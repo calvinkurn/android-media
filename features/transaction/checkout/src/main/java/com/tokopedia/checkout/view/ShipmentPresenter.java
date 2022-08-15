@@ -185,7 +185,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
-    private ShipmentNewUpsellModel shipmentUpsellModel = new ShipmentNewUpsellModel();
+    private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
+    private ShipmentNewUpsellModel shipmentNewUpsellModel = new ShipmentNewUpsellModel();
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
     private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
@@ -703,6 +704,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setRecipientAddressModel(newAddress);
 
         this.shipmentUpsellModel = shipmentDataConverter.getShipmentUpsellModel(cartShipmentAddressFormData.getUpsell());
+        this.shipmentNewUpsellModel = shipmentDataConverter.getShipmentNewUpsellModel(cartShipmentAddressFormData.getNewUpsell());
 
         if (cartShipmentAddressFormData.getDonation() != null) {
             ShipmentDonationModel shipmentDonationModel = shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData);
@@ -2374,8 +2376,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public ShipmentNewUpsellModel getShipmentUpsellModel() {
+    public ShipmentUpsellModel getShipmentUpsellModel() {
         return shipmentUpsellModel;
+    }
+
+    @Override
+    public ShipmentNewUpsellModel getShipmentNewUpsellModel() {
+        return shipmentNewUpsellModel;
     }
 
     @Override

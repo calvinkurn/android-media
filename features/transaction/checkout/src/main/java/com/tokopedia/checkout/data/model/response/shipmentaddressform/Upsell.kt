@@ -6,6 +6,19 @@ import com.google.gson.annotations.SerializedName
 class Upsell(
         @SerializedName("is_show")
         val isShow: Boolean = false,
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("description")
+        val description: String = "",
+        @SerializedName("app_link")
+        val appLink: String = "",
+        @SerializedName("image")
+        val image: String = ""
+)
+
+class NewUpsell(
+        @SerializedName("is_show")
+        val isShow: Boolean = false,
         @SerializedName("is_selected")
         val isSelected: Boolean = false,
         @SerializedName("description")
@@ -25,24 +38,7 @@ class Upsell(
         val button: UpsellButton = UpsellButton()
 )
 
-data class UpsellButton(
+class UpsellButton(
         @SerializedName("text")
         val text: String = ""
 )
-
-/**
- * upsell_v2 {
-is_show
-is_selected
-price
-price_fmt
-duration (6 bulan)
-description (jangan lupa html format)
-wording untuk ringkasan belanja (Langganan PLUS 6 Bulan)
-image
-applink
-button {
-text
-}
-}
- */

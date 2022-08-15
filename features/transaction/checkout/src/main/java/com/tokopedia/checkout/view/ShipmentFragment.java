@@ -505,7 +505,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
                                       TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       RecipientAddressModel recipientAddressModel,
-                                      ShipmentNewUpsellModel shipmentUpsellModel,
+                                      ShipmentUpsellModel shipmentUpsellModel,
+                                      ShipmentNewUpsellModel shipmentNewUpsellModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
                                       List<ShipmentCrossSellModel> shipmentCrossSellModelList,
@@ -531,6 +532,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         if (shipmentUpsellModel.isShow()) {
             shipmentAdapter.addUpsellData(shipmentUpsellModel);
+        }
+        if (shipmentNewUpsellModel.isShow()) {
+            shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
@@ -839,6 +843,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 recipientAddressModel,
                 shipmentPresenter.getShipmentUpsellModel(),
+                shipmentPresenter.getShipmentNewUpsellModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getListShipmentCrossSellModel(),
@@ -873,6 +878,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentUpsellModel(),
+                shipmentPresenter.getShipmentNewUpsellModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getListShipmentCrossSellModel(),

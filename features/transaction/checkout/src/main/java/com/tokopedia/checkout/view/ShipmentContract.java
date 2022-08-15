@@ -379,7 +379,9 @@ public interface ShipmentContract {
 
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
-        ShipmentNewUpsellModel getShipmentUpsellModel();
+        ShipmentUpsellModel getShipmentUpsellModel();
+
+        ShipmentNewUpsellModel getShipmentNewUpsellModel();
 
         void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 

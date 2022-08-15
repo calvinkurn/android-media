@@ -43,6 +43,7 @@ data class CartShipmentAddressFormData(
         var popUpMessage: String = "",
         var errorTicker: String = "",
         var upsell: UpsellData = UpsellData(),
+        var newUpsell: NewUpsellData = NewUpsellData(),
         var cartData: String = ""
 ) : Parcelable {
 

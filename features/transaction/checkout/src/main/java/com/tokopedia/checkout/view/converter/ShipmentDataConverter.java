@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
@@ -419,7 +420,17 @@ public class ShipmentDataConverter {
         return addOnWordingModel;
     }
 
-    public ShipmentNewUpsellModel getShipmentUpsellModel(UpsellData upsellData) {
+    public ShipmentUpsellModel getShipmentUpsellModel(UpsellData upsellData) {
+        ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
+        shipmentUpsellModel.setShow(upsellData.isShow());
+        shipmentUpsellModel.setTitle(upsellData.getTitle());
+        shipmentUpsellModel.setDescription(upsellData.getDescription());
+        shipmentUpsellModel.setAppLink(upsellData.getAppLink());
+        shipmentUpsellModel.setImage(upsellData.getImage());
+        return shipmentUpsellModel;
+    }
+
+    public ShipmentNewUpsellModel getShipmentNewUpsellModel(NewUpsellData upsellData) {
         ShipmentNewUpsellModel shipmentUpsellModel = new ShipmentNewUpsellModel();
         shipmentUpsellModel.setShow(upsellData.isShow());
         shipmentUpsellModel.setSelected(upsellData.isSelected());

@@ -98,7 +98,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private EgoldAttributeModel egoldAttributeModel;
     private ShippingCompletionTickerModel shippingCompletionTickerModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
-    private ShipmentNewUpsellModel shipmentUpsellModel;
+    private ShipmentUpsellModel shipmentUpsellModel;
+    private ShipmentNewUpsellModel shipmentNewUpsellModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
@@ -293,9 +294,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void addUpsellData(ShipmentNewUpsellModel shipmentUpsellModel) {
+    public void addUpsellData(ShipmentUpsellModel shipmentUpsellModel) {
         shipmentDataList.add(shipmentUpsellModel);
         this.shipmentUpsellModel = shipmentUpsellModel;
+    }
+
+    public void addNewUpsellData(ShipmentNewUpsellModel shipmentNewUpsellModel) {
+        shipmentDataList.add(shipmentNewUpsellModel);
+        this.shipmentNewUpsellModel = shipmentNewUpsellModel;
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddressModel) {
@@ -972,10 +978,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setTotalPrice(totalPrice);
 
         ShipmentCrossSellModel upsellCost = null;
-        if (shipmentUpsellModel != null && shipmentUpsellModel.isSelected() && shipmentUpsellModel.isShow()) {
+        if (shipmentNewUpsellModel != null && shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
             CrossSellModel crossSellModel = new CrossSellModel();
-            crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentUpsellModel.getWording(), ""));
-            crossSellModel.setPrice(shipmentUpsellModel.getPrice());
+            crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentNewUpsellModel.getWording(), ""));
+            crossSellModel.setPrice(shipmentNewUpsellModel.getPrice());
             upsellCost = new ShipmentCrossSellModel(crossSellModel, true, true);
         }
         ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
