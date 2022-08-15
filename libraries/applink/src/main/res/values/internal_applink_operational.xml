@@ -16,5 +16,6 @@
     <string name="host_resolution" translatable="false">resolution</string>
     <string name="path_success_reso" translatable="false">/success-create</string>
     <string name="path_detail_complain" translatable="false">/detail-complain</string>
+    <string name="applink_title_resolution">Resolution Success</string>
 
 </resources>
