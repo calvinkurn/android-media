@@ -15,7 +15,7 @@ import javax.inject.Inject
 class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopMessageChatExist>() {
 
     private val Chat_Existing_Chat = "query getExistingChat(\$shopIds: Int!){\n" +
-            "     chatExistingChat(shop_ids: \$shopIds) {\n" +
+            "     chatExistingChat(toShopId: \$shopIds) {\n" +
             "         messageId\n" +
             "     }\n" +
             " }"
