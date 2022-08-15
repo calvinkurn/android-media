@@ -235,6 +235,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             navIcon = CLOSE
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
 
+            if (viewModel.isFirstSwitchAccount) {
+                showCoachMarkSwitchAccount()
+                viewModel.setNotFirstSwitchAccount()
+            }
+
             setOnAccountClickListener {
                 FeedAccountTypeBottomSheet
                     .getFragment(childFragmentManager, requireContext().classLoader)
@@ -245,10 +250,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             setOnBackClickListener {
                 analytic.clickCloseOnPreparation()
                 activity?.onBackPressed()
-            }
-            if (viewModel.isFirstSwitchAccount) {
-                showCoachMarkSwitchAccount()
-                viewModel.setNotFirstSwitchAccount()
             }
         }
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
