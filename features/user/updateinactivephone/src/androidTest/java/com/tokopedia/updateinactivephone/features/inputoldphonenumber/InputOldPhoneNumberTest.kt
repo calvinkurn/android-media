@@ -12,20 +12,13 @@ import org.junit.runner.RunWith
 
 @UiTest
 @RunWith(AndroidJUnit4::class)
-class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
-
-    override fun before() {
-        super.before()
-        inactivePhoneDependency.apply {
-            inputOldPhoneNumberUseCaseStub.response = registerCheckRegisteredModel
-        }
-    }
+class InputOldPhoneNumberTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun init_view_is_show() {
-        //WHEN first time launch
+        // When first time launch
 
-        //THEN
+        // Then
         runTest {
             checkInitViewIsShowing()
         }
@@ -33,61 +26,82 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_empty_phone_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = ""
 
         runTest {
-            //WHEN
+            // When
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
 
-            //THEN
+            // Then
             checkErrorMessageOnInputPhone(ERROR_PHONE_EMPTY)
         }
     }
 
     @Test
     fun input_too_long_phone_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = "0821375674837463231"
 
         runTest {
-            //WHEN
+            // When
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
 
-            //THEN
+            // Then
             checkErrorMessageOnInputPhone(ERROR_PHONE_TOO_LONG)
         }
     }
 
     @Test
-    fun input_too_long_short_number_then_show_message_error() {
-        //GIVEN
+    fun input_too_short_number_then_show_message_error() {
+        // Given
         val phone = "0821375"
 
         runTest {
-            //WHEN
+            // When
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
 
-            //THEN
+            // Then
             checkErrorMessageOnInputPhone(ERROR_PHONE_TOO_SHORT)
         }
     }
 
     @Test
     fun input_registered_number_then_success() {
-        //GIVEN
+        // Given
+        inactivePhoneDependency.apply {
+            inputOldPhoneNumberUseCaseStub.response = registerCheckRegisteredModel
+        }
         val phone = "082137567654"
 
         runTest {
-            //WHEN
+            // When
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
 
-            //THEN
+            // Then
             checkErrorMessageIsNotDisplayed()
+        }
+    }
+
+    @Test
+    fun input_not_registered_number_then_success() {
+        // Given
+        inactivePhoneDependency.apply {
+            inputOldPhoneNumberUseCaseStub.response = registerCheckNotRegisteredModel
+        }
+        val phone = "012345678910"
+
+        runTest {
+            // When
+            setPhoneNumberText(phone)
+            clickOnButtonSubmit()
+
+            // Then
+            checkErrorMessageOnInputPhone(ERROR_PHONE_NOT_REGISTERED)
         }
     }
 
@@ -95,6 +109,7 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
         const val ERROR_PHONE_EMPTY = "Wajib diisi."
         const val ERROR_PHONE_TOO_SHORT = "Min. 9 digit."
         const val ERROR_PHONE_TOO_LONG = "Maks. 15 digit."
+        const val ERROR_PHONE_NOT_REGISTERED = "Nomor ini tidak terdaftar di Tokopedia."
     }
 
 }
