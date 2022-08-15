@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
 import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
@@ -20,4 +21,9 @@ abstract class TokopediaFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(LandingContainerViewModel::class)
     internal abstract fun provideLandingContainerViewModel(viewModel: LandingContainerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CampaignDetailViewModel::class)
+    internal abstract fun provideCampaignDetailViewModel(viewModel: CampaignDetailViewModel): ViewModel
 }

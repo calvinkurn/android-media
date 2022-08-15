@@ -5,6 +5,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment
 import com.tokopedia.tkpd.flashsale.presentation.landing.LandingActivity
 import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerFragment
 import dagger.Component
@@ -17,4 +18,6 @@ import dagger.Component
 interface TokopediaFlashSaleComponent {
     fun inject(activity: LandingActivity)
     fun inject(fragment: LandingContainerFragment)
+
+    fun inject(fragment: CampaignDetailFragment)
 }
