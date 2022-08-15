@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.model.ShopInfoData
+import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopMessageChatExist
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,6 +26,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val getShopNoteUseCase: GetShopNoteUseCase,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
+                                            private val getMessageIdChatUseCase : GetMessageIdChatUseCase,
                                             private val coroutineDispatcherProvider: CoroutineDispatchers
 ): BaseViewModel(coroutineDispatcherProvider.main){
 
@@ -34,6 +37,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
+    val messageIdOnChateExist = MutableLiveData<Result<Int>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
@@ -88,6 +92,19 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     private suspend fun getShopReputation(shopId: String): ShopBadge {
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
         return getShopReputationUseCase.executeOnBackground()
+    }
+
+    fun getMessageIdOnChatExist(shopId: String) {
+        launchCatchError(coroutineDispatcherProvider.io, block = {
+            messageIdOnChateExist.postValue(Success(getMessageId(shopId).messageId))
+        }) {
+            messageIdOnChateExist.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun getMessageId(shopId: String): ShopMessageChatExist {
+        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
+        return getMessageIdChatUseCase.executeOnBackground()
     }
 
 }

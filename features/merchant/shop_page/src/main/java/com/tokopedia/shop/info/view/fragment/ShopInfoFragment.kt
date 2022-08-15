@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -45,16 +46,18 @@ import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, ShopNoteViewHolder.OnNoteClicked {
+class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
+    ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
         fun createInstance(
-                shopId: String? = null,
-                shopInfo: ShopInfoData? = null
+            shopId: String? = null,
+            shopInfo: ShopInfoData? = null
         ): ShopInfoFragment {
             return ShopInfoFragment().apply {
                 val bundle = Bundle()
@@ -86,10 +89,23 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.recyclerViewNote
     private val shopInfoNoteLoading: View?
         get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.loading
+
+    private val viewReport: ConstraintLayout?
+        get() = fragmentShopInfoBinding?.reportContainer
+    private val viewDivTopOfReport: DividerUnify?
+        get() = fragmentShopInfoBinding?.diverLayoutTopOfReport
+    private val viewDivBottomOfReport: DividerUnify?
+        get() = fragmentShopInfoBinding?.diverLayoutBottomOfReport
+
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         fragmentShopInfoBinding = FragmentShopInfoBinding.inflate(inflater, container, false)
         return fragmentShopInfoBinding?.root
     }
@@ -115,7 +131,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     override fun onDestroy() {
-        shopViewModel?.let{
+        shopViewModel?.let {
             removeObservers(it.shopInfo)
             removeObservers(it.shopNotesResp)
             it.flush()
@@ -125,8 +141,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     override fun onEmptyButtonClicked() {
         shopInfo?.run {
-            shopPageTracking?.clickAddNote(CustomDimensionShopPage
-                    .create(shopId, isOfficial == 1, isGold == 1))
+            shopPageTracking?.clickAddNote(
+                CustomDimensionShopPage
+                    .create(shopId, isOfficial == 1, isGold == 1)
+            )
             RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
         }
     }
@@ -134,14 +152,16 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     override fun onNoteClicked(position: Long, shopNoteUiModel: ShopNoteUiModel) {
         shopInfo?.run {
             val isMyShop = shopViewModel?.isMyShop(shopId) ?: false
-            if(!isMyShop) {
+            if (!isMyShop) {
                 shopPageTracking?.clickReadNotes(shopId, userId)
             }
-            startActivity(ShopNoteDetailActivity.createIntent(
+            startActivity(
+                ShopNoteDetailActivity.createIntent(
                     activity,
                     shopId,
                     shopNoteUiModel.shopNoteId.toString()
-            ))
+                )
+            )
         }
     }
 
@@ -151,28 +171,51 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     override fun initInjector() {
         DaggerShopInfoComponent.builder().shopInfoModule(ShopInfoModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+            .shopComponent(getComponent(ShopComponent::class.java))
+            .build()
+            .inject(this)
     }
 
     private fun initViewModel() {
         shopViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(ShopInfoViewModel::class.java)
+            .get(ShopInfoViewModel::class.java)
     }
 
     private fun initObservers() {
         observeShopNotes()
         observeShopInfo()
         observeShopBadgeReputation()
+        observerMessageIdOnChatExist()
     }
 
     private fun observeShopBadgeReputation() {
-        shopViewModel?.shopBadgeReputation?.observe(viewLifecycleOwner,  Observer {
+        shopViewModel?.shopBadgeReputation?.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
                 showShopBadgeReputation(it.data)
             }
         })
+    }
+
+    private fun observerMessageIdOnChatExist() {
+        shopViewModel?.messageIdOnChateExist?.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                showReportView()
+            } else {
+                hideReportView()
+            }
+        }
+    }
+
+    private fun showReportView() {
+        viewReport?.show()
+        viewDivTopOfReport?.show()
+        viewDivBottomOfReport?.show()
+    }
+
+    private fun hideReportView() {
+        viewReport?.hide()
+        viewDivTopOfReport?.hide()
+        viewDivBottomOfReport?.hide()
     }
 
     private fun showShopBadgeReputation(shopBadge: ShopBadge) {
@@ -199,6 +242,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
                 this@ShopInfoFragment.shopInfo = it
                 customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
                 showShopInfo()
+                getMessageIdOnChatExist()
                 if (!isOfficial) {
                     getShopBadgeReputation()
                 }
@@ -208,6 +252,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     private fun getShopBadgeReputation() {
         shopViewModel?.getShopReputationBadge(getShopId().orEmpty())
+    }
+
+    private fun getMessageIdOnChatExist() {
+        shopViewModel?.getMessageIdOnChatExist(getShopId().orEmpty())
     }
 
     private fun initView() {
