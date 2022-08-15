@@ -2,6 +2,7 @@ package com.tokopedia.usercomponents.stickylogin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -25,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginReminderTracker
@@ -50,7 +52,7 @@ import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.user.session.util.EncoderDecoder
+import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -152,7 +154,11 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                 page?.let { _page -> tracker.clickOnLogin(_page) }
             }
 
-            stickyLoginAction?.onClick()
+            // Temp user consent test entry point
+//            stickyLoginAction?.onClick()
+            context?.let {
+                it.startActivity(Intent(it, UserConsentDebugActivity::class.java))
+            }
         }
 
         viewBinding.layoutStickyContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
