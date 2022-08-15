@@ -19,7 +19,7 @@ class LastFilterPresenterDelegate @Inject constructor(
     @param:Named(SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
 ): LastFilterPresenter {
-    override var categoryIdL2: String = ""
+    var categoryIdL2: String = ""
 
     override fun updateLastFilter(
         searchParameter: Map<String, Any>,

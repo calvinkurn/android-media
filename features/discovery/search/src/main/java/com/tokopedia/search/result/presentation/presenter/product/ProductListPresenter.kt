@@ -145,7 +145,7 @@ class ProductListPresenter @Inject constructor(
     private val bannerDelegate: BannerPresenterDelegate,
     private val requestParamsGenerator: RequestParamsGenerator,
     private val paginationImpl: PaginationImpl,
-    lastFilterPresenterDelegate: LastFilterPresenterDelegate,
+    private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -640,7 +640,7 @@ class ProductListPresenter @Inject constructor(
         bannerDelegate.setBannerData(productDataView.bannerDataView)
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         paginationImpl.totalData = productDataView.totalData
-        categoryIdL2 = productDataView.categoryIdL2
+        lastFilterPresenterDelegate.categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
         pageComponentId = productDataView.pageComponentId
