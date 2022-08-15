@@ -52,6 +52,8 @@ import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
@@ -279,9 +281,15 @@ class OfficialHomeFragment :
             removeLoading(it.isCache)
             swipeRefreshLayout?.isRefreshing = false
             adapter?.submitList(it.dataList)
-            bannerPerformanceMonitoring.stopTrace()
-            dynamicChannelPerformanceMonitoring.stopTrace()
-            shopPerformanceMonitoring.stopTrace()
+            if(it.dataList.any { it is OfficialBannerDataModel }){
+                bannerPerformanceMonitoring.stopTrace()
+            }
+            if(it.dataList.any { it is OfficialFeaturedShopDataModel }){
+                shopPerformanceMonitoring.stopTrace()
+            }
+            if(it.dataList.any { it !is OfficialBannerDataModel && it !is OfficialFeaturedShopDataModel }){
+                dynamicChannelPerformanceMonitoring.stopTrace()
+            }
         }
     }
 
@@ -289,6 +297,9 @@ class OfficialHomeFragment :
         viewModel.officialStoreError.observe(viewLifecycleOwner){
             swipeRefreshLayout?.isRefreshing = false
             showErrorNetwork(it)
+            bannerPerformanceMonitoring.stopTrace()
+            dynamicChannelPerformanceMonitoring.stopTrace()
+            shopPerformanceMonitoring.stopTrace()
         }
     }
 
