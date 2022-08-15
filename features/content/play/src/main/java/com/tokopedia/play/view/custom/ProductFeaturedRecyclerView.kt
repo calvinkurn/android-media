@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.Shader
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +37,8 @@ class ProductFeaturedRecyclerView : RecyclerView {
     private val mEndGradientRect = Rect(0, 0, 0, 0)
 
     override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return super.drawChild(canvas, child, drawingTime)
+
         if (visibility == View.GONE) {
             return super.drawChild(canvas, child, drawingTime)
         }
