@@ -45,6 +45,6 @@ class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiR
         private const val PARAM_SHOP_IDS = "shopIds"
 
         @JvmStatic
-        fun createParams(shopId: String): Map<String, Any> = mapOf(PARAM_SHOP_IDS to listOf(shopId.toIntOrZero()))
+        fun createParams(shopId: String): Map<String, Any> = mapOf(PARAM_SHOP_IDS to shopId.toIntOrZero())
     }
 }
