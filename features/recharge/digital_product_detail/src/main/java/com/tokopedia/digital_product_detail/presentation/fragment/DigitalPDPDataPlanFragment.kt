@@ -1111,12 +1111,26 @@ class DigitalPDPDataPlanFragment :
 
     private fun showErrorUnverifiedPhoneNumber(error: ErrorAtc){
         view?.let {
-            Toaster.build(
-                it,
-                error.title,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-            ).show()
+            if (error.appLinkUrl.isNotEmpty()){
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.common_digital.R.string.button_toaster)
+                ) {
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                    }
+                }.show()
+            }else{
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                ).show()
+            }
         }
     }
 
