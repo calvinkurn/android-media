@@ -62,7 +62,7 @@
                 android:layout_gravity="center_vertical"
                 android:id="@+id/parallax_image"
                 android:layout_height="0dp"
-                android:layout_width="@dimen/product_card_flashsale_width"
+                android:layout_width="@dimen/home_mix_left_image_width"
                 android:adjustViewBounds="true"
                 android:clickable="true"
                 android:focusable="true"
