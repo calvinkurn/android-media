@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -585,9 +586,9 @@ class ShopPageCampaignFragment :
             }
             val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
             gradient.cornerRadius = 0f
-            topView?.setBackgroundColor(Color.parseColor(listBackgroundColor.firstOrNull()))
+            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
             centerView?.background = gradient
-            bottomView?.setBackgroundColor(Color.parseColor(listBackgroundColor.lastOrNull()))
+            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
         } else {
             topView?.hide()
             centerView?.hide()
@@ -755,6 +756,22 @@ class ShopPageCampaignFragment :
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {
         this.listBackgroundColor = listBackgroundColor
+        checkIfListBackgroundColorValueIsEmpty()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun checkIfListBackgroundColorValueIsEmpty() {
+        if (listBackgroundColor.all { it.isEmpty() }) {
+            this.listBackgroundColor = getDefaultListBackgroundColor()
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getDefaultListBackgroundColor(): List<String> {
+        return listOf(
+            getString(R.color.clr_dms_shop_campaign_tab_first_color),
+            getString(R.color.clr_dms_shop_campaign_tab_second_color)
+        )
     }
 
     fun setPageTextColor(textColor: String) {

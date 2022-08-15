@@ -475,7 +475,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     companion object {
-        const val TOP_ADS_SOURCE = "5"
+        const val TOP_ADS_SOURCE = "19"
         const val TOP_ADS_COUNT = 1
         const val TOP_ADS_DIMEN_ID = 3
 
