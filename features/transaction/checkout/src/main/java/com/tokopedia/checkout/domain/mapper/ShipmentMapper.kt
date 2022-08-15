@@ -180,6 +180,7 @@ class ShipmentMapper @Inject constructor() {
                         unblockingErrorMessage = it.unblockingErrors.joinToString()
                         shippingId = it.shippingId
                         spId = it.spId
+                        boCode = it.boCode
                         dropshipperName = it.dropshiper.name
                         dropshipperPhone = it.dropshiper.telpNo
                         isUseInsurance = it.isInsurance

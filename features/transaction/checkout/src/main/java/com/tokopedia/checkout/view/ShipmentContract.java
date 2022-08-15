@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
@@ -172,6 +173,8 @@ public interface ShipmentContract {
         void showPopUp(PopUpData popUpData);
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+
+        void onNeedUpdateViewItem(int position);
     }
 
     interface AnalyticsActionListener {
@@ -377,6 +380,10 @@ public interface ShipmentContract {
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
         ShipmentNewUpsellModel getShipmentUpsellModel();
+
+        void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
+
+        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
     }
 
 }
