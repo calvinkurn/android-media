@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
-import com.tokopedia.sellerapp.presentation.theme.NestDarkN0
 import com.tokopedia.sellerapp.presentation.theme.NestLightBlue
 import com.tokopedia.tkpd.R
 import com.tokopedia.unifyprinciples.Typography
@@ -21,7 +21,7 @@ fun NewOrderSummaryScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = NestDarkN0),
+            .background(color = Color(com.tokopedia.unifyprinciples.R.color.Unify_NN1000)),
         contentAlignment = Alignment.Center
     ) {
         Column(
