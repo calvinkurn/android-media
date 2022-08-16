@@ -211,7 +211,6 @@ class CarouselViewHolder(
             val imageUrl = element.emptyState.imageUrl.takeIf { it.isNotBlank() }
                 ?: SellerHomeUrl.IMG_EMPTY_STATE
             emptyStateBinding.imgShcCarouselEmpty.loadImage(imageUrl)
-
         }
     }
 
