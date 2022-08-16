@@ -1109,7 +1109,6 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
                 is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
-                    it.position,
                     it.quantity,
                     it.data
                 )
@@ -1122,6 +1121,16 @@ class TokoNowHomeFragment: Fragment(),
                 is HomeLeftCarouselAtcProductCardUiModel -> trackLeftCarouselAddToCart(
                     it.quantity,
                     it.cartId,
+                    it.data
+                )
+            }
+        }
+
+        observe(viewModelTokoNow.homeRemoveFromCartTracker) {
+            when(it.data) {
+                is HomeProductRecomUiModel -> trackProductRecomRemoveFromCart(
+                    it.quantity,
+                    it.position,
                     it.data
                 )
             }
@@ -1214,6 +1223,16 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
+    private fun trackProductRecomRemoveFromCart(quantity: Int, position: Int, productRecomModel: HomeProductRecomUiModel) {
+        analytics.onClickProductRecomRemoveFromCart(
+            channelId = productRecomModel.id,
+            headerName = productRecomModel.recomWidget.title,
+            quantity = quantity.toString(),
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            position = position.toString()
+        )
+    }
+
     private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselAtcProductCardUiModel) {
         analytics.onClickLeftCarouselAddToCart(
             quantity = quantity.toString(),
@@ -1301,8 +1320,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickRepurchase(position, data)
     }
 
-    private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRepurchaseAddToCart(position, quantity, data)
+    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+        analytics.onRepurchaseAddToCart(quantity, data)
     }
 
     private fun trackClickShareSenderReferralWidget(referral: HomeSharingReferralWidgetUiModel) {

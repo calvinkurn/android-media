@@ -5,14 +5,11 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.usercomponents.explicit.view.ExplicitView
+        android:id="@+id/fake_explicit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:page_name="halal_single_name"
-        app:page_path="halal_single_path"
-        app:page_type="halal_single_type"
-        app:template_name="halal_single" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,6 +24,10 @@ import rx.Subscriber
 private const val searchProductNotEmptyJSON = "searchproduct/with-topads.json"
 private const val emptyTotalDataZeroJSON = "searchproduct/postprocessingfilter/empty-total-data-0.json"
 private const val emptyTotalDataNotZeroJSON = "searchproduct/postprocessingfilter/empty-total-data-not-0.json"
+private const val searchProductPostProcessingWithoutTopadsJSON = "searchproduct/postprocessingfilter/postprocessing-without-topads.json"
+private const val searchProductPostProcessingWithoutTopadsSmallTotalDataJSON = "searchproduct/postprocessingfilter/postprocessing-without-topads-small-total-data.json"
+private const val postProcessingEmptyTotalDataNotZeroJSON = "searchproduct/postprocessingfilter/postprocessing-empty-total-data-not-0.json"
+private const val postProcessingEmptySmallTotalDataJSON = "searchproduct/postprocessingfilter/postprocessing-empty-small-total-data.json"
 
 internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtures() {
 
@@ -33,12 +37,23 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
         emptyTotalDataZeroJSON.jsonToObject<SearchProductModel>()
     private val notEmptyProduct =
         searchProductNotEmptyJSON.jsonToObject<SearchProductModel>()
+    private val postProcessingEmptyProductTotalDataNotZero =
+        postProcessingEmptyTotalDataNotZeroJSON.jsonToObject<SearchProductModel>()
+    private val postProcessingNotEmptyProduct =
+        searchProductPostProcessingWithoutTopadsJSON.jsonToObject<SearchProductModel>()
+    private val postProcessingEmptyProductSmallTotalData =
+        postProcessingEmptySmallTotalDataJSON.jsonToObject<SearchProductModel>()
+    private val postProcessingNotEmptyProductSmallTotalData =
+        searchProductPostProcessingWithoutTopadsSmallTotalDataJSON.jsonToObject<SearchProductModel>()
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
     private val searchParameter: Map<String, Any> = mapOf(
         SearchApiConst.Q to "samsung",
         SearchApiConst.IS_FULFILLMENT to "true",
+    )
+    private val searchParameterPostProcessing: Map<String, Any> = mapOf(
+        SearchApiConst.Q to "samsung",
     )
 
     @Test
@@ -292,6 +307,82 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
             val subscriber = secondArg<Subscriber<SearchProductModel>>()
 
             subscriber.complete(getSearchProduct(searchProductParams))
+        }
+    }
+
+    @Test
+    fun `empty products post processing with non zero total data should stop retry before threshold - 1`() {
+        `Given search product APIs responses` { parameter ->
+            when (parameter[START].toString()) {
+                "0" -> postProcessingEmptyProductTotalDataNotZero
+                "8" -> postProcessingEmptyProductTotalDataNotZero
+                else -> postProcessingEmptyProductTotalDataNotZero
+            }
+        }
+
+        productListPresenter.loadData(searchParameterPostProcessing)
+
+        verify(exactly = 3) {
+            searchProductFirstPageUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 1) {
+            productListView.removeLoading()
+        }
+    }
+
+    @Test
+    fun `empty products post processing with non zero total data should stop retry before threshold - 2`() {
+        `Given search product APIs responses` { parameter ->
+            when (parameter[START].toString()) {
+                "0" -> postProcessingEmptyProductTotalDataNotZero
+                "8" -> postProcessingNotEmptyProduct
+                "16" -> postProcessingEmptyProductTotalDataNotZero
+                "24" -> postProcessingEmptyProductTotalDataNotZero
+                else -> postProcessingEmptyProductTotalDataNotZero
+            }
+        }
+
+        productListPresenter.loadData(searchParameterPostProcessing)
+        productListPresenter.loadMoreData(searchParameterPostProcessing)
+
+        verify(exactly = 2) {
+            searchProductFirstPageUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 3) {
+            searchProductLoadMoreUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 2) {
+            productListView.removeLoading()
+        }
+    }
+
+    @Test
+    fun `empty products post processing with small total data should stop retry after greater than total data`() {
+        `Given search product APIs responses` { parameter ->
+            when (parameter[START].toString()) {
+                "0" -> postProcessingNotEmptyProductSmallTotalData
+                "8" -> postProcessingEmptyProductSmallTotalData
+                "16" -> postProcessingEmptyProductSmallTotalData
+                else -> postProcessingEmptyProductSmallTotalData
+            }
+        }
+
+        productListPresenter.loadData(searchParameterPostProcessing)
+        productListPresenter.loadMoreData(searchParameterPostProcessing)
+
+        verify(exactly = 1) {
+            searchProductFirstPageUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 2) {
+            searchProductLoadMoreUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 2) {
+            productListView.removeLoading()
         }
     }
 }

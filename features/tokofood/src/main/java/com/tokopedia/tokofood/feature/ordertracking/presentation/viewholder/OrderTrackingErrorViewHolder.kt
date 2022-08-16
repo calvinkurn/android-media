@@ -23,16 +23,11 @@ class OrderTrackingErrorViewHolder(itemView: View, private val listener: Listene
         with(binding) {
             globalErrorOrderTracking.run {
                 setType(element.throwable.getPostPurchaseGlobalErrorType())
-                setPrimaryActionText()
                 setActionClickListener {
                     listener.onErrorActionClicked()
                 }
             }
         }
-    }
-
-    private fun GlobalError.setPrimaryActionText() {
-        errorAction.text = getString(com.tokopedia.tokofood.R.string.global_error_order_tracking_primary_action_text)
     }
 
     interface Listener {

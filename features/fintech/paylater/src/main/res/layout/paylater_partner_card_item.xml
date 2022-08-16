@@ -42,12 +42,11 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivPaylaterPartner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="@dimen/unify_space_32"
+                android:layout_height="@dimen/unify_space_32"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
-                app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
                 tools:src="@tools:sample/avatars" />
@@ -62,7 +61,8 @@
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintLeft_toRightOf="@id/ivPaylaterPartner"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_6"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
                 tools:text="Title" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -84,15 +84,17 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
                 app:layout_constraintStart_toEndOf="@id/tvInstallmentAmount"
+                app:layout_constraintTop_toTopOf="@+id/tvInstallmentAmount"
                 app:typographyType="body_3"
                 tools:text="x 12" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/partnerTenureInfo"
-                android:layout_width="@dimen/unify_space_16"
-                android:layout_height="@dimen/unify_space_16"
+                android:layout_width="@dimen/pay_later_dp_18"
+                android:layout_height="@dimen/pay_later_dp_18"
                 android:layout_marginStart="@dimen/unify_space_4"
                 app:icon_name="INFORMATION"
+                app:icon_enable_state="true"
                 app:layout_constraintBottom_toBottomOf="@id/tvInstallmentAmount"
                 app:layout_constraintStart_toEndOf="@id/tvTenureMultiplier"
                 app:layout_constraintTop_toTopOf="@id/tvInstallmentAmount" />
@@ -122,7 +124,7 @@
             <LinearLayout
                 android:id="@+id/llBenefits"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginEnd="@dimen/unify_space_32"
                 android:layout_marginBottom="@dimen/unify_space_12"

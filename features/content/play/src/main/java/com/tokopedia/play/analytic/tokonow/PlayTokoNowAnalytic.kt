@@ -9,42 +9,41 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
  * @author by astidhiyaa on 17/06/22
  */
 interface PlayTokoNowAnalytic {
-    fun sendData(channelId: String, channelType: PlayChannelType, channelName: String)
-    fun impressAddressWidget()
-    fun impressChooseAddress()
-    fun clickChooseAddress()
-    fun clickInfoAddressWidget()
+    fun sendDataNow(channelId: String, channelType: PlayChannelType, channelName: String)
+    fun impressAddressWidgetNow()
+    fun impressChooseAddressNow()
+    fun clickChooseAddressNow()
+    fun clickInfoAddressWidgetNow()
     fun impressInfoNow()
     fun clickInfoNow()
     fun impressNowToaster()
     fun clickLihatNowToaster()
     fun impressGlobalToaster()
-    fun clickGlobalToaster()
-    fun clickProductBottomSheet(
+    fun clickProductBottomSheetNow(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         position: Int,
     )
 
-    fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int)
+    fun clickFeaturedProductNow(featuredProduct: PlayProductUiModel.Product, position: Int)
 
-    fun impressProductBottomSheet(
+    fun impressProductBottomSheetNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section,
     )
 
-    fun impressFeaturedProduct(
+    fun impressFeaturedProductNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
     )
 
-    fun clickBeli(
+    fun clickBeliNowProduct(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
         shopInfo: PlayPartnerInfo,
     )
 
-    fun clickAtc(
+    fun clickAtcNowProduct(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,

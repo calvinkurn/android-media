@@ -76,9 +76,6 @@ interface SearchEventTracking {
             const val CLICK_DYNAMIC_PRODUCT_CAROUSEL = "click - dynamic carousel product"
             const val CLICK_DYNAMIC_PRODUCT_CAROUSEL_SEE_MORE = "click - dynamic carousel search"
             const val GENERAL_SEARCH_SHOP = "general search shop"
-            const val IMPRESSION_SAVE_LAST_FILTER = "impression - save last filter"
-            const val CLICK_SAVE_LAST_FILTER = "click - save last filter"
-            const val CLOSE_SAVE_LAST_FILTER = "close - save last filter"
             const val IMPRESSION_CAROUSEL_PRODUCT = "impression - carousel product"
             const val CLICK_CAROUSEL_PRODUCT = "click - carousel product"
             const val CLICK_DROPDOWN_QUICK_FILTER = "filter product dropdown - click"
@@ -132,5 +129,6 @@ interface SearchEventTracking {
         const val NONE = "none"
         const val OTHER = "other"
         const val PHYSICAL_GOODS = "physical goods"
+        const val EXTERNAL_REFERENCE = "externalReference"
     }
 }

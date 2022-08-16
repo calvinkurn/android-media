@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductMultipleBinding
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -18,7 +19,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultiplePackageViewHolder(
         itemView: View,
-        private val itemListener: MultipleProductBundleListener
+        private val itemListener: MultipleProductBundleListener? = null
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -50,7 +51,7 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
         itemView.addOnImpressionListener(bundleProductItem){
-            itemListener.impressionProductItemBundleMultiple(
+            itemListener?.impressionProductItemBundleMultiple(
                 bundleProductItem,
                 bundleDetail,
                 bundleParent.bundleName,
@@ -61,10 +62,13 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
             )
         }
         itemView.setOnClickListener {
-            itemListener.onMultipleBundleProductClicked(
+            itemListener?.onMultipleBundleProductClicked(
+                bundleParent.shopId,
+                bundleParent.warehouseId,
                 bundleProductItem,
                 bundleDetail,
                 bundleParent.bundleName,
+                bundleParent.bundleType,
                 bundlePosition,
                 widgetTitle,
                 widgetName,
@@ -72,28 +76,50 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
             )
         }
     }
+
+    fun bind(
+        bundleProductItem: BundleProductUiModel,
+        onViewImpression: (position: Int) -> Unit,
+        onClickImpression: (position: Int) -> Unit
+    ) {
+        imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
+        typographyBundleProductName?.text = bundleProductItem.productName
+        itemView.addOnImpressionListener(bundleProductItem) { onViewImpression.invoke(adapterPosition) }
+        itemView.setOnClickListener { onClickImpression.invoke(adapterPosition) }
+    }
 }
 
 interface MultipleProductBundleListener {
     fun onMultipleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+            bundleType: String,
             bundlePosition: Int,
             widgetTitle: String,
             widgetName: String,
             productItemPosition: Int
     )
     fun addMultipleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            bundleType: String,
+            bundlePosition: Int,
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     )
     fun impressionProductBundleMultiple(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+            bundleType: String,
             bundlePosition: Int,
     )
 
