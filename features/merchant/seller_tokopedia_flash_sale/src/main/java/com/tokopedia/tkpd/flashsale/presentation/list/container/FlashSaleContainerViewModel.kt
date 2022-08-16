@@ -2,13 +2,11 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductDeleteUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductSubmissionUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleReservedProductListUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -48,10 +46,8 @@ class FlashSaleContainerViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val response = getFlashSaleListForSellerMetaUseCase.execute()
-
-                _uiEvent.tryEmit(UiEvent.FetchTabMetaError(MessageErrorException("Some error message")))
-                _uiState.update { it.copy(tabsMetadata = response) }
+                val tabs = getFlashSaleListForSellerMetaUseCase.execute()
+                _uiState.update { it.copy(tabsMetadata = tabs) }
 
             },
             onError = { error ->

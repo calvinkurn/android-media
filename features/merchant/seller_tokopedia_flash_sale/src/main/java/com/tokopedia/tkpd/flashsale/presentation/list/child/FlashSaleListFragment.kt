@@ -47,6 +47,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     }
 
+
     private val tabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_TARGET_TAB_POSITION).orZero()
     }
@@ -65,6 +66,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     
+
 
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
     private var isFirstLoad = true

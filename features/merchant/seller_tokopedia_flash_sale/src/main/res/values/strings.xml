@@ -7,6 +7,11 @@
     <!--Flash Sale List-->
 
     <!--Flash Sale Status-->
+    <string name="stfs_tab_name_upcoming">Akan Datang</string>
+    <string name="stfs_tab_name_registered">Terdaftar</string>
+    <string name="stfs_tab_name_ongoing">Berlangsung</string>
+    <string name="stfs_tab_name_finished">Selesai</string>
+
     <string name="stfs_status_registration_ended">Pendaftaran Berakhir</string>
     <string name="stfs_status_registration_closed">Pendaftaran Ditutup</string>
     <string name="stfs_status_product_not_registered">Belum daftar produk</string>

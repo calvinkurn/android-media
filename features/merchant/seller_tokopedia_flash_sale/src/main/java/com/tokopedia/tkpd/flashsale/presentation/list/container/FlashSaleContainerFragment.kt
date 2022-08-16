@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
@@ -20,10 +21,14 @@ import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 
 class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
+
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }
@@ -34,6 +39,15 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<StfsFragmentLandingContainerBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleContainerViewModel::class.java) }
+
+    private val predefinedTabs by lazy {
+        listOf(
+            TabMetadata(TabConstant.TAB_ID_UPCOMING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_upcoming)),
+            TabMetadata(TabConstant.TAB_ID_REGISTERED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_registered)),
+            TabMetadata(TabConstant.TAB_ID_ONGOING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_ongoing)),
+            TabMetadata(TabConstant.TAB_ID_FINISHED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_finished))
+        )
+    }
 
     override fun getScreenName(): String = FlashSaleContainerFragment::class.java.canonicalName.orEmpty()
 
@@ -97,28 +111,32 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun renderTabs(tabs: List<TabMetadata>) {
         if (tabs.isEmpty()) return
-        displayTabs(tabs)
+        displayTabs(predefinedTabs, tabs)
     }
 
-    private fun createFragments(tabs: List<TabMetadata>): List<Pair<String, Fragment>> {
+    private fun createFragments(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
-        tabs.forEachIndexed { index, tab ->
+        predefinedTabs.forEachIndexed { index, currentTab ->
+            val tab = tabs.find { tab -> tab.tabId == currentTab.tabId }
+            val totalCampaign = tab?.totalCampaign.orZero()
+            val tabName = tab?.tabName.orEmpty()
+
             val fragment = FlashSaleListFragment.newInstance(
                 index,
-                tab.tabName,
-                tab.totalCampaign
+                tabName,
+                totalCampaign
             )
 
-            val tabName = "${tab.displayName} (${tab.totalCampaign})"
-            pages.add(Pair(tabName, fragment))
+            val displayedTabName = "${currentTab.displayName} (${totalCampaign})"
+            pages.add(Pair(displayedTabName, fragment))
         }
 
         return pages
     }
 
-    private fun displayTabs(tabs: List<TabMetadata>) {
-        val fragments = createFragments(tabs)
+    private fun displayTabs(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>) {
+        val fragments = createFragments(predefinedTabs, tabs)
         val pagerAdapter =
             TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
 
