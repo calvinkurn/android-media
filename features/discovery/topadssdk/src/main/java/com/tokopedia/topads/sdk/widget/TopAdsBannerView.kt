@@ -499,7 +499,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
             formattedPrice = product.priceFormat,
             reviewCount = product.countReviewFormat.toIntOrZero(),
-            ratingCount = product.productRating,
             ratingString = product.productRatingFormat,
             freeOngkir = ProductCardModel.FreeOngkir(
                 product.freeOngkir.isActive,
@@ -519,7 +518,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     ): ProductCardModel {
         if (isAvailAble) {
             return if (!product.campaign.originalPrice.isNullOrEmpty()) {
-                productCardModel.copy(slashedPrice = product.campaign.originalPrice,
+                productCardModel.copy(
+                    slashedPrice = product.campaign.originalPrice,
+                    ratingCount = product.productRating,
                     countSoldRating = product.headlineProductRatingAverage,
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                         product.labelGroupList.map {
@@ -530,14 +531,16 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 productCardModel.copy(
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                         product.labelGroupList.map {
-                            add(
-                                ProductCardModel.LabelGroup(
-                                    it.position,
-                                    it.title,
-                                    it.type,
-                                    it.imageUrl
+                            if (it.type != "integrity"){
+                                add(
+                                    ProductCardModel.LabelGroup(
+                                        it.position,
+                                        it.title,
+                                        it.type,
+                                        it.imageUrl
+                                    )
                                 )
-                            )
+                            }
                         }
                     })
             }
