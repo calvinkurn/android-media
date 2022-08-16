@@ -46,6 +46,7 @@ data class CartShipmentAddressFormData(
         var prescriptionUploadText: String = "",
         var prescriptionLeftIconUrl: String = "",
         var prescriptionCheckoutId: String = "",
+        var prescriptionFrontEndValidation: Boolean = false,
         var upsell: UpsellData = UpsellData()
 ) : Parcelable {
 

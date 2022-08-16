@@ -108,6 +108,7 @@ class ShipmentMapper @Inject constructor() {
             prescriptionUploadText = shipmentAddressFormDataResponse.imageUpload.text
             prescriptionLeftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
             prescriptionCheckoutId = shipmentAddressFormDataResponse.imageUpload.checkoutId
+            prescriptionFrontEndValidation = shipmentAddressFormDataResponse.imageUpload.frontEndValidation
             keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
             keroToken = shipmentAddressFormDataResponse.keroToken
             keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime

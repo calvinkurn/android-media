@@ -13,5 +13,6 @@ data class UploadPrescriptionUiModel(
         var prescriptionIds : ArrayList<String> = arrayListOf(),
         var uploadedImageCount : Int? = 0,
         var descriptionText : String? = "",
-        var isError : Boolean = false
+        var isError : Boolean = false,
+        var frontEndValidation : Boolean = false,
 ) : Parcelable

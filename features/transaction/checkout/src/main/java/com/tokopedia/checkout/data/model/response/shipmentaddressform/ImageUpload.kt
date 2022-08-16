@@ -11,4 +11,6 @@ data class ImageUpload (
     var leftIconUrl: String = "",
     @SerializedName("checkout_id")
     var checkoutId: String = "",
+    @SerializedName("front_end_validation")
+    var frontEndValidation: Boolean = false
 )
