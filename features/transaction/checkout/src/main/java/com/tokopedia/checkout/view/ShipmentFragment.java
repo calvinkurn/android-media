@@ -3222,7 +3222,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     }else if(shipmentDataList.get(i) instanceof UploadPrescriptionUiModel){
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        if(uploadPrescriptionUiModel.getFrontEndValidation() && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
+                        if(uploadPrescriptionUiModel.getFrontEndValidation() && uploadPrescriptionUiModel.getUploadedImageCount()!= null
+                                && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
                             if (firstFoundPosition == 0) {
                                 showToastNormal(getActivity().getString(R.string.message_error_prescription_not_found));
                                 firstFoundPosition = i;
