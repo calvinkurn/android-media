@@ -1,0 +1,26 @@
+{
+  "error_message": "",
+          "status": "OK",
+          "data": {
+            "success": 1,
+            "messages": [
+              "2 barang berhasil ditambahkan ke keranjang belanja"
+            ],
+            "data": [
+              {
+                "cart_id": "2166410712",
+                "product_id": 2150355153,
+                "quantity": 1,
+                "notes": "",
+                "shop_id": 480552
+              },
+              {
+                "cart_id": "2166410713",
+                "product_id": 2150355156,
+                "quantity": 1,
+                "notes": "",
+                "shop_id": 480552
+              }
+            ]
+          }
+}
