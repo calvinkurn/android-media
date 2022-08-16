@@ -146,7 +146,8 @@ object DeviceInfo {
                         "hasFID" to hasFID.toString()
                     )
                 )
-            } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {
+            }
         }
     }
 
@@ -155,7 +156,7 @@ object DeviceInfo {
         return try {
             val uuid = getUUID(context)
             uuid.isNotEmpty()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             false
         }
     }
@@ -188,11 +189,13 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                val result = runBlocking { getlatestAdId(context, 3000L) }
-                if(result.isEmpty()) {
-                    logIdentifier(context, "DeviceInfo")
-                }
-                result
+                getAdsIdSuspend(
+                    context, ({ adsId ->
+                        if (adsId.isEmpty()) {
+                            logIdentifier(context, "DeviceInfo")
+                        }
+                    }))
+                ""
             } catch (e: Exception) {
                 ""
             }
@@ -277,7 +280,8 @@ object DeviceInfo {
                     val adId = getlatestAdId(context, timeOutInMillis)
                     onSuccessGetAdsId?.invoke(adId)
                 }
-            } catch (ignored:Exception) { }
+            } catch (ignored: Exception) {
+            }
         }
     }
 
