@@ -128,6 +128,11 @@ fun Bundle.appendProductID(productID: String): Bundle {
     return this
 }
 
+fun Bundle.appendPageSource(source: String): Bundle {
+    putString(AnalyticConstant.KEY_PAGE_SOURCE, source)
+    return this
+}
+
 fun Bundle.appendTrackerIdIfNotBlank(trackerId: String): Bundle {
     if (trackerId.isNotBlank()) putString(AnalyticConstant.KEY_TRACKER_ID, trackerId)
     return this

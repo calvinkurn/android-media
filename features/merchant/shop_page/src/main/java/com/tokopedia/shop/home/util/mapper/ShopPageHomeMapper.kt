@@ -92,7 +92,7 @@ object ShopPageHomeMapper {
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.minimumOrder = minimumOrder
-                it.maximumOrder = stock
+                it.maximumOrder = getMaximumOrderForGetShopProduct(shopProduct)
                 it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
@@ -139,7 +139,12 @@ object ShopPageHomeMapper {
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
                 hasAddToCartButton = isHasATC,
                 addToCartButtonType = UnifyButton.Type.MAIN,
-                addToCardText = occButtonText
+                addToCardText = occButtonText,
+                countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
+                freeOngkir = freeOngkirObject,
+                labelGroupList = shopHomeProductViewModel.labelGroupList.map {
+                    mapToProductCardLabelGroup(it)
+                }
             )
         } else {
             ProductCardModel(
@@ -1009,5 +1014,12 @@ object ShopPageHomeMapper {
 
     private fun getMaximumOrder(stock: Int, maximumOrder: Int): Int {
         return maximumOrder.takeIf { !it.isZero() } ?: stock
+    }
+
+    private fun getMaximumOrderForGetShopProduct(shopProductResponse: ShopProduct): Int {
+        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() } ?:
+        shopProductResponse.maximumOrder.takeIf { !it.isZero() } ?:
+        shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() } ?:
+        shopProductResponse.stock
     }
 }

@@ -97,6 +97,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
@@ -253,6 +255,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.BannerInfinite, ::ShopBannerInfiniteViewHolder, ::ShopBannerInfiniteViewModel)
             initializeComponent(ComponentsList.BannerInfiniteItem, ::ShopBannerInfiniteItemViewHolder, ::ShopBannerInfiniteItemViewModel)
             initializeComponent(ComponentsList.ShopCardInfinite, ::ShopCardInfiniteViewHolder, ::ShopCardInfiniteViewModel)
+            initializeComponent(ComponentsList.ExplicitWidget, ::ExplicitWidgetViewHolder, ::ExplicitWidgetViewModel)
 
         }
 

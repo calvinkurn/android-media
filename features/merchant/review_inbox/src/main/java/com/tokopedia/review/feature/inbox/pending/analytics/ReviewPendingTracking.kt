@@ -6,7 +6,10 @@ import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductId
+import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
 import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
 
 object ReviewPendingTracking {
@@ -61,6 +64,42 @@ object ReviewPendingTracking {
             .appendBannerPromotions(position, title)
             .appendUserId(userId)
             .sendEnhancedEcommerce(ReviewPendingTrackingConstants.EVENT_NAME_VALUE_VIEW_ITEM)
+    }
+
+    fun trackClickCheckReviewContribution(isCompetitionWinner: Boolean, userId: String) {
+        mutableMapOf<String, Any>()
+            .appendGeneralEventData(
+                eventName = if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.EVENT_NAME_CLICK_PG
+                } else {
+                    ReviewPendingTrackingConstants.EVENT_NAME_CLICK_INBOX_REVIEW
+                },
+                eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW,
+                eventAction = if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_HI_REVIEW_COMPETITION_WINNER
+                } else {
+                    ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_CHECK_REVIEW_CONTRIBUTION
+                },
+                eventLabel = ""
+            )
+            .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
+            .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
+            .appendTrackerIdIfNotBlank(
+                if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.TRACKER_ID_CLICK_HI_REVIEW_COMPETITION_WINNER
+                } else {
+                    ReviewPendingTrackingConstants.TRACKER_ID_CLICK_CHECK_REVIEW_CONTRIBUTION
+                }
+            )
+            .apply {
+                if (isCompetitionWinner) {
+                    appendProductId("")
+                    appendUserId(userId)
+                } else {
+                    appendUserId("")
+                }
+            }
+            .sendGeneralEvent()
     }
 
     private fun generateTrackingMap(label: String, action: String, userId: String, source: String): Map<String, String> {

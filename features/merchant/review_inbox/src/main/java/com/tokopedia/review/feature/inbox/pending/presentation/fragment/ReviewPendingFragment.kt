@@ -73,6 +73,7 @@ class ReviewPendingFragment :
     IncentiveOvoListener {
 
     companion object {
+        private const val CAROUSEL_WINNER_TITLE = "Hai, Juara Ulasan"
         const val PARAM_RATING = "rating"
         const val CREATE_REVIEW_REQUEST_CODE = 420
         const val INBOX_SOURCE = "inbox"
@@ -325,6 +326,10 @@ class ReviewPendingFragment :
     override fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int) {
         if (appLink.isBlank()) {
             goToCredibility()
+            ReviewPendingTracking.trackClickCheckReviewContribution(
+                isCompetitionWinner = title.contains(CAROUSEL_WINNER_TITLE),
+                userId = viewModel.getUserId()
+            )
         } else {
             RouteManager.route(context, appLink)
         }

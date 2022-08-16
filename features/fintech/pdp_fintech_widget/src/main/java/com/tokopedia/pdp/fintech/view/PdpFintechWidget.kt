@@ -168,7 +168,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         rediretionLink: String
     ) {
 
-        if (fintechRedirectionWidgetDataClass.gatewayId == 0)
+        if (fintechRedirectionWidgetDataClass.gatewayId == "0")
             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                 FintechWidgetAnalyticsEvent.PdpWidgetClick(
                     this.productID,
@@ -269,7 +269,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
         for (i in 0 until chipList.size) {
-            if (chipList[i].gatewayId == 0)
+            if (chipList[i].gatewayId == "0")
                 pdpWidgetAnalytics.get().sendAnalyticsEvent(
                     FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                         productID ?: "",
@@ -305,7 +305,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     companion object {
         const val ACTIVATION_LINKINING_FLOW = 2
-        const val LIHAT_SEMU_GATEWAY_ID = 0
+        const val LIHAT_SEMU_GATEWAY_ID = "0"
     }
 
 }
