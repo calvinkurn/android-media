@@ -24,13 +24,24 @@
             android:id="@+id/tpgCampaignStatus"
             android:layout_width="wrap_content"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_NN600"
             android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
             android:layout_marginStart="@dimen/unify_space_12"
             app:layout_constraintStart_toEndOf="@id/imgCampaignStatusIndicator"
             app:layout_constraintTop_toTopOf="@+id/imgCampaignStatusIndicator"
             app:typographyType="display_3"
             tools:text="Belum Daftar Produk" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_constraintBottom_toBottomOf="@+id/tpgCampaignStatus"
+            app:layout_constraintStart_toEndOf="@+id/tpgCampaignStatus"
+            app:layout_constraintTop_toTopOf="@+id/tpgCampaignStatus"
+            app:timer_unify_single_type="hour"
+            app:timer_unify_single_variant="informative" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgCampaignName"
@@ -74,32 +85,43 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_24"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:text="@string/stfs_registration_ends_in"
+            android:text="@string/stfs_campaign_quota"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imgFlashSale"
             app:typographyType="small" />
 
-        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-            android:id="@+id/timer"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/progressBar"
+            android:layout_width="0dp"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            app:layout_constraintEnd_toStartOf="@+id/btnCreateCampaign"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpgDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgQuota"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_16"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/progressBar"
+            tools:text="Sisa 50 Kuota"
+            app:typographyType="small"
+            android:layout_marginTop="@dimen/unify_space_8"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tpgDescription"
-            app:layout_constraintTop_toBottomOf="@+id/tpgDescription"
-            app:timer_unify_single_type="day"
-            app:timer_unify_single_variant="informative" />
+            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnCreateCampaign"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/flash_sale_list_button_width"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:layout_marginEnd="@dimen/unify_space_16"
-            android:text="@string/stfs_add_product"
-            app:layout_constraintBottom_toBottomOf="@+id/timer"
+            android:text="@string/stfs_register"
+            app:layout_constraintBottom_toBottomOf="@+id/tpgQuota"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tpgDescription"
             app:unifyButtonSize="medium" />
