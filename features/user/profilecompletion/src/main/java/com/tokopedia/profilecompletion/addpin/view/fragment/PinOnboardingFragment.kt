@@ -132,7 +132,7 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun goToChangePin() {
-        RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
+        RouteManager.route(activity, ApplinkConstInternalUserPlatform.CHANGE_PIN)
         activity?.finish()
     }
 

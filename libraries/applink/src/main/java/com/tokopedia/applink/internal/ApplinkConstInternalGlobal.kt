@@ -142,10 +142,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-phone-number
     const val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 
-    // ChangePinActivity
-    // tokopedia-android-internal://global/change-pin
-    const val CHANGE_PIN = "$INTERNAL_GLOBAL/change-pin"
-
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."

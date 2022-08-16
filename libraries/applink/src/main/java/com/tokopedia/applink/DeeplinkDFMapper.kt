@@ -51,7 +51,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
@@ -160,6 +159,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_PIN
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger

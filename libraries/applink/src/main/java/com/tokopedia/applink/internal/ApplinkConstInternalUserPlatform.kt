@@ -238,6 +238,12 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_PIN_FROM_2FA = "${NEW_INTERNAL_USER}/add-pin-from-2fa"
 
     /**
+     * ChangePinActivity
+     * @Applink : tokopedia-android-internal://user/change-pin
+     **/
+    const val CHANGE_PIN = "${NEW_INTERNAL_USER}/change-pin"
+
+    /**
      * ChangeNameActivity
      * @Applink : tokopedia-android-internal://user/change-name
      *

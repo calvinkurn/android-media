@@ -105,7 +105,7 @@ class ResultNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun goToChangePin() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalGlobal.CHANGE_PIN)
+            RouteManager.route(it, ApplinkConstInternalUserPlatform.CHANGE_PIN)
             closeResult()
         }
     }
