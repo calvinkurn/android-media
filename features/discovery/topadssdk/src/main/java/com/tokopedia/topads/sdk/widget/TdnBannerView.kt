@@ -1,0 +1,112 @@
+package com.tokopedia.topads.sdk.widget
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_CAROUSEL
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.topads.sdk.utils.TdnHelper
+import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import timber.log.Timber
+
+class TdnBannerView : FrameLayout {
+
+    private val topAdsImageViewViewModel: TopAdsImageViewViewModel by lazy {
+        ViewModelProvider(context as AppCompatActivity).get(TopAdsImageViewViewModel::class.java)
+    }
+    private var tdnCarouselView: TdnCarouselView? = null
+    private var singleTdnView: SingleTdnView? = null
+    private var tdnBannerResponseListener: TdnBannerResponseListener? = null
+
+    constructor(context: Context) : super(context) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        init()
+    }
+
+    private fun init() {
+        val view = View.inflate(context, R.layout.layout_widget_tdn_view, this)
+        tdnCarouselView = view.findViewById(R.id.tdnCarouselView)
+        singleTdnView = view.findViewById(R.id.singleTdnView)
+    }
+
+    fun setTdnResponseListener(listener: TdnBannerResponseListener) {
+        tdnBannerResponseListener = listener
+    }
+
+    fun getTdnData(
+        source: String,
+        adsCount: Int,
+        dimenId: Int,
+        query: String = "",
+        depId: String = "",
+        pageToken: String = "",
+        productID: String = "",
+        page: String = ""
+    ) {
+        val qp = topAdsImageViewViewModel.getQueryParams(
+            query,
+            source,
+            pageToken,
+            adsCount,
+            dimenId,
+            depId,
+            productID,
+            page
+        )
+        topAdsImageViewViewModel.getImageData(qp)
+
+        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    val categoriesList = TdnHelper.categoriesTdnBanners(it.data)
+                    tdnBannerResponseListener?.onTdnBannerResponse(categoriesList)
+                    Timber.d("Response received successfully")
+                }
+                is Fail -> {
+                    Timber.d("error in response")
+                }
+            }
+
+        })
+    }
+
+    fun renderTdnBanner(
+        tdnBanners: List<TopAdsImageViewModel>,
+        cornerRadius: Int,
+        onTdnBannerClicked: (String) -> Unit
+    ) {
+        val layoutType = tdnBanners.firstOrNull()?.layoutType
+        if (layoutType == TYPE_CAROUSEL) {
+            tdnCarouselView?.setCarouselModel(tdnBanners, onTdnBannerClicked, cornerRadius)
+            tdnCarouselView?.show()
+            singleTdnView?.hide()
+        } else if (layoutType == TYPE_SINGLE || layoutType == "") {
+            singleTdnView?.setTdnModel(tdnBanners.first(), onTdnBannerClicked, cornerRadius)
+            singleTdnView?.show()
+            tdnCarouselView?.hide()
+        }
+    }
+
+}

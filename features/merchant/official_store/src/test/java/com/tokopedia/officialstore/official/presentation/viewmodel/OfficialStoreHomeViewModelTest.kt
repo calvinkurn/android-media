@@ -35,6 +35,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,6 +107,9 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var bestSellerMapper: BestSellerMapper
 
+    @RelaxedMockK
+    lateinit var topAdsAddressHelper: TopAdsAddressHelper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -131,6 +135,7 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             getTopAdsHeadlineUseCase,
+            topAdsAddressHelper,
             CoroutineTestDispatchersProvider
         ))
     }
@@ -286,7 +291,7 @@ class OfficialStoreHomeViewModelTest {
                 )
             } returns "parmas"
 
-            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just Runs
             coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineAdResponse
 
             val topAdsData = viewModel.getTopAdsHeadlineData(page)
@@ -318,7 +323,7 @@ class OfficialStoreHomeViewModelTest {
                 )
             } returns "parmas"
 
-            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just Runs
             coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } throws Throwable("error")
 
             val topAdsData = viewModel.getTopAdsHeadlineData(page)

@@ -124,13 +124,13 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserver(view)
+
         if (projectId != KYCConstant.STATUS_DEFAULT) {
-            statusInfo
+            getStatusInfo()
         } else {
             toggleNotFoundView(true)
         }
-
-        initObserver(view)
     }
 
     private fun initObserver(view: View) {
@@ -138,8 +138,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             when(it) {
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo.isSelfie
-                    if(it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
-                            it.data.kycProjectInfo.statusName != null && it.data.kycProjectInfo.statusName == "") {
+                    if( it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
+                        it.data.kycProjectInfo.statusName != null &&
+                        it.data.kycProjectInfo.statusName == ""
+                    ) {
                         onUserBlacklist()
                     } else {
                         onSuccessGetUserProjectInfo(view, it.data.kycProjectInfo.status, it.data.kycProjectInfo.reasonList)
@@ -150,11 +152,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         })
     }
 
-    private val statusInfo: Unit
-        get() {
-            showLoading()
-            viewModel.getUserProjectInfo(projectId)
-        }
+    private fun getStatusInfo() {
+        showLoading()
+        viewModel.getUserProjectInfo(projectId)
+    }
 
     private fun onUserBlacklist() {
         hideLoading()
@@ -185,7 +186,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (context != null) {
             hideLoading()
             val error = ErrorHandler.getErrorMessage(context, throwable)
-            NetworkErrorHelper.showEmptyState(context, mainView, error) { statusInfo }
+            NetworkErrorHelper.showEmptyState(context, mainView, error) {
+                getStatusInfo()
+            }
         }
     }
 
@@ -216,6 +219,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             activity?.onBackPressed()
         }, onCheckedChanged = {
             analytics?.eventClickKycTnc(it)
+        }, onTncClicked = {
+            analytics?.eventClickTermsSuccessPage()
         })
         analytics?.eventViewOnKYCOnBoarding()
     }
@@ -364,7 +369,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
-            statusInfo
+            getStatusInfo()
             NetworkErrorHelper.showGreenSnackbar(activity, getString(R.string.text_notification_success_upload))
             analytics?.eventViewSuccessSnackbarPendingPage()
         } else if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {

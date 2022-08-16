@@ -41,6 +41,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 @UiTest
 class LoginNormalCase : LoginBase() {
@@ -57,7 +58,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent()
@@ -65,7 +66,7 @@ class LoginNormalCase : LoginBase() {
             )
             inputEmailOrPhone("082242454504")
             clickSubmit()
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -151,7 +152,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent().apply {
@@ -172,7 +173,7 @@ class LoginNormalCase : LoginBase() {
                 .perform(click())
 
 
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 

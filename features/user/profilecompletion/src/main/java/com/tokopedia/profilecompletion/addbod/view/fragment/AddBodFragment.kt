@@ -52,7 +52,7 @@ class AddBodFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addBodViewModel by lazy { viewModelProvider.get(AddBodViewModel::class.java) }
 
-    private var minDate: Calendar = GregorianCalendar(1900, 0, 1)
+    private var minDate: Calendar = GregorianCalendar(MIN_GREGORIAN_YEAR, MIN_GREGORIAN_MONTH, MIN_GREGORIAN_DAY)
     private lateinit var maxDate: Calendar
     private lateinit var defaultDate: Calendar
 
@@ -175,7 +175,7 @@ class AddBodFragment : BaseDaggerFragment() {
 	    selectedDate = bod
 	    setChoosenDateFormat(bod)
 	} else {
-	    defaultDate.add(Calendar.YEAR, -17)
+	    defaultDate.add(Calendar.YEAR, MINUS_17)
 	}
     }
 
@@ -231,16 +231,20 @@ class AddBodFragment : BaseDaggerFragment() {
 	progressBar.visibility = View.GONE
     }
 
-    companion object {
+	companion object {
+		private const val MIN_GREGORIAN_YEAR = 1900
+		private const val MIN_GREGORIAN_MONTH = 0
+		private const val MIN_GREGORIAN_DAY = 1
+		private const val MINUS_17 = -17
 
-	const val TAG = "addDobFragment"
-	val EXTRA_PROFILE_SCORE = "profile_score"
-	val EXTRA_BOD = "bod"
+		const val TAG = "addDobFragment"
+		val EXTRA_PROFILE_SCORE = "profile_score"
+		val EXTRA_BOD = "bod"
 
-	fun createInstance(bundle: Bundle): AddBodFragment {
-	    val fragment = AddBodFragment()
-	    fragment.arguments = bundle
-	    return fragment
+		fun createInstance(bundle: Bundle): AddBodFragment {
+			val fragment = AddBodFragment()
+			fragment.arguments = bundle
+			return fragment
+		}
 	}
-    }
 }

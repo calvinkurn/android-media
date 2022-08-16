@@ -27,6 +27,7 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
 import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
@@ -205,6 +206,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
             // setup quantity editor
             binding?.qeuProductQtyEditor?.setupEditText()
+            binding?.qeuProductQtyEditor?.maxValue = TokofoodExt.MAXIMUM_QUANTITY
             binding?.qeuProductQtyEditor?.setAddClickListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
@@ -219,7 +221,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
-                    val quantity = p0.toString().toIntOrZero()
+                    val quantity = binding?.qeuProductQtyEditor?.getValue().orZero()
                     updateSubtotalPriceLabel(addOnUiModels, quantity)
                 }
                 override fun afterTextChanged(p0: Editable?) {}

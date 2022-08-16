@@ -13,6 +13,7 @@ import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_EMAIL
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,98 +29,97 @@ class AddEmailViewModel @Inject constructor(
     val mutateCheckEmailResponse = MutableLiveData<Result<String>>()
     val mutateAddEmailResponse = MutableLiveData<Result<AddEmailResult>>()
 
-    fun mutateAddEmail(context: Context, email: String, otpCode: String) {
+    fun mutateAddEmail(context: Context, email: String, otpCode: String, validateToken: String) {
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)?.let { query ->
 
-	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)?.let { query ->
+            val params = mapOf(
+                PARAM_EMAIL to email,
+                PARAM_OTP_CODE to otpCode,
+                PARAM_VALIDATE_TOKEN to validateToken,
+            )
 
-	    val params = mapOf(
-		PARAM_EMAIL to email,
-		PARAM_OTP_CODE to otpCode
-	    )
+            addEmaillUseCase.setTypeClass(AddEmailPojo::class.java)
+            addEmaillUseCase.setRequestParams(params)
+            addEmaillUseCase.setGraphqlQuery(query)
 
-	    addEmaillUseCase.setTypeClass(AddEmailPojo::class.java)
-	    addEmaillUseCase.setRequestParams(params)
-	    addEmaillUseCase.setGraphqlQuery(query)
+            addEmaillUseCase.execute(
+                onSuccessMutateAddEmail(email),
+                onErrorMutateAddEmail()
+            )
 
-	    addEmaillUseCase.execute(
-		onSuccessMutateAddEmail(email),
-		onErrorMutateAddEmail()
-	    )
-
-	}
-
+        }
     }
 
     fun checkEmail(context: Context, email: String) {
 
-	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_email)?.let { query ->
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_email)?.let { query ->
 
-	    val params = mapOf(PARAM_EMAIL to email)
+            val params = mapOf(PARAM_EMAIL to email)
 
-	    checkEmaillUseCase.setTypeClass(CheckEmailPojo::class.java)
-	    checkEmaillUseCase.setRequestParams(params)
-	    checkEmaillUseCase.setGraphqlQuery(query)
+            checkEmaillUseCase.setTypeClass(CheckEmailPojo::class.java)
+            checkEmaillUseCase.setRequestParams(params)
+            checkEmaillUseCase.setGraphqlQuery(query)
 
-	    checkEmaillUseCase.execute(
-		onSuccessMutateCheckEmail(email),
-		onErrorMutateCheckEmail()
-	    )
-	}
+            checkEmaillUseCase.execute(
+                onSuccessMutateCheckEmail(email),
+                onErrorMutateCheckEmail()
+            )
+        }
 
     }
 
     private fun onSuccessMutateCheckEmail(email: String): (CheckEmailPojo) -> Unit {
-	return {
-	    val errorMessage = it.data.errorMessage
-	    val isSuccess = it.data.isValid
+        return {
+            val errorMessage = it.data.errorMessage
+            val isSuccess = it.data.isValid
 
-	    if (errorMessage.isBlank() && isSuccess) {
-		mutateCheckEmailResponse.value = Success(email)
-	    } else if (!errorMessage.isBlank()) {
-		mutateCheckEmailResponse.value = Fail(
-		    MessageErrorException(
-			errorMessage,
-			ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
-		    )
-		)
-	    } else {
-		mutateCheckEmailResponse.value = Fail(RuntimeException())
-	    }
-	}
+            if (errorMessage.isBlank() && isSuccess) {
+                mutateCheckEmailResponse.value = Success(email)
+            } else if (!errorMessage.isBlank()) {
+                mutateCheckEmailResponse.value = Fail(
+                    MessageErrorException(
+                        errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
+                    )
+                )
+            } else {
+                mutateCheckEmailResponse.value = Fail(RuntimeException())
+            }
+        }
     }
 
     private fun onErrorMutateCheckEmail(): (Throwable) -> Unit {
-	return {
-	    it.printStackTrace()
-	    mutateCheckEmailResponse.value = Fail(it)
-	}
+        return {
+            it.printStackTrace()
+            mutateCheckEmailResponse.value = Fail(it)
+        }
     }
 
 
     private fun onErrorMutateAddEmail(): (Throwable) -> Unit {
-	return {
-	    it.printStackTrace()
-	    mutateAddEmailResponse.value = Fail(it)
-	}
+        return {
+            it.printStackTrace()
+            mutateAddEmailResponse.value = Fail(it)
+        }
     }
 
     private fun onSuccessMutateAddEmail(email: String): (AddEmailPojo) -> Unit {
-	return {
-	    val errorMessage = it.data.errorMessage
-	    val isSuccess = it.data.isSuccess
+        return {
+            val errorMessage = it.data.errorMessage
+            val isSuccess = it.data.isSuccess
 
-	    if (errorMessage.isBlank() && isSuccess) {
-		mutateAddEmailResponse.value = Success(AddEmailResult(it, email))
-	    } else if (!errorMessage.isBlank()) {
-		mutateAddEmailResponse.value = Fail(
-		    MessageErrorException(
-			errorMessage,
-			ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
-		    )
-		)
-	    } else {
-		mutateAddEmailResponse.value = Fail(RuntimeException())
-	    }
-	}
+            if (errorMessage.isBlank() && isSuccess) {
+                mutateAddEmailResponse.value = Success(AddEmailResult(it, email))
+            } else if (!errorMessage.isBlank()) {
+                mutateAddEmailResponse.value = Fail(
+                    MessageErrorException(
+                        errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
+                    )
+                )
+            } else {
+                mutateAddEmailResponse.value = Fail(RuntimeException())
+            }
+        }
     }
 }

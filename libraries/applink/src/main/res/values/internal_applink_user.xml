@@ -34,7 +34,7 @@
     <string name="applink_manage_password_has_password">/has-password</string>
     <string name="applink_manage_password_add_password">/add-password</string>
     <string name="applink_manage_password_forgot_password">/forgot-password</string>
-  
+
     <string name="applink_profile_completion_title">Data Diri</string>
     <string name="applink_setting_bank_title">Rekening Bank</string>
     <string name="applink_change_password">Ubah Kata Sandi</string>
@@ -61,5 +61,15 @@
     <string name="applink_telephony">Telephony Masking</string>
 
     <string name="applink_global_sharing">/sharing</string>
+
+    <string name="applink_new_profile_info">/profile-info</string>
+
+    // OTP
+    <string name="applink_cotp">/cotp</string>
+    <string name="applink_qr_login">/qr-login</string>
+    <string name="applink_qr_login_result">/qr-login-result</string>
+
+    <string name="applink_otp_push_notif_receiver">/otp-push-notif-receiver</string>
+    <string name="applink_otp_push_notif_setting">/otp-push-notif-setting</string>
 
 </resources>
