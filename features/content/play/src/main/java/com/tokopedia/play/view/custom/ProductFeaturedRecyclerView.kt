@@ -68,7 +68,7 @@ class ProductFeaturedRecyclerView : RecyclerView {
     }
 
     private fun setupEndGradientRect(endBounds: Int) {
-        val startGradient = width - 3 * endBounds
+        val startGradient = width - START_GRADIENT * endBounds
         mFadingEdgePaint.shader = getHorizontalGradientShader(
             startGradient.toFloat(),
             endBounds.toFloat()
@@ -95,5 +95,9 @@ class ProductFeaturedRecyclerView : RecyclerView {
             null,
             Shader.TileMode.CLAMP
         )
+    }
+
+    companion object {
+        private const val START_GRADIENT = 3
     }
 }
