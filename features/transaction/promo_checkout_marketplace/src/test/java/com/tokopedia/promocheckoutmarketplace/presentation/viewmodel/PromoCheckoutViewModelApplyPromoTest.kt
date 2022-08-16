@@ -408,8 +408,6 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         viewModel.applyPromo(request, ArrayList())
 
         //then
-        print(request.orders.first().codes)
-        print(selectedBo.uiData.boAdditionalData.map { it.code })
         assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).size == 1)
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
         assert(request.orders.first().shippingId > 0)
@@ -420,10 +418,11 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
     fun `WHEN unapply promo BO from promo page THEN validate use request should not contain bo promo code`() {
         //given
         val request = provideApplyPromoEmptyRequest()
+        request.orders.first().codes.add("PLUSAA")
         val response = provideApplyPromoMerchantResponseSuccess()
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
         val selectedBo = promoList[1] as PromoListItemUiModel
-        selectedBo.uiState.isSelected = true
+        selectedBo.uiState.isSelected = false
         viewModel.setPromoListValue(promoList)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs

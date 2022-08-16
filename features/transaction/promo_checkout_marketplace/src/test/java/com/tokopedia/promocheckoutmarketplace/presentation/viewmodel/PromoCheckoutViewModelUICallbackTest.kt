@@ -132,8 +132,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert(viewModel.fragmentUiModel.value?.uiState?.hasSelectedBoClashingPromo == false)
-        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingMessage == "")
-        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingImage == "")
     }
 
     @Test
