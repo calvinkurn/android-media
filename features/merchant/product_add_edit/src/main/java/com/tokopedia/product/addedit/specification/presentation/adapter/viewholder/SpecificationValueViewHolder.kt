@@ -8,12 +8,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.product.addedit.common.util.setDescriptionClick
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.unifycomponents.TextAreaUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SpecificationValueViewHolder(
     itemView: View,
@@ -27,17 +30,17 @@ class SpecificationValueViewHolder(
     }
 
     private val tfSpecification: TextAreaUnify? = itemView.findViewById(R.id.tfSpecification)
-    private val tooltipRequired: View? = itemView.findViewById(R.id.tooltipRequired)
+    private val tooltipRequired: Ticker? = itemView.findViewById(R.id.tooltipRequired)
 
     init {
         tfSpecification?.textAreaInput?.setOnClickListener {
             onSpecificationClickListener.onSpecificationValueTextClicked(adapterPosition)
         }
         tfSpecification?.textAreaInput?.doOnTextChanged { text, _, count, _ ->
-            if (count > 0 && text?.isBlank() == true)
+            if (count > Int.ZERO && text?.isBlank() == true)
                 onSpecificationClickListener.onSpecificationValueTextCleared(adapterPosition)
         }
-        tooltipRequired?.setOnClickListener {
+        tooltipRequired?.setDescriptionClick {
             onSpecificationClickListener.onTooltipRequiredClicked()
         }
     }

@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.common.util.setDescriptionClick
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.URL_PRODUCT_LIMITATION_EDU
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
@@ -109,7 +110,7 @@ class ProductLimitationBottomSheet(
                 closeButtonVisibility = VISIBLE
             }
             setHtmlDescription(tickerDesc)
-            setOnClickListener {
+            setDescriptionClick {
                 ProductLimitationTracking.clickEduTicker()
                 onBottomSheetResult.invoke(URL_PRODUCT_LIMITATION_EDU)
             }

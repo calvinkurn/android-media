@@ -556,7 +556,7 @@ class AddEditProductShipmentFragment:
 
     private fun setupInsuranceTicker() {
         tickerInsurance?.setHtmlDescription(getString(R.string.label_shipment_ticker))
-        tickerInsurance?.setOnClickListener {
+        tickerInsurance?.setDescriptionClick {
             ShipmentInsuranceBottomSheet().show(childFragmentManager)
         }
     }
