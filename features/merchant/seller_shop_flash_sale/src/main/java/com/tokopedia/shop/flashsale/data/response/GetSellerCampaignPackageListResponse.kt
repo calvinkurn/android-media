@@ -14,6 +14,8 @@ data class GetSellerCampaignPackageListResponse(
         val responseHeader: ResponseHeader = ResponseHeader()
     ) {
         data class Package(
+            @SerializedName("remaining_quota")
+            val remainingQuota: Int = 0,
             @SerializedName("current_quota")
             val currentQuota: Int = 0,
             @SerializedName("is_disabled")

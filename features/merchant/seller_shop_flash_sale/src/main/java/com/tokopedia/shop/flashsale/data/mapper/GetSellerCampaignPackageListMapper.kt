@@ -10,6 +10,7 @@ class GetSellerCampaignPackageListMapper @Inject constructor() {
     fun map(data: GetSellerCampaignPackageListResponse): List<VpsPackage> {
         return data.getSellerCampaignPackageList.packageList.map { currentPackage ->
             VpsPackage(
+                currentPackage.remainingQuota,
                 currentPackage.currentQuota,
                 currentPackage.isDisabled,
                 currentPackage.originalQuota,

@@ -36,6 +36,7 @@ class GetSellerCampaignPackageListUseCase @Inject constructor(
                   package_name
                   original_quota
                   current_quota
+                  remaining_quota
                   package_start_time
                   package_end_time
                   is_disabled

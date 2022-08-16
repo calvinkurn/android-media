@@ -87,7 +87,7 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val benefitPackage = differ.currentList[position]
         return when {
             benefitPackage.isShopTierBenefit -> SHOP_TIER_BENEFIT_VIEW_TYPE
-            benefitPackage.currentQuota == EMPTY_QUOTA -> EMPTY_VPS_PACKAGE_VIEW_TYPE
+            benefitPackage.remainingQuota == EMPTY_QUOTA -> EMPTY_VPS_PACKAGE_VIEW_TYPE
             else -> VPS_PACKAGE_VIEW_TYPE
         }
     }
