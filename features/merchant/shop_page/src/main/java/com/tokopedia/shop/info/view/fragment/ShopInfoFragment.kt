@@ -1,5 +1,7 @@
 package com.tokopedia.shop.info.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -16,14 +18,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -44,9 +44,12 @@ import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -55,6 +58,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
+        private const val REQUEST_CODER_USER_LOGIN = 100
         fun createInstance(
             shopId: String? = null,
             shopInfo: ShopInfoData? = null
@@ -96,6 +100,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         get() = fragmentShopInfoBinding?.diverLayoutTopOfReport
     private val viewDivBottomOfReport: DividerUnify?
         get() = fragmentShopInfoBinding?.diverLayoutBottomOfReport
+    private val loadProgressGetMessageId: LoaderUnify?
+        get() = fragmentShopInfoBinding?.loaderProgressGetMessageId
+    private val labelRepost: Typography?
+        get() = fragmentShopInfoBinding?.labelReport
 
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
     private val userId: String
@@ -134,6 +142,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopViewModel?.let {
             removeObservers(it.shopInfo)
             removeObservers(it.shopNotesResp)
+            removeObservers(it.messageIdOnChatExist)
             it.flush()
         }
         super.onDestroy()
@@ -198,23 +207,53 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun observerMessageIdOnChatExist() {
         shopViewModel?.messageIdOnChatExist?.observe(viewLifecycleOwner) {
-            when(it){
-                is Success -> showReportView()
-                else -> hideReportView()
+            when (it) {
+                is Success -> goToWebViewPage(it.data)
+                is Fail -> handlingFailState(it.throwable)
+                else -> hideProgressGetMessageId()
             }
         }
     }
 
-    private fun showReportView() {
+    private fun showReportStore() {
         viewReport?.show()
         viewDivTopOfReport?.show()
         viewDivBottomOfReport?.show()
     }
 
-    private fun hideReportView() {
-        viewReport?.hide()
-        viewDivTopOfReport?.hide()
-        viewDivBottomOfReport?.hide()
+    private fun showProgressGetMessageId() {
+        labelRepost?.gone()
+        loadProgressGetMessageId?.show()
+        viewReport?.isClickable = false
+    }
+
+    private fun handlingFailState(e: Throwable){
+        hideProgressGetMessageId()
+        if (e is UserNotLoginException) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
+            return
+        }
+    }
+
+    private fun hideProgressGetMessageId() {
+        labelRepost?.show()
+        loadProgressGetMessageId?.gone()
+        viewReport?.isClickable = true
+    }
+
+    private fun goToWebViewPage(messageId: String) {
+        hideProgressGetMessageId()
+        routeToWebViewPage(messageId)
+    }
+
+    private fun routeToWebViewPage(messageId: String) {
+        val url = getString(R.string.urlOfPageReport, messageId)
+        val appLink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        RouteManager.route(
+            activity,
+            appLink
+        )
     }
 
     private fun showShopBadgeReputation(shopBadge: ShopBadge) {
@@ -241,7 +280,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                 this@ShopInfoFragment.shopInfo = it
                 customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
                 showShopInfo()
-                getMessageIdOnChatExist()
+                setReportStoreView()
                 if (!isOfficial) {
                     getShopBadgeReputation()
                 }
@@ -251,6 +290,14 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun getShopBadgeReputation() {
         shopViewModel?.getShopReputationBadge(getShopId().orEmpty())
+    }
+
+    private fun setReportStoreView() {
+        showReportStore()
+        viewReport?.setOnClickListener {
+            showProgressGetMessageId()
+            getMessageIdOnChatExist()
+        }
     }
 
     private fun getMessageIdOnChatExist() {
@@ -269,6 +316,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             }
 
             getShopNotes(shopId)
+            setReportStoreView()
         }
     }
 
@@ -327,7 +375,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun setupLogisticList(shopInfo: ShopInfoData) {
         val visitable = shopInfo.shipments.map { it.transformToVisitable() }
-        val shopLogisticAdapter = ShopInfoLogisticAdapter(ShopInfoLogisticAdapterTypeFactory(), visitable)
+        val shopLogisticAdapter =
+            ShopInfoLogisticAdapter(ShopInfoLogisticAdapterTypeFactory(), visitable)
 
         fragmentShopInfoBinding?.layoutPartialShopInfoDelivery?.recyclerViewLogistic?.apply {
             adapter = shopLogisticAdapter
@@ -337,8 +386,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun goToManageLogistic() {
-        val shippingIntent = RouteManager.getIntent(activity,
-                ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS) ?: return
+        val shippingIntent = RouteManager.getIntent(
+            activity,
+            ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS
+        ) ?: return
         startActivity(shippingIntent)
     }
 
@@ -350,14 +401,17 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                     hide()
                 } else {
                     show()
-                    text = MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+                    text =
+                        MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
                 }
             }
 
             // go apotik info
             goApotikInfoContainer.shouldShowWithAction(shopInfo.isGoApotik) {
-                tvSiaDescription.text = shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
-                tvSipaDescription.text = shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                tvSiaDescription.text =
+                    shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                tvSipaDescription.text =
+                    shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
                 tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
             }
 
@@ -365,7 +419,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             shopInfoLocation.text = shopInfo.location
 
             // shop establishment info
-            shopInfoOpenSince?.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
+            shopInfoOpenSince?.text =
+                getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
     }
 

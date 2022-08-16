@@ -5,14 +5,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
+import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopMessageChatExist
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -32,7 +33,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
     fun userId() : String = userSessionInterface.userId
-
+    private fun isUserLogin() : Boolean = userSessionInterface.isLoggedIn
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()
@@ -95,14 +96,19 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     }
 
     fun getMessageIdOnChatExist(shopId: String) {
+        if (!isUserLogin()) {
+            messageIdOnChatExist.value = Fail(UserNotLoginException())
+            return
+        }
+
         launchCatchError(coroutineDispatcherProvider.io, block = {
-            messageIdOnChatExist.postValue(Success(getMessageId(shopId).messageId))
+            messageIdOnChatExist.postValue(Success(getMessageId(shopId).chatExistingChat.messageId))
         }) {
             messageIdOnChatExist.postValue(Fail(it))
         }
     }
 
-    private suspend fun getMessageId(shopId: String): ShopMessageChatExist {
+    private suspend fun getMessageId(shopId: String): ChatExistingChat {
         getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)
         return getMessageIdChatUseCase.executeOnBackground()
     }
