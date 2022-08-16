@@ -1314,7 +1314,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             LONG_VIDEO_SGC
         else if (type == TYPE_FEED_X_CARD_POST && !isFollowed && mediaType == TYPE_LONG_VIDEO)
             LONG_VIDEO_SGC_RECOM
-        else if (type == TYPE_FEED_X_CARD_POST && mediaType == VIDEO)
+        else if (type == TYPE_FEED_X_CARD_POST && mediaType == TYPE_VIDEO)
             VIDEO
         else if (type != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
             SGC_IMAGE_RECOM

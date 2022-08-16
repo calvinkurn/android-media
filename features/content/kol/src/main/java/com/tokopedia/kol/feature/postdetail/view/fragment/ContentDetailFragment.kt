@@ -1908,9 +1908,9 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         feedXCard.isTypeVOD && !feedXCard.followers.isFollowed -> trackerIdVodRecomm
         feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed -> trackerIdAsgc
         feedXCard.isTypeProductHighlight && !feedXCard.followers.isFollowed -> trackerIdAsgcRecom
-        feedXCard.isTypeSGC && feedXCard.followers.isFollowed -> trackerIdSgc
-        feedXCard.isTypeSGC && !feedXCard.followers.isFollowed -> trackerIdSgcRecom
-        feedXCard.isTypeSgcVideo && feedXCard.followers.isFollowed -> trackerIdSgcVideo
+        feedXCard.isTypeSGC && !feedXCard.isTypeSgcVideo && feedXCard.followers.isFollowed -> trackerIdSgc
+        feedXCard.isTypeSGC && !feedXCard.isTypeSgcVideo && !feedXCard.followers.isFollowed -> trackerIdSgcRecom
+        feedXCard.isTypeSgcVideo  -> trackerIdSgcVideo
         else -> ""
 
     }
@@ -1932,10 +1932,9 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_LONG_VIDEO && !item.isFollowed -> trackerIdLongVideoRecomm
         item.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && item.isFollowed -> trackerIdAsgc
         item.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT  && !item.isFollowed -> trackerIdAsgcRecom
-        item.postType == TYPE_FEED_X_CARD_POST  && item.isFollowed -> trackerIdSgc
-        item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed -> trackerIdSgcRecom
+        item.postType == TYPE_FEED_X_CARD_POST  && item.isFollowed && item.mediaType != TYPE_VIDEO -> trackerIdSgc
+        item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType != TYPE_VIDEO -> trackerIdSgcRecom
         item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_VIDEO  -> trackerIdSgcVideo
-
         else -> ""
 
     }
