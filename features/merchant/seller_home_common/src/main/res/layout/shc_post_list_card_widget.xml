@@ -7,10 +7,10 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
         android:descendantFocusability="blocksDescendants"
-        app:cardCornerRadius="@dimen/layout_lvl1"
+        app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

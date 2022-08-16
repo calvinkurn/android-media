@@ -19,7 +19,6 @@ import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
-import java.util.*
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -64,12 +63,12 @@ class CardViewHolder(
             null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 showShimmer(false)
-                showOnError(true)
+                showOnError(element, true)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
                 setupTag(element)
             }
             else -> {
-                showOnError(false)
+                showOnError(element, false)
                 showShimmer(false)
                 showViewComponent(element, true)
                 setupTag(element)
@@ -79,7 +78,7 @@ class CardViewHolder(
 
     private fun showLoadingState(element: CardWidgetUiModel) {
         showViewComponent(element, false)
-        showOnError(false)
+        showOnError(element, false)
         showShimmer(true)
     }
 
@@ -173,9 +172,11 @@ class CardViewHolder(
         with(binding) {
             containerCard.viewTreeObserver.addOnPreDrawListener {
                 element.data?.lastUpdated?.let {
-                    val shouldShowRefreshButton =
-                        it.needToUpdated.orFalse() && !element.showLoadingState
-                    icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
+                    val shouldShowRefreshButton = it.needToUpdated.orFalse()
+                            && !element.showLoadingState
+                    val isError = !element.data?.error.isNullOrBlank()
+                    icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
+                            || isError
                     icShcRefreshCard.setOnClickListener {
                         refreshWidget(element)
                     }
@@ -216,12 +217,16 @@ class CardViewHolder(
         }
     }
 
-    private fun showOnError(isError: Boolean) {
+    private fun showOnError(element: CardWidgetUiModel, isError: Boolean) {
         if (!isError) return
         with(binding) {
             tvCardTitle.visible()
             tvCardValue.visible()
+            icShcRefreshCard.visible()
             tvCardValue.text = root.context.getString(R.string.shc_load_failed)
+            icShcRefreshCard.setOnClickListener {
+                refreshWidget(element)
+            }
             tvCardSubValue.invisible()
         }
     }

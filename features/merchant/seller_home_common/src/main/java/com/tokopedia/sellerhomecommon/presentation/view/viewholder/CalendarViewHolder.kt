@@ -44,7 +44,6 @@ class CalendarViewHolder(
 
     private val binding by lazy { ShcCalendarWidgetBinding.bind(itemView) }
     private val loadingStateBinding by lazy { binding.shcCalendarWidgetLoadingState }
-    private val errorStateBinding by lazy { binding.shcCalendarWidgetErrorState }
     private val emptyStateBinding by lazy { binding.shcCalendarWidgetEmptyState }
 
     private val pagerAdapter by lazy {
@@ -104,7 +103,7 @@ class CalendarViewHolder(
 
     private fun showSuccessState(element: CalendarWidgetUiModel) {
         loadingStateBinding.viewShcCalendarLoading.gone()
-        errorStateBinding.viewShcCalendarError.gone()
+        binding.shcCalendarWidgetErrorState.gone()
         emptyStateBinding.commonWidgetErrorState.gone()
 
         with(binding) {
@@ -150,16 +149,16 @@ class CalendarViewHolder(
         binding.rvShcCalendar.gone()
         with(emptyStateBinding) {
             commonWidgetErrorState.visible()
-            imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+            imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_bandwidth)
             tvShcErrorMessage.text = root.context.getString(R.string.shc_calendar_empty_state)
+            btnShcReloadErrorState.gone()
         }
     }
 
     private fun showErrorState(element: CalendarWidgetUiModel) {
-        errorStateBinding.run {
-            viewShcCommonLayout.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-            viewShcCalendarError.visible()
-            btnShcCalendarReload.setOnClickListener {
+        binding.shcCalendarWidgetErrorState.run {
+            visible()
+            setOnReloadClicked {
                 listener.onReloadWidget(element)
             }
         }
@@ -174,7 +173,7 @@ class CalendarViewHolder(
 
     private fun showLoadingState() {
         loadingStateBinding.viewShcCalendarLoading.visible()
-        errorStateBinding.viewShcCalendarError.gone()
+        binding.shcCalendarWidgetErrorState.gone()
         emptyStateBinding.commonWidgetErrorState.gone()
         with(binding) {
             luvShcCalendar.gone()

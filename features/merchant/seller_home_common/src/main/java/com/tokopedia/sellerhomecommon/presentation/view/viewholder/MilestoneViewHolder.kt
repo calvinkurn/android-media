@@ -9,7 +9,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
@@ -402,12 +410,9 @@ class MilestoneViewHolder(
         errorStateBinding.run {
             containerShcMilestoneError.visible()
             tvShcMilestoneErrorStateTitle.text = element.title
-            btnMilestoneError.setOnClickListener {
+            shcMilestoneErrorStateView.setOnReloadClicked {
                 listener.onReloadWidget(element)
             }
-
-            imgMilestoneOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-
             setupTooltip(tvShcMilestoneErrorStateTitle, element)
         }
     }

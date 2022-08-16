@@ -51,7 +51,6 @@ class MultiLineGraphViewHolder(
     }
 
     private val binding by lazy { ShcMultiLineGraphWidgetBinding.bind(itemView) }
-    private val errorStateBinding by lazy { binding.shcMultiLineGraphErrorView }
     private val emptyStateBinding by lazy { binding.shcMultiLineGraphEmptyStateView }
     private val loadingStateBinding by lazy { binding.shcMultiLineGraphLoadingView }
 
@@ -188,7 +187,7 @@ class MultiLineGraphViewHolder(
     private fun setOnLoadingState() {
         binding.shcMlgSuccessState.gone()
         binding.luvShcMultiLineGraph.setRefreshButtonVisibility(false)
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcMultiLineGraphErrorView.gone()
         emptyStateBinding.multiLineEmptyState.gone()
         loadingStateBinding.shcMlgLoadingState.visible()
     }
@@ -203,8 +202,10 @@ class MultiLineGraphViewHolder(
         getWidgetComponents().forEach {
             it.gone()
         }
-        errorStateBinding.commonWidgetErrorState.visible()
-        errorStateBinding.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+        binding.shcMultiLineGraphErrorView.visible()
+        binding.shcMultiLineGraphErrorView.setOnReloadClicked {
+            listener.onReloadWidget(element)
+        }
 
         setTagNotification(element.tag)
         setupTooltip(element)
@@ -250,7 +251,7 @@ class MultiLineGraphViewHolder(
 
         with(binding) {
             loadingStateBinding.shcMlgLoadingState.gone()
-            errorStateBinding.commonWidgetErrorState.gone()
+            shcMultiLineGraphErrorView.gone()
             shcMlgSuccessState.visible()
             setupTitle(element.title)
 
@@ -638,15 +639,12 @@ class MultiLineGraphViewHolder(
 
     private fun showMetricErrorState() {
         binding.chartViewShcMultiLine.gone()
-        errorStateBinding.commonWidgetErrorState.visible()
-        errorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        binding.shcMultiLineGraphErrorView.visible()
     }
 
     private fun clearMetricErrorState() {
         binding.chartViewShcMultiLine.visible()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcMultiLineGraphErrorView.gone()
     }
 
     private fun checkIsMetricError(metric: MultiLineMetricUiModel): Boolean {
