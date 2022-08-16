@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -70,13 +69,13 @@ class GetShopInfoUseCase @Inject constructor(
 
     private fun getParams(): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(userSession.shopId.toLongOrZero())
+            PARAM_INPUT to Param(userSession.shopId)
         )
     }
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
+        var shopId: String
     )
 
     companion object {

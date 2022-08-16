@@ -1,10 +1,10 @@
 package com.tokopedia.navigation.presentation.presenter;
 
-import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase;
+import com.tokopedia.navigation.domain.model.Param;
 import com.tokopedia.navigation.domain.subscriber.NotificationSubscriber;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.usecase.RequestParams;
@@ -22,7 +22,6 @@ public class MainParentPresenter {
 
     private boolean isReccuringApplink = false;
     private static String PARAM_INPUT = "input";
-    final static String PARAM_SHOP_ID = "shop_id";
 
     public MainParentPresenter(GetBottomNavNotificationUseCase getNotificationUseCase, UserSessionInterface userSession) {
         this.getNotificationUseCase = getNotificationUseCase;
@@ -39,8 +38,7 @@ public class MainParentPresenter {
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(GlobalNavConstant.QUERY,
                     GraphqlHelper.loadRawString(this.mainParentView.getContext().getResources(), R.raw.query_notification));
-            Param param = new Param();
-            param.setShopId(userSession.getShopId());
+            Param param = new Param(userSession.getShopId());
             requestParams.putObject(PARAM_INPUT, param);
             getNotificationUseCase.execute(requestParams, new NotificationSubscriber(this.mainParentView));
         }
@@ -69,22 +67,5 @@ public class MainParentPresenter {
 
     public boolean isUserLogin(){
         return userSession.isLoggedIn();
-    }
-}
-
-class Param {
-    @SerializedName(MainParentPresenter.PARAM_SHOP_ID)
-    Long shopId;
-
-    public Long getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        try {
-            this.shopId = Long.parseLong(shopId);
-        } catch (Throwable throwable) {
-            this.shopId = 0L;
-        }
     }
 }

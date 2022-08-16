@@ -27,12 +27,12 @@ internal object SellerMenuNotification {
 
     fun getNotificationParam(shopId: String): Map<String, Any> {
         return mapOf(
-            PARAM_INPUT to Param(shopId.toLongOrZero())
+            PARAM_INPUT to Param(shopId)
         )
     }
 }
 
 data class Param(
     @SerializedName(PARAM_SHOP_ID)
-    var shopId: Long
+    var shopId: String
 )

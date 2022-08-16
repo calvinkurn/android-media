@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -45,13 +44,13 @@ open class GetChatNotificationUseCase @Inject constructor(
 
     private fun getParams(shopId: String): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(shopId.toLongOrZero())
+            PARAM_INPUT to Param(shopId)
         )
     }
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
+        var shopId: String
     )
 
     private val query = """

@@ -7,9 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.homenav.mainnav.data.pojo.notif.NavNotificationPojo
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -39,13 +37,13 @@ class GetNavNotification @Inject constructor(
 
     private fun getParams(): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(userSession.shopId.toLongOrZero())
+            PARAM_INPUT to Param(userSession.shopId)
         )
     }
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
+        var shopId: String
     )
 
     companion object {

@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
@@ -46,13 +45,13 @@ class GetNotificationUseCase(
 
     private fun getParams(shopId: String): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(shopId.toLongOrZero())
+            PARAM_INPUT to Param(shopId)
         )
     }
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
+        var shopId: String
     )
 
     companion object {

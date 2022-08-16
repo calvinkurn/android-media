@@ -1,7 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.domain
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.searchbar.navigation_component.domain.QueryNotification.PARAM_SHOP_ID
 
 object QueryNotification {
@@ -64,12 +63,12 @@ object QueryNotification {
 
     fun getNotificationParam(shopId: String): Map<String, Any> {
         return mapOf(
-            PARAM_INPUT to Param(shopId.toLongOrZero())
+            PARAM_INPUT to Param(shopId)
         )
     }
 }
 
 data class Param(
     @SerializedName(PARAM_SHOP_ID)
-    var shopId: Long
+    var shopId: String
 )

@@ -33,13 +33,13 @@ class GetPaymentListCountUseCase @Inject constructor(
 
     private fun getParams(): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(userSession.shopId.toLongOrZero())
+            PARAM_INPUT to Param(userSession.shopId)
         )
     }
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
+        var shopId: String
     )
 
     companion object {

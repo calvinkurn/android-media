@@ -2,16 +2,15 @@ package com.tokopedia.navigation.presentation.presenter
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker.Companion.userSession
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation.GlobalNavConstant
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
+import com.tokopedia.navigation.domain.model.Param
 import com.tokopedia.navigation.domain.model.RecomTitle
 import com.tokopedia.navigation.domain.model.Recommendation
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
@@ -80,7 +79,7 @@ class InboxPresenter @Inject constructor(
                 R.raw.query_notification
             )
         )
-        requestParams.putObject(PARAM_INPUT, Param(userSessionInterface.shopId.toLongOrZero()))
+        requestParams.putObject(PARAM_INPUT, Param(userSessionInterface.shopId))
         getNotificationUseCase.execute(requestParams, InboxSubscriber(this.inboxView))
     }
 
@@ -291,11 +290,6 @@ class InboxPresenter @Inject constructor(
         this.getInboxData()
     }
 
-    data class Param(
-        @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
-    )
-
     fun onDestroy() {
         this.getRecommendationUseCase.unsubscribe()
         this.getNotificationUseCase.unsubscribe()
@@ -309,6 +303,5 @@ class InboxPresenter @Inject constructor(
         val INBOX_PAGE = "inbox"
 
         private const val PARAM_INPUT = "input"
-        private const val PARAM_SHOP_ID = "shop_id"
     }
 }

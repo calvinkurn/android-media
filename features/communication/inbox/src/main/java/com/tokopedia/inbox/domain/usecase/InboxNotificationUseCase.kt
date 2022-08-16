@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
@@ -42,13 +41,13 @@ open class InboxNotificationUseCase @Inject constructor(
 
     private fun getParams(shopId: String): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(shopId.toLongOrZero())
+            PARAM_INPUT to Param(shopId)
         )
     }
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: Long
+        var shopId: String
     )
 
     private val query = """
