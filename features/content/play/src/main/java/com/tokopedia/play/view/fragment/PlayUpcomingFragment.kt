@@ -153,7 +153,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun sendImpression() {
-        playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
+        analytic.impressUpcomingPage(channelId)
     }
 
     private fun renderDescription(prevState: DescriptionUiState?, state: DescriptionUiState){
@@ -321,8 +321,23 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onClickActionButton() {
-        if(playUpcomingViewModel.remindState == PlayUpcomingState.Reminded) analytic.clickCancelRemindMe(channelId)
+        handleUpcomingClickAnalytic()
         playUpcomingViewModel.submitAction(ClickUpcomingButton)
+    }
+
+    private fun handleUpcomingClickAnalytic(){
+        when (playUpcomingViewModel.remindState) {
+            PlayUpcomingState.Reminded -> {
+                analytic.clickCancelRemindMe(channelId)
+            }
+            PlayUpcomingState.RemindMe -> {
+                analytic.clickRemindMe(channelId)
+            }
+            PlayUpcomingState.WatchNow -> {
+                analytic.clickWatchNow(channelId)
+            }
+            else -> {}
+        }
     }
 
     override fun onBackButtonClicked(view: ToolbarRoomViewComponent) {
@@ -330,7 +345,6 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
-        analytic.clickFollowUniversal(channelId)
         playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction(applink))
     }
 
@@ -339,31 +353,37 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
+        analytic.clickFollowUniversal(channelId)
         playUpcomingViewModel.submitAction(ClickFollowUpcomingAction)
     }
 
     override fun onShareIconClick(view: ShareExperienceViewComponent) {
+        analytic.clickShareButton(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value)
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
     }
 
     override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(ShowShareExperienceUpcomingAction)
+        if(playUpcomingViewModel.isCustomSharingAllowed) analytic.impressShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value)
     }
 
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
+        analytic.clickSharingOption(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, shareModel.channel, playUpcomingViewModel.isSharingBottomSheet)
         playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
     }
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
+        analytic.closeShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, playUpcomingViewModel.isSharingBottomSheet)
         playUpcomingViewModel.submitAction(CloseSharingOptionUpcomingAction)
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(ScreenshotTakenUpcomingAction)
+        if(playUpcomingViewModel.isCustomSharingAllowed) analytic.takeScreenshotForSharing(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value)
     }
 
     override fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String) {
-        playUpcomingViewModel.submitAction(SharePermissionUpcomingAction(label))
+        analytic.clickSharePermission(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, label)
     }
 
     override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
