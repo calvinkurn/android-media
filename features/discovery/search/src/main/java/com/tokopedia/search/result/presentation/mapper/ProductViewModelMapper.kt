@@ -447,17 +447,10 @@ class ProductViewModelMapper {
         keyword: String,
         dimension90: String,
     ): LastFilterDataView {
-        val lastFilterData = searchProductModel.lastFilter.data
-
-        return LastFilterDataView(
-            filterList = lastFilterData.filters,
-            title = lastFilterData.title,
-            keyword = keyword,
-            applink = lastFilterData.applink,
-            trackingOption = lastFilterData.trackingOption,
-            componentId = lastFilterData.componentId,
-            dimension90 = dimension90,
-            valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }
+        return LastFilterDataView.create(
+            searchProductModel.lastFilter,
+            keyword,
+            dimension90
         )
     }
 
