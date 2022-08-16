@@ -13,6 +13,8 @@ import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
@@ -116,10 +118,20 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
+        `Then assert visitable list does not contain Separator`(visitableList)
     }
 
     private fun `Given keyword from view`(keyword: String) {
         every { productListView.queryKey } returns keyword
+    }
+
+    private fun `Then assert visitable list does not contain Separator`(visitableList: List<Visitable<*>>) {
+        val separatorIndex = visitableList.indexOfFirst { it is VerticalSeparable && it.verticalSeparator !is VerticalSeparator.None  }
+
+        separatorIndex.shouldBe(
+            -1,
+            "Separator is found on visitable list index $separatorIndex"
+        )
     }
 
     private fun `Then assert view will show product list`() {
@@ -247,6 +259,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
+        `Then assert visitable list does not contain Separator`(visitableList)
     }
 
     @Test
