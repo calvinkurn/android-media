@@ -1280,19 +1280,27 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             startTime = getDate()
                             firstTimeStart = true
                             couponStartTime = "$selectedHour:$selectedMinute"
-                            updatedStartTimeCoupon = startTime?.time?.let { dateTime ->
+                            tmCouponStartTimeUnix = startTime
+                            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                            tmCouponStartTimeUnix?.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
+                            tmCouponStartTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
+                            tmCouponStartTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            updatedStartTimeCoupon = tmCouponStartTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
-                            tmCouponStartTimeUnix = startTime
                         }
                         1 -> {
                             startTime = getDate()
                             firstTimeEnd = true
                             couponEndTime = "$selectedHour:$selectedMinute"
-                            updatedEndTimeCoupon = startTime?.time?.let { dateTime ->
+                            tmCouponEndTimeUnix = startTime
+                            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                            tmCouponEndTimeUnix?.time = sdf.parse(updatedEndTimeCoupon + "00") ?: Date()
+                            tmCouponEndTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
+                            tmCouponEndTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            updatedEndTimeCoupon = tmCouponEndTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
-                            tmCouponEndTimeUnix = startTime
                         }
                     }
                     dismiss()
