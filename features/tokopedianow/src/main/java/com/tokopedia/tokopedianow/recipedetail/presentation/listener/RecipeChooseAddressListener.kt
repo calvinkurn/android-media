@@ -21,7 +21,7 @@ class RecipeChooseAddressListener(
     override fun onAddressDataChanged() {
         removeScrollListener()
         toolbarHeader?.reset()
-        viewModel.onAddressChanged()
+        viewModel.refreshPage()
     }
 
     override fun onLocalizingAddressServerDown() { /* to do : nothing */

@@ -4,8 +4,8 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 internal object GetRecipe: GqlQueryInterface {
 
-    const val PARAM_RECIPE_ID = "recipe_id"
-    const val PARAM_WAREHOUSE_ID = "warehouse_id"
+    const val PARAM_RECIPE_ID = "recipeID"
+    const val PARAM_WAREHOUSE_ID = "warehouseID"
 
     private const val OPERATION_NAME = "TokonowGetRecipe"
 
@@ -13,12 +13,102 @@ internal object GetRecipe: GqlQueryInterface {
         return listOf(OPERATION_NAME)
     }
 
-    //TODO: Waiting for BE final contract
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}${PARAM_RECIPE_ID}: String!, ${'$'}${PARAM_WAREHOUSE_ID}: String!) {
-            $OPERATION_NAME(recipe_id:${'$'}${PARAM_RECIPE_ID}, warehouse_id:${'$'}${PARAM_WAREHOUSE_ID}}) {
-                
+        query $OPERATION_NAME(${'$'}${PARAM_RECIPE_ID}: String!, ${'$'}${PARAM_WAREHOUSE_ID}: String) {
+            $OPERATION_NAME(input: {${PARAM_RECIPE_ID}:${'$'}${PARAM_RECIPE_ID}, ${PARAM_WAREHOUSE_ID}:${'$'}${PARAM_WAREHOUSE_ID}}) {
+                header {
+                  success
+                  processTime
+                  message
+                  statusCode
+                }
+                data {
+                  id
+                  title
+                  status
+                  instruction
+                  portion
+                  duration
+                  createdTime
+                  updatedTime
+                  publishedTime
+                  isBookmarked
+                  category {
+                    id
+                    name
+                  }
+                  tags {
+                    id
+                    name
+                  }
+                  ingredients {
+                    id
+                    name
+                    quantity
+                    unit
+                    image {
+                      urlOriginal
+                      urlThumbnail
+                      fileName
+                      filePath
+                      width
+                      height
+                    }
+                  }
+                  images {
+                    urlOriginal
+                    urlThumbnail
+                    fileName
+                    filePath
+                    width
+                    height
+                  }
+                  videos {
+                    url
+                    type
+                  }
+                  medias {
+                    url
+                    type
+                  }
+                  products {
+                    id
+                    quantity
+                    detail {
+                      name
+                      url
+                      imageUrl
+                      fmtPrice
+                      appUrl
+                      slashedPrice
+                      discountPercentage
+                      parentProductID
+                      minOrder
+                      stock
+                      categoryName
+                      countReview
+                      rating
+                      ratingAverage
+                      shopID
+                      maxOrder
+                      categoryID
+                      redirectLink
+                      labelGroups {
+                        title
+                        type
+                        position
+                        url
+                      }
+                      labelGroupVariants {
+                        title
+                        type
+                        typeVariant
+                        hexColor
+                      }
+                    }
+                  }
+                }
             }
        }
        """.trimIndent()

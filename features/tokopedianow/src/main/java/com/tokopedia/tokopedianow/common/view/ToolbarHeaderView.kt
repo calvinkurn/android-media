@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.view
 
-import android.view.View
+import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +20,7 @@ class ToolbarHeaderView(
     var rightIcons: List<Int> = listOf()
         set(value) {
             field = value
+            removeRightIcons()
             value.forEach {
                 header?.addRightIcon(it)
             }
@@ -52,7 +53,9 @@ class ToolbarHeaderView(
         }
     }
 
-    fun getActionItem(pos: Int): View? = header?.rightIcons?.get(pos)
+    fun getActionItem(pos: Int): ImageView? = header?.rightIcons?.get(pos)
+
+    fun getRightIcon(pos: Int): Int? = rightIcons.getOrNull(pos)
 
     fun setRightIconsColor(@ColorRes colorId: Int) {
         header?.rightIcons?.forEach {
@@ -96,6 +99,11 @@ class ToolbarHeaderView(
             transparentMode = false
             setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         }
+    }
+
+    private fun removeRightIcons() {
+        header?.rightContentView?.removeAllViews()
+        header?.rightIcons?.clear()
     }
 
     private fun setScrollListener() {
