@@ -132,7 +132,7 @@ object ProductDetailConstant {
     const val ALREADY_FAVORITE_SHOP = 1
 
     //TopAds Banner
-    const val ADS_COUNT = 1
+    const val ADS_COUNT = 3
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
 
