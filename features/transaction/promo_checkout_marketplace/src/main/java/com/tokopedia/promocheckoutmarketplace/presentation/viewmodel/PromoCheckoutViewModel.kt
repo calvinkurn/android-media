@@ -1481,9 +1481,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
-        // todo
+        // todo ini     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
         val clashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (clashingInfo != null) {
+            // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
             if (promoListItemUiModel.uiData.currentClashingPromo.containsPromoCode(selectedItem)) {
                 promoListItemUiModel.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
                 if (promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty()) {
@@ -1508,9 +1509,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun checkAndSetClashOnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel): Boolean {
         var clashResult = false
-        // todo
+        // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
         val clashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (clashingInfo != null) {
+            // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
             if (!promoListItemUiModel.uiData.currentClashingPromo.containsPromoCode(selectedItem)) {
                 promoListItemUiModel.uiData.currentClashingPromo.addPromo(selectedItem)
                 val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
