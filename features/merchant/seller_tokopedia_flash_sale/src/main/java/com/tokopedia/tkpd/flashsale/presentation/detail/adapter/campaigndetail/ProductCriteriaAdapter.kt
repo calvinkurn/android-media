@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductCriteriaBinding
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
 
@@ -51,6 +52,7 @@ class ProductCriteriaAdapter: RecyclerView.Adapter<ProductCriteriaAdapter.Criter
         }
 
         fun bind(itemModel: ProductCriteriaModel) {
+            val context = binding.root.context
             binding.tfCategoryTitle.text = itemModel.categorySelectionsText
             binding.tfProductCount.text = itemModel.productSelectionsText
 
@@ -63,8 +65,8 @@ class ProductCriteriaAdapter: RecyclerView.Adapter<ProductCriteriaAdapter.Criter
                 tfMinScore.value = itemModel.minScore.toString()
                 tfProductSold.value = formatRange(itemModel.productSold)
                 tfMinProductSold.value = itemModel.minSold.toString()
-                tfSubmissionLimit.value = "Maks. ${itemModel.maxProductSubmission}"
-                tfMaxShown.value = "Maks. ${itemModel.maxShownCount} dalam ${itemModel.maxShownDays} hari"
+                tfSubmissionLimit.value = context.getString(R.string.campaigndetail_submission_limit_format, itemModel.maxProductSubmission)
+                tfMaxShown.value = context.getString(R.string.campaigndetail_max_shown_format, itemModel.maxShownCount, itemModel.maxShownDays)
                 tfOtherCriteria.value = itemModel.otherCriteria.joinToString(", ")
                 tfCategoryList.value = itemModel.categories.joinToString(", ")
                 tfCategoryList.isVisible = itemModel.showFullCategories

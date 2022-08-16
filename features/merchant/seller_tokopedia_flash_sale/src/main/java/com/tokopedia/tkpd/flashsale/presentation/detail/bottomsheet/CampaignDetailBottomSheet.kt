@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.common.adapter.TabPagerAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelineFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -21,25 +22,20 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class CampaignDetailBottomSheet: BottomSheetUnify() {
 
     companion object {
-        private const val BUNDLE_KEY_TIMELINE_STEP_MODEL = "TimelineStepModel"
-        private const val BUNDLE_KEY_CRITERIA_MODEL = "ProductCriteriaModel"
+        private const val BUNDLE_KEY_CAMPAIGN_DETAIL_MODEL = "CampaignDetailBottomSheetModel"
         @JvmStatic
-        fun newInstance(timelineSteps: List<TimelineStepModel>, productCriterias: List<ProductCriteriaModel>): CampaignDetailBottomSheet {
+        fun newInstance(campaignDetailBottomSheetModel: CampaignDetailBottomSheetModel): CampaignDetailBottomSheet {
             return CampaignDetailBottomSheet().apply {
-                arguments = Bundle().apply {
-                    putParcelableArrayList(BUNDLE_KEY_TIMELINE_STEP_MODEL, ArrayList(timelineSteps))
-                    putParcelableArrayList(BUNDLE_KEY_CRITERIA_MODEL, ArrayList(productCriterias))
+                arguments = Bundle().apply { //TODO: use SaveInstanceCacheManager
+                    putParcelable(BUNDLE_KEY_CAMPAIGN_DETAIL_MODEL, campaignDetailBottomSheetModel)
                 }
             }
         }
     }
 
     private var binding by autoClearedNullable<StfsBottomsheetCampaignDetailBinding>()
-    private val timelineSteps by lazy {
-        arguments?.getParcelableArrayList<TimelineStepModel>(BUNDLE_KEY_TIMELINE_STEP_MODEL)?.toList()
-    }
-    private val productCriterias by lazy {
-        arguments?.getParcelableArrayList<ProductCriteriaModel>(BUNDLE_KEY_CRITERIA_MODEL)?.toList()
+    private val campaignDetailBottomSheetModel by lazy {
+        arguments?.getParcelable<CampaignDetailBottomSheetModel>(BUNDLE_KEY_CAMPAIGN_DETAIL_MODEL)
     }
 
     override fun onCreateView(
@@ -67,6 +63,9 @@ class CampaignDetailBottomSheet: BottomSheetUnify() {
         val timelineTitle = getString(R.string.campaigndetail_timeline_title)
         val criteriaTitle = getString(R.string.campaigndetail_criteria_title)
         val productCriteriaTitle = getString(R.string.campaigndetail_product_criteria_title)
+
+        val timelineSteps = campaignDetailBottomSheetModel?.timelineSteps
+        val productCriterias = campaignDetailBottomSheetModel?.productCriterias
 
         val timelineFragment = CampaignTimelineFragment.newInstance(timelineSteps.orEmpty())
         val criteriaFragment = CampaignCriteriaFragment()

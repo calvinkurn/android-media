@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -63,7 +64,8 @@ class LandingContainerFragment : BaseDaggerFragment() {
             ProductCriteriaModel("Suplemen Diet, + 10 lainnya", "Belum ada produkmu yang sesuai", categories = listOf("Robot", "Mesin", "Alien", "Tengkorak")),
             ProductCriteriaModel("Olahraga, Games", "15 produkmu sesuai")
         )
-        val bottomSheet = CampaignDetailBottomSheet.newInstance(timelineSteps, productCriterias)
+        val model = CampaignDetailBottomSheetModel(timelineSteps, productCriterias)
+        val bottomSheet = CampaignDetailBottomSheet.newInstance(model)
         bottomSheet.show(childFragmentManager, "")
     }
 

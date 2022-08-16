@@ -20,7 +20,7 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
         private const val BUNDLE_KEY_TIMELINE_STEP_MODEL = "TimelineStepModel"
         @JvmStatic
         fun newInstance(timelineSteps: List<TimelineStepModel>): CampaignTimelineFragment {
-            return CampaignTimelineFragment().apply {
+            return CampaignTimelineFragment().apply { //TODO: use SaveInstanceCacheManager
                 arguments = Bundle().apply {
                     putParcelableArrayList(BUNDLE_KEY_TIMELINE_STEP_MODEL, ArrayList(timelineSteps))
                 }

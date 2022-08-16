@@ -5,6 +5,8 @@
     <string name="campaigndetail_product_criteria_title">Kriteria Produk</string>
     <string name="campaigndetail_timeline_title">Timeline</string>
     <string name="campaigndetail_campaign_ended">Selesai</string>
+    <string name="campaigndetail_submission_limit_format">Maks. %d</string>
+    <string name="campaigndetail_max_shown_format">Maks. %1d dalam %2d hari</string>
 
     <string-array name="criteria_items">
         <item>Pastikan harga diskon produkmu lebih rendah dari harga termurah di Tokopedia untuk produk serupa.</item>

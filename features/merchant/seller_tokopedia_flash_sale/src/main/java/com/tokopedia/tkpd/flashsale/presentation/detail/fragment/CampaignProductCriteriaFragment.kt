@@ -19,7 +19,7 @@ class CampaignProductCriteriaFragment: BaseDaggerFragment() {
         private const val BUNDLE_KEY_CRITERIA_MODEL = "ProductCriteriaModel"
         @JvmStatic
         fun newInstance(productCriterias: List<ProductCriteriaModel>): CampaignProductCriteriaFragment {
-            return CampaignProductCriteriaFragment().apply {
+            return CampaignProductCriteriaFragment().apply { //TODO: use SaveInstanceCacheManager
                 arguments = Bundle().apply {
                     putParcelableArrayList(BUNDLE_KEY_CRITERIA_MODEL, ArrayList(productCriterias))
                 }
