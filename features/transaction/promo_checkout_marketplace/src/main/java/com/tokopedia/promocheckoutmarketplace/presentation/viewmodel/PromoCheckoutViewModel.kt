@@ -1486,6 +1486,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         if (clashingInfo != null) {
             // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
             if (promoListItemUiModel.uiData.currentClashingPromo.containsPromoCode(selectedItem)) {
+                // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
                 promoListItemUiModel.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
                 if (promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty()) {
                     val errorMessageBuilder = StringBuilder()
@@ -1599,6 +1600,14 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
         } else {
             this.add(promoListItemUiModel.uiData.promoCode)
+        }
+    }
+
+    private fun MutableCollection<String>.removePromo(promoListItemUiModel: PromoListItemUiModel) {
+        if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.removeAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
+        } else {
+            this.remove(promoListItemUiModel.uiData.promoCode)
         }
     }
 
