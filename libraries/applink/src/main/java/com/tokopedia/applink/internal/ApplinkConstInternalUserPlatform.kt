@@ -99,7 +99,6 @@ object ApplinkConstInternalUserPlatform {
     **/
     const val PRIVACY_ACCOUNT = "${NEW_INTERNAL_USER}/privacy-account"
 
-
     /**
      * ChooseAccountActivity
      * @Applink : tokopedia-android-internal://user/choose-account
@@ -139,7 +138,7 @@ object ApplinkConstInternalUserPlatform {
     /**
      * LinkAccountWebViewActivity
      * @Applink : tokopedia-android-internal://user/link-account-webview
-     * @param   : [PARAM_LD]
+     * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
      **/
     const val LINK_ACCOUNT_WEBVIEW = "${NEW_INTERNAL_USER}/link-account-webview"
 

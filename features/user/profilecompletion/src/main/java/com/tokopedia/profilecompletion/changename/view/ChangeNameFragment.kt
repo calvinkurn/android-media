@@ -170,9 +170,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun updateChangesCounter(counter: String) {
-	activity?.getString(R.string.change_name_note, counter)?.let { changeNameHint ->
-	    changeNameTextNote?.text = changeNameHint
-	}
+		activity?.getString(R.string.change_name_note)?.let { changeNameHint ->
+			changeNameTextNote?.text = changeNameHint
+		}
     }
 
     private fun onSuccessChangeName(result: ChangeNameResult) {
