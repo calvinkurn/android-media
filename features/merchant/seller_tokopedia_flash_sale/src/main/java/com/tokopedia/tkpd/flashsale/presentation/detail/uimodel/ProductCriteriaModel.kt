@@ -18,6 +18,7 @@ data class ProductCriteriaModel (
     val maxProductSubmission: Long = 0,
     val maxShownCount: Long = 0,
     val maxShownDays: Long = 0,
+    val showFullCategories: Boolean = false,
     val otherCriteria: List<String> = emptyList(),
     val categories: List<String> = emptyList()
 ) : Parcelable {

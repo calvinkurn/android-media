@@ -67,7 +67,7 @@ class ProductCriteriaAdapter: RecyclerView.Adapter<ProductCriteriaAdapter.Criter
                 tfMaxShown.value = "Maks. ${itemModel.maxShownCount} dalam ${itemModel.maxShownDays} hari"
                 tfOtherCriteria.value = itemModel.otherCriteria.joinToString(", ")
                 tfCategoryList.value = itemModel.categories.joinToString(", ")
-                tfCategoryList.isVisible = itemModel.categories.isNotEmpty()
+                tfCategoryList.isVisible = itemModel.showFullCategories
             }
 
         }
