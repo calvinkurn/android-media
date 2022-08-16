@@ -33,7 +33,18 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.TM_INTRO_BG
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_INTRO_EDU
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_INTRO_OS
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SELLER_NO_OS
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
@@ -102,6 +113,8 @@ class TmIntroFragment : BaseDaggerFragment(),
                 tmTracker?.clickIntroLanjut(it.toString())
             }
         }
+
+        toolbar_tokomember.setActivity(activity)
 
         scrollContainer?.viewTreeObserver?.addOnScrollChangedListener {
             val y = scrollContainer.scrollY

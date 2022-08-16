@@ -16,17 +16,18 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class TmToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
+    private var activity: FragmentActivity? = null
     var tvToolbarTitle: TextView? = null
     var backArrowWhite: Drawable? = null
     var mContext: Context? = null
@@ -53,8 +54,15 @@ class TmToolbar @JvmOverloads constructor(
                 v.setLayoutParams(lp)
                 v.invalidate()
                 v.requestLayout()
+                v.setOnClickListener {
+                    activity?.finish()
+                }
             }
         }
+    }
+
+    fun setActivity(activity: FragmentActivity?){
+        this.activity = activity
     }
 
     private fun initDrawableResources() {

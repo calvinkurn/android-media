@@ -1242,6 +1242,16 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var selectedMinute = ""
         context?.let { ctx ->
             val defaultTime = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            when(type){
+                0 -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    defaultTime.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                }
+                1 -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    defaultTime.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
+                }
+            }
             val maxDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
