@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitle
 
 object RecipeDetailMapper {
 
+    private const val PRODUCT_DEFAULT_QTY = 0
     private const val MEDIA_TYPE_IMAGE = "Image"
 
     fun MutableList<Visitable<*>>.updateProductQuantity(miniCart: MiniCartSimplifiedData) {
@@ -46,6 +47,36 @@ object RecipeDetailMapper {
                         itemList[index] = product
                     }
                 }
+
+            ingredientTab = ingredientTab.copy(items = itemList)
+            recipeTab = recipeTab.copy(ingredient = ingredientTab)
+            set(itemIndex, recipeTab)
+        }
+    }
+
+    fun MutableList<Visitable<*>>.updateDeletedProductQuantity(miniCart: MiniCartSimplifiedData) {
+        val miniCartProductIds = miniCart.miniCartItems
+            .filter { it.value is MiniCartItem.MiniCartItemProduct }
+            .map {
+                val cartItem = it.value as MiniCartItem.MiniCartItemProduct
+                cartItem.productId
+            }
+
+        find { it is RecipeTabUiModel }?.let { item ->
+            var recipeTab = item as RecipeTabUiModel
+            var ingredientTab = recipeTab.ingredient
+
+            val itemIndex = indexOf(recipeTab)
+            val itemList = ingredientTab.items.toMutableList()
+            val productList = itemList.filterIsInstance<RecipeProductUiModel>()
+
+            productList.forEach {
+                if(it.id !in miniCartProductIds) {
+                    val product = it.copy(quantity = PRODUCT_DEFAULT_QTY)
+                    val index = itemList.indexOf(it)
+                    itemList[index] = product
+                }
+            }
 
             ingredientTab = ingredientTab.copy(items = itemList)
             recipeTab = recipeTab.copy(ingredient = ingredientTab)

@@ -29,6 +29,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailM
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.mapToRecipeInfo
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.mapToRecipeTab
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.removeLoadingItem
+import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BookmarkUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetailLoadingUiModel
@@ -333,6 +334,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         layoutItemList.updateProductQuantity(miniCart)
+        layoutItemList.updateDeletedProductQuantity(miniCart)
     }
 
     private fun setMiniCartData(miniCart: MiniCartSimplifiedData) {
