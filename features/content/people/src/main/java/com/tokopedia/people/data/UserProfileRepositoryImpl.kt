@@ -53,7 +53,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getFollowInfo(profileIdList: List<String>): FollowInfoUiModel {
         return withContext(dispatcher.io) {
-            val result = profileIsFollowing.profileIsFollowing(profileIdList)
+            val result = profileIsFollowing.apply {
+                setRequestParams(ProfileTheyFollowedUseCase.createParam(profileIdList))
+            }.executeOnBackground()
 
             mapper.mapFollowInfo(result)
         }
