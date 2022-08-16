@@ -43,9 +43,11 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getProfile(username: String): ProfileUiModel {
         return withContext(dispatcher.io) {
-            val result = userDetailsUseCase.getUserProfileDetail(username)
+            val result = userDetailsUseCase.apply {
+                setRequestParams(UserDetailsUseCase.createParam(username))
+            }.executeOnBackground()
 
-            mapper.mapUserProfile(result.getData(ProfileHeaderBase::class.java))
+            mapper.mapUserProfile(result)
         }
     }
 
