@@ -531,7 +531,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 productCardModel.copy(
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                         product.labelGroupList.map {
-                            if (it.type != "integrity"){
+                            if (it.position != "integrity"){
                                 add(
                                     ProductCardModel.LabelGroup(
                                         it.position,
