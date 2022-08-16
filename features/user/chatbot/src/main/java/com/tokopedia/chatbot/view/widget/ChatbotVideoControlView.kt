@@ -25,8 +25,8 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
     private val videoControlContainer: LinearLayout = findViewById(R.id.nav_container)
     private val videoPauseButtonHandler = Handler(Looper.getMainLooper())
-    private val controllerPlayButton : ImageView = findViewById(R.id.exo_play)
-    private val controllerPauseButton : ImageView = findViewById(R.id.exo_pause)
+    private val controllerPlayButton : ImageView = findViewById(com.google.android.exoplayer2.R.id.exo_play)
+    private val controllerPauseButton : ImageView = findViewById(com.google.android.exoplayer2.R.id.exo_pause)
 
     var listener: Listener? = null
         set(value) {
