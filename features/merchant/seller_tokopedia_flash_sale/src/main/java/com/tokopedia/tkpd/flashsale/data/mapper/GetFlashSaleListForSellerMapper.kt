@@ -5,6 +5,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
 import javax.inject.Inject
+import com.tokopedia.tkpd.flashsale.util.extension.epochToDate
+import com.tokopedia.tkpd.flashsale.util.extension.removeTimeZone
 
 class GetFlashSaleListForSellerMapper @Inject constructor() {
 
@@ -15,19 +17,19 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 campaign.cancellationReason,
                 campaign.coverImage,
                 campaign.description,
-                campaign.endDateUnix,
+                campaign.endDateUnix.epochToDate().removeTimeZone(),
                 campaign.maxProductSubmission,
                 campaign.name,
                 campaign.toProductMeta(),
                 campaign.remainingQuota,
-                campaign.reviewEndDateUnix,
-                campaign.reviewStartDateUnix,
+                campaign.reviewEndDateUnix.epochToDate().removeTimeZone(),
+                campaign.reviewStartDateUnix.epochToDate().removeTimeZone(),
                 campaign.slug,
-                campaign.startDateUnix,
+                campaign.startDateUnix.epochToDate().removeTimeZone(),
                 campaign.statusId.toIntOrZero(),
                 campaign.statusText,
-                campaign.submissionEndDateUnix,
-                campaign.submissionStartDateUnix,
+                campaign.submissionEndDateUnix.epochToDate().removeTimeZone(),
+                campaign.submissionStartDateUnix.epochToDate().removeTimeZone(),
                 campaign.useMultilocation
             )
         }

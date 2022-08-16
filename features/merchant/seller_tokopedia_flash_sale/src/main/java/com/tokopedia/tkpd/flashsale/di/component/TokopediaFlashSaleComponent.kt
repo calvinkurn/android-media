@@ -5,8 +5,9 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
-import com.tokopedia.tkpd.flashsale.presentation.list.LandingActivity
-import com.tokopedia.tkpd.flashsale.presentation.list.LandingContainerFragment
+import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
+import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity
+import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import dagger.Component
 
 @TokopediaFlashSaleScope
@@ -15,6 +16,7 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface TokopediaFlashSaleComponent {
-    fun inject(activity: LandingActivity)
-    fun inject(fragment: LandingContainerFragment)
+    fun inject(activity: FlashSaleListActivity)
+    fun inject(fragment: FlashSaleContainerFragment)
+    fun inject(fragment: FlashSaleListFragment)
 }

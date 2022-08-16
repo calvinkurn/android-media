@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.tkpd.flashsale.presentation.list.LandingContainerFragment">
+    tools:context="com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment">
 
 
     <com.tokopedia.header.HeaderUnify
@@ -17,5 +17,33 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_is_show_shadow="false"
         app:unify_header_title="@string/fs_tkpd_title" />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tabsUnify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabsUnify" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

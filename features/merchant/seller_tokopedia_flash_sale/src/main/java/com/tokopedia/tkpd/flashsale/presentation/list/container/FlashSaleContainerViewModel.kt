@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.list
+package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -18,13 +18,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class LandingContainerViewModel @Inject constructor(
+class FlashSaleContainerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
-    private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase,
-    private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase
+    private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     data class UiState(
@@ -109,8 +108,7 @@ class LandingContainerViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val params =
-                    GetFlashSaleReservedProductListUseCase.Param("122402171660144143955", 0)
+                val params = GetFlashSaleReservedProductListUseCase.Param("122402171660144143955", 0)
                 val response = getFlashSaleReservedProductListUseCase.execute(params)
             },
             onError = { error ->
@@ -119,17 +117,5 @@ class LandingContainerViewModel @Inject constructor(
 
     }
 
-    fun getFlashSaleList() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val params =
-                    GetFlashSaleListForSellerUseCase.Param( "upcoming", 0)
-                val response = getFlashSaleListForSellerUseCase.execute(params)
-            },
-            onError = { error ->
-            }
-        )
 
-    }
 }
