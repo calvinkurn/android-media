@@ -6,20 +6,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.di.UserProfileScope
-import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import kotlinx.coroutines.Dispatchers
-
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 @UserProfileScope
 class FollowerFollowingViewModel @Inject constructor(
-    private val useCaseFollowersList: FollowerFollowingListingUseCase,
-    private val useCaseFollowingList: FollowerFollowingListingUseCase,
     private val repo: UserProfileRepository,
 ) : BaseViewModel(Dispatchers.Main) {
 
@@ -39,30 +34,28 @@ class FollowerFollowingViewModel @Inject constructor(
     val followersErrorLiveData: LiveData<Throwable> get() = followersError
 
     fun getFollowers(
-        userName: String,
+        username: String,
         cursor: String,
         limit: Int
     ) {
         launchCatchError(block = {
-            val data = useCaseFollowersList.getProfileFollowerList(userName, cursor, limit)
-            if (data != null) {
-                profileFollowers.value = Success(data)
-            } else throw NullPointerException("data is null")
+            val result = repo.getFollowerList(username, cursor, limit)
+
+            profileFollowers.value = Success(result)
         }, onError = {
             followersError.value = it
         })
     }
 
     fun getFollowings(
-        userName: String,
+        username: String,
         cursor: String,
         limit: Int
     ) {
         launchCatchError(block = {
-            val data = useCaseFollowingList.getProfileFollowingList(userName, cursor, limit)
-            if (data != null) {
-                profileFollowingsList.value = Success(data)
-            } else throw NullPointerException("data is null")
+            val result = repo.getFollowingList(username, cursor, limit)
+
+            profileFollowingsList.value = Success(result)
         }, onError = {
             followersError.value = it
         })

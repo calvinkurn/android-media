@@ -7,13 +7,10 @@ import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
-import com.tokopedia.people.domains.UserDetailsUseCase
-import com.tokopedia.people.domains.PlayPostContentUseCase
-import com.tokopedia.people.domains.ProfileFollowUseCase
-import com.tokopedia.people.domains.ProfileUnfollowedUseCase
-import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
-import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.model.ProfileFollowerListBase
+import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
@@ -39,6 +36,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopFollowUseCase: ShopFollowUseCase,
+    private val getFollowerFollowingListUseCase: FollowerFollowingListingUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -124,6 +122,22 @@ class UserProfileRepositoryImpl @Inject constructor(
             setRequestParams(ShopFollowUseCase.createParam(shopId, action))
         }.executeOnBackground()
         return@withContext mapper.mapShopFollow(result)
+    }
+
+    override suspend fun getFollowerList(
+        username: String,
+        cursor: String,
+        limit: Int
+    ): ProfileFollowerListBase = withContext(dispatcher.io) {
+        return@withContext getFollowerFollowingListUseCase.getProfileFollowerList(username, cursor, limit)
+    }
+
+    override suspend fun getFollowingList(
+        username: String,
+        cursor: String,
+        limit: Int
+    ): ProfileFollowingListBase = withContext(dispatcher.io) {
+        return@withContext getFollowerFollowingListUseCase.getProfileFollowingList(username, cursor, limit)
     }
 
     companion object {
