@@ -334,7 +334,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
             )
 
             val response = removeRecipeBookmarkUseCase.execute(
-                userId = userId,
                 recipeId = recipeId
             )
 
@@ -373,7 +372,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
             )
 
             val response = addRecipeBookmarkUseCase.execute(
-                userId = userId,
                 recipeId = recipeId
             )
 
