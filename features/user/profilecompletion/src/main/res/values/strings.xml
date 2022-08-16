@@ -18,7 +18,7 @@
     <string name="title_profile_completion">Lengkapi Profil</string>
 
     <!-- PROFILE INFO -->
-    <string name="profile_info_title_profile_info">Ubah Profil</string>
+    <string name="title_profile_info">Ubah Profil</string>
     <string name="profile_info_label_cancel">Batal</string>
     <string name="profile_info_success_change_profile_picture">Foto profil berhasil diubah!</string>
     <string name="profile_info_success_change_name">Yay! Nama kamu berhasil diubah.</string>
