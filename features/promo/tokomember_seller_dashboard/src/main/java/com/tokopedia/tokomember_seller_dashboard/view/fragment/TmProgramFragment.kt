@@ -50,7 +50,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
@@ -65,6 +67,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayFromTimeWindow
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
+import com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
@@ -509,6 +512,26 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
         }
     }
 
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = 0,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        bottomsheet.show(childFragmentManager,"")
+    }
     private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
         textFieldTranskPremium.let {
             it.editText.addTextChangedListener(object : NumberTextWatcher(it.editText) {
@@ -612,7 +635,14 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
             arguments?.getInt(BUNDLE_CARD_ID) ?: 0,
             arguments?.getInt(BUNDLE_CARD_ID_IN_TOOLS) ?: 0
         )
-        tmDashCreateViewModel.updateProgram(programUpdateResponse)
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.updateProgram(programUpdateResponse)
+        }
+        else{
+            noInternetUi {
+                initCreateProgram(membershipGetProgramForm)
+            }
+        }
     }
 
     private fun clickDatePicker() {
