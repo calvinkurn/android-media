@@ -32,8 +32,8 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val mapper: UserProfileUiMapper,
     private val userDetailsUseCase: UserDetailsUseCase,
     private val playVodUseCase: PlayPostContentUseCase,
-    private val useCaseDoFollow: ProfileFollowUseCase,
-    private val useCaseDoUnFollow: ProfileUnfollowedUseCase,
+    private val doFollowUseCase: ProfileFollowUseCase,
+    private val doUnfollowUseCase: ProfileUnfollowedUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
@@ -71,7 +71,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun followProfile(encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = useCaseDoFollow.doFollow(encryptedUserId)
+            val result = doFollowUseCase.apply {
+                setRequestParams(ProfileFollowUseCase.createParam(encryptedUserId))
+            }.executeOnBackground()
 
             mapper.mapFollow(result)
         }
@@ -79,7 +81,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = useCaseDoUnFollow.doUnfollow(encryptedUserId)
+            val result = doUnfollowUseCase.apply {
+                setRequestParams(ProfileUnfollowedUseCase.createParam(encryptedUserId))
+            }.executeOnBackground()
 
             mapper.mapUnfollow(result)
         }
