@@ -533,7 +533,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.button_toaster)
+                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
                 ) {
                     RouteManager.getIntent(context, error.appLinkUrl).apply {
                         startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
