@@ -7,7 +7,6 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -91,6 +90,6 @@ class HomeQuestTitleViewHolder(
         } else {
             QUEST_DETAIL_PRODUCTION_URL
         }
-        RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW, url)
+        RouteManager.route(itemView.context, url)
     }
 }
