@@ -56,9 +56,8 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.LeadeboardType
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderBoardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -79,7 +78,7 @@ class PlayBottomSheetFragment @Inject constructor(
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
-        PlayInteractiveLeaderboardViewComponent.Listener,
+        PlayGameLeaderBoardViewComponent.Listener,
         ShopCouponSheetViewComponent.Listener
 {
 
@@ -91,7 +90,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
-    private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
+    private val leaderboardSheetView by viewComponent { PlayGameLeaderBoardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
     private val offset16 by lazy { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
@@ -239,25 +238,24 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * LeaderboardSheet View Component Listener
      */
-    override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onCloseButtonClicked(view: PlayGameLeaderBoardViewComponent) {
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onRefreshButtonClicked(view: PlayGameLeaderBoardViewComponent) {
         playViewModel.submitAction(RefreshLeaderboard)
         analytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString())
     }
 
-    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+    override fun onRefreshButtonImpressed(view: PlayGameLeaderBoardViewComponent) {
         analytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
     }
 
     override fun onLeaderBoardImpressed(
-        view: PlayInteractiveLeaderboardViewComponent,
-        leaderboard: PlayLeaderboardUiModel
+        view: PlayGameLeaderBoardViewComponent,
+        leaderboard: List<LeaderboardGameUiModel>
     ) {
-        if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
-        analytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id)
+        //TODO Analytics impress
     }
 
     /**
@@ -490,7 +488,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 when(state.winnerBadge.leaderboards.state) {
                     ResultState.Success ->
                         leaderboardSheetView.setData(
-                            state.winnerBadge.leaderboards.data.leaderboardWinners
+                            state.winnerBadge.leaderboards.data
                         )
                     is ResultState.Fail ->
                         leaderboardSheetView.setError()
