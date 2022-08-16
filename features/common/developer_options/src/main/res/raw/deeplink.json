@@ -1610,6 +1610,11 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.resolution.ResolutionSuccessActivity", 
+          "deeplink": "tokopedia-android-internal://resolution/success-create", 
+          "deeplink_variable": "ApplinkConstInternalOperational.SUCCESS_RESO"
+     }, 
+     {
           "destination_activity": "com.tokopedia.contactus.home.view.ContactUsHomeActivity", 
           "deeplink": "tokopedia://contactus", 
           "deeplink_variable": "ApplinkConst.CONTACT_US_NATIVE"
