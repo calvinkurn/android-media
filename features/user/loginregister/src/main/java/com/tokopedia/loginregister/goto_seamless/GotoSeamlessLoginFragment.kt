@@ -104,8 +104,8 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     }
 
     private fun cancelSeamlessLoginFlow() {
-        activity?.setResult(Activity.RESULT_CANCELED)
-        activity?.finish()
+//        activity?.setResult(Activity.RESULT_CANCELED)
+//        activity?.finish()
     }
 
     private fun setupViews() {
