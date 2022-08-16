@@ -1195,10 +1195,10 @@ open class ShopScoreMapper @Inject constructor(
 
     private fun getNumberFormatted(valueResponse: Double): String {
         return try {
-            val number = valueResponse.toString().split(".").getOrNull(Int.ONE) ?: ""
+            val number = valueResponse.toString().split(".").getOrNull(Int.ZERO) ?: ""
             val decimalNumber =
                 valueResponse.toString().split(".").getOrNull(Int.ONE)
-                    ?.getOrNull(Int.ONE) ?: ""
+                    ?.getOrNull(Int.ZERO) ?: ""
             "$number.$decimalNumber"
         } catch (e: IndexOutOfBoundsException) {
             String.format("%.1f", valueResponse)
