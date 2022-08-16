@@ -48,7 +48,7 @@ class ApplinkDebuggerDetailFragment : TkpdBaseV4Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = arguments!!.getParcelable(DATA_DETAIL)
+        viewModel = requireArguments().getParcelable(DATA_DETAIL)
         if (viewModel != null) {
             textApplink!!.text = viewModel!!.applink
             textTimestamp!!.text = viewModel!!.timestamp
