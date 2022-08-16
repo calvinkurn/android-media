@@ -265,8 +265,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun getRecipe() {
         launchCatchError(block = {
-            // temporary hardcode recipeID & warehouseID
-            val response = getRecipeUseCase.execute(recipeId = "1", warehouseId = "342184")
+            val warehouseId = addressData.getWarehouseId().toString()
+            val response = getRecipeUseCase.execute(recipeId, warehouseId)
             _isBookmarked.postValue(response.isBookmarked)
 
             val mediaSlider = mapToMediaSlider(response)
