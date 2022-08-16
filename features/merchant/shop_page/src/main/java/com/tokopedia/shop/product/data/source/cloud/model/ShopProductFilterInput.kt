@@ -54,5 +54,9 @@ data class ShopProductFilterInput(
 
         @SerializedName("user_long")
         @Expose
-        var userLong: String = ""
+        var userLong: String = "",
+
+        @SerializedName("extraParam")
+        @Expose
+        var extraParam: String = ""
 )

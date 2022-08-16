@@ -399,6 +399,7 @@ class ShopHomeViewModel @Inject constructor(
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
                     userLong = widgetUserAddressLocalData.long
+                    extraParam = shopProductFilterParameter.getExtraParam()
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
