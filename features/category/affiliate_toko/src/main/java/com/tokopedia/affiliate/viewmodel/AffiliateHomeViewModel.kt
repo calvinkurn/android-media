@@ -66,7 +66,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private fun isAffiliateShopAdpEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_SHOP_ADP,
-            ""
+            AFFILIATE_SHOP_ADP
         ) == AFFILIATE_SHOP_ADP
 
     fun getAffiliateValidateUser() {
