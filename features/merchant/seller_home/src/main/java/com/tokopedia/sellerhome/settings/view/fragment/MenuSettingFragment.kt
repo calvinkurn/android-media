@@ -51,6 +51,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -354,23 +355,27 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun showLogoutDialog() {
-        var dialogBuilder: AlertDialog.Builder? = null
-        context?.let { dialogBuilder = AlertDialog.Builder(it) }
-        dialogBuilder?.apply {
-            setIcon(logoutIconDrawable)
-            setTitle(context.getString(R.string.seller_home_logout_title))
-            setMessage(context.getString(R.string.seller_home_logout_confirm))
-            setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                val progressDialog = showProgressDialog()
-                dialogInterface.dismiss()
-                RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
-                progressDialog.dismiss()
-                activity?.finish()
-            }
-            setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
-            show()
+        context?.let {
+            AlertDialog.Builder(it).apply {
+                try {
+                    setIcon(logoutIconDrawable)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+
+                setTitle(context.getString(R.string.seller_home_logout_title))
+                setMessage(context.getString(R.string.seller_home_logout_confirm))
+                setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
+                    val progressDialog = showProgressDialog()
+                    dialogInterface.dismiss()
+                    RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
+                    progressDialog.dismiss()
+                    activity?.finish()
+                }
+                setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+            }.show()
         }
     }
 
