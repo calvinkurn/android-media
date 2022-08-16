@@ -549,7 +549,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
     protected fun showProtectedParameterSection(shopScoreResponseStub: ShopScoreResponseStub) {
         val scoreProtectedParameter = shopScoreMapperStub.getProtectedParameterSection(
             shopScoreResponseStub.shopScoreLevel.result.shopScoreDetail,
-            shopScoreResponseStub.goldGetPMShopInfoResponse.shopAge.toInt()
+            shopScoreResponseStub.goldGetPMShopInfoResponse.shopAge
         )
         val recyclerViewMatcher = RecyclerViewMatcher(R.id.rvParameterReliefDetail)
 
