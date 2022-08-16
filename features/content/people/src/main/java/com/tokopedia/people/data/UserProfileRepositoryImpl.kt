@@ -11,7 +11,6 @@ import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
-import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -36,7 +35,8 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val shopFollowUseCase: ShopFollowUseCase,
-    private val getFollowerFollowingListUseCase: FollowerFollowingListingUseCase,
+    private val getFollowerListUseCase: GetFollowerListUseCase,
+    private val getFollowingListUseCase: GetFollowingListUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -129,7 +129,9 @@ class UserProfileRepositoryImpl @Inject constructor(
         cursor: String,
         limit: Int
     ): ProfileFollowerListBase = withContext(dispatcher.io) {
-        return@withContext getFollowerFollowingListUseCase.getProfileFollowerList(username, cursor, limit)
+        return@withContext getFollowerListUseCase.apply {
+            setRequestParams(GetFollowerListUseCase.createParam(username, cursor, limit))
+        }.executeOnBackground()
     }
 
     override suspend fun getFollowingList(
@@ -137,7 +139,9 @@ class UserProfileRepositoryImpl @Inject constructor(
         cursor: String,
         limit: Int
     ): ProfileFollowingListBase = withContext(dispatcher.io) {
-        return@withContext getFollowerFollowingListUseCase.getProfileFollowingList(username, cursor, limit)
+        return@withContext getFollowingListUseCase.apply {
+            setRequestParams(GetFollowingListUseCase.createParam(username, cursor, limit))
+        }.executeOnBackground()
     }
 
     companion object {

@@ -1,7 +1,6 @@
 package com.tokopedia.people.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.people.domains.FollowerFollowingListingUseCase
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import io.mockk.mockk
