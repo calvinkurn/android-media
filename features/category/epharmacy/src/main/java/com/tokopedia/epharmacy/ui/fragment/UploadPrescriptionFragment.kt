@@ -337,9 +337,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 is EPharmacyUploadEmptyImageError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
                 is EPharmacyUploadNoPrescriptionIdError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
             }
-            if(error !is EPharmacyNoInternetError){
-                sendUploadImageFailedEvent()
-            }
+            sendUploadImageFailedEvent()
         })
     }
 
