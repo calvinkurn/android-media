@@ -1,6 +1,7 @@
 <resources>
     <string name="fs_tkpd_title">Flash Sale Tokopedia</string>
 
+    <string name="campaigndetail_bottomsheet_title">Detail Campaign</string>
     <string name="campaigndetail_criteria_title">Kriteria Umum</string>
     <string name="campaigndetail_product_criteria_title">Kriteria Produk</string>
     <string name="campaigndetail_timeline_title">Timeline</string>
