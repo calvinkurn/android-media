@@ -79,17 +79,21 @@ class RecipeProductViewHolder(
     private fun renderProductButton(product: RecipeProductUiModel) {
         binding?.btnProductCta?.apply {
             if (product.stock == 0) {
-                text = itemView.context.getString(
-                    R.string.tokopedianow_stock_empty_text
-                )
+                text = itemView.context.getString(R.string.tokopedianow_stock_empty_text)
                 buttonVariant = UnifyButton.Variant.FILLED
                 isEnabled = false
             } else {
-                text = itemView.context.getString(
-                    R.string.tokopedianow_add_to_cart_text
-                )
+                text = itemView.context.getString(R.string.tokopedianow_add_to_cart_text)
                 buttonVariant = UnifyButton.Variant.GHOST
                 isEnabled = true
+
+                setOnClickListener {
+                    recipeDetailView?.addItemToCart(
+                        productId = product.id,
+                        shopId = product.shopId,
+                        quantity = product.minOrder
+                    )
+                }
             }
         }
     }

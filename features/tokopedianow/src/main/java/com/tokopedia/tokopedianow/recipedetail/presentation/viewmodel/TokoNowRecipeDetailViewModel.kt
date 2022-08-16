@@ -128,6 +128,20 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         }
     }
 
+    fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            _addItemToCart.postValue(Success(it))
+        }, {
+            _addItemToCart.postValue(Fail(it))
+        })
+    }
+
     fun deleteCartItem(productId: String, cartId: String) {
         deleteCartUseCase.setParams(cartIdList = listOf(cartId))
         deleteCartUseCase.execute({
@@ -294,20 +308,6 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         },{
 
         }, GET_ADDRESS_SOURCE)
-    }
-
-    private fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            _addItemToCart.postValue(Success(it))
-        }, {
-            _addItemToCart.postValue(Fail(it))
-        })
     }
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {

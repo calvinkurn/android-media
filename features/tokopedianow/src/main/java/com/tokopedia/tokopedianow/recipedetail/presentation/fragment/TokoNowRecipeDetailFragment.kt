@@ -121,6 +121,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.onQuantityChanged(productId, shopId, quantity)
     }
 
+    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+        viewModel.addItemToCart(productId, shopId, quantity)
+    }
+
     override fun deleteCartItem(productId: String) {
         val miniCartItem = viewModel.getMiniCartItem(productId)
         val cartId = miniCartItem?.cartId.orEmpty()
