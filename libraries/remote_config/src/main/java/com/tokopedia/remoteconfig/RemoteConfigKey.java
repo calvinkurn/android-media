@@ -304,4 +304,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 
     public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
+
+    public static final String SHOW_MODAL_TOKO_WIDGET_SALDO = "android_show_modal_toko_widget_saldo";
 }

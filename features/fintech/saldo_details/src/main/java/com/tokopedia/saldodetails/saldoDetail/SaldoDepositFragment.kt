@@ -39,9 +39,7 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
-import com.tokopedia.saldodetails.commom.utils.ErrorMessage
-import com.tokopedia.saldodetails.commom.utils.SaldoCoachMarkController
-import com.tokopedia.saldodetails.commom.utils.Success
+import com.tokopedia.saldodetails.commom.utils.*
 import com.tokopedia.saldodetails.merchantDetail.credit.MerchantCreditDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlDetailsResponse
@@ -839,24 +837,30 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
-        if (response != null && response.isEligible) {
-            statusWithDrawLock = response.status
-            when (statusWithDrawLock) {
-                MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
-                MCL_STATUS_BLOCK1 -> {
-                    showTicker()
-                    showMerchantCreditLineWidget(response)
-                }
-                MCL_STATUS_BLOCK3 -> {
-                    showTicker()
+        context?.let {
+            if(SaldoDetailsRollenceUtil.shouldShowModalTokoWidget(it))
+            {
+                if (response != null && response.isEligible) {
+                    statusWithDrawLock = response.status
+                    when (statusWithDrawLock) {
+                        MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
+                        MCL_STATUS_BLOCK1 -> {
+                            showTicker()
+                            showMerchantCreditLineWidget(response)
+                        }
+                        MCL_STATUS_BLOCK3 -> {
+                            showTicker()
+                            hideMerchantCreditLineFragment()
+                        }
+                        else -> showMerchantCreditLineWidget(response)
+                    }
+                } else {
                     hideMerchantCreditLineFragment()
                 }
-                else -> showMerchantCreditLineWidget(response)
+            }else{
+                hideMerchantCreditLineFragment()
             }
-        } else {
-            hideMerchantCreditLineFragment()
         }
-
     }
 
     private fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse?) {
