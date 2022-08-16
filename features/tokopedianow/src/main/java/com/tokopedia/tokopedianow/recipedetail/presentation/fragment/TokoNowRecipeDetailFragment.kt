@@ -382,7 +382,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             } else {
                 paddingZero
             }
-            binding?.root?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
+            binding?.rvRecipeDetail?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
         }
     }
 
@@ -390,7 +390,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         val paddingZero = context?.resources?.getDimensionPixelSize(
             com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
         ).orZero()
-        binding?.root?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
+        binding?.rvRecipeDetail?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
     }
 
     private fun onSuccessGetRecipeInfo(it: RecipeInfoUiModel) {
