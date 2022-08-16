@@ -231,7 +231,8 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             proceedAddToCart(
                 emoneyPdpViewModel.generateCheckoutPassData(
                     (requireActivity() as EmoneyPdpActivity).promoCode,
-                    it.clientNumber, it.productId, it.operatorId
+                    it.clientNumber, it.productId, it.operatorId,
+                    categoryIdFromPDP = detailPassData.categoryId
                 )
             )
         })
@@ -668,7 +669,8 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         proceedAddToCart(
             emoneyPdpViewModel.generateCheckoutPassData(
                 (requireActivity() as EmoneyPdpActivity).promoCode,
-                binding.emoneyPdpInputCardWidget.getNumber()
+                binding.emoneyPdpInputCardWidget.getNumber(),
+                categoryIdFromPDP = detailPassData.categoryId
             )
         )
     }
