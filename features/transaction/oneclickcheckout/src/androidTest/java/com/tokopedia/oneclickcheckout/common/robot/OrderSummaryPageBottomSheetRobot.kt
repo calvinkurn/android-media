@@ -50,7 +50,7 @@ class OrderPriceSummaryBottomSheetRobot {
         onView(withId(R.id.tv_total_shipping_price_value)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (isBbo) {
-                assertEquals("Bebas Ongkir", (view as Typography).text)
+                assertEquals("Rp0", (view as Typography).text)
             } else {
                 assertEquals(shippingPrice, (view as Typography).text)
             }

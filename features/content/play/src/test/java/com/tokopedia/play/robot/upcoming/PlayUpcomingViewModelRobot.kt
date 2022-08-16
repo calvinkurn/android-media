@@ -6,10 +6,8 @@ import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.robot.play.PlayViewModelRobot2
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingUiState

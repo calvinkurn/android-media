@@ -93,8 +93,11 @@ class ShopHomeProductBundleMultipleViewHolder(
         // bind listeners
         itemView.addOnImpressionListener(bundle) {
             multipleProductBundleListener.impressionProductBundleMultiple(
+                    shopId = bundle.shopId,
+                    warehouseId = bundle.warehouseId,
                     selectedMultipleBundle = multipleBundleItem,
                     bundleName = bundle.bundleName,
+                    bundleType = bundle.bundleType,
                     bundlePosition = adapterPosition
             )
         }
@@ -102,11 +105,16 @@ class ShopHomeProductBundleMultipleViewHolder(
         buttonAtc?.setOnClickListener {
             // add to cart bundle
             multipleProductBundleListener.addMultipleBundleToCart(
+                    bundle.shopId,
+                    bundle.warehouseId,
                     multipleBundleItem,
                     bundleListSize,
                     bundle.bundleProducts,
                     bundle.bundleName,
-                    widgetLayout
+                    bundle.bundleType,
+                    adapterPosition,
+                    widgetLayout,
+                    bundle.bundleGroupId
             )
         }
     }

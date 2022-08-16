@@ -59,6 +59,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
@@ -275,6 +276,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarBackIconUnify()
         setBackgroundDefaultColor()
         setHeaderBackground()
         setupAppBarLayoutListener()
@@ -324,6 +326,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
+    private fun setToolbarBackIconUnify() {
+        binding?.toolbarMerchantPage?.setBackIconUnify()
+    }
+
     private fun setBackgroundDefaultColor() {
         binding?.toolbarParent?.let {
             it.setBackgroundColor(
@@ -343,7 +349,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 } else {
                     com.tokopedia.tokofood.R.drawable.header_background
                 }
-            binding?.bgMerchantHeader?.setBackgroundResource(backgroundResourceId)
+            binding?.bgMerchantHeader?.setImageResource(backgroundResourceId)
         }
     }
 
@@ -1484,7 +1490,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                     warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(
                         chooseAddressData.tokonow.warehouses
                     ),
-                    serviceType = chooseAddressData.tokonow.serviceType
+                    serviceType = chooseAddressData.tokonow.serviceType,
+                    lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
                 )
             }
         }
