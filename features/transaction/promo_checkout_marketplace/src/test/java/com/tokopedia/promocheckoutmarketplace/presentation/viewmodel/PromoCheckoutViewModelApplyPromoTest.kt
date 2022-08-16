@@ -388,9 +388,8 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(request.orders.firstOrNull()?.codes?.isEmpty() == true)
     }
 
-    // todo
     @Test
-    fun `WHEN apply promo BO from promo page THEN validate use request should contain shipping id and sp id`() {
+    fun `WHEN apply promo BO from promo page THEN validate use request should contain shipping id, sp id, and promo code from bo additional data`() {
         //given
         val request = provideApplyPromoEmptyRequest()
         val response = provideApplyPromoMerchantResponseSuccess()
@@ -409,8 +408,36 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         viewModel.applyPromo(request, ArrayList())
 
         //then
+        print(request.orders.first().codes)
+        print(selectedBo.uiData.boAdditionalData.map { it.code })
+        assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).size == 1)
+        assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
         assert(request.orders.first().shippingId > 0)
         assert(request.orders.first().spId > 0)
+    }
+
+    @Test
+    fun `WHEN unapply promo BO from promo page THEN validate use request should not contain bo promo code`() {
+        //given
+        val request = provideApplyPromoEmptyRequest()
+        val response = provideApplyPromoMerchantResponseSuccess()
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val selectedBo = promoList[1] as PromoListItemUiModel
+        selectedBo.uiState.isSelected = true
+        viewModel.setPromoListValue(promoList)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { validateUseUseCase.setParam(any()) } returns validateUseUseCase
+        coEvery { validateUseUseCase.execute(any(), any()) } answers {
+            firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
+        }
+
+        //when
+        viewModel.applyPromo(request, ArrayList())
+
+        //then
+        assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).isEmpty())
+        assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
     }
 
 }

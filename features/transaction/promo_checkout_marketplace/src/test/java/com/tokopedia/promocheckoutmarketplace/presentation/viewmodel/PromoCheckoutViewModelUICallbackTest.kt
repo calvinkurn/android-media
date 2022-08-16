@@ -109,6 +109,31 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // THEN
         assert((viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert(viewModel.fragmentUiModel.value?.uiState?.hasSelectedBoClashingPromo == true)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingMessage == promoListItemUiModel.uiData.boClashingInfos.first().message)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingImage == promoListItemUiModel.uiData.boClashingInfos.first().icon)
+    }
+
+    @Test
+    fun `WHEN click selected BO clashing promo item THEN should unshow ticker BO clashing`() {
+        // GIVEN
+        val data = GetPromoListDataProvider.providePromoListWithClashingBoPromo()
+        val promoListItemUiModel = data[1] as PromoListItemUiModel
+        promoListItemUiModel.uiState.isSelected = true
+        viewModel.setPromoListValue(data)
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // WHEN
+        viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+
+        // THEN
+        assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasSelectedBoClashingPromo == false)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingMessage == "")
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingImage == "")
     }
 
     @Test
