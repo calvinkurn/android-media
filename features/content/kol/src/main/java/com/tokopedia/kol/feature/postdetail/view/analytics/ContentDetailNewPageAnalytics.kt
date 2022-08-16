@@ -426,6 +426,21 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             trackerID = contentDetailPageAnalyticsDataModel.trackerId //33269
         )
     }
+    fun sendClickThreeDotsSgcRecomm(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - three dots product - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "34279"
+        )
+    }
 
     fun sendClickWishlistProductEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
@@ -489,7 +504,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 EventLabel.getPostLabel(
                     contentDetailPageAnalyticsDataModel
                 ) else EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33272
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
     }
 
@@ -557,7 +572,13 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     ) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - report reason - sgc image",
+            eventAction = "click - report reason - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
             eventLabel = EventLabel.getPostReportLabel(
                 contentDetailPageAnalyticsDataModel,
@@ -570,7 +591,13 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     fun sendClickGreyAreaReportBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = EventAction.CLICK_GREY_AREA_SGC_IMAGE,
+            eventAction = "click - grey area - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId //33289

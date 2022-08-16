@@ -659,7 +659,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         item: ProductPostTagViewModelNew
     ) {
         rowNumberWhenShareClicked = item.positionInFeed
-        if (item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
+        if (!item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickShareProductSgcRecommEvent(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = item.postId.toString(),
@@ -680,7 +680,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     productId = item.id,
                     trackerId = getTrackerID(
                         item,
-                        trackerIdSgc = "33272",
                         trackerIdAsgcRecom = "34094",
                         trackerIdVod = "34166",
                         trackerIdVodRecomm = "34185",
@@ -826,15 +825,12 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                                 }
                             })
                         reportBottomSheet.onClosedClicked = {
-                            analyticsTracker.sendClickCancelReportSgcImageEvent(
+                            analyticsTracker.sendClickXThreeDotsReportSheet(
                                 getContentDetailAnalyticsData(
                                     feedXCard,
                                     trackerId = getTrackerID(
                                         feedXCard,
-                                        trackerIdSgcRecom = getTrackerID(
-                                            feedXCard,
-                                            trackerIdSgc = "34299"
-                                        )
+                                        trackerIdSgcRecom = "34299"
                                     )
                                 )
                             )
@@ -1345,26 +1341,39 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         context: Context,
         shopId: String
     ) {
-        analyticsTracker.sendClickThreeDotsSgcImageEventForBottomSheet(
-           ContentDetailPageAnalyticsDataModel(
-               activityId = item.postId.toString(),
-               shopId = item.shopId,
-               isFollowed = item.isFollowed,
-               type = item.postType,
-               productId = item.id,
-               mediaType = item.mediaType,
-               trackerId = getTrackerID(
-                   item,
-                   trackerIdSgc = "33269",
-                   trackerIdAsgcRecom = "34091",
-                   trackerIdVod = "34157",
-                   trackerIdVodRecomm = "34182",
-                   trackerIdSgcRecom = "34279",
-                   trackerIdAsgc = "34103",
-                   trackerIdLongVideoRecomm = "34533"
-               ),
-               source = contentDetailSource
-           ))
+        if (item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType == TYPE_IMAGE)
+            analyticsTracker.sendClickThreeDotsSgcRecomm(
+                ContentDetailPageAnalyticsDataModel(
+                    activityId = item.postId.toString(),
+                    shopId = item.shopId,
+                    isFollowed = item.isFollowed,
+                    type = item.postType,
+                    productId = item.id,
+                    mediaType = item.mediaType,
+                    source = contentDetailSource
+                )
+            )
+        else
+            analyticsTracker.sendClickThreeDotsSgcImageEventForBottomSheet(
+                ContentDetailPageAnalyticsDataModel(
+                    activityId = item.postId.toString(),
+                    shopId = item.shopId,
+                    isFollowed = item.isFollowed,
+                    type = item.postType,
+                    productId = item.id,
+                    mediaType = item.mediaType,
+                    trackerId = getTrackerID(
+                        item,
+                        trackerIdSgc = "33269",
+                        trackerIdAsgcRecom = "34091",
+                        trackerIdVod = "34157",
+                        trackerIdVodRecomm = "34182",
+                        trackerIdAsgc = "34103",
+                        trackerIdLongVideoRecomm = "34533"
+                    ),
+                    source = contentDetailSource
+                )
+            )
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         val bundle = Bundle()
@@ -1800,6 +1809,16 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         if (adapter.getList().size > rowNumberWhenShareClicked) {
             val card = adapter.getList()[rowNumberWhenShareClicked]
             analyticsTracker.sendClickShareOptionInShareBottomSheet(getContentDetailAnalyticsData(card, shareMedia = shareModel.socialMediaName?:""))
+            //hit only for sgc
+            analyticsTracker.sendClickShareSgcImageBottomSheet(
+                getContentDetailAnalyticsData(card,
+                    trackerId = getTrackerID(
+                        card,
+                        trackerIdSgc = "33272",
+                    ),
+                    shareMedia = shareModel.socialMediaName ?: ""
+                ),
+            )
             universalShareBottomSheet?.dismiss()
         }
 
