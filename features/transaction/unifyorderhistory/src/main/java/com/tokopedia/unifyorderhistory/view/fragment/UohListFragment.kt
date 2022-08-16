@@ -592,7 +592,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         setInitialValue()
         loadOrderHistoryList("")
         if (!paramUohOrder.hasActiveFilter()) {
-            uohListViewModel.loadPmsCounter()
+            uohListViewModel.loadPmsCounter(userSession.shopId)
         }
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.sellerappwidget.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerappwidget.data.model.GetChatResponse
 import com.tokopedia.sellerappwidget.domain.mapper.ChatMapper
 import com.tokopedia.sellerappwidget.view.model.ChatUiModel
@@ -37,16 +38,20 @@ class GetChatUseCase(
         private const val VALUE_PARAM_FILTER = "unread"
         private const val VALUE_PARAM_TAB = "tab-seller"
 
-        fun creteParams(): RequestParams {
+        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shop_id"
+
+        fun creteParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
                 putInt(KEY_PARAM_PAGE, VALUE_PARAM_PAGE)
                 putString(KEY_PARAM_FILTER, VALUE_PARAM_FILTER)
                 putString(KEY_PARAM_TAB, VALUE_PARAM_TAB)
+                putLong(PARAM_SHOP_ID, shopId.toLongOrZero())
             }
         }
 
         private val QUERY = """
-            query getUserChatListMessage(${'$'}page: Int!, ${'$'}filter: String!, ${'$'}tab: String!) {
+            query getUserChatListMessage(${'$'}page: Int!, ${'$'}filter: String!, ${'$'}tab: String!, $$PARAM_INPUT: NotificationRequest) {
               chatListMessage(page: ${'$'}page, filter:${'$'}filter, tab:${'$'}tab) {
                 list {
                   msgID
@@ -60,7 +65,7 @@ class GetChatUseCase(
                   }
                 }
               }
-              notifications {
+              notifications(input: $$PARAM_INPUT) {
                 chat {
                   unreadsSeller
                 }

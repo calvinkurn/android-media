@@ -1,31 +1,34 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetShopInfoUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<ShopData>
+        private val graphqlUseCase: GraphqlUseCase<ShopData>,
+        private val userSession: UserSessionInterface
 ) : UseCase<Result<ShopData>>() {
 
     init {
         val query =
-                """query getShopInfo{
+                """query getShopInfo($$PARAM_INPUT: NotificationRequest){
                  userShopInfo{
                     info{
                         shop_name
                         shop_id
                     }
                  }
-                 notifications {
+                 notifications(input: $$PARAM_INPUT) {
                     sellerOrderStatus {
                         newOrder
                         readyToShip
@@ -39,11 +42,9 @@ class GetShopInfoUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(ShopData::class.java)
     }
 
-    var params: RequestParams = RequestParams.EMPTY
-
     override suspend fun executeOnBackground(): Result<ShopData> {
         return try{
-            graphqlUseCase.setRequestParams(params.parameters)
+            graphqlUseCase.setRequestParams(getParams())
             val data = graphqlUseCase.executeOnBackground()
             return Success(data)
         } catch (e: Exception) {
@@ -65,5 +66,21 @@ class GetShopInfoUseCase @Inject constructor(
                         .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                         .setSessionIncluded(true)
                         .build())
+    }
+
+    private fun getParams(): Map<String, Any?> {
+        return mapOf(
+            PARAM_INPUT to Param(userSession.shopId.toLongOrZero())
+        )
+    }
+
+    data class Param(
+        @SerializedName(PARAM_SHOP_ID)
+        var shopId: Long
+    )
+
+    companion object {
+        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shop_id"
     }
 }

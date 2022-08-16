@@ -1,24 +1,26 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.homenav.mainnav.data.pojo.notif.NavNotificationPojo
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetNavNotification @Inject constructor(
-        val graphqlUseCase: GraphqlRepository)
-    : UseCase<NavNotificationModel>() {
-
-    var params: RequestParams = RequestParams.EMPTY
+        val graphqlUseCase: GraphqlRepository,
+        val userSession: UserSessionInterface
+) : UseCase<NavNotificationModel>() {
 
     override suspend fun executeOnBackground(): NavNotificationModel {
-        val gqlRequest = GraphqlRequest(query, NavNotificationPojo::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(query, NavNotificationPojo::class.java, getParams())
         val gqlResponse = graphqlUseCase.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
@@ -35,11 +37,24 @@ class GetNavNotification @Inject constructor(
         }
     }
 
+    private fun getParams(): Map<String, Any?> {
+        return mapOf(
+            PARAM_INPUT to Param(userSession.shopId.toLongOrZero())
+        )
+    }
+
+    data class Param(
+        @SerializedName(PARAM_SHOP_ID)
+        var shopId: Long
+    )
+
     companion object {
+        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shop_id"
         private val query = getQuery()
         private fun getQuery(): String {
-            return """{
-                        notifications(){
+            return """query NavNotification($$PARAM_INPUT: NotificationRequest){
+                        notifications(input: $$PARAM_INPUT){
                             resolutionAs {
                                 buyer
                             }
