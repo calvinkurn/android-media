@@ -1810,7 +1810,12 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     context?.let {
 
                         var shareString =
-                            String.format(shareData.description, linkerShareData?.shareUri ?: "")
+                            if (shareData.description.contains("%s")) String.format(
+                                shareData.description,
+                                linkerShareData?.shareUri ?: ""
+                            ) else
+                                shareData.description + "\n" + linkerShareData?.shareUri
+
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,
