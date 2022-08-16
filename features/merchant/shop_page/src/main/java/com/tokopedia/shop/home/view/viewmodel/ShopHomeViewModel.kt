@@ -211,20 +211,20 @@ class ShopHomeViewModel @Inject constructor(
     private var miniCartData : MiniCartSimplifiedData? = null
 
     fun getShopPageHomeWidgetLayoutData(
-            shopId: String,
-            extParam: String,
+        shopId: String,
+        extParam: String,
     ) {
         launchCatchError(block = {
             val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
                 gqlShopPageGetHomeType.isFromCacheFirst = false
                 gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
-                        shopId,
-                        extParam
+                    shopId,
+                    extParam
                 )
                 gqlShopPageGetHomeType.executeOnBackground()
             }
             val shopHomeLayoutUiModelPlaceHolder = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(
-                    shopHomeLayoutResponse.homeLayoutData
+                shopHomeLayoutResponse.homeLayoutData
             )
             _shopHomeWidgetLayoutData.postValue(Success(shopHomeLayoutUiModelPlaceHolder))
         }) {
@@ -359,6 +359,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
+        gqlShopPageGetHomeType.clearCache()
     }
 
     fun getWishlistStatus(shopHomeCarousellProductUiModel: List<ShopHomeCarousellProductUiModel>) {
@@ -517,7 +518,6 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clearCache() {
         clearGetShopProductUseCase()
-        gqlShopPageGetHomeType.clearCache()
     }
 
     fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {

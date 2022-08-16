@@ -129,5 +129,6 @@ interface SearchEventTracking {
         const val NONE = "none"
         const val OTHER = "other"
         const val PHYSICAL_GOODS = "physical goods"
+        const val EXTERNAL_REFERENCE = "externalReference"
     }
 }

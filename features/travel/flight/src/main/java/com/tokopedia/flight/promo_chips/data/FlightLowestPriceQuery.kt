@@ -1,11 +1,15 @@
 package com.tokopedia.flight.promo_chips.data
 
+import com.tokopedia.flight.promo_chips.data.FlightLowestPriceQuery.QUERY_FLIGHT_LOWEST_PRICE
+import com.tokopedia.gql_query_annotation.GqlQuery
+
 /**
  * author by astidhiyaa on 12/03/2021
  */
 
+@GqlQuery("QueryFlightLowestPrice", QUERY_FLIGHT_LOWEST_PRICE)
 object FlightLowestPriceQuery {
-    val flightLowestPriceInput = """
+    const val QUERY_FLIGHT_LOWEST_PRICE = """
        query FlightLowestPrice(${'$'}data: FlightLowestPriceArgs!) {
 	        flightLowestPrice(input: ${'$'}data) {
 		        data {
@@ -25,5 +29,5 @@ object FlightLowestPriceQuery {
 		        }
 	            }
         }
-        """.trimIndent()
+        """
 }

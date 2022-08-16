@@ -806,14 +806,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check otp appLink then should return tokopedia internal otp in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/cotp"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/cotp"
         assertEqualsDeepLinkMapper(ApplinkConst.OTP, expectedDeepLink)
     }
 
     @Test
     fun `check otp verify appLink then should return tokopedia internal otp in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/otp-push-notif-receiver"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/otp-push-notif-receiver"
         assertEqualsDeepLinkMapper(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER, expectedDeepLink)
     }
 
@@ -2041,7 +2041,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check login by qr appLink then should return tokopedia internal login by qr in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/qr-login"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/qr-login"
         assertEqualsDeepLinkMapper(ApplinkConst.QR_LOGIN, expectedDeepLink)
     }
 
