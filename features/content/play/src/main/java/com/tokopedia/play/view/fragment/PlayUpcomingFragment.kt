@@ -157,9 +157,8 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun renderDescription(prevState: DescriptionUiState?, state: DescriptionUiState){
-        if(prevState?.isExpand != state.isExpand) {
-            description.setupExpand(state.isExpand)
-        }
+        if(prevState?.isExpand == state.isExpand) return
+        description.setupExpand(state.isExpand)
     }
 
     private fun setupObserver() {
@@ -288,6 +287,7 @@ class PlayUpcomingFragment @Inject constructor(
                 if(it.coverUrl.isNotEmpty()) {
                     binding.ivUpcomingCover.setImageUrl(it.coverUrl)
                 }
+                description.rootView.showWithCondition(it.description.isNotEmpty())
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)
             }
@@ -438,7 +438,6 @@ class PlayUpcomingFragment @Inject constructor(
         binding.ivUpcomingCover.setOnClickListener {
             if (playUpcomingViewModel.isExpanded) {
                 playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
-                description.resetText()
             } else {
                 analytic.clickCover(channelId)
             }

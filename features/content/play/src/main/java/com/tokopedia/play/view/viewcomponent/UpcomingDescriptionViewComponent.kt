@@ -55,19 +55,17 @@ class UpcomingDescriptionViewComponent(
         get() = ObjectAnimator.ofInt(
             txt,
             PARAM_MAX_LINES,
-            if (uiModel.isExpanded) MIN_LINES else MAX_LINES
+            if (!uiModel.isExpanded) MIN_LINES else MAX_LINES //state already switched so returned back
         )
             .apply {
                 duration = UnifyMotion.T2
                 expandText(
                     description = uiModel.originalText,
-                    isExpand = !uiModel.isExpanded
+                    isExpand = uiModel.isExpanded
                 )
             }
 
     fun setupText(description: String) {
-        if (description.isBlank()) return
-
         uiModel.originalText = description
         txt.text = description
 
@@ -75,7 +73,10 @@ class UpcomingDescriptionViewComponent(
     }
 
     fun setupExpand(isExpanded: Boolean) {
+        if(uiModel.isExpanded == isExpanded) return
+
         uiModel.isExpanded = isExpanded
+        resetText()
     }
 
     private val clickableSpan: ClickableSpan
@@ -87,11 +88,10 @@ class UpcomingDescriptionViewComponent(
 
             override fun onClick(widget: View) {
                 listener.onTextClicked(this@UpcomingDescriptionViewComponent)
-                resetText()
             }
         }
 
-    fun resetText() {
+    private fun resetText() {
         animExpand.start()
     }
 
