@@ -1158,8 +1158,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onShowPromoRecommendation(element: PromoRecommendationUiModel) {
         var totalPotentialBenefit = 0
         viewModel.promoListUiModel.value?.forEach {
-            // todo use containsPromo
-            if (it is PromoListItemUiModel && element.uiData.promoCodes.contains(it.uiData.promoCode)) {
+            if (it is PromoListItemUiModel && element.uiData.promoCodes.containsPromoCode(it)) {
                 totalPotentialBenefit += it.uiData.benefitAmount
             }
         }

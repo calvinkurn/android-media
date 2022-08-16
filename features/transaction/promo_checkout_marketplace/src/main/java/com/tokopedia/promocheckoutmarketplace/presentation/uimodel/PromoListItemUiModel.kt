@@ -26,6 +26,14 @@ data class PromoListItemUiModel(
                 }
         }
 
+        fun getPromoCode(listOfPromoCodes: Collection<String>) : String {
+                return if (uiState.isBebasOngkir) {
+                        uiData.boAdditionalData.map { it.code }.intersect(listOfPromoCodes).firstOrNull() ?: ""
+                } else {
+                        uiData.promoCode
+                }
+        }
+
     data class UiData(
             var promoId: String = "",
             var uniqueId: String = "",

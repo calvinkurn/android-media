@@ -5,6 +5,7 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.util.DisplayMetrics
 import android.widget.ImageView
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 
 const val IMAGE_ALPHA_DISABLED = 128
 const val IMAGE_ALPHA_ENABLED = 255
@@ -26,4 +27,28 @@ fun getDeviceHeight(activity: Activity): Int {
     val displayMetrics = DisplayMetrics()
     activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.heightPixels
+}
+
+fun Collection<String>.containsPromoCode(promoListItemUiModel: PromoListItemUiModel) : Boolean {
+    return if (promoListItemUiModel.uiState.isBebasOngkir) {
+        this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code }).isNotEmpty()
+    } else {
+        this.contains(promoListItemUiModel.uiData.promoCode)
+    }
+}
+
+fun MutableCollection<String>.addPromo(promoListItemUiModel: PromoListItemUiModel) {
+    if (promoListItemUiModel.uiState.isBebasOngkir) {
+        this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
+    } else {
+        this.add(promoListItemUiModel.uiData.promoCode)
+    }
+}
+
+fun MutableCollection<String>.removePromo(promoListItemUiModel: PromoListItemUiModel) {
+    if (promoListItemUiModel.uiState.isBebasOngkir) {
+        this.removeAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
+    } else {
+        this.remove(promoListItemUiModel.uiData.promoCode)
+    }
 }
