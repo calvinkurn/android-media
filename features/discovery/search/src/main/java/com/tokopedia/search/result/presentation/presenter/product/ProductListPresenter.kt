@@ -661,6 +661,8 @@ class ProductListPresenter @Inject constructor(
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
+        if (!productDataView.isQuerySafe) view.showAdultRestriction()
+
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
                 searchProductModel.isPostProcessing,
@@ -969,8 +971,6 @@ class ProductListPresenter @Inject constructor(
     ) {
         val searchProduct = searchProductModel.searchProduct
         val list = mutableListOf<Visitable<*>>()
-
-        if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
         addPageTitle(list)
 
