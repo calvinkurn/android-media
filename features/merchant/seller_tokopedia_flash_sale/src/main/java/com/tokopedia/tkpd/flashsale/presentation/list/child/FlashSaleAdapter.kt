@@ -2,31 +2,36 @@ package com.tokopedia.tkpd.flashsale.presentation.list.child
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemRegisteredFlashSaleBinding
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.seller_tokopedia_flash_sale.R
 
+class FlashSaleAdapter : RecyclerView.Adapter<FlashSaleAdapter.RegisteredFlashSaleViewHolder>() {
 
-class FlashSaleAdapter : RecyclerView.Adapter<FlashSaleAdapter.CampaignViewHolder>() {
-
-    private var onItemClicked: (Campaign) -> Unit = {}
+    private var onItemClicked: (FlashSale) -> Unit = {}
     private var isLoading = false
 
-    private val differCallback = object : DiffUtil.ItemCallback<Campaign>() {
+    companion object {
+
+    }
+    private val differCallback = object : DiffUtil.ItemCallback<FlashSale>() {
         override fun areItemsTheSame(
-            oldItem: Campaign,
-            newItem: Campaign
+            oldItem: FlashSale,
+            newItem: FlashSale
         ): Boolean {
             return oldItem.campaignId == newItem.campaignId
         }
 
         override fun areContentsTheSame(
-            oldItem: Campaign,
-            newItem: Campaign
+            oldItem: FlashSale,
+            newItem: FlashSale
         ): Boolean {
             return oldItem == newItem
         }
@@ -34,16 +39,16 @@ class FlashSaleAdapter : RecyclerView.Adapter<FlashSaleAdapter.CampaignViewHolde
 
     private val differ = AsyncListDiffer(this, differCallback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampaignViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegisteredFlashSaleViewHolder {
         val binding = StfsItemRegisteredFlashSaleBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return CampaignViewHolder(binding)
+        return RegisteredFlashSaleViewHolder(binding)
     }
 
-    override fun onBindViewHolder(viewHolder: CampaignViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: RegisteredFlashSaleViewHolder, position: Int) {
         val currentItem = differ.currentList[position]
         viewHolder.bind(position, currentItem, onItemClicked, isLoading)
     }
@@ -53,16 +58,16 @@ class FlashSaleAdapter : RecyclerView.Adapter<FlashSaleAdapter.CampaignViewHolde
     }
 
 
-    fun setOnItemClicked(onItemClicked: (Campaign) -> Unit) {
+    fun setOnItemClicked(onItemClicked: (FlashSale) -> Unit) {
         this.onItemClicked = onItemClicked
     }
 
 
-    fun submit(newItems: List<Campaign>) {
+    fun submit(newItems: List<FlashSale>) {
         differ.submitList(newItems)
     }
 
-    fun snapshot(): List<Campaign> {
+    fun snapshot(): List<FlashSale> {
         return differ.currentList
     }
 
@@ -80,22 +85,38 @@ class FlashSaleAdapter : RecyclerView.Adapter<FlashSaleAdapter.CampaignViewHolde
         }
     }
 
-    inner class CampaignViewHolder(private val binding: StfsItemRegisteredFlashSaleBinding) :
+    inner class RegisteredFlashSaleViewHolder(private val binding: StfsItemRegisteredFlashSaleBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.btnCreateCampaign.setOnClickListener {  }
+        }
 
         fun bind(
             position: Int,
-            campaign: Campaign,
-            onCampaignClicked: (Campaign) -> Unit,
+            flashSale: FlashSale,
+            onCampaignClicked: (FlashSale) -> Unit,
             isLoading: Boolean
         ) {
-            binding.imgFlashSale.loadImage(campaign.coverImage)
-            binding.tpgCampaignStatus.text = campaign.statusText
-            binding.tpgCampaignName.text = campaign.name
+            binding.imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
+            binding.imgFlashSale.loadImage(flashSale.coverImage)
+            binding.tpgCampaignStatus.text = flashSale.statusText
+            binding.tpgCampaignName.text = flashSale.name
+            binding.tpgPeriod.text = binding.tpgPeriod.context.getString(
+                R.string.stfs_placeholder_period,
+                flashSale.formattedDate.startDate,
+                flashSale.formattedDate.endDate
+            )
 
             //handleCampaignStatusIndicator(campaign)
         }
+
+
+        private fun Typography.setPeriod(@StringRes resourceId: Int) {
+
+
+        }
+
 
         /*private fun handleCampaignStatusIndicator(campaign: Campaign) {
             when {

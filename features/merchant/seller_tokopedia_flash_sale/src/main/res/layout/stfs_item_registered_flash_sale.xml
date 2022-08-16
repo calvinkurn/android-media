@@ -14,8 +14,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgCampaignStatusIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/ribbon_width"
+            android:layout_height="@dimen/ribbon_height"
             android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -23,13 +23,14 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgCampaignStatus"
             android:layout_width="wrap_content"
-            app:typographyWeight="bold"
-            android:textColor="@color/Unify_NN600"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@+id/imgCampaignStatusIndicator"
             app:layout_constraintStart_toEndOf="@id/imgCampaignStatusIndicator"
             app:layout_constraintTop_toTopOf="@+id/imgCampaignStatusIndicator"
             app:typographyType="display_3"
+            app:typographyWeight="bold"
             tools:text="Belum Daftar Produk" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -57,7 +58,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tpgCampaignStatus" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgEnd"
+            android:id="@+id/tpgPeriod"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
@@ -94,11 +95,10 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnCreateCampaign"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/flash_sale_list_button_width"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:layout_marginEnd="@dimen/unify_space_16"
-            android:text="@string/stfs_add_product"
+            android:text="@string/stfs_register"
             app:layout_constraintBottom_toBottomOf="@+id/timer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tpgDescription"

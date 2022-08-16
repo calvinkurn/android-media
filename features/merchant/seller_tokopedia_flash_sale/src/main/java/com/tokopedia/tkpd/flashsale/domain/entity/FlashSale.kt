@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.flashsale.domain.entity
 
 import java.util.Date
 
-data class Campaign(
+data class FlashSale(
     val campaignId: Long,
     val cancellationReason: String,
     val coverImage: String,
@@ -20,7 +20,8 @@ data class Campaign(
     val statusText: String,
     val submissionEndDateUnix: Date,
     val submissionStartDateUnix: Date,
-    val useMultiLocation: Boolean
+    val useMultiLocation: Boolean,
+    val formattedDate: FormattedDate
 ) {
     data class ProductMeta(
         val acceptedProduct: Int,
@@ -29,5 +30,14 @@ data class Campaign(
         val totalProductStock: Int,
         val totalStockSold: Int,
         val transferredProduct: Int
+    )
+
+    data class FormattedDate(
+        val startDate: String,
+        val endDate: String,
+        val submissionStartDate: String,
+        val submissionEndDate: String,
+        val reviewStartDate: String,
+        val reviewEndDate: String
     )
 }

@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -29,6 +29,11 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "campaign_count"
         private const val PAGE_SIZE = 10
+
+        private const val IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_upcoming_campaign.png"
+        private const val IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN =  "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_registered_campaign.png"
+        private const val IMAGE_URL_EMPTY_ONGOING_CAMPAIGN =  "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_ongoing_campaign.png"
+        private const val IMAGE_URL_EMPTY_FINISHED_CAMPAIGN =  "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_finished_campaign.png"
 
         @JvmStatic
         fun newInstance(
@@ -151,7 +156,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
-        renderFlashSaleList(uiState.campaigns)
+        renderFlashSaleList(uiState.flashSales)
     }
 
 
@@ -159,8 +164,8 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         binding?.loader?.isVisible = isLoading
     }
 
-    private fun renderFlashSaleList(campaigns: List<Campaign>) {
-        if (campaigns.isEmpty()) return
-        flashSaleAdapter.submit(campaigns)
+    private fun renderFlashSaleList(flashSales: List<FlashSale>) {
+        if (flashSales.isEmpty()) return
+        flashSaleAdapter.submit(flashSales)
     }
 }

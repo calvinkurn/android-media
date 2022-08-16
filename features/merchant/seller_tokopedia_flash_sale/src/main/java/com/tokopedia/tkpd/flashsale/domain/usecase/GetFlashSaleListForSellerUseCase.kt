@@ -11,14 +11,14 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleListForSellerMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import javax.inject.Inject
 
 
 class GetFlashSaleListForSellerUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetFlashSaleListForSellerMapper
-) : GraphqlUseCase<List<Campaign>>(repository) {
+) : GraphqlUseCase<List<FlashSale>>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -73,7 +73,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): List<Campaign> {
+    suspend fun execute(param: Param): List<FlashSale> {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleListForSellerResponse>()

@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.child
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,7 +25,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     data class UiState(
         val isLoading: Boolean = false,
-        val campaigns: List<Campaign> = emptyList(),
+        val flashSales: List<FlashSale> = emptyList(),
         val error: Throwable? = null
     )
 
@@ -39,7 +39,7 @@ class FlashSaleListViewModel @Inject constructor(
             block = {
                 val params = GetFlashSaleListForSellerUseCase.Param(tabName, offset)
                 val campaigns = getFlashSaleListForSellerUseCase.execute(params)
-                _uiState.update { it.copy(isLoading = false, campaigns = campaigns) }
+                _uiState.update { it.copy(isLoading = false, flashSales = campaigns) }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
