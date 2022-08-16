@@ -77,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="@dimen/dp_22"
+                    android:layout_marginTop="22dp"
                     android:layout_marginEnd="10dp"
                     app:card_type="border"
                     app:layout_constraintTop_toBottomOf="@id/text_subtitle_message">
@@ -113,22 +113,22 @@
                         <View
                             android:id="@+id/line_divider"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_1"
+                            android:layout_height="1dp"
                             android:layout_marginTop="12dp"
                             android:background="@drawable/line_divider"
                             app:layout_constraintTop_toBottomOf="@id/text_sample_buyer" />
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/text_sample_message"
-                            android:layout_width="@dimen/dp_250"
+                            android:layout_width="250dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_11"
+                            android:layout_marginTop="11dp"
                             android:layout_marginEnd="6dp"
                             android:background="@drawable/right_bubble"
                             android:backgroundTint="@color/Unify_N50"
-                            android:paddingLeft="@dimen/dp_18"
+                            android:paddingLeft="18dp"
                             android:paddingTop="8dp"
-                            android:paddingRight="@dimen/dp_18"
+                            android:paddingRight="18dp"
                             android:paddingBottom="8dp"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/line_divider"
@@ -149,8 +149,8 @@
 
                                 <View
                                     android:id="@+id/image_sample_item"
-                                    android:layout_width="@dimen/dp_36"
-                                    android:layout_height="@dimen/dp_36"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
                                     android:background="@drawable/bg_round_corner_solid_grey"
                                     android:backgroundTint="@color/Unify_N500_68"
                                     app:layout_constraintLeft_toLeftOf="parent"
@@ -230,7 +230,7 @@
                 <com.tokopedia.unifycomponents.CardUnify
                     android:id="@+id/card_products"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_290"
+                    android:layout_height="290dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="10dp"

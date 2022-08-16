@@ -4,16 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/Unify_Background"
-    android:paddingTop="@dimen/dp_80"
-    android:paddingLeft="@dimen/dp_45"
-    android:paddingRight="@dimen/dp_45"
+    android:paddingTop="80dp"
+    android:paddingLeft="45dp"
+    android:paddingRight="45dp"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_145"
+        android:layout_height="145dp"
         app:srcCompat="@drawable/ic_empty_search"
         android:contentDescription="@string/search_icon"/>
 

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/ec_image_bg_background"
-        android:layout_width="@dimen/dp_52"
-        android:layout_height="@dimen/dp_52"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         app:srcCompat="@drawable/ic_squircle_border"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/ec_image_bg"
-        android:layout_width="@dimen/dp_52"
-        android:layout_height="@dimen/dp_52"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -36,7 +36,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="@string/ec_new_label"
-        android:textSize="@dimen/sp_8"
+        android:textSize="8sp"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
@@ -46,7 +46,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/ec_typography_icon_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_36"
+        android:layout_height="36dp"
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="2"

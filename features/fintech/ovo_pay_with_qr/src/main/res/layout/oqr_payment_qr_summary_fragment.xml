@@ -18,7 +18,7 @@
             <LinearLayout
                 android:id="@+id/header_section"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_145"
+                android:layout_height="145dp"
                 android:background="@color/oqr_header_bg"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
@@ -44,7 +44,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/oqr_default_shop_name"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_16" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/merchant_name"
@@ -52,14 +52,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/oqr_default_shop_description"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_12" />
+                        android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_110"
+                android:layout_height="110dp"
                 android:layout_margin="16dp"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="6dp"
@@ -94,7 +94,7 @@
                             android:gravity="center_horizontal"
                             android:text="@string/oqr_rp_string"
                             android:textColor="@color/oqr_cash_point_color"
-                            android:textSize="@dimen/sp_24" />
+                            android:textSize="24sp" />
 
                         <EditText
                             android:id="@+id/input_amount"
@@ -103,11 +103,11 @@
                             android:background="@null"
                             android:cursorVisible="true"
                             android:inputType="number"
-                            android:minWidth="@dimen/dp_30"
+                            android:minWidth="30dp"
                             android:paddingEnd="16dp"
                             android:paddingRight="16dp"
                             android:textColor="@color/oqr_cash_point_color"
-                            android:textSize="@dimen/sp_24" />
+                            android:textSize="24sp" />
                     </LinearLayout>
 
 
@@ -140,7 +140,7 @@
                     android:layout_marginTop="24dp"
                     android:text="@string/oqr_payment_method"
                     android:textColor="@color/pin_normal"
-                    android:textSize="@dimen/sp_12" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -149,11 +149,11 @@
                     android:lineSpacingExtra="8sp"
                     android:text="@string/oqr_ovo_cash_text"
                     android:textColor="@color/oqr_amount_color_black"
-                    android:textSize="@dimen/sp_16" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
+                    android:layout_height="1dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:background="@color/grey_200" />
@@ -164,13 +164,13 @@
                     android:layout_height="wrap_content"
                     android:text="@string/oqr_cash_point"
                     android:textColor="@color/oqr_cash_point_color"
-                    android:textSize="@dimen/sp_12" />
+                    android:textSize="12sp" />
 
                 <LinearLayout
                     android:id="@+id/switch_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_28"
+                    android:layout_marginTop="28dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -179,7 +179,7 @@
                         android:layout_weight="1"
                         android:text="@string/oqr_use_ovo_points"
                         android:textColor="@color/pin_normal"
-                        android:textSize="@dimen/sp_16" />
+                        android:textSize="16sp" />
 
                     <Switch
                         android:id="@+id/switch_ovo"
@@ -247,7 +247,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="@dimen/dp_36"
+                android:layout_marginTop="36dp"
                 android:layout_marginRight="16dp"
                 android:gravity="center_horizontal"
                 app:layout_constraintTop_toBottomOf="@+id/ovo_body">
@@ -266,7 +266,7 @@
                         android:padding="10dp"
                         android:text="@string/oqr_buy_string"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_16" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <ProgressBar

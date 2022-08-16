@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:paddingBottom="8dp"
-    android:paddingLeft="@dimen/dp_15"
-    android:paddingRight="@dimen/dp_15"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:paddingTop="8dp">
 
     <RadioButton

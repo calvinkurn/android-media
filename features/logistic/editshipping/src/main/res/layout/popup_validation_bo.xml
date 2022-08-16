@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_one"
         app:layout_constraintTop_toTopOf="@id/iv_point_one" />
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_two"
         app:layout_constraintTop_toTopOf="@id/iv_point_two" />
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_three"
         app:layout_constraintTop_toTopOf="@id/iv_point_three" />
@@ -82,7 +82,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"

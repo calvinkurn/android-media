@@ -47,11 +47,11 @@
 
             <ImageView
                 android:id="@+id/iv_empty_address"
-                android:layout_width="@dimen/dp_280"
-                android:layout_height="@dimen/dp_140"
-                android:layout_marginLeft="@dimen/dp_60"
+                android:layout_width="280dp"
+                android:layout_height="140dp"
+                android:layout_marginLeft="60dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginRight="@dimen/dp_60"
+                android:layout_marginRight="60dp"
                 android:contentDescription="@string/image_desc" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_26"
+                android:layout_marginTop="26dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 app:typographyType="heading_3"

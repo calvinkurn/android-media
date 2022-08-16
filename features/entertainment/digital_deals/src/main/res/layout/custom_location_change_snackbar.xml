@@ -20,9 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/snack_ok"
-        android:layout_marginBottom="@dimen/dp_32"
+        android:layout_marginBottom="32dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="32dp"
         android:maxLines="2"
         tools:text="@string/location_changed_to" />
 

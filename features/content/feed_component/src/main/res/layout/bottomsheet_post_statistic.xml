@@ -32,7 +32,7 @@
         android:id="@+id/ll_commision_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_28"
+        android:layout_marginTop="28dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"

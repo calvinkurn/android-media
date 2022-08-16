@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl2"
         android:gravity="center"
-        android:maxWidth="@dimen/dp_250"
+        android:maxWidth="250dp"
         app:typographyType="body_1"
         tools:text="ajasjd aiahkshj akshdkhkusdi" />
 
@@ -57,7 +57,7 @@
     <!-- text will be override programmatically -->
     <Button
         android:id="@+id/button_add_promo"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl4"

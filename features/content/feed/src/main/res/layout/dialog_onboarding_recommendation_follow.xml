@@ -32,8 +32,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_avatar"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_marginTop="24dp"
         android:layout_gravity="center_horizontal"/>
 
@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="24dp"
         android:text="@string/action_follow_english"
         tools:text="Follow"/>

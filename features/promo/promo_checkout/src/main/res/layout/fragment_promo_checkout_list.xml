@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="@dimen/dp_3">
+        app:elevation="3dp">
 
         <LinearLayout
             android:id="@+id/header_product_review"
@@ -27,7 +27,7 @@
                 android:layout_margin="@dimen/spacing_lvl4"
                 app:cardBackgroundColor="@color/Unify_N0"
                 app:cardCornerRadius="@dimen/spacing_lvl2"
-                app:cardElevation="@dimen/dp_3">
+                app:cardElevation="3dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

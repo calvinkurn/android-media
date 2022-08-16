@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:textSize="@dimen/sp_18"
+            android:textSize="18sp"
             android:textStyle="bold"
             tools:text="GRATIS ONGKIR" />
 
@@ -66,14 +66,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/grey_700"
-                android:layout_marginLeft="@dimen/dp_3"
-                android:layout_marginStart="@dimen/dp_3"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
                 app:cardCornerRadius="4dp">
                 <TextView
                     android:id="@+id/promo_expiry_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_3"
+                    android:layout_margin="3dp"
                     android:textColor="@color/white"
                     tools:text="10 Jam" />
             </androidx.cardview.widget.CardView>

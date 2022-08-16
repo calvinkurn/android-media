@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_shop_name"
-        android:layout_width="@dimen/dp_112"
+        android:layout_width="112dp"
         android:layout_height="10dp"
         android:layout_marginLeft="8dp"
         app:loader_corner_radius="5dp"
@@ -30,7 +30,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_shop_location"
-        android:layout_width="@dimen/dp_160"
+        android:layout_width="160dp"
         android:layout_height="6dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -87,8 +87,8 @@
 
         <View
             android:id="@+id/divider_1"
-            android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@color/Unify_N75"
@@ -133,8 +133,8 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
-            android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@color/Unify_N75"
@@ -180,8 +180,8 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
-            android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@color/Unify_N75"
@@ -468,7 +468,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="10dp"
         app:loader_corner_radius="20dp"
         app:loader_type="rect"
@@ -511,7 +511,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="10dp"
         app:loader_corner_radius="20dp"
         app:loader_type="rect"

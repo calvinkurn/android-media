@@ -24,7 +24,7 @@
         android:padding="12dp"
         android:text="@string/see_more_comments"
         android:textColor="@color/Unify_G400"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:typographyWeight="bold" />
 

@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/radio"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginTop="2dp"
         app:srcCompat="@drawable/ic_radiobutton_normal"
         tools:ignore="ContentDescription" />

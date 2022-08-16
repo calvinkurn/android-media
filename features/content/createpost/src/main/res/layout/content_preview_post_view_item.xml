@@ -10,8 +10,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/content_preview_page_image"
-            android:layout_width="@dimen/dp_160"
-            android:layout_height="@dimen/dp_160"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:scaleType="fitXY"
             tools:srcCompat="@tools:sample/avatars"
             app:unify_image_corner_radius="0"

@@ -35,8 +35,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

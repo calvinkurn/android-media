@@ -43,7 +43,7 @@
         android:paddingStart="4dp"
         android:paddingEnd="16dp"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         app:layout_constraintLeft_toRightOf="@+id/iv_product"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Hong Tang" />

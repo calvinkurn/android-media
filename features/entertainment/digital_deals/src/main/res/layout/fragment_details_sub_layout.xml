@@ -94,7 +94,7 @@
     <View
         android:id="@+id/divider1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/tv_sales_price" />
@@ -258,7 +258,7 @@
     <View
         android:id="@+id/divider3"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N100"
         app:layout_constraintTop_toBottomOf="@+id/cl_outlets" />
@@ -309,7 +309,7 @@
         <View
             android:id="@+id/divider4"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_description" />
@@ -363,7 +363,7 @@
         <View
             android:id="@+id/divider5"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_tnc" />
@@ -414,7 +414,7 @@
     <View
         android:id="@+id/divider6"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N100"
         app:layout_constraintTop_toBottomOf="@+id/cl_redeem_instructions" />
