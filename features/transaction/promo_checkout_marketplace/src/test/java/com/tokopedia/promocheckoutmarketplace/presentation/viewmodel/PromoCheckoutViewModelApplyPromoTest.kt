@@ -17,6 +17,8 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCu
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
@@ -388,11 +390,14 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
 
     // todo
     @Test
-    fun `WHEN apply promo BO THEN promo request should contain shipping id and sp id`() {
+    fun `WHEN apply promo BO from promo page THEN validate use request should contain shipping id and sp id`() {
         //given
-        val request = provideApplyPromoMerchantRequest()
+        val request = provideApplyPromoEmptyRequest()
         val response = provideApplyPromoMerchantResponseSuccess()
-        viewModel.setPromoListValue(provideCurrentDisabledExpandedMerchantPromoData())
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val selectedBo = promoList[1] as PromoListItemUiModel
+        selectedBo.uiState.isSelected = true
+        viewModel.setPromoListValue(promoList)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
         coEvery { validateUseUseCase.setParam(any()) } returns validateUseUseCase
@@ -404,7 +409,8 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         viewModel.applyPromo(request, ArrayList())
 
         //then
-        assert(request.orders.firstOrNull()?.codes?.isEmpty() == true)
+        assert(request.orders.first().shippingId > 0)
+        assert(request.orders.first().spId > 0)
     }
 
 }

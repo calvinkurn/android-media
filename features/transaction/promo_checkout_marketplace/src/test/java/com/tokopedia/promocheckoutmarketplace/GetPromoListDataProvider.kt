@@ -300,13 +300,16 @@ object GetPromoListDataProvider {
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessWithBoPromo()
         val section = response.couponListRecommendation.data.couponSections[0]
-        val subSectionBoPlus = response.couponListRecommendation.data.couponSections[0].subSections[0]
-        val selectedPromoHeaderUiModel = uiModelmapper.mapPromoListHeaderUiModel(subSectionBoPlus, section, 0, true)
+        val subsection = response.couponListRecommendation.data.couponSections[0].subSections[2]
+        val selectedPromoHeaderUiModel = uiModelmapper.mapPromoListHeaderUiModel(subsection, section, 0, true)
         promoListUiModelList.add(selectedPromoHeaderUiModel)
-        val boPlusPromo = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
-        val boPlusPromoUiModel = uiModelmapper.mapPromoListItemUiModel(boPlusPromo, subSectionBoPlus, section, 0, emptyList())
-        boPlusPromoUiModel.uiState.isRecommended = true
-        promoListUiModelList.add(boPlusPromoUiModel)
+        val clashingPromo = response.couponListRecommendation.data.couponSections[0].subSections[2].coupons[0]
+        val clashingPromoUiModel = uiModelmapper.mapPromoListItemUiModel(clashingPromo, subsection, section, 0, emptyList())
+        promoListUiModelList.add(clashingPromoUiModel)
+        val recommendedPromo = response.couponListRecommendation.data.couponSections[0].subSections[2].coupons[1]
+        val recommendedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(recommendedPromo, subsection, section, 0, emptyList())
+        recommendedPromoUiModel.uiState.isRecommended = true
+        promoListUiModelList.add(recommendedPromoUiModel)
 
         return promoListUiModelList
     }

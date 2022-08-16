@@ -240,14 +240,14 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     @Test
     fun `WHEN apply recommended promo THEN sibling coupon need to be unselected`() {
         // GIVEN
-        val data = GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo()
-        val preSelectedBoPromo = data[2] as PromoListItemUiModel
-        preSelectedBoPromo.uiState.isSelected = true
+        val data = GetPromoListDataProvider.providePromoListWithClashingSectionRecommendedPromo()
+        val preSelectedPromo = data[1] as PromoListItemUiModel
+        preSelectedPromo.uiState.isSelected = true
         viewModel.setPromoListValue(data)
         viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
             uiData = PromoRecommendationUiModel.UiData().apply {
                 promoCodes = listOf(
-                    "PLUSAA"
+                    "PROMO1"
                 )
             },
                 uiState = PromoRecommendationUiModel.UiState())
@@ -260,7 +260,8 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         viewModel.applyRecommendedPromo()
 
         // THEN
-        assert(!(viewModel.promoListUiModel.value?.get(2) as PromoListItemUiModel).uiState.isSelected)
+        assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+        assert((viewModel.promoListUiModel.value?.get(2) as PromoListItemUiModel).uiState.isSelected)
     }
 
     @Test
