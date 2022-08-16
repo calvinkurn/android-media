@@ -209,8 +209,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     fun addRecipeBookmark() {
         launchCatchError(block = {
-            val userId = userSession.userId
-            addRecipeBookmarkUseCase.execute(recipeId, userId)
+            addRecipeBookmarkUseCase.execute(recipeId)
 
             val isBookmarked = true
             val data = BookmarkUiModel(
@@ -234,8 +233,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     fun removeRecipeBookmark() {
         launchCatchError(block = {
-            val userId = userSession.userId
-            removeRecipeBookmarkUseCase.execute(userId, recipeId)
+            removeRecipeBookmarkUseCase.execute(recipeId)
 
             val isBookmarked = false
             val data = BookmarkUiModel(
