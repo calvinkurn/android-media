@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -112,7 +113,7 @@ interface PlayBroadcastMapper {
         interactiveId: String,
     ): QuizDetailDataUiModel
 
-    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel
+    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): List<LeaderboardGameUiModel>
 
     fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,
@@ -124,7 +125,7 @@ interface PlayBroadcastMapper {
     fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean,
-    ): List<PlayLeaderboardUiModel>
+    ): List<LeaderboardGameUiModel>
 
     fun mapBroadcasterMetric(
         metric: BroadcasterMetric,

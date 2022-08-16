@@ -32,6 +32,8 @@ sealed class LeaderboardGameUiModel {
         val otherParticipant: Long,
         val emptyLeaderBoardCopyText: String = "",
     ) : LeaderboardGameUiModel()
+
+    //TODO Add detail perhaps
 }
 
 /**

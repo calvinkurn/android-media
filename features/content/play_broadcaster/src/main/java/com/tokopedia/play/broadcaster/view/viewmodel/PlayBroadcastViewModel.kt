@@ -48,8 +48,8 @@ import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
@@ -130,7 +130,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
+    val observableLeaderboardInfo: LiveData<NetworkResult<List<LeaderboardGameUiModel>>>
         get() = _observableLeaderboardInfo
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -156,7 +156,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableLeaderboardInfo =
-        MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
+        MutableLiveData<NetworkResult<List<LeaderboardGameUiModel>>>()
 
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
@@ -750,9 +750,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
             _quizDetailState.value = QuizDetailStateUiModel.Success(
-                listOf(
                     playBroadcastMapper.mapQuizDetailToLeaderBoard(quizDetailUiModel)
-                )
             )
         }) {
             _quizDetailState.value =
@@ -1120,13 +1118,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = InteractiveUiModel.Unknown
     }
 
-    private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
-        getQuizChoiceDetailData(
-            choiceId = choice.id,
-            index = choice.index,
-            interactiveId = choice.interactiveId,
-            interactiveTitle = choice.interactiveTitle
-        )
+    //TODO handle This
+    private fun handleChoiceDetail(choice: LeaderboardGameUiModel.Winner) {
+//        getQuizChoiceDetailData(
+//            choiceId = choice.id,
+//            index = choice.index,
+//            interactiveId = choice.interactiveId,
+//            interactiveTitle = choice.interactiveTitle
+//        )
     }
 
     private fun handleLoadMoreParticipant() {

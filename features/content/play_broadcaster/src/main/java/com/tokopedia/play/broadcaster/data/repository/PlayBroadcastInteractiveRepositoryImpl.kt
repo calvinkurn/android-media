@@ -18,6 +18,7 @@ import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeader
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,14 +61,12 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             return@withContext interactiveMapper.mapInteractive(response.data)
         }
 
+    //TODO setup mapper
     override suspend fun getInteractiveLeaderboard(
         channelId: String,
         isChatAllowed: () -> Boolean
-    ): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapLeaderboard(
-            getInteractiveLeaderboardUseCase.execute(channelId),
-            isChatAllowed
-        )
+    ): List<LeaderboardGameUiModel> {
+        return emptyList()
     }
 
     override suspend fun createGiveaway(
@@ -138,7 +137,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
 
     override suspend fun getSellerLeaderboardWithSlot(
         channelId: String, allowChat: Boolean
-    ): List<PlayLeaderboardUiModel> = withContext(dispatchers.io) {
+    ): List<LeaderboardGameUiModel> = withContext(dispatchers.io) {
         val response = getSellerLeaderboardUseCase.apply {
             setRequestParams(GetSellerLeaderboardUseCase.createParams(channelId))
         }.executeOnBackground()
