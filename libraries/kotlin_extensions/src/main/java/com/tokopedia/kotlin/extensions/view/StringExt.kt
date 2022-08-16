@@ -1,6 +1,9 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.text.Html
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import java.lang.NumberFormatException
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
@@ -11,7 +14,6 @@ import java.util.Locale
 
 fun String?.toIntOrZero(): Int {
     return this?.toIntOrZero {
-        // New Relic Log would be added here
     } ?: 0
 }
 
@@ -137,19 +139,24 @@ fun String.digitsOnly(): Long {
 }
 
 
-fun String.toIntOrZero(block:(number:String)->Unit):Int {
+fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
     return try {
         val longValue: Long = this.toLong()
         return if (longValue < Int.MIN_VALUE || longValue > Int.MAX_VALUE) {
-            // We will add new relic log here
-            block(this)
-            0
+            throw NumberFormatException("Integer Out Of Range value :- ${this}")
         } else {
             longValue.toInt()
         }
     }catch (e:Exception) {
-        // We will add new relic log here
-        block(this)
+        ServerLogger.log(
+            Priority.P2, "Integer_Parsing_Error",
+            mapOf(
+                "error_msg " to (e.message?:"Integer Parsing"),
+                "trace " to e.stackTrace.toString()
+            ))
+
+        // calling error block in case of exception
+        error_block(this)
         0
     }
 }

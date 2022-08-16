@@ -19,7 +19,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
-
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {
