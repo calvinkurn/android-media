@@ -91,7 +91,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateReminder(channelId: String, isActive: Boolean): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = videoPostReminderUseCase.updateReminder(channelId, isActive)
+            val result = videoPostReminderUseCase.apply {
+                setRequestParams(VideoPostReminderUseCase.createParam(channelId, isActive))
+            }.executeOnBackground()
 
             mapper.mapUpdateReminder(result)
         }
