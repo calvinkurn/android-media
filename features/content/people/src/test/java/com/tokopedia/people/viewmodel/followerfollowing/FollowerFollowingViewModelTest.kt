@@ -3,22 +3,16 @@ package com.tokopedia.people.viewmodel.followerfollowing
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.Success
 import com.tokopedia.people.domains.FollowerFollowingListingUseCase
-import com.tokopedia.people.domains.ProfileFollowUseCase
-import com.tokopedia.people.domains.ProfileUnfollowedUseCase
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
-import com.tokopedia.people.model.followerfollowing.FollowModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowerListModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowingListModelBuilder
-import com.tokopedia.people.model.followerfollowing.UnFollowModelBuilder
 import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
 import com.tokopedia.people.robot.FollowerFollowingViewModelRobot
 import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.util.getOrAwaitValue
-import com.tokopedia.people.util.getOrNullValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
-import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,7 +33,6 @@ class FollowerFollowingViewModelTest {
     private val followingListBuilder = FollowingListModelBuilder()
     private val mutationBuilder = MutationUiModelBuilder()
 
-    private val mockUserIdSource = "1"
     private val mockUserIdTarget = "2"
 
     private val mockException = commonBuilder.buildException()
@@ -50,8 +43,6 @@ class FollowerFollowingViewModelTest {
     private val mockErrorWithoutMessage = mutationBuilder.buildError("")
 
     private val mockFollowerFollowingUseCase: FollowerFollowingListingUseCase = mockk(relaxed = true)
-    private val mockDoFollowUseCase: ProfileFollowUseCase = mockk(relaxed = true)
-    private val mockDoUnFollowUseCase: ProfileUnfollowedUseCase = mockk(relaxed = true)
     private val repo: UserProfileRepository = mockk(relaxed = true)
 
     private val robot = FollowerFollowingViewModelRobot(
