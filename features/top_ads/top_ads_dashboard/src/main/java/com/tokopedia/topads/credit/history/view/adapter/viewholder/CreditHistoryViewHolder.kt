@@ -41,7 +41,7 @@ class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory
     }
 
     private fun getStatusTextAndColor(element: CreditHistory): Pair<String, Int> = when {
-        element.status === Status.PENDING -> getString(R.string.topads_credit_status_menunggu) to com.tokopedia.unifyprinciples.R.color.Unify_YN500
+        element.status == Status.PENDING -> getString(R.string.topads_credit_status_menunggu) to com.tokopedia.unifyprinciples.R.color.Unify_YN500
         element.status == Status.EXPIRED -> getString(R.string.topads_credit_status_kedaluwarsa) to com.tokopedia.unifyprinciples.R.color.Unify_RN500
         element.isReduction -> getString(R.string.topads_credit_status_digunakan) to com.tokopedia.unifyprinciples.R.color.Unify_NN500
         element.status == Status.CLAIMED || (!element.isReduction && element.status != Status.PENDING) ->
