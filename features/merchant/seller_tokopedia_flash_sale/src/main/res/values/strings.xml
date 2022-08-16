@@ -11,7 +11,6 @@
     <string name="stfs_tab_name_registered">Terdaftar</string>
     <string name="stfs_tab_name_ongoing">Berlangsung</string>
     <string name="stfs_tab_name_finished">Selesai</string>
-
     <string name="stfs_status_registration_ended">Pendaftaran Berakhir</string>
     <string name="stfs_status_registration_closed">Pendaftaran Ditutup</string>
     <string name="stfs_status_product_not_registered">Belum daftar produk</string>
@@ -20,28 +19,25 @@
     <string name="stfs_status_selection_finished">Seleksi Selesai</string>
     <string name="stfs_status_ongoing">Berlangsung</string>
     <string name="stfs_status_finished">Selesai</string>
-
     <string name="stfs_status_skipped">Terlewat</string>
     <string name="stfs_status_cancelled">Dibatalkan</string>
-
-
-
     <string name="stfs_registration_ends_in">Pendaftaran berakhir dalam</string>
     <string name="stfs_selection_starts_in">Seleksi dimulai dalam</string>
     <string name="stfs_selection_ends_in">Seleksi berakhir dalam</string>
     <string name="stfs_campaign_starts_in">Campaign dimulai dalam</string>
-
     <string name="stfs_campaign_quota">Kuota Campaign</string>
     <string name="stfs_full_quota">Kuota penuh</string>
-
-    <!--Flash Sale List Button-->
     <string name="stfs_register">Daftar</string>
     <string name="stfs_add_product">Tambah Produk</string>
     <string name="stfs_change_product">Ubah Produk</string>
     <string name="stfs_view_detail">Lihat detail</string>
+    <string name="stfs_sold_count">Stok terjual</string>
+    <string name="stfs_all_product_rejected">Semua Produk Ditolak</string>
+    <string name="stfs_ends_in">Berakhir dalam</string>
 
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_timer_days">%s hari</string>
     <string name="stfs_placeholder_period">%s - %s</string>
+    <string name="stfs_placeholder_sold_count">%s dari %s</string>
 
 </resources>
