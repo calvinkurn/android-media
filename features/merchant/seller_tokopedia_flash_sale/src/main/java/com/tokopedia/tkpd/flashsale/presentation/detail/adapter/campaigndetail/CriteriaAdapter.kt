@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCriteriaBinding
 
 class CriteriaAdapter: RecyclerView.Adapter<CriteriaAdapter.CriteriaViewHolder>() {
@@ -10,7 +11,7 @@ class CriteriaAdapter: RecyclerView.Adapter<CriteriaAdapter.CriteriaViewHolder>(
     var data: List<String> = mutableListOf()
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemRangeChanged(Int.ZERO, value.size)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {

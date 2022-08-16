@@ -37,10 +37,7 @@ class CampaignDetailBottomSheet: BottomSheetUnify() {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(CampaignDetailBottomSheetViewModel::class.java) }
-
+    lateinit var viewModel: CampaignDetailBottomSheetViewModel
     private var binding by autoClearedNullable<StfsBottomsheetCampaignDetailBinding>()
     private val campaignDetailBottomSheetModel by lazy {
         arguments?.getParcelable<CampaignDetailBottomSheetModel>(BUNDLE_KEY_CAMPAIGN_DETAIL_MODEL)

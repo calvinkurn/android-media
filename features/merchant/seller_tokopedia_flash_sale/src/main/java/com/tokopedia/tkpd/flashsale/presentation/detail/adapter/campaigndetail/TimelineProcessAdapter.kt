@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -13,8 +14,10 @@ class TimelineProcessAdapter: RecyclerView.Adapter<TimelineProcessAdapter.Timeli
 
     var data: List<TimelineStepModel> = mutableListOf()
         set(value) {
+            val diffUtil = TimelineDiffUtil(field, value)
+            val diffResult = DiffUtil.calculateDiff(diffUtil)
             field = value
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineViewHolder {
@@ -28,6 +31,28 @@ class TimelineProcessAdapter: RecyclerView.Adapter<TimelineProcessAdapter.Timeli
     override fun onBindViewHolder(holder: TimelineViewHolder, position: Int) {
         data.getOrNull(position)?.let { menu ->
             holder.bind(menu)
+        }
+    }
+
+    inner class TimelineDiffUtil(
+        private val oldItems: List<TimelineStepModel>,
+        private val newItems: List<TimelineStepModel>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldItems.size
+
+        override fun getNewListSize(): Int = newItems.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldItems[oldItemPosition]
+            val new = newItems[newItemPosition]
+            return old.title == new.title
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldItems[oldItemPosition]
+            val new = newItems[newItemPosition]
+            return old == new
         }
     }
 

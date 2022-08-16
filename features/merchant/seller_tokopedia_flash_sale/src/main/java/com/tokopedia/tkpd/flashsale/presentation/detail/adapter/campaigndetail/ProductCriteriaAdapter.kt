@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -13,8 +14,10 @@ class ProductCriteriaAdapter: RecyclerView.Adapter<ProductCriteriaAdapter.Criter
 
     var data: List<ProductCriteriaModel> = mutableListOf()
         set(value) {
+            val diffUtil = CriteriaDiffUtil(field, value)
+            val diffResult = DiffUtil.calculateDiff(diffUtil)
             field = value
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
@@ -28,6 +31,28 @@ class ProductCriteriaAdapter: RecyclerView.Adapter<ProductCriteriaAdapter.Criter
     override fun onBindViewHolder(holder: CriteriaViewHolder, position: Int) {
         data.getOrNull(position)?.let { menu ->
             holder.bind(menu)
+        }
+    }
+
+    inner class CriteriaDiffUtil(
+        private val oldItems: List<ProductCriteriaModel>,
+        private val newItems: List<ProductCriteriaModel>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldItems.size
+
+        override fun getNewListSize(): Int = newItems.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldItems[oldItemPosition]
+            val new = newItems[newItemPosition]
+            return old.categorySelectionsText == new.categorySelectionsText
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldItems[oldItemPosition]
+            val new = newItems[newItemPosition]
+            return old == new
         }
     }
 
