@@ -12,13 +12,10 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on July 06, 2022
  */
 class FollowerFollowingViewModelRobot(
-    useCaseFollowersFollowingsList: FollowerFollowingListingUseCase = mockk(relaxed = true),
     repo: UserProfileRepository = mockk(relaxed = true),
 ) : Closeable {
 
     val viewModel = FollowerFollowingViewModel(
-        useCaseFollowersList = useCaseFollowersFollowingsList,
-        useCaseFollowingList = useCaseFollowersFollowingsList,
         repo = repo,
     )
 
