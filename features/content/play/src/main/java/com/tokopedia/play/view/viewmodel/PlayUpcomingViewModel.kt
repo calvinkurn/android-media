@@ -122,6 +122,9 @@ class PlayUpcomingViewModel @Inject constructor(
     val isExpanded: Boolean
             get() = _isExpanded.value.isExpand
 
+    val remindState: PlayUpcomingState
+        get() = _upcomingState.value
+
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
         this.mChannelData = channelData
@@ -347,8 +350,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleClickPartnerName(appLink: String) {
         viewModelScope.launch {
-            val partnerInfo = _partnerInfo.value
-            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
             _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(appLink))
         }
     }

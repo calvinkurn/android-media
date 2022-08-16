@@ -14,9 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.databinding.FragmentPlayUpcomingBinding
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -41,7 +44,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -55,7 +57,8 @@ import javax.inject.Inject
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dispatchers: CoroutineDispatchers,
-): TkpdBaseV4Fragment(),
+    private val analytic: PlayNewAnalytic,
+    ): TkpdBaseV4Fragment(),
     ToolbarRoomViewComponent.Listener,
     PartnerInfoViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
@@ -117,6 +120,7 @@ class PlayUpcomingFragment @Inject constructor(
         sendImpression()
         setupInsets()
         setupObserver()
+        setupView()
     }
 
     override fun onResume() {
@@ -283,9 +287,6 @@ class PlayUpcomingFragment @Inject constructor(
             currState.info.let {
                 if(it.coverUrl.isNotEmpty()) {
                     binding.ivUpcomingCover.setImageUrl(it.coverUrl)
-                    binding.ivUpcomingCover.setOnClickListener {
-                       if (playUpcomingViewModel.isExpanded) description.resetText()
-                    }
                 }
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)
@@ -320,6 +321,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onClickActionButton() {
+        if(playUpcomingViewModel.remindState == PlayUpcomingState.Reminded) analytic.clickCancelRemindMe(channelId)
         playUpcomingViewModel.submitAction(ClickUpcomingButton)
     }
 
@@ -328,7 +330,12 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
+        analytic.clickFollowUniversal(channelId)
         playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction(applink))
+    }
+
+    override fun onFollowImpressed(view: PartnerInfoViewComponent) {
+        analytic.impressFollow(channelId)
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
@@ -364,7 +371,12 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onTextClicked(view: UpcomingDescriptionViewComponent) {
+        if(playUpcomingViewModel.isExpanded) analytic.clickSeeLessDescription(channelId) else analytic.clickSeeAllDescription(channelId)
         playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
+    }
+
+    override fun onDescriptionImpressed(view: UpcomingDescriptionViewComponent) {
+        analytic.impressDescription(channelId)
     }
 
     private fun copyToClipboard(content: String) {
@@ -400,6 +412,21 @@ class PlayUpcomingFragment @Inject constructor(
             if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
             putExtra(EXTRA_IS_REMINDER, playUpcomingViewModel.isReminderSet)
         })
+    }
+
+    fun setupView(){
+        binding.ivUpcomingCover.setOnClickListener {
+            if (playUpcomingViewModel.isExpanded) {
+                playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
+                description.resetText()
+            } else {
+                analytic.clickCover(channelId)
+            }
+        }
+
+        binding.ivUpcomingCover.addOnImpressionListener(ImpressHolder()){
+            analytic.impressCoverWithoutComponent(channelId)
+        }
     }
 
     companion object {

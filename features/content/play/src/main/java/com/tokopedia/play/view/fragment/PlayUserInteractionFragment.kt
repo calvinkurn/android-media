@@ -432,6 +432,10 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(ClickPartnerNameAction(applink))
     }
 
+    override fun onFollowImpressed(view: PartnerInfoViewComponent) {
+        //No tracker for live
+    }
+
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
         playViewModel.submitAction(PlayViewerNewAction.Follow)
     }

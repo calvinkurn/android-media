@@ -17,6 +17,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -38,10 +40,14 @@ class UpcomingDescriptionViewComponent(
         get() = rootView.context
 
     private var uiModel: DescriptionUiModel = DescriptionUiModel()
+    private val impressHelper = ImpressHolder()
 
     init {
         txt.updateLayoutParams {
             this.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+        txt.addOnImpressionListener(impressHelper){
+            listener.onDescriptionImpressed(this)
         }
     }
 
@@ -80,14 +86,12 @@ class UpcomingDescriptionViewComponent(
             }
 
             override fun onClick(widget: View) {
+                listener.onTextClicked(this@UpcomingDescriptionViewComponent)
                 resetText()
             }
         }
 
     fun resetText() {
-        if (uiModel.originalText.isBlank()) return
-
-        listener.onTextClicked(this)
         animExpand.start()
     }
 
@@ -150,6 +154,7 @@ class UpcomingDescriptionViewComponent(
 
     interface Listener {
         fun onTextClicked(view: UpcomingDescriptionViewComponent)
+        fun onDescriptionImpressed(view: UpcomingDescriptionViewComponent)
     }
 
     data class DescriptionUiModel(

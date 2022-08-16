@@ -1,8 +1,10 @@
 package com.tokopedia.play.view.viewcomponent.partnerinfo
 
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
@@ -22,9 +24,14 @@ class PartnerInfoViewComponent(
     private val tvPartnerName: Typography = findViewById(R.id.tv_partner_name)
     private val btnFollow: UnifyButton = findViewById(R.id.btn_follow)
 
+    private val impressHelper = ImpressHolder()
+
     init {
         btnFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
+        }
+        btnFollow.addOnImpressionListener(impressHelper){
+            listener.onFollowImpressed(this)
         }
     }
 
@@ -59,6 +66,7 @@ class PartnerInfoViewComponent(
     interface Listener {
         fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String)
         fun onFollowButtonClicked(view: PartnerInfoViewComponent)
+        fun onFollowImpressed(view: PartnerInfoViewComponent)
     }
 
 }
