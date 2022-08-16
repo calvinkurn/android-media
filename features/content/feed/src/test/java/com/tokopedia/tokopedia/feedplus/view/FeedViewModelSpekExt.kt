@@ -12,8 +12,6 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
-import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
-import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -32,8 +30,6 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
  */
 fun TestBody.createFeedViewModel(): FeedViewModel{
     val userSession by memoized<UserSessionInterface>()
-    val getInterestPickUseCase by memoized<GetInterestPickUseCase>()
-    val submitInterestPickUseCase by memoized<SubmitInterestPickUseCase>()
     val doFavoriteShopUseCase by memoized<ToggleFavouriteShopUseCase>()
     val followKolPostGqlUseCase by memoized<FollowKolPostGqlUseCase>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
@@ -53,8 +49,6 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     return FeedViewModel(
         CoroutineTestDispatchersProvider,
         userSession,
-        getInterestPickUseCase,
-        submitInterestPickUseCase,
         doFavoriteShopUseCase,
         followKolPostGqlUseCase,
         likeKolPostUseCase,
@@ -81,16 +75,8 @@ fun FeatureBody.createFeedTestInstance() {
         mockk<UserSessionInterface>(relaxed = true)
     }
 
-    val getInterestPickUseCase by memoized {
-        mockk<GetInterestPickUseCase>(relaxed = true)
-    }
-
     val atcUseCase by memoized {
         mockk<AddToCartUseCase>(relaxed = true)
-    }
-
-    val submitInterestPickUseCase by memoized {
-        mockk<SubmitInterestPickUseCase>(relaxed = true)
     }
 
     val getDynamicFeedFirstPageUseCase by memoized {
