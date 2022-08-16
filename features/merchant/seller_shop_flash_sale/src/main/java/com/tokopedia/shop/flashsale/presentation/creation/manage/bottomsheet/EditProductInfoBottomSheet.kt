@@ -184,10 +184,11 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             doOnDelayFinished(DELAY) {
                 if (it is Success) {
-                    dismiss()
-                    onDeleteProductSuccessListener()
+                    onDeleteDataSuccess()
+//                    dismiss()
+//                    onDeleteProductSuccessListener()
                 } else if (it is Fail) {
-                    binding?.btnSave?.showError(it.throwable)
+                    it.throwable.localizedMessage?.let { it -> displayError(it) }
                 }
             }
         }
@@ -497,6 +498,17 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
         } else {
             dismiss()
             onEditProductSuccessListener()
+        }
+    }
+
+    private fun onDeleteDataSuccess() {
+        productIndex++
+        shouldLoadNextData = productIndex.inc() < productList?.size.orZero()
+        if (shouldLoadNextData) {
+            loadNextData()
+        } else {
+            dismiss()
+            onDeleteProductSuccessListener()
         }
     }
 
