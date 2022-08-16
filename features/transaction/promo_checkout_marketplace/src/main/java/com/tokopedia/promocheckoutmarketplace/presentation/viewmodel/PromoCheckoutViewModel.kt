@@ -217,6 +217,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
             if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
                 order.codes.add(it.uiData.promoCode)
+            } else if (it.uiState.isBebasOngkir){
+                val boData = it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                boData?.let {
+                    if (!order.codes.contains(boData.code)) {
+                        // if code is not already in request param, then add bo additional data
+                        order.shippingId = boData.shippingId
+                        order.spId = boData.shipperProductId
+                        order.codes.add(boData.code)
+                    } else {
+                        // if code already in request param, set shipping id and sp id again
+                        // in case user changes address from other page and the courier info changes
+                        order.shippingId = boData.shippingId
+                        order.spId = boData.shipperProductId
+                    }
+                }
             } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
                 promoRequest.codes.add(it.uiData.promoCode)
             }
@@ -225,6 +240,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
             if (it.uiData.uniqueId == order.uniqueId && order.codes.contains(it.uiData.promoCode)) {
                 order.codes.remove(it.uiData.promoCode)
+            } else if (it.uiState.isBebasOngkir) {
+                // if coupon is bebas ongkir promo, then remove code only
+                val boData = it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    order.let {
+                        if (it.codes.contains(boData.code)) {
+                            it.codes.remove(boData.code)
+                        }
+                    }
+                }
             } else if (it.uiData.shopId == 0 && promoRequest.codes.contains(it.uiData.promoCode)) {
                 promoRequest.codes.remove(it.uiData.promoCode)
             }
