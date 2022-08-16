@@ -229,10 +229,10 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                    menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
                 }
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
                 }
             }
         } else {
