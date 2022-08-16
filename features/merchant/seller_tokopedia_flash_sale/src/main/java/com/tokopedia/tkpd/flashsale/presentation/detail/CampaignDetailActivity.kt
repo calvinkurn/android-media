@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerFragment
 
 class CampaignDetailActivity : BaseSimpleActivity() {
 
@@ -18,8 +17,8 @@ class CampaignDetailActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getLayoutRes() = R.layout.stfs_activity_landing
-    override fun getNewFragment() = LandingContainerFragment.newInstance()
+    override fun getLayoutRes() = R.layout.stfs_activity_campaign_detail
+    override fun getNewFragment() = CampaignDetailFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {

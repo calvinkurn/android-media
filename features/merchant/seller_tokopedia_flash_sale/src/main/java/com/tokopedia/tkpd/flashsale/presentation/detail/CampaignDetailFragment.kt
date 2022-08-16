@@ -9,8 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsActivityCampaignDetailBinding
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignDetailBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -28,7 +27,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
 
-    override fun getScreenName(): String = CampaignDetailFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String =
+        CampaignDetailFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerTokopediaFlashSaleComponent.builder()
@@ -47,5 +47,57 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupUpcoming()
+    }
+
+    private fun setupUpcoming() {
+        setupUpcomingHeader()
+        setupUpcomingMid()
+        setupUpcomingBody()
+    }
+
+    private fun setupUpcomingHeader() {
+        val binding = binding ?: return
+        var upcomingCdpHeaderBinding: StfsCdpUpcomingHeaderBinding? = null
+        val inflatedView = binding.layoutHeader
+        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_header
+        inflatedView.inflate()
+        inflatedView.setOnInflateListener { viewStub, view ->
+            upcomingCdpHeaderBinding = StfsCdpUpcomingHeaderBinding.bind(view)
+        }
+
+        upcomingCdpHeaderBinding.run {
+
+        }
+    }
+
+    private fun setupUpcomingMid() {
+        val binding = binding ?: return
+        var upcomingCdpMidBinding: StfsCdpUpcomingMidBinding? = null
+        val inflatedView = binding.layoutMid
+        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
+        inflatedView.inflate()
+        inflatedView.setOnInflateListener { viewStub, view ->
+            upcomingCdpMidBinding = StfsCdpUpcomingMidBinding.bind(view)
+        }
+
+        upcomingCdpMidBinding.run {
+
+        }
+    }
+
+    private fun setupUpcomingBody() {
+        val binding = binding ?: return
+        var upcomingCdpBodyBinding: StfsCdpUpcomingBodyBinding? = null
+        val inflatedView = binding.layoutBody
+        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
+        inflatedView.inflate()
+        inflatedView.setOnInflateListener { viewStub, view ->
+            upcomingCdpBodyBinding = StfsCdpUpcomingBodyBinding.bind(view)
+        }
+
+        upcomingCdpBodyBinding.run {
+
+        }
     }
 }
