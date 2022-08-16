@@ -83,7 +83,15 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.invoke
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -1176,9 +1184,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.topAdsImageView.value is Success)
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        // update: palugada unused component wholesales_info
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
@@ -1329,12 +1338,22 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VALUE_PROP })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VARIANT_OPTIONS })
+        // remove unused palugada
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.ORDER_PRIORITY })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.COD })
+
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.MEDIA })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.TICKER_INFO })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_CONTENT })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_PROTECTION })
+        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.SHIPMENT })
     }
 
     @Test
@@ -1367,9 +1386,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.count { it.type() == ProductDetailConstant.PRODUCT_LIST } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PLAY_CAROUSEL } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
+        Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PLAY_CAROUSEL })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.REPORT })
     }
 
     /**

@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewGameOptionBinding
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
+import com.tokopedia.play_common.view.game.GiveawayWidgetView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 

@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
@@ -44,7 +45,7 @@ class InvitationConfirmationNavigator(
 
     fun goToOtp(email: String, phoneNumber: String) {
         val intent =
-            RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.COTP).apply {
+            RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.COTP).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                 putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
                 putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)

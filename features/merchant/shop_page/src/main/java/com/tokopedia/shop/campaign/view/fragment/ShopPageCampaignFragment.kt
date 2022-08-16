@@ -259,9 +259,12 @@ class ShopPageCampaignFragment :
     }
 
     override fun onMultipleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
+        bundleType: String,
         bundlePosition: Int,
         widgetTitle: String,
         widgetName: String,
@@ -283,13 +286,16 @@ class ShopPageCampaignFragment :
     }
 
     override fun onSingleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
         bundlePosition: Int,
-        widgetName: String,
         widgetTitle: String,
-        productItemPosition: Int
+        widgetName: String,
+        productItemPosition: Int,
+        bundleType: String
     ) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             selectedProduct.productId,
@@ -330,12 +336,15 @@ class ShopPageCampaignFragment :
     }
 
     override fun impressionProductBundleSingle(
+        shopId: String,
+        warehouseId: String,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         selectedProduct: ShopHomeBundleProductUiModel,
         bundleName: String,
         bundlePosition: Int,
         widgetTitle: String,
-        widgetName: String
+        widgetName: String,
+        bundleType: String
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,
