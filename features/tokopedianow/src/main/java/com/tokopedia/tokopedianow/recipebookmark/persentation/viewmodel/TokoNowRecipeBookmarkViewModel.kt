@@ -61,13 +61,12 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     val isOnScrollNotNeeded: StateFlow<Boolean>
         get() = _isOnScrollNotNeeded
 
-    private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, Boolean> {
+    private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, Boolean> {
         val response = getRecipeBookmarksUseCase.execute(
-            userId = userId,
             warehouseId = warehouseId,
             page = page,
             limit = DEFAULT_PER_PAGE
-        ).data.tokonowGetRecipeBookmarks
+        ).tokonowGetRecipeBookmarks
 
         return Triple(
             response.data.recipes.mapResponseToUiModelList(),
@@ -219,7 +218,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see noNeedLoadMore - if true no need to load widgets more
      * @see loadRecipeBookmarks - layout will be updated with latest layout or show global error
      */
-    private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
+    private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
 
         if (header.success) {
@@ -247,7 +246,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see noNeedLoadMore - if true no need to load widgets more
      * @see moreRecipeBookmarks - layout will be updated with latest layout or just hide load more loading
      */
-    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
+    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
         layout.removeRecipeProgressBar()
 
