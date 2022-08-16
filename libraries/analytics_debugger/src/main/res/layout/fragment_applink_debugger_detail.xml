@@ -32,7 +32,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/applink_text_name"
                 app:typographyType="body_2"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
                 android:layout_weight="1"
@@ -63,7 +63,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mapped_deeplink"
                 app:typographyType="body_2"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
                 android:layout_weight="1"
