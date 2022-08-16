@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.domain.usecase
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
@@ -49,8 +50,8 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
                 "",
                 params.inventoryId,
                 "",
-                params.itemCount.toInt(),
-                params.dimen.toInt(), "",
+                params.itemCount.toIntOrZero(),
+                params.dimen.toIntOrZero(), "",
                 productId
             )
         )
