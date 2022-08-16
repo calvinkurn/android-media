@@ -349,7 +349,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tauVpsPackageName?.editText?.setText(vpsPackage?.packageName)
         binding?.tauVpsPackageName?.setMessage(helperMessage)
 
-        if (isUsingVpsPackage && vpsPackage?.currentQuota == EMPTY_QUOTA) {
+        if (isUsingVpsPackage && vpsPackage?.remainingQuota == EMPTY_QUOTA) {
             displayVpsQuotaEmptyError(vpsPackage.originalQuota)
         }
     }

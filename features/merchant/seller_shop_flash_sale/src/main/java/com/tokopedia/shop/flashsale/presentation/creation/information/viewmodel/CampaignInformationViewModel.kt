@@ -479,6 +479,7 @@ class CampaignInformationViewModel @Inject constructor(
         return vpsPackages
             .map { vpsPackage ->
                 VpsPackageUiModel(
+                    vpsPackage.remainingQuota,
                     vpsPackage.currentQuota,
                     vpsPackage.originalQuota,
                     vpsPackage.packageEndTime.epochToDate(),
@@ -486,7 +487,7 @@ class CampaignInformationViewModel @Inject constructor(
                     vpsPackage.packageName,
                     vpsPackage.packageStartTime.epochToDate(),
                     vpsPackage.isSelected(selectedPackageId),
-                    vpsPackage.isDisabled(),
+                    vpsPackage.isDisabled,
                     vpsPackage.isShopTierBenefit()
                 )
             }
@@ -499,18 +500,6 @@ class CampaignInformationViewModel @Inject constructor(
 
     private fun VpsPackage.isShopTierBenefit() : Boolean {
         return packageId.toLongOrZero() == SHOP_TIER_BENEFIT_PACKAGE_ID
-    }
-
-    private fun VpsPackage.isDisabled(): Boolean {
-        if (isDisabled) {
-            return true
-        }
-
-        if (currentQuota == EMPTY_QUOTA) {
-            return true
-        }
-
-        return false
     }
 
     fun findNearestExpiredVpsPackage(vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
