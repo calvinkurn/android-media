@@ -23,7 +23,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean aliquet dapibus neque in consectetur. Nulla cursus libero non sagittis aliquet. Etiam quis rutrum ex, ut ultrices odio. Aliquam dui turpis, aliquam vitae sagittis sed, consectetur vel nunc. Quisque pulvinar vulputate augue." />
+                tools:text="Lorem ipsum dolor sit amet" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icon_copy_main_applink"
