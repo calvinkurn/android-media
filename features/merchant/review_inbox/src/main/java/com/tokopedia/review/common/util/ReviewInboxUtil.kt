@@ -4,9 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.review.common.ReviewInboxConstants
-import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import java.util.*
 
 object ReviewInboxUtil {
 
@@ -28,22 +26,22 @@ object ReviewInboxUtil {
 fun getReviewStar(ratingCount: Int): Int {
     return when (ratingCount) {
         ReviewInboxConstants.RATING_1 -> {
-            R.drawable.review_ic_rating_star_one
+            com.tokopedia.reviewcommon.R.drawable.review_ic_rating_star_one
         }
         ReviewInboxConstants.RATING_2 -> {
-            R.drawable.review_ic_rating_star_two
+            com.tokopedia.reviewcommon.R.drawable.review_ic_rating_star_two
         }
         ReviewInboxConstants.RATING_3 -> {
-            R.drawable.review_ic_rating_star_three
+            com.tokopedia.reviewcommon.R.drawable.review_ic_rating_star_three
         }
         ReviewInboxConstants.RATING_4 -> {
-            R.drawable.review_ic_rating_star_four
+            com.tokopedia.reviewcommon.R.drawable.review_ic_rating_star_four
         }
         ReviewInboxConstants.RATING_5 -> {
-            R.drawable.review_ic_rating_star_five
+            com.tokopedia.reviewcommon.R.drawable.review_ic_rating_star_five
         }
         else -> {
-            R.drawable.review_ic_rating_star_zero
+            com.tokopedia.reviewcommon.R.drawable.review_ic_rating_star_zero
         }
     }
 }

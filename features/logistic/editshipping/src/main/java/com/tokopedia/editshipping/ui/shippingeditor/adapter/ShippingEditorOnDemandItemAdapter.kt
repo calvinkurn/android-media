@@ -175,7 +175,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
             featureItemAdapter.setData(data.featureInfo)
 
-
+            initUncheckedListener()
         }
 
         private fun setItemChecked(data: OnDemandModel) {
@@ -205,6 +205,14 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                     childLayout.gone()
                 }
             }
+        }
+
+        private fun initUncheckedListener(){
+            productItemAdapter.setupUncheckedListener(object : ShipperProductItemAdapter.ShipperProductUncheckedListener {
+                override fun uncheckedProduct() {
+                    shipmentItemCb.isChecked = false
+                }
+            })
         }
 
     }

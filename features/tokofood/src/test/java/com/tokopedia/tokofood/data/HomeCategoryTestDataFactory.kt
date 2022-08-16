@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.ChosenAddressDataResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -149,7 +150,7 @@ fun createKeroEditAddressResponseFail(): KeroEditAddressResponse {
     )
 }
 
-fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): TokoFoodHomeTickerUiModel {
+fun createHomeTickerDataModel(tickers: List<TickerData> = listOf()): TokoFoodHomeTickerUiModel {
     return TokoFoodHomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers)
 }
 
@@ -285,21 +286,21 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createUSPModel(): TokoFoodHomeUSPUiModel{
+fun createUSPModel(uspResponse: TokoFoodHomeUSPResponse? = null, state: Int): TokoFoodHomeUSPUiModel{
     return TokoFoodHomeUSPUiModel(
         id = "11111",
-        uspModel = createUSPResponse(),
-        TokoFoodLayoutState.SHOW,
+        uspModel = uspResponse,
+        state,
         verticalPosition = 0
     )
 }
 
-fun createIconsModel(): TokoFoodHomeIconsUiModel {
+fun createIconsModel(listDynamicIcon: List<DynamicIcon>? = null, state: Int): TokoFoodHomeIconsUiModel {
     return TokoFoodHomeIconsUiModel(
         id = "22222",
         widgetParam = "",
-        listIcons = createDynamicIconsResponse().dynamicIcon.listDynamicIcon,
-        state = TokoFoodLayoutState.SHOW,
+        listIcons = listDynamicIcon,
+        state = state,
         verticalPosition = 1
     )
 }
@@ -364,5 +365,13 @@ fun createMerchantListModel2(): TokoFoodMerchantListUiModel {
     return TokoFoodMerchantListUiModel(
         id = "abcdeg",
         createMerchantListResponse().data.merchants.get(1)
+    )
+}
+
+fun createAddress(): LocalCacheModel {
+    return LocalCacheModel(
+        address_id = "1",
+        long = "1.49348938",
+        lat = "1.493903230"
     )
 }

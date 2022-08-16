@@ -30,7 +30,7 @@ class TransactionInvoiceListViewModel @Inject constructor(private val userSessio
 
     fun getFilteredInvoiceLiveData(): LiveData<Result<List<Visitable<*>>>> = filteredInvoiceLiveData
 
-    fun getFilteredInvoice(filteredEvent: String, page: Int, messageId: Int) {
+    fun getFilteredInvoice(filteredEvent: String, page: Int, messageId: Long) {
         viewModelScope.launchCatchError(
                 block = {
                     getFilteredInvoiceListUseCase.setParams(filteredEvent, page, messageId.toString())

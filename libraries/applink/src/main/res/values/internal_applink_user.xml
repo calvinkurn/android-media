@@ -35,4 +35,12 @@
 
     <string name="applink_new_profile_info">/profile-info</string>
 
+    // OTP
+    <string name="applink_cotp">/cotp</string>
+    <string name="applink_qr_login">/qr-login</string>
+    <string name="applink_qr_login_result">/qr-login-result</string>
+
+    <string name="applink_otp_push_notif_receiver">/otp-push-notif-receiver</string>
+    <string name="applink_otp_push_notif_setting">/otp-push-notif-setting</string>
+
 </resources>
