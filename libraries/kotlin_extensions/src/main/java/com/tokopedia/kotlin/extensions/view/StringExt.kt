@@ -149,7 +149,7 @@ fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
         }
     }catch (e:Exception) {
         ServerLogger.log(
-            Priority.P2, "Integer_Parsing_Error",
+            Priority.P1, "INTEGER_PARSING_ERROR",
             mapOf(
                 "error_msg " to (e.message?:"Integer Parsing"),
                 "trace " to e.stackTrace.toString()
