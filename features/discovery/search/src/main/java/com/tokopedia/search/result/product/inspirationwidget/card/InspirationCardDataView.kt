@@ -6,15 +6,17 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationWi
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 data class InspirationCardDataView(
     override val data: InspirationWidgetDataView = InspirationWidgetDataView(),
     val optionCardData: List<InspirationCardOptionDataView> = listOf(),
+    override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
 ) : InspirationWidgetVisitable {
 
-    override val hasBottomSeparator = false
-
-    override val hasTopSeparator = false
+    override fun addTopSeparator(): VerticalSeparable = this
+    override fun addBottomSeparator(): VerticalSeparable = this
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)

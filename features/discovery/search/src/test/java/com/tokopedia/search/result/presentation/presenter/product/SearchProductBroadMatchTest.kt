@@ -11,7 +11,6 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.shouldBe
@@ -117,20 +116,10 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
-        `Then assert visitable list does not contain SeparatorViewModel`(visitableList)
     }
 
     private fun `Given keyword from view`(keyword: String) {
         every { productListView.queryKey } returns keyword
-    }
-
-    private fun `Then assert visitable list does not contain SeparatorViewModel`(visitableList: List<Visitable<*>>) {
-        val separatorIndex = visitableList.indexOfFirst { it is SeparatorDataView }
-
-        separatorIndex.shouldBe(
-                -1,
-                "Separator is found on visitable list index $separatorIndex"
-        )
     }
 
     private fun `Then assert view will show product list`() {
@@ -258,7 +247,6 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             searchProductModel,
             keyword,
         )
-        `Then assert visitable list does not contain SeparatorViewModel`(visitableList)
     }
 
     @Test
