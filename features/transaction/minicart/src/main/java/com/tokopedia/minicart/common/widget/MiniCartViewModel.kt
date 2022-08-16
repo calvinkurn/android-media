@@ -5,9 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -19,9 +22,13 @@ import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet.Companion.STATE_PRODUCT_BUNDLE_RECOM_ATC
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
@@ -31,29 +38,38 @@ import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundleGroup
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
-class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
+class MiniCartViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
                                             private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
                                             private val getMiniCartListUseCase: GetMiniCartListUseCase,
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
+                                            private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
+                                            private val addToCartBundleUseCase: AddToCartBundleUseCase,
                                             private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
                                             private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
-                                            private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper)
+                                            private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper,
+                                            private val userSession: UserSessionInterface)
     : BaseViewModel(executorDispatchers.main) {
 
     companion object {
@@ -94,6 +110,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private val _miniCartChatListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
     val miniCartChatListBottomSheetUiModel: LiveData<MiniCartListUiModel>
         get() = _miniCartChatListBottomSheetUiModel
+
+    // Product Bundle Recommendation Data for Tracking Purpose Only
+    private val _productBundleRecomTracker = MutableLiveData<ProductBundleRecomTracker>()
+    val productBundleRecomTracker: LiveData<ProductBundleRecomTracker>
+        get() = _productBundleRecomTracker
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
@@ -162,6 +183,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
+    private fun updateVisitablesBackgroundState(visitables: MutableList<Visitable<*>>) {
+        miniCartListBottomSheetUiModel.value?.visitables = visitables
+        _miniCartListBottomSheetUiModel.postValue(miniCartListBottomSheetUiModel.value)
+    }
+
     fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
         _miniCartABTestData.value = MiniCartABTestData(
                 isOCCFlow = isOCCFlow,
@@ -213,6 +239,168 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
+    private fun getProductBundleRecommendation(
+        miniCartListUiModel: MiniCartListUiModel
+    ) {
+        launchCatchError(context = executorDispatchers.io, block = {
+            showProductBundleRecomShimmering(miniCartListUiModel)
+
+            val response = getProductBundleRecomUseCase.execute(
+                productIds = miniCartListUiModel.availableProductIds,
+                excludeBundleIds = miniCartListUiModel.availableBundleIds
+            )
+
+            showProductBundleRecom(miniCartListUiModel, response.tokonowBundleWidget.data.widgetData, response)
+        }, onError = {
+            hideProductBundleRecomShimmering(miniCartListUiModel)
+        })
+    }
+
+    private fun showProductBundleRecomShimmering(miniCartListUiModel: MiniCartListUiModel) {
+        miniCartListUiModel.visitables.add(MiniCartProductBundleRecomShimmeringUiModel())
+        updateVisitablesBackgroundState(miniCartListUiModel.visitables)
+    }
+
+    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>, response: ProductBundleRecomResponse) {
+        if (widgetData.isNotEmpty()) {
+            val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
+            miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
+            miniCartListUiModel.visitables.add(productBundleRecom)
+            updateVisitablesBackgroundState(miniCartListUiModel.visitables)
+        } else {
+            hideProductBundleRecomShimmering(miniCartListUiModel)
+        }
+    }
+
+    private fun hideProductBundleRecomShimmering(miniCartListUiModel: MiniCartListUiModel) {
+        miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
+        updateVisitablesBackgroundState(miniCartListUiModel.visitables)
+    }
+
+    fun trackProductBundleRecom(
+        shopId: String,
+        warehouseId: String,
+        bundleId: String,
+        bundleName: String,
+        bundleType: String,
+        bundlePosition: Int,
+        priceCut: String,
+        state: String
+    ) {
+        _productBundleRecomTracker.value = ProductBundleRecomTracker(
+            shopId = shopId,
+            warehouseId = warehouseId,
+            bundleId = bundleId,
+            bundleName = bundleName,
+            bundleType = bundleType,
+            bundlePosition = bundlePosition,
+            priceCut = priceCut,
+            state = state
+        )
+    }
+
+    fun addBundleToCart(
+        shopId: String,
+        warehouseId: String,
+        bundleId: String,
+        bundleName: String,
+        bundleType: String,
+        bundlePosition: Int,
+        priceCut: String,
+        productDetails: List<ShopHomeBundleProductUiModel>,
+        productQuantity: Int
+    ) {
+        launchCatchError(context = executorDispatchers.io, block = {
+            val productDetailsParam = miniCartListUiModelMapper.mapToAddToCartBundleProductDetailParam(
+                productDetails = productDetails,
+                quantity = productQuantity,
+                shopId = shopId,
+                userId = userSession.userId
+            )
+
+            val atcBundleParams = AddToCartBundleRequestParams(
+                shopId = shopId,
+                bundleId = bundleId,
+                bundleQty = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
+                selectedProductPdp = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID,
+                productDetails = productDetailsParam
+            )
+
+            addToCartBundleUseCase.setParams(atcBundleParams)
+            val response = addToCartBundleUseCase.executeOnBackground()
+
+            validateBundleResponse(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                response = response,
+                bundleId = bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = priceCut
+            )
+        }) { throwable ->
+            _globalEvent.postValue(
+                GlobalEvent(
+                    state = GlobalEvent.STATE_FAILED_ADD_TO_CART_BUNDLE_RECOM_ITEM,
+                    throwable = throwable
+                )
+            )
+        }
+    }
+
+    private fun validateBundleResponse(
+        shopId: String,
+        warehouseId: String,
+        response: AddToCartBundleModel,
+        bundleId: String,
+        bundleName: String,
+        bundleType: String,
+        bundlePosition: Int,
+        priceCut: String
+    ) {
+        response.validateResponse(
+            onSuccess = {
+                _globalEvent.postValue(
+                    GlobalEvent(
+                        state = GlobalEvent.STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM
+                    )
+                )
+
+                _productBundleRecomTracker.postValue(
+                    ProductBundleRecomTracker(
+                        shopId = shopId,
+                        warehouseId = warehouseId,
+                        bundleId = bundleId,
+                        bundleName = bundleName,
+                        bundleType = bundleType,
+                        bundlePosition = bundlePosition,
+                        priceCut = priceCut,
+                        cartId = response.addToCartBundleDataModel.data.firstOrNull()?.cartId.orEmpty(),
+                        quantity = response.addToCartBundleDataModel.data.firstOrNull()?.productId.orEmpty(),
+                        state = STATE_PRODUCT_BUNDLE_RECOM_ATC
+                    )
+                )
+            },
+            onFailedWithMessages = { errorMessages ->
+                _globalEvent.postValue(
+                    GlobalEvent(
+                        state = GlobalEvent.STATE_FAILED_ADD_TO_CART_BUNDLE_RECOM_ITEM,
+                        data = errorMessages.joinToString(separator = ", ")
+                    )
+                )
+            },
+            onFailedWithException = { throwable ->
+                _globalEvent.postValue(
+                    GlobalEvent(
+                        state = GlobalEvent.STATE_FAILED_ADD_TO_CART_BUNDLE_RECOM_ITEM,
+                        throwable = throwable
+                    )
+                )
+            }
+        )
+    }
+
     private fun onSuccessGetCartList(miniCartData: MiniCartData, isFirstLoad: Boolean) {
         if (isFirstLoad && miniCartData.data.outOfService.id.isNotBlank() && miniCartData.data.outOfService.id != "0") {
             _globalEvent.value = GlobalEvent(
@@ -222,6 +410,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         } else {
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
+
+            getProductBundleRecommendation(tmpMiniCartListUiModel)
 
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
