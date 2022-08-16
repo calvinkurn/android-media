@@ -163,10 +163,10 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                    showError(false)
                    btnRefresh.isLoading = false
                    if(parentViewModel.isBroadcastStopped) {
-                       leaderboardAdapter.setItems(it.data.leaderboardWinners)
+//                       leaderboardAdapter.setItems(it.data)
                        leaderboardAdapter.notifyDataSetChanged()
                    } else {
-                       leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+//                       leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
                    }
                }
            }
