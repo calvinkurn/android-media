@@ -1413,7 +1413,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
                 }
             }
 

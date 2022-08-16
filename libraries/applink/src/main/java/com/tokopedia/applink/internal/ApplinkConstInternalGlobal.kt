@@ -89,14 +89,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/profile-completion
     const val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
-    // LandingShopCreationActivity
-    // tokopedia-android-internal://global/landing-shop-creation
-    const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
-
-    // PhoneShopCreationActivity
-    // tokopedia-android-internal://global/phone-shop-creation
-    const val PHONE_SHOP_CREATION = "$INTERNAL_GLOBAL/phone-shop-creation"
-
     // NameShopCreationActivity
     // tokopedia-android-internal://global/name-shop-creation
     const val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
@@ -271,13 +263,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     const val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
-    // RegisterInitialActivity
-    // tokopedia-android-internal://global/init-register
-    const val INIT_REGISTER = "$INTERNAL_GLOBAL/init-register"
-
-    // RegisterEmailActivity
-    // tokopedia-android-internal://global/email-register
-    const val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
     // ChatbotActivity
     // tokopedia-android-internal://global/chatbot
     const val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
@@ -315,11 +300,6 @@ object ApplinkConstInternalGlobal {
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
-    /**
-     * TermPrivacyActivity
-     * @applink : tokopedia-android-internal://global/term-privacy/{page}/
-     **/
-    const val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}/"
     /** for param term privacy */
     const val PAGE_TERM_AND_CONDITION = "term-condition"
     const val PAGE_PRIVACY_POLICY = "privacy-policy"
@@ -383,9 +363,6 @@ object ApplinkConstInternalGlobal {
     // FundsAndInvestmentActivity
     // tokopedia-android-internal://global/funds-and-investment
     const val FUNDS_AND_INVESTMENT = "$INTERNAL_GLOBAL/funds-and-investment"
-
-    //SeamlessActivity
-    const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 
     //Image Quality Setting Activity
     // tokopedia-android-internal://global/media-quality-setting

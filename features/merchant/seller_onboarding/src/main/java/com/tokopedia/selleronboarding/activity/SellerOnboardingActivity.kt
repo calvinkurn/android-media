@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -235,7 +236,7 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun goToLoginPage() {
-        RouteManager.route(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN)
+        RouteManager.route(this, ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN)
         finish()
     }
 

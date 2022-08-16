@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.managename.R
@@ -140,7 +141,7 @@ class AddNameFragment : BaseDaggerFragment() {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
                 }
             }
 
@@ -155,7 +156,7 @@ class AddNameFragment : BaseDaggerFragment() {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
                 }
             }
 

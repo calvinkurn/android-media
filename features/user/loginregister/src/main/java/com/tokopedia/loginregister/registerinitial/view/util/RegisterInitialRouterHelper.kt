@@ -49,7 +49,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     }
 
     fun goToRegisterEmailPageWithParams(fragment: Fragment, email: String, token: String, source: String){
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
+        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.EMAIL_REGISTER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)

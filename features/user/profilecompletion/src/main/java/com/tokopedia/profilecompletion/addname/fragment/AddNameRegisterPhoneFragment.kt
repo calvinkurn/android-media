@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.kotlin.util.getParamString
@@ -242,7 +243,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 		    startActivity(
 			RouteManager.getIntent(
 			    it,
-			    ApplinkConstInternalGlobal.TERM_PRIVACY,
+				ApplinkConstInternalUserPlatform.TERM_PRIVACY,
 			    page
 			)
 		    )

@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
@@ -207,7 +208,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun clickableSpan(page: String): ClickableSpan {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
-                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                startActivity(RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
             }
 
             override fun updateDrawState(ds: TextPaint) {
