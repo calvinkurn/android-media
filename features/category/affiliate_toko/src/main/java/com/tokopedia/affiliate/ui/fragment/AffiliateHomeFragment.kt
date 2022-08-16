@@ -500,7 +500,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         sendFilterClickEvent(type)
         affiliateHomeViewModel.lastSelectedChip = type
         partialReset()
-        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, type?.pageType.toIntOrZero())
+        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun sendFilterClickEvent(type: ItemTypesItem?) {

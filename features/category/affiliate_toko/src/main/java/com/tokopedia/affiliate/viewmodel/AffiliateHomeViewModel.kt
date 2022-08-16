@@ -30,6 +30,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -90,7 +91,7 @@ class AffiliateHomeViewModel @Inject constructor(
         })
     }
 
-    fun getAffiliatePerformance(page: Int, pageType: Int = 0, isFullLoad: Boolean = false) {
+    fun getAffiliatePerformance(page: Int, isFullLoad: Boolean = false) {
         launchCatchError(block = {
             if (firstTime) {
                 affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
@@ -103,9 +104,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     }
                     firstTime = false
                 }
-                if (isAffiliateShopAdpEnabled())
-                    itemTypes =
-                        affiliatePerformanceItemTypeUseCase.affiliatePerformanceItemTypeList().getItemTypeList.data.itemTypes
+
             }
             var performanceList: AffiliateUserPerformaListItemData? = null
             if (page == PAGE_ZERO) {
@@ -113,18 +112,22 @@ class AffiliateHomeViewModel @Inject constructor(
                 if (isFullLoad) {
                     dataPlatformShimmerVisibility.value = true
                     noMoreDataAvailable.value = false
+                    lastSelectedChip = null
                     performanceList =
                         affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
                 }
             }
             if (!isFullLoad) shimmerVisibility.value = true
-
+            if (isAffiliateShopAdpEnabled() && (firstTime || isFullLoad)) {
+                itemTypes =
+                    affiliatePerformanceItemTypeUseCase.affiliatePerformanceItemTypeList().getItemTypeList.data.itemTypes
+            }
 
 
             affiliatePerformanceDataUseCase.affiliateItemPerformanceList(
                 selectedDateValue,
                 lastID,
-                pageType
+                lastSelectedChip?.pageType?.toIntOrZero() ?: 0
             ).getAffiliatePerformanceList?.data?.data.let {
                 lastID = it?.lastID ?: "0"
                 if (page == PAGE_ZERO && isFullLoad) dataPlatformShimmerVisibility.value = false
