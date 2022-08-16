@@ -2,6 +2,7 @@ package com.tokopedia.play.analytic.upcoming
 
 import com.tokopedia.play.analytic.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -58,5 +59,78 @@ class PlayUpcomingAnalyticImpl @Inject constructor(
                 KEY_USER_ID to userId
             )
         )
+    }
+
+
+    override fun clickCancelRemindMe(channelId: String){
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_TOP_ADS)
+            .setEventAction("$KEY_TRACK_CLICK - batalkan pengingat")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    override fun impressDescription(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_VIEW_TOP_ADS)
+            .setEventAction("impression - description")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    override fun clickSeeAllDescription(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_TOP_ADS)
+            .setEventAction("$KEY_TRACK_CLICK - lihat semua button")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    override fun clickSeeLessDescription(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_TOP_ADS)
+            .setEventAction("$KEY_TRACK_CLICK - tampilkan sedikit button")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    override fun clickCover(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_TOP_ADS)
+            .setEventAction("tap - live room")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    override fun impressCoverWithoutComponent(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_VIEW_TOP_ADS)
+            .setEventAction("impression - cover image")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
     }
 }
