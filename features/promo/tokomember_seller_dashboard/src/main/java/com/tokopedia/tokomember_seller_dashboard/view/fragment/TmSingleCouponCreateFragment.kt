@@ -1505,14 +1505,26 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            minCalendar.time = defaultCalendar.time
             if(tmCouponStartDateUnix != null && type == 0 && firstDateStart){
                 defaultCalendar.time = tmCouponStartDateUnix?.time
             }
             if(tmCouponEndDateUnix != null && type == 1 && firstDateEnd){
                 defaultCalendar.time = tmCouponEndDateUnix?.time
             }
+            if(tmCouponStartDateUnix != null && type == 1 && !firstDateEnd && firstDateStart){
+                defaultCalendar.time = tmCouponStartDateUnix?.time
+            }
             calendarMax.time = defaultCalendar.time
+            minCalendar.time = defaultCalendar.time
+            if(tmCouponStartDateUnix != null){
+                calendarMax.time = tmCouponStartDateUnix?.time
+                minCalendar.time = tmCouponStartDateUnix?.time
+            }
+            if(type == 0){
+                calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+            }
+
             calendarMax.add(Calendar.YEAR, 1)
 
             val datepickerObject = DateTimePickerUnify(it, minCalendar, defaultCalendar, calendarMax).apply {
@@ -1542,15 +1554,39 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             0 -> {
                                 firstDateStart = true
                                 tmCouponStartDateUnix = selectedCalendar
-                                if(!firstTimeStart) {
-                                    tmCouponStartTimeUnix = selectedCalendar
+                                selectedCalendar?.get(Calendar.DAY_OF_MONTH)?.let { it1 ->
+                                    tmCouponStartTimeUnix?.set(Calendar.DAY_OF_MONTH,
+                                        it1
+                                    )
+                                }
+                                selectedCalendar?.get(Calendar.MONTH)?.let { it1 ->
+                                    tmCouponStartTimeUnix?.set(Calendar.MONTH,
+                                        it1
+                                    )
+                                }
+                                selectedCalendar?.get(Calendar.YEAR)?.let { it1 ->
+                                    tmCouponStartTimeUnix?.set(Calendar.YEAR,
+                                        it1
+                                    )
                                 }
                             }
                             1 -> {
                                 firstDateEnd = true
                                 tmCouponEndDateUnix = selectedCalendar
-                                if(!firstTimeEnd) {
-                                    tmCouponEndTimeUnix = selectedCalendar
+                                selectedCalendar?.get(Calendar.DAY_OF_MONTH)?.let { it1 ->
+                                    tmCouponEndTimeUnix?.set(Calendar.DAY_OF_MONTH,
+                                        it1
+                                    )
+                                }
+                                selectedCalendar?.get(Calendar.MONTH)?.let { it1 ->
+                                    tmCouponEndTimeUnix?.set(Calendar.MONTH,
+                                        it1
+                                    )
+                                }
+                                selectedCalendar?.get(Calendar.YEAR)?.let { it1 ->
+                                    tmCouponEndTimeUnix?.set(Calendar.YEAR,
+                                        it1
+                                    )
                                 }
                             }
                         }
