@@ -8,12 +8,12 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
-import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,6 +55,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
                 try{
+                    val headlineAds = fetchHeadlineAds(tabIndex)
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
                     var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
                     if (homeBannerTopAds.isNotEmpty()) {
@@ -70,27 +71,8 @@ class HomeRecommendationViewModel @Inject constructor(
                             )
                         )
                     }
-                    incrementTopadsPage()
-                    val headlineAds = fetchHeadlineAds(tabIndex)
-                    val newList = data.homeRecommendations.toMutableList()
-                    if(topAdsBanner.isEmpty()){
-                        _homeRecommendationLiveData.postValue(data.copy(
-                                homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
-                        ))
-                    } else {
-                        topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
-                            val visitableBanner = homeBannerTopAds[index]
-                            newList[visitableBanner.position] = HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
-                        }
-                    }
-                    if (!headlineAds?.displayAds?.data.isNullOrEmpty()){
-                        val position = headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position
-                        if (position != null) {
-                            newList[position] =
-                                HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
-                        }
-                    }
-                    _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
+                    handleTopAdsWidgets(data, topAdsBanner, homeBannerTopAds, headlineAds)
+
                 } catch (e: Exception){
                     _homeRecommendationLiveData.postValue(data.copy(
                             homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}
@@ -105,6 +87,41 @@ class HomeRecommendationViewModel @Inject constructor(
         }
     }
 
+    private fun handleTopAdsWidgets(
+        data: HomeRecommendationDataModel,
+        topAdsBanner: ArrayList<TopAdsImageViewModel>,
+        homeBannerTopAds: List<HomeRecommendationBannerTopAdsDataModel>,
+        headlineAds: TopAdsHeadlineResponse?
+    ) {
+        incrementTopadsPage()
+        val newList = data.homeRecommendations.toMutableList()
+        if (topAdsBanner.isEmpty()) {
+            _homeRecommendationLiveData.postValue(data.copy(
+                homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
+            ))
+        } else {
+            topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
+                val visitableBanner = homeBannerTopAds[index]
+                if (headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position == Int.ZERO) {
+                    newList.removeAt(visitableBanner.position)
+                    newList[visitableBanner.position + 1] =
+                        HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                } else {
+                    newList[visitableBanner.position] =
+                        HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                }
+            }
+        }
+        if (!headlineAds?.displayAds?.data.isNullOrEmpty()) {
+            val position = headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position
+            if (position != null) {
+                newList[position] =
+                    HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
+            }
+        }
+        _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
+    }
+
     private suspend fun fetchHeadlineAds(tabIndex: Int): TopAdsHeadlineResponse? {
         return if (tabIndex == Int.ZERO) {
             val params = getTopAdsHeadlineUseCase.createParams(
@@ -112,8 +129,9 @@ class HomeRecommendationViewModel @Inject constructor(
                 page = TOPADS_PAGE_DEFAULT,
                 src = SRC_HEADLINE_TOPADS,
                 templateId = VALUE_TEMPLATE_ID,
-                headlineProductCount = VALUE_HEADLINE_PRODUCT_COUNT,
-                item = VALUE_ITEM
+                headlineProductCount = "2",
+                item = VALUE_ITEM,
+                seenAds = null
             )
             getTopAdsHeadlineUseCase.setParams(params, topAdsAddressHelper.getAddressData())
             getTopAdsHeadlineUseCase.executeOnBackground()
@@ -192,7 +210,7 @@ class HomeRecommendationViewModel @Inject constructor(
 
     private fun incrementTopadsPage() {
         topAdsBannerNextPage = try {
-            val currentPage = topAdsBannerNextPage.toInt()
+            val currentPage = topAdsBannerNextPage.toIntOrZero()
             (currentPage+1).toString()
         } catch (e: Exception) {
             TOPADS_PAGE_DEFAULT

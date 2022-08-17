@@ -10,7 +10,10 @@ import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +30,18 @@ class HomeRecommendationViewModelTest{
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk< TopAdsImageViewUseCase>(relaxed = true)
     private val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
-    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
+    private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
+    private val topAdsAddressHelper = mockk<TopAdsAddressHelper>(relaxed = true)
+    private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
+
+    private val homeRecommendationViewModel = HomeRecommendationViewModel(
+        getHomeRecommendationUseCase,
+        topAdsImageViewUseCase,
+        getTopAdsHeadlineUseCase,
+        userSessionInterface,
+        topAdsAddressHelper,
+        CoroutineTestDispatchersProvider
+    )
 
     @Test
     fun `Get Success Data Home Recommendation Initial Page`(){
