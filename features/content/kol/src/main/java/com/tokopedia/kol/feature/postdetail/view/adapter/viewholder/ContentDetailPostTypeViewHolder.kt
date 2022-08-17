@@ -993,7 +993,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
         listener?.onHashtagClicked(hashtag, feed)
-
     }
 
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
