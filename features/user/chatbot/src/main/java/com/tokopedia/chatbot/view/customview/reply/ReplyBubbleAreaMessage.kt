@@ -1,6 +1,8 @@
 package com.tokopedia.chatbot.view.customview.reply
 
 import android.content.Context
+import android.os.Build
+import android.text.Html
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -14,6 +16,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.util.getTextFromHtml
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -196,7 +199,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             attachmentType = referredMsg.attachmentType,
             senderId = referredMsg.fromUid ?: "",
             replyTime = referredMsg.replyTime ?: "",
-            mainText = referredMsg.message,
+            mainText = referredMsg.message.getTextFromHtml(),
             subText = "",
             imageUrl = referredMsg.getReferredImageUrl(),
             localId = referredMsg.localId,
@@ -207,6 +210,19 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         bindParentReplyData(parentReply, referredMsg.message, userName)
         updateCloseButtonState(enableCloseButton)
         show()
+    }
+
+    private fun renderMessageText(message: String): String {
+        return getTextFromHtml(message).toString()
+    }
+
+    private fun getTextFromHtml(htmlText: String?): CharSequence {
+        val charSequence: CharSequence = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(htmlText)
+        }
+        return charSequence
     }
 
     companion object {

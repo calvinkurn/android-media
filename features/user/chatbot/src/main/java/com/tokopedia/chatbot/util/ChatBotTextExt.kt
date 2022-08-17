@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.util
 
+import android.os.Build
+import android.text.Html
 import android.text.Spannable
 import android.text.TextPaint
 import android.text.style.URLSpan
@@ -18,4 +20,13 @@ fun TextView.removeUnderLineFromLinkAndSetText(text: String) {
         }, spannable.getSpanStart(u), spannable.getSpanEnd(u), 0)
     }
     this.text = spannable
+}
+
+fun String.getTextFromHtml(): String {
+    val charSequence: CharSequence = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+    } else {
+        Html.fromHtml(this)
+    }
+    return charSequence.toString()
 }
