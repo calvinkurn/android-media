@@ -43,6 +43,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_HASHTAG
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
@@ -77,6 +78,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
+import java.net.URLEncoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
@@ -1172,6 +1174,12 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 trackerId = getTrackerID(feedXCard, trackerIdSgc = "33295")
             )
         )
+        val encodeHashtag = URLEncoder.encode(hashTag, "UTF-8")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
+        intent.putExtra(ARG_IS_FROM_CONTENT_DETAIL_PAGE, true)
+        intent.putExtra(CONTENT_DETAIL_PAGE_SOURCE, contentDetailSource)
+        intent.putExtra(ARG_HASHTAG, hashTag)
+        startActivity(intent)
     }
 
     override fun onCekSekarangButtonClicked(feedXCard: FeedXCard, postPosition: Int) {

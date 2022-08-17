@@ -14,6 +14,9 @@ class ContentDetailArgumentModel {
         const val ARG_IS_FROM_CONTENT_DETAIL_PAGE = "IS_FROM_CONTENT_DETAIL_PAGE"
         const val CONTENT_DETAIL_PAGE_SOURCE = "CONTENT_DETAIL_PAGE_SOURCE"
 
+        //hashtag activity
+        const val ARG_HASHTAG = "arg_hashtag"
+
         //video detail page param
         const val START_TIME = "start_time"
         const val SHOULD_TRACK = "should_track"
