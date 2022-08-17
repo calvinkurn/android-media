@@ -204,7 +204,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     listOf(
                         getImpressionPost(
                             contentDetailPageAnalyticsDataModel,
-                            if (contentDetailPageAnalyticsDataModel.isFollowed) Promotions.ITEM_NAME_IMAGE_SGC else contentDetailPageAnalyticsDataModel.itemName,
+                            if (contentDetailPageAnalyticsDataModel.isFollowed) Promotions.ITEM_NAME_IMAGE_SGC else Promotions.ITEM_NAME_POST_SGC,
                         )
                     )
                 )

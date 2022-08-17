@@ -119,6 +119,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
 
     private lateinit var shareData: LinkerData
+    private var isShareFromProductBottomSheet: Boolean = false
 
     private val viewModel: ContentDetailViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -585,6 +586,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
 
             shareData = shareDataBuilder.build()
+            isShareFromProductBottomSheet = false
             showUniversalShareBottomSheet(getContentShareDataModel(feedXCard))
 
         }
@@ -646,6 +648,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                         )
                     )
                 }
+            } else {
+                dissmisByGreyArea = true
             }
         }
         universalShareBottomSheet?.let {
@@ -711,6 +715,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 .setDesktopUrl(item.weblink)
 
             shareData = linkerBuilder.build()
+            isShareFromProductBottomSheet = true
             showUniversalShareBottomSheet(getContentShareDataModel(item))
         }
 
@@ -1808,17 +1813,22 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
          dissmisByGreyArea = false
         if (adapter.getList().size > rowNumberWhenShareClicked) {
             val card = adapter.getList()[rowNumberWhenShareClicked]
+            if (!isShareFromProductBottomSheet)
             analyticsTracker.sendClickShareOptionInShareBottomSheet(getContentDetailAnalyticsData(card, shareMedia = shareModel.socialMediaName?:""))
             //hit only for sgc
-            analyticsTracker.sendClickShareSgcImageBottomSheet(
-                getContentDetailAnalyticsData(card,
-                    trackerId = getTrackerID(
+            if (isShareFromProductBottomSheet) {
+                isShareFromProductBottomSheet = false
+                analyticsTracker.sendClickShareSgcImageBottomSheet(
+                    getContentDetailAnalyticsData(
                         card,
-                        trackerIdSgc = "33272",
+                        trackerId = getTrackerID(
+                            card,
+                            trackerIdSgc = "33272",
+                        ),
+                        shareMedia = shareModel.socialMediaName ?: ""
                     ),
-                    shareMedia = shareModel.socialMediaName ?: ""
-                ),
-            )
+                )
+            }
             universalShareBottomSheet?.dismiss()
         }
 
