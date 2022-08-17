@@ -682,6 +682,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     isFollowed = item.isFollowed,
                     type = item.postType,
                     productId = item.id,
+                    mediaType = item.mediaType,
                     trackerId = getTrackerID(
                         item,
                         trackerIdAsgcRecom = "34094",
@@ -1437,7 +1438,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 trackerId = getTrackerID(
                     ProductPostTagViewModelNew(
                         postType = type,
-                        mediaType = type,
+                        mediaType = mediaType,
                         isFollowed = isFollowed
                     ),
                     trackerIdSgc = "33267",
@@ -1474,6 +1475,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                         shopId = item.author.id,
                         type = item.typename,
                         productId = postTagItem.id,
+                        mediaType = mediaType,
                         trackerId = getTrackerID(
                             item,
                             trackerIdSgc = "33268",
@@ -1581,7 +1583,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 trackerId = getTrackerID(
                     ProductPostTagViewModelNew(
                         postType = type,
-                        mediaType = type,
+                        mediaType = mediaType,
                         isFollowed = isFollowed
                     ),
                     trackerIdSgc = "33270",

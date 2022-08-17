@@ -2,7 +2,9 @@ package com.tokopedia.kol.feature.postdetail.view.datamodel
 
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_VIDEO
 
 
 data class ContentDetailPageAnalyticsDataModel(
@@ -30,6 +32,8 @@ data class ContentDetailPageAnalyticsDataModel(
         get() = type == TYPE_FEED_X_CARD_PLAY
     val isTypeASGC: Boolean
         get() = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+    val isTypeSGCVideo: Boolean
+        get() = type == TYPE_FEED_X_CARD_POST && mediaType == TYPE_VIDEO
 
     companion object {
         const val POST_ITEM_NAME = "/feed - content detail page"

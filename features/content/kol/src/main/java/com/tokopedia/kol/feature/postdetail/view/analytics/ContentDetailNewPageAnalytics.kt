@@ -375,7 +375,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventLabel = EventLabel.getProductLabel(
                 contentDetailPageAnalyticsDataModel
             ),
-            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
+            eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eCommerceData = DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
                 "impressions", getProductItems(feedXProducts)
@@ -397,11 +397,11 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventLabel = EventLabel.getProductLabel(
                 contentDetailPageAnalyticsDataModel
             ),
-            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
+            eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eCommerceData = DataLayer.mapOf(
                 EventName.CLICK, mapOf(
                     "actionField" to mapOf(
-                        "list" to Promotions.ITEM_PRODUCT_SGC
+                        "list" to ITEM_PRODUCT_SGC
                     ),
                     "products" to getSingleProductList(contentDetailPageAnalyticsDataModel)
                 )
@@ -452,9 +452,9 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     contentDetailPageAnalyticsDataModel.mediaType
                 )
             }",
-            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
+            eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33270
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
 
     }
@@ -683,7 +683,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                     contentDetailPageAnalyticsDataModel.mediaType
                 )
             }",
-            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
+            eventCategory = if (contentDetailPageAnalyticsDataModel.isTypeSGCVideo) EventCategory.CONTENT_DETAIL_PAGE else EventCategory.CONTENT_DETAIL_PAGE_THREE_DOTS,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId //33293
         )
