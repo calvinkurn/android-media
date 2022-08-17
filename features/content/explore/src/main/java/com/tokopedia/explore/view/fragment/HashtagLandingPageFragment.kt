@@ -222,7 +222,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
                 post.id,
                 searchTag,
                 sourceFromContentDetail,
-                userSession?.userId?:""
+                userSession?.userId ?: ""
             )
         else
             feedAnalytics.eventHashtagPageClickThumbnail(post.id, searchTag, position)
