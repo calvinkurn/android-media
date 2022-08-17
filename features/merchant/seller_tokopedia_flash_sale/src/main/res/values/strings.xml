@@ -36,6 +36,7 @@
     <string name="stfs_ends_in">Berakhir dalam</string>
 
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
+    <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
     <string name="stfs_placeholder_timer_days">%s hari</string>
     <string name="stfs_placeholder_period">%s - %s</string>
     <string name="stfs_placeholder_sold_count">%s dari %s</string>

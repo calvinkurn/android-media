@@ -2,14 +2,20 @@ package com.tokopedia.tkpd.flashsale.presentation.list.child
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
+import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
+import com.tokopedia.tkpd.flashsale.util.extension.daysDifference
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Date
 import javax.inject.Inject
 
 class FlashSaleListViewModel @Inject constructor(
@@ -25,7 +31,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     data class UiState(
         val isLoading: Boolean = false,
-        val flashSales: List<FlashSale> = emptyList(),
+        val flashSales: List<DelegateAdapterItem> = emptyList(),
         val error: Throwable? = null
     )
 
@@ -33,18 +39,62 @@ class FlashSaleListViewModel @Inject constructor(
         data class FetchError(val throwable: Throwable) : UiEvent()
     }
 
-    fun getFlashSaleList(tabName : String, offset : Int) {
+    fun getFlashSaleList(tabName : String, tabId: Int, offset : Int) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val params = GetFlashSaleListForSellerUseCase.Param(tabName, offset)
                 val campaigns = getFlashSaleListForSellerUseCase.execute(params)
-                _uiState.update { it.copy(isLoading = false, flashSales = campaigns) }
+                _uiState.update { it.copy(isLoading = false, flashSales = populate(tabId, campaigns)) }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
 
+    }
+
+    private fun populate(tabId: Int, flashSales: List<FlashSale>) : List<DelegateAdapterItem> {
+        return flashSales.map { flashSale ->
+            when(tabId) {
+                TabConstant.TAB_ID_UPCOMING -> flashSale.toUpcomingItem()
+                TabConstant.TAB_ID_REGISTERED -> flashSale.toUpcomingItem()
+                TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem()
+                TabConstant.TAB_ID_FINISHED -> flashSale.toUpcomingItem()
+                else -> flashSale.toUpcomingItem()
+            }
+        }
+    }
+
+    private fun FlashSale.toUpcomingItem() : DelegateAdapterItem {
+        val status = if(statusId == 1) {
+            UpcomingFlashSaleItem.Status.REGISTRATION_OPEN
+        } else {
+            UpcomingFlashSaleItem.Status.REGISTRATION_CLOSED
+        }
+
+        return UpcomingFlashSaleItem(
+            campaignId,
+            name,
+            coverImage,
+            remainingQuota,
+            maxProductSubmission,
+            formattedDate.startDate,
+            formattedDate.endDate,
+            endDateUnix,
+            status,
+            findQuotaUsagePercentage(),
+            daysDifference(Date(), reviewStartDateUnix),
+            reviewStartDateUnix
+        )
+    }
+
+    private fun FlashSale.findQuotaUsagePercentage() : Int {
+        val usedQuota = maxProductSubmission - remainingQuota
+        return (usedQuota / maxProductSubmission) * 100
+    }
+
+    private fun FlashSale.toOngoingItem() : DelegateAdapterItem {
+        return OngoingFlashSaleItem(campaignId, name)
     }
 }

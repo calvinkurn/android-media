@@ -121,9 +121,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             val tab = tabs.find { tab -> tab.tabId == currentTab.tabId }
             val totalCampaign = tab?.totalCampaign.orZero()
             val tabName = tab?.tabName.orEmpty()
+            val tabId = tab?.tabId.orZero()
 
             val fragment = FlashSaleListFragment.newInstance(
                 index,
+                tabId,
                 tabName,
                 totalCampaign
             )

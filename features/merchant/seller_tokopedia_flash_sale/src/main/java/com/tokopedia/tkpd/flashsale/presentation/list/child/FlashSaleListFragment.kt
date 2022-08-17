@@ -11,6 +11,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -18,10 +21,16 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import kotlin.math.max
 
 class FlashSaleListFragment : BaseDaggerFragment() {
 
@@ -38,12 +47,14 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         @JvmStatic
         fun newInstance(
             tabPosition: Int,
+            tabId: Int,
             tabName: String,
             totalCampaign: Int
         ): FlashSaleListFragment {
             val fragment = FlashSaleListFragment()
             fragment.arguments = Bundle().apply {
                 putInt(BUNDLE_KEY_TARGET_TAB_POSITION, tabPosition)
+                putInt(BundleConstant.BUNDLE_KEY_TAB_ID, tabId)
                 putString(BUNDLE_KEY_TAB_NAME, tabName)
                 putInt(BUNDLE_KEY_CAMPAIGN_COUNT, totalCampaign)
             }
@@ -57,6 +68,10 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         arguments?.getInt(BUNDLE_KEY_TARGET_TAB_POSITION).orZero()
     }
 
+    private val tabId by lazy {
+        arguments?.getInt(BundleConstant.BUNDLE_KEY_TAB_ID).orZero()
+    }
+
     private val tabName by lazy {
         arguments?.getString(BUNDLE_KEY_TAB_NAME).orEmpty()
     }
@@ -66,7 +81,13 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     }
     
 
-    private val flashSaleAdapter = FlashSaleAdapter()
+    private val flashSaleAdapter by lazy {
+        CompositeAdapter.Builder()
+            .add(OngoingFlashSaleDelegateAdapter())
+            .add(UpcomingFlashSaleDelegateAdapter())
+            .add(LoadingDelegateAdapter())
+            .build()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -102,7 +123,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         setupView()
         observeUiEvent()
         observeUiState()
-        viewModel.getFlashSaleList(tabName, Int.ZERO)
+        viewModel.getFlashSaleList(tabName, tabId, Int.ZERO)
     }
 
 
@@ -118,8 +139,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    flashSaleAdapter.showLoading()
-                    viewModel.getFlashSaleList(tabName, page * PAGE_SIZE)
+                    viewModel.getFlashSaleList(tabName, tabId,page * PAGE_SIZE)
                 }
             }
             addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
@@ -164,8 +184,15 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         binding?.loader?.isVisible = isLoading
     }
 
-    private fun renderFlashSaleList(flashSales: List<FlashSale>) {
+    private fun renderFlashSaleList(flashSales: List<DelegateAdapterItem>) {
         if (flashSales.isEmpty()) return
-        flashSaleAdapter.submit(flashSales)
+        flashSaleAdapter.submitList(flashSales)
+        flashSaleAdapter.showLoading(LoadingItem)
+
+        doOnDelayFinished(5000) {
+            flashSaleAdapter.stopLoading()
+        }
     }
+
+
 }

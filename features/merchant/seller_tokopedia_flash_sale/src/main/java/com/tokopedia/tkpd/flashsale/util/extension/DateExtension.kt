@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.util.extension
 
 import java.util.Calendar
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 fun Date.removeTimeZone(): Date {
     val calendar = Calendar.getInstance()
@@ -9,6 +10,15 @@ fun Date.removeTimeZone(): Date {
     return calendar.time
 }
 
+fun hoursDifference(currentDate: Date, futureDate : Date): Int {
+    val differenceInMillis = futureDate.time - currentDate.time
+    return TimeUnit.MILLISECONDS.toHours(differenceInMillis).toInt()
+}
+
+fun daysDifference(currentDate: Date, futureDate : Date): Int {
+    val differenceInMillis = futureDate.time - currentDate.time
+    return TimeUnit.MILLISECONDS.toDays(differenceInMillis).toInt()
+}
 
 /**
  * This method will return time-zone offset in millis,
