@@ -135,7 +135,8 @@ object WishlistV2Utils {
                     img = wishlistV2Response.emptyState.messages[0].imageUrl,
                     desc = wishlistV2Response.emptyState.messages[0].description,
                     title = wishlistV2Response.emptyState.messages[0].title,
-                    listButton = listEmptyButton
+                    listButton = listEmptyButton,
+                    query = wishlistV2Response.query
                 )
             }
 

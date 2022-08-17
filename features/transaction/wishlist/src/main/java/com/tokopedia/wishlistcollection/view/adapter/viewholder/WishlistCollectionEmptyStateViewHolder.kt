@@ -30,7 +30,7 @@ class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2Empt
                     if (item.dataObject.listButton[0].action == ACTION_ADD_ITEM_TO_COLLECTION) {
                         setPrimaryCTAClickListener { actionListener?.goToWishlistAll() }
                     } else if (item.dataObject.listButton[0].action == ACTION_SEARCH_ITEM) {
-                        setPrimaryCTAClickListener { actionListener?.onCariBarangClicked() }
+                        setPrimaryCTAClickListener { actionListener?.onNotFoundButtonClicked(item.dataObject.query) }
                     } else if (item.dataObject.listButton[0].action == ACTION_RESET_FILTER) {
                         setPrimaryCTAClickListener { actionListener?.onResetFilter() }
                     } else if (item.dataObject.listButton[0].action == ACTION_SHOW_SEARCH_BAR) {
