@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -195,8 +194,7 @@ class ChatbotPresenter @Inject constructor(
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
-    @VisibleForTesting
-    var videoUploadJob : Job = Job()
+    var mapForVideoUploadJobs = HashMap<String, Job>()
 
     init {
         mSubscription = CompositeSubscription()
@@ -782,6 +780,7 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
+        mapForVideoUploadJobs.clear()
         super.detachView()
     }
 
@@ -846,28 +845,33 @@ class ChatbotPresenter @Inject constructor(
     ) {
         val originalFile = File(videoUploadUiModel.videoUrl)
 
-        videoUploadJob =  launchCatchError(
-            block = {
-                val param = uploaderUseCase.createParams(
-                    filePath = originalFile,
-                    sourceId = sourceId
-                )
-                if (videoUploadJob.isActive) {
-                    val result = uploaderUseCase.invoke(param)
-                    when (result) {
-                        is UploadResult.Success -> {
-                            sendVideoAttachment(result.videoUrl, startTime, messageId)
+        val videoUrl = videoUploadUiModel.videoUrl
+        if (videoUrl!=null && !mapForVideoUploadJobs.contains(videoUrl)) {
+            mapForVideoUploadJobs[videoUrl] =
+                launchCatchError(
+                    block = {
+                        val param = uploaderUseCase.createParams(
+                            filePath = originalFile,
+                            sourceId = sourceId
+                        )
+
+                        if (mapForVideoUploadJobs[videoUrl]?.isActive == true) {
+                            val result = uploaderUseCase.invoke(param)
+                            when (result) {
+                                is UploadResult.Success -> {
+                                    sendVideoAttachment(result.videoUrl, startTime, messageId)
+                                }
+                                is UploadResult.Error -> {
+                                    onErrorVideoUpload(result.message, videoUploadUiModel)
+                                }
+                            }
                         }
-                        is UploadResult.Error -> {
-                            onErrorVideoUpload(result.message, videoUploadUiModel)
-                        }
+                    },
+                    onError = {
+                        onErrorVideoUpload(it.message ?: "", videoUploadUiModel)
                     }
-                }
-            },
-            onError = {
-                onErrorVideoUpload(it.message ?: "", videoUploadUiModel)
-            }
-        )
+                )
+        }
     }
 
     override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
@@ -885,7 +889,7 @@ class ChatbotPresenter @Inject constructor(
                     filePath = file,
                     sourceId = sourceId
             )
-                videoUploadJob.cancel()
+                mapForVideoUploadJobs[file]?.cancel()
             },
             onError = {
                 onErrorVideoUpload(it)
