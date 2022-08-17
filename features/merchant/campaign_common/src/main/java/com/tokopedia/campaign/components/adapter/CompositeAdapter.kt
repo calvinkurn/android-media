@@ -2,21 +2,14 @@ package com.tokopedia.campaign.components.adapter
 
 import android.util.SparseArray
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 class CompositeAdapter(
     private val delegates: SparseArray<DelegateAdapter<DelegateAdapterItem, RecyclerView.ViewHolder>>
-) : ListAdapter<DelegateAdapterItem, RecyclerView.ViewHolder>(DelegateAdapterItemDiffCallback()) {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun getItemViewType(position: Int): Int {
-        for (i in 0 until delegates.size()) {
-            if (delegates[i].modelClass == getItem(position).javaClass) {
-                return delegates.keyAt(i)
-            }
-        }
-        throw NullPointerException("Can not get viewType for position $position")
-    }
+    private val items = mutableListOf<DelegateAdapterItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             delegates[viewType].createViewHolder(parent)
@@ -24,31 +17,58 @@ class CompositeAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val delegateAdapter = delegates[getItemViewType(position)]
 
-
         if (delegateAdapter != null) {
-            delegateAdapter.bindViewHolder(getItem(position), holder)
+            delegateAdapter.bindViewHolder(items[position], holder)
         } else {
             throw NullPointerException("can not find adapter for position $position")
         }
     }
 
-
-    fun addItem(item: DelegateAdapterItem) {
-        addItems(listOf(item))
+    override fun getItemViewType(position: Int): Int {
+        for (i in 0 until delegates.size()) {
+            if (delegates[i].modelClass == items[position].javaClass) {
+                return delegates.keyAt(i)
+            }
+        }
+        throw NullPointerException("Can not get viewType for position $position")
     }
 
-    fun addItems(items: List<DelegateAdapterItem>) {
-        val newItems = currentList.toMutableList()
+    override fun getItemCount() = items.size
+
+    fun addItem(item: DelegateAdapterItem) {
+        val newItems = getItems() + listOf(item)
+        addItems(newItems)
+    }
+
+    fun addItems(items : List<DelegateAdapterItem>) {
+        val newItems = getItems().toMutableList()
         newItems.addAll(items)
-        submitList(newItems)
+        submit(newItems)
     }
 
     fun removeItem(item: DelegateAdapterItem) {
-        if (currentList.isNotEmpty()) {
-            val newItems = currentList.toMutableList()
-            newItems.remove(item)
-            submitList(newItems)
+        removeItems(listOf(item))
+    }
+
+    fun removeItems(items : List<DelegateAdapterItem>) {
+        if (items.isNotEmpty()) {
+            val newItems = this.items.toMutableList()
+            newItems.removeAll(items)
+            submit(newItems)
         }
+    }
+
+    fun submit(newItems: List<DelegateAdapterItem>) {
+        val diffCallback = DiffCallback(this.items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.items.clear()
+        this.items.addAll(newItems)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun getItems(): List<DelegateAdapterItem> {
+        return this.items
     }
 
     class Builder {
@@ -65,5 +85,24 @@ class CompositeAdapter(
             require(count != 0) { "Register at least one adapter" }
             return CompositeAdapter(delegates)
         }
+    }
+
+
+    inner class DiffCallback(
+        private val oldProductList: List<DelegateAdapterItem>,
+        private val newProductList: List<DelegateAdapterItem>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize() = oldProductList.size
+        override fun getNewListSize() = newProductList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldProductList[oldItemPosition].id() == newProductList[newItemPosition].id()
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return  oldProductList[oldItemPosition] == newProductList[newItemPosition]
+        }
+
     }
 }

@@ -186,7 +186,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         flashSaleAdapter.removeItem(LoadingItem)
 
         if (flashSales.isNotEmpty()) {
-            flashSaleAdapter.submitList(flashSales)
+            flashSaleAdapter.addItems(flashSales)
         }
     }
 

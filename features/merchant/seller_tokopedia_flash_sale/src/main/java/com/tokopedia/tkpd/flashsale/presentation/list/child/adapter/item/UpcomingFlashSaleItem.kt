@@ -18,7 +18,6 @@ data class UpcomingFlashSaleItem(
     val reviewStartDate: Date
 ) : DelegateAdapterItem {
     override fun id() = id
-    override fun content() = this
 
     enum class Status {
         REGISTRATION_OPEN,
