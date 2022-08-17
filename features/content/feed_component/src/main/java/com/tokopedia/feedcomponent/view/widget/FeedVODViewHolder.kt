@@ -327,6 +327,10 @@ class FeedVODViewHolder @JvmOverloads constructor(
                             (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND,
                             false
                         )
+                        mListener?.onVODStopTrack(
+                            this@FeedVODViewHolder,
+                            videoPlayer?.getExoPlayer()?.currentPosition.orZero() / TIME_SECOND
+                        )
                     }
 
                 }
@@ -517,6 +521,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
             time: Long,
             hitTrackerApi: Boolean
         )
+        fun onVODStopTrack(viewHolder: FeedVODViewHolder, lastPosition: Long)
 
     }
     

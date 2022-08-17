@@ -202,6 +202,9 @@ class CarouselVideoViewHolder(
         if (videoPlayer == null) {
             videoPlayer = FeedExoPlayer(itemView.context)
             layoutVideo.player = videoPlayer?.getExoPlayer()
+            layoutVideo.videoSurfaceView?.setOnClickListener {
+                listener.onVideoSurfaceTapped(this, media, isMuted)
+            }
             videoPlayer?.setVideoStateListener(createVideoStateListener(media))
         }
         media.canPlay = true

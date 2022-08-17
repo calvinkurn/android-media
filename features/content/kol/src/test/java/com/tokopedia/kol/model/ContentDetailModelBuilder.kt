@@ -38,5 +38,13 @@ class ContentDetailModelBuilder {
 
     fun getDeleteContentModel(rowNumber: Int = 0) = DeleteContentModel(rowNumber)
 
+    fun getWishlistModel(
+        rowNumber: Int = 0,
+        productId: String = ""
+    ) = WishlistContentModel(
+        rowNumber = rowNumber,
+        productId = productId
+    )
+
     fun getReportContentModel(rowNumber: Int = 0) = ReportContentModel(rowNumber)
 }

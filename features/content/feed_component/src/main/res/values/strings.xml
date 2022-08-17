@@ -175,6 +175,8 @@
 
     <!--SHARE-->
     <string name="feed_share_default_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+    <string name="cdp_share_default_text">"Beli %s %s di toko %s %s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
+    <string name="feed_detail_share_default_text">"Beli %s di toko %s %s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
     <string name="feed_share_detail_format_text">Ini bagus deh, kayaknya cocok buat kamu %s </string>
 
     <!--POST-->

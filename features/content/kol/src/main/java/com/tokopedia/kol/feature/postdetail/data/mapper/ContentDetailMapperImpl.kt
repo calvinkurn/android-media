@@ -31,4 +31,7 @@ class ContentDetailMapperImpl : ContentDetailMapper {
     override fun mapReportContent(rowNumber: Int) = ReportContentModel(rowNumber)
 
     override fun mapVisitChannel(rowNumber: Int) = VisitContentModel(rowNumber)
+
+    override fun mapWishlistData(rowNumber: Int, productId: String) =
+        WishlistContentModel(rowNumber = rowNumber, productId = productId)
 }

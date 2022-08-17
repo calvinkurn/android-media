@@ -38,7 +38,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
@@ -2045,11 +2044,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
         time: Long,
         hitTrackerApi: Boolean
     ) {
-        if (!hitTrackerApi) {
+        if (hitTrackerApi) {
+            if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
+                feedViewModel.trackLongVideoView(feedXCard.id, rowNumber)
+            else
+                feedViewModel.trackVisitChannel(playChannelId, rowNumber)
+        }
+    }
+
+    override fun sendWatchVODTracker(
+        feedXCard: FeedXCard,
+        playChannelId: String,
+        rowNumber: Int,
+        time: Long
+    ) {
             var finalId =
                 if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
 
-            feedAnalytics.eventAddView(
+            feedAnalytics.eventSendWatchVODAnalytics(
                 finalId,
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,
@@ -2058,13 +2070,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedXCard.media.firstOrNull()?.type
                     ?: ""
             )
-        }
-        if (hitTrackerApi) {
-            if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
-                feedViewModel.trackLongVideoView(feedXCard.id, rowNumber)
-            else
-                feedViewModel.trackVisitChannel(playChannelId, rowNumber)
-        }
+
     }
 
     override fun onPostTagBubbleClick(

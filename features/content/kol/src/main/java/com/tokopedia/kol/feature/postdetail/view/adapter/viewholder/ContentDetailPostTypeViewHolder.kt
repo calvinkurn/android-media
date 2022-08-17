@@ -23,8 +23,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.NestedScrollableHost
 import com.tokopedia.feedcomponent.util.TagConverter
@@ -57,7 +55,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     private val view = LayoutInflater.from(context).inflate(
-        R.layout.content_detail_revamped_viewholder_container_item,
+        R.layout.content_detail_viewholder_container_item,
         this,
         true
     )
@@ -147,7 +145,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             override fun onImageDoubleClicked(viewHolder: CarouselImageViewHolder) {
                 val card = mData
-                if (!card.isTopAds) changeCTABtnColorAsPerWidget(card)
+                if (card.isTypeProductHighlight) changeCTABtnColorAsPerWidget(card)
             }
 
             override fun onImageLongClicked(viewHolder: CarouselImageViewHolder) {
@@ -159,7 +157,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 changeCTABtnColorAsPerWidget(mData)
                 listener?.onLikeClicked(
                     mData,
-                    positionInCdp
+                    positionInCdp,
+                    true
                 )
             }
 
@@ -477,6 +476,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 feedXCard
             )
         }
+        val shouldNotShowMenuIcon = (!feedXCard.reportable && !feedXCard.deletable && !feedXCard.followers.isFollowed)
+        shopMenuIcon.showWithCondition(!shouldNotShowMenuIcon)
         shopMenuIcon.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onClickOnThreeDots(
@@ -769,6 +770,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 listener?.addViewsToVOD(feedXCard, rowNumber, time, hitTrackerApi)
             }
 
+            override fun onVODStopTrack(viewHolder: FeedVODViewHolder, lastPosition: Long) {
+                listener?.sendWatchVODTracker(mData, lastPosition)
+            }
+
         })
 
         feedVODViewHolder.updateLikedText {
@@ -866,14 +871,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private fun bindCaption(card: FeedXCard) {
         val tagConverter = TagConverter()
         var spannableString: SpannableString
-        val authorType =
-            if (card.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
-        val followCta =
-            FollowCta(
-                authorID = card.author.id,
-                authorType = authorType,
-                isFollow = card.followers.isFollowed
-            )
+
         val cs: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 listener?.onShopHeaderItemClicked(
