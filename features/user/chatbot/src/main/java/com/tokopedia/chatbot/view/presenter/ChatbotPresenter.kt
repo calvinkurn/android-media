@@ -841,12 +841,12 @@ class ChatbotPresenter @Inject constructor(
         sourceId: String,
         startTime: String,
         messageId: String,
-        onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
+        onErrorVideoUpload: (String, VideoUploadUiModel) -> Unit
     ) {
         val originalFile = File(videoUploadUiModel.videoUrl)
 
         val videoUrl = videoUploadUiModel.videoUrl
-        if (videoUrl!=null && !mapForVideoUploadJobs.contains(videoUrl)) {
+        if (videoUrl != null && !mapForVideoUploadJobs.contains(videoUrl)) {
             mapForVideoUploadJobs[videoUrl] =
                 launchCatchError(
                     block = {
@@ -855,15 +855,13 @@ class ChatbotPresenter @Inject constructor(
                             sourceId = sourceId
                         )
 
-                        if (mapForVideoUploadJobs[videoUrl]?.isActive == true) {
-                            val result = uploaderUseCase.invoke(param)
-                            when (result) {
-                                is UploadResult.Success -> {
-                                    sendVideoAttachment(result.videoUrl, startTime, messageId)
-                                }
-                                is UploadResult.Error -> {
-                                    onErrorVideoUpload(result.message, videoUploadUiModel)
-                                }
+                        val result = uploaderUseCase.invoke(param)
+                        when (result) {
+                            is UploadResult.Success -> {
+                                sendVideoAttachment(result.videoUrl, startTime, messageId)
+                            }
+                            is UploadResult.Error -> {
+                                onErrorVideoUpload(result.message, videoUploadUiModel)
                             }
                         }
                     },
