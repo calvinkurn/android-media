@@ -33,17 +33,21 @@ class CompositeAdapter(
     }
 
 
-    fun showLoading(loadingItem: DelegateAdapterItem) {
-        val currentItems = currentList
-        val newItems = currentItems + listOf(loadingItem)
+    fun addItem(item: DelegateAdapterItem) {
+        addItems(listOf(item))
+    }
+
+    fun addItems(items: List<DelegateAdapterItem>) {
+        val newItems = currentList.toMutableList()
+        newItems.addAll(items)
         submitList(newItems)
     }
 
-    fun stopLoading() {
+    fun removeItem(item: DelegateAdapterItem) {
         if (currentList.isNotEmpty()) {
-            val currentList = currentList.toMutableList()
-            currentList.removeAt(currentList.lastIndex)
-            submitList(currentList)
+            val newItems = currentList.toMutableList()
+            newItems.remove(item)
+            submitList(newItems)
         }
     }
 

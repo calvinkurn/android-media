@@ -13,14 +13,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
@@ -30,7 +28,6 @@ import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARG
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import kotlin.math.max
 
 class FlashSaleListFragment : BaseDaggerFragment() {
 
@@ -139,6 +136,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    flashSaleAdapter.addItem(LoadingItem)
                     viewModel.getFlashSaleList(tabName, tabId,page * PAGE_SIZE)
                 }
             }
@@ -185,12 +183,10 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     }
 
     private fun renderFlashSaleList(flashSales: List<DelegateAdapterItem>) {
-        if (flashSales.isEmpty()) return
-        flashSaleAdapter.submitList(flashSales)
-        flashSaleAdapter.showLoading(LoadingItem)
+        flashSaleAdapter.removeItem(LoadingItem)
 
-        doOnDelayFinished(5000) {
-            flashSaleAdapter.stopLoading()
+        if (flashSales.isNotEmpty()) {
+            flashSaleAdapter.submitList(flashSales)
         }
     }
 
