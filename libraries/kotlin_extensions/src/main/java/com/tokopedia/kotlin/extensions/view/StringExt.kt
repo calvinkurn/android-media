@@ -3,7 +3,8 @@ package com.tokopedia.kotlin.extensions.view
 import android.text.Html
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import java.lang.NumberFormatException
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
@@ -148,11 +149,13 @@ fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
             longValue.toInt()
         }
     }catch (e:Exception) {
+        val sw = StringWriter()
+        e.printStackTrace(PrintWriter(sw))
         ServerLogger.log(
             Priority.P1, "INTEGER_PARSING_ERROR",
             mapOf(
                 "error_msg " to (e.message?:"Integer Parsing"),
-                "trace " to e.stackTrace.toString()
+                "trace " to sw.toString()
             ))
 
         // calling error block in case of exception
