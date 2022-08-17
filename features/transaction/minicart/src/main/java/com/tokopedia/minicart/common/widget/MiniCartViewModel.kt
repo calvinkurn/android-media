@@ -367,6 +367,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                     )
                 )
 
+                val productData = response.addToCartBundleDataModel.data.firstOrNull()
                 _productBundleRecomTracker.postValue(
                     ProductBundleRecomTracker(
                         shopId = shopId,
@@ -376,8 +377,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                         bundleType = bundleType,
                         bundlePosition = bundlePosition,
                         priceCut = priceCut,
-                        cartId = response.addToCartBundleDataModel.data.firstOrNull()?.cartId.orEmpty(),
-                        quantity = response.addToCartBundleDataModel.data.firstOrNull()?.productId.orEmpty(),
+                        cartId = productData?.cartId.orEmpty(),
+                        quantity = productData?.quantity.toString(),
                         state = STATE_PRODUCT_BUNDLE_RECOM_ATC
                     )
                 )
