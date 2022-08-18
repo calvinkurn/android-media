@@ -180,7 +180,10 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
         tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = Ticker.TYPE_WARNING
+        tickerShopStatus?.tickerType = when(shopStatus) {
+            ShopStatusDef.INCUBATED -> Ticker.TYPE_ANNOUNCEMENT
+            else -> Ticker.TYPE_WARNING
+        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
                 if(shopStatus == ShopStatusDef.MODERATED && isMyShop) {
