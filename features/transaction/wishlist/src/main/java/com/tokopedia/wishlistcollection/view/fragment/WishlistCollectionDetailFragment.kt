@@ -2312,7 +2312,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun doBulkDelete() {
-        val source = if (collectionId == "0") "" else SOURCE_COLLECTION
+        val source = if (collectionId == "0") SRC_WISHLIST_COLLECTION else SOURCE_COLLECTION
         wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(
             listSelectedProductIds,
             userSession.userId,
