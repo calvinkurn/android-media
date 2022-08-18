@@ -17,7 +17,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
@@ -94,7 +93,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(feedRecommendationViewModel: FeedRecommendationViewModel): Int {
-        return FeedRecommendationViewHolder.LAYOUT
+        return 0
     }
 
     override fun type(bannerViewModel: BannerViewModel): Int {
@@ -154,9 +153,6 @@ class FeedPlusTypeFactoryImpl(
                         feedMultipleImageViewListener,
                         userSession
                 )
-            }
-            FeedRecommendationViewHolder.LAYOUT -> {
-                viewHolder = FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener)
             }
             BannerViewHolder.LAYOUT -> {
                 viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)

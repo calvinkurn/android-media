@@ -14,7 +14,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
@@ -67,7 +66,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
     }
 
     override fun type(feedRecommendationViewModel: FeedRecommendationViewModel): Int {
-        return FeedRecommendationViewHolder.LAYOUT
+        return 0
     }
 
     override fun type(bannerViewModel: BannerViewModel): Int {
@@ -132,8 +131,6 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                         videoViewListener,
                         feedMultipleImageViewListener,
                         userSession) as AbstractViewHolder<Visitable<*>>
-            FeedRecommendationViewHolder.LAYOUT ->
-                FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->
                 BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
