@@ -149,7 +149,7 @@ public class SplashScreenActivity extends SplashScreen {
             }
             intent.putExtras(b);
         } else if (hasOnboarding) {
-            intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
+            intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN);
         } else {
             intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         }
