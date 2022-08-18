@@ -103,12 +103,18 @@ class HomeRecommendationViewModel @Inject constructor(
             topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
                 val visitableBanner = homeBannerTopAds[index]
                 if (headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position == Int.ZERO) {
-                    newList.removeAt(visitableBanner.position)
-                    newList[visitableBanner.position + 1] =
-                        HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                    if (newList.size > visitableBanner.position){
+                        newList.removeAt(visitableBanner.position)
+                        newList[visitableBanner.position + 1] =
+                            HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                    }
+
                 } else {
-                    newList[visitableBanner.position] =
-                        HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                    if (newList.size > visitableBanner.position){
+                        newList[visitableBanner.position] =
+                            HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                    }
+
                 }
             }
         }
