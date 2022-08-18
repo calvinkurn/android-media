@@ -396,6 +396,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun setupCardSticky() {
         binding?.cardUnifySticky?.setOnClickListener {
+            hideKeyboard()
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             val categoryFilter =
                 TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
@@ -996,6 +997,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
+        hideKeyboard()
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
@@ -1017,6 +1019,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onCarouselItemClicked() {
+        hideKeyboard()
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
