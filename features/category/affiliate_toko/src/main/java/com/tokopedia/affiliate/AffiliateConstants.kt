@@ -38,7 +38,6 @@ const val AFFILIATE_SPLASH_TIME = 4000L
 
 const val AFFILIATE_WALLET_TRANSACTION_ENABLE = "app_affiliate_wallet_transaction_enable"
 
-const val AFFILIATE_WITHDRAWAL = "Aff_withdrawal"
 
 const val AFFILIATE_TRAFFIC_ADB = "traffic_att_adp"
 

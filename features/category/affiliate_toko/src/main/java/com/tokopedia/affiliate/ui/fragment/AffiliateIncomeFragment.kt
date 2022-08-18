@@ -35,7 +35,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
-import com.tokopedia.affiliate.AFFILIATE_WITHDRAWAL
 import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.KYC_DONE
@@ -327,7 +326,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     }
 
     private fun afterViewCreated() {
-        initUi()
+        setTarikSaldoButtonUI()
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
             it.setOnRefreshListener {
@@ -370,24 +369,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         affiliateIncomeViewModel.getAffiliateValidateUser(UserSession(context).email)
     }
 
-    private var enableTarikSaldo = false
-    private fun initUi() {
-        setTarikSaldoButtonUI()
-        when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AFFILIATE_WITHDRAWAL,
-            ""
-        )) {
-            AFFILIATE_WITHDRAWAL -> enableTarikSaldo = true
-            else ->{
-                enableTarikSaldo = false
-                initTicker()
-            }
-        }
-    }
 
-    private fun initTicker() {
-        view?.findViewById<Ticker>(R.id.affiliate_income_ticker)?.show()
-    }
 
     private fun setTarikSaldoButtonUI() {
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.apply {
@@ -476,7 +458,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     }
 
     private fun initTarikSaldo(isReviewed: Boolean) {
-        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = isReviewed  && enableTarikSaldo
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = isReviewed
     }
 
     override fun onUserRegistered() {
