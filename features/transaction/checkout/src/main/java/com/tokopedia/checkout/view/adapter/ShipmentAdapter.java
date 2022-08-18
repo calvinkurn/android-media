@@ -646,7 +646,25 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
 
-            shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
+            boolean isPrescriptionFrontEndValidationNeeded = false;
+            if(availableCheckout) {
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    Object shipmentData = shipmentDataList.get(i);
+                    if (shipmentData instanceof UploadPrescriptionUiModel) {
+                        if (((UploadPrescriptionUiModel) shipmentData).getFrontEndValidation()) {
+                            isPrescriptionFrontEndValidationNeeded = true;
+                            errorPosition = i;
+                            errorSelectedShipmentData = shipmentData;
+                        }
+                    }
+                }
+            }
+
+            if(isPrescriptionFrontEndValidationNeeded){
+                shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
+            }else {
+                shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
+            }
         } else {
             int errorPosition = 0;
             if (shipmentCartItemModelList != null && shipmentDataList != null) {
