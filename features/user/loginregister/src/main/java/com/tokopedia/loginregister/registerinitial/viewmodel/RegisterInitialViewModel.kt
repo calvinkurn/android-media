@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
@@ -29,6 +30,7 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.domain.query.LoginQueries
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -190,16 +192,13 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun registerCheck(id: String) {
         launchCatchError(coroutineContext, {
-            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
-                val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
-                registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
-                registerCheckUseCase.setRequestParams(params)
-                registerCheckUseCase.setGraphqlQuery(query)
-                idlingResourceProvider?.increment()
-                val response = registerCheckUseCase.executeOnBackground()
-                onSuccessRegisterCheck().invoke(response)
-
-            }
+            val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
+            registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
+            registerCheckUseCase.setRequestParams(params)
+            registerCheckUseCase.setGraphqlQuery(MutationRegisterCheck.getQuery())
+            idlingResourceProvider?.increment()
+            val response = registerCheckUseCase.executeOnBackground()
+            onSuccessRegisterCheck().invoke(response)
         }, {
             onFailedRegisterCheck().invoke(it)
         })
