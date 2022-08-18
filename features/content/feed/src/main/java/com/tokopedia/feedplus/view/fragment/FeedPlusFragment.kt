@@ -92,7 +92,6 @@ import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomAct
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
-import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
@@ -186,7 +185,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     FeedMultipleImageView.FeedMultipleImageViewListener,
     HighlightAdapter.HighlightListener,
     InterestPickAdapter.InterestPickItemListener,
-    EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
     RetryViewHolder.RetryViewHolderListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineListener,
@@ -1456,7 +1454,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         showToast(errorMsg, Toaster.TYPE_ERROR, getString(R.string.label_close))
     }
 
-    override fun onGoToLogin() {
+    private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             requireActivity().startActivityForResult(intent, REQUEST_LOGIN)
