@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.navigation
 
+import NewOrderSummaryScreen
 import SplashScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
@@ -21,5 +22,13 @@ fun NavGraphBuilder.homeComposable() {
         route = ScreenConstant.HOME_SCREEN
     ) {
         HomeScreen()
+    }
+}
+
+fun NavGraphBuilder.newOrderSummaryScreenComposable() {
+    composable(
+        route = ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
+    ) {
+        NewOrderSummaryScreen()
     }
 }
