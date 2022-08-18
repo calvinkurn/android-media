@@ -185,8 +185,6 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
             doOnDelayFinished(DELAY) {
                 if (it is Success) {
                     onDeleteDataSuccess()
-//                    dismiss()
-//                    onDeleteProductSuccessListener()
                 } else if (it is Fail) {
                     it.throwable.localizedMessage?.let { it -> displayError(it) }
                 }
@@ -503,7 +501,7 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
 
     private fun onDeleteDataSuccess() {
         productIndex++
-        shouldLoadNextData = productIndex.inc() < productList?.size.orZero()
+        shouldLoadNextData = productIndex < productList?.size.orZero()
         if (shouldLoadNextData) {
             loadNextData()
         } else {
