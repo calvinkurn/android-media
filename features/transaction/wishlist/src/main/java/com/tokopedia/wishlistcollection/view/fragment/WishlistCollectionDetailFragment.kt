@@ -217,6 +217,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         const val REQUEST_CODE_LOGIN = 288
         const val REQUEST_CODE_GO_TO_PDP = 788
+        const val REQUEST_CODE_GO_TO_SEMUA_WISHLIST = 1288
         private const val PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2"
         const val PARAM_HOME = "home"
         const val SHARE_LINK_PRODUCT = "SHARE_LINK_PRODUCT"
@@ -1897,7 +1898,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val detailCollection =
             "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
-        startActivity(intentCollectionDetail)
+        startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_SEMUA_WISHLIST)
     }
 
     override fun onChangeCollectionName() {
@@ -2361,7 +2362,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_PDP) {
+        } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST) {
             getCollectionItems()
         }
     }
