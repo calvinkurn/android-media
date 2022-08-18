@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.domain.usecase
+package com.tokopedia.content.common.usecase
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -13,7 +13,6 @@ import javax.inject.Inject
 /**
  * @author by yfsx on 20/06/18.
  */
-
 const val GET_WHITE_LIST_QUERY: String = """query WhitelistQuery(${'$'}type: String, ${'$'}ID: String) {
   feed_check_whitelist(type: ${'$'}type, ID: ${'$'}ID) {
     __typename
@@ -32,6 +31,14 @@ const val GET_WHITE_LIST_QUERY: String = """query WhitelistQuery(${'$'}type: Str
       link
       badge
       type
+      post {
+        enable
+        has_username
+      }
+      livestream {
+        enable
+        has_username
+      }
     }
     error
   }
