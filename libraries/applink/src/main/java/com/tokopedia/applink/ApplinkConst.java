@@ -540,6 +540,8 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+        String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
+        String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
     }
 
     interface TokoFood {
