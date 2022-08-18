@@ -5,7 +5,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.ui.model.FeedAccountUiModel
-import com.tokopedia.content.common.usecase.GetContentFormUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -81,7 +82,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val getChannelUseCase: GetChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getContentFormUseCase: GetContentFormUseCase,
+    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayWebSocket,
@@ -1446,19 +1447,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleFeedAccountList() {
         viewModelScope.launchCatchError(block = {
-            val response = getContentFormUseCase.apply {
-                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "entrypoint", ""))
-            }.executeOnBackground()
+            val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
 
-            val feedAccountList = response.feedContentForm.authors.map {
+            val feedAccountList = response.whitelist.authors.map {
                 FeedAccountUiModel(
                     id = it.id,
                     name = it.name,
                     iconUrl = it.thumbnail,
                     badge = it.badge,
                     type = it.type,
-                    hasUsername = response.feedContentForm.hasUsername,
-                    hasAcceptTnc = response.feedContentForm.hasAcceptTnc,
+                    hasUsername = it.livestream.hasUsername,
+                    hasAcceptTnc = it.livestream.hasAcceptTnc,
                 )
             }
 

@@ -27,10 +27,11 @@ class GetWhiteListNewUseCase @Inject constructor(
     }
 
     fun createRequestParams(type: String, id: String = "") {
-        val variables = HashMap<String, Any>()
-        variables[PARAM_TYPE] = type
-        variables[PARAM_ID] = id
-        setRequestParams(variables)
+        val request = mapOf(
+            PARAM_TYPE to type,
+            PARAM_ID to id,
+        )
+        setRequestParams(request)
     }
 
     suspend fun execute(type: String, id: String = ""): WhitelistQuery {
@@ -42,6 +43,7 @@ class GetWhiteListNewUseCase @Inject constructor(
         private const val PARAM_TYPE = "type"
         private const val PARAM_ID = "ID"
         const val WHITELIST_INTEREST = "interest"
+        const val WHITELIST_ENTRY_POINT = "entrypoint"
         const val QUERY_NAME = "GetWhitelistNewUseCaseQuery"
         const val GET_WHITE_LIST_QUERY: String = """
             query FeedCheckWhitelist(${'$'}type: String, ${'$'}ID: String) {
