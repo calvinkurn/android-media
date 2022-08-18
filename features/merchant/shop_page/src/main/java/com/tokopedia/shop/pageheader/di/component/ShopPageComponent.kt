@@ -11,7 +11,7 @@ import dagger.Component
  * Created by hendry on 18/01/18.
  */
 @ShopPageScope
-@Component(modules = [ShopPageModule::class, AffiliateCommonModule::class], dependencies = [ShopComponent::class])
+@Component(modules = [ShopPageModule::class], dependencies = [ShopComponent::class])
 interface ShopPageComponent {
     fun inject(fragment: NewShopPageFragment?)
 }
