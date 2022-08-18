@@ -7,7 +7,7 @@ import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.network.data.model.response.DataResponse
 import java.lang.reflect.Type
 
-class DigitalAddToCartMockResponse: MockRestResponse<ResponseCartData>() {
+class DigitalRestAddToCartMockResponse: MockRestResponse<ResponseCartData>() {
     override fun getToken(): Type =
         object : TypeToken<DataResponse<ResponseCartData>>() {}.type
 
