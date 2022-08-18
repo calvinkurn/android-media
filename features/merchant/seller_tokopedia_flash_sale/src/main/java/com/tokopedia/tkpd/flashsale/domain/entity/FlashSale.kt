@@ -21,8 +21,7 @@ data class FlashSale(
     val submissionEndDateUnix: Date,
     val submissionStartDateUnix: Date,
     val useMultiLocation: Boolean,
-    val formattedDate: FormattedDate,
-    val startEndDateDifferenceInHours: Int
+    val formattedDate: FormattedDate
 ) {
     data class ProductMeta(
         val acceptedProduct: Int,

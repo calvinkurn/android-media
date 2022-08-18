@@ -14,7 +14,6 @@ data class UpcomingFlashSaleItem(
     val endDate : Date,
     val status: Status,
     val quotaUsagePercentage: Int,
-    val distanceDaysToSubmissionEndDate: Int,
     val distanceHoursToSubmissionEndDate: Int,
     val submissionEndDate: Date
 ) : DelegateAdapterItem {

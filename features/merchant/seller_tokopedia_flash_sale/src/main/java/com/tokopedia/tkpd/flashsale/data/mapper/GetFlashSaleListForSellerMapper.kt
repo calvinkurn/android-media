@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.util.extension.epochToDate
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GetFlashSaleListForSellerMapper @Inject constructor() {
@@ -33,17 +32,9 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.submissionEndDateUnix.epochToDate(),
                 flashSale.submissionStartDateUnix.epochToDate(),
                 flashSale.useMultilocation,
-                flashSale.formatDate(),
-                flashSale.hoursDifference()
+                flashSale.formatDate()
             )
         }
-    }
-
-    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.hoursDifference(): Int {
-        val startDate = startDateUnix.epochToDate()
-        val endDate = endDateUnix.epochToDate()
-        val differenceInMillis = endDate.time - startDate.time
-        return TimeUnit.MILLISECONDS.toHours(differenceInMillis).toInt()
     }
 
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toProductMeta(): FlashSale.ProductMeta {

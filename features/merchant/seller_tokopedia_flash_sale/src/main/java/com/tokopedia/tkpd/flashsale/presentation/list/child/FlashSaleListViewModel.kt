@@ -4,11 +4,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
-import com.tokopedia.tkpd.flashsale.util.extension.daysDifference
 import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +22,10 @@ class FlashSaleListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val PERCENT = 100
+    }
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
@@ -85,7 +88,6 @@ class FlashSaleListViewModel @Inject constructor(
             endDateUnix,
             status,
             findQuotaUsagePercentage(),
-            daysDifference(Date(), submissionEndDateUnix),
             hoursDifference(Date(), submissionEndDateUnix),
             submissionEndDateUnix
         )
@@ -93,7 +95,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     private fun FlashSale.findQuotaUsagePercentage() : Int {
         val usedQuota = maxProductSubmission - remainingQuota
-        return (usedQuota / maxProductSubmission) * 100
+        return (usedQuota / maxProductSubmission) * PERCENT
     }
 
     private fun FlashSale.toOngoingItem() : DelegateAdapterItem {

@@ -58,7 +58,7 @@
             app:typographyType="display_2"
             tools:text="Serba Diskon 1" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgFlashSale"
             tools:background="@color/Unify_NN200"
             android:layout_marginTop="@dimen/unify_space_24"

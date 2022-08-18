@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
+import com.tokopedia.campaign.utils.extension.dimmed
+import com.tokopedia.campaign.utils.extension.resetDimmedBackground
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.toCalendar
@@ -64,12 +66,13 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
 
             binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
             renderQuotaUsage(item)
-            handleTimer(item.status, item.distanceDaysToSubmissionEndDate, item.distanceHoursToSubmissionEndDate, item.submissionEndDate)
+            handleTimer(item.status, item.distanceHoursToSubmissionEndDate, item.submissionEndDate)
         }
 
         private fun renderQuotaUsage(item: UpcomingFlashSaleItem) {
             when {
                 item.quotaUsagePercentage < QUOTA_USAGE_HALF_FULL -> {
+                    binding.imgFlashSale.resetDimmedBackground()
                     binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_original_quota,
@@ -77,6 +80,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                     )
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_HALF_FULL..QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED -> {
+                    binding.imgFlashSale.resetDimmedBackground()
                     binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_remaining_quota,
@@ -84,6 +88,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                     )
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL..QUOTA_USAGE_ALMOST_FULL -> {
+                    binding.imgFlashSale.resetDimmedBackground()
                     binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_remaining_quota,
@@ -99,6 +104,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                     )
                 }
                 item.quotaUsagePercentage == QUOTA_USAGE_FULL -> {
+                    binding.imgFlashSale.dimmed()
                     binding.btnRegister.buttonType = UnifyButton.Type.ALTERNATE
                     binding.btnRegister.buttonVariant = UnifyButton.Variant.GHOST
                     binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
@@ -113,7 +119,6 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
 
         private fun handleTimer(
             status: UpcomingFlashSaleItem.Status,
-            distanceDaysToSubmissionEndDate: Int,
             distanceHoursToSubmissionEndDate: Int,
             submissionEndDate: Date
         ) {
@@ -126,12 +131,27 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
         }
 
         private fun startTimer(distanceHoursToSubmissionEndDate: Int, submissionEndDate: Date) {
+            val onTimerFinished = {
+                binding.timer.gone()
+                binding.imgFlashSale.dimmed()
+                binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
+                binding.btnRegister.buttonType = UnifyButton.Type.ALTERNATE
+                binding.btnRegister.buttonVariant = UnifyButton.Variant.GHOST
+                binding.progressBar.progressDrawable.colors = intArrayOf(
+                    ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200),
+                    ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200)
+                )
+                binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(R.string.stfs_status_registration_closed_alternative)
+            }
             if (distanceHoursToSubmissionEndDate > ONE_DAY) {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
                 binding.timer.targetDate = submissionEndDate.toCalendar()
+                binding.timer.onFinish = onTimerFinished
             } else {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
                 binding.timer.targetDate = submissionEndDate.toCalendar()
+                binding.timer.onFinish = onTimerFinished
             }
         }
     }
