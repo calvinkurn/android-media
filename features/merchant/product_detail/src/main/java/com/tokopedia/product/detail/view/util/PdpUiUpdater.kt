@@ -494,6 +494,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else if (ppItemData.titlePDP?.isNotEmpty() == true) {
                     title = ppItemData.titlePDP
                 }
+
+                if (!ppItemData.linkURL.isNullOrBlank()) {
+                    applink = ppItemData.linkURL.orEmpty()
+                }
+
                 subtitle = ppItemData.subTitlePDP ?: ""
                 additionalIcon = ppItemData.partnerLogo ?: ""
                 additionalDesc = ppItemData.partnerText ?: ""

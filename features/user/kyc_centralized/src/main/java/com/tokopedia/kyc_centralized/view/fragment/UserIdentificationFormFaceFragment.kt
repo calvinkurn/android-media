@@ -70,7 +70,7 @@ class UserIdentificationFormFaceFragment :
                         )
                         NetworkErrorHelper.showRedSnackbar(
                             activity,
-                            resources.getString(R.string.error_text_image_fail_to_encrypt)
+                            context?.resources?.getString(R.string.error_text_image_fail_to_encrypt).orEmpty()
                         )
                     }
                 }
@@ -170,7 +170,7 @@ class UserIdentificationFormFaceFragment :
 
     override fun trackOnBackPressed() {
         FileUtil.deleteFile(stepperModel?.ktpFile)
-        analytics?.eventClickBackSelfiePage()
+        analytics?.eventClickBackSelfiePage(isKycSelfie)
     }
 
     companion object {
