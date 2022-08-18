@@ -89,7 +89,8 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 channelPositionInList = position,
                 isRemindMe = reminderType.reminded
             )
-            mWidgetListener?.onToggleReminderClicked(
+            if(item.isUpcoming)
+                mWidgetListener?.onToggleReminderClicked(
                 this@PlayWidgetLargeView,
                 item.channelId,
                 reminderType,
