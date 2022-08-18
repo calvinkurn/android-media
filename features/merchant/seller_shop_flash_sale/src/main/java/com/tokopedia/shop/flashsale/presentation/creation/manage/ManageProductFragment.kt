@@ -184,8 +184,8 @@ class ManageProductFragment : BaseDaggerFragment() {
             when (result) {
                 is Success -> {
                     hideLoader()
+                    displayProducts(result.data)
                     if (result.data.productList.size.isMoreThanZero()) {
-                        displayProducts(result.data)
                         hideEmptyState()
                     } else {
                         showEmptyState()
@@ -490,8 +490,14 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showChooseProductPage() {
         val context = context ?: return
-        val intent = ChooseProductActivity.createIntent(context, campaignId.toString(), manageProductListAdapter.itemCount)
-        startActivityForResult(intent, REQUEST_CODE)
+        doOnDelayFinished(DELAY) {
+            val intent = ChooseProductActivity.createIntent(
+                context,
+                campaignId.toString(),
+                manageProductListAdapter.itemCount
+            )
+            startActivityForResult(intent, REQUEST_CODE)
+        }
     }
 
     private fun editProduct(product: SellerCampaignProductList.Product) {
