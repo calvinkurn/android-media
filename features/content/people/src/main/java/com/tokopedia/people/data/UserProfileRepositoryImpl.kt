@@ -101,9 +101,12 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
-        val result = shopRecomUseCase.apply {
-            setRequestParams(ShopRecomUseCase.createParam())
-        }.executeOnBackground()
+        val result = shopRecomUseCase.executeOnBackground(
+            screenName = VAL_SCREEN_NAME,
+            limit = VAL_LIMIT,
+            cursor = VAL_CURSOR,
+        )
+
         return@withContext mapper.mapShopRecom(result)
     }
 
@@ -111,9 +114,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         shopId: String,
         action: ShopFollowAction
     ): MutationUiModel = withContext(dispatcher.io) {
-        val result = shopFollowUseCase.apply {
-            setRequestParams(ShopFollowUseCase.createParam(shopId, action))
-        }.executeOnBackground()
+        val result = shopFollowUseCase.executeOnBackground(
+            shopId = shopId,
+            action = action,
+        )
+
         return@withContext mapper.mapShopFollow(result)
     }
 
@@ -144,5 +149,9 @@ class UserProfileRepositoryImpl @Inject constructor(
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
         private const val VAL_SOURCE_BUYER = "buyer"
+
+        private const val VAL_SCREEN_NAME = "user_profile"
+        private const val VAL_LIMIT = 10
+        private const val VAL_CURSOR = ""
     }
 }
