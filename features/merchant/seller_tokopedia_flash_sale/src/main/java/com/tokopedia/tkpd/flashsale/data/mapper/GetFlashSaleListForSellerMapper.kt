@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.util.extension.epochToDate
-import com.tokopedia.tkpd.flashsale.util.extension.removeTimeZone
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -20,18 +19,18 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.cancellationReason,
                 flashSale.coverImage,
                 flashSale.description,
-                flashSale.endDateUnix.epochToDate().removeTimeZone(),
+                flashSale.endDateUnix.epochToDate(),
                 flashSale.maxProductSubmission,
                 flashSale.name,
                 flashSale.toProductMeta(),
                 flashSale.remainingQuota,
-                flashSale.reviewEndDateUnix.epochToDate().removeTimeZone(),
-                flashSale.reviewStartDateUnix.epochToDate().removeTimeZone(),
+                flashSale.reviewEndDateUnix.epochToDate(),
+                flashSale.reviewStartDateUnix.epochToDate(),
                 flashSale.slug,
-                flashSale.startDateUnix.epochToDate().removeTimeZone(),
+                flashSale.startDateUnix.epochToDate(),
                 flashSale.statusId.toIntOrZero(),
                 flashSale.statusText,
-                flashSale.submissionEndDateUnix.epochToDate().removeTimeZone(),
+                flashSale.submissionEndDateUnix.epochToDate(),
                 flashSale.submissionStartDateUnix.epochToDate(),
                 flashSale.useMultilocation,
                 flashSale.formatDate(),

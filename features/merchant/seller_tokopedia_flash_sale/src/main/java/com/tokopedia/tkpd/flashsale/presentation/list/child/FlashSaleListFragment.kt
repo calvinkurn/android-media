@@ -92,7 +92,6 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
 
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
-    private var isFirstLoad = true
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleListViewModel::class.java) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null

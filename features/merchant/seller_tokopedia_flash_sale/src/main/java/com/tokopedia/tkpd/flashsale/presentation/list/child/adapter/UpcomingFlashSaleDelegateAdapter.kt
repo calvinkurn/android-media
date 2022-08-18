@@ -24,7 +24,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
     UpcomingFlashSaleItem::class.java) {
 
     companion object{
-        private const val ONE_DAY = 1
+        private const val ONE_DAY = 24
         private const val QUOTA_USAGE_HALF_FULL = 50
         private const val QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED = 75
         private const val QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL = 76
@@ -64,7 +64,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
 
             binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
             renderQuotaUsage(item)
-            handleTimer(item.status, item.distanceDaysToReviewStartDate, item.reviewStartDate)
+            handleTimer(item.status, item.distanceDaysToSubmissionEndDate, item.distanceHoursToSubmissionEndDate, item.submissionEndDate)
         }
 
         private fun renderQuotaUsage(item: UpcomingFlashSaleItem) {
@@ -113,24 +113,25 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
 
         private fun handleTimer(
             status: UpcomingFlashSaleItem.Status,
-            distanceDaysToReviewStartDate: Int,
-            reviewStartDate: Date
+            distanceDaysToSubmissionEndDate: Int,
+            distanceHoursToSubmissionEndDate: Int,
+            submissionEndDate: Date
         ) {
             if (status == UpcomingFlashSaleItem.Status.REGISTRATION_CLOSED) {
                 binding.timer.gone()
             } else {
                 binding.timer.visible()
-                startTimer(distanceDaysToReviewStartDate, reviewStartDate)
+                startTimer(distanceHoursToSubmissionEndDate, submissionEndDate)
             }
         }
 
-        private fun startTimer(distanceDaysToReviewStartDate: Int, reviewStartDate: Date) {
-            if (distanceDaysToReviewStartDate > ONE_DAY) {
+        private fun startTimer(distanceHoursToSubmissionEndDate: Int, submissionEndDate: Date) {
+            if (distanceHoursToSubmissionEndDate > ONE_DAY) {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
-                binding.timer.targetDate = reviewStartDate.toCalendar()
+                binding.timer.targetDate = submissionEndDate.toCalendar()
             } else {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                binding.timer.targetDate = reviewStartDate.toCalendar()
+                binding.timer.targetDate = submissionEndDate.toCalendar()
             }
         }
     }

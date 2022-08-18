@@ -14,8 +14,9 @@ data class UpcomingFlashSaleItem(
     val endDate : Date,
     val status: Status,
     val quotaUsagePercentage: Int,
-    val distanceDaysToReviewStartDate: Int,
-    val reviewStartDate: Date
+    val distanceDaysToSubmissionEndDate: Int,
+    val distanceHoursToSubmissionEndDate: Int,
+    val submissionEndDate: Date
 ) : DelegateAdapterItem {
     override fun id() = id
 

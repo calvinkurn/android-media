@@ -13,6 +13,7 @@
     <string name="stfs_tab_name_finished">Selesai</string>
     <string name="stfs_status_registration_ended">Pendaftaran Berakhir</string>
     <string name="stfs_status_registration_closed">Pendaftaran Ditutup</string>
+    <string name="stfs_status_registration_closed_alternative">Pendaftaran ditutup</string>
     <string name="stfs_status_product_not_registered">Belum daftar produk</string>
     <string name="stfs_status_waiting_for_selection">Menunggu seleksi</string>
     <string name="stfs_status_on_selection">Proses Seleksi</string>
