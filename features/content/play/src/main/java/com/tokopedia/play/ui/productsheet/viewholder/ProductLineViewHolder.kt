@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Paint
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play.databinding.ItemPlayProductLineBinding
 import com.tokopedia.play.view.type.ComingSoon
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
@@ -34,27 +37,15 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * Created by jegul on 03/03/20
  */
 class ProductLineViewHolder(
-    itemView: View,
+    binding: ItemPlayProductLineBinding,
     private val listener: Listener
-) : BaseViewHolder(itemView) {
+) : BaseViewHolder(binding.root) {
 
     private val context: Context
         get() = itemView.context
 
-    private val tvProductTitle: TextView = itemView.findViewById(R.id.tv_product_title)
-    private val ivProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
-    private val tvProductDiscount: TextView = itemView.findViewById(R.id.tv_product_discount)
-    private val tvOriginalPrice: TextView = itemView.findViewById(R.id.tv_original_price)
-    private val tvCurrentPrice: TextView = itemView.findViewById(R.id.tv_current_price)
-    private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
-    private val btnProductAtc: UnifyButton = itemView.findViewById(R.id.btn_product_atc)
-    private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
-    private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
-    private val ivNow: IconUnify = itemView.findViewById(R.id.iv_now)
-    private val tvNow: TextView = itemView.findViewById(R.id.tv_now)
-    private val llInfo: LinearLayout = itemView.findViewById(R.id.ll_info)
-    private val iconPinned: IconUnify = itemView.findViewById(R.id.icon_pinned)
-    private val tvInfo: TextView = itemView.findViewById(R.id.tv_info)
+    private val productBinding = binding.layoutPlayProduct
+
 
     private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
     private val separatorSpan = ForegroundColorSpan(
@@ -65,68 +56,69 @@ class ProductLineViewHolder(
     )
 
     init {
-        tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        productBinding.tvOriginalPrice.paintFlags =
+            productBinding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     fun bind(item: PlayProductUiModel.Product) {
-        ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
-        tvProductTitle.text = item.title
+        productBinding.ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
+        productBinding.tvProductTitle.text = item.title
 
-        llInfo.showWithCondition(
+        productBinding.llInfo.showWithCondition(
             shouldShow = item.isPinned ||
                     (item.stock is StockAvailable && item.stock.stock <= MIN_STOCK)
         )
-        iconPinned.showWithCondition(item.isPinned)
-        tvInfo.text = getInfo(item)
+        productBinding.iconPinned.showWithCondition(item.isPinned)
+        productBinding.tvInfo.text = getInfo(item)
 
-        tvNow.showWithCondition(item.isTokoNow)
-        ivNow.showWithCondition(item.isTokoNow)
+        productBinding.tvNow.showWithCondition(item.isTokoNow)
+        productBinding.ivNow.showWithCondition(item.isTokoNow)
 
         when (item.price) {
             is DiscountedPrice -> {
-                tvProductDiscount.show()
-                tvOriginalPrice.show()
-                tvProductDiscount.text = itemView.context.getString(R.string.play_discount_percent, item.price.discountPercent)
-                tvOriginalPrice.text = item.price.originalPrice
-                tvCurrentPrice.text = item.price.discountedPrice
+                productBinding.tvProductDiscount.show()
+                productBinding.tvOriginalPrice.show()
+                productBinding.tvProductDiscount.text = itemView.context.getString(R.string.play_discount_percent, item.price.discountPercent)
+                productBinding.tvOriginalPrice.text = item.price.originalPrice
+                productBinding.tvCurrentPrice.text = item.price.discountedPrice
             }
             is OriginalPrice -> {
-                tvProductDiscount.hide()
-                tvOriginalPrice.hide()
-                tvCurrentPrice.text = item.price.price
+                productBinding.tvProductDiscount.hide()
+                productBinding.tvOriginalPrice.hide()
+                productBinding.tvCurrentPrice.text = item.price.price
             }
         }
 
         when (item.stock) {
             OutOfStock -> {
-                shadowOutOfStock.show()
-                lblOutOfStock.show()
-                btnProductAtc.setDrawable(
+                productBinding.shadowOutOfStock.show()
+                productBinding.labelOutOfStock.show()
+                productBinding.btnProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
                 )
-                btnProductBuy.isEnabled = false
-                btnProductAtc.isEnabled = false
+                productBinding.btnProductBuy.isEnabled = false
+                productBinding.btnProductAtc.isEnabled = false
             }
 
             is StockAvailable -> {
-                shadowOutOfStock.gone()
-                lblOutOfStock.gone()
-                btnProductBuy.isEnabled = true
-                btnProductAtc.isEnabled = true
-                btnProductAtc.setDrawable(
+                productBinding.shadowOutOfStock.gone()
+                productBinding.labelOutOfStock.gone()
+                productBinding.btnProductBuy.isEnabled = true
+                productBinding.btnProductAtc.isEnabled = true
+                productBinding.btnProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
             }
             is ComingSoon ->{
-                btnProductAtc.hide()
-                btnProductBuy.hide()
+                productBinding.btnProductAtc.hide()
+                productBinding.btnProductBuy.hide()
             }
         }
 
-        btnProductBuy.setOnClickListener {
+        productBinding.btnProductBuy.setOnClickListener {
             listener.onBuyProduct(item)
         }
-        btnProductAtc.setOnClickListener {
+        productBinding.btnProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
         }
         itemView.setOnClickListener {
@@ -156,7 +148,18 @@ class ProductLineViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_play_product_line
+
+        fun create(
+            parent: ViewGroup,
+            listener: Listener,
+        ) = ProductLineViewHolder(
+            ItemPlayProductLineBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            ),
+            listener,
+        )
 
         private const val MIN_STOCK: Int = 5
     }
