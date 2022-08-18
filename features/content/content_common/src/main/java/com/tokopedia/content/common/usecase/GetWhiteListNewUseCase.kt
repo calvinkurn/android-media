@@ -2,7 +2,6 @@ package com.tokopedia.content.common.usecase
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -13,54 +12,18 @@ import javax.inject.Inject
 /**
  * @author by yfsx on 20/06/18.
  */
-const val GET_WHITE_LIST_QUERY: String = """query WhitelistQuery(${'$'}type: String, ${'$'}ID: String) {
-  feed_check_whitelist(type: ${'$'}type, ID: ${'$'}ID) {
-    __typename
-    iswhitelist
-    url
-    title
-    title_identifier
-    description
-    post_success
-    image_url
-    authors {
-      id
-      name
-      title
-      thumbnail
-      link
-      badge
-      type
-      post {
-        enable
-        has_username
-      }
-      livestream {
-        enable
-        has_username
-      }
-    }
-    error
-  }
-}
-"""
-
-private const val PARAM_TYPE = "type"
-private const val PARAM_ID = "ID"
-const val WHITELIST_INTEREST = "interest"
-
-@GqlQuery("GetWhitelistQuery", GET_WHITE_LIST_QUERY)
-class GetWhitelistNewUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<WhitelistQuery>(graphqlRepository) {
+@GqlQuery(GetWhiteListNewUseCase.QUERY_NAME, GetWhiteListNewUseCase.GET_WHITE_LIST_QUERY)
+class GetWhiteListNewUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<WhitelistQuery>(graphqlRepository) {
 
     init {
-        setTypeClass(WhitelistQuery::class.java)
+        setGraphqlQuery(GetWhitelistNewUseCaseQuery())
         setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
-                        .setSessionIncluded(true)
-                        .build())
-        setGraphqlQuery(GetWhitelistQuery.GQL_QUERY)
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
+        setTypeClass(WhitelistQuery::class.java)
     }
 
     fun createRequestParams(type: String, id: String = "") {
@@ -70,8 +33,48 @@ class GetWhitelistNewUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         setRequestParams(variables)
     }
 
-    suspend fun execute(type: String, id: String = "") : WhitelistQuery {
+    suspend fun execute(type: String, id: String = ""): WhitelistQuery {
         this.createRequestParams(type, id)
         return executeOnBackground()
     }
+
+    companion object {
+        private const val PARAM_TYPE = "type"
+        private const val PARAM_ID = "ID"
+        const val WHITELIST_INTEREST = "interest"
+        const val QUERY_NAME = "GetWhitelistNewUseCaseQuery"
+        const val GET_WHITE_LIST_QUERY: String = """
+            query FeedCheckWhitelist(${'$'}type: String, ${'$'}ID: String) {
+              feed_check_whitelist(type: ${'$'}type, ID: ${'$'}ID) {
+                __typename
+                iswhitelist
+                url
+                title
+                title_identifier
+                description
+                post_success
+                image_url
+                authors {
+                  id
+                  name
+                  title
+                  thumbnail
+                  link
+                  badge
+                  type
+                  post {
+                    enable
+                    has_username
+                  }
+                  livestream {
+                    enable
+                    has_username
+                  }
+                }
+                error
+              }
+            }
+        """
+    }
+
 }

@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.content.common.usecase.GetWhitelistNewUseCase
-import com.tokopedia.content.common.usecase.WHITELIST_INTEREST
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -82,7 +82,7 @@ class FeedViewModel @Inject constructor(
     private val sendTopAdsUseCase: SendTopAdsUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
-    private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
     private val addWishListUseCase: AddWishListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
@@ -507,7 +507,7 @@ class FeedViewModel @Inject constructor(
         return try {
             val feedResponseModel = getFeedDataResult()
             if (userSession.isLoggedIn) {
-                val whiteListModel = getWhitelistNewUseCase.execute(type = WHITELIST_INTEREST)
+                val whiteListModel = getWhiteListNewUseCase.execute(type = WHITELIST_INTEREST)
                 DynamicFeedFirstPageDomainModel(
                     feedResponseModel,
                     (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist)
