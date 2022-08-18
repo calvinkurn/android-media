@@ -3,6 +3,7 @@ package com.tokopedia.unifyorderhistory.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -1796,10 +1797,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
 
             override fun onClickAjukanKomplain(orderId: String) {
+                finishOrderBottomSheet.dismiss()
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
                 userSession.userId?.let { userId -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(userId) }
             }
-
         })
         finishOrderBottomSheet.show(childFragmentManager)
     }

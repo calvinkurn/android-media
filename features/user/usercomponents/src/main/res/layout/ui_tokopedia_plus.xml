@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.LocalLoad
         android:id="@+id/tokopediaLocalLoad"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="@dimen/layout_lvl8"
         android:visibility="gone"
         tools:visibility="gone"
         android:layout_marginHorizontal="@dimen/usercomponents_card_view_padding_remover"

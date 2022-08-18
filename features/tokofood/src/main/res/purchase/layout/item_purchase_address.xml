@@ -43,8 +43,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/label_main_address"
         app:layout_constraintTop_toBottomOf="@+id/divider_top"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintWidth_default="wrap"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Rumah" />
@@ -58,6 +64,7 @@
         app:labelType="general_light_red"
         app:layout_constraintBottom_toBottomOf="@+id/text_address_name"
         app:layout_constraintStart_toEndOf="@+id/text_address_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_address_name" />
 
     <com.tokopedia.unifyprinciples.Typography

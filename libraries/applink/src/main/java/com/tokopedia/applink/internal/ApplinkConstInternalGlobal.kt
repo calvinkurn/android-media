@@ -207,28 +207,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-from-2fa
     const val ADD_PIN_FROM_2FA = "$INTERNAL_GLOBAL/add-pin-from-2fa"
 
-    // VerificationActivity
-    // tokopedia-android-internal://global/cotp
-    const val COTP = "$INTERNAL_GLOBAL/cotp"
-
-    // ReceiverNotifActivity
-    // tokopedia-android-internal://global/otp-push-notif-receiver
-    const val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
-
-    // SettingNotifActivity
-    // tokopedia-android-internal://global/otp-push-notif-setting
-    const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
-
-    // LoginByQrActivity
-    // tokopedia-android-internal://global/qr-login
-    @JvmField
-    val QR_LOGIN = "$INTERNAL_GLOBAL/qr-login"
-
-    // LoginByQrResultActivity
-    // tokopedia-android-internal://global/qr-login-result
-    @JvmField
-    val QR_LOGIN_RESULT = "$INTERNAL_GLOBAL/qr-login-result"
-
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     const val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"

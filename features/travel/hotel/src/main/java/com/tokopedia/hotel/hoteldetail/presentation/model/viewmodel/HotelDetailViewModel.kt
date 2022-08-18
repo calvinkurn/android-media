@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -52,7 +53,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String, hotelNearbyLandmarksQuery: String,
+    fun getHotelDetailData(hotelInfoQuery: GqlQueryInterface, roomListQuery: GqlQueryInterface, hotelReviewQuery: GqlQueryInterface, hotelNearbyLandmarksQuery: GqlQueryInterface,
                            propertyId: Long, searchParam: HotelHomepageModel, source: String) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId, source)
@@ -62,7 +63,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun getHotelDetailDataWithoutRoom(hotelInfoQuery: String, hotelReviewQuery: String, hotelNearbyLandmarksQuery: String, propertyId: Long, source: String) {
+    fun getHotelDetailDataWithoutRoom(hotelInfoQuery: GqlQueryInterface, hotelReviewQuery: GqlQueryInterface, hotelNearbyLandmarksQuery: GqlQueryInterface, propertyId: Long, source: String) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId, source)
             getHotelReview(hotelReviewQuery, propertyId.toString())
@@ -70,13 +71,13 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun getRoomWithoutHotelData(roomListQuery: String, searchParam: HotelHomepageModel) {
+    fun getRoomWithoutHotelData(roomListQuery: GqlQueryInterface, searchParam: HotelHomepageModel) {
         launch {
             getRoomList(roomListQuery, searchParam)
         }
     }
 
-    private suspend fun getHotelInfo(rawQuery: String, propertyId: Long, source: String) {
+    private suspend fun getHotelInfo(rawQuery: GqlQueryInterface, propertyId: Long, source: String) {
 
         val requestDetailParams = PropertyDataParam(propertyId, source)
         val detailParams = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestDetailParams)
@@ -97,7 +98,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getHotelReview(rawQuery: String, propertyId: String) {
+    private suspend fun getHotelReview(rawQuery: GqlQueryInterface, propertyId: String) {
 
         val requestReviewParams = HotelReviewParam(propertyId = propertyId,
                 page = DEFAULT_PAGE_REVIEW,
@@ -124,7 +125,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getRoomList(rawQuery: String, searchParam: HotelHomepageModel) {
+    private suspend fun getRoomList(rawQuery: GqlQueryInterface, searchParam: HotelHomepageModel) {
         try{
             val hotelRoomListData = async {
                 val data = withContext(dispatcher.io){
@@ -143,7 +144,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getNearbyLandmarks(rawQuery: String, propertyId: Long){
+    private suspend fun getNearbyLandmarks(rawQuery: GqlQueryInterface, propertyId: Long){
         val filterNearby = HotelNearbyLandmarkParam.FilterNearbyLandmark(propertyId)
         val nearbyLandmarkParam = HotelNearbyLandmarkParam(template = HotelNearbyLandmarkTemplate.HOTEL_PDP.value, filter = filterNearby)
 

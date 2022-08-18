@@ -121,6 +121,8 @@
     <string name="shop_postal_code_invalid">Format kode pos invalid</string>
     <string name="edit_address_success">Alamat berhasil disimpan!</string>
     <string name="add_address_success">Alamat berhasil ditambahkan!</string>
+    <string name="title_ticker_shop_setting">Atur lokasi toko di halaman Pengiriman</string>
+    <string name="desc_ticker_shop_setting"><![CDATA[Sekarang kamu bisa mengatur lokasi tokomu langsung di <a href="">Halaman Pengiriman</a>.]]></string>
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>

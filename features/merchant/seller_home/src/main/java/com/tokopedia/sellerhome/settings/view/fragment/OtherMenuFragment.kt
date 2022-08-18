@@ -504,6 +504,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         observeMultipleErrorToaster()
         observeToasterAlreadyShown()
         observeToggleTopadsCount()
+        observeIsShowTageCentralizePromo()
     }
 
     private fun observeShopBadge() {
@@ -664,6 +665,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
+    private fun observeIsShowTageCentralizePromo() {
+        viewModel.isShowTagCentralizePromo.observe(viewLifecycleOwner) {
+           viewHolder?.setCentralizePromoTag(it)
+        }
+    }
+
     private fun goToReputationHistory() {
         val appLink = UriUtil.buildUriAppendParam(
             ApplinkConst.REPUTATION,
@@ -697,14 +704,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         val bottomSheetInfix: String
         val bottomSheetDescription: String
         if (isTopAdsActive) {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
+            bottomSheetInfix = context?.resources?.getString(R.string.setting_topads_status_active).orEmpty()
+            bottomSheetDescription = context?.resources?.getString(R.string.setting_topads_description_active).orEmpty()
         } else {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_inactive)
+            bottomSheetInfix = context?.resources?.getString(R.string.setting_topads_status_inactive).orEmpty()
             bottomSheetDescription =
-                resources.getString(R.string.setting_topads_description_inactive)
+                context?.resources?.getString(R.string.setting_topads_description_inactive).orEmpty()
         }
-        val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
+        val bottomSheetTitle = context?.resources?.getString(R.string.setting_topads_status, bottomSheetInfix).orEmpty()
         return topAdsBottomSheetView?.apply {
             findViewById<Typography>(R.id.topAdsBottomSheetTitle)?.text = bottomSheetTitle
             findViewById<TextView>(R.id.topAdsBottomSheetDescription)?.text = bottomSheetDescription
@@ -749,7 +756,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         if (canShowToaster && !hasShownMultipleErrorToaster) {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
-            } ?: resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message)
+            } ?: context?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message).orEmpty()
             view?.showToasterError(errorMessage, onRetryAction)
         }
     }

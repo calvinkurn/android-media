@@ -20,4 +20,13 @@ object TopAdsConstants {
         const val TYPE_SINGLE = "single"
 
     }
+
+    object TopAdsAddressConstant{
+        const val USER_DISTRICT_ID = "user_districtId"
+        const val USER_CITY_ID = "user_cityId"
+        const val USER_POSTCODE = "user_postCode"
+        const val USER_LAT = "user_lat"
+        const val USER_LONG = "user_long"
+        const val USER_ADDRESS_ID = "user_addressId"
+    }
 }
