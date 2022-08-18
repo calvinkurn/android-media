@@ -501,12 +501,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 showRvWishlist()
                                 isFetchRecommendation = true
                                 hideTotalLabel()
-                                // hideSortFilter(collectionDetail.sortFilters)
+                                hideSearchBar()
+                                hideFilter()
                             }
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
                             showRvWishlist()
-                            // showSearchBar()
                             if (!collectionDetail.showDeleteProgress) updateTotalLabel(
                                 collectionDetail.totalData
                             )
@@ -626,13 +626,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 rvWishlistCollectionDetail.gone()
                 wishlistCollectionDetailSearchbar.gone()
                 emptyStateGlobalWishlistCollectionDetail.gone()
-                if (isAutoDeletion) {
-                    hideSearchBar()
-                    hideFilter()
-                } else {
-                    showSearchBar()
-                    showFilter()
-                }
+                hideSearchBar()
+                hideFilter()
                 hideTotalLabel()
                 globalErrorWishlistCollectionDetail.visible()
                 globalErrorWishlistCollectionDetail.setType(errorType)
