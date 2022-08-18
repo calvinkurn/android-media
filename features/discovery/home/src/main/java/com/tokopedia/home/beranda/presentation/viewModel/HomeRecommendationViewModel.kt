@@ -95,16 +95,19 @@ class HomeRecommendationViewModel @Inject constructor(
     ) {
         incrementTopadsPage()
         val newList = data.homeRecommendations.toMutableList()
+        if (!headlineAds?.displayAds?.data.isNullOrEmpty()) {
+            val position = headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position
+            if (position != null) {
+                newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
+            }
+        }
         if (topAdsBanner.isEmpty()) {
-            _homeRecommendationLiveData.postValue(data.copy(
-                homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel }
-            ))
+            homeBannerTopAds.firstOrNull()?.let { newList.remove(it) }
         } else {
             topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
                 val visitableBanner = homeBannerTopAds[index]
-                if (headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position == Int.ZERO) {
+                if (newList.first() is HomeRecommendationHeadlineTopAdsDataModel) {
                     if (newList.size > visitableBanner.position){
-                        newList.removeAt(visitableBanner.position)
                         newList[visitableBanner.position + 1] =
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
                     }
@@ -116,13 +119,6 @@ class HomeRecommendationViewModel @Inject constructor(
                     }
 
                 }
-            }
-        }
-        if (!headlineAds?.displayAds?.data.isNullOrEmpty()) {
-            val position = headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position
-            if (position != null) {
-                newList[position] =
-                    HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
             }
         }
         _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
