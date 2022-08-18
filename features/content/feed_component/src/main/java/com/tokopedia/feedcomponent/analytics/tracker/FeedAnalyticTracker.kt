@@ -2455,7 +2455,7 @@ class FeedAnalyticTracker
             EVENT_LABEL, "$activityId - $hashtag - - $source",
             BUSINESS_UNIT, CONTENT,
             CURRENT_SITE, MARKETPLACE,
-            USER_ID, userId,
+            KEY_EVENT_USER_ID, userId,
             TRACKER_ID, "34616",
         )
 
