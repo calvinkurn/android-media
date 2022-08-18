@@ -173,6 +173,8 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
             }
 
             featureItemAdapter.setData(data.featureInfo)
+
+            initUncheckedListener()
         }
 
         private fun setItemChecked(data: ConventionalModel) {
@@ -202,6 +204,14 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                     childLayout.gone()
                 }
             }
+        }
+
+        private fun initUncheckedListener(){
+            productItemAdapter.setupUncheckedListener(object : ShipperProductItemAdapter.ShipperProductUncheckedListener {
+                override fun uncheckedProduct() {
+                    shipmentItemCb.isChecked = false
+                }
+            })
         }
 
     }

@@ -69,6 +69,7 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
             pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
             relatedKeyword = relatedKeyword,
             searchFilter = "",
+            externalReference = "",
         )
 
         `Test general search tracking`(
@@ -105,6 +106,7 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
             pageSource = Dimension90Utils.getDimension90(searchShopParameter),
             relatedKeyword = relatedKeyword,
             searchFilter = "",
+            externalReference = "",
         )
 
         `Test general search tracking`(
@@ -144,6 +146,7 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
             pageSource = Dimension90Utils.getDimension90(searchShopParameter),
             relatedKeyword = relatedKeyword,
             searchFilter = "",
+            externalReference = "",
         )
 
         `Test general search tracking`(
@@ -181,6 +184,7 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
             pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
             relatedKeyword = relatedKeyword,
             searchFilter = "",
+            externalReference = "",
         )
 
         `Test general search tracking`(
@@ -219,7 +223,8 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
             eventLabel = eventLabel,
             pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
             relatedKeyword = relatedKeyword,
-            searchFilter = "${SearchApiConst.OFFICIAL}=true&${SearchApiConst.FCITY}=123"
+            searchFilter = "${SearchApiConst.OFFICIAL}=true&${SearchApiConst.FCITY}=123",
+            externalReference = "",
         )
 
         `Test general search tracking`(
@@ -228,4 +233,43 @@ internal class SearchShopGeneralSearchTrackingTest: SearchShopDataViewTestFixtur
             expectedGeneralSearchTracking = expectedGeneralSearchTracking
         )
     }
+
+    @Test
+    fun `general search tracking shop external reference`() {
+        val externalReference = "1234567"
+        val searchShopParameter = mapOf(
+            SearchApiConst.Q to defaultKeyword,
+            SearchApiConst.SRP_EXT_REF to externalReference,
+        )
+        val searchShopModel = "searchshop/generalsearch/general-search.json".jsonToObject<SearchShopModel>()
+
+        val treatmentType = searchShopModel.aceSearchShop.header.keywordProcess
+        val responseCode = searchShopModel.aceSearchShop.header.responseCode
+        val businessUnit = SearchEventTracking.PHYSICAL_GOODS
+        val totalData = searchShopModel.aceSearchShop.totalShop
+        val eventLabel = "$defaultKeyword|" +
+                "$treatmentType|" +
+                "$responseCode|" +
+                "$businessUnit|" +
+                "${SearchEventTracking.NONE}|" +
+                "${SearchEventTracking.NONE}|" +
+                "$totalData"
+
+        val relatedKeyword = "${SearchEventTracking.NONE} - ${SearchEventTracking.NONE}"
+
+        val expectedGeneralSearchTracking = GeneralSearchTrackingShop(
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(searchShopParameterCommon),
+            relatedKeyword = relatedKeyword,
+            searchFilter = "",
+            externalReference = externalReference,
+        )
+
+        `Test general search tracking`(
+            searchShopParameter = searchShopParameter,
+            searchShopModel = searchShopModel,
+            expectedGeneralSearchTracking = expectedGeneralSearchTracking
+        )
+    }
+
 }

@@ -16,15 +16,14 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.MutationSharePdfNotification
+import com.tokopedia.hotel.common.util.QueryHotelOrderDetail
 import com.tokopedia.hotel.databinding.FragmentHotelEVoucherBinding
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelEVoucherCancellationPoliciesAdapter
@@ -34,8 +33,10 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,7 +51,6 @@ import java.io.File.separator
 import java.io.FileOutputStream
 import java.io.OutputStream
 import javax.inject.Inject
-
 
 /**
  * @author by furqan on 14/05/19
@@ -77,7 +77,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             eVoucherViewModel = viewModelProvider.get(HotelEVoucherViewModel::class.java)
         }
 
@@ -120,7 +120,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         val args = savedInstanceState ?: arguments
         orderId = args?.getString(EXTRA_ORDER_ID) ?: ""
-        eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
+        eVoucherViewModel.getOrderDetail(QueryHotelOrderDetail(), orderId)
 
     }
 
@@ -405,12 +405,12 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         binding?.let {
             it.containerError.root.hide()
         }
-        eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
+        eVoucherViewModel.getOrderDetail(QueryHotelOrderDetail(), orderId)
     }
 
     override fun sendPdf(emailList: MutableList<String>) {
         progressDialog.show()
-        eVoucherViewModel.sendPdf(HotelGqlMutation.SHARE_PDF_NOTIFICATION, emailList, orderId)
+        eVoucherViewModel.sendPdf(MutationSharePdfNotification(), emailList, orderId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

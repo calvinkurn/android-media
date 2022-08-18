@@ -1510,7 +1510,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
