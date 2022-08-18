@@ -3,5 +3,13 @@
     <string name="fs_canceled_lable">Batalkan</string>
     <string name="title_detail_category">Detail Category</string>
     <string name="quantity_product">%1$d/%2$d Produk</string>
+
+    <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>
+    <string name="stft_check_reason">Cek Alasan</string>
+    <string name="stfs_title_ticker_upcoming_cdp_full_quota_state">Yah, kuota campaign sudah penuh</string>
+    <string name="stfs_title_ticker_upcoming_cdp_registration_close_state">Periode pendaftaran campaign ini sudah ditutup</string>
+    <string name="stfs_description_ticker_upcoming_cdp_product_not_eligible_state">Belum ada produkmu yang memenuhi kriteria campaign ini.</string>
+    <string name="stfs_description_ticker_upcoming_cdp_full_quota_state">Tenang, kamu masih punya kesempatan berpartisipasi di campaign menarik lainnya!</string>
+    <string name="stfs_description_ticker_upcoming_cdp_registration_close_state">Yuk, daftar di campaign lain yang periode pendaftarannya masih dibuka!</string>
 </resources>

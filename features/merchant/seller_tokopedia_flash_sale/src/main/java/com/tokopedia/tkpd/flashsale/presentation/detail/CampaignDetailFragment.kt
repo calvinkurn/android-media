@@ -25,7 +25,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
+
+    //View Binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
+    private var upcomingCdpHeaderBinding: StfsCdpUpcomingHeaderBinding? = null
+    private var upcomingCdpMidBinding: StfsCdpUpcomingMidBinding? = null
+    private var upcomingCdpBodyBinding: StfsCdpUpcomingBodyBinding? = null
 
     override fun getScreenName(): String =
         CampaignDetailFragment::class.java.canonicalName.orEmpty()
@@ -58,11 +63,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcomingHeader() {
         val binding = binding ?: return
-        var upcomingCdpHeaderBinding: StfsCdpUpcomingHeaderBinding? = null
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_header
         inflatedView.inflate()
-        inflatedView.setOnInflateListener { viewStub, view ->
+        inflatedView.setOnInflateListener { _, view ->
             upcomingCdpHeaderBinding = StfsCdpUpcomingHeaderBinding.bind(view)
         }
 
@@ -73,7 +77,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcomingMid() {
         val binding = binding ?: return
-        var upcomingCdpMidBinding: StfsCdpUpcomingMidBinding? = null
         val inflatedView = binding.layoutMid
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
         inflatedView.inflate()
@@ -88,7 +91,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcomingBody() {
         val binding = binding ?: return
-        var upcomingCdpBodyBinding: StfsCdpUpcomingBodyBinding? = null
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
         inflatedView.inflate()
