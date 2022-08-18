@@ -36,9 +36,7 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
-import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
@@ -70,7 +68,6 @@ class FeedPlusTypeFactoryImpl(
     private val videoViewListener: VideoViewHolder.VideoViewListener
     private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener
     private val highlightListener: HighlightAdapter.HighlightListener
-    private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
     private val topAdsHeadlineListener: TopAdsHeadlineListener
 
@@ -88,13 +85,8 @@ class FeedPlusTypeFactoryImpl(
         this.videoViewListener = context
         this.feedMultipleImageViewListener = context
         this.highlightListener = context
-        this.retryViewHolderListener = context
         this.topAdsBannerListener = context
         this.topAdsHeadlineListener = context
-    }
-
-    override fun type(retryModel: RetryModel): Int {
-        return RetryViewHolder.LAYOUT
     }
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
@@ -149,7 +141,6 @@ class FeedPlusTypeFactoryImpl(
         val viewHolder: AbstractViewHolder<*>
 
         when (type) {
-            RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, retryViewHolderListener)
             DynamicPostViewHolder.LAYOUT -> {
                 viewHolder = DynamicPostViewHolder(
                         view,

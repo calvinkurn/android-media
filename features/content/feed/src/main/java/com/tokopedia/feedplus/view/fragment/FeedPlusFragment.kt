@@ -93,7 +93,6 @@ import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -105,7 +104,6 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
@@ -185,7 +183,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     FeedMultipleImageView.FeedMultipleImageViewListener,
     HighlightAdapter.HighlightListener,
     InterestPickAdapter.InterestPickItemListener,
-    RetryViewHolder.RetryViewHolderListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineListener,
     ShareCallback {
@@ -755,7 +752,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onLoad(totalCount: Int) {
         val size = adapter.getlist().size
         val lastIndex = size - 1
-        if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
+        if (adapter.getlist()[0] !is EmptyModel)
             feedViewModel.getFeedNextPage()
     }
 
@@ -860,13 +857,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onInfoClicked() {
         infoBottomSheet.show()
-    }
-
-    override fun onRetryClicked() {
-        adapter.removeRetry()
-        adapter.showLoading()
-        adapter.setEndlessScrollListener()
-        feedViewModel.getFeedNextPage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -2933,7 +2923,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             e.printStackTrace()
         }
         unsetEndlessScroll()
-        onShowRetryGetFeed()
         hideAdapterLoading()
     }
 
@@ -3291,10 +3280,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun isEnableInterestPick(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
         return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
-    }
-
-    private fun onShowRetryGetFeed() {
-        adapter.showRetry()
     }
 
     private fun hideAdapterLoading() {
