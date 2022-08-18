@@ -8,6 +8,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -64,7 +65,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun getHotelSearchDestination(rawQuery: String, keyword: String) {
+    fun getHotelSearchDestination(rawQuery: GqlQueryInterface, keyword: String) {
         val params = mapOf(PARAM_SEARCH_KEY to keyword)
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
@@ -79,7 +80,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    fun deleteRecentSearch(query: String, uuid: String) {
+    fun deleteRecentSearch(query: GqlQueryInterface, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {

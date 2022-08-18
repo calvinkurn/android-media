@@ -89,14 +89,12 @@
         app:layout_constraintEnd_toStartOf="@id/view_like"
         />
 
-    <com.tokopedia.iconunify.IconUnify
+    <include
         android:id="@+id/view_kebab_menu"
+        layout="@layout/view_kebab_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="MENU_KEBAB_VERTICAL"
         app:layout_constraintBottom_toBottomOf="@id/view_share_experience"
         app:layout_constraintEnd_toStartOf="@id/view_share_experience"
         app:layout_goneMarginEnd="@dimen/spacing_lvl3"

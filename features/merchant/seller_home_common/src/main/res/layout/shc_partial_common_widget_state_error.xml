@@ -10,8 +10,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgWidgetOnError"
-        android:layout_width="@dimen/shc_dimen_110dp"
-        android:layout_height="@dimen/shc_dimen_80dp"
+        android:layout_width="120dp"
+        android:layout_height="88dp"
         android:contentDescription="@string/shc_content_desc_image_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
@@ -44,6 +45,9 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,6 +86,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var price: Int = 0
     var pendingPromoNavigation: String = ""
 
+    val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
+
     // Express Checkout
     var isExpressCheckout = false
         set(value) {
@@ -117,7 +125,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         // Handle null response error
                         var throwable = it.throwable
                         if (throwable.message == NULL_RESPONSE) {
-                            throwable = MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                            throwable =
+                                MessageErrorException(getString(R.string.common_topup_enquiry_error))
                         }
                         onEnquiryError(throwable)
                     }
@@ -180,14 +189,14 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                             requestOtp()
                         } else {
                             commonTopupBillsAnalytics.eventExpressCheckout(
-                                    categoryName,
-                                    operatorName,
-                                    productId.toString(),
-                                    productName,
-                                    price,
-                                    isInstantCheckout,
-                                    promoCode.isNotEmpty(),
-                                    isSpecialProduct
+                                categoryName,
+                                operatorName,
+                                productId.toString(),
+                                productName,
+                                price,
+                                isInstantCheckout,
+                                promoCode.isNotEmpty(),
+                                isSpecialProduct
                             )
                             navigateToPayment(it.data)
                         }
@@ -195,7 +204,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     is Fail -> {
                         var throwable = it.throwable
                         if (it.throwable.message.isNullOrEmpty()) {
-                            throwable = MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                            throwable =
+                                MessageErrorException(getString(R.string.common_topup_enquiry_error))
                         }
                         onExpressCheckoutError(throwable)
                     }
@@ -259,7 +269,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
                             // Stop check voucher job to prevent previous promo override
                             topupBillsViewModel.stopCheckVoucher()
-                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData()
+                            val promoData: PromoData =
+                                it.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData()
                             setupPromoTicker(promoData)
                         }
                     }
@@ -321,13 +332,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         if (promoCode.isNotEmpty()) {
             val requestCode: Int
             if (isCoupon) {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
+                intent =
+                    RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
                 intent.putExtra(EXTRA_IS_USE, true)
                 intent.putExtra(EXTRA_COUPON_CODE, promoCode)
                 intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
                 requestCode = REQUEST_CODE_PROMO_DETAIL
             } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
+                intent =
+                    RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                 intent.putExtra(EXTRA_PROMO_CODE, promoCode)
                 intent.putExtra(EXTRA_COUPON_ACTIVE, true)
                 intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
@@ -382,20 +395,26 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getEnquiry(operatorId: String, productId: String, inputData: Map<String, String>) {
-        topupBillsViewModel.getEnquiry(CommonTopupBillsGqlQuery.rechargeInquiry,
-                topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
+        topupBillsViewModel.getEnquiry(
+            CommonTopupBillsGqlQuery.rechargeInquiry,
+            topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData)
+        )
     }
 
     fun getMenuDetail(menuId: Int) {
         onLoadingMenuDetail(true)
-        topupBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
-                topupBillsViewModel.createMenuDetailParams(menuId))
+        topupBillsViewModel.getMenuDetail(
+            CommonTopupBillsGqlQuery.catalogMenuDetail,
+            topupBillsViewModel.createMenuDetailParams(menuId)
+        )
     }
 
     fun getCatalogPluginData(operatorId: Int, categoryId: Int) {
         if (operatorId > 0 && categoryId > 0) {
-            topupBillsViewModel.getCatalogPluginData(CommonTopupBillsGqlQuery.rechargeCatalogPlugin,
-                    topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId))
+            topupBillsViewModel.getCatalogPluginData(
+                CommonTopupBillsGqlQuery.rechargeCatalogPlugin,
+                topupBillsViewModel.createCatalogPluginParams(operatorId, categoryId)
+            )
         }
     }
 
@@ -408,16 +427,23 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         shouldRefreshInputNumber: Boolean = true
     ) {
         topupBillsViewModel.getSeamlessFavoriteNumbers(
-                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds),
-                shouldRefreshInputNumber
+            CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+            topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds),
+            shouldRefreshInputNumber
         )
     }
 
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
-        topupBillsViewModel.checkVoucher(promoCode,
-                PromoDigitalModel(categoryId, categoryName, operatorName, productId, price = price.toLong())
+        topupBillsViewModel.checkVoucher(
+            promoCode,
+            PromoDigitalModel(
+                categoryId,
+                categoryName,
+                operatorName,
+                productId,
+                price = price.toLong()
+            )
         )
     }
 
@@ -430,13 +456,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         } ?: ""
         if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(
-                    CommonTopupBillsGqlMutation.rechargeExpressCheckout,
-                    topupBillsViewModel.createExpressCheckoutParams(
-                            productId,
-                            inputFields,
-                            price,
-                            voucherCode,
-                            checkOtp))
+                CommonTopupBillsGqlMutation.rechargeExpressCheckout,
+                topupBillsViewModel.createExpressCheckoutParams(
+                    productId,
+                    inputFields,
+                    price,
+                    voucherCode,
+                    checkOtp
+                )
+            )
         }
     }
 
@@ -497,16 +525,20 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             onLoadingAtc(true)
             checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
             checkoutPassData.voucherCodeCopied = promoCode
-            addToCartViewModel.addToCart(checkoutPassData,
-                    DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                    DigitalSubscriptionParams())
+            addToCartViewModel.addToCart(
+                checkoutPassData,
+                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams(),
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            )
         }
     }
 
     private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             if (::checkoutPassData.isInitialized) {
-                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+                val intent =
+                    RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
                 checkoutPassData.categoryId = categoryId
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
@@ -520,7 +552,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     private fun requestOtp() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
 
         val bundle = Bundle()
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
@@ -544,14 +576,14 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     protected fun getDefaultCheckoutPassDataBuilder(): DigitalCheckoutPassData.Builder {
         return DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                .instantCheckout("0")
-                .utmContent(GlobalConfig.VERSION_NAME)
-                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                .voucherCodeCopied("")
-                .isFromPDP(true)
+            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+            .instantCheckout("0")
+            .utmContent(GlobalConfig.VERSION_NAME)
+            .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+            .voucherCodeCopied("")
+            .isFromPDP(true)
     }
 
     companion object {
