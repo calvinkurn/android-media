@@ -229,6 +229,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.feedAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        // TODO check if has draft then showing dialog
                         getSwitchAccountConfirmationDialog(feedAccount).show()
                     }
                 })
@@ -781,7 +782,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setTitle(
                     String.format(
                         getString(R.string.play_bro_switch_account_title_dialog),
-                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer)
+                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer) + "mu"
                         else getString(R.string.play_bro_switch_account_shop)
                     )
                 )
