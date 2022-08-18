@@ -115,7 +115,6 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun renderLoadingState(isLoading: Boolean) {
         binding?.shimmer?.content?.isVisible = isLoading
         binding?.tabsUnify?.isVisible = !isLoading
-        binding?.globalError?.isVisible = !isLoading
     }
 
     private fun renderTabs(tabs: List<TabMetadata>) {

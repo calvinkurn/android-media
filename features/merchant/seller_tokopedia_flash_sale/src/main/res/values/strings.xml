@@ -35,6 +35,8 @@
     <string name="stfs_sold_count">Stok terjual</string>
     <string name="stfs_all_product_rejected">Semua Produk Ditolak</string>
     <string name="stfs_ends_in">Berakhir dalam</string>
+    <string name="stfs_sort">Urutkan</string>
+    <string name="stfs_all_category">Semua Kategori</string>
 
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>

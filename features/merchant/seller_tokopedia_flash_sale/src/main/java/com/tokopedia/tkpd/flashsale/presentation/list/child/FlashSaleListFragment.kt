@@ -17,7 +17,9 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
@@ -25,9 +27,11 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlas
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import com.tokopedia.seller_tokopedia_flash_sale.R
 
 class FlashSaleListFragment : BaseDaggerFragment() {
 
@@ -36,10 +40,14 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "campaign_count"
         private const val PAGE_SIZE = 10
 
-        private const val IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_upcoming_campaign.png"
-        private const val IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN =  "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_registered_campaign.png"
-        private const val IMAGE_URL_EMPTY_ONGOING_CAMPAIGN =  "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_ongoing_campaign.png"
-        private const val IMAGE_URL_EMPTY_FINISHED_CAMPAIGN =  "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_finished_campaign.png"
+        private const val IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_upcoming_campaign.png"
+        private const val IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_registered_campaign.png"
+        private const val IMAGE_URL_EMPTY_ONGOING_CAMPAIGN =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_ongoing_campaign.png"
+        private const val IMAGE_URL_EMPTY_FINISHED_CAMPAIGN =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_finished_campaign.png"
 
         @JvmStatic
         fun newInstance(
@@ -75,7 +83,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     private val totalCampaign by lazy {
         arguments?.getInt(BUNDLE_KEY_CAMPAIGN_COUNT).orZero()
     }
-    
+
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
@@ -87,7 +95,6 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    
 
 
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
@@ -123,24 +130,33 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
 
     private fun setupView() {
+        setupSortFilter()
         setupClickListener()
         setupRecyclerView()
     }
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.run {
-            layoutManager = LinearLayoutManager(activity ?: return, LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(activity ?: return, LinearLayoutManager.VERTICAL, false)
             adapter = flashSaleAdapter
 
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    val currentItemCount = flashSaleAdapter.getItems().size
-                    if (currentItemCount < totalCampaign) {
-                        flashSaleAdapter.addItem(LoadingItem)
-                        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(tabName, tabId,page * PAGE_SIZE))
+            endlessRecyclerViewScrollListener =
+                object : EndlessRecyclerViewScrollListener(layoutManager) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                        val currentItemCount = flashSaleAdapter.getItems().size
+                        if (currentItemCount < totalCampaign) {
+                            flashSaleAdapter.addItem(LoadingItem)
+                            viewModel.processEvent(
+                                FlashSaleListViewModel.UiEvent.LoadPage(
+                                    tabName,
+                                    tabId,
+                                    page * PAGE_SIZE
+                                )
+                            )
+                        }
                     }
                 }
-            }
             addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
         }
     }
@@ -181,6 +197,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun renderLoadingState(isLoading: Boolean) {
         binding?.loader?.isVisible = isLoading
+
     }
 
     private fun renderFlashSaleList(flashSales: List<DelegateAdapterItem>) {
@@ -189,6 +206,41 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         if (flashSales.isNotEmpty()) {
             flashSaleAdapter.addItems(flashSales)
         }
+    }
+
+    private fun setupSortFilter() {
+
+        val sortFilter = SortFilterItem(getString(R.string.stfs_sort))
+        val onSortClicked = {
+            sortFilter.type = if(sortFilter.type == ChipsUnify.TYPE_NORMAL) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+            sortFilter.selectedItem = arrayListOf("Jabodetabek", "Bali")
+        }
+
+        sortFilter.listener = { onSortClicked() }
+        sortFilter.chevronListener = { onSortClicked() }
+
+        val categoryFilter = SortFilterItem(getString(R.string.stfs_all_category))
+        val onCategoryClicked = {
+            sortFilter.type = if(sortFilter.type == ChipsUnify.TYPE_NORMAL) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+            sortFilter.selectedItem = arrayListOf("Jabodetabek", "Bali")
+        }
+        categoryFilter.listener = { onCategoryClicked() }
+        categoryFilter.chevronListener = { onCategoryClicked() }
+
+
+        val items = arrayListOf(sortFilter, categoryFilter)
+
+        binding?.sortFilter?.addItem(items)
+        binding?.sortFilter?.parentListener = {}
+        binding?.sortFilter?.dismissListener = {}
     }
 
 }
