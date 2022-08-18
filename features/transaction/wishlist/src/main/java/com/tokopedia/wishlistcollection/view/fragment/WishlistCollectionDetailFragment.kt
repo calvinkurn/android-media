@@ -1525,6 +1525,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             listProduct,
             userSession.userId,
             bulkDeleteMode,
+            bulkDeleteAdditionalParams,
             source
         )
     }
@@ -1535,6 +1536,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             listProductId,
             userSession.userId,
             bulkDeleteMode,
+            bulkDeleteAdditionalParams,
             source
         )
     }
@@ -2315,6 +2317,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             listSelectedProductIds,
             userSession.userId,
             bulkDeleteMode,
+            bulkDeleteAdditionalParams,
             source
         )
         WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()

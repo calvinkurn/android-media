@@ -182,13 +182,13 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         }
     }
 
-    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int, source: String) {
+    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int, additionalParams: WishlistV2BulkRemoveAdditionalParams, source: String) {
         launch {
             _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(
                 listProductId,
                 userId,
                 mode,
-                WishlistV2BulkRemoveAdditionalParams(),
+                additionalParams,
                 source
             )
         }
