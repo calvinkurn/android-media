@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerFragmen
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelineFragment
+import com.tokopedia.tkpd.flashsale.presentation.list.LandingContainerFragment
 import dagger.Component
 
 @TokopediaFlashSaleScope

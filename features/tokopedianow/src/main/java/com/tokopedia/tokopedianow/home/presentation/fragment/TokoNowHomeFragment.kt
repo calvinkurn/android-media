@@ -1109,7 +1109,6 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
                 is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
-                    it.position,
                     it.quantity,
                     it.data
                 )
@@ -1321,8 +1320,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickRepurchase(position, data)
     }
 
-    private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRepurchaseAddToCart(position, quantity, data)
+    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+        analytics.onRepurchaseAddToCart(quantity, data)
     }
 
     private fun trackClickShareSenderReferralWidget(referral: HomeSharingReferralWidgetUiModel) {

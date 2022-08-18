@@ -302,6 +302,9 @@ class ShopHomeNplCampaignViewHolder(
                         }
                     }
                     isShowClockIcon = false
+                    onFinish = {
+                        shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+                    }
                     show()
                 }
             } else {
