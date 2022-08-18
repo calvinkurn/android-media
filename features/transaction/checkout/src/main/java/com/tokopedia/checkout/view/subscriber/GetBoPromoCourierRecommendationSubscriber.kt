@@ -27,7 +27,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
         Timber.d(e)
-        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
@@ -47,7 +47,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                             if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
                                             shippingCourierUiModel.productData.shipperId == shipperId)) {
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                    presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+                                    presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
                                     presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
                                     view.resetCourier(shipmentCartItemModel)
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
@@ -66,7 +66,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                 }
             }
         }
-        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff)

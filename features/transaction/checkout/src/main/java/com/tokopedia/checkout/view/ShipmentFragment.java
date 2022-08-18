@@ -1112,7 +1112,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentCartItemModel.setStateHasLoadCourierState(true);
             }
             if (!shipmentCartItemModel.getBoCode().isEmpty()) {
-                shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode());
+                shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
                 shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
                 shipmentCartItemModel.setBoCode("");
             }
