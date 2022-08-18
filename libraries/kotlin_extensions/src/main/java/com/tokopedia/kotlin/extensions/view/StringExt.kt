@@ -140,6 +140,8 @@ fun String.digitsOnly(): Long {
 }
 
 
+
+const val INTEGER_OUT_RANGE_MAX_LENGTH = 1000
 fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
     return try {
         val longValue: Long = this.toLong()
@@ -155,7 +157,7 @@ fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
             Priority.P1, "INTEGER_PARSING_ERROR",
             mapOf(
                 "error_msg " to (e.message?:"Integer Parsing"),
-                "trace " to sw.toString()
+                "trace " to sw.toString().take(INTEGER_OUT_RANGE_MAX_LENGTH).trim()
             ))
 
         // calling error block in case of exception
