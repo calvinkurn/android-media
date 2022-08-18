@@ -49,6 +49,7 @@ import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -60,6 +61,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewHolder
@@ -225,6 +227,8 @@ class DiscoveryFragment :
                 bundle.putString(RECOM_PRODUCT_ID, queryParameterMap[RECOM_PRODUCT_ID])
                 bundle.putString(DYNAMIC_SUBTITLE, queryParameterMap[DYNAMIC_SUBTITLE])
                 bundle.putString(TARGET_TITLE_ID, queryParameterMap[TARGET_TITLE_ID])
+                bundle.putString(CAMPAIGN_ID, queryParameterMap[CAMPAIGN_ID])
+                bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
             }
         }
     }
@@ -1462,9 +1466,9 @@ class DiscoveryFragment :
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn())
+            getDiscoveryAnalytics().trackDiscoOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn())
+            getDiscoveryAnalytics().trackDiscoOpenScreen(identifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
         }
         openScreenStatus = true
     }

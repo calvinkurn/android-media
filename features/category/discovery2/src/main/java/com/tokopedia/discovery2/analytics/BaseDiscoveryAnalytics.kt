@@ -66,6 +66,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackQuickCouponPhoneVerified() {}
     open fun trackQuickCouponPhoneVerifyCancel() {}
     open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {}
+    open fun trackDiscoOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, campaignId: String = "", variantId: String = "") {}
     open fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String = "") {}
     open fun trackUnifyTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String = "") {}
     open fun trackCarouselBannerImpression(banners: List<DataItem>) {}
