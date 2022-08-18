@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class CampaignDetailBottomSheetModel(
     val timelineSteps: List<TimelineStepModel> = listOf(),
     val productCriterias: List<ProductCriteriaModel> = listOf(),
-    var showTimeline: Boolean = false,
-    var showCriteria: Boolean = false,
-    var showProductCriteria: Boolean = false
+    val showTimeline: Boolean = false,
+    val showCriteria: Boolean = false,
+    val showProductCriteria: Boolean = false
 ) : Parcelable
