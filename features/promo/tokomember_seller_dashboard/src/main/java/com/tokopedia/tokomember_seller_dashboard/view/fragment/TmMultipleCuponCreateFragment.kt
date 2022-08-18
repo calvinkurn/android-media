@@ -1223,12 +1223,15 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
-            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
-            val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+            val currentDate =
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            val maxDate =
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
                     set(Calendar.MINUTE, 59)
                 }
-            val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+            val minDate =
+                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 0)
                     set(Calendar.MINUTE, 0)
                 }
