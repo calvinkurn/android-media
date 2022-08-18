@@ -31,7 +31,7 @@ class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): Bottom
         savedInstanceState: Bundle?
     ): View? {
         binding = LayoutInitRegisterOtherMethodBottomsheetBinding.inflate(layoutInflater, container, false)
-        setTitle(context?.getString(R.string.choose_social_media) ?: "")
+        setTitle(context?.getString(R.string.other_method_title) ?: "")
         setChild(binding?.root)
 
         return super.onCreateView(inflater, container, savedInstanceState)
