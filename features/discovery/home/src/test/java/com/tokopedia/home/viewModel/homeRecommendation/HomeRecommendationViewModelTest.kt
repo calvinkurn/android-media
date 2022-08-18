@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
@@ -524,6 +525,8 @@ class HomeRecommendationViewModelTest{
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
+        getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
 
         homeRecommendationViewModel.loadInitialPage("", 1, 0)
@@ -642,6 +645,8 @@ class HomeRecommendationViewModelTest{
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
+        getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
 
         homeRecommendationViewModel.loadInitialPage("",1, 0)
@@ -710,6 +715,8 @@ class HomeRecommendationViewModelTest{
 
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()), arrayListOf())
 
+        getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
+
         homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
 
         homeRecommendationViewModel.loadInitialPage("",1, 0)
@@ -774,6 +781,8 @@ class HomeRecommendationViewModelTest{
         )
 
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel, homeRecommendationDataModel2)
+
+        getTopAdsHeadlineUseCase.givenDataReturn(TopAdsHeadlineResponse())
 
         topAdsImageViewUseCase.givenDataReturnAndThenThrows(arrayListOf(TopAdsImageViewModel()))
 
