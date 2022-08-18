@@ -1,5 +1,6 @@
 package com.tokopedia.sellerappwidget.view.executor
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
@@ -26,6 +27,7 @@ import timber.log.Timber
 class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel> {
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         private var INSTANCE: GetChatExecutor? = null
 
         fun run(context: Context, showLoadingState: Boolean = false) {

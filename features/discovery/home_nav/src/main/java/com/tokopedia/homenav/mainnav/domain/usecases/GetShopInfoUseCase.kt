@@ -54,7 +54,7 @@ class GetShopInfoUseCase @Inject constructor(
     fun setStrategyCache() {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setExpiryTime(EXPIRY_TIMES_MULTIPLIER * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                         .setSessionIncluded(true)
                         .build())
     }
@@ -62,7 +62,7 @@ class GetShopInfoUseCase @Inject constructor(
     fun setStrategyCloudThenCache() {
         graphqlUseCase.setCacheStrategy(
                 GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                        .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setExpiryTime(EXPIRY_TIMES_MULTIPLIER * GraphqlConstant.ExpiryTimes.HOUR.`val`())
                         .setSessionIncluded(true)
                         .build())
     }
@@ -81,5 +81,6 @@ class GetShopInfoUseCase @Inject constructor(
     companion object {
         private const val PARAM_INPUT = "input"
         private const val PARAM_SHOP_ID = "shop_id"
+        private const val EXPIRY_TIMES_MULTIPLIER = 5
     }
 }
