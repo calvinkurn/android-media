@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_2"
         android:gravity="center"
-        android:text="@string/up_empty_page_desc"
+        android:text="@string/up_empty_post_desc_on_self"
         android:textColor="@color/Unify_NN600"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"

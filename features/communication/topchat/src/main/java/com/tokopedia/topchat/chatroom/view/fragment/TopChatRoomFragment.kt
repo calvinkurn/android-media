@@ -1003,8 +1003,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         context?.let {
             val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
                 context = it,
-                shopId = shopId.toString(),
-                shopName = "",
+                shopId = shopId,
                 isSeller = isSeller(),
                 warehouseId = viewModel.attachProductWarehouseId
             )

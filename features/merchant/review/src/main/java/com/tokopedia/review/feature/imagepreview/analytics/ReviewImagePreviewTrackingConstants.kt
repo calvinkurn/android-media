@@ -14,7 +14,7 @@ object ReviewImagePreviewTrackingConstants {
     const val EVENT_LABEL_CLICK_SWIPE =
         "feedback_id:%s;direction:%s;image_position:%d;total_image:%d;"
     const val EVENT_LABEL_IMPRESS_IMAGE = "count_attachment:%d;"
-    const val EVENT_LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;"
+    const val EVENT_LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
 
     const val EVENT_CATEGORY = "product detail page - review - review image"
     const val EVENT_CATEGORY_IMAGE_GALLERY =

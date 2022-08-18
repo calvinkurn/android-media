@@ -13,7 +13,9 @@ data class MiniCartListUiModel(
         var visitables: MutableList<Visitable<*>> = mutableListOf(),
         var chatVisitables: MutableList<Visitable<*>> = mutableListOf(),
         var isFirstLoad: Boolean = false,
-        var needToCalculateAfterLoad: Boolean = false
+        var needToCalculateAfterLoad: Boolean = false,
+        var availableProductIds: ArrayList<String> = arrayListOf(),
+        var availableBundleIds: ArrayList<String> = arrayListOf()
 ) {
 
     fun getMiniCartProductUiModelList(): List<MiniCartProductUiModel> {

@@ -7,6 +7,7 @@ import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
 import com.tokopedia.topads.sdk.utils.CacheHandler
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSession
@@ -20,7 +21,8 @@ import java.util.*
 class GetAllDataFavoriteUseCase(
         private val context: Context,
         private val getFavoriteShopUsecase: GetFavoriteShopUsecase,
-        private val getTopAdsShopUseCase: GetTopAdsShopUseCase
+        private val getTopAdsShopUseCase: GetTopAdsShopUseCase,
+        private val topAdsAddressHelper: TopAdsAddressHelper
 ) : UseCase<DataFavorite>() {
 
     private val cacheHandler: CacheHandler = CacheHandler(context, CacheHandler.TOP_ADS_CACHE)
@@ -51,7 +53,7 @@ class GetAllDataFavoriteUseCase(
 
     private val topAdsShop: Observable<TopAdsShop>
         get() {
-            val requestParams = defaultParams()
+            val requestParams = defaultParams(topAdsAddressHelper.getAddressData())
             requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, true)
             requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
             val preferredCacheList = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY)

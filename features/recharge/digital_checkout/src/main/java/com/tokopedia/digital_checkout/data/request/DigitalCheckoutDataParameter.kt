@@ -23,5 +23,7 @@ data class DigitalCheckoutDataParameter(
 
     var isSubscriptionChecked: Boolean = false,
     var fintechProducts: HashMap<String, FintechProduct> = hashMapOf(),
-    var userInputPriceValue: Long? = null
+    var userInputPriceValue: Long? = null,
+
+    var isInstantCheckout: Boolean = false
 ) : Parcelable

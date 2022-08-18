@@ -96,7 +96,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check profile appLink then should return DF_CONTENT_PROFILE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/12345"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PROFILE)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_PEOPLE)
     }
 
     @Test
