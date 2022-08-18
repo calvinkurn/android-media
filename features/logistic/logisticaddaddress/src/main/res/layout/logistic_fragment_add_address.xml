@@ -198,10 +198,10 @@
                 android:textSize="5dp"
                 android:visibility="gone" />
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/regency_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:visibility="gone" />
 
             <Spinner
@@ -230,10 +230,10 @@
                 android:textSize="5dp"
                 android:visibility="gone" />
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/district_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:visibility="gone" />
 
             <Spinner
