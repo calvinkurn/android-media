@@ -27,25 +27,18 @@ class OldClearCacheAutoApplyStackUseCase @Inject constructor(private val graphql
         const val PARAM_PLACEHOLDER_ORDER_DATA = "orderData"
     }
 
-    fun setParams(serviceId: String, promoCodeList: ArrayList<String>) {
-        params = mapOf(
-                PARAM_PLACEHOLDER_SERVICE_ID to serviceId,
-                PARAM_PLACEHOLDER_PROMO_CODE to promoCodeList,
-                PARAM_PLACEHOLDER_IS_OCC to false
-        )
-    }
-
     fun setParams(request: ClearPromoRequest) {
         params = mapOf(
                 PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
                 PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
                 PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
-                PARAM_PLACEHOLDER_PROMO_CODE to ArrayList<String>().apply {
-                    addAll(request.orderData.codes)
-                    request.orderData.orders.forEach {
-                        addAll(it.codes)
-                    }
-                }
+//                // temporary for old compatibility
+//                PARAM_PLACEHOLDER_PROMO_CODE to ArrayList<String>().apply {
+//                    addAll(request.orderData.codes)
+//                    request.orderData.orders.forEach {
+//                        addAll(it.codes)
+//                    }
+//                }
         )
     }
 
