@@ -30,7 +30,7 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<StfsFragmentCampaignTimelineBinding>()
     private val timelineSteps by lazy {
-        arguments?.getParcelableArrayList<TimelineStepModel>(BUNDLE_KEY_TIMELINE_STEP_MODEL)
+        arguments?.getParcelableArrayList<TimelineStepModel>(BUNDLE_KEY_TIMELINE_STEP_MODEL)?.toList().orEmpty()
     }
 
     override fun getScreenName() = ""
@@ -62,7 +62,7 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             addItemDecoration(VerticalSpaceItemDecoration(spacingAmount))
             adapter = TimelineProcessAdapter().apply {
-                data = timelineSteps?.toList().orEmpty()
+                setDataList(timelineSteps)
             }
         }
     }

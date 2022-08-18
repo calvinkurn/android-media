@@ -8,11 +8,7 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCriteriaBin
 
 class CriteriaAdapter: RecyclerView.Adapter<CriteriaAdapter.CriteriaViewHolder>() {
 
-    var data: List<String> = mutableListOf()
-        set(value) {
-            field = value
-            notifyItemRangeChanged(Int.ZERO, value.size)
-        }
+    private var data: List<String> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
         val binding = StfsItemCriteriaBinding.inflate(LayoutInflater.from(parent.context),
@@ -26,6 +22,11 @@ class CriteriaAdapter: RecyclerView.Adapter<CriteriaAdapter.CriteriaViewHolder>(
         data.getOrNull(position)?.let { menu ->
             holder.bind(menu)
         }
+    }
+
+    fun setDataList(newData: List<String>) {
+        data = newData
+        notifyItemRangeChanged(Int.ZERO, newData.size)
     }
 
     inner class CriteriaViewHolder(private val binding: StfsItemCriteriaBinding) :

@@ -41,10 +41,10 @@ class CampaignCriteriaFragment: BaseDaggerFragment() {
 
     private fun setupCriteriaList() {
         binding?.rvCriteria?.apply {
-            val criteriaItems = resources.getStringArray(R.array.criteria_items)
+            val criteriaItems = resources.getStringArray(R.array.criteria_items).toList()
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = CriteriaAdapter().apply {
-                data = criteriaItems.toList()
+                setDataList(criteriaItems)
             }
         }
     }

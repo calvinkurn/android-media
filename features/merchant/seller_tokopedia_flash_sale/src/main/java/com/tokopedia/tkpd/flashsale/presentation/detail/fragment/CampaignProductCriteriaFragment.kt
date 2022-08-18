@@ -29,7 +29,7 @@ class CampaignProductCriteriaFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<StfsFragmentCampaignProductCriteriaBinding>()
     private val productCriterias by lazy {
-        arguments?.getParcelableArrayList<ProductCriteriaModel>(BUNDLE_KEY_CRITERIA_MODEL)?.toList()
+        arguments?.getParcelableArrayList<ProductCriteriaModel>(BUNDLE_KEY_CRITERIA_MODEL)?.toList().orEmpty()
     }
 
     override fun getScreenName() = ""
@@ -58,7 +58,7 @@ class CampaignProductCriteriaFragment: BaseDaggerFragment() {
         binding?.rvProductCriteria?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ProductCriteriaAdapter().apply {
-                data = productCriterias.orEmpty()
+                setDataList(productCriterias)
             }
         }
     }
