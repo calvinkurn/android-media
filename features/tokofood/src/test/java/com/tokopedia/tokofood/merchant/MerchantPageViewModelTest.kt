@@ -1,11 +1,12 @@
 package com.tokopedia.tokofood.merchant
 
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.data.*
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
@@ -15,10 +16,43 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
+
+    @Test
+    fun `when view model is created expect initial properties to be false or empty`() {
+        assertEquals(hashMapOf<String, Pair<Int, Int>>(), viewModel.productMap)
+        assertEquals(mutableListOf<ProductListItem>(), viewModel.productListItems)
+        assertEquals(listOf<CheckoutTokoFoodProduct>(), viewModel.selectedProducts)
+        assertFalse(viewModel.isAddressManuallyUpdated)
+        assertFalse(viewModel.isProductDetailBottomSheetVisible)
+        assertEquals(listOf<TokoFoodCategoryFilter>(), viewModel.filterList)
+        assertTrue(viewModel.filterNameSelected.isBlank())
+        assertFalse(viewModel.isStickyBarVisible)
+        assertEquals(null, viewModel.merchantData)
+    }
+
+    @Test
+    fun `when getting position from card positions pair expect the first value to be dataset position`() {
+        val datasetPosition = 1
+        val adapterPosition = 0
+        val testData = datasetPosition to adapterPosition
+        val expectedResult = 1
+        val actualResult = viewModel.getDataSetPosition(testData)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when getting position from card positions pair expect the second value to be adapter position`() {
+        val datasetPosition = 0
+        val adapterPosition = 1
+        val testData = datasetPosition to adapterPosition
+        val expectedResult = 1
+        val actualResult = viewModel.getAdapterPosition(testData)
+        assertEquals(expectedResult, actualResult)
+    }
 
     @Test
     fun `when GetMerchantDataUseCase is success expect merchant data`() {
@@ -107,6 +141,20 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     }
 
     @Test
+    fun `when resource provider return null expect the titles to be empty`() {
+        val testData = generateTestTokoFoodMerchantProfile()
+        coEvery { resourceProvider.getDistanceTitle() } returns null
+        coEvery { resourceProvider.getEstimationTitle() } returns null
+        coEvery { resourceProvider.getOpsHoursTitle() } returns null
+        val actualCarouselData = viewModel.mapMerchantProfileToCarouselData(testData)
+        actualCarouselData.forEachIndexed { index, carouselData ->
+            if (index != 0) {
+                assertTrue(carouselData.title.isBlank())
+            }
+        }
+    }
+
+    @Test
     fun `when today is sunday expect isToday is true in MerchantOpsHour with day equal to sunday`() {
         val monday = MerchantOpsHour(
                 initial = 'S',
@@ -155,7 +203,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
                 day = "Minggu",
                 time = "11:00 - 21:45",
                 isWarning = false,
-                isToday = false
+                isToday = true
         )
         val today = 1 // Calendar.SUNDAY = 1
         val testData = generateTestMerchantOpsHour()
@@ -183,6 +231,34 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         val productListItems = viewModel.mapFoodCategoriesToProductListItems(isShopClosed, testFoodCategories)
         val testData = generateTestCheckoutTokoFoodProduct()
         val actualResult = viewModel.applyProductSelection(productListItems, testData)
+        // index 0 is reserved for the header
+        // non variant test
+        assertEquals(expectedResult[1].productUiModel.isAtc, actualResult[1].productUiModel.isAtc)
+        // with variant test
+        assertEquals(expectedResult[2].productUiModel.isAtc, actualResult[2].productUiModel.isAtc)
+        val expectedCustomOrderDetail = expectedResult[2].productUiModel.customOrderDetails.first()
+        val expectedSelectedAddons = expectedCustomOrderDetail.customListItems.first().addOnUiModel?.selectedAddOns
+        val actualCustomOrderDetail = actualResult[2].productUiModel.customOrderDetails.first()
+        val actualSelectedAddons = actualCustomOrderDetail.customListItems.first().addOnUiModel?.selectedAddOns
+        assertEquals(expectedSelectedAddons, actualSelectedAddons)
+    }
+
+    @Test
+    fun `when getting product list items from view model expect ProductListItems with selected items`() {
+        coEvery {
+            getMerchantDataUseCase.executeOnBackground()
+        } returns GetMerchantDataResponse(
+                TokoFoodGetMerchantData(
+                        ticker = TokoFoodTickerDetail(),
+                        merchantProfile = TokoFoodMerchantProfile(),
+                        filters = listOf(),
+                        categories = generateTestFoodCategories()
+                )
+        )
+        viewModel.getMerchantData("merchantId", "latlong", "timezone")
+        viewModel.selectedProducts = generateTestCheckoutTokoFoodProduct()
+        val expectedResult = generateExpectedSelectedProductListItems(false)
+        val actualResult = viewModel.getAppliedProductSelection()?: listOf()
         // index 0 is reserved for the header
         // non variant test
         assertEquals(expectedResult[1].productUiModel.isAtc, actualResult[1].productUiModel.isAtc)
@@ -254,6 +330,15 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
     }
 
     @Test
+    fun `when mapping CartTokoFood to CustomOrderDetail using non variant product expect null`() {
+        val expectedResult = null
+        val testData = generateTestCartTokoFood()
+        val productUiModel = ProductUiModel()
+        val actualResult = viewModel.mapCartTokoFoodToCustomOrderDetail(testData, productUiModel)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
     fun `when mapping CartTokoFood to CustomOrderDetail expect legit CustomOrderDetail`() {
         val expectedResult = generateExpectedCustomOrderDetail()
         val testData = generateTestCartTokoFood()
@@ -272,6 +357,23 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         val expectedResult = true
         val actualResult = viewModel.isTickerDetailEmpty(emptyTickerData)
         assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when title or subtitle is not empty expect isTickerDetailEmpty to be false`() {
+        val tickerData1 = TokoFoodTickerDetail(title = "title")
+        val actualResult1 = viewModel.isTickerDetailEmpty(tickerData1)
+        assertFalse(actualResult1)
+        val tickerData2 = TokoFoodTickerDetail(subtitle = "subtitle")
+        val actualResult2 = viewModel.isTickerDetailEmpty(tickerData2)
+        assertFalse(actualResult2)
+    }
+
+    @Test
+    fun `when title and subtitle are not empty expect isTickerDetailEmpty to be false`() {
+        val tickerData = TokoFoodTickerDetail(title = "title", subtitle = "subtitle")
+        val actualResult = viewModel.isTickerDetailEmpty(tickerData)
+        assertFalse(actualResult)
     }
 
     private fun generateExpectedProductListItems(isShopClosed: Boolean): List<ProductListItem> {

@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
 import androidx.annotation.CallSuper
+import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.coachmark.CoachMarkItem
@@ -19,7 +20,7 @@ abstract class BasePartialView<T : BaseUiModel>(
     val impressHolder: ImpressHolder = ImpressHolder()
 
     abstract fun bindSuccessData(data: T)
-    abstract fun renderLoading()
+    abstract fun renderLoading(loadingType: LoadingType = LoadingType.ALL)
     abstract fun getCoachMarkItem(): CoachMarkItem?
     abstract fun shouldShowCoachMark(): Boolean
 

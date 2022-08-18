@@ -15,6 +15,7 @@ internal object TopAdsGtmTrackerConstant {
     const val DIMENSION83 = "dimension83"
     const val DIMENSION90 = "dimension90"
     const val DIMENSION115 = "dimension115"
+    const val DIMENSION131 = "dimension131"
 
     const val PRODUCT_VIEW = "productView"
     const val SEARCH_RESULT = "search result"

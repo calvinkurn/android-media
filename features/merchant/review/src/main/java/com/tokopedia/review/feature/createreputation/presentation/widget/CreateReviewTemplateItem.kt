@@ -11,7 +11,7 @@ class CreateReviewTemplateItem @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTemplateItemBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewTemplateItemBinding>(context, attrs, defStyleAttr) {
 
     private var createReviewTemplateListener: Listener? = null
 
@@ -47,10 +47,10 @@ class CreateReviewTemplateItem @JvmOverloads constructor(
 
     fun setListener(
         newCreateReviewTemplateListener: Listener,
-        newBaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener
+        newBaseReviewCustomViewListener: BaseReviewCustomView.Listener
     ) {
         createReviewTemplateListener = newCreateReviewTemplateListener
-        baseCreateReviewCustomViewListener = newBaseCreateReviewCustomViewListener
+        baseCreateReviewCustomViewListener = newBaseReviewCustomViewListener
     }
 
     interface Listener {

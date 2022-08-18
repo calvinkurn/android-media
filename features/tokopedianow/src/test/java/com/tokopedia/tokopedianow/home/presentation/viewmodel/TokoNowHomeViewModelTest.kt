@@ -68,6 +68,7 @@ import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
 import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
@@ -1754,7 +1755,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
-        val expected = HomeAddToCartTracker(
+        val expected = HomeRemoveFromCartTracker(
             position = 0,
             quantity = 0,
             cartId = cartId,
@@ -1765,8 +1766,31 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
 
-        viewModel.homeAddToCartTracker
+        viewModel.homeRemoveFromCartTracker
             .verifyValueEquals(expected)
+    }
+
+
+    @Test
+    fun `homeLayoutItemList does NOT contain product recom when remove from cart should NOT track the product`() {
+        val warehouseId = "1"
+        val productId = "1"
+        val shopId = "5"
+        val cartId = "1999"
+        val type = TokoNowLayoutType.PRODUCT_RECOM
+
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetMiniCart_thenReturn(miniCartResponse)
+        onRemoveItemCart_thenReturn(RemoveFromCartData())
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.addProductToCart(productId, 0, shopId, type)
+
+        viewModel.homeRemoveFromCartTracker
+            .verifyValueEquals(null)
     }
 
     @Test

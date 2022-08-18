@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
@@ -25,6 +26,9 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -37,8 +41,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ProfileViewHolder(
     itemView: View,
     val listener: HomeAccountUserListener,
+    val tokopediaPlusListener: TokopediaPlusListener,
     private val balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter?,
-    private val memberAdapter: HomeAccountMemberAdapter?
+    private val memberAdapter: HomeAccountMemberAdapter?,
 ) : BaseViewHolder(itemView) {
 
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
@@ -111,12 +116,29 @@ class ProfileViewHolder(
             binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
             binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
         }
+
+        binding?.tokopediaPlusWidget?.apply {
+            listener = tokopediaPlusListener
+            if (profile.isSuccessGetTokopediaPlusData) {
+                setContent(
+                    TokopediaPlusParam(
+                        TokopediaPlusCons.SOURCE_ACCOUNT_PAGE,
+                        profile.tokopediaPlusWidget
+                    )
+                )
+            } else {
+                onError()
+            }
+        }
     }
 
     private fun setupMemberSection(tierData: TierData) {
-        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text = tierData.nameDesc
-        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
+        if (tierData.nameDesc.isNotEmpty()) {
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text = tierData.nameDesc
+        }
+
         if(tierData.imageURL.isNotEmpty()) {
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
             binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.show()
             binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.setImageUrl(tierData.imageURL)
         } else {
@@ -129,12 +151,12 @@ class ProfileViewHolder(
             if (context.isDarkMode()) {
                 MethodChecker.setBackground(
                     binding?.accountUserItemProfileContainer,
-                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark)
+                    VectorDrawableCompat.create(context.resources,  R.drawable.ic_account_backdrop_dark, context.theme)
                 )
             } else {
                 MethodChecker.setBackground(
                     binding?.accountUserItemProfileContainer,
-                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop)
+                    VectorDrawableCompat.create(context.resources,  R.drawable.ic_account_backdrop, context.theme)
                 )
             }
         } catch (e: Exception) {}

@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
@@ -155,6 +156,16 @@ class CardViewHolder(
             }
 
             showCardState(element.data)
+            showBadge(element.data?.badgeImageUrl.orEmpty())
+        }
+    }
+
+    private fun showBadge(badgeUrl: String) {
+        if (badgeUrl.isNotBlank()) {
+            binding.imgSahCardBadge.visible()
+            binding.imgSahCardBadge.loadImage(badgeUrl)
+        } else {
+            binding.imgSahCardBadge.gone()
         }
     }
 
@@ -179,13 +190,28 @@ class CardViewHolder(
     }
 
     private fun showCardState(data: CardDataUiModel?) {
-        with(binding.imgShcCardState) {
+        with(binding) {
             when (data?.state) {
                 CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
-                    visible()
-                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardState.visible()
+                    imgShcCardStatePlus.gone()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
-                CardDataUiModel.State.NORMAL -> gone()
+                CardDataUiModel.State.WARNING_PLUS, CardDataUiModel.State.DANGER_PLUS -> {
+                    imgShcCardState.visible()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
+                }
+                CardDataUiModel.State.GOOD_PLUS -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
+                }
+                else -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.gone()
+                }
             }
         }
     }

@@ -82,7 +82,8 @@ object ShopPageProductListMapper {
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
                     it.stock = stock.toLong()
-                    it.maximumOrder = stock
+                    it.maximumOrder = getMaximumOrder(shopProduct)
+                    it.isEnableDirectPurchase = isEnableDirectPurchase
                     when (it.etalaseType) {
                         ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -121,8 +122,10 @@ object ShopPageProductListMapper {
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
                             setStockAndSoldOutForCampaignEtalase(it, shopProduct)
                         }
+                        ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN -> {
+                            it.isEnableDirectPurchase = false
+                        }
                     }
-                    it.isEnableDirectPurchase = isEnableDirectPurchase
                     it.isVariant = hasVariant
                     it.minimumOrder = minimumOrder
                     it.parentId = parentId
@@ -135,7 +138,6 @@ object ShopPageProductListMapper {
     ) {
         shopProductUiModel.stock = shopProduct.campaign.customStock.toLongOrZero().takeIf {!it.isZero()} ?: shopProduct.stock.toLong()
         shopProductUiModel.isSoldOut = shopProductUiModel.stock.isZero()
-        shopProductUiModel.maximumOrder = shopProduct.campaign.maxOrder
     }
 
     private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
@@ -339,5 +341,12 @@ object ShopPageProductListMapper {
             }
         }
         return stringBuilder.toString()
+    }
+
+    private fun getMaximumOrder(shopProductResponse: ShopProduct): Int {
+        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() } ?:
+        shopProductResponse.maximumOrder.takeIf { !it.isZero() } ?:
+        shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() } ?:
+        shopProductResponse.stock
     }
 }

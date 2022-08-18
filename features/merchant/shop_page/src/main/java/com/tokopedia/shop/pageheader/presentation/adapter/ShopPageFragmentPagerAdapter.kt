@@ -22,7 +22,6 @@ import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
 import com.tokopedia.utils.resources.isDarkMode
-import java.lang.Exception
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(

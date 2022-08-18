@@ -146,6 +146,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
@@ -237,7 +238,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
-    private var replyBox: ComposeMessageAreaConstraintLayout? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -287,7 +287,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
-            initSrw()
             initUserLocation()
             initObserver()
             initComposeAreaMsg()
@@ -300,8 +299,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         composeMsgArea?.initLayout(this,this)
     }
 
-    private fun initSrw() {
-        rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
+    private fun getSrwFrameLayoutListener() : SrwFrameLayout.Listener {
+        return object : SrwFrameLayout.Listener {
             override fun trackViewSrw() {
                 analytics.eventViewSrw(shopId, session.userId)
             }
@@ -317,7 +316,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun shouldShowOnBoarding(): Boolean {
                 return replyBubbleOnBoarding.hasBeenShown()
             }
-        })
+        }
     }
 
     private fun initUserLocation() {
@@ -339,10 +338,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun updateSrwPreviewState() {
         if (shouldShowSrw()) {
-            rvSrw?.renderSrwState()
+            handleSrw(onNewDesign = {
+                //Show SRW if only there's no reply specific message
+                topchatViewState?.shouldShowSrw = (replyCompose?.isVisible != true)
+            }, onOldDesign = {
+                rvSrw?.renderSrwState()
+                topchatViewState?.shouldShowSrw = false
+            })
             topchatViewState?.hideTemplateChat()
-        } else {
-            rvSrw?.hideSrw()
+        } else if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isLoadingState() != true) {
+            handleSrw(onNewDesign = {
+                topchatViewState?.shouldShowSrw = false
+            }, onOldDesign = {
+                rvSrw?.hideSrw()
+                topchatViewState?.shouldShowSrw = false
+            })
             showTemplateChatIfReady()
         }
     }
@@ -363,7 +373,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun hasNoSrw(): Boolean {
-        return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
+        return if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == false
+                    && topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true
+        } else {
+            rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
+        }
     }
 
     override fun collapseSrw() {
@@ -399,13 +414,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun clearReferredMsg() {
         replyCompose?.clearReferredComposedMsg()
+        if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isForceToHide = false
+        }
     }
 
     override fun notifyPreviewRemoved(model: SendablePreview) {
+        viewModel.removeAttachmentPreview(model)
         if (model is TopchatProductAttachmentPreviewUiModel && hasProductPreviewShown()) {
+            if (isSrwNewDesign()) {
+                topchatViewState?.showChatAreaShimmer()
+                topchatViewState?.chatTextAreaTabLayout?.srwLayout?.resetChatReplyQuestion()
+            }
             reloadSrw()
         }
-        viewModel.removeAttachmentPreview(model)
     }
 
     override fun reloadCurrentAttachment() {
@@ -421,9 +443,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun shouldShowSrw(): Boolean {
-        return !isSeller() && hasProductPreviewShown() &&
+        return if (isSrwNewDesign()) {
+            !isSeller() && hasProductPreviewShown() &&
+                    topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isAllowToShow() == true &&
+                    viewModel.isAttachmentPreviewReady()
+        } else {
+            !isSeller() && hasProductPreviewShown() &&
                 rvSrw?.isAllowToShow() == true && viewModel.isAttachmentPreviewReady() ||
                 (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
+        }
     }
 
     private fun initFbNewUnreadMessage() {
@@ -446,7 +474,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
-        replyBox = view?.findViewById(R.id.reply_box)
     }
 
     private fun initStickerView() {
@@ -480,6 +507,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         removeAttachmentIfNecessary(savedInstanceState)
         setupObservers()
         setupLifecycleObserver()
+        initChatTextAreaLayout()
     }
 
     private fun setupLifecycleObserver() {
@@ -685,8 +713,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
-        initProductPreview(savedInstanceState)
-        initInvoicePreview(savedInstanceState)
+        val isFromAnotherChat = isFromAnotherChat(savedInstanceState)
+        if (!isFromAnotherChat) {
+            initProductPreview(savedInstanceState)
+            initInvoicePreview(savedInstanceState)
+        }
         viewModel.initAttachmentPreview()
     }
 
@@ -760,6 +791,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
             viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated2)
+        } else if (topchatViewState?.getChatAreaShimmer()?.isVisible == true) {
+            topchatViewState?.shouldShowSrw = false
         }
     }
 
@@ -775,9 +808,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun checkReplyBubbleOnBoardingFirstRender() {
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
         if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
-            replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                rv, adapter, replyBox, context
-            )
+            if (isSrwNewDesign() &&
+                topchatViewState?.chatTextAreaTabLayout?.visibility == View.VISIBLE
+            ) {
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                    rv, adapter, topchatViewState?.chatTextAreaTabLayout?.tabReplyBox, context
+                )
+            } else {
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                    rv, adapter, composeMsgArea, context
+                )
+            }
         }
     }
 
@@ -962,8 +1003,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         context?.let {
             val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
                 context = it,
-                shopId = shopId.toString(),
-                shopName = "",
+                shopId = shopId,
                 isSeller = isSeller(),
                 warehouseId = viewModel.attachProductWarehouseId
             )
@@ -1119,7 +1159,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return if (message != null && message.isNotEmpty()) {
             message
         } else {
-            composeMsgArea?.getComposedText() ?: ""
+            getComposeMessageArea()?.getComposedText() ?: ""
         }
     }
 
@@ -1131,7 +1171,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendComposedMsg() {
-        composeMsgArea?.onSendMessage()
+        getComposeMessageArea()?.onSendMessage()
         val composedMsg = getComposedMessage()
         sendMessage(composedMsg)
         onSendingMessage().invoke()
@@ -1142,9 +1182,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         intention: String? = null
     ) {
         val referredMsg = replyCompose?.referredMsg
-        if (rvSrw?.isShowing() == true) {
-            addSrwBubbleToChat()
-        }
+        handleSrw(onNewDesign = {
+            if (topchatViewState?.chatTextAreaTabLayout?.isVisible == true) {
+                addSrwBubbleToChat()
+            }
+        }, onOldDesign = {
+            if (rvSrw?.isShowing() == true) {
+                addSrwBubbleToChat()
+            }
+        })
         replyBubbleOnBoarding.dismiss()
         viewModel.sendMsg(message, intention, referredMsg)
     }
@@ -1188,9 +1234,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (sticker == null) return
         onSendAndReceiveMessage()
         val referredMsg = replyCompose?.referredMsg
-        if (rvSrw?.isShowing() == true) {
-            addSrwBubbleToChat()
-        }
+        handleSrw(onNewDesign = {
+            if (topchatViewState?.chatTextAreaTabLayout?.isVisible == true) {
+                addSrwBubbleToChat()
+            }
+        }, onOldDesign = {
+            if (rvSrw?.isShowing() == true) {
+                addSrwBubbleToChat()
+            }
+        })
         onSendingMessage().invoke()
         sendAttachmentPreviews(sticker.intention)
         viewModel.sendSticker(sticker, referredMsg)
@@ -1476,12 +1528,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
-        initInvoicePreview(data.extras)
+        topchatViewState?.shouldShowSrw = false
+        val invoiceAttached = initInvoicePreview(data.extras)
+        if (invoiceAttached) {
+            removeSrwPreview()
+            showTemplateChatIfReady()
+        }
         viewModel.initAttachmentPreview()
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
+        topchatViewState?.shouldShowSrw = false
         initVoucherPreview(data.extras)
         viewModel.initAttachmentPreview()
     }
@@ -1501,13 +1559,23 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         resultProducts?.let { products ->
             removeSrwBubble()
             removeSrwPreview()
+            if (isSrwNewDesign()) {
+                topchatViewState?.showChatAreaShimmer()
+            }
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
         }
     }
 
     private fun removeSrwPreview() {
-        rvSrw?.hideSrw()
+        handleSrw(onNewDesign = {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.hideSrw()
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.resetSrw()
+            topchatViewState?.chatTextAreaTabLayout?.resetTab()
+        }, onOldDesign = {
+            rvSrw?.hideSrw()
+            rvSrw?.resetSrw()
+        })
     }
 
     private fun getImagePickerResult(data: Intent): List<String> {
@@ -1884,6 +1952,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.clearAttachmentPreview()
             viewModel.clearAttachmentPreview()
         }
+        topchatViewState?.shouldShowSrw = false
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
@@ -2264,7 +2333,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun initInvoicePreview(savedInstanceState: Bundle?) {
+    private fun initInvoicePreview(savedInstanceState: Bundle?): Boolean {
         val id = getInvoicePreviewId(savedInstanceState)
         val invoiceCode = getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
         val productName = getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
@@ -2286,9 +2355,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             status,
             totalPriceAmount
         )
-        if (invoiceViewModel.enoughRequiredData()) {
+        return if (invoiceViewModel.enoughRequiredData()) {
             viewModel.clearAttachmentPreview()
             viewModel.addAttachmentPreview(invoiceViewModel)
+            true
+        } else {
+            false
         }
     }
 
@@ -2449,7 +2521,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun addSrwBubble() {
         expandSrwPreview()
-        val srwState = rvSrw?.getStateInfo()
+        val srwState = if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.getStateInfo()
+        } else {
+            rvSrw?.getStateInfo()
+        }
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
@@ -2476,9 +2552,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
-        sendButton?.background =
+        val chatSendButton = getChatSendButton()
+        chatSendButton?.background =
             MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn_disabled)
-        sendButton?.setOnClickListener {
+        chatSendButton?.setOnClickListener {
             if (!isExceedLimit) {
                 showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
             }
@@ -2486,9 +2563,26 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun enableSendButton() {
-        sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
-        sendButton?.setOnClickListener {
+        val chatSendButton = getChatSendButton()
+        chatSendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
+        chatSendButton?.setOnClickListener {
             onSendButtonClicked()
+        }
+    }
+
+    private fun getChatSendButton(): IconUnify? {
+        return if (topchatViewState?.isChatTabVisible() == true) {
+            topchatViewState?.chatTextAreaTabLayout?.getSendButton()
+        } else {
+            sendButton
+        }
+    }
+
+    private fun getComposeMessageArea(): ComposeMessageAreaConstraintLayout? {
+        return if (topchatViewState?.isChatTabVisible() == true) {
+            topchatViewState?.chatTextAreaTabLayout?.getComposeMessageArea()
+        } else {
+            composeMsgArea
         }
     }
 
@@ -2549,14 +2643,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupObservers() {
-        viewModel.messageId.observe(viewLifecycleOwner, {
+        viewModel.messageId.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetMessageId(it.data)
                 is Fail -> onError(it.throwable)
             }
-        })
+        }
 
-        viewModel.shopFollowing.observe(viewLifecycleOwner, {
+        viewModel.shopFollowing.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.shopInfoById.result.isNullOrEmpty()) {
@@ -2567,9 +2661,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> onErrorGetShopFollowingStatus()
             }
-        })
+        }
 
-        viewModel.followUnfollowShop.observe(viewLifecycleOwner, {
+        viewModel.followUnfollowShop.observe(viewLifecycleOwner) {
             val element = it.first
             val result = it.second
             if (element != null) {
@@ -2583,9 +2677,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     is Fail -> onErrorFollowUnfollowShop(result.throwable)
                 }
             }
-        })
+        }
 
-        viewModel.addToCart.observe(viewLifecycleOwner, {
+        viewModel.addToCart.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     when (it.data.source) {
@@ -2603,13 +2697,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     }
                 }
             }
-        })
+        }
 
-        viewModel.seamlessLogin.observe(viewLifecycleOwner, {
+        viewModel.seamlessLogin.observe(viewLifecycleOwner) {
             redirectToBrowser(it)
-        })
+        }
 
-        viewModel.chatRoomSetting.observe(viewLifecycleOwner, {
+        viewModel.chatRoomSetting.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val widget = filterSettingToBeShown(it.data)
@@ -2619,24 +2713,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.orderProgress.observe(viewLifecycleOwner, {
+        viewModel.orderProgress.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> renderOrderProgress(it.data.chatOrderProgress)
                 is Fail -> {
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.srwTickerReminder.observe(viewLifecycleOwner, {
+        viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
+                else -> {}
             }
-        })
+        }
 
-        viewModel.occProduct.observe(viewLifecycleOwner, {
+        viewModel.occProduct.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     topchatViewState?.chatRoomViewModel?.let { chatData ->
@@ -2648,55 +2743,63 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> onError(it.throwable)
             }
-        })
+        }
 
-        viewModel.toggleBlock.observe(viewLifecycleOwner, {
+        viewModel.toggleBlock.observe(viewLifecycleOwner) {
             handleToggleBlock(it)
-        })
+        }
 
-        viewModel.chatDeleteStatus.observe(viewLifecycleOwner, {
+        viewModel.chatDeleteStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessDeleteConversation()
                 is Fail -> onError(it.throwable)
             }
-        })
+        }
 
-        viewModel.chatBackground.observe(viewLifecycleOwner, {
+        viewModel.chatBackground.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> renderBackground(it.data)
                 is Fail -> {
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.chatAttachments.observe(viewLifecycleOwner, {
+        viewModel.chatAttachments.observe(viewLifecycleOwner) {
             updateAttachmentsView(it)
-        })
+        }
 
-        viewModel.chatAttachmentsPreview.observe(viewLifecycleOwner, {
+        viewModel.chatAttachmentsPreview.observe(viewLifecycleOwner) {
             updateAttachmentsPreview(it)
-        })
+        }
 
-        viewModel.chatListGroupSticker.observe(viewLifecycleOwner, {
+        viewModel.chatListGroupSticker.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val listGroupSticker = it.data.first.chatListGroupSticker.list
                     val listUpdate = it.data.second
                     getChatMenuView()?.stickerMenu?.updateStickers(listGroupSticker, listUpdate)
+                    topchatViewState?.chatTextAreaTabLayout?.updateStickers(
+                        listGroupSticker,
+                        listUpdate
+                    )
                 }
                 is Fail -> {
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.srw.observe(viewLifecycleOwner, {
-            rvSrw?.updateStatus(it)
+        viewModel.srw.observe(viewLifecycleOwner) {
+            handleSrw(onNewDesign = {
+                topchatViewState?.chatTextAreaTabLayout?.srwLayout?.updateStatus(it)
+            }, onOldDesign = {
+                rvSrw?.updateStatus(it)
+            })
             updateSrwPreviewState()
-        })
+        }
 
-        viewModel.existingChat.observe(viewLifecycleOwner, {
+        viewModel.existingChat.observe(viewLifecycleOwner) {
             val result = it.first
             val isInit = it.second
             when (result) {
@@ -2717,25 +2820,28 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     } else {
                         onErrorResetChatToFirstPage(result.throwable)
                     }
+                    topchatViewState?.shouldShowSrw = false
+                    topchatViewState?.isAbleToReply = false
                 }
             }
-        })
+        }
 
-        viewModel.topChat.observe(viewLifecycleOwner, {
+        viewModel.topChat.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTopChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetTopChat(it.throwable)
             }
-        })
+        }
 
-        viewModel.bottomChat.observe(viewLifecycleOwner, {
+        viewModel.bottomChat.observe(viewLifecycleOwner) {
+
             when (it) {
                 is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetBottomChat(it.throwable)
             }
-        })
+        }
 
-        viewModel.deleteBubble.observe(viewLifecycleOwner, {
+        viewModel.deleteBubble.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     adapter.deleteMsg(it.data)
@@ -2743,75 +2849,74 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> showToasterError(R.string.topchat_error_delete_msg_bubble)
             }
-        })
+        }
 
-        viewModel.isWebsocketError.observe(viewLifecycleOwner, {
+        viewModel.isWebsocketError.observe(viewLifecycleOwner) {
             showErrorWebSocket(it)
-        })
+        }
 
-        viewModel.isTyping.observe(viewLifecycleOwner, { isTyping ->
+        viewModel.isTyping.observe(viewLifecycleOwner) { isTyping ->
             if (isTyping) {
                 onReceiveStartTypingEvent()
             } else {
                 onReceiveStopTypingEvent()
             }
-        })
+        }
 
         viewModel.msgDeleted.observeForever(deleteMsgObserver)
 
-        viewModel.msgRead.observe(viewLifecycleOwner, { replyTime ->
+        viewModel.msgRead.observe(viewLifecycleOwner) { replyTime ->
             onReceiveReadEvent()
-        })
+        }
 
-        viewModel.unreadMsg.observe(viewLifecycleOwner, { totalUnread ->
+        viewModel.unreadMsg.observe(viewLifecycleOwner) { totalUnread ->
             if (totalUnread > 0) {
                 showUnreadMessage(totalUnread)
             } else {
                 hideUnreadMessage()
             }
-        })
+        }
 
         viewModel.newMsg.observeForever(newMsgObserver)
         viewModel.removeSrwBubble.observeForever(srwRemovalObserver)
 
-        viewModel.previewMsg.observe(viewLifecycleOwner, { preview ->
+        viewModel.previewMsg.observe(viewLifecycleOwner) { preview ->
             showPreviewMsg(preview)
-        })
+        }
 
-        viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner, { attachPreview ->
+        viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner) { attachPreview ->
             if (attachPreview.isNotEmpty()) {
                 showAttachmentPreview(attachPreview)
-                updateSrwPreviewState()
                 if (hasProductPreviewShown()) {
                     focusOnReply()
                 }
             } else {
                 clearAttachmentPreviews()
             }
-        })
+        }
 
-        viewModel.attachmentSent.observe(viewLifecycleOwner, { attachment ->
+        viewModel.attachmentSent.observe(viewLifecycleOwner) { attachment ->
             sendAnalyticAttachmentSent(attachment)
-        })
+        }
 
-        viewModel.failUploadImage.observe(viewLifecycleOwner, { image ->
+        viewModel.failUploadImage.observe(viewLifecycleOwner) { image ->
             topchatViewState?.showRetryUploadImages(image, true)
-        })
+        }
 
-        viewModel.errorSnackbar.observe(viewLifecycleOwner, { error ->
+        viewModel.errorSnackbar.observe(viewLifecycleOwner) { error ->
             showSnackbarError(error)
-        })
+        }
 
-        viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
+        viewModel.uploadImageService.observe(viewLifecycleOwner) { image ->
             uploadImage(image)
-        })
+        }
 
-        viewModel.templateChat.observe(viewLifecycleOwner, {
-            when(it) {
+        viewModel.templateChat.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onErrorGetTemplate()
             }
-        })
+        }
     }
 
     private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
@@ -2820,6 +2925,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val afterReadyState = viewModel.isAttachmentPreviewReady()
         if (!previousReadyState && afterReadyState) {
             reloadSrw()
+        } else if (!afterReadyState) {
+            //when fail to get attachment, update srw preview state to hide loading & srw
+            updateSrwPreviewState()
         }
     }
 
@@ -3005,6 +3113,30 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    /**
+     * Show SRW Tab Design & Hide Template
+     */
+    override fun onCloseReplyBubble() {
+        if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isForceToHide = false
+            if (shouldShowSrw()) {
+                topchatViewState?.shouldShowSrw = true
+                topchatViewState?.hideTemplateChat()
+            }
+        }
+    }
+
+    /**
+     * Hide SRW Tab Design & Show Template
+     */
+    override fun onShowReplyBubble() {
+        if (isSrwNewDesign() && shouldShowSrw()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isForceToHide = true
+            topchatViewState?.shouldShowSrw = false
+            showTemplateChatIfReady()
+        }
+    }
+
     private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatTypeFactory>> {
         val widgets = arrayListOf<Visitable<TopChatTypeFactory>>()
 
@@ -3059,6 +3191,39 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER
     }
 
+    private fun initChatTextAreaLayout() {
+        handleSrw(onNewDesign = {
+            topchatViewState?.chatTextAreaTabLayout?.initReplyBox(
+                this,
+                this,
+                this,
+                this
+            )
+            topchatViewState?.chatTextAreaTabLayout?.initSrw(
+                this,
+                getSrwFrameLayoutListener()
+            )
+        }, onOldDesign = {
+            rvSrw?.initialize(this, getSrwFrameLayoutListener())
+        })
+    }
+
+    private fun isFromAnotherChat(savedInstanceState: Bundle?): Boolean {
+        return getBooleanArgument(IS_FROM_ANOTHER_CALL, savedInstanceState)
+    }
+
+    private fun handleSrw(onNewDesign: () -> Unit, onOldDesign: () -> Unit) {
+        if (isSrwNewDesign()) {
+            onNewDesign.invoke()
+        } else {
+            onOldDesign.invoke()
+        }
+    }
+
+    private fun isSrwNewDesign(): Boolean {
+        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -3081,7 +3246,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
-        private const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
+        const val AB_TEST_NEW_SRW = "srw_new_design"
+        const val AB_TEST_OLD_SRW = "control_variant"
+        const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

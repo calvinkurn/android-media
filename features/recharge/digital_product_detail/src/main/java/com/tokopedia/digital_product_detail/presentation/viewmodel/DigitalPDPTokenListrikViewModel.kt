@@ -68,11 +68,13 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
+    private val _favoriteChipsData =
+        MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
     val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>>
         get() = _favoriteChipsData
 
-    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
     val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>>
         get() = _autoCompleteData
 
@@ -98,11 +100,12 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     val catalogSelectGroup: LiveData<RechargeNetworkResult<DigitalCatalogOperatorSelectGroup>>
         get() = _catalogSelectGroup
 
-    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    private val _recommendationData =
+        MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
 
-    fun setMenuDetailLoading(){
+    fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
@@ -115,24 +118,24 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun setRechargeCatalogInputMultiTabLoading(){
+    fun setRechargeCatalogInputMultiTabLoading() {
         _observableDenomData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String) {
         catalogProductJob = viewModelScope.launch {
             launchCatchError(block = {
                 delay(DELAY_MULTI_TAB)
                 val denomGrid = repo.getProductTokenListrikDenomGrid(menuId, operator, clientNumber)
                 _observableDenomData.value = RechargeNetworkResult.Success(denomGrid)
-            }){
+            }) {
                 if (it !is CancellationException)
                     _observableDenomData.value = RechargeNetworkResult.Fail(it)
             }
         }
     }
 
-    fun setFavoriteNumberLoading(){
+    fun setFavoriteNumberLoading() {
         _favoriteChipsData.value = RechargeNetworkResult.Loading
     }
 
@@ -151,7 +154,7 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun setOperatorSelectGroupLoading(){
+    fun setOperatorSelectGroupLoading() {
         _catalogSelectGroup.value = RechargeNetworkResult.Loading
     }
 
@@ -185,16 +188,25 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         _addToCartResult.value = RechargeNetworkResult.Loading
     }
 
-    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  userId: String
-    ){
+    fun addToCart(
+        digitalIdentifierParam: RequestBodyIdentifier,
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        userId: String,
+        isUseGql: Boolean
+    ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            val categoryIdAtc = repo.addToCart(
+                digitalCheckoutPassData,
+                digitalIdentifierParam,
+                digitalSubscriptionParams,
+                userId,
+                isUseGql
+            )
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+                _addToCartResult.value =
+                    RechargeNetworkResult.Fail(MessageErrorException(it.message))
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
@@ -205,7 +217,11 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         _recommendationData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>, dgOperatorIds: List<Int>) {
+    fun getRecommendations(
+        clientNumbers: List<String>,
+        dgCategoryIds: List<Int>,
+        dgOperatorIds: List<Int>
+    ) {
         recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
             val recommendations = repo.getRecommendations(
@@ -220,7 +236,12 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun updateCheckoutPassData(denomData: DenomData, idemPotencyKeyActive: String, clientNumberWidget: String, operatorActiveId: String){
+    fun updateCheckoutPassData(
+        denomData: DenomData,
+        idemPotencyKeyActive: String,
+        clientNumberWidget: String,
+        operatorActiveId: String
+    ) {
         digitalCheckoutPassData.apply {
             categoryId = denomData.categoryId
             clientNumber = clientNumberWidget
@@ -246,29 +267,29 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryCheckoutPassData(categoryId: String){
+    fun updateCategoryCheckoutPassData(categoryId: String) {
         digitalCheckoutPassData.categoryId = categoryId
     }
 
     fun validateClientNumber(clientNumber: String) {
         validatorJob = viewModelScope.launch {
-                var errorMessage = ""
-                for (validation in validators) {
-                    val phoneIsValid = Pattern.compile(validation.rule)
-                        .matcher(clientNumber).matches()
-                    if (!phoneIsValid) {
-                        errorMessage = validation.message
-                    }
+            var errorMessage = ""
+            for (validation in validators) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumber).matches()
+                if (!phoneIsValid) {
+                    errorMessage = validation.message
                 }
-                isEligibleToBuy = errorMessage.isEmpty()
-                delay(VALIDATOR_DELAY_TIME)
-                _clientNumberValidatorMsg.value = errorMessage
+            }
+            isEligibleToBuy = errorMessage.isEmpty()
+            delay(VALIDATOR_DELAY_TIME)
+            _clientNumberValidatorMsg.value = errorMessage
         }
     }
 
-    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String) {
         var denomData: DenomData? = null
-        listDenomData.forEachIndexed{ index, activeDenomData ->
+        listDenomData.forEachIndexed { index, activeDenomData ->
             if (productId.equals(activeDenomData.id)) denomData = activeDenomData
         }
 
@@ -277,26 +298,28 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedPositionId(listDenomData: List<DenomData>): Int?{
-        var selectedProductPositionId : Int? = null
+    fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
+        var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
+                && selectedGridProduct.denomData.id.isNotEmpty()
+            ) selectedProductPositionId = index
         }
         return selectedProductPositionId
     }
 
-    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedGridProduct.denomData.id.isNotEmpty()
-            && selectedGridProduct.position >= 0
-            && selectedGridProduct.denomWidgetEnum == layoutType
-            && isEligibleToBuy)
+    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
+        (selectedGridProduct.denomData.id.isNotEmpty()
+                && selectedGridProduct.position >= 0
+                && selectedGridProduct.denomWidgetEnum == layoutType
+                && isEligibleToBuy)
 
-    fun onResetSelectedProduct(){
+    fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()
     }
 
     fun getListInfo(): List<String> {
-        return if (operatorData.id.isNotEmpty()){
+        return if (operatorData.id.isNotEmpty()) {
             operatorData.attributes.operatorDescriptions
         } else listOf()
     }

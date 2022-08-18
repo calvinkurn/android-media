@@ -32,7 +32,6 @@ import com.tokopedia.unifyprinciples.Typography
  */
 internal class CarouselVideoViewHolder(
     itemView: View,
-    private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
 ) : BaseViewHolder(itemView) {
 
@@ -42,7 +41,6 @@ internal class CarouselVideoViewHolder(
     private val frameVideo = itemView.findViewById<ConstraintLayout>(R.id.frame_video)
     private val layoutVideo = itemView.findViewById<PlayerView>(R.id.layout_video)
     private val videoPreviewImage = itemView.findViewById<ImageUnify>(R.id.videoPreviewImage)
-    private val videoView = itemView.findViewById<View>(R.id.video_view)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
     private val volumeIcon = itemView.findViewById<ImageView>(R.id.volume_icon)
@@ -239,7 +237,6 @@ internal class CarouselVideoViewHolder(
 
         fun create(
             parent: ViewGroup,
-            dataSource: FeedPostCarouselAdapter.DataSource,
             listener: Listener,
         ) = CarouselVideoViewHolder(
             LayoutInflater.from(parent.context)
@@ -248,7 +245,6 @@ internal class CarouselVideoViewHolder(
                     parent,
                     false,
                 ),
-            dataSource,
             listener,
         )
     }

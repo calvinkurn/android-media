@@ -15,6 +15,7 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_WHOLESALE_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -59,6 +60,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import java.io.IOException
 import kotlin.reflect.KFunction0
+import kotlin.reflect.KFunction1
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -565,6 +567,21 @@ class AddEditProductDetailViewModelTest {
         }
 
         Assert.assertTrue(errorMessage.isNotBlank() && errorMessage == stringResErrorMessage)
+    }
+
+    @Test
+    fun `validateProductWholeSaleQuasdsaoleSaleQuantityInput`() {
+        val stringResErrorMessage = "Jasd"
+
+        val errorMessage = runValidationAndProvideMessage(
+            provider::getWholeSaleMaxErrorMessage,
+            MAX_WHOLESALE_QUANTITY,
+            stringResErrorMessage
+        ) {
+            viewModel.validateProductWholeSaleQuantityInput(MAX_WHOLESALE_QUANTITY.toString(), "", "5")
+        }
+
+        Assert.assertTrue(errorMessage == stringResErrorMessage)
     }
 
     @Test
@@ -1829,6 +1846,18 @@ class AddEditProductDetailViewModelTest {
         every { provider() } returns value
         val result = funcToCall.invoke()
         verify { provider() }
+        return result
+    }
+
+    private fun <T: Any> runValidationAndProvideMessage(
+        provider: KFunction1<Int, String>,
+        arg: Int,
+        value: String,
+        funcToCall: () -> T
+    ): T {
+        every { provider(arg) } returns value
+        val result = funcToCall.invoke()
+        verify { provider(arg) }
         return result
     }
 

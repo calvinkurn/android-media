@@ -29,6 +29,8 @@ class Address(
         val provinceId: Long = 0,
         @SerializedName("province_name")
         val provinceName: String = "",
+        @SerializedName("country")
+        val country: String = "",
         @SerializedName("phone")
         val phone: String = "",
         @SerializedName("longitude")

@@ -44,6 +44,7 @@ data class Product(
         var tradeInInfoData: TradeInInfoData = TradeInInfoData(),
         var isFreeShipping: Boolean = false,
         var isFreeShippingExtra: Boolean = false,
+        var freeShippingName: String = "",
         var isShowTicker: Boolean = false,
         var tickerMessage: String = "",
         var variant: String = "",

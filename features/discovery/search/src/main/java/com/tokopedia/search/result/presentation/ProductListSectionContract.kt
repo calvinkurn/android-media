@@ -14,7 +14,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
@@ -128,7 +128,6 @@ interface ProductListSectionContract {
         val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
-        val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
         fun onViewCreated()
@@ -154,16 +153,11 @@ interface ProductListSectionContract {
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onInspirationCarouselChipsClick(
-                adapterPosition: Int,
-                inspirationCarouselViewModel: InspirationCarouselDataView,
-                clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-                searchParameter: Map<String, Any>
+            adapterPosition: Int,
+            inspirationCarouselViewModel: InspirationCarouselDataView,
+            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+            searchParameter: Map<String, Any>
         )
-        fun updateLastFilter(
-            searchParameter: Map<String, Any>,
-            savedOptionList: List<SavedOption>,
-        )
-        fun closeLastFilter(searchParameter: Map<String, Any>)
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

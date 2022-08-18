@@ -28,16 +28,12 @@ class RsaSignatureUtils {
 
     /* Check if we already have keypair within keystore with given alias */
     private fun hasKey(): Boolean {
-        try {
+        return try {
             val ks = getKeystore()
-            val entry: KeyStore.Entry = ks.getEntry(BiometricConstant.FINGERPRINT, null)
-            if (entry !is KeyStore.PrivateKeyEntry) {
-                return false
-            }
-            return true
+            ks.containsAlias(BiometricConstant.FINGERPRINT)
         } catch (e: Exception) {
             log("hasKey", e)
-            return false
+            false
         }
     }
 

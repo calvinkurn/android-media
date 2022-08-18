@@ -9,5 +9,6 @@ data class ShipmentInformationData(
         var estimation: String = "",
         var freeShipping: FreeShippingData = FreeShippingData(),
         var freeShippingExtra: FreeShippingData = FreeShippingData(),
+        var freeShippingGeneral: FreeShippingGeneralData = FreeShippingGeneralData(),
         var preorder: PreorderData = PreorderData()
 ) : Parcelable

@@ -225,6 +225,7 @@ class SearchProductFirstPageGqlUseCase(
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
                         title
+                        chip_name
                         options {
                             name
                             key

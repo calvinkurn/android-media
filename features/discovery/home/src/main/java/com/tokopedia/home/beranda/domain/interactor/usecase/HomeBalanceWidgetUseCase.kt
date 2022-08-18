@@ -1,11 +1,19 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
+import com.google.gson.Gson
+import com.google.gson.JsonParseException
+import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
-import com.tokopedia.home.beranda.domain.interactor.repository.*
-import com.tokopedia.home.beranda.domain.model.HomeFlag
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTokopointsListRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.GetHomeBalanceWidgetRepository
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.DEFAULT_BALANCE_POSITION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
@@ -15,13 +23,18 @@ import javax.inject.Inject
 class HomeBalanceWidgetUseCase @Inject constructor(
         private val homeWalletAppRepository: HomeWalletAppRepository,
         private val homeTokopointsListRepository: HomeTokopointsListRepository,
-        private val homeFlagRepository: HomeFlagRepository,
         private val userSession: UserSessionInterface,
-        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase
+        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
+        private val getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository
         ) {
 
     companion object {
         const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
+        const val ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET = "Unable to parse balance widget"
+        const val ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET_SUBSCRIPTION = "Unable to parse balance widget subscription data"
+        private const val BALANCE_TYPE_GOPAY = "gopay"
+        private const val BALANCE_TYPE_REWARDS = "rewards"
+        private const val BALANCE_TYPE_SUBSCRIPTIONS = "subscription"
     }
 
     suspend fun onGetInjectCouponTimeBased(): Result<InjectCouponTimeBased> {
@@ -33,98 +46,176 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    suspend fun onGetBalanceWidgetData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
-        if (!userSession.isLoggedIn) return currentHeaderDataModel
+    suspend fun onGetBalanceWidgetData(): HomeHeaderDataModel {
+        val homeHeaderDataModel = HomeHeaderDataModel()
+        if (!userSession.isLoggedIn) return homeHeaderDataModel
 
         try {
-            var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
-            homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
+            val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
+            if (getHomeBalanceWidget.getHomeBalanceList.error.isNotBlank()) {
+                throw MessageErrorException(getHomeBalanceWidget.getHomeBalanceList.error)
+            } else {
+                homeHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
+                var homeBalanceModel = getHomeBalanceModel(homeHeaderDataModel)
+                var indexDataRegistered = 0
+                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
+                    when (getHomeBalanceItem.type) {
+                        BALANCE_TYPE_GOPAY -> {
+                            val placeHolderLoadingGopay = BalanceDrawerItemModel(
+                                drawerItemType = TYPE_WALLET_APP_LINKED,
+                                headerTitle = getHomeBalanceItem.title
+                            )
+                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingGopay)
+                            indexDataRegistered++
+                        }
+                        BALANCE_TYPE_REWARDS -> {
+                            val placeHolderLoadingRewards = BalanceDrawerItemModel(
+                                drawerItemType = TYPE_REWARDS,
+                                headerTitle = getHomeBalanceItem.title
+                            )
+                            homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingRewards)
+                            indexDataRegistered++
+                        }
+                        BALANCE_TYPE_SUBSCRIPTIONS -> {
+                            homeBalanceModel = getSubscriptionsData(
+                                homeBalanceModel,
+                                getHomeBalanceItem.title,
+                                getHomeBalanceItem.data
+                            )
+                            homeBalanceModel.balancePositionSubscriptions = indexDataRegistered
+                            indexDataRegistered++
+                        }
+                    }
+                }
+                indexDataRegistered = 0
 
-            homeBalanceModel = getTokopointData(homeBalanceModel)
-            return currentHeaderDataModel.copy(headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                    homeBalanceModel = homeBalanceModel,
-                    isUserLogin = userSession.isLoggedIn
-            ),
-                    needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
-            )
+                return homeHeaderDataModel.copy(
+                    headerDataModel = homeHeaderDataModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
+                        isUserLogin = userSession.isLoggedIn
+                    )
+                )
+            }
         } catch (e: Exception) {
-            return currentHeaderDataModel
+            HomeServerLogger.logWarning(
+                type = HomeServerLogger.TYPE_BALANCE_WIDGET_ERROR,
+                throwable = MessageErrorException(e.localizedMessage),
+                reason = ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET
+            )
+            homeHeaderDataModel.headerDataModel?.homeBalanceModel?.status = HomeBalanceModel.STATUS_ERROR
+            homeHeaderDataModel.headerDataModel?.isUserLogin = userSession.isLoggedIn
+            return homeHeaderDataModel
         }
     }
 
-    private suspend fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel, vararg positionToReset: Int): HomeBalanceModel {
+    private fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel): HomeBalanceModel {
         return HomeBalanceModel().apply {
             val currentHomeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel
                     ?: HomeBalanceModel()
             balanceDrawerItemModels = currentHomeBalanceModel.balanceDrawerItemModels
-            positionToReset.forEach {
-                resetDrawerItem(it)
-            }
         }
     }
 
-    suspend fun onGetTokopointData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+    suspend fun onGetTokopointData(
+        currentHeaderDataModel: HomeHeaderDataModel,
+        position: Int,
+        headerTitle: String
+    ): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
-        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_SECOND)
-        homeBalanceModel = getTokopointData(homeBalanceModel)
+        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+        homeBalanceModel = getTokopointData(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                        homeBalanceModel = homeBalanceModel,
-                        isUserLogin = userSession.isLoggedIn
-                ),
-                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+                    homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS,
+                        balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
+                            ?: DEFAULT_BALANCE_POSITION
+                    ),
+                        isUserLogin = userSession.isLoggedIn,
+                )
         )
     }
 
-    suspend fun onGetWalletAppData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+    suspend fun onGetWalletAppData(
+        currentHeaderDataModel: HomeHeaderDataModel,
+        position: Int,
+        headerTitle: String
+    ): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
-        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST)
-        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
+        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                homeBalanceModel = homeBalanceModel,
+                homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS,
+                    balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
+                        ?: DEFAULT_BALANCE_POSITION
+                ),
                 isUserLogin = userSession.isLoggedIn
-            ),
-            needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+            )
         )
     }
 
-    suspend fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+    fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
-
-        try {
-            val homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel).apply { initBalanceModelByType() }
-            return currentHeaderDataModel.copy(headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                homeBalanceModel = homeBalanceModel,
-                isUserLogin = userSession.isLoggedIn
-            ),
-                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+        return currentHeaderDataModel.copy(
+            headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                isUserLogin = userSession.isLoggedIn,
+                homeBalanceModel = HomeBalanceModel(balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions?: DEFAULT_BALANCE_POSITION)
             )
-        } catch (e: Exception) {
-            return currentHeaderDataModel
-        }
+        )
     }
 
-    private suspend fun getTokopointData(homeBalanceModel: HomeBalanceModel): HomeBalanceModel {
+    private suspend fun getTokopointData(
+        homeBalanceModel: HomeBalanceModel,
+        headerTitle: String,
+        position: Int = DEFAULT_BALANCE_POSITION
+    ): HomeBalanceModel {
         try {
-            homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(
-
-            ))
+            homeBalanceModel.mapBalanceData(
+                tokopointDrawerListHomeData = homeTokopointsListRepository.getRemoteData(),
+                headerTitle = headerTitle,
+                position = position
+            )
         } catch (e: Exception) {
-            homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeBalanceModel.mapErrorTokopoints()
+            homeBalanceModel.mapErrorTokopoints(headerTitle, position)
         }
         return homeBalanceModel
     }
 
-    private suspend fun getDataUsingWalletApp(homeBalanceModel: HomeBalanceModel): HomeBalanceModel {
+    private fun getSubscriptionsData(
+        homeBalanceModel: HomeBalanceModel,
+        headerTitle: String,
+        subscriptions: String
+    ): HomeBalanceModel {
+        try {
+            val subscriptionsData = Gson().fromJson(subscriptions, SubscriptionsData::class.java)
+            homeBalanceModel.mapBalanceData(subscriptionsData = subscriptionsData, headerTitle = headerTitle)
+        } catch (e: Exception) {
+            HomeServerLogger.logWarning(
+                type = HomeServerLogger.TYPE_SUBSCRIPTION_ERROR,
+                throwable = MessageErrorException(e.localizedMessage),
+                reason = ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET_SUBSCRIPTION
+            )
+            throw JsonParseException(e)
+        }
+        return homeBalanceModel
+    }
+
+    private suspend fun getDataUsingWalletApp(
+        homeBalanceModel: HomeBalanceModel,
+        headerTitle: String,
+        position: Int = DEFAULT_BALANCE_POSITION
+    ): HomeBalanceModel {
         try {
             val walletAppData = homeWalletAppRepository.getRemoteData()
             walletAppData.let { walletContent ->
                 if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
-                    homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
+                    homeBalanceModel.mapBalanceData(
+                        walletAppData = walletAppData,
+                        headerTitle = headerTitle,
+                        position = position
+                    )
                 } else {
                     HomeServerLogger.logWarning(
                             type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
@@ -135,8 +226,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeBalanceModel.mapErrorWallet(isWalletApp = true)
+            homeBalanceModel.mapErrorWallet(headerTitle, position)
         }
         return homeBalanceModel
     }

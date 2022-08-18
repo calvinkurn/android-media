@@ -112,19 +112,22 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeCard(intent: Intent) {
+        val timeCheckCardDuration = intent.getStringExtra(EMONEY_TIME_CHECK_LOGIC_TAG)
+            ?: context?.resources?.getString(com.tokopedia.emoney.R.string.emoney_nfc_no_need_to_check_logic) ?: ""
+        val startTimeBeforeCallGql = System.currentTimeMillis()
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
-                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery, startTimeBeforeCallGql, timeCheckCardDuration)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
                 showLoading(getOperatorName(issuerActive))
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
-                        0)
+                        0, startTimeBeforeCallGql, timeCheckCardDuration)
             } else {
                 val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty(),
@@ -350,6 +353,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
+
+        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

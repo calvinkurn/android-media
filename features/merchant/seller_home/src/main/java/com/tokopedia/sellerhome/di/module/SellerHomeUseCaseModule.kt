@@ -216,5 +216,4 @@ class SellerHomeUseCaseModule {
         mapper: TickerMapper,
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
-
 }

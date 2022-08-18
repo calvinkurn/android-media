@@ -76,6 +76,7 @@ class ShippingDurationConverter @Inject constructor() {
             shippingDurationUiModel.etaErrorCode = serviceData.texts.errorCode
             val shippingCourierUiModels = convertToShippingCourierViewModel(shippingDurationUiModel,
                     serviceData.products, ratesId, blackboxInfo, convertToPreOrderModel(ratesDetailData.preOrder))
+            shippingDurationUiModel.serviceData.isUiRatesHidden = shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
             shippingDurationUiModel.shippingCourierViewModelList = shippingCourierUiModels
             if (shippingCourierUiModels.isNotEmpty()) {
                 shippingDurationUiModels.add(shippingDurationUiModel)

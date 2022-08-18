@@ -41,7 +41,8 @@ data class CartShipmentAddressFormData(
         var isOpenPrerequisiteSite: Boolean = false,
         var isEligibleNewShippingExperience: Boolean = false,
         var popUpMessage: String = "",
-        var errorTicker: String = ""
+        var errorTicker: String = "",
+        var upsell: UpsellData = UpsellData()
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

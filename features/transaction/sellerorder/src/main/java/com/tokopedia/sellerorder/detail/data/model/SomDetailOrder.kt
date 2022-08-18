@@ -458,7 +458,11 @@ data class SomDetailOrder(
 
                 @SerializedName("is_broadcast_chat")
                 @Expose
-                val isBroadcastChat: Boolean = false
+                val isBroadcastChat: Boolean = false,
+
+                @SerializedName("shipment_logo")
+                @Expose
+                val shipmentLogo: String = "",
             )
 
             data class LogisticInfo(

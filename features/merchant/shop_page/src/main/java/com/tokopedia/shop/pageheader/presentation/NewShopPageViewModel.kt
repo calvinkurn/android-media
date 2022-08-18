@@ -22,7 +22,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopRe
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
-import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_BRANCH_LINK
@@ -36,18 +36,27 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_SHOP_SNIPPET
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_STATUS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
+import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
-import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
-import com.tokopedia.shop.pageheader.domain.interactor.*
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.NewGetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageTickerData
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
@@ -159,7 +168,8 @@ class NewShopPageViewModel @Inject constructor(
                                 shopId,
                                 shopDomain,
                                 isRefresh,
-                                extParam
+                                extParam,
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -175,7 +185,8 @@ class NewShopPageViewModel @Inject constructor(
                     block = {
                         getShopPageHeaderData(
                                 shopId,
-                                isRefresh
+                                isRefresh,
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -247,7 +258,8 @@ class NewShopPageViewModel @Inject constructor(
                         shopId,
                         shopDomain,
                         isRefresh,
-                        extParam
+                        extParam,
+                        widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -263,7 +275,8 @@ class NewShopPageViewModel @Inject constructor(
                 block = {
                     getShopPageHeaderData(
                         shopId,
-                        isRefresh
+                        isRefresh,
+                        widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -314,9 +327,22 @@ class NewShopPageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopPageHeaderData(shopId: String, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
+    private suspend fun getShopPageHeaderData(
+        shopId: String,
+        isRefresh: Boolean,
+        widgetUserAddressLocalData: LocalCacheModel
+    ): ShopPageHeaderLayoutResponse {
         val useCase = getShopPageHeaderLayoutUseCase.get()
-        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId)
+        val districtId: String
+        val cityId: String
+        if (!isMyShop(shopId)) {
+            districtId = widgetUserAddressLocalData.district_id
+            cityId = widgetUserAddressLocalData.city_id
+        } else {
+            districtId = ""
+            cityId = ""
+        }
+        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId, districtId, cityId)
         useCase.isFromCloud = isRefresh
         return useCase.executeOnBackground()
     }
@@ -353,14 +379,20 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopP1Data(
-            shopId: String,
-            shopDomain: String,
-            isRefresh: Boolean,
-            extParam: String
+        shopId: String,
+        shopDomain: String,
+        isRefresh: Boolean,
+        extParam: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): ShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        useCase.params = GetShopPageP1DataUseCase.createParams(
+            shopId,
+            shopDomain,
+            extParam,
+            widgetUserAddressLocalData
+        )
         return useCase.executeOnBackground()
     }
 
@@ -368,11 +400,17 @@ class NewShopPageViewModel @Inject constructor(
         shopId: String,
         shopDomain: String,
         isRefresh: Boolean,
-        extParam: String
+        extParam: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): NewShopPageHeaderP1 {
         val useCase = newGetShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        useCase.params = GetShopPageP1DataUseCase.createParams(
+            shopId,
+            shopDomain,
+            extParam,
+            widgetUserAddressLocalData
+        )
         return useCase.executeOnBackground()
     }
 
