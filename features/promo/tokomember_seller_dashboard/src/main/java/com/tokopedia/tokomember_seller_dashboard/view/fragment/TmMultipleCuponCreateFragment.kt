@@ -64,7 +64,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
@@ -1224,15 +1223,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
-            val currentDate =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
-            val maxDate =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
                     set(Calendar.MINUTE, 59)
                 }
-            val minDate =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+            val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 0)
                     set(Calendar.MINUTE, 0)
                 }
