@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -318,7 +317,6 @@ class DynamicFeedFragment:
                     like.value = like.value - 1
                 }
                 val payloads: MutableList<Int> = ArrayList()
-                payloads.add(HighlightViewHolder.PAYLOAD_UPDATE_LIKE)
                 payloads.add(columnNumber)
                 adapter.notifyItemChanged(rowNumber, payloads)
             }
@@ -341,7 +339,6 @@ class DynamicFeedFragment:
 
             comment.value = comment.value + totalNewComment
             val payloads: MutableList<Int> = ArrayList()
-            payloads.add(HighlightViewHolder.PAYLOAD_UPDATE_COMMENT)
             payloads.add(columnNumber)
             adapter.notifyItemChanged(rowNumber, payloads)
         }

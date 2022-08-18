@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
@@ -52,7 +51,7 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
-        return HighlightViewHolder.LAYOUT
+        return 0
     }
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
@@ -73,11 +72,6 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
 
     @Suppress("UNCHECKED_CAST")
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
-        return when (type) {
-            HighlightViewHolder.LAYOUT ->
-                HighlightViewHolder(parent, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
-            else -> super.createViewHolder(parent, type)
-
-        }
+        return super.createViewHolder(parent, type)
     }
 }

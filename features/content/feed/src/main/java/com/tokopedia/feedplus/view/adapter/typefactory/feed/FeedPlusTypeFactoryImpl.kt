@@ -3,12 +3,10 @@ package com.tokopedia.feedplus.view.adapter.typefactory.feed
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -111,7 +109,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
-        return HighlightViewHolder.LAYOUT
+        return 0
     }
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
@@ -192,9 +190,6 @@ class FeedPlusTypeFactoryImpl(
                     gridItemListener,
                     imagePostListener
                 )
-            }
-            HighlightViewHolder.LAYOUT -> {
-                viewHolder = HighlightViewHolder(view, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             }
             else -> viewHolder = super.createViewHolder(view, type)
         }
