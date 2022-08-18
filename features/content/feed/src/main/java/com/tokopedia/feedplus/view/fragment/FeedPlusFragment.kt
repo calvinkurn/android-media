@@ -751,7 +751,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onLoad(totalCount: Int) {
         val size = adapter.getlist().size
-        val lastIndex = size - 1
         if (adapter.getlist()[0] !is EmptyModel)
             feedViewModel.getFeedNextPage()
     }

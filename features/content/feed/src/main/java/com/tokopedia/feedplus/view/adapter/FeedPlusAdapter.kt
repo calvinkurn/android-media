@@ -31,6 +31,8 @@ class FeedPlusAdapter(
     private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
+
+    @Suppress("MagicNumber")
     var itemTreshold = 5
 
     // used to determine dynamicPostViewHolder.setVideo
