@@ -430,7 +430,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         val preSelectedPromoCodes = ArrayList<String>()
         promoListUiModel.value?.forEach { visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected) {
-                preSelectedPromoCodes.addPromo(visitable)
+                preSelectedPromoCodes.add(visitable.uiData.promoCode)
             }
         }
 
@@ -568,7 +568,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             var selectedRecommendationCount = 0
             promoListUiModel.value?.forEach { visitable ->
                 if (visitable is PromoListItemUiModel) {
-                    if (visitable.uiState.isSelected && recommendationPromoCodeList.containsPromoCode(visitable)) {
+                    if (visitable.uiState.isSelected && recommendationPromoCodeList.contains(visitable.uiData.promoCode)) {
                         selectedRecommendationCount++
                     }
                 }
@@ -1016,20 +1016,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun addUnSelectedPromoCodes(toBeRemovedPromoCodes: ArrayList<String>) {
         promoListUiModel.value?.forEach { visitable ->
-//            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled) {
-//                if (visitable.uiState.isBebasOngkir) {
-//                    val boPromoCodes = visitable.uiData.boAdditionalData.map { it.code }
-//                    boPromoCodes.forEach { boCode ->
-//                        if (!toBeRemovedPromoCodes.contains(boCode)) {
-//                            toBeRemovedPromoCodes.add(boCode)
-//                        }
-//                    }
-//                } else {
-//                    if (!toBeRemovedPromoCodes.containsPromoCode(visitable)) {
-//                        toBeRemovedPromoCodes.add(visitable.uiData.promoCode)
-//                    }
-//                }
-//            }
             if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.containsPromoCode(visitable)) {
                 toBeRemovedPromoCodes.addPromo(visitable)
             }
@@ -1173,7 +1159,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             _tmpUiModel.value = Update(promoItem)
 
             // Send tracker
-            // todo for this tracker should this be BOPLUSCOUPON or promo code from additional_bo_datas
             // if need from additional_bo_datas then need to loop
             if (promoItem.uiState.isSelected) {
                 analytics.eventClickSelectKupon(getPageSource(), promoItem.uiData.promoCode, promoItem.uiState.isCausingOtherPromoClash)
@@ -1268,15 +1253,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val expandedParentIdentifierList = mutableSetOf<Int>()
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
-                    if (promoRecommendation.uiData.promoCodes.containsPromoCode(it)) {
+                    if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         uncheckSibling(it)
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
                         _tmpUiModel.value = Update(it)
                         calculateClash(it)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
-                        // todo for this tracker should this be BOPLUSCOUPON or promo code from additional_bo_datas
-                        // if need from additional_bo_datas then need to loop
                         analytics.eventClickPilihOnRecommendation(getPageSource(), it.uiData.promoCode, it.uiState.isCausingOtherPromoClash)
                     }
                 }
@@ -1328,11 +1311,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
                     // CASE 1
-                    if (preAppliedPromoCodes.containsPromoCode(it) && !it.uiState.isSelected) {
+                    if (preAppliedPromoCodes.contains(it.uiData.promoCode) && !it.uiState.isSelected) {
                         return true
                     }
                     // CASE 2
-                    if (!preAppliedPromoCodes.containsPromoCode(it) && it.uiState.isSelected) {
+                    if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
                         return true
                     }
                 }
@@ -1479,12 +1462,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
-        // todo ini     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
         val clashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (clashingInfo != null) {
-            // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
-            if (promoListItemUiModel.uiData.currentClashingPromo.containsPromoCode(selectedItem)) {
-                // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
+            if (promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
                 promoListItemUiModel.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
                 if (promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty()) {
                     val errorMessageBuilder = StringBuilder()
@@ -1508,26 +1488,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun checkAndSetClashOnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel): Boolean {
         var clashResult = false
-        // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
-        // case 2: if clashing_info == BOPLUSCOUPON
         val clashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
-        // case 1: if clashing_info bo_additional_data
-//        val demoClashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo1 -> selectedItem.equalsPromoCode(clashingInfo1.code) }
-        if (clashingInfo != null) {
-            // todo     - code promo yg di `clashing_infos` bakal BOPLUSCOUPON juga kah?
-                // case 1: below is if clashing info == bo_additional_data
-//            if (!promoListItemUiModel.uiData.currentClashingPromo.containsPromoCode(selectedItem)) {
-//                // add all promo in bo_additional_info
-//                promoListItemUiModel.uiData.currentClashingPromo.addPromo(selectedItem)
-//                val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
-//                if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
-//                    errorMessageBuilder.clear()
-//                }
-//                errorMessageBuilder.append(clashingInfo.message)
-//                promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
-//                clashResult = true
-//            }
-            // case 2: clashing info == BOPLUSCOUPON
+         if (clashingInfo != null) {
             if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
                 promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
                 val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)

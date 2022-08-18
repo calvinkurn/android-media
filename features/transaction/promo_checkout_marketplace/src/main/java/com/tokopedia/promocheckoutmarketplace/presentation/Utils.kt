@@ -44,11 +44,3 @@ fun MutableCollection<String>.addPromo(promoListItemUiModel: PromoListItemUiMode
         this.add(promoListItemUiModel.uiData.promoCode)
     }
 }
-
-fun MutableCollection<String>.removePromo(promoListItemUiModel: PromoListItemUiModel) {
-    if (promoListItemUiModel.uiState.isBebasOngkir) {
-        this.removeAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
-    } else {
-        this.remove(promoListItemUiModel.uiData.promoCode)
-    }
-}

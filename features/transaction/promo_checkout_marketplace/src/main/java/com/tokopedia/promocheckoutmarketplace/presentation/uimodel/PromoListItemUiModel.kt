@@ -18,14 +18,6 @@ data class PromoListItemUiModel(
         return typeFactory.type(this)
     }
 
-        fun equalsPromoCode(code: String): Boolean {
-                return if (uiState.isBebasOngkir) {
-                        uiData.boAdditionalData.map { it.code }.contains(code)
-                } else {
-                        uiData.promoCode == code
-                }
-        }
-
         fun getPromoCode(listOfPromoCodes: Collection<String>) : String {
                 return if (uiState.isBebasOngkir) {
                         uiData.boAdditionalData.map { it.code }.intersect(listOfPromoCodes).firstOrNull() ?: ""
