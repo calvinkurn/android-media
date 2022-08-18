@@ -67,7 +67,6 @@ ext {
     playServiceFirebaseFirestore = '17.1.2'
     playServiceAds = '17.1.0'
     playServiceTagManager = '17.0.0'
-    playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '18.0.0'
     playServiceMeasurementApi = '16.0.4'
     bomVersion = '26.2.0'
@@ -197,7 +196,6 @@ ext {
             ads           : "com.google.android.gms:play-services-ads-identifier:${playServiceAds}",
             tagManagerImpl: "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager    : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
-            safetyNet     : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
             measurementApi: "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}"
     ]
 
