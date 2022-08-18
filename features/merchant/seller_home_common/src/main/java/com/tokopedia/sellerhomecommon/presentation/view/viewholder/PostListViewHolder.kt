@@ -219,7 +219,7 @@ class PostListViewHolder(
                 filterShcPostList.text = selectedFilter?.name.orEmpty()
                 filterShcPostList.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
                 filterShcPostList.setOnClickListener {
-                    listener.showPostFilter(element, adapterPosition)
+                    listener.showPostFilter(element)
                     listener.sendPostListFilterClick(element)
                 }
             } else {
@@ -382,6 +382,6 @@ class PostListViewHolder(
 
         fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {}
 
-        fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {}
+        fun showPostFilter(element: PostListWidgetUiModel) {}
     }
 }

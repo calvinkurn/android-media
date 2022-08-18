@@ -27,21 +27,33 @@ data class PermissionUiModel(
             RECORD_AUDIO
         )
 
+        private fun collectModeTypePermission(
+            @ModeType mode: Int
+        ): List<PermissionUiModel> {
+            return when (mode) {
+                ModeType.IMAGE_ONLY -> listOf(camera())
+
+                // it occurs for ModeType.COMMON and ModeType.VIDEO_ONLY
+                else -> listOf(camera(), microphone())
+            }
+        }
+
         fun getOrCreate(
             @PageType page: Int,
             @ModeType mode: Int
         ): List<PermissionUiModel> {
             return when (page) {
-                PageType.CAMERA -> {
-                    when (mode) {
-                        ModeType.IMAGE_ONLY -> listOf(camera())
-
-                        // it occurs for ModeType.COMMON and ModeType.VIDEO_ONLY
-                        else -> listOf(camera(), microphone())
-                    }
-                }
                 PageType.GALLERY -> listOf(storage())
-                else -> listOf(camera(), microphone(), storage())
+                PageType.CAMERA -> collectModeTypePermission(mode)
+                else -> {
+                    collectModeTypePermission(mode)
+                        .toMutableList()
+                        .also {
+                            // in PageType.COMMON, we also need to add `storage()` permission
+                            // to show the gallery media items
+                            it.add(storage())
+                        }
+                }
             }
         }
     }

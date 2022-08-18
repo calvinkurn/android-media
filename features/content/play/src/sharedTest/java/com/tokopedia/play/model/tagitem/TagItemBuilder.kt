@@ -40,6 +40,8 @@ interface TagItemBuilder {
         isFreeShipping: Boolean = false,
         appLink: String = "",
         isTokoNow: Boolean = false,
+        isPinned: Boolean = false,
+        isRilisanSpesial: Boolean = false,
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(
@@ -65,12 +67,16 @@ interface TagItemBuilder {
         id: String = "",
     ): ProductSectionUiModel.Section
 
-    fun buildSectionConfig(type: ProductSectionType = ProductSectionType.Unknown,
-                           title: String = "", timerInfo: String = "", serverTime: String = "",
-                           startTime: String = "", endTime: String = "",
-                           background: ProductSectionUiModel.Section.BackgroundUiModel =
-                               ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
-                           reminderStatus: PlayUpcomingBellStatus
+    fun buildSectionConfig(
+        type: ProductSectionType = ProductSectionType.Unknown,
+        title: String = "",
+        timerInfo: String = "",
+        serverTime: String = "",
+        startTime: String = "",
+        endTime: String = "",
+        background: ProductSectionUiModel.Section.BackgroundUiModel =
+            ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
+        reminderStatus: PlayUpcomingBellStatus = PlayUpcomingBellStatus.Unknown,
     ): ProductSectionUiModel.Section.ConfigUiModel
 
     companion object {
