@@ -130,6 +130,10 @@ class PlayWidgetMediumViewHolder private constructor() {
             override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel) {
                 listener.onMenuActionButtonClicked(view, item, adapterPosition)
             }
+
+            override fun onRemindMeImpressed(view: View, item: PlayWidgetChannelUiModel) {
+                listener.onRemindMeImpressed(view, item, adapterPosition)
+            }
         }
 
         init {
@@ -174,6 +178,12 @@ class PlayWidgetMediumViewHolder private constructor() {
             )
 
             fun onMenuActionButtonClicked(
+                view: View,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onRemindMeImpressed(
                 view: View,
                 item: PlayWidgetChannelUiModel,
                 position: Int
