@@ -125,6 +125,8 @@ class UpcomingDescriptionViewComponent(
     }
 
     private fun expandText(description: String, isExpand: Boolean) {
+        //scroll to v top of content
+        txt.scrollTo(0,0)
         if (!isExpand) {
             txt.ellipsize = TextUtils.TruncateAt.END
             txt.movementMethod = LinkMovementMethod.getInstance()
