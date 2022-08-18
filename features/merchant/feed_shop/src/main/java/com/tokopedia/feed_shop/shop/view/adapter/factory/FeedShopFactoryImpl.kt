@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -70,7 +69,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
     }
 
     override fun type(bannerViewModel: BannerViewModel): Int {
-        return BannerViewHolder.LAYOUT
+        return 0
     }
 
     override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
@@ -131,8 +130,6 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                         videoViewListener,
                         feedMultipleImageViewListener,
                         userSession) as AbstractViewHolder<Visitable<*>>
-            BannerViewHolder.LAYOUT ->
-                BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopAdsHeadlineViewHolder.LAYOUT ->

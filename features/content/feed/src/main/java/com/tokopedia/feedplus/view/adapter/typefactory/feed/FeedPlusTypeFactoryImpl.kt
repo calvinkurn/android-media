@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
@@ -97,7 +96,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(bannerViewModel: BannerViewModel): Int {
-        return BannerViewHolder.LAYOUT
+        return 0
     }
 
     override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
@@ -153,9 +152,6 @@ class FeedPlusTypeFactoryImpl(
                         feedMultipleImageViewListener,
                         userSession
                 )
-            }
-            BannerViewHolder.LAYOUT -> {
-                viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
             }
             TopadsShopViewHolder.LAYOUT -> {
                 viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
