@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
@@ -50,7 +49,7 @@ class RechargeHomepageViewModel @Inject constructor(
         onRefreshData()
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    RechargeHomepageQueries.SKELETON_QUERY,
+                    QueryRechargeHomepageSkeleton(),
                     RechargeHomepageSectionSkeleton.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
@@ -75,7 +74,7 @@ class RechargeHomepageViewModel @Inject constructor(
 
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    RechargeHomepageQueries.SECTION_QUERY,
+                    QueryRechargeHomepageSection(),
                     RechargeHomepageSections.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
@@ -110,7 +109,7 @@ class RechargeHomepageViewModel @Inject constructor(
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    RechargeHomepageQueries.ACTION_QUERY,
+                    QueryRechargeHomepageAction(),
                     RechargeHomepageSectionAction.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
@@ -126,7 +125,7 @@ class RechargeHomepageViewModel @Inject constructor(
     fun getTickerHomepageSection(mapParams: Map<String, Any>) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
-                    RechargeHomepageQueries.TICKER_QUERY,
+                    QueryRechargeHomepageTicker(),
                     RechargeTickerHomepageModel::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {

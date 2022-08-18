@@ -13,12 +13,12 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.domain.usecase.TopadsCreditHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,8 +43,7 @@ class TopAdsCreditHistoryViewModelTest {
     private val pendingRewardUseCase: TopadsGetFreeDepositUseCase = mockk(relaxed = true)
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
-    private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse> =
-        mockk(relaxed = true)
+    private val topAdsCreditHistoryUseCase: TopadsCreditHistoryUseCase = mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
@@ -68,78 +67,6 @@ class TopAdsCreditHistoryViewModelTest {
         viewModel.loadPendingReward()
 
         Assert.assertEquals(viewModel.expiryDateHiddenTrial.value, actual.pendingRebateCredit)
-    }
-
-    @Test
-    fun `getCreditHistory success check, livedata should be success`() {
-        val expectedValue = TopAdsCreditHistory()
-        val mockObject = mockk<TopAdsCreditHistory.CreditsResponse>(relaxed = true)
-
-        every { mockObject.response.errors } returns emptyList()
-        every { mockObject.response.dataHistory } returns expectedValue
-        every {
-            topAdsCreditHistoryUseCase.execute(captureLambda(), any())
-        } answers {
-            firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
-        }
-
-        viewModel.getCreditHistory("", null, null)
-
-        Assert.assertEquals((viewModel.creditsHistory.value as Success).data, expectedValue)
-    }
-
-    @Test
-    fun `getCreditHistory non empty error check, livedata should be fail`() {
-        val expectedValue = TopAdsCreditHistory()
-        val mockObject = mockk<TopAdsCreditHistory.CreditsResponse>(relaxed = true)
-
-        every { mockObject.response.errors } returns listOf(Error())
-        every {
-            topAdsCreditHistoryUseCase.execute(captureLambda(), any())
-        } answers {
-            firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
-        }
-
-        viewModel.getCreditHistory("", null, null)
-
-        Assert.assertTrue(viewModel.creditsHistory.value is Fail)
-    }
-
-    @Test
-    fun `getCreditHistory on error exception check, livedata should be fail`() {
-        val actual = Exception("it")
-
-        every {
-            topAdsCreditHistoryUseCase.execute(captureLambda(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(actual)
-        }
-
-        viewModel.getCreditHistory("", null, null)
-
-        Assert.assertEquals((viewModel.creditsHistory.value as Fail).throwable, actual)
-    }
-
-    @Test
-    fun `credit history execute`() {
-        viewModel.getCreditHistory("", Date(), Date())
-        verify {
-            topAdsCreditHistoryUseCase.execute(any(), any())
-        }
-    }
-
-    @Test
-    fun `credit history`() {
-        val expected = 5.0f
-        var actual = 0.0f
-        val data =
-            TopAdsCreditHistory.CreditsResponse(response = TopAdsCreditHistory.Response(dataHistory = TopAdsCreditHistory(
-                totalAddition = expected)))
-        every { topAdsCreditHistoryUseCase.execute(captureLambda(), any()) } answers {
-            actual = data.response.dataHistory.totalAddition
-        }
-        viewModel.getCreditHistory("", Date(), Date())
-        Assert.assertEquals(expected, actual)
     }
 
     @Test

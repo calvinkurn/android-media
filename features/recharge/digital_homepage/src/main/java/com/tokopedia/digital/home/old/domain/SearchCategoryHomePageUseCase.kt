@@ -4,6 +4,7 @@ import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageCategoryDataMapper
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,7 +13,7 @@ import com.tokopedia.network.exception.MessageErrorException
 
 class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<DigitalHomePageCategoryModel>(graphqlRepository) {
 
-    suspend fun searchCategoryList(rawQuery: String, isLoadFromCloud: Boolean, searchQuery: String): DigitalHomePageSearchNewModel {
+    suspend fun searchCategoryList(rawQuery: GqlQueryInterface, isLoadFromCloud: Boolean, searchQuery: String): DigitalHomePageSearchNewModel {
         setGraphqlQuery(rawQuery)
         setTypeClass(DigitalHomePageCategoryModel::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build())
