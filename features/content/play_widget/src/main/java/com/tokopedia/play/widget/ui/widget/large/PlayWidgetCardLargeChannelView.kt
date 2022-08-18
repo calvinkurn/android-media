@@ -127,11 +127,6 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
         }
-
-
-        if (reminderBadge.isVisible){
-            mListener?.onRemindMeImpressed(this, model)
-        }
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -221,11 +216,6 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType
-        )
-
-        fun onRemindMeImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel
         )
     }
 }

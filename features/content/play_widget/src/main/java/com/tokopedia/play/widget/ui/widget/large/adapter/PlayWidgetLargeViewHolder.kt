@@ -84,10 +84,6 @@ class PlayWidgetLargeViewHolder {
                 ) {
                     listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
                 }
-
-                override fun onRemindMeImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                    listener.onRemindMeImpressed(view, item, adapterPosition)
-                }
             })
         }
 
@@ -125,12 +121,6 @@ class PlayWidgetLargeViewHolder {
             fun onToggleReminderChannelClicked(
                 item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType,
-                position: Int
-            )
-
-            fun onRemindMeImpressed(
-                view: View,
-                item: PlayWidgetChannelUiModel,
                 position: Int
             )
         }
