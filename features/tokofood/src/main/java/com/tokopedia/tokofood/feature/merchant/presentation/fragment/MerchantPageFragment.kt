@@ -1032,6 +1032,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             cardPositions.first,
             merchantId
         )
+        hideKeyboard()
         val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel)
         bottomSheet.setOnDismissListener { viewModel.isProductDetailBottomSheetVisible = false }
         bottomSheet.setClickListener(this)
@@ -1049,7 +1050,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         bottomSheet.setSelectedCardPositions(cardPositions)
         bottomSheet.setProductListItem(productListItem)
         bottomSheet.show(childFragmentManager)
-        hideKeyboard()
         viewModel.isProductDetailBottomSheetVisible = true
     }
 
