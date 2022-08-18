@@ -3,5 +3,5 @@ package com.tokopedia.sellerapp.presentation.model
 data class MenuItem(
     val title: String = "",
     val unreadCount: Int = 0,
-    val icon: String = ""
+    val icon: Int = -1
 )

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Tokopedia Wear</string>
     <string name="splash_screen_logo_content_description">Splash Screen Logo</string>
+    <string name="home_title">Tokopedia Seller</string>
 </resources>
