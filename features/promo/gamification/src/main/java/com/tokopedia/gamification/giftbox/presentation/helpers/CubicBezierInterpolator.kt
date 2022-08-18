@@ -2,14 +2,19 @@ package com.tokopedia.gamification.giftbox.presentation.helpers
 
 import android.graphics.PointF
 import android.view.animation.Interpolator
+import kotlin.math.abs
 
 class CubicBezierInterpolator : Interpolator {
 
-    protected var start: PointF = PointF()
-    protected var end: PointF = PointF()
-    protected var a = PointF()
-    protected var b = PointF()
-    protected var c = PointF()
+    private var start: PointF = PointF()
+    private var end: PointF = PointF()
+    private var a = PointF()
+    private var b = PointF()
+    private var c = PointF()
+
+    companion object{
+        private const val BREAKING_CONSTANT=1e-3
+    }
 
     constructor(start:PointF,end:PointF){
         if(start.x < 0 || start.x>1){
@@ -30,19 +35,19 @@ class CubicBezierInterpolator : Interpolator {
         return getBezierCoordinateY(getXForTime(time))
     }
 
-    protected fun getBezierCoordinateY(time: Float): Float {
+    private fun getBezierCoordinateY(time: Float): Float {
         c.y = 3 * start.y
         b.y = 3 * (end.y - start.y) - c.y
         a.y = 1 - c.y - b.y
         return time * (c.y + time * (b.y + time * a.y))
     }
 
-    protected fun getXForTime(time: Float): Float {
+    private fun getXForTime(time: Float): Float {
         var x = time
         var z: Float
         for (i in 1..13) {
             z = getBezierCoordinateX(x) - time
-            if (Math.abs(z) < 1e-3) {
+            if (abs(z) < BREAKING_CONSTANT) {
                 break
             }
             x -= z / getXDerivate(x)
