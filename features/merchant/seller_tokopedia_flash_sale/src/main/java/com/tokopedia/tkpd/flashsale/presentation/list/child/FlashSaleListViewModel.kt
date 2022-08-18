@@ -101,7 +101,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     private fun FlashSale.findQuotaUsagePercentage() : Int {
         val usedQuota = maxProductSubmission - remainingQuota
-        return (usedQuota / maxProductSubmission) * PERCENT
+        return ((usedQuota.toFloat() / maxProductSubmission.toFloat()) * PERCENT).toInt()
     }
 
     private fun FlashSale.toOngoingItem() : DelegateAdapterItem {

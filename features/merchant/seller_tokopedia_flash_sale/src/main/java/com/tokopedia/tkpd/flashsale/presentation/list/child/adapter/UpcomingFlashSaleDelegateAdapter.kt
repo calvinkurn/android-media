@@ -72,7 +72,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                     binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_original_quota,
-                        item.maxProductSubmission.splitByThousand()
+                        item.remainingQuota.splitByThousand()
                     )
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_HALF_FULL..QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED -> {
