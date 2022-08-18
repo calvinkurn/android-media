@@ -1,17 +1,21 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.play.R
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play.databinding.ItemPlayProductSectionHeaderBinding
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
@@ -22,23 +26,24 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
-import java.util.Calendar
-import java.util.Date
+import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 27/01/22
  */
 class ProductSectionViewHolder(
-    itemView: View, private val listener: Listener
-) : BaseViewHolder(itemView) {
+    binding: ItemPlayProductSectionHeaderBinding,
+    private val listener: Listener
+) : BaseViewHolder(binding.root) {
 
-    private val tvSectionTitle: TextView = itemView.findViewById(R.id.tv_header_title)
-    private val ivBg: ImageView = itemView.findViewById(R.id.iv_bg)
-    private val tvTimerInfo: TextView = itemView.findViewById(R.id.tv_header_info)
-    private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
-    private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
-    private val btnReminder: IconUnify = itemView.findViewById(R.id.btn_section_reminder)
-    private val btnInfo: IconUnify = itemView.findViewById(R.id.btn_information)
+    private val tvSectionTitle: TextView = binding.tvHeaderTitle
+    private val ivBg: ImageView = binding.ivBg
+    private val tvTimerInfo: TextView = binding.tvHeaderInfo
+    private val timerSection: TimerUnifySingle = binding.sectionTimer
+    private val rvProducts: RecyclerView = binding.rvProduct
+    private val btnReminder: IconUnify = binding.btnSectionReminder
+    private val btnInfo: IconUnify = binding.btnInformation
 
     private var timerTime = ""
 
@@ -172,8 +177,18 @@ class ProductSectionViewHolder(
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_play_product_section_header
+
+        fun create(
+            parent: ViewGroup,
+            listener: Listener,
+        ) = ProductSectionViewHolder(
+            ItemPlayProductSectionHeaderBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ),
+            listener,
+        )
     }
 
     interface Listener {
