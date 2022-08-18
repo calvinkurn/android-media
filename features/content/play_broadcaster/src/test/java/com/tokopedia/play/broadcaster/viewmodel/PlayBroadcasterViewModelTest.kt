@@ -13,7 +13,6 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.util.assertEmpty
@@ -132,7 +131,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = false)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = false)
+                    )
+                )
             }
 
             events
@@ -161,7 +164,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)
+                    )
+                )
             }
 
             events
@@ -180,7 +187,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)
+                    )
+                )
             }
 
             events
@@ -202,7 +213,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)
+                    )
+                )
             }
 
             events
@@ -222,7 +237,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)
+                    )
+                )
 
             }
 
@@ -254,7 +273,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)
+                    )
+                )
             }
 
             events
@@ -285,7 +308,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)
+                    )
+                )
 
             }
 
@@ -417,7 +444,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Error(errorThrowable)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Error(errorThrowable)
+                    )
+                )
             }
 
             event
@@ -446,7 +477,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -475,7 +510,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -504,7 +543,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -527,7 +570,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event

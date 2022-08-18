@@ -4,14 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
-import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
@@ -77,6 +76,9 @@ class PlayBroQuizViewModelTest {
             )
         )
     )
+
+    private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
     @Test
     fun `when user successfully create new quiz, it should return quiz model`() {
         coJustRun {
@@ -382,14 +384,13 @@ class PlayBroQuizViewModelTest {
         coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
         coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
 
-        val livePusher = mockk<PusherMediator>(relaxed = true)
-        every { livePusher.remainingDurationInMillis } returns Long.MAX_VALUE
+        every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
             sharedPref =  mockSharedPref,
-            livePusherMediator = livePusher,
+            broadcastTimer = mockBroadcastTimer,
         )
 
         robot.use {
