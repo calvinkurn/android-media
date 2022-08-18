@@ -3163,10 +3163,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
-        TopChatAnalyticsKt.eventClickProductBundlingCta(
-            element.productBundling.bundleItem?.first()?.productId?: "",
-            element.productBundling.bundleId?: ""
-        )
+        if (element.isBroadcast()) {
+            TopChatAnalyticsKt.eventClickCtaOnProductBundlingBroadcast(
+                element.blastId,
+                element.productBundling.bundleStatus.toString(),
+                element.productBundling.bundleId.toString(),
+                getBroadcastSenderShopId(element),
+                session.userId
+            )
+        } else {
+            TopChatAnalyticsKt.eventClickProductBundlingCta(
+                element.productBundling.bundleItem?.first()?.productId?: "",
+                element.productBundling.bundleId?: ""
+            )
+        }
+
         if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
             context?.let {
                 val intent = RouteManager.getIntent(it,
@@ -3178,19 +3189,48 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
-            TopChatAnalyticsKt.eventViewProductBundling(
-                element.productBundling.bundleItem?.first()?.productId?: "",
-                element.productBundling.bundleId?: ""
-            )
+            if (element.isBroadcast()) {
+                TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                    element.blastId,
+                    element.productBundling.bundleStatus.toString(),
+                    element.productBundling.bundleId.toString(),
+                    getBroadcastSenderShopId(element),
+                    session.userId
+                )
+            } else {
+                TopChatAnalyticsKt.eventViewProductBundling(
+                    element.productBundling.bundleItem?.first()?.productId?: "",
+                    element.productBundling.bundleId?: ""
+                )
+            }
         }
     }
 
-    override fun onClickProductBundlingImage(element: BundleItem) {
-        if (element.androidUrl.isNotEmpty()) {
+    override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
+        if (element.isBroadcast()) {
+            TopChatAnalyticsKt.eventClickProductAttachmentOnProductBundlingBroadcast(
+                element.blastId,
+                element.productBundling.bundleStatus.toString(),
+                element.productBundling.bundleId.toString(),
+                item.productId,
+                getBroadcastSenderShopId(element),
+                session.userId
+            )
+        }
+
+        if (item.androidUrl.isNotEmpty()) {
             context?.let {
-                val intent = RouteManager.getIntent(it, element.androidUrl)
+                val intent = RouteManager.getIntent(it, item.androidUrl)
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun getBroadcastSenderShopId(element: ProductBundlingUiModel): String {
+        return if (element.isSender) {
+            session.shopId
+        } else {
+            shopId
         }
     }
 

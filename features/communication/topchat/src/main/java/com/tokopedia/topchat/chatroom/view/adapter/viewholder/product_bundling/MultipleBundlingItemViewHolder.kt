@@ -6,12 +6,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.databinding.ItemTopchatListProductBundlingBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class MultipleBundlingItemViewHolder(
     itemView: View,
-    private val listener: ProductBundlingListener?
+    private val listener: ProductBundlingListener?,
+    private val productBundling: ProductBundlingUiModel?
 ): RecyclerView.ViewHolder(itemView) {
 
     private var binding: ItemTopchatListProductBundlingBinding? by viewBinding()
@@ -32,7 +34,9 @@ class MultipleBundlingItemViewHolder(
 
     private fun bindListener(data: BundleItem) {
         binding?.ivProductBundlingThumbnail?.setOnClickListener {
-            listener?.onClickProductBundlingImage(data)
+            productBundling?.let { bundle ->
+                listener?.onClickProductBundlingImage(data, bundle)
+            }
         }
     }
 

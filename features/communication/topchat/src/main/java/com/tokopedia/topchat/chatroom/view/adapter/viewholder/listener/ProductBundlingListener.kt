@@ -6,5 +6,5 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundl
 interface ProductBundlingListener {
     fun onClickCtaProductBundling(element: ProductBundlingUiModel)
     fun onSeenProductBundling(element: ProductBundlingUiModel)
-    fun onClickProductBundlingImage(element: BundleItem)
+    fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel)
 }

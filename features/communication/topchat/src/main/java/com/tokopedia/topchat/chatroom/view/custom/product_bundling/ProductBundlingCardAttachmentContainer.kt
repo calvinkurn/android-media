@@ -155,7 +155,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             initRecyclerView(element)
             showRecyclerView()
         } else {
-            bindImage(element.productBundling.bundleItem?.first())
+            bindImage(element.productBundling.bundleItem?.first(), element)
             bindLabel(element.productBundling.bundleItem?.first())
             bindBundlingName(element.productBundling.bundleItem?.first())
             hideRecyclerView()
@@ -190,9 +190,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private fun initRecyclerView(element: ProductBundlingUiModel) {
         recyclerView?.let {
             it.adapter = adapter
-            element.productBundling.bundleItem?.let { list ->
-                bindBundleItemList(list)
-            }
+            bindBundleItemList(element)
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false)
@@ -200,8 +198,11 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindBundleItemList(list : List<BundleItem>) {
-        adapter?.bundlingList = list
+    private fun bindBundleItemList(element: ProductBundlingUiModel) {
+        element.productBundling.bundleItem?.let { list ->
+            adapter?.bundlingList = list
+        }
+        adapter?.productBundling = element
     }
 
     private fun addItemDecoration() {
@@ -259,12 +260,12 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindImage(item: BundleItem?) {
+    private fun bindImage(item: BundleItem?, element: ProductBundlingUiModel) {
         item?.let { bundleItem ->
             image?.apply {
                 this.setImageUrl(bundleItem.imageUrl)
                 this.setOnClickListener {
-                    listener?.onClickProductBundlingImage(bundleItem)
+                    listener?.onClickProductBundlingImage(bundleItem, element)
                 }
             }
         }
@@ -327,7 +328,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun getButtonText(element: ProductBundlingUiModel): String? {
-        return if (element.blastId != NOT_BROADCAST &&
+        return if (element.isBroadcast() &&
             element.productBundling.ctaBundling?.isDisabled == false
         ) {
             context?.getString(R.string.action_atc)
@@ -426,6 +427,5 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     companion object {
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
-        private const val NOT_BROADCAST = "0"
     }
 }
