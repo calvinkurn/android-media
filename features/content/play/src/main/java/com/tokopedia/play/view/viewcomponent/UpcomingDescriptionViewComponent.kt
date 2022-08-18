@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.text.buildSpannedString
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -43,9 +42,6 @@ class UpcomingDescriptionViewComponent(
     private val impressHelper = ImpressHolder()
 
     init {
-        txt.updateLayoutParams {
-            this.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
         txt.addOnImpressionListener(impressHelper){
             listener.onDescriptionImpressed(this)
         }
@@ -166,7 +162,7 @@ class UpcomingDescriptionViewComponent(
     companion object {
         private const val PARAM_MAX_LINES = "maxLines"
         private const val MIN_LINES = 2
-        private const val MAX_LINES = 14
+        private const val MAX_LINES = 50
         private const val END_CHARS = "... "
     }
 }
