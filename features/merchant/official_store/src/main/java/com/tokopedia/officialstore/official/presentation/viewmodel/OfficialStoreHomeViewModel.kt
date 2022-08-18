@@ -32,6 +32,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
@@ -43,7 +44,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -67,6 +67,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
+        private val topAdsAddressHelper: TopAdsAddressHelper,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -192,7 +193,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 item = VALUE_ITEM,
                 seenAds = getSeenShopAdsWidgetCount()
             )
-            getTopAdsHeadlineUseCase.setParams(params)
+            getTopAdsHeadlineUseCase.setParams(params, topAdsAddressHelper.getAddressData())
             val data = getTopAdsHeadlineUseCase.executeOnBackground()
             OfficialTopAdsHeadlineDataModel(data)
 
@@ -382,7 +383,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
         launchCatchError(coroutineContext, block={
-            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+            getDisplayHeadlineAds.createParams(
+                featuredShopDataModel.channelModel.widgetParam,
+                topAdsAddressHelper.getAddressData()
+            )
             val data = getDisplayHeadlineAds.executeOnBackground()
             if (data.isEmpty()) {
                 _featuredShopResult.value = Success(

@@ -54,9 +54,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toIntOrNull() ?: KYCConstant.STATUS_DEFAULT
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
@@ -128,14 +127,18 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                     throw Exception()
                 }
             }
+
             fragmentList[actualPosition] = fragment
-            val fragmentArguments = fragment.arguments
-            val bundle: Bundle = fragmentArguments ?: Bundle()
-            bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
-            fragment.arguments = bundle
-            supportFragmentManager.beginTransaction()
-                .replace(parentView, fragment, fragment.javaClass.simpleName)
-                .commit()
+            val stepperBundle = Bundle().apply {
+                putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
+            }
+            fragment.arguments?.putAll(stepperBundle)
+
+            if (savedinstancestate == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(parentView, fragment, fragment.javaClass.simpleName)
+                    .commit()
+            }
         }
     }
 
@@ -209,8 +212,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     fun setTextViewWithBullet(text: String, context: Context, layout: LinearLayout) {
         val tv = Typography(context)
         val span = SpannableString(text)
-        val radius = dpToPx(4)
-        val gapWidth = dpToPx(12)
+        val radius = dpToPx(RADIUS_FOUR)
+        val gapWidth = dpToPx(GAP_WIDTH)
         val color = ResourcesCompat.getColor(
             resources,
             com.tokopedia.unifyprinciples.R.color.Unify_N100,
@@ -229,7 +232,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val margin = dpToPx(8)
+        val margin = dpToPx(MARGIN_EIGHT)
         setMargins(tv, 0, 0, 0, margin)
         layout.addView(tv)
     }
@@ -266,5 +269,9 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             intent.putExtras(bundle)
             return intent
         }
+
+        private const val RADIUS_FOUR = 4
+        private const val GAP_WIDTH = 12
+        private const val MARGIN_EIGHT = 8
     }
 }

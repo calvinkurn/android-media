@@ -895,6 +895,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
             intent.putExtra(KERO_TOKEN, token);
             intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
+            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.getSource());
             startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
         } else {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
@@ -909,6 +910,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState);
         intent.putExtra(EXTRA_IS_FROM_CHECKOUT_SNIPPET, true);
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CART.getSource());
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1482,6 +1484,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true);
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CHECKOUT.getSource());
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 

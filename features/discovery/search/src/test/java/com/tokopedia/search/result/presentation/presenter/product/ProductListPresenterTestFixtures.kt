@@ -14,6 +14,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.shouldBe
@@ -72,6 +73,9 @@ internal open class ProductListPresenterTestFixtures {
 
     @Before
     open fun setUp() {
+        val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
+        val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
+
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
             searchLoadMoreUseCase,
@@ -87,10 +91,14 @@ internal open class ProductListPresenterTestFixtures {
             testSchedulersProvider,
             topAdsHeadlineHelper,
             { performanceMonitoring },
-            ChooseAddressPresenterDelegate(chooseAddressView),
+            chooseAddressPresenterDelegate,
             BannerPresenterDelegate(pagination),
-            RequestParamsGenerator(userSession, pagination),
+            requestParamsGenerator,
             pagination,
+            LastFilterPresenterDelegate(
+                requestParamsGenerator,
+                chooseAddressPresenterDelegate
+            ) { saveLastFilterUseCase },
         )
         productListPresenter.attachView(productListView)
     }
