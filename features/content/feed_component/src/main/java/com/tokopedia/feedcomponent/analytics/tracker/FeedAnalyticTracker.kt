@@ -2452,7 +2452,7 @@ class FeedAnalyticTracker
             EVENT, Event.CLICK_PG,
             EVENT_ACTION, Action.CLICK_POST_HASHTAG,
             EVENT_CATEGORY, Category.CONTENT_DETAIL_PAGE_HASHTAG,
-            EVENT_LABEL, "$activityId - $hashtag - $source",
+            EVENT_LABEL, "$activityId - $hashtag - - $source",
             BUSINESS_UNIT, CONTENT,
             CURRENT_SITE, MARKETPLACE,
             USER_ID, userId,
