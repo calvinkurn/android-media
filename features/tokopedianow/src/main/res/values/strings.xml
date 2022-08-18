@@ -214,7 +214,7 @@
     <string name="tokopedianow_recipe_learn_more">Apa itu Tokopedia NOW! <![CDATA[<font color=#00AA5B><b>Pelajari</b>]]></string>
     <string name="tokopedianow_percentage_format">%1$s %%</string>
 
-    <string name="tokopedianow_recipe_success_add_bookmark">%s berhasil ditambahkan ke Buku Resep.</string>
-    <string name="tokopedianow_recipe_failed_add_bookmark">Wah belum bisa di simpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
+    <string name="tokopedianow_recipe_success_add_bookmark">“%s” berhasil ditambahkan ke Buku Resep.</string>
+    <string name="tokopedianow_recipe_failed_add_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
     <string name="tokopedianow_recipe_failed_remove_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
 </resources>
