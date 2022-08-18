@@ -8,35 +8,33 @@ import kotlinx.parcelize.Parcelize
 @SuppressLint("ParamFieldAnnotation")
 @Parcelize
 data class EditorParam(
-    var ratioDefault: ImageRatioType = ImageRatioType.RATIO_1_1,
-    var editorTools: ArrayList<Int> = createDefaultEditorTools(),
-    var pickerParam: PickerParam = PickerParam()
+    var ratioList: ArrayList<ImageRatioType> = createDefaultRatioList(),
+    var editorToolsList: ArrayList<Int> = createDefaultEditorTools(),
+    var pickerParam: PickerParam = PickerParam(),
+    var autoCropRatio: ImageRatioType? = null
 ) : Parcelable {
-    fun ratio(ratio: ImageRatioType) = apply {
-        ratioDefault = ratio
-    }
-
-    fun withWatermark() = editorTools.add(EditorToolType.WATERMARK)
-
-    fun withRemoveBackground() = editorTools.add(EditorToolType.REMOVE_BACKGROUND)
-
+    fun withWatermark() = editorToolsList.add(EditorToolType.WATERMARK)
+    fun withRemoveBackground() = editorToolsList.add(EditorToolType.REMOVE_BACKGROUND)
 }
 
 fun createDefaultEditorTools() = arrayListOf(
     EditorToolType.BRIGHTNESS,
     EditorToolType.CONTRAST,
     EditorToolType.CROP,
-    EditorToolType.ROTATE,
-    EditorToolType.WATERMARK
+    EditorToolType.ROTATE
+)
+
+fun createDefaultRatioList() = arrayListOf(
+    ImageRatioType.RATIO_1_1,
+    ImageRatioType.RATIO_2_1,
+    ImageRatioType.RATIO_3_4
 )
 
 @Parcelize
 enum class ImageRatioType(val id: Int, private val ratio: Pair<Int, Int>) : Parcelable {
     RATIO_1_1(1, 1 to 1),
     RATIO_3_4(2, 3 to 4),
-    RATIO_4_3(3, 4 to 3),
-    RATIO_16_9(4, 16 to 9),
-    RATIO_9_16(5, 9 to 16);
+    RATIO_2_1(3, 2 to 1);
 
     fun getRatioX() = ratio.first
     fun getRatioY() = ratio.second

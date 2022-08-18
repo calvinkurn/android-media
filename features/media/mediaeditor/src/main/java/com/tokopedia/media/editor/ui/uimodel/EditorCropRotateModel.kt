@@ -13,5 +13,6 @@ data class EditorCropRotateModel(
     var rotateDegree: Float,
     var orientationChangeNumber: Int,
     var isRotate: Boolean,
-    var isCrop: Boolean
+    var isCrop: Boolean,
+    var isAutoCrop: Boolean = false
 )

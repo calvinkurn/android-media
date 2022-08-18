@@ -51,6 +51,7 @@ data class EditorDetailUiModel(
         cropRotateValue.orientationChangeNumber = parcel.readInt()
         cropRotateValue.isRotate = parcel.readInt() == 1
         cropRotateValue.isCrop = parcel.readInt() == 1
+        cropRotateValue.isAutoCrop = parcel.readInt() == 1
     }
 
     // used only for remove background
@@ -75,7 +76,8 @@ data class EditorDetailUiModel(
             0f,
             0,
             isRotate = false,
-            isCrop = false
+            isCrop = false,
+            isAutoCrop = false
         )
     }
 
@@ -131,6 +133,7 @@ data class EditorDetailUiModel(
             parcel.writeInt(cropRotateValue.orientationChangeNumber)
             parcel.writeInt(if (cropRotateValue.isRotate) 1 else 0)
             parcel.writeInt(if (cropRotateValue.isCrop) 1 else 0)
+            parcel.writeInt(if (cropRotateValue.isAutoCrop) 1 else 0)
         }
 
         private const val DEFAULT_NULL_VALUE_ROTATE_SCALE = -2f

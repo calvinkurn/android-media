@@ -22,6 +22,7 @@
     <!-- Toast text -->
     <string name="editor_undo_state_format">Undo %s</string>
     <string name="editor_redo_state_format">Redo %s</string>
+    <string name="editor_auto_crop_format">Foto berhasil dipotong %d:%d secara otomatis. Untuk mengatur posisinya, pilih editor Crop.</string>
     
     <!-- Dialog confirmation text -->
     <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>

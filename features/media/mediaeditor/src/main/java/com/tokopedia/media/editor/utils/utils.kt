@@ -5,7 +5,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import androidx.core.net.toFile
+import androidx.core.net.toUri
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -77,5 +81,29 @@ fun Bitmap.isDark(): Boolean {
         return darkPixels >= darkThreshold
     } catch (t: Throwable) {
         return false
+    }
+}
+
+fun writeBitmapToStorage(
+    context: Context,
+    bitmapParam: Bitmap,
+    filename: String? = null
+): File? {
+    return try {
+        val file = getDestinationUri(context, filename).toFile()
+        file.createNewFile()
+
+        val bos = ByteArrayOutputStream()
+        bitmapParam.compress(Bitmap.CompressFormat.PNG, 0, bos)
+        val bitmapData = bos.toByteArray()
+
+        val fos = FileOutputStream(file)
+        fos.write(bitmapData)
+        fos.flush()
+        fos.close()
+
+        file
+    } catch (e: Exception) {
+        null
     }
 }

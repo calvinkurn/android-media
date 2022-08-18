@@ -16,6 +16,7 @@ import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.ImageRatioType
 import javax.inject.Inject
 
 class EditorActivity : BaseEditorActivity() {
@@ -61,6 +62,8 @@ class EditorActivity : BaseEditorActivity() {
         // sample data
         val editorParam = EditorParam()
         editorParam.withRemoveBackground()
+        editorParam.withWatermark()
+        editorParam.autoCropRatio = ImageRatioType.RATIO_3_4
 
         viewModel.setEditorParam(editorParam)
 //        viewModel.initStateList(

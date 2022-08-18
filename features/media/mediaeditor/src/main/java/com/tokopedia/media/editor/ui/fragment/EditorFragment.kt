@@ -1,8 +1,11 @@
 package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +23,17 @@ import com.tokopedia.media.editor.ui.component.DrawerUiComponent
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.writeBitmapToStorage
+import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import kotlin.math.round
 
 class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
@@ -36,6 +45,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     private val thumbnailDrawerComponent by uiComponent { DrawerUiComponent(it, this) }
 
     private var activeImageUrl: String = ""
+
+    private val isAutoCrop: ImageRatioType? get() = viewModel.editorParam.value?.autoCropRatio
 
     fun isShowDialogConfirmation(): Boolean{
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
@@ -64,6 +75,89 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             forwardState()
         }
     }
+
+    override fun initObserver() {
+        observeEditorParam()
+        observeUpdateIndex()
+    }
+
+    override fun onEditorToolClicked(type: Int) {
+        activity?.let {
+            val clickedItem = viewModel.getEditState(activeImageUrl)
+            clickedItem?.let { editorUiModel ->
+                val paramData = EditorDetailUiModel(
+                    originalUrl = editorUiModel.getOriginalUrl(),
+                    editorToolType = type
+                )
+
+                // limit state according to undo
+                val stateLimit = (editorUiModel.editList.size - 1) - editorUiModel.backValue
+
+                editorUiModel.editList.forEachIndexed { index, item ->
+                    // stop loop if
+                    // 1. index is more than undo/redo state
+                    if (index > stateLimit) {
+                        return@forEachIndexed
+                    }
+
+                    // skip state if (AND), when state limit greater than removeBG index then dont bring previous value
+                    // 1. index is lower than state limit
+                    // 2. state limit greater than remove index
+                    if (editorUiModel.removeBackgroundStartState in index until stateLimit) {
+                        return@forEachIndexed
+                    }
+
+                    paramData.brightnessValue = item.brightnessValue
+                    paramData.contrastValue = item.contrastValue
+                    paramData.watermarkMode = item.watermarkMode
+                    paramData.removeBackgroundUrl = item.removeBackgroundUrl
+                    paramData.cropRotateValue = item.cropRotateValue
+
+                    // need to store brightness / contrast implement sequence (result will be diff)
+                    // if contrast is latest filter then isContrastExecuteFirst = false
+                    if (item.editorToolType == EditorToolType.CONTRAST) {
+                        paramData.isContrastExecuteFirst = 0
+                    } else if (item.editorToolType == EditorToolType.BRIGHTNESS) {
+                        paramData.isContrastExecuteFirst = 1
+                    }
+                }
+
+                val intent = Intent(it, DetailEditorActivity::class.java).apply {
+                    putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)
+                }
+
+                startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
+            }
+        }
+    }
+
+    // always triggered for initial phase, since active index default value is 0
+    override fun onThumbnailDrawerClicked(
+        originalUrl: String,
+        resultUrl: String?,
+        clickedIndex: Int
+    ) {
+        activeImageUrl = originalUrl
+
+        val editorUiModel = viewModel.getEditState(originalUrl)
+
+        viewBinding?.imgMainPreview?.loadImage(editorUiModel?.getImageUrl()) {
+            this.listener(onSuccess = { bitmap, _ ->
+                if(isAutoCrop != null && editorUiModel?.editList?.size == 0){
+                    cropImage(bitmap, editorUiModel)
+                }
+
+                editorUiModel?.let {
+                    renderUndoText(it)
+                    renderRedoText(it)
+
+                    renderToolsIconActiveState(it)
+                }
+            })
+        }
+    }
+
+    override fun getScreenName() = SCREEN_NAME
 
     private fun backState() {
         val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
@@ -151,85 +245,78 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         }
     }
 
-    override fun initObserver() {
-        observeEditorParam()
-        observeUpdateIndex()
-    }
+    private fun cropImage(sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel){
+        sourceBitmap?.let { it ->
+            var scaledBitmap: Bitmap? = null
 
-    override fun onEditorToolClicked(type: Int) {
-        activity?.let {
-            val clickedItem = viewModel.getEditState(activeImageUrl)
-            clickedItem?.let { editorUiModel ->
-                val paramData = EditorDetailUiModel(
-                    originalUrl = editorUiModel.getOriginalUrl(),
-                    editorToolType = type
+            val bitmapWidth = sourceBitmap.width
+            val bitmapHeight = sourceBitmap.height
+
+            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
+            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
+            val autoCropRatio = ratioHeight / ratioWidth
+
+            var newWidth = bitmapWidth
+            var newHeight = (bitmapWidth * autoCropRatio).toInt()
+
+            var topMargin = 0
+            var leftMargin = 0
+
+            if(newHeight <= bitmapHeight && newWidth <= bitmapWidth){
+                leftMargin = (bitmapWidth - newWidth) / 2
+                topMargin = (bitmapHeight - newHeight) / 2
+            } else if(newHeight > bitmapHeight){
+                val diffValue = newHeight - bitmapHeight
+                val scaledTarget = 1f + (diffValue.toFloat() / bitmapHeight)
+
+                scaledBitmap = Bitmap.createScaledBitmap(sourceBitmap,
+                    (bitmapWidth*scaledTarget).toInt(),
+                    newHeight,
+                    false
                 )
 
-                // limit state according to undo
-                val stateLimit = (editorUiModel.editList.size - 1) - editorUiModel.backValue
-
-                editorUiModel.editList.forEachIndexed { index, item ->
-                    // stop loop if
-                    // 1. index is more than undo/redo state
-                    if (index > stateLimit) {
-                        return@forEachIndexed
-                    }
-
-                    // skip state if (AND), when state limit greater than removeBG index then dont bring previous value
-                    // 1. index is lower than state limit
-                    // 2. state limit greater than remove index
-                    if (editorUiModel.removeBackgroundStartState in index until stateLimit) {
-                        return@forEachIndexed
-                    }
-
-                    paramData.brightnessValue = item.brightnessValue
-                    paramData.contrastValue = item.contrastValue
-                    paramData.watermarkMode = item.watermarkMode
-                    paramData.removeBackgroundUrl = item.removeBackgroundUrl
-                    paramData.cropRotateValue = item.cropRotateValue
-
-                    // need to store brightness / contrast implement sequence (result will be diff)
-                    // if contrast is latest filter then isContrastExecuteFirst = false
-                    if (item.editorToolType == EditorToolType.CONTRAST) {
-                        paramData.isContrastExecuteFirst = 0
-                    } else if (item.editorToolType == EditorToolType.BRIGHTNESS) {
-                        paramData.isContrastExecuteFirst = 1
-                    }
-                }
-
-                val intent = Intent(it, DetailEditorActivity::class.java).apply {
-                    putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)
-                }
-
-                startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
+                leftMargin = ((scaledBitmap?.width ?: 0) - newWidth) / 2
+                topMargin = ((scaledBitmap?.height ?: 0) - newHeight) / 2
             }
-        }
-    }
 
-    override fun onThumbnailDrawerClicked(
-        originalUrl: String,
-        resultUrl: String?,
-        clickedIndex: Int
-    ) {
-        activeImageUrl = originalUrl
+            val bitmapResult = Bitmap.createBitmap((scaledBitmap ?: it), leftMargin, topMargin, newWidth, newHeight)
+            val savedFile = writeBitmapToStorage(
+                requireContext(),
+                bitmapResult
+            )
 
-        val editList = viewModel.getEditState(originalUrl)
+            val newEditorDetailUiModel = EditorDetailUiModel(
+                originalUrl = activeImageUrl,
+                editorToolType = EditorToolType.CROP,
+                resultUrl = savedFile?.path ?: "",
+            )
+            newEditorDetailUiModel.cropRotateValue.apply {
+                imageWidth = newWidth
+                imageHeight = newHeight
+                isCrop = true
+                isAutoCrop = true
+            }
 
-        viewBinding?.imgMainPreview?.loadImage(editList?.getImageUrl())
+            editorDetailUiModel.editList.add(newEditorDetailUiModel)
 
-        viewBinding?.imgMainPreview?.post {
-            editList?.let {
-                renderUndoText(it)
-                renderRedoText(it)
+            viewBinding?.imgMainPreview?.post {
+                viewBinding?.imgMainPreview?.loadImage(savedFile?.path)
 
-                renderToolsIconActiveState(it)
+                viewBinding?.mainEditorFragmentLayout?.let { editorFragmentContainer ->
+                    Toaster.build(
+                        editorFragmentContainer,
+                        getString(editorR.string.editor_auto_crop_format, ratioWidth.toInt(), ratioHeight.toInt()),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
             }
         }
     }
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            editorToolComponent.setupView(it.editorTools)
+            editorToolComponent.setupView(it.editorToolsList)
             thumbnailDrawerComponent.setupRecyclerView(viewModel.editStateList.values.toList())
         }
     }
@@ -248,8 +335,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             }
         }
     }
-
-    override fun getScreenName() = SCREEN_NAME
 
     companion object {
         private const val SCREEN_NAME = "Main Editor"
