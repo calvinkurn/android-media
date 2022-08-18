@@ -21,7 +21,7 @@ class ViewBundle(parent: View) {
     private val info: Typography = view.findViewById(R.id.product_bundling_info)
     private val slash: Typography = view.findViewById(R.id.product_bundling_total_slash)
     private val saving: Typography = view.findViewById(R.id.product_bundling_total_saving)
-    private val savingText: Typography = view.findViewById(R.id.product_bundling_total_saving_text)
+    private val savingView: View = view.findViewById(R.id.product_bundling_view_saving)
     private val price: Typography = view.findViewById(R.id.product_bundling_total_price)
     private val buttonCheck: UnifyButton = view.findViewById(R.id.product_bundling_button_check)
 
@@ -36,8 +36,8 @@ class ViewBundle(parent: View) {
         }
 
         val savingPrice = bundle.savingPriceBundling
-        if (savingPrice.isBlank()) savingText.hide()
-        saving.text = savingPrice
+        if (savingPrice.isBlank()) savingView.hide()
+        else saving.text = savingPrice
 
         price.text = bundle.finalPriceBundling
         buttonCheck.setOnClickListener { onClickCheck() }

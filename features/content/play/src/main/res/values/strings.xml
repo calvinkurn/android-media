@@ -101,13 +101,18 @@
     <!-- Sharing Experience -->
     <string name="play_sharing_error_generate_link">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="play_sharing_refresh">Refresh</string>
-    <string name="play_change_address_widget_wording">Ganti Alamat</string>
 
     <!--TokoNow-->
+    <string name="play_change_address_widget_wording">Ganti Alamat</string>
     <string name="play_address_widget_info">Lokasimu belum tersedia di NOW! <![CDATA[<strong><span style="color:#03AC0E">Cek Jangkauan</span></strong>]]></string>
     <string name="play_tokonow_info_weblink">help/article/apa-itu-tokopedia-now</string>
     <string name="play_toaster_global_wording">Lihat Keranjang</string>
     <string name="play_toaster_tokonow_wording">Lihat</string>
     <string name="play_tokonow_minicart_applink">\?isMiniCartOpen=true</string>
     <string name="play_tokopedia_now_wording">Tokopedia NOW!</string>
+
+    <!--Pinned Product-->
+    <string name="play_product_pinned">Pin Dipasang</string>
+    <string name="play_product_pinned_atc">+</string>
+    <string name="play_product_pinned_info_separator">\u00b7</string>
 </resources>

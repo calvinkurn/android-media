@@ -1,13 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.model.TagAttributes
-import com.tokopedia.home.beranda.data.model.TextAttributes
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
+import com.tokopedia.home.beranda.data.model.SubscriptionsDrawerList
+import com.tokopedia.home.beranda.data.model.TextAttributes
+import com.tokopedia.home.beranda.data.model.SubscriptionsTextAttributes
+import com.tokopedia.home.beranda.data.model.TagAttributes
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
 
@@ -17,101 +16,19 @@ const val defaultActivationCta = "Sambungkan"
 private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
 private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
 private const val WALLET_PEMUDA_POINTS_THRESHOLD = 10000
+private const val FIRST_WALLET_DATA = 0
+private const val TEXT_ATTRIBUTE_FIRST = 0
+private const val TEXT_ATTRIBUTE_SECOND = 1
+private const val TAG_ATTRIBUTE_FIRST = 0
+private const val TAG_ATTRIBUTE_SECOND = 1
+private const val EMPTY_AMOUNT_RESERVE_BALANCE = 0
 
-fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
-    val iconRes = R.drawable.ic_tokocash
-    return BalanceDrawerItemModel(
-            applinkContainer = if (itemType == TYPE_WALLET_WITH_TOPUP) topupUrl else appLinkBalance,
-            applinkActionText = appLinkActionButton,
-            iconImageUrl = "",
-            defaultIconRes = iconRes,
-            balanceTitleTextAttribute = buildWalletTitleTextAttribute(),
-            balanceSubTitleTextAttribute = buildWalletSubTitleTextAttribute(),
-            balanceTitleTagAttribute = null,
-            balanceSubTitleTagAttribute = null,
-            drawerItemType = itemType,
-            state = state
-    )
-}
+fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int, headerTitle: String): BalanceDrawerItemModel {
+    val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.textAttributes?.mapToBalanceTextAttributes()
+    val balanceSubTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_SECOND)?.textAttributes?.mapToBalanceTextAttributes()
 
-fun HomeHeaderWalletAction.buildWalletTitleTextAttribute(): BalanceTextAttribute? {
-    var colourRef: Int? = null
-    var colour: String = ""
-    var text = ""
-    var isBold = false
-    var applink = ""
-
-    colourRef = R.color.Unify_N700
-
-    walletBalanceCondition (
-            isNotLinkedCondition = {
-                text = "(+ ${cashBalance} )"
-                isBold = true
-            },
-            isNotOvoWalletTypeCondition = {
-                text = labelTitle
-                isBold = false
-            }
-    )
-
-    return BalanceTextAttribute(
-            colour = colour,
-            colourRef = colourRef,
-            text = text,
-            isBold = isBold
-    )
-}
-
-fun HomeHeaderWalletAction.buildWalletSubTitleTextAttribute(): BalanceTextAttribute? {
-    var colourRef: Int? = null
-    var colour: String = ""
-    var text = ""
-    var isBold = false
-    var applink = ""
-
-    walletBalanceCondition (
-            isLinkedCondition = {
-                text = labelActionButton
-                colourRef = R.color.Unify_N700_96
-            },
-            isNotLinkedCondition = {
-                text = labelActionButton
-                colourRef = R.color.Unify_G500
-            },
-            isNotOvoWalletTypeCondition = {
-                text = labelActionButton
-                colourRef = R.color.Unify_G500
-                applink = appLinkActionButton
-            }
-    )
-
-    return BalanceTextAttribute(
-            colour = colour,
-            colourRef = colourRef,
-            text = text,
-            isBold = isBold
-    )
-}
-
-private fun HomeHeaderWalletAction.walletBalanceCondition(
-        isLinkedCondition: () -> Unit = {},
-        isNotLinkedCondition: () -> Unit = {},
-        isNotOvoWalletTypeCondition: () -> Unit = {}
-) {
-    if (isLinked) {
-        isLinkedCondition.invoke()
-        isNotOvoWalletTypeCondition.invoke()
-    } else {
-        isNotLinkedCondition.invoke()
-    }
-}
-
-fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int): BalanceDrawerItemModel {
-    val balanceTitleTextAttribute = sectionContent.getOrNull(0)?.textAttributes?.mapToBalanceTextAttributes()
-    val balanceSubTitleTextAttribute = sectionContent.getOrNull(1)?.textAttributes?.mapToBalanceTextAttributes()
-
-    val balanceTitleTagAttribute = sectionContent.getOrNull(0)?.tagAttributes?.mapToBalanceTagAttributes()
-    val balanceSubTitleTagAttribute = sectionContent.getOrNull(1)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_FIRST)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceSubTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_SECOND)?.tagAttributes?.mapToBalanceTagAttributes()
 
     return BalanceDrawerItemModel(
             applinkContainer = redirectAppLink,
@@ -125,12 +42,13 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
             balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
             drawerItemType = drawerItemType,
             state = state,
-            mainPageTitle = mainPageTitle
+            mainPageTitle = mainPageTitle,
+            headerTitle = headerTitle
     )
 }
 
-fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel? {
-    val selectedBalance = walletappGetBalance.balances.getOrNull(0)
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): BalanceDrawerItemModel? {
+    val selectedBalance = walletappGetBalance.balances.getOrNull(FIRST_WALLET_DATA)
     var pemudaPointsReserveBalance = ""
 
     selectedBalance?.let { balances ->
@@ -139,7 +57,6 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel?
         if (selectedBalance.isLinked) {
             val gopayBalance = balances.balance.find { it.walletCode == WALLET_CODE_GOPAY }
             val gopayPointsBalance = balances.balance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
-
             if (gopayBalance?.amountFmt?.isEmpty() == true) {
                 HomeServerLogger.logWarning(
                     type = HomeServerLogger.TYPE_WALLET_BALANCE_EMPTY,
@@ -159,50 +76,65 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int): BalanceDrawerItemModel?
             }
             balanceTitle = BalanceTextAttribute(
                     text = gopayBalance?.amountFmt?:"",
-                    isBold = true,
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             )
             balanceSubtitle = BalanceTextAttribute(
                     text = gopayPointsBalance?.amountFmt?:"",
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
             )
         } else {
             balanceTitle = BalanceTextAttribute(
                 text = balances.walletName,
-                isBold = true,
-                colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             )
             balanceSubtitle = BalanceTextAttribute(
                 text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
-                colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                isBold = true
             )
-
             val pemudaReserveBalance = balances.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
-            if (pemudaReserveBalance?.amount?:0 >= WALLET_PEMUDA_POINTS_THRESHOLD) {
+            if (pemudaReserveBalance?.amount?: EMPTY_AMOUNT_RESERVE_BALANCE >= WALLET_PEMUDA_POINTS_THRESHOLD) {
                 pemudaPointsReserveBalance = pemudaReserveBalance?.amountFmt?:""
                 pemudaPointsReserveBalance+=" "
             }
         }
-
         return buildWalletAppBalanceDrawerModel(
             selectedBalance = balances,
             balanceTitleTextAttribute = balanceTitle,
             balanceSubTitleTextAttribute = balanceSubtitle,
             state = state,
-            pemudaPointsReserveBalance = pemudaPointsReserveBalance
+            pemudaPointsReserveBalance = pemudaPointsReserveBalance,
+            headerTitle = headerTitle
         )
     }
     return null
 }
 
-private fun WalletAppData.buildWalletAppBalanceDrawerModel(
+fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: String, isSubscriber: Boolean, drawerItemType: Int): BalanceDrawerItemModel {
+    val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
+    val balanceSubTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_SECOND)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
+
+    val balanceTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_FIRST)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceSubTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_SECOND)?.tagAttributes?.mapToBalanceTagAttributes()
+
+    return BalanceDrawerItemModel(
+        applinkContainer = redirectAppLink,
+        applinkActionText = redirectAppLink,
+        redirectUrl = redirectURL,
+        iconImageUrl = iconImageURL,
+        balanceTitleTextAttribute = balanceTitleTextAttribute,
+        balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
+        balanceTitleTagAttribute = balanceTitleTagAttribute,
+        balanceSubTitleTagAttribute = balanceSubTitleTagAttribute,
+        state = state,
+        headerTitle = headerTitle,
+        isSubscriberGoToPlus = isSubscriber,
+        drawerItemType = drawerItemType
+    )
+}
+
+private fun buildWalletAppBalanceDrawerModel(
     selectedBalance: Balances,
     balanceTitleTextAttribute: BalanceTextAttribute,
     balanceSubTitleTextAttribute: BalanceTextAttribute,
     state: Int,
-    walletCode: String = "",
-    pemudaPointsReserveBalance: String = ""
+    pemudaPointsReserveBalance: String = "",
+    headerTitle: String
 ) = BalanceDrawerItemModel(
     applinkContainer = selectedBalance.redirectUrl,
     applinkActionText = selectedBalance.redirectUrl,
@@ -212,41 +144,30 @@ private fun WalletAppData.buildWalletAppBalanceDrawerModel(
     balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
     drawerItemType = if (selectedBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
     state = state,
-    trackingAttribute = walletCode,
-    reserveBalance = pemudaPointsReserveBalance
+    reserveBalance = pemudaPointsReserveBalance,
+    headerTitle = headerTitle
 )
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
-    when {
-        //subtitle green color from backend, use g500
-        colour.contains("03AC0E") || colour.contains("03ac0e") -> {
-            return BalanceTextAttribute(
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                    text = text,
-                    isBold = true)
-        }
-        //title color from backend, use n700
-        colour.contains("31353B") || colour.contains("31353b")-> {
-            return BalanceTextAttribute(
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700,
-                    text = text,
-                    isBold = true)
-        }
-        //subtitle other than green color from backend (most likely adadad color)
-        //hardcoded to n700 96%
-        else -> {
-            return BalanceTextAttribute(
-                    colour = "",
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
-                    text = text,
-                    isBold = false)
-        }
-    }
+    return BalanceTextAttribute(
+        colour = this.colour,
+        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        text = text,
+        isBold = this.isBold
+    )
+}
+
+fun SubscriptionsTextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
+    return BalanceTextAttribute(
+        colour = this.color,
+        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        text = text,
+        isBold = this.isBold)
 }
 
 fun TagAttributes.mapToBalanceTagAttributes(): BalanceTagAttribute {
     return BalanceTagAttribute(
-            text = text,
-            backgroundColour = backgroundColour
+        text = text,
+        backgroundColour = backgroundColour
     )
 }

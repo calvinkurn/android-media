@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.usecase.RequestParams
@@ -17,17 +18,38 @@ class GqlShopPageGetHomeType @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_EXT_PARAM = "extParam"
+        private const val KEY_DISTRICT_ID = "districtId"
+        private const val KEY_CITY_ID = "cityId"
+        private const val KEY_LATITUDE = "latitude"
+        private const val KEY_LONGITUDE = "longitude"
+
         @JvmStatic
-        fun createParams(shopId: Int, extParam: String): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_ID, shopId)
-            putObject(PARAM_EXT_PARAM, extParam)
-        }
+        fun createParams(
+            shopId: String,
+            extParam: String,
+            districtId: String = "",
+            cityId: String = "",
+            latitude: String = "",
+            longitude: String = ""
+        ): RequestParams =
+            RequestParams.create().apply {
+                putObject(PARAM_SHOP_ID, shopId.toIntOrZero())
+                putObject(PARAM_EXT_PARAM, extParam)
+                putObject(KEY_DISTRICT_ID, districtId)
+                putObject(KEY_CITY_ID, cityId)
+                putObject(KEY_LATITUDE, latitude)
+                putObject(KEY_LONGITUDE, longitude)
+            }
 
         const val QUERY = """
-            query shopPageGetHomeType(${'$'}shopID: Int!, ${'$'}extParam: String!){
+            query shopPageGetHomeType(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){
               shopPageGetHomeType(
                 shopID: ${'$'}shopID,
-                extParam: ${'$'}extParam
+                extParam: ${'$'}extParam,
+                districtID: ${'$'}districtId,
+                cityID: ${'$'}cityId,
+                latitude: ${'$'}latitude,
+                longitude: ${'$'}longitude
               ){
                 shopHomeType 
                 homeLayoutData {
@@ -39,6 +61,10 @@ class GqlShopPageGetHomeType @Inject constructor(
                     widgetType
                     widgetName
                   }
+                }
+                shopLayoutFeatures {
+                    name
+                    isActive
                 }
               }
             }

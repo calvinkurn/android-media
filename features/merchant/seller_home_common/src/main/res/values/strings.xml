@@ -11,6 +11,7 @@
     <string name="shc_current_period">Periode ini</string>
     <string name="shc_last_period">Periode sebelumnya</string>
     <string name="shc_select_category">Pilih Kategori</string>
+    <string name="shc_select_analysis">Pilih analisis</string>
     <string name="shc_select_statistic_data">Pilih data statistik</string>
     <string name="shc_apply_btn">Terapkan</string>
     <string name="shc_data_empty_state_title">Belum ada data hari ini</string>
@@ -52,4 +53,7 @@
     <string name="shc_last_updated_yesterday">Update terakhir kemarin"</string>
     <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
     <string name="shc_last_updated">Update terakhir: %1$s</string>
+    <string name="shc_new">Baru</string>
+    <string name="shc_no_access">Tidak ada akses</string>
+    <string name="shc_no_access_state_message">Oops, kamu tidak punya izin untuk melihat konten ini</string>
 </resources>

@@ -180,14 +180,16 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     fun addToCart(
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String
+        userId: String,
+        isUseGql: Boolean
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val atcResult = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
                 digitalSubscriptionParams,
-                userId
+                userId,
+                isUseGql
             )
             _addToCartResult.postValue(RechargeNetworkResult.Success(atcResult))
         }) {

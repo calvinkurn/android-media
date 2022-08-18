@@ -9,8 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
@@ -20,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
@@ -29,6 +26,8 @@ import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationCompone
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.report.InboxReputationReportViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -38,12 +37,12 @@ import javax.inject.Inject
  */
 class InboxReputationReportFragment : BaseDaggerFragment() {
 
-    private var sendButton: Button? = null
+    private var sendButton: UnifyButton? = null
     private var reportRadioGroup: RadioGroup? = null
     private var otherRadioButton: RadioButton? = null
     private var spamRadioButton: RadioButton? = null
     private var saraRadioButton: RadioButton? = null
-    private var otherReason: EditText? = null
+    private var otherReason: TextFieldUnify? = null
     private var progressDialog: ProgressDialog? = null
     private var feedbackId = ""
 
@@ -81,9 +80,9 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
             R.layout.fragment_inbox_reputation_report, container,
             false
         )
-        sendButton = parentView.findViewById<View>(R.id.send_button) as Button?
+        sendButton = parentView.findViewById<View>(R.id.send_button) as UnifyButton?
         reportRadioGroup = parentView.findViewById<View>(R.id.radio_group) as RadioGroup?
-        otherReason = parentView.findViewById<View>(R.id.reason) as EditText?
+        otherReason = parentView.findViewById<View>(R.id.reason) as TextFieldUnify?
         otherRadioButton = parentView.findViewById<View>(R.id.report_other) as RadioButton?
         spamRadioButton = parentView.findViewById(R.id.report_spam)
         saraRadioButton = parentView.findViewById(R.id.report_sara)
@@ -106,7 +105,7 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
             }
             setSendButton()
         }
-        otherReason?.addTextChangedListener(object : TextWatcher {
+        otherReason?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
@@ -132,7 +131,7 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
                     ""
                 ) ?: "",
                 checkedRadioId = reportRadioGroup?.checkedRadioButtonId ?: 0,
-                reasonText = otherReason?.text.toString()
+                reasonText = otherReason?.getEditableValue().toString()
             )
         }
         initProgressDialog()
@@ -150,25 +149,11 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
                 tracking.onClickRadioButtonReportAbuse(otherRadioButton?.text.toString())
             }
         }
-        if ((reportRadioGroup?.checkedRadioButtonId == R.id.report_spam
+        val sendButtonEnabled = (reportRadioGroup?.checkedRadioButtonId == R.id.report_spam
                     ) || (reportRadioGroup?.checkedRadioButtonId == R.id.report_sara
                     ) || ((reportRadioGroup?.checkedRadioButtonId == R.id.report_other
-                    && !TextUtils.isEmpty(otherReason?.text.toString().trim { it <= ' ' })))
-        ) {
-            sendButton?.isEnabled = true
-            sendButton?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            MethodChecker.setBackground(
-                sendButton,
-                resources.getDrawable(com.tokopedia.design.R.drawable.green_button_rounded)
-            )
-        } else {
-            sendButton?.isEnabled = false
-            sendButton?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
-            MethodChecker.setBackground(
-                sendButton,
-                resources.getDrawable(com.tokopedia.design.R.drawable.bg_button_disabled)
-            )
-        }
+                    && !TextUtils.isEmpty(otherReason?.getEditableValue().toString().trim { it <= ' ' })))
+        sendButton?.isEnabled = sendButtonEnabled
     }
 
     private fun initProgressDialog() {

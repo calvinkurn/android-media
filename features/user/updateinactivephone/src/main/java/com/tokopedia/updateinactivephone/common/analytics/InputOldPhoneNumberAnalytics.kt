@@ -5,13 +5,13 @@ import com.tokopedia.track.TrackAppUtils
 
 class InputOldPhoneNumberAnalytics {
 
-    //7
-    fun trackPageInactivePhoneNumberClickNext(labelAction: String, errorMessage: String = "", inactivePhoneNumber: String = ""){
+    //Tracker ID: 30678
+    fun trackPageInactivePhoneNumberClickNext(labelAction: String, errorMessage: String = "") {
 
         val label = if (labelAction == LABEL_CLICK || labelAction == LABEL_SUCCESS)
-            labelAction
+            "$labelAction - $LABEL_INACTIVE_PHONE_NUMBER"
         else
-            labelErrorMessage(labelAction, errorMessage, inactivePhoneNumber)
+            labelErrorMessage(labelAction, errorMessage)
 
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
@@ -19,14 +19,15 @@ class InputOldPhoneNumberAnalytics {
             ACTION_CLICK_ON_BUTTON_LANJUT,
             label
         )
+        data[KEY_TRACKER_ID] = VALUE_TRACKER_30678
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
 
         sendData(data)
     }
 
-    //8
-    fun trackPageInactivePhoneNumberClickBack(){
+    //Tracker ID: 30679
+    fun trackPageInactivePhoneNumberClickBack() {
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
             CATEGORY_ACCOUNT_SETTING,
@@ -39,13 +40,19 @@ class InputOldPhoneNumberAnalytics {
         sendData(data)
     }
 
-    private fun sendData(data: Map<String, Any>){
+    private fun sendData(data: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    private fun labelErrorMessage(label: String, errorMessage: String): String {
+        return "$label - $errorMessage - $LABEL_INACTIVE_PHONE_NUMBER"
     }
 
     companion object {
         private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_CURRENT_SITE = "currentSite"
+        private const val KEY_TRACKER_ID = "trackerId"
+        private const val VALUE_TRACKER_30678 = "30678"
 
         private const val BUSINESS_UNIT = "user platform"
         private const val CURRENT_SITE = "tokopediamarketplace"
@@ -62,10 +69,5 @@ class InputOldPhoneNumberAnalytics {
         const val LABEL_CLICK = "click"
         const val LABEL_SUCCESS = "success"
         const val LABEL_FAILED = "failed"
-
-        private fun labelErrorMessage(label: String, errorMessage: String, inactivePhoneNumber: String): String{
-            return "$label - $errorMessage - $inactivePhoneNumber"
-        }
-
     }
 }
