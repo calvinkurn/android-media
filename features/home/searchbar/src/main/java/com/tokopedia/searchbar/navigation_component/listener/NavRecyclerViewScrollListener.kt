@@ -21,10 +21,9 @@ class NavRecyclerViewScrollListener(
         super.onScrolled(recyclerView, dx, dy)
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
         if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
-        calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
-        val offset = recyclerView.computeVerticalScrollOffset();
+        val offset = recyclerView.computeVerticalScrollOffset()
+        calculateNavToolbarTransparency(offset)
         navScrollCallback?.onYposChanged(offset)
-
     }
 
     private fun calculateNavToolbarTransparency(offset: Int) {
@@ -74,7 +73,7 @@ class NavRecyclerViewScrollListener(
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
         }
-        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+        if (offsetAlpha in 0.0..255.0) {
             navToolbar.setBackgroundAlpha(offsetAlpha)
             navScrollCallback?.onAlphaChanged(offsetAlpha)
         }

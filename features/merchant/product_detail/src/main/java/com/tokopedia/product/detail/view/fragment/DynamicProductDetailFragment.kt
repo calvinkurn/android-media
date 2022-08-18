@@ -70,6 +70,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -247,6 +248,7 @@ import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -290,6 +292,8 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
+        private const val TOOLBAR_TRANSITION_START = 100
+        private const val TOOLBAR_TRANSITION_RANGES = 50
 
         fun newInstance(
             productId: String? = null,
@@ -478,19 +482,12 @@ open class DynamicProductDetailFragment :
 
     private val compositeSubscription by lazy { CompositeSubscription() }
 
-    // start transition for toolbar transparent
-    // start when user scrolls to 1/3 of screen height
-    private val toolbarStartTransitionPixel get() = DeviceScreenInfo.getScreenWidth(requireContext()) / 4
-
-    // transition range from 1/2 from toolbarStartTransitionPixel
-    private val toolbarTransitionRangePixel get() = toolbarStartTransitionPixel
-
     private val scrollListener by lazy {
         navToolbar?.let {
             NavRecyclerViewScrollListener(
                 navToolbar = it,
-                startTransitionPixel = toolbarStartTransitionPixel,
-                toolbarTransitionRangePixel = toolbarTransitionRangePixel,
+                startTransitionPixel = TOOLBAR_TRANSITION_START,
+                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGES,
                 navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                     override fun onAlphaChanged(offsetAlpha: Float) {
                         // seller app have not search bar
@@ -511,7 +508,7 @@ open class DynamicProductDetailFragment :
                     }
                 }
             )
-        } ?: run { null }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -3850,8 +3847,7 @@ open class DynamicProductDetailFragment :
             constraintSet.clone(containerDynamicProductDetail)
             constraintSet.connect(
                 swipeRefreshPdp.id, ConstraintSet.TOP,
-                containerDynamicProductDetail.id, ConstraintSet.TOP,
-                0
+                containerDynamicProductDetail.id, ConstraintSet.TOP
             )
             constraintSet.applyTo(containerDynamicProductDetail)
         }
@@ -3867,8 +3863,7 @@ open class DynamicProductDetailFragment :
             constraintSet.clone(containerDynamicProductDetail)
             constraintSet.connect(
                 swipeRefreshPdp.id, ConstraintSet.TOP,
-                pdpNavtoolbar.id, ConstraintSet.BOTTOM,
-                0
+                pdpNavtoolbar.id, ConstraintSet.BOTTOM
             )
             constraintSet.applyTo(containerDynamicProductDetail)
         }
