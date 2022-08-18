@@ -312,13 +312,13 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(
             Intent.EXTRA_TEXT,
-            resources.getString(R.string.msg_share_apps) + "\n" + urlPlayStore
+            context?.resources?.getString(R.string.msg_share_apps) + "\n" + urlPlayStore
         )
         sendIntent.type = "text/plain"
         activity?.startActivity(
             Intent.createChooser(
                 sendIntent,
-                resources.getText(R.string.title_share)
+                context?.resources?.getText(R.string.title_share)
             )
         )
     }
@@ -382,7 +382,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun showProgressDialog(): ProgressDialog {
         val progressDialog = ProgressDialog(context)
         return progressDialog.apply {
-            setMessage(resources.getString(R.string.seller_home_loading))
+            setMessage(context?.resources?.getString(R.string.seller_home_loading).orEmpty())
             setTitle("")
             setCancelable(false)
             show()
