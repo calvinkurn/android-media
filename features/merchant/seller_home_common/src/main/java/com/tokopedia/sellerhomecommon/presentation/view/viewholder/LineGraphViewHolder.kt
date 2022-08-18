@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcLineGraphWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
@@ -131,8 +132,10 @@ class LineGraphViewHolder(
     }
 
     private fun onStateLoading(isShown: Boolean) {
-        loadingStateBinding.shimmerWidgetCommon
-            .visibility = if (isShown) View.VISIBLE else View.GONE
+        loadingStateBinding.shimmerWidgetCommon.isVisible = isShown
+        if (isShown) {
+            emptyStateBinding.root.gone()
+        }
     }
 
     private fun onStateError(element: LineGraphWidgetUiModel, isShown: Boolean) {
@@ -141,6 +144,7 @@ class LineGraphViewHolder(
             binding.shcLineGraphErrorState.setOnReloadClicked {
                 listener.onReloadWidget(element)
             }
+            emptyStateBinding.root.gone()
         }
     }
 
@@ -261,6 +265,7 @@ class LineGraphViewHolder(
 
     private fun showEmptyState(element: LineGraphWidgetUiModel) {
         with(element.emptyState) {
+            emptyStateBinding.root.visible()
             emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
             emptyStateBinding.tvLineGraphEmptyStateDescription.text = description
             emptyStateBinding.tvShcMultiLineEmptyStateCta.text = ctaText
