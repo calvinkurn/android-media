@@ -95,6 +95,13 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 config = mModel.config,
                 channelPositionInList = position,
             )
+
+            mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetMediumView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
+            )
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
@@ -124,19 +131,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
             mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
-        }
-
-        override fun onRemindMeImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel,
-            position: Int
-        ) {
-            mAnalyticListener?.onImpressReminderIcon(
-                view = this@PlayWidgetMediumView,
-                item = item,
-                channelPositionInList = position,
-                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
-            )
         }
     }
 

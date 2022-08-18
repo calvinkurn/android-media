@@ -138,10 +138,6 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, data)
         }
-
-        if (reminderBadge.isVisible){
-            mListener?.onRemindMeImpressed(this, data)
-        }
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -267,10 +263,5 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: View,
             item: PlayWidgetChannelUiModel
         ) {}
-
-        fun onRemindMeImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel
-        )
     }
 }
