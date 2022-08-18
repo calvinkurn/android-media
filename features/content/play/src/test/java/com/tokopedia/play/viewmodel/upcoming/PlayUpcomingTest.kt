@@ -899,4 +899,52 @@ class PlayUpcomingTest {
             event[1].assertEqualTo(mockErrorGenerateLink)
         }
     }
+
+    /**
+     * Expanded
+     */
+    @Test
+    fun `given initial value of desc isExpand is false, when user click Lihat Semua it will set true`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+            }
+
+            state.description.isExpand.assertTrue()
+            events.last().assertType<PlayUpcomingUiEvent.ExpandDescriptionEvent> { it.isExpanded.assertTrue()  }
+        }
+    }
+
+    @Test
+    fun `given initial value of desc isExpand is false, when user click Lihat Semua it will set true then user click Tampilkan Sedikit it would go back as initial value`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            //1 click to expand
+            val (state1, events1) = robot.recordStateAndEvent {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+            }
+
+            //2 click to dismiss
+            val (state2, events2) = robot.recordStateAndEvent {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+            }
+
+            state1.description.isExpand.assertTrue()
+            state2.description.isExpand.assertFalse()
+
+            events1.last().assertType<PlayUpcomingUiEvent.ExpandDescriptionEvent> { it.isExpanded.assertTrue()  }
+            events2.last().assertType<PlayUpcomingUiEvent.ExpandDescriptionEvent> { it.isExpanded.assertFalse()  }
+        }
+    }
 }
