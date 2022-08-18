@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.websocket
 
 import android.content.Context
-import android.os.Build
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -9,7 +8,6 @@ import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.network.authentication.HEADER_CONTENT_TYPE
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
