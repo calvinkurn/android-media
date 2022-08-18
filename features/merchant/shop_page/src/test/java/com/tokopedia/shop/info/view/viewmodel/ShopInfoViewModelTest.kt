@@ -1,5 +1,6 @@
 package com.tokopedia.shop.info.view.viewmodel
 
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -146,11 +147,12 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     @Test
-    fun when_get_shop_chat_message_id_success_should_return_id_message() {
+    fun `when user is login and success to get chat existing message id`() {
         runBlocking {
             //define return expected
             val shopMessageChat = ChatMessageId("123")
             onGetMessageIdChat_thenReturn(ChatExistingChat(shopMessageChat))
+            isLoginSession_returnTrue()
 
             //on exceute
             viewModel.getMessageIdOnChatExist("12")
@@ -163,10 +165,11 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     @Test
-    fun when_get_shop_chat_message_id_is_fail_should_return_fail_object() {
+    fun `when user not login and fail to get chat existing message id`() {
         runBlocking {
             //define return expected
             onGetMessageIdChat_thenReturn_Error()
+            isLoginSession_returnFalse()
 
             //on exceute
             viewModel.getMessageIdOnChatExist("0")
@@ -174,6 +177,8 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
             //on assertion result
             val actualResultOfMessageId = (viewModel.messageIdOnChatExist.value)
             assert(actualResultOfMessageId is Fail)
+            val failData = actualResultOfMessageId as Fail
+            assert(failData.throwable is UserNotLoginException)
         }
     }
 
@@ -302,6 +307,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
 
     private suspend fun onGetMessageIdChat_thenReturn_Error() {
         coEvery { getMessageIdChatUseCase.executeOnBackground() } throws Exception()
+    }
+
+    private fun isLoginSession_returnTrue() {
+        every { userSessionInterface.isLoggedIn } returns true
+    }
+
+    private fun isLoginSession_returnFalse() {
+        every { userSessionInterface.isLoggedIn } returns false
     }
     //end GetMessageId
 }

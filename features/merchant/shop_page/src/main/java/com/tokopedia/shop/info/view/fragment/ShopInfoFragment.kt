@@ -1,14 +1,12 @@
 package com.tokopedia.shop.info.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,7 +19,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -44,14 +47,13 @@ import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.*
 import javax.inject.Inject
 
 class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
@@ -94,12 +96,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private val shopInfoNoteLoading: View?
         get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.loading
 
-    private val viewReport: ConstraintLayout?
-        get() = fragmentShopInfoBinding?.reportContainer
-    private val viewDivTopOfReport: DividerUnify?
-        get() = fragmentShopInfoBinding?.diverLayoutTopOfReport
-    private val viewDivBottomOfReport: DividerUnify?
-        get() = fragmentShopInfoBinding?.diverLayoutBottomOfReport
+    private val viewReport: LinearLayoutCompat?
+        get() = fragmentShopInfoBinding?.containerReport
     private val loadProgressGetMessageId: LoaderUnify?
         get() = fragmentShopInfoBinding?.loaderProgressGetMessageId
     private val labelRepost: Typography?
@@ -217,8 +215,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun showReportStore() {
         viewReport?.show()
-        viewDivTopOfReport?.show()
-        viewDivBottomOfReport?.show()
     }
 
     private fun showProgressGetMessageId() {
@@ -249,7 +245,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun routeToWebViewPage(messageId: String) {
         val url = getString(R.string.urlOfPageReport, messageId)
-        val appLink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        val appLink = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
         RouteManager.route(
             activity,
             appLink

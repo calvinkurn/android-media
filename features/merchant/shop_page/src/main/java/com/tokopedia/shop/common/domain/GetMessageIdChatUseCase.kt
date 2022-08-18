@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ChatExistingChat>() {
 
-    private val Chat_Existing_Chat = "query getExistingChat(\$shopIds: Int!){\n" +
+    private val _chatExistingChat = "query getExistingChat(\$shopIds: Int!){\n" +
             "     chatExistingChat(toShopId: \$shopIds) {\n" +
             "         messageId\n" +
             "     }\n" +
@@ -22,7 +22,7 @@ class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiR
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
     val request by lazy{
-        GraphqlRequest(Chat_Existing_Chat, ChatExistingChat::class.java, params)
+        GraphqlRequest(_chatExistingChat, ChatExistingChat::class.java, params)
     }
 
     override suspend fun executeOnBackground(): ChatExistingChat {
