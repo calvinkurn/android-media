@@ -520,8 +520,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             return if (!product.campaign.originalPrice.isNullOrEmpty()) {
                 productCardModel.copy(
                     slashedPrice = product.campaign.originalPrice,
-                    ratingCount = product.productRating,
-                    countSoldRating = product.headlineProductRatingAverage,
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
                         product.labelGroupList.map {
                             add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
