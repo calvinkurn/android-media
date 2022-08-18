@@ -56,7 +56,8 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 channelPositionInList = position,
             )
 
-            mAnalyticListener?.onImpressReminderIcon(
+            if(item.isUpcoming)
+                mAnalyticListener?.onImpressReminderIcon(
                 view = this@PlayWidgetLargeView,
                 item = item,
                 channelPositionInList = position,
@@ -89,8 +90,7 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 channelPositionInList = position,
                 isRemindMe = reminderType.reminded
             )
-            if(item.isUpcoming)
-                mWidgetListener?.onToggleReminderClicked(
+            mWidgetListener?.onToggleReminderClicked(
                 this@PlayWidgetLargeView,
                 item.channelId,
                 reminderType,
