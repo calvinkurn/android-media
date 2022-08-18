@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
-import com.tokopedia.common_digital.common.util.CommonDigitalGqlQuery
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
@@ -48,6 +47,10 @@ import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingA
 import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
+import com.tokopedia.digital.home.util.QueryDigitalHomeBanner
+import com.tokopedia.digital.home.util.QueryDigitalHomeCategory
+import com.tokopedia.digital.home.util.QueryDigitalHomeRechargeFavoriteRecommendationList
+import com.tokopedia.digital.home.util.QueryDigitalHomeSection
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -91,7 +94,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             sliceOpenApp = it.getBoolean(RechargeHomepageFragment.RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
-        searchBarTransitionRange = resources.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE)
+        searchBarTransitionRange = context?.resources?.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE) ?: 0
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -232,10 +235,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         showLoading()
 
         val queryList = mapOf(
-                QUERY_BANNER to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeBanner,
-                QUERY_CATEGORY to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeCategory,
-                QUERY_SECTIONS to com.tokopedia.digital.home.util.DigitalHomepageGqlQuery.digitalHomeSection,
-                QUERY_RECOMMENDATION to CommonDigitalGqlQuery.rechargeFavoriteRecommendationList
+                QUERY_BANNER to QueryDigitalHomeBanner(),
+                QUERY_CATEGORY to QueryDigitalHomeCategory(),
+                QUERY_SECTIONS to QueryDigitalHomeSection(),
+                QUERY_RECOMMENDATION to QueryDigitalHomeRechargeFavoriteRecommendationList()
         )
         viewModel.initialize(queryList)
         viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
