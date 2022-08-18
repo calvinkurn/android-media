@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navi
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
@@ -81,5 +82,6 @@ interface UIWidgetComponent {
     fun inject(shopBannerInfiniteViewModel: ShopBannerInfiniteViewModel)
     fun inject(viewModel: TopQuestViewModel)
     fun inject(shopCardInfiniteViewModel: ShopCardInfiniteViewModel)
+    fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
 
 }

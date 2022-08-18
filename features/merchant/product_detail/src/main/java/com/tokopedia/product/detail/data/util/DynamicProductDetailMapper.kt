@@ -112,13 +112,11 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
-                    listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
-                            ?: "", contentData?.title ?: "",
-                            contentData?.isApplink ?: true, contentData?.icon
-                            ?: "", content?.firstOrNull()?.subtitle
-                            ?: "", content?.firstOrNull()?.icon ?: "")
-                    )
+                    val customInfoData = mapToGeneralInfo(contentData, type = component.type, name = component.componentName)
+
+                    customInfoData?.let {
+                        listOfComponent.add(it)
+                    }
                 }
                 ProductDetailConstant.MINI_SHOP_WIDGET -> {
                     listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
@@ -221,6 +219,31 @@ object DynamicProductDetailMapper {
             }
         }
         return listOfComponent
+    }
+
+    /**
+     * mapping P1 General Info to Visitable Model
+     */
+    private fun mapToGeneralInfo(
+        contentData: ComponentData?,
+        type: String,
+        name: String
+    ): ProductGeneralInfoDataModel? {
+        if (contentData == null) return null
+
+        val content = contentData.content.ifEmpty { listOf(Content()) }
+
+        return ProductGeneralInfoDataModel(
+            name = name,
+            type = type,
+            applink = contentData.applink,
+            title = contentData.title,
+            isApplink = contentData.isApplink,
+            parentIcon = contentData.icon ,
+            subtitle = content.firstOrNull()?.subtitle.orEmpty(),
+            lightIcon = contentData.lightIcon,
+            darkIcon = contentData.darkIcon,
+        )
     }
 
     /**
@@ -362,7 +385,9 @@ object DynamicProductDetailMapper {
                 icon = componentData.icon,
                 separator = componentData.separator,
                 labelColor = label?.color ?: "",
-                labelValue = label?.value ?: ""
+                labelValue = label?.value ?: "",
+                lightIcon = componentData.lightIcon,
+                darkIcon = componentData.darkIcon
         )
     }
 
@@ -568,48 +593,37 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun removeUnusedComponent(productInfo: DynamicProductInfoP1?,
-                              variantData: ProductVariant?,
-                              isShopOwner: Boolean,
-                              initialLayoutData: MutableList<DynamicPdpDataModel>)
-            : MutableList<DynamicPdpDataModel> {
-
+    fun removeUnusedComponent(
+        productInfo: DynamicProductInfoP1?,
+        variantData: ProductVariant?,
+        isShopOwner: Boolean,
+        initialLayoutData: MutableList<DynamicPdpDataModel>
+    ): MutableList<DynamicPdpDataModel> {
         val isTradein = productInfo?.data?.isTradeIn == true
-        val hasWholesale = productInfo?.data?.hasWholesale == true
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
 
-        val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner) && it.name() == ProductDetailConstant.TRADE_IN) {
-                it
-            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
-                it
-            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) {
-                it
-            } else if (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) {
-                it
-            } else {
-                null
-            }
-        }
-
-        if (removedData.isNotEmpty())
-            initialLayoutData.removeAll(removedData)
-
-        return initialLayoutData
+        return initialLayoutData.filterNot {
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
+                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
+                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
+                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
+                    /***
+                     * remove palugada type with name
+                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                     */
+                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
+                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
+                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
+                    || (it.name() == ProductDetailConstant.COD)
+        }.toMutableList()
     }
 
     private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {

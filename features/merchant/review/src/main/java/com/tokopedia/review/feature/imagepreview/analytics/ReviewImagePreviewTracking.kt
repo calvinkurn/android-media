@@ -165,7 +165,8 @@ object ReviewImagePreviewTracking {
         userId: String,
         statistics: String,
         productId: String,
-        currentUserId: String
+        currentUserId: String,
+        label: String
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
@@ -176,7 +177,8 @@ object ReviewImagePreviewTracking {
                     ReviewImagePreviewTrackingConstants.EVENT_LABEL_CLICK_REVIEWER_NAME,
                     feedbackId,
                     userId,
-                    statistics
+                    statistics,
+                    label
                 ),
                 ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
                 ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,

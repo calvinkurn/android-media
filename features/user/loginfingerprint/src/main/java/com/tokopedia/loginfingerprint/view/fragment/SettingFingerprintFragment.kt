@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
@@ -153,7 +154,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     private fun goToVerification() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_SECURITY_QUESTION)
