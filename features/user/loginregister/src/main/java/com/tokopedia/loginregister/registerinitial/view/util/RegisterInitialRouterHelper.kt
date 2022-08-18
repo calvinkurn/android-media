@@ -24,7 +24,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     var source = ""
 
     fun goToVerification(phone: String = "", email: String = "", otpType: Int, context: Context): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -66,8 +66,11 @@ class RegisterInitialRouterHelper @Inject constructor() {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
-    fun goToChangeName(fragment: Fragment) {
+    fun goToChangeName(fragment: Fragment, validateToken: String) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
+        intent.putExtras(Bundle().apply {
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+        })
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)
     }
 

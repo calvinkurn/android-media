@@ -1214,7 +1214,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun isFromAtc(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     private fun onGoToChangeName() {
-        registerInitialRouter.goToChangeName(this)
+        registerInitialRouter.goToChangeName(this, validateToken)
     }
 
     private fun onGoToForbiddenPage() {
