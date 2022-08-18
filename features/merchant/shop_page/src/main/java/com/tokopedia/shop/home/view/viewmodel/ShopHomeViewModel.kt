@@ -657,7 +657,8 @@ class ShopHomeViewModel @Inject constructor(
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                widgetUserAddressLocalData.long,
+                tempShopProductFilterParameter.getExtraParam()
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
