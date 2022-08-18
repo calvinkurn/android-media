@@ -327,16 +327,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
+        val widgets = mutableListOf<BaseWidgetUiModel<*>>()
         adapter.data.forEach {
             val isTheSameWidget = it.widgetType == widget.widgetType
-                    && it.dataKey == widget.dataKey
             if (isTheSameWidget) {
-                widget.showLoadingState = true
+                it.showLoadingState = true
+                notifyWidgetChanged(it)
+                widgets.add(it)
             }
         }
-
-        notifyWidgetChanged(widget)
-        getWidgetsData(listOf(widget))
+        getWidgetsData(widgets)
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {

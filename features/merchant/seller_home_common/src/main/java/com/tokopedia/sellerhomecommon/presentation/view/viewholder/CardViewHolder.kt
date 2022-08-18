@@ -170,18 +170,15 @@ class CardViewHolder(
 
     private fun setupRefreshButton(element: CardWidgetUiModel) {
         with(binding) {
-            containerCard.viewTreeObserver.addOnPreDrawListener {
-                element.data?.lastUpdated?.let {
-                    val shouldShowRefreshButton = it.needToUpdated.orFalse()
-                            && !element.showLoadingState
-                    val isError = !element.data?.error.isNullOrBlank()
-                    icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
-                            || isError
-                    icShcRefreshCard.setOnClickListener {
-                        refreshWidget(element)
-                    }
+            element.data?.lastUpdated?.let {
+                val shouldShowRefreshButton = it.needToUpdated.orFalse()
+                        && !element.showLoadingState
+                val isError = !element.data?.error.isNullOrBlank()
+                icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
+                        || isError
+                icShcRefreshCard.setOnClickListener {
+                    refreshWidget(element)
                 }
-                return@addOnPreDrawListener true
             }
         }
     }
