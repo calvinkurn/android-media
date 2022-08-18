@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.Loading
 
 class LoadingDelegateAdapter : DelegateAdapter<LoadingItem, LoadingDelegateAdapter.LoadingViewHolder>(
     LoadingItem::class.java) {
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemLoadingBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -20,12 +21,12 @@ class LoadingDelegateAdapter : DelegateAdapter<LoadingItem, LoadingDelegateAdapt
     }
 
     override fun bindViewHolder(item: LoadingItem, viewHolder: LoadingViewHolder) {
-        viewHolder.bind(item)
+        viewHolder.bind()
     }
 
     inner class LoadingViewHolder(private val binding : StfsItemLoadingBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: LoadingItem) {
+        fun bind() {
             binding.loader.visible()
         }
 

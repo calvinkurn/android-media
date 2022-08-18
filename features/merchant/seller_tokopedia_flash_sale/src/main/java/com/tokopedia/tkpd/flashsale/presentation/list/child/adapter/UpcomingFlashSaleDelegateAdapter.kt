@@ -2,12 +2,14 @@ package com.tokopedia.tkpd.flashsale.presentation.list.child.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.toCalendar
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -19,6 +21,15 @@ import java.util.Date
 class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, UpcomingFlashSaleDelegateAdapter.UpcomingFlashSaleViewHolder>(
     UpcomingFlashSaleItem::class.java) {
 
+    companion object{
+        private const val ONE_DAY = 1
+        private const val QUOTA_USAGE_HALF_FULL = 50
+        private const val QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED = 75
+        private const val QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL = 76
+        private const val QUOTA_USAGE_ALMOST_FULL = 99
+        private const val QUOTA_USAGE_FULL = 100
+
+    }
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemUpcomingFlashSaleBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -49,35 +60,44 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                 item.formattedEndDate
             )
 
-            binding.progressBar.setValue(item.quotaUsagePercentage)
+            binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
             renderQuotaUsageDescription(item)
             handleTimer(item.status, item.distanceDaysToReviewStartDate, item.reviewStartDate)
         }
 
         private fun renderQuotaUsageDescription(item: UpcomingFlashSaleItem) {
             when {
-                item.quotaUsagePercentage < 50 -> {
+                item.quotaUsagePercentage < QUOTA_USAGE_HALF_FULL -> {
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_original_quota,
                         item.maxProductSubmission.splitByThousand()
                     )
                 }
-                item.quotaUsagePercentage in 50..75 -> {
+                item.quotaUsagePercentage in QUOTA_USAGE_HALF_FULL..QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED -> {
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
                 }
-                item.quotaUsagePercentage in 76..99 -> {
-                    //add fire icon
-                    //binding.progressBar.setProgressIcon()
+                item.quotaUsagePercentage in QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL..QUOTA_USAGE_ALMOST_FULL -> {
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
+                    binding.progressBar.setProgressIcon(
+                        icon = ContextCompat.getDrawable(
+                            binding.progressBar.context,
+                            R.drawable.ic_stfs_fire
+                        ),
+                        width = binding.progressBar.context.resources.getDimension(R.dimen.fire_width).toIntSafely(),
+                        height = binding.progressBar.context.resources.getDimension(R.dimen.fire_height).toIntSafely()
+                    )
                 }
-                item.quotaUsagePercentage == 100 -> {
-                    //change quota progressbar to red color
+                item.quotaUsagePercentage == QUOTA_USAGE_FULL -> {
+                    binding.progressBar. progressDrawable.colors = intArrayOf(
+                        ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200),
+                        ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200)
+                    )
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(R.string.stfs_full_quota)
                 }
             }
@@ -97,7 +117,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
         }
 
         private fun startTimer(distanceDaysToReviewStartDate: Int, reviewStartDate: Date) {
-            if (distanceDaysToReviewStartDate > 1) {
+            if (distanceDaysToReviewStartDate > ONE_DAY) {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
                 binding.timer.targetDate = reviewStartDate.toCalendar()
             } else {
