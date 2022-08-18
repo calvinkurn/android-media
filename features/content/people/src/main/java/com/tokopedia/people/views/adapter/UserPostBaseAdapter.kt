@@ -130,6 +130,10 @@ open class UserPostBaseAdapter(
         )
     }
 
+    override fun onRemindMeImpressed(view: View, item: PlayWidgetChannelUiModel) {
+        //DO NOTHING
+    }
+
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
         fun onPlayWidgetLargeClick(appLink: String)
