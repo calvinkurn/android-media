@@ -41,9 +41,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getProfile(username: String): ProfileUiModel {
         return withContext(dispatcher.io) {
-            val result = userDetailsUseCase.apply {
-                setRequestParams(UserDetailsUseCase.createParam(username))
-            }.executeOnBackground()
+            val result = userDetailsUseCase.executeOnBackground(username)
 
             mapper.mapUserProfile(result)
         }
@@ -51,9 +49,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getFollowInfo(profileIdList: List<String>): FollowInfoUiModel {
         return withContext(dispatcher.io) {
-            val result = profileIsFollowing.apply {
-                setRequestParams(ProfileTheyFollowedUseCase.createParam(profileIdList))
-            }.executeOnBackground()
+            val result = profileIsFollowing.executeOnBackground(profileIdList)
 
             mapper.mapFollowInfo(result)
         }
@@ -69,9 +65,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun followProfile(encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = doFollowUseCase.apply {
-                setRequestParams(ProfileFollowUseCase.createParam(encryptedUserId))
-            }.executeOnBackground()
+            val result = doFollowUseCase.executeOnBackground(encryptedUserId)
 
             mapper.mapFollow(result)
         }
@@ -79,9 +73,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun unFollowProfile(encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = doUnfollowUseCase.apply {
-                setRequestParams(ProfileUnfollowedUseCase.createParam(encryptedUserId))
-            }.executeOnBackground()
+            val result = doUnfollowUseCase.executeOnBackground(encryptedUserId)
 
             mapper.mapUnfollow(result)
         }
@@ -89,9 +81,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateReminder(channelId: String, isActive: Boolean): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = videoPostReminderUseCase.apply {
-                setRequestParams(VideoPostReminderUseCase.createParam(channelId, isActive))
-            }.executeOnBackground()
+            val result = videoPostReminderUseCase.executeOnBackground(channelId, isActive)
 
             mapper.mapUpdateReminder(result)
         }
@@ -99,9 +89,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
         return withContext(dispatcher.io) {
-            val result = playVodUseCase.apply {
-                setRequestParams(PlayPostContentUseCase.createParam(VAL_FEEDS_PROFILE, cursor, VAL_SOURCE_BUYER, username))
-            }.executeOnBackground()
+            val result = playVodUseCase.executeOnBackground(
+                group = VAL_FEEDS_PROFILE,
+                cursor = cursor,
+                sourceType = VAL_SOURCE_BUYER,
+                sourceId = username,
+            )
 
             result
         }
@@ -129,9 +122,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         cursor: String,
         limit: Int
     ): ProfileFollowerListBase = withContext(dispatcher.io) {
-        return@withContext getFollowerListUseCase.apply {
-            setRequestParams(GetFollowerListUseCase.createParam(username, cursor, limit))
-        }.executeOnBackground()
+        return@withContext getFollowerListUseCase.executeOnBackground(
+            username = username,
+            cursor = cursor,
+            limit = limit,
+        )
     }
 
     override suspend fun getFollowingList(
@@ -139,9 +134,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         cursor: String,
         limit: Int
     ): ProfileFollowingListBase = withContext(dispatcher.io) {
-        return@withContext getFollowingListUseCase.apply {
-            setRequestParams(GetFollowingListUseCase.createParam(username, cursor, limit))
-        }.executeOnBackground()
+        return@withContext getFollowingListUseCase.executeOnBackground(
+            username = username,
+            cursor = cursor,
+            limit = limit,
+        )
     }
 
     companion object {

@@ -19,6 +19,15 @@ class ProfileTheyFollowedUseCase @Inject constructor(
         setTypeClass(UserProfileIsFollow::class.java)
     }
 
+    suspend fun executeOnBackground(profileIds: List<String>): UserProfileIsFollow {
+        val request = mapOf(
+            KEY_USER_IDS to profileIds
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_USER_IDS = "followingUserIDs"
 
@@ -38,11 +47,5 @@ class ProfileTheyFollowedUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(
-            profileIds: List<String>
-        ): Map<String, Any> = mapOf(
-            KEY_USER_IDS to profileIds
-        )
     }
 }

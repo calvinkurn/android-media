@@ -19,6 +19,15 @@ class UserDetailsUseCase @Inject constructor(
         setTypeClass(ProfileHeaderBase::class.java)
     }
 
+    suspend fun executeOnBackground(username: String): ProfileHeaderBase {
+        val request = mapOf(
+            KEY_USERNAME to username
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_USERNAME = "username"
 
@@ -62,11 +71,5 @@ class UserDetailsUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(
-            username: String
-        ): Map<String, Any> = mapOf(
-            KEY_USERNAME to username
-        )
     }
 }

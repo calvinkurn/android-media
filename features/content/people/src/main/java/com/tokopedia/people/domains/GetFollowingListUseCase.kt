@@ -22,6 +22,21 @@ class GetFollowingListUseCase @Inject constructor(
         setTypeClass(ProfileFollowingListBase::class.java)
     }
 
+    suspend fun executeOnBackground(
+        username: String,
+        cursor: String,
+        limit: Int,
+    ): ProfileFollowingListBase {
+        val request = mapOf(
+            KEY_USERNAME to username,
+            KEY_CURSOR to cursor,
+            KEY_LIMIT to limit,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_USERNAME = "username"
         private const val KEY_CURSOR = "cursor"
@@ -59,15 +74,5 @@ class GetFollowingListUseCase @Inject constructor(
                   }
                 }
         """
-
-        fun createParam(
-            username: String,
-            cursor: String,
-            limit: Int,
-        ): Map<String, Any> = mapOf(
-            KEY_USERNAME to username,
-            KEY_CURSOR to cursor,
-            KEY_LIMIT to limit,
-        )
     }
 }

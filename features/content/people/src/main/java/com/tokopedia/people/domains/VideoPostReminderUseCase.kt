@@ -19,6 +19,19 @@ class VideoPostReminderUseCase @Inject constructor(
         setTypeClass(VideoPostReimderModel::class.java)
     }
 
+    suspend fun executeOnBackground(
+        channelId: String,
+        isActive: Boolean,
+    ): VideoPostReimderModel {
+        val request = mapOf(
+            KEY_CHANNEL_ID to channelId,
+            KEY_SET_ACTIVE to isActive,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_CHANNEL_ID = "channelID"
         private const val KEY_SET_ACTIVE = "setActive"
@@ -40,13 +53,5 @@ class VideoPostReminderUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(
-            channelId: String,
-            isActive: Boolean,
-        ): Map<String, Any> = mapOf(
-            KEY_CHANNEL_ID to channelId,
-            KEY_SET_ACTIVE to isActive,
-        )
     }
 }

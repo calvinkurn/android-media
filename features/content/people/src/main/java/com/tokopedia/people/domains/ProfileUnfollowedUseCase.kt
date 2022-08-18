@@ -19,6 +19,15 @@ class ProfileUnfollowedUseCase @Inject constructor(
         setTypeClass(ProfileDoUnFollowModelBase::class.java)
     }
 
+    suspend fun executeOnBackground(followedUserIdEnc: String): ProfileDoUnFollowModelBase {
+        val request = mapOf(
+            KEY_USER_ID_ENC to followedUserIdEnc
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_USER_ID_ENC = "userIDEnc"
 
@@ -38,11 +47,5 @@ class ProfileUnfollowedUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(
-            followedUserIdEnc: String
-        ): Map<String, Any> = mapOf(
-            KEY_USER_ID_ENC to followedUserIdEnc
-        )
     }
 }

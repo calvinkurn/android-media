@@ -22,6 +22,23 @@ class PlayPostContentUseCase @Inject constructor(
         setTypeClass(UserPostModel::class.java)
     }
 
+    suspend fun executeOnBackground(
+        group: String,
+        cursor: String,
+        sourceType: String,
+        sourceId: String,
+    ): UserPostModel {
+        val request = mapOf(
+            KEY_GROUP to group,
+            KEY_CURSOR to cursor,
+            KEY_SOURCE_TYPE to sourceType,
+            KEY_SOURCE_ID to sourceId,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_GROUP = "group"
         private const val KEY_CURSOR = "cursor"
@@ -97,17 +114,5 @@ class PlayPostContentUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(
-            group: String,
-            cursor: String,
-            sourceType: String,
-            sourceId: String,
-        ): Map<String, Any> = mapOf(
-            KEY_GROUP to group,
-            KEY_CURSOR to cursor,
-            KEY_SOURCE_TYPE to sourceType,
-            KEY_SOURCE_ID to sourceId,
-        )
     }
 }

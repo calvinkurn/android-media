@@ -19,6 +19,15 @@ class ProfileFollowUseCase @Inject constructor(
         setTypeClass(ProfileDoFollowModelBase::class.java)
     }
 
+    suspend fun executeOnBackground(followingUserIdEnc: String): ProfileDoFollowModelBase {
+        val request = mapOf(
+            KEY_USER_ID_ENC to followingUserIdEnc
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val KEY_USER_ID_ENC = "userIDEnc"
 
@@ -40,11 +49,5 @@ class ProfileFollowUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(
-            followingUserIdEnc: String
-        ): Map<String, Any> = mapOf(
-            KEY_USER_ID_ENC to followingUserIdEnc
-        )
     }
 }
