@@ -60,7 +60,6 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     }
 
-
     private val tabPosition by lazy {
         arguments?.getInt(BUNDLE_KEY_TARGET_TAB_POSITION).orZero()
     }
@@ -117,7 +116,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeUiEvent()
+        observeUiEffect()
         observeUiState()
         viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(tabName, tabId, Int.ZERO))
     }
@@ -159,15 +158,15 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun observeUiEvent() {
+    private fun observeUiEffect() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEffect.collect { event -> handleEvent(event) }
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
         }
     }
 
-    private fun handleEvent(effect: FlashSaleListViewModel.UiEffect) {
+    private fun handleEffect(effect: FlashSaleListViewModel.UiEffect) {
         when (effect) {
-            is FlashSaleListViewModel.UiEffect.FetchError -> {
+            is FlashSaleListViewModel.UiEffect.FetchFlashSaleError -> {
                 binding?.root.showToasterError(effect.throwable)
             }
         }

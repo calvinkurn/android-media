@@ -11,8 +11,10 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
@@ -22,6 +24,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 
 class FlashSaleContainerFragment : BaseDaggerFragment() {
@@ -36,7 +39,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var binding by autoClearedNullable<StfsFragmentLandingContainerBinding>()
+    private var binding by autoClearedNullable<StfsFragmentFlashSaleListContainerBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleContainerViewModel::class.java) }
 
@@ -61,16 +64,16 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = StfsFragmentLandingContainerBinding.inflate(inflater, container, false)
+        binding = StfsFragmentFlashSaleListContainerBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        observeUiEvent()
+        observeUiEffect()
         observeUiState()
-        viewModel.getTabsMetaData()
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
     }
 
     private fun setupView() {
@@ -85,16 +88,20 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun observeUiEvent() {
+    private fun observeUiEffect() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event -> handleEvent(event) }
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
         }
     }
 
-    private fun handleEvent(event: FlashSaleContainerViewModel.UiEvent) {
-        when (event) {
-            is FlashSaleContainerViewModel.UiEvent.FetchTabMetaError -> {
-
+    private fun handleEffect(effect: FlashSaleContainerViewModel.UiEffect) {
+        when (effect) {
+            is FlashSaleContainerViewModel.UiEffect.FetchTabMetaError -> {
+                binding?.root.showToasterError(effect.throwable)
+                binding?.globalError?.visible()
+                binding?.globalError?.setActionClickListener {
+                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+                }
             }
         }
     }
@@ -106,7 +113,9 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
 
     private fun renderLoadingState(isLoading: Boolean) {
-
+        binding?.shimmer?.content?.isVisible = isLoading
+        binding?.tabsUnify?.isVisible = !isLoading
+        binding?.globalError?.isVisible = !isLoading
     }
 
     private fun renderTabs(tabs: List<TabMetadata>) {

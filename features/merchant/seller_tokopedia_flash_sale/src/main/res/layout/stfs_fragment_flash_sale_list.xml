@@ -14,7 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="3"
-        tools:listitem="@layout/ssfs_item_campaign" />
+        tools:visibility="gone"
+        tools:listitem="@layout/stfs_item_upcoming_flash_sale" />
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyState"
@@ -40,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

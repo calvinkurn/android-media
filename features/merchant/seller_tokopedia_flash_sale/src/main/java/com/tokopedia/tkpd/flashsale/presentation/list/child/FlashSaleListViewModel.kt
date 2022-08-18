@@ -34,7 +34,7 @@ class FlashSaleListViewModel @Inject constructor(
     val uiEffect = _uiEffect.asSharedFlow()
 
     data class UiState(
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
         val flashSales: List<DelegateAdapterItem> = emptyList(),
         val error: Throwable? = null
     )
@@ -44,7 +44,7 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     sealed class UiEffect {
-        data class FetchError(val throwable: Throwable) : UiEffect()
+        data class FetchFlashSaleError(val throwable: Throwable) : UiEffect()
     }
 
     fun processEvent(event : UiEvent) {
