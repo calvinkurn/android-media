@@ -35,6 +35,7 @@ import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getDestinationUri
+import com.tokopedia.media.editor.utils.writeBitmapToStorage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -586,27 +587,14 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun writeToStorage(bitmapParam: Bitmap, filename: String? = null, isFinish: Boolean = true) {
-        viewBinding?.let {
-            try {
-                val file = getDestinationUri(requireContext(), filename).toFile()
-                file.createNewFile()
+        val fileResult = writeBitmapToStorage(
+            requireContext(),
+            bitmapParam,
+            filename
+        )
 
-                val bos = ByteArrayOutputStream()
-                bitmapParam.compress(Bitmap.CompressFormat.PNG, 0, bos)
-                val bitmapData = bos.toByteArray()
-
-                val fos = FileOutputStream(file)
-                fos.write(bitmapData)
-                fos.flush()
-                fos.close()
-
-                val uri = file.toUri()
-                data.resultUrl = uri.path
-
-                if (isFinish) finishPage()
-            } catch (e: Exception) {
-            }
-        }
+        data.resultUrl = fileResult?.path
+        if (isFinish) finishPage()
     }
 
     override fun getScreenName() = SCREEN_NAME
