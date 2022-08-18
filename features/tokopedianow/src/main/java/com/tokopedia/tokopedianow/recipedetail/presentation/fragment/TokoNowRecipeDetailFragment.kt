@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -421,10 +423,16 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onSuccessAddBookmark(data: BookmarkUiModel) {
-        showToaster(getString(
-            R.string.tokopedianow_recipe_success_add_bookmark,
-            data.recipeTitle
-        ))
+        showToaster(
+            message = getString(
+                R.string.tokopedianow_recipe_success_add_bookmark,
+                data.recipeTitle
+            ),
+            actionText = getString(R.string.tokopedianow_lihat),
+            onClickAction = {
+                goToRecipeBookmark()
+            }
+        )
     }
 
     private fun onFailedAddBookmark() {
@@ -535,6 +543,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             message = error.throwable.message.orEmpty(),
             type = Toaster.TYPE_ERROR
         )
+    }
+
+    private fun goToRecipeBookmark() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
     }
 
     private fun getMiniCartHeight(): Int {
