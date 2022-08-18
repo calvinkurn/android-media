@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape android:shape="ring" android:thickness="6dp" android:innerRadiusRatio="2.5" android:useLevel="false">
-            <solid android:color="@android:color/white"/>
+            <solid android:color="@color/Unify_Static_White"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
