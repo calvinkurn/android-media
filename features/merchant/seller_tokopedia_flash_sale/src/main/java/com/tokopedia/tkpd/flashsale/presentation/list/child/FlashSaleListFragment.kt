@@ -119,7 +119,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         setupView()
         observeUiEvent()
         observeUiState()
-        viewModel.getFlashSaleList(tabName, tabId, Int.ZERO)
+        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(tabName, tabId, Int.ZERO))
     }
 
 
@@ -135,8 +135,11 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    flashSaleAdapter.addItem(LoadingItem)
-                    viewModel.getFlashSaleList(tabName, tabId,page * PAGE_SIZE)
+                    val currentItemCount = flashSaleAdapter.getItems().size
+                    if (currentItemCount < totalCampaign) {
+                        flashSaleAdapter.addItem(LoadingItem)
+                        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(tabName, tabId,page * PAGE_SIZE))
+                    }
                 }
             }
             addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
@@ -158,14 +161,14 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event -> handleEvent(event) }
+            viewModel.uiEffect.collect { event -> handleEvent(event) }
         }
     }
 
-    private fun handleEvent(event: FlashSaleListViewModel.UiEvent) {
-        when (event) {
-            is FlashSaleListViewModel.UiEvent.FetchError -> {
-                binding?.root.showToasterError(event.throwable)
+    private fun handleEvent(effect: FlashSaleListViewModel.UiEffect) {
+        when (effect) {
+            is FlashSaleListViewModel.UiEffect.FetchError -> {
+                binding?.root.showToasterError(effect.throwable)
             }
         }
     }
@@ -188,6 +191,5 @@ class FlashSaleListFragment : BaseDaggerFragment() {
             flashSaleAdapter.addItems(flashSales)
         }
     }
-
 
 }

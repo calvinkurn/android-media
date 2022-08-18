@@ -30,6 +30,7 @@
             app:layout_constraintStart_toEndOf="@id/imgCampaignStatusIndicator"
             app:layout_constraintTop_toTopOf="@+id/imgCampaignStatusIndicator"
             app:typographyType="display_3"
+            android:text="@string/stfs_status_registration_ended"
             app:typographyWeight="bold"
             tools:text="Belum Daftar Produk" />
 

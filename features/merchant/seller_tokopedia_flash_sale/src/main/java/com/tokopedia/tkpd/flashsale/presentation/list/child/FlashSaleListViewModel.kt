@@ -30,8 +30,8 @@ class FlashSaleListViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<UiEvent>(replay = 1)
-    val uiEvent = _uiEvent.asSharedFlow()
+    private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
+    val uiEffect = _uiEffect.asSharedFlow()
 
     data class UiState(
         val isLoading: Boolean = false,
@@ -40,10 +40,22 @@ class FlashSaleListViewModel @Inject constructor(
     )
 
     sealed class UiEvent {
-        data class FetchError(val throwable: Throwable) : UiEvent()
+        data class LoadPage(val tabName : String, val tabId: Int, val offset : Int) : UiEvent()
     }
 
-    fun getFlashSaleList(tabName : String, tabId: Int, offset : Int) {
+    sealed class UiEffect {
+        data class FetchError(val throwable: Throwable) : UiEffect()
+    }
+
+    fun processEvent(event : UiEvent) {
+        when (event) {
+            is UiEvent.LoadPage -> getFlashSaleList(event.tabName, event.tabId, event.offset)
+            else -> {}
+        }
+    }
+
+
+    private fun getFlashSaleList(tabName : String, tabId: Int, offset : Int) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -71,12 +83,7 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun FlashSale.toUpcomingItem() : DelegateAdapterItem {
-        val status = if(statusId == 1) {
-            UpcomingFlashSaleItem.Status.REGISTRATION_OPEN
-        } else {
-            UpcomingFlashSaleItem.Status.REGISTRATION_CLOSED
-        }
-
+        val now = Date()
         return UpcomingFlashSaleItem(
             campaignId,
             name,
@@ -86,9 +93,8 @@ class FlashSaleListViewModel @Inject constructor(
             formattedDate.startDate,
             formattedDate.endDate,
             endDateUnix,
-            status,
             findQuotaUsagePercentage(),
-            hoursDifference(Date(), submissionEndDateUnix),
+            hoursDifference(now, submissionEndDateUnix),
             submissionEndDateUnix
         )
     }

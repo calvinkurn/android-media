@@ -12,15 +12,9 @@ data class UpcomingFlashSaleItem(
     val formattedStartDate: String,
     val formattedEndDate: String,
     val endDate : Date,
-    val status: Status,
     val quotaUsagePercentage: Int,
     val distanceHoursToSubmissionEndDate: Int,
     val submissionEndDate: Date
 ) : DelegateAdapterItem {
     override fun id() = id
-
-    enum class Status {
-        REGISTRATION_OPEN,
-        REGISTRATION_CLOSED
-    }
 }

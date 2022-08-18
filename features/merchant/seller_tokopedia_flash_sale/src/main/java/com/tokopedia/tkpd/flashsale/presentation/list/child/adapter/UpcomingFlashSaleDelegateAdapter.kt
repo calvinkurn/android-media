@@ -8,11 +8,11 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.dimmed
 import com.tokopedia.campaign.utils.extension.resetDimmedBackground
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.toCalendar
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemUpcomingFlashSaleBinding
@@ -26,7 +26,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
     UpcomingFlashSaleItem::class.java) {
 
     companion object{
-        private const val ONE_DAY = 24
+        private const val TWENTY_FOUR_HOURS = 24
         private const val QUOTA_USAGE_HALF_FULL = 50
         private const val QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED = 75
         private const val QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL = 76
@@ -53,10 +53,6 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
             binding.tpgCampaignName.text = item.name
             binding.imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
             binding.imgFlashSale.loadImage(item.imageUrl)
-            binding.tpgCampaignStatus.text = when (item.status) {
-                UpcomingFlashSaleItem.Status.REGISTRATION_OPEN -> binding.tpgCampaignStatus.context.getString(R.string.stfs_status_registration_ended)
-                UpcomingFlashSaleItem.Status.REGISTRATION_CLOSED -> binding.tpgCampaignStatus.context.getString(R.string.stfs_status_registration_closed)
-            }
             binding.tpgCampaignName.text = item.name
             binding.tpgPeriod.text = binding.tpgPeriod.context.getString(
                 R.string.stfs_placeholder_period,
@@ -66,7 +62,7 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
 
             binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
             renderQuotaUsage(item)
-            handleTimer(item.status, item.distanceHoursToSubmissionEndDate, item.submissionEndDate)
+            startTimer(item.distanceHoursToSubmissionEndDate, item.submissionEndDate)
         }
 
         private fun renderQuotaUsage(item: UpcomingFlashSaleItem) {
@@ -117,22 +113,10 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
             }
         }
 
-        private fun handleTimer(
-            status: UpcomingFlashSaleItem.Status,
-            distanceHoursToSubmissionEndDate: Int,
-            submissionEndDate: Date
-        ) {
-            if (status == UpcomingFlashSaleItem.Status.REGISTRATION_CLOSED) {
-                binding.timer.gone()
-            } else {
-                binding.timer.visible()
-                startTimer(distanceHoursToSubmissionEndDate, submissionEndDate)
-            }
-        }
-
         private fun startTimer(distanceHoursToSubmissionEndDate: Int, submissionEndDate: Date) {
             val onTimerFinished = {
                 binding.timer.gone()
+                binding.tpgCampaignStatus.text = binding.tpgCampaignStatus.context.getString(R.string.stfs_status_registration_closed)
                 binding.imgFlashSale.dimmed()
                 binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
                 binding.btnRegister.buttonType = UnifyButton.Type.ALTERNATE
@@ -143,15 +127,21 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                 )
                 binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(R.string.stfs_status_registration_closed_alternative)
             }
-            if (distanceHoursToSubmissionEndDate > ONE_DAY) {
-                binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
-                binding.timer.targetDate = submissionEndDate.toCalendar()
-                binding.timer.onFinish = onTimerFinished
-            } else {
-                binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                binding.timer.targetDate = submissionEndDate.toCalendar()
-                binding.timer.onFinish = onTimerFinished
+
+            when {
+                distanceHoursToSubmissionEndDate < Int.ZERO -> onTimerFinished()
+                distanceHoursToSubmissionEndDate in Int.ZERO..TWENTY_FOUR_HOURS -> {
+                    binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                    binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+                    binding.timer.targetDate = submissionEndDate.toCalendar()
+                    binding.timer.onFinish = onTimerFinished
+                }
+                distanceHoursToSubmissionEndDate > TWENTY_FOUR_HOURS -> {
+                    binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
+                    binding.timer.targetDate = submissionEndDate.toCalendar()
+                    binding.timer.onFinish = onTimerFinished
+                }
+                else -> onTimerFinished()
             }
         }
     }
