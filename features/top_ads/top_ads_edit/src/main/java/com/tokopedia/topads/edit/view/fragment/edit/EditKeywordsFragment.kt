@@ -728,6 +728,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                         budgetInputRekomendasi.textFieldInput.setText(
                             (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
                     }
+                    it.bidType.equals(PRODUCT_AUTO_SEARCH) -> {
+                        budgetInput.textFieldInput.setText(suggestBidPerClick)
+                    }
+                    it.bidType.equals(PRODUCT_AUTO_BROWSE) -> {
+                        budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+                    }
                 }
             }
             updateTextFields()
