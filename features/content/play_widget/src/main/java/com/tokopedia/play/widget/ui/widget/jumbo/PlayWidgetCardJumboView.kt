@@ -156,7 +156,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
         }
-        if (reminderBadge.isVisible){
+        reminderBadge.addOnImpressionListener(model.impressHolder){
             mListener?.onRemindMeImpressed(this, model)
         }
     }
