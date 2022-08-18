@@ -9,8 +9,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -812,6 +811,142 @@ class HomeRecommendationViewModelTest{
             observerHomeRecommendation.onChanged(match {
                 it.homeRecommendations.isNotEmpty() &&
                         it.homeRecommendations[it.homeRecommendations.size - 1] !is HomeRecommendationBannerTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page and load shopAds on empty Banner`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+            homeRecommendations = listOf(
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                )
+            ),
+            isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+
+        val s = CpmModel()
+        val v = CpmData()
+        val d = Cpm()
+        d.position = 0
+        v.cpm = d
+        s.data = listOf(v)
+        val n = TopAdsHeadlineResponse(s)
+
+        getTopAdsHeadlineUseCase.givenDataReturn(n)
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+            // check on first data is headline ads item
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationHeadlineTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page and load shopAds with topads Banner`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+            homeRecommendations = listOf(
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                ),
+                HomeRecommendationBannerTopAdsDataModel(position = 1)
+            ),
+            isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+
+
+        val s = CpmModel()
+        val v = CpmData()
+        val d = Cpm()
+        d.position = 0
+        v.cpm = d
+        s.data = listOf(v)
+        val n = TopAdsHeadlineResponse(s)
+
+        getTopAdsHeadlineUseCase.givenDataReturn(n)
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+
+            // check on first data is home headline ads item and topAds banner at next index
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationHeadlineTopAdsDataModel
+                        && it.homeRecommendations[2] is HomeRecommendationBannerTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
+    fun `Get Success Data Home Recommendation Initial Page and load topads Banner when headlines ads is null`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+            homeRecommendations = listOf(
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                ),
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                ),
+                HomeRecommendationBannerTopAdsDataModel(position = 2),
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                )
+            ),
+            isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0, tabIndex = 1)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+
+            // check on first data is home recommendation item and topAds banner at index
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel
+                        && it.homeRecommendations[2] is HomeRecommendationBannerTopAdsDataModel
             })
         }
         confirmVerified(observerHomeRecommendation)
