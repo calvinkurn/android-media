@@ -25,10 +25,6 @@ class OrderHistoryViewModel @Inject constructor(
         private const val PARAM_LANGUAGE = "lang"
         private const val LANGUAGE_ID = "id"
         private const val PARAM_USER_ID = "userID"
-        private const val PARAM_DEVICE_ID = "device_id"
-        private const val PARAM_HASH = "hash"
-        private const val PARAM_OS_TYPE = "os_type"
-        private const val PARAM_TIMESTAMP = "device_time"
         private const val PARAM_REQUEST_BY = "requestBy"
     }
 
