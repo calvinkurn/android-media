@@ -32,8 +32,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_content_hashtag_landing_page.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -46,7 +44,6 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     private var isInitialLoad: Boolean = true
     private var isFromContentDetailpage: Boolean = false
     private var sourceFromContentDetail: String = ""
-    private var userSession: UserSessionInterface? = null
 
 
     @Inject
@@ -81,7 +78,6 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userSession = UserSession(requireContext())
         viewModel = ViewModelProvider(this, viewModelFactory).get(HashtagLandingPageViewModel::class.java)
         arguments?.let {
             searchTag = it.getString(ARG_HASHTAG, "")
@@ -221,8 +217,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
             feedAnalytics.eventContentDetailHashtagPageClickThumbnail(
                 post.id,
                 searchTag,
-                sourceFromContentDetail,
-                userSession?.userId ?: ""
+                sourceFromContentDetail
             )
         else
             feedAnalytics.eventHashtagPageClickThumbnail(post.id, searchTag, position)

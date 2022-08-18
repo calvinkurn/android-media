@@ -2445,8 +2445,7 @@ class FeedAnalyticTracker
     fun eventContentDetailHashtagPageClickThumbnail(
         activityId: String,
         hashtag: String,
-        source: String,
-        userId: String
+        source: String
     ) {
         val generalData = DataLayer.mapOf(
             EVENT, Event.CLICK_PG,
@@ -2455,7 +2454,7 @@ class FeedAnalyticTracker
             EVENT_LABEL, "$activityId - $hashtag - - $source",
             BUSINESS_UNIT, CONTENT,
             CURRENT_SITE, MARKETPLACE,
-            KEY_EVENT_USER_ID, userId,
+            KEY_EVENT_USER_ID, userSessionInterface.userId,
             TRACKER_ID, "34616",
         )
 
