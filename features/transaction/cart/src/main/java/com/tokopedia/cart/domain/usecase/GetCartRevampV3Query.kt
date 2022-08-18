@@ -732,6 +732,8 @@ const val CART_REVAMP_V3_QUERY =
                       order_id
                       shop_id
                       is_po
+                      shipping_id
+                      sp_id
                       duration
                       warehouse_id
                       address_id
