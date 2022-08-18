@@ -16,6 +16,7 @@ ext {
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
+            affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
