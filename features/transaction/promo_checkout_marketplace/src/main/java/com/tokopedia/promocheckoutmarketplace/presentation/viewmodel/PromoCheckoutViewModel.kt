@@ -318,8 +318,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val hasPreSelectedPromo = checkHasPreSelectedPromo()
         val preSelectedPromoCodes = getPreSelectedPromoList()
+        val hasSelectedPromoBo = checkHasSelectedPromoBo()
 
-        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo)
+        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, hasSelectedPromoBo)
 
         calculateAndRenderTotalBenefit()
         updateRecommendationState()
@@ -444,6 +445,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
         return tmpHasPreSelectedPromo
+    }
+
+    private fun checkHasSelectedPromoBo(): Boolean {
+        var hasSelectedPromoBo = false
+        promoListUiModel.value?.forEach visitableLoop@{ visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir && visitable.uiState.isSelected) {
+                hasSelectedPromoBo = true
+                return@visitableLoop
+            }
+        }
+        return hasSelectedPromoBo
     }
 
     private fun setPromoInputState(response: CouponListRecommendationResponse, tmpPromoCode: String) {
@@ -581,11 +593,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean) {
+    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, hasSelectedBoPromo: Boolean) {
         fragmentUiModel.value?.let {
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
             it.uiState.hasAnyPromoSelected = hasPreSelectedPromo
+            it.uiState.hasPreAppliedBo = hasSelectedBoPromo
             it.uiState.hasFailedToLoad = false
             it.uiData.exception = null
             _fragmentUiModel.value = it
@@ -1189,7 +1202,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             fragmentUiModel.value?.let {
                 it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
                 it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.firstOrNull()?.icon ?: ""
-                it.uiState.hasSelectedBoClashingPromo = selectedItem.uiState.isSelected
+                it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
 
                 _fragmentUiModel.value = it
             }
