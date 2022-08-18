@@ -1627,8 +1627,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString, boolean forceHitValidateUse) {
-        // TODO: 04/07/22 CHECK IF BO GETS RED STATE, THEN HOW? -> last validate use request should remove BO code
-        // TODO: 04/07/22 CHECK IF PROMO GETS RED STATE, THEN should keep hit -> by last validate use request
         boolean stillHasPromo = false;
         ValidateUsePromoRequest lastValidateUseRequest = shipmentPresenter.getLastValidateUseRequest();
         if (lastValidateUseRequest != null) {
@@ -2986,39 +2984,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
         if (lastApplyUiModel == null) return;
-
-//        ArrayList<Order> listOrder = new ArrayList<>();
-//        Order order = new Order();
-//        for (int i = 0; i < shipmentAdapter.getShipmentCartItemModelList().size(); i++) {
-//            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelList().get(i);
-//            order.setShopId(shipmentCartItemModel.getShopId());
-//            order.setUniqueId(shipmentCartItemModel.getCartString());
-//            order.setChecked(true);
-//
-//            ArrayList<String> listOrderCodes = new ArrayList<>();
-//            for (int x = 0; x < lastApplyUiModel.getVoucherOrders().size(); x++) {
-//                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyUiModel.getVoucherOrders().get(x).getUniqueId())) {
-//                    listOrderCodes.add(lastApplyUiModel.getVoucherOrders().get(x).getCode());
-//                    break;
-//                }
-//            }
-//            order.setCodes(listOrderCodes);
-//
-//            ArrayList<ProductDetail> listProduct = new ArrayList<>();
-//            for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-//                CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(j);
-//                ProductDetail productDetail = new ProductDetail();
-//                productDetail.setProductId(cartItemModel.getProductId());
-//                productDetail.setQuantity(cartItemModel.getQuantity());
-//                listProduct.add(productDetail);
-//            }
-//            order.setProduct_details(listProduct);
-//            listOrder.add(order);
-//        }
-//
-//        PromoRequest promoRequest = new PromoRequest();
-//        promoRequest.setState(CheckoutConstant.CHECKOUT);
-//        promoRequest.setCodes(new ArrayList<>(lastApplyUiModel.getCodes()));
 
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
