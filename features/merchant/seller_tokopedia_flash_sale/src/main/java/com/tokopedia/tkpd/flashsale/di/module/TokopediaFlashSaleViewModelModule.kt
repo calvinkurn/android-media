@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
 import com.tokopedia.tkpd.flashsale.presentation.list.LandingContainerViewModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.viewmodel.CampaignDetailBottomSheetViewModel
-import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
