@@ -16,9 +16,7 @@ import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetCouponListRecomm
 import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetPromoSuggestionUseCase
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
-import com.tokopedia.promocheckoutmarketplace.presentation.addPromo
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
-import com.tokopedia.promocheckoutmarketplace.presentation.containsPromoCode
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomSheetUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
@@ -32,6 +30,8 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItem
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.addPromo
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.containsPromoCode
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest

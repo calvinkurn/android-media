@@ -28,19 +28,3 @@ fun getDeviceHeight(activity: Activity): Int {
     activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.heightPixels
 }
-
-fun Collection<String>.containsPromoCode(promoListItemUiModel: PromoListItemUiModel) : Boolean {
-    return if (promoListItemUiModel.uiState.isBebasOngkir) {
-        this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code }).isNotEmpty()
-    } else {
-        this.contains(promoListItemUiModel.uiData.promoCode)
-    }
-}
-
-fun MutableCollection<String>.addPromo(promoListItemUiModel: PromoListItemUiModel) {
-    if (promoListItemUiModel.uiState.isBebasOngkir) {
-        this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
-    } else {
-        this.add(promoListItemUiModel.uiData.promoCode)
-    }
-}
