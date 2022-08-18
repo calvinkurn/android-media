@@ -625,8 +625,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 rvWishlistCollectionDetail.gone()
                 wishlistCollectionDetailSearchbar.gone()
                 emptyStateGlobalWishlistCollectionDetail.gone()
-                hideSearchBar()
-                hideFilter()
+                if (isAutoDeletion) {
+                    hideSearchBar()
+                    hideFilter()
+                } else {
+                    showSearchBar()
+                    showFilter()
+                }
                 hideTotalLabel()
                 globalErrorWishlistCollectionDetail.visible()
                 globalErrorWishlistCollectionDetail.setType(errorType)
@@ -2189,8 +2194,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             listExcludedBulkDelete.clear()
             collectionItemsAdapter.showCheckbox(isAutoDeletion)
             binding?.run {
-                hideSearchBar()
-                hideFilter()
+                if (isAutoDeletion) {
+                    hideSearchBar()
+                    hideFilter()
+                } else {
+                    showSearchBar()
+                    showFilter()
+                }
                 wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
                 bottomButtonLayout.visible()
