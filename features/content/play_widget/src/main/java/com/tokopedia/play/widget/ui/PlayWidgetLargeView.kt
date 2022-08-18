@@ -55,13 +55,6 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 config = mModel.config,
                 channelPositionInList = position,
             )
-
-            mAnalyticListener?.onImpressReminderIcon(
-                view = this@PlayWidgetLargeView,
-                item = item,
-                channelPositionInList = position,
-                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
-            )
         }
 
         override fun onChannelClicked(
@@ -94,6 +87,19 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
                 item.channelId,
                 reminderType,
                 position
+            )
+        }
+
+        override fun onRemindMeImpressed(
+            view: View,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetLargeView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
             )
         }
     }
