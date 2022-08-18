@@ -15,6 +15,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemUpcomingFlashSaleBinding
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.Date
 
@@ -61,25 +63,28 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
             )
 
             binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
-            renderQuotaUsageDescription(item)
+            renderQuotaUsage(item)
             handleTimer(item.status, item.distanceDaysToReviewStartDate, item.reviewStartDate)
         }
 
-        private fun renderQuotaUsageDescription(item: UpcomingFlashSaleItem) {
+        private fun renderQuotaUsage(item: UpcomingFlashSaleItem) {
             when {
                 item.quotaUsagePercentage < QUOTA_USAGE_HALF_FULL -> {
+                    binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_original_quota,
                         item.maxProductSubmission.splitByThousand()
                     )
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_HALF_FULL..QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED -> {
+                    binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL..QUOTA_USAGE_ALMOST_FULL -> {
+                    binding.progressBar.progressBarColorType = ProgressBarUnify.COLOR_RED
                     binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
@@ -94,7 +99,10 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
                     )
                 }
                 item.quotaUsagePercentage == QUOTA_USAGE_FULL -> {
-                    binding.progressBar. progressDrawable.colors = intArrayOf(
+                    binding.btnRegister.buttonType = UnifyButton.Type.ALTERNATE
+                    binding.btnRegister.buttonVariant = UnifyButton.Variant.GHOST
+                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
+                    binding.progressBar.progressDrawable.colors = intArrayOf(
                         ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200),
                         ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200)
                     )
