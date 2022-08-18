@@ -305,5 +305,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 
-    public static final String SHOW_MODAL_TOKO_WIDGET_SALDO = "android_show_modal_toko_widget_saldo";
+    public static final String SHOW_MODAL_TOKO_WIDGET_SALDO = "saldohistory_modaltoko_widgetremoval";
 }
