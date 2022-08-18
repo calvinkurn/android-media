@@ -240,6 +240,8 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
     private fun deleteProduct(product: SellerCampaignProductList.Product) {
         ProductDeleteDialog().apply {
             setOnPrimaryActionClick {
+                productIndex++
+                shouldLoadNextData = productIndex < productList?.size.orZero()
                 viewModel.removeProducts(campaignId, listOf(product))
             }
             show(context ?: return)
@@ -473,6 +475,7 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
         viewModel.setCampaignPrice(discountedPrice)
         viewModel.setCampaignStock(customStock)
         viewModel.setCampaignMaxOrder(maxOrder)
+        viewModel.setDeleteStatus(false)
         binding?.apply {
             tfCampaignPrice.text = discountedPrice
             tfCampaignPricePercent.text = discountedPricePercent?.toString() ?: EMPTY_INITIAL_VALUE
@@ -500,8 +503,7 @@ class EditProductInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun onDeleteDataSuccess() {
-        productIndex++
-        shouldLoadNextData = productIndex < productList?.size.orZero()
+        viewModel.setDeleteStatus(true)
         if (shouldLoadNextData) {
             loadNextData()
         } else {

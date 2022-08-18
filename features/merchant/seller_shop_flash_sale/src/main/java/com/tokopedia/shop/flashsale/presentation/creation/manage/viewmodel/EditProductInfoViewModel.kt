@@ -73,6 +73,7 @@ class EditProductInfoViewModel @Inject constructor(
     private var _campaignPricePercent = MutableStateFlow("")
     private var _campaignStock = MutableStateFlow("")
     private var _campaignMaxOrder = MutableStateFlow("")
+    private var _deleteActionExecuted = MutableStateFlow(false)
 
     val campaignPrice = _campaignPricePercent.map {
         DiscountUtil.getDiscountPrice(it.toLongOrZero(), product.value?.price)
@@ -87,8 +88,9 @@ class EditProductInfoViewModel @Inject constructor(
         campaignPrice,
         _campaignPrice,
         _campaignStock,
-        _campaignMaxOrder
-    ) { priceFromDiscount, price, stock, maxOrder ->
+        _campaignMaxOrder,
+        _deleteActionExecuted
+    ) { priceFromDiscount, price, stock, maxOrder, _ ->
         _productInputData.price = if (isUsingPricePercentage) priceFromDiscount else price.toLongOrNull()
         _productInputData.stock = stock.toLongOrNull()
         _productInputData.maxOrder = maxOrder.toIntOrNull()
@@ -174,5 +176,9 @@ class EditProductInfoViewModel @Inject constructor(
 
     fun setInputOriginalStock(stock: Long) {
         _productInputData.originalStock = stock
+    }
+
+    fun setDeleteStatus(isDeleteActionExecuted: Boolean) {
+        _deleteActionExecuted.value = isDeleteActionExecuted
     }
 }
