@@ -32,6 +32,10 @@ class PlayWidgetJumboViewHolder {
                 ) {
                     listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
                 }
+
+                override fun onRemindMeImpressed(view: View, item: PlayWidgetChannelUiModel) {
+                    listener.onRemindIconImpressed(view, item, adapterPosition)
+                }
             })
         }
 
@@ -69,6 +73,12 @@ class PlayWidgetJumboViewHolder {
             fun onToggleReminderChannelClicked(
                 item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType,
+                position: Int
+            )
+
+            fun onRemindIconImpressed(
+                view: View,
+                item: PlayWidgetChannelUiModel,
                 position: Int
             )
         }
