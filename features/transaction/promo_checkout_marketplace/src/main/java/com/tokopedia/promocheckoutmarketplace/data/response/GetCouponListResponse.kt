@@ -182,7 +182,7 @@ data class Coupon(
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
         @SerializedName("bo_clashing_infos")
-        val boClashingInfos: List<ClashingInfo> = emptyList(),
+        val boClashingInfos: List<BoClashingInfo> = emptyList(),
         @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
@@ -263,6 +263,15 @@ data class PromoInfo(
 }
 
 data class ClashingInfo(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("icon")
+        val icon: String = ""
+)
+
+data class BoClashingInfo(
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")
