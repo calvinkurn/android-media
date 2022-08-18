@@ -37,7 +37,6 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
@@ -75,7 +74,6 @@ class FeedPlusTypeFactoryImpl(
     private val highlightListener: HighlightAdapter.HighlightListener
     private val emptyFeedBeforeLoginListener: EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener
     private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
-    private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
     private val topAdsHeadlineListener: TopAdsHeadlineListener
 
@@ -95,13 +93,8 @@ class FeedPlusTypeFactoryImpl(
         this.highlightListener = context
         this.emptyFeedBeforeLoginListener = context
         this.retryViewHolderListener = context
-        this.emptyFeedViewHolderListener = context
         this.topAdsBannerListener = context
         this.topAdsHeadlineListener = context
-    }
-
-    override fun type(emptyModel: EmptyModel): Int {
-        return EmptyFeedViewHolder.LAYOUT
     }
 
     override fun type(emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel): Int {
@@ -164,7 +157,6 @@ class FeedPlusTypeFactoryImpl(
         val viewHolder: AbstractViewHolder<*>
 
         when (type) {
-            EmptyFeedViewHolder.LAYOUT -> viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, retryViewHolderListener)
             EmptyFeedBeforeLoginViewHolder.LAYOUT -> viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
             DynamicPostViewHolder.LAYOUT -> {

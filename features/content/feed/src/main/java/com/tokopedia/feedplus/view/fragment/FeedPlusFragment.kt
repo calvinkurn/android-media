@@ -94,7 +94,6 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
@@ -189,7 +188,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     InterestPickAdapter.InterestPickItemListener,
     EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
     RetryViewHolder.RetryViewHolderListener,
-    EmptyFeedViewHolder.EmptyFeedListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineListener,
     ShareCallback {
@@ -1247,16 +1245,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
         return position
-    }
-
-    override fun onSearchShopButtonClicked() {
-        if (context != null) {
-            val valueExtraInitFragment = 2
-            val keyExtraInitFragment = "EXTRA_INIT_FRAGMENT"
-            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.HOME)
-            intent.putExtra(keyExtraInitFragment, valueExtraInitFragment)
-            startActivity(intent)
-        }
     }
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
