@@ -71,7 +71,7 @@
                 android:layout_alignBottom="@+id/layout_content"
                 android:layout_centerInParent="true"
                 android:alpha="0.6"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:visibility="gone">
 
                 <com.tokopedia.unifycomponents.LoaderUnify
