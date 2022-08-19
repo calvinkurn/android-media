@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.pinproduct
 
+import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
 import com.tokopedia.play.broadcaster.analytic.KEY_EVENT
@@ -7,11 +8,10 @@ import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_ACTION
 import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
 import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_VIEW_EVENT_SELLER
 import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
-import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,62 +27,61 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
 
     private val partnerId = userSession.shopId
     private val userId = userSession.userId
-    private val partner = "seller"
     private val channelId by lazy (LazyThreadSafetyMode.NONE){ configStore.getChannelId() }
 
     override fun onClickPinProductLiveRoom(productId: String) {
         sendClickContent(
             eventAction = "click - pin product live room",
-            eventLabel = "$partnerId - $channelId - $productId - $partner",
+            eventLabel = "$partnerId - $channelId - $productId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onClickPinProductBottomSheet(productId: String) {
         sendClickContent(
             eventAction = "click - pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $productId - $partner",
+            eventLabel = "$partnerId - $channelId - $productId - $",
         )
     }
 
     override fun onImpressPinProductLiveRoom(productId: String) {
         sendImpressionContent(
             eventAction = "view - pin product live room",
-            eventLabel = "$partnerId - $channelId - $productId - $partner",
+            eventLabel = "$partnerId - $channelId - $productId - $",
         )
     }
 
     override fun onImpressPinProductBottomSheet(productId: String) {
         sendImpressionContent(
             eventAction = "view - pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $productId - $partner",
+            eventLabel = "$partnerId - $channelId - $productId - $",
         )
     }
 
     override fun onImpressFailPinProductLiveRoom() {
         sendImpressionContent(
             eventAction = "view - fail pin product live room",
-            eventLabel = "$partnerId - $channelId - $partner",
+            eventLabel = "$partnerId - $channelId - $",
         )
     }
 
     override fun onImpressFailPinProductBottomSheet() {
         sendImpressionContent(
             eventAction = "view - fail pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $partner",
+            eventLabel = "$partnerId - $channelId - $",
         )
     }
 
     override fun onImpressFailUnPinProductLiveRoom() {
         sendImpressionContent(
             eventAction = "view - fail un-pin product live room",
-            eventLabel = "$partnerId - $channelId - $partner",
+            eventLabel = "$partnerId - $channelId - $",
         )
     }
 
     override fun onImpressFailUnPinProductBottomSheet() {
         sendImpressionContent(
             eventAction = "view - fail un-pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $partner",
+            eventLabel = "$partnerId - $channelId - $",
         )
     }
 
@@ -90,7 +89,7 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
         val screen = if (isLiveRoom) "product carousel" else "bottom sheet"
         sendImpressionContent(
             eventAction = "view - cold down pin product 5 second",
-            eventLabel = "$partnerId - $screen - $partner",
+            eventLabel = "$partnerId - $screen - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 

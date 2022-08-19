@@ -24,6 +24,7 @@ private const val KEY_TRACK_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
 internal const val KEY_TRACK_BUSINESS_UNIT = "play"
 internal const val KEY_TRACK_CATEGORY = "seller broadcast"
 internal const val KEY_TRACK_CATEGORY_PLAY = "play broadcast"
+internal const val KEY_TRACK_CATEGORY_SELLER = "seller"
 
 internal const val KEY_TRACK_CLICK_EVENT_SELLER = "clickContent"
 internal const val KEY_TRACK_CLICK_EVENT_MARKETPLACE = "clickPG"
