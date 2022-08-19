@@ -79,6 +79,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.unifyDependencies.global_error
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

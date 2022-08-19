@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -37,4 +39,10 @@ public class OrderDetailModule {
     OrderDetailRechargeDownloadWebviewAnalytics provideOrderDetailRechargeDownloadWebviewAnalytics() {
         return new OrderDetailRechargeDownloadWebviewAnalytics();
     }
+
+    @Provides
+    MultiRequestGraphqlUseCase provideMultiGraphQlUseCase(){
+        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
+    }
+
 }
