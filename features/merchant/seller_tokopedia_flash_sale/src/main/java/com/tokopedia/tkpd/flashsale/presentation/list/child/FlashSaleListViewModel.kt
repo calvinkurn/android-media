@@ -10,7 +10,9 @@ import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerCategoryUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
@@ -41,20 +43,21 @@ class FlashSaleListViewModel @Inject constructor(
 
      data class UiState(
          val isLoading: Boolean = true,
-         val totalItem: Int = 0,
+         val totalFlashSaleCount: Int = 0,
          val isLoadingNextPage: Boolean = false,
          val flashSales: List<DelegateAdapterItem> = emptyList(),
          val tabName: String = "",
          val tabId: Int = TabConstant.TAB_ID_UPCOMING,
          val offset: Int = 0,
-         val selectedSort : SingleSelectionItem = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "",isSelected = false, direction = "ASC"),
+         val selectedSort : SingleSelectionItem = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
          val selectedCategoryIds: List<Long> = emptyList(),
          val flashSaleCategories : List<FlashSaleCategory> = emptyList(),
+         val isUsingFilter: Boolean = false,
          val error: Throwable? = null
     )
 
     sealed class UiEvent {
-        data class Init(val tabName : String, val tabId: Int, val totalItem: Int) : UiEvent()
+        data class Init(val tabName : String, val tabId: Int, val totalFlashSaleCount: Int) : UiEvent()
         data class LoadNextPage(val offset : Int) : UiEvent()
         object ChangeSort : UiEvent()
         data class ApplySort(val selectedSort: SingleSelectionItem) : UiEvent()
@@ -74,7 +77,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     fun processEvent(event : UiEvent) {
         when (event) {
-            is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalItem)
+            is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalFlashSaleCount)
             is UiEvent.LoadNextPage -> onLoadNextPage(event.offset)
             is UiEvent.ChangeSort -> onChangeSort()
             is UiEvent.ApplySort -> onApplySort(event.selectedSort)
@@ -84,14 +87,14 @@ class FlashSaleListViewModel @Inject constructor(
         }
     }
 
-    private fun onPageFirstAppear(tabName: String, tabId: Int, totalItem: Int) {
+    private fun onPageFirstAppear(tabName: String, tabId: Int, totalFlashSaleCount: Int) {
         _uiState.update {
             it.copy(
                 isLoading = true,
                 tabName = tabName,
                 tabId = tabId,
                 offset = 0,
-                totalItem = totalItem
+                totalFlashSaleCount = totalFlashSaleCount
             )
         }
 
@@ -100,11 +103,8 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun onLoadNextPage(offset: Int) {
-        print("Loading offset $offset")
         _uiState.update { it.copy(isLoadingNextPage = true, offset = offset) }
         getFlashSaleList()
-
-
     }
 
     private fun onChangeSort() {
@@ -117,7 +117,8 @@ class FlashSaleListViewModel @Inject constructor(
                 isLoading = true,
                 selectedSort = selectedSort,
                 flashSales = emptyList(),
-                offset = 0
+                offset = 0,
+                isUsingFilter = true
             )
         }
 
@@ -141,7 +142,8 @@ class FlashSaleListViewModel @Inject constructor(
                 isLoading = true,
                 selectedCategoryIds = categoryIds,
                 flashSales = emptyList(),
-                offset = 0
+                offset = 0,
+                isUsingFilter = categoryIds.isNotEmpty()
             )
         }
 
@@ -155,7 +157,8 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedCategoryIds = listOf(),
                 selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
                 flashSales = emptyList(),
-                offset = 0
+                offset = 0,
+                isUsingFilter = false
             )
         }
         getFlashSaleList()
@@ -202,10 +205,10 @@ class FlashSaleListViewModel @Inject constructor(
         return flashSales.map { flashSale ->
             when(tabId) {
                 TabConstant.TAB_ID_UPCOMING -> flashSale.toUpcomingItem()
-                TabConstant.TAB_ID_REGISTERED -> flashSale.toUpcomingItem()
+                TabConstant.TAB_ID_REGISTERED -> flashSale.toRegisteredItem()
                 TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem()
-                TabConstant.TAB_ID_FINISHED -> flashSale.toUpcomingItem()
-                else -> flashSale.toUpcomingItem()
+                TabConstant.TAB_ID_FINISHED -> flashSale.toFinishedItem()
+                else -> throw IllegalArgumentException("Unknown")
             }
         }
     }
@@ -213,6 +216,40 @@ class FlashSaleListViewModel @Inject constructor(
     private fun FlashSale.toUpcomingItem() : DelegateAdapterItem {
         val now = Date()
         return UpcomingFlashSaleItem(
+            campaignId,
+            name,
+            coverImage,
+            remainingQuota,
+            maxProductSubmission,
+            formattedDate.startDate,
+            formattedDate.endDate,
+            endDateUnix,
+            findQuotaUsagePercentage(),
+            hoursDifference(now, submissionEndDateUnix),
+            submissionEndDateUnix
+        )
+    }
+
+    private fun FlashSale.toFinishedItem() : DelegateAdapterItem {
+        val now = Date()
+        return FinishedFlashSaleItem(
+            campaignId,
+            name,
+            coverImage,
+            remainingQuota,
+            maxProductSubmission,
+            formattedDate.startDate,
+            formattedDate.endDate,
+            endDateUnix,
+            findQuotaUsagePercentage(),
+            hoursDifference(now, submissionEndDateUnix),
+            submissionEndDateUnix
+        )
+    }
+
+    private fun FlashSale.toRegisteredItem() : DelegateAdapterItem {
+        val now = Date()
+        return RegisteredFlashSaleItem(
             campaignId,
             name,
             coverImage,

@@ -42,7 +42,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     fun processEvent(event : UiEvent) {
         when (event) {
             is UiEvent.GetTabsMetadata -> {
-                _uiState.update { it.copy(isLoading = true) }
+                _uiState.update { it.copy(isLoading = true, error = null) }
                 getTabsMetaData()
             }
         }

@@ -17,20 +17,29 @@ import com.tokopedia.campaign.components.bottomsheet.selection.multiple.Multiple
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.FinishedFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
+import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant
+import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -40,31 +49,25 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     companion object {
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
-        private const val BUNDLE_KEY_CAMPAIGN_COUNT = "campaign_count"
+        private const val BUNDLE_KEY_TOTAL_FLASH_SALE_COUNT = "campaign_count"
         private const val PAGE_SIZE = 10
+        private const val ONE_PAGE = 1
+        private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
 
-        private const val IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN =
-            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_upcoming_campaign.png"
-        private const val IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN =
-            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_registered_campaign.png"
-        private const val IMAGE_URL_EMPTY_ONGOING_CAMPAIGN =
-            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_ongoing_campaign.png"
-        private const val IMAGE_URL_EMPTY_FINISHED_CAMPAIGN =
-            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_empty_finished_campaign.png"
 
         @JvmStatic
         fun newInstance(
             tabPosition: Int,
             tabId: Int,
             tabName: String,
-            totalCampaign: Int
+            totalFlashSaleCount: Int
         ): FlashSaleListFragment {
             val fragment = FlashSaleListFragment()
             fragment.arguments = Bundle().apply {
                 putInt(BUNDLE_KEY_TARGET_TAB_POSITION, tabPosition)
                 putInt(BundleConstant.BUNDLE_KEY_TAB_ID, tabId)
                 putString(BUNDLE_KEY_TAB_NAME, tabName)
-                putInt(BUNDLE_KEY_CAMPAIGN_COUNT, totalCampaign)
+                putInt(BUNDLE_KEY_TOTAL_FLASH_SALE_COUNT, totalFlashSaleCount)
             }
             return fragment
         }
@@ -83,8 +86,8 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         arguments?.getString(BUNDLE_KEY_TAB_NAME).orEmpty()
     }
 
-    private val totalCampaign by lazy {
-        arguments?.getInt(BUNDLE_KEY_CAMPAIGN_COUNT).orZero()
+    private val totalFlashSaleCount by lazy {
+        arguments?.getInt(BUNDLE_KEY_TOTAL_FLASH_SALE_COUNT).orZero()
     }
 
     private val sortChips by lazy {  SortFilterItem(getString(R.string.stfs_sort)) }
@@ -93,10 +96,40 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(OngoingFlashSaleDelegateAdapter())
+            .add(RegisteredFlashSaleDelegateAdapter())
             .add(UpcomingFlashSaleDelegateAdapter())
+            .add(FinishedFlashSaleDelegateAdapter())
             .add(LoadingDelegateAdapter())
             .build()
     }
+
+    private val emptyStateConfig by lazy {
+        mapOf(
+            TabConstant.TAB_ID_UPCOMING to EmptyStateConfig(
+                RemoteImageUrlConstant.IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN,
+                getString(R.string.stfs_empty_state_upcoming_title),
+                getString(R.string.stfs_empty_state_upcoming_description),
+                getString(R.string.stfs_read_article),
+                primaryCtaAction = { routeToUrl(SELLER_EDU_URL) }
+            ),
+            TabConstant.TAB_ID_REGISTERED to EmptyStateConfig(
+                RemoteImageUrlConstant.IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN,
+                getString(R.string.stfs_empty_state_registered_title),
+                getString(R.string.stfs_empty_state_registered_description)
+            ),
+            TabConstant.TAB_ID_ONGOING to EmptyStateConfig(
+                RemoteImageUrlConstant.IMAGE_URL_EMPTY_ONGOING_CAMPAIGN,
+                getString(R.string.stfs_empty_state_ongoing_title),
+                getString(R.string.stfs_empty_state_ongoing_description)
+            ),
+            TabConstant.TAB_ID_FINISHED to EmptyStateConfig(
+                RemoteImageUrlConstant.IMAGE_URL_EMPTY_FINISHED_CAMPAIGN,
+                getString(R.string.stfs_empty_search_result_title),
+                getString(R.string.stfs_empty_search_result_description)
+            )
+        )
+    }
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -130,7 +163,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         setupView()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalCampaign))
+        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalFlashSaleCount))
     }
 
 
@@ -146,8 +179,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
                 LinearLayoutManager(activity ?: return, LinearLayoutManager.VERTICAL, false)
             adapter = flashSaleAdapter
 
-            endlessRecyclerViewScrollListener =
-                object : EndlessRecyclerViewScrollListener(layoutManager) {
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
                     override fun onLoadMore(page: Int, totalItemsCount: Int) {
                         viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadNextPage(page * PAGE_SIZE))
                     }
@@ -195,8 +227,36 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         renderLoadingState(uiState.isLoading)
         renderLoadNextPage(uiState.isLoadingNextPage)
         renderList(uiState.flashSales)
-        renderSortChips(uiState.selectedSort)
+        renderSortChips(uiState.selectedSort, uiState.totalFlashSaleCount)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
+        renderEmptyState(uiState.isUsingFilter, totalFlashSaleCount)
+        renderEmptySearchResult(uiState.isUsingFilter, uiState.flashSales.size)
+    }
+
+
+    private fun renderEmptyState(isUsingFilter : Boolean, totalFlashSaleCount: Int) {
+        if (!isUsingFilter && totalFlashSaleCount == Int.ZERO) {
+            binding?.emptyState?.visible()
+            binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
+            binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
+            binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
+        } else {
+            binding?.emptyState?.gone()
+        }
+    }
+
+    private fun renderEmptySearchResult(isUsingFilter : Boolean, searchResultSize: Int) {
+        if (isUsingFilter && searchResultSize == Int.ZERO) {
+            binding?.emptyState?.visible()
+
+            val emptyStateConfig = emptyStateConfig[tabId] ?: return
+            binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
+            binding?.emptyState?.setTitle(emptyStateConfig.title)
+            binding?.emptyState?.setDescription(emptyStateConfig.description)
+            handleEmptyStatePrimaryAction(emptyStateConfig)
+        } else {
+            binding?.emptyState?.gone()
+        }
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
@@ -206,9 +266,9 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun renderLoadNextPage(isLoading: Boolean) {
         if (isLoading) {
-            flashSaleAdapter.addItem(LoadingItem)
+        //    flashSaleAdapter.addItem(LoadingItem)
         } else {
-            flashSaleAdapter.removeItem(LoadingItem)
+       //     flashSaleAdapter.removeItem(LoadingItem)
         }
     }
 
@@ -229,13 +289,18 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderSortChips(selectedSort: SingleSelectionItem) {
+
+    private fun renderSortChips(selectedSort: SingleSelectionItem, totalFlashSaleItemCount: Int) {
         if (selectedSort.id == "DEFAULT_VALUE_PLACEHOLDER") {
             sortChips.type = ChipsUnify.TYPE_NORMAL
             sortChips.selectedItem = arrayListOf(getString(R.string.stfs_sort))
         } else {
             sortChips.type = ChipsUnify.TYPE_SELECTED
             sortChips.selectedItem = arrayListOf(selectedSort.name)
+        }
+
+        if (totalFlashSaleItemCount == Int.ZERO) {
+            binding?.sortFilter?.gone()
         }
     }
 
@@ -247,6 +312,13 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         } else {
             categoryChips.type = ChipsUnify.TYPE_SELECTED
             categoryChips.selectedItem = arrayListOf(getString(R.string.stfs_placeholder_selected_category_count, selectedCategoryIds.size))
+        }
+    }
+
+    private fun handleEmptyStatePrimaryAction(emptyStateConfig: EmptyStateConfig) {
+        if (emptyStateConfig.primaryCtaText.isNotEmpty()) {
+            binding?.emptyState?.setPrimaryCTAText(emptyStateConfig.primaryCtaText)
+            binding?.emptyState?.setPrimaryCTAClickListener { emptyStateConfig.primaryCtaAction() }
         }
     }
 

@@ -136,7 +136,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
         predefinedTabs.forEachIndexed { index, currentTab ->
             val tab = tabs.find { tab -> tab.tabId == currentTab.tabId }
-            val totalCampaign = tab?.totalCampaign.orZero()
+            val totalFlashSaleCount = tab?.totalFlashSaleCount.orZero()
             val tabName = tab?.tabName.orEmpty()
             val tabId = tab?.tabId.orZero()
 
@@ -144,10 +144,10 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 index,
                 tabId,
                 tabName,
-                totalCampaign
+                totalFlashSaleCount
             )
 
-            val displayedTabName = "${currentTab.displayName} (${totalCampaign})"
+            val displayedTabName = "${currentTab.displayName} (${totalFlashSaleCount})"
             pages.add(Pair(displayedTabName, fragment))
         }
 
