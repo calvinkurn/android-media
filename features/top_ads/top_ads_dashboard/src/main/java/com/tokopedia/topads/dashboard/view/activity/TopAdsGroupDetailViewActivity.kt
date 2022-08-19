@@ -39,6 +39,7 @@ import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
+import com.tokopedia.topads.common.data.util.TopAdsEditUtils
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -289,17 +290,26 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(false))
             sheet.show(supportFragmentManager, "")
             sheet.onSaved = { bid, pos ->
-                saveBidData(bid, "search")
+                saveBidData(
+                    bid, "search", dailyBudget = TopAdsEditUtils.calculateDailyBudget(
+                        bid.toIntSafely(), rekommendedBid.toIntSafely()
+                    )
+                )
             }
         }
 
         editRekomendasiBudget?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                EDIT_BIAYA_REKOMENDASI, "")
+                EDIT_BIAYA_REKOMENDASI, ""
+            )
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(true))
             sheet.show(supportFragmentManager, "")
             sheet.onSaved = { bid, pos ->
-                saveBidData(bid, "browse")
+                saveBidData(
+                    bid, "browse", dailyBudget = TopAdsEditUtils.calculateDailyBudget(
+                        searchBid.toIntSafely(), bid.toIntSafely()
+                    )
+                )
             }
         }
 
@@ -388,7 +398,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         dailyBudgetProgressBar = findViewById(R.id.daily_budget_progress_bar)
     }
 
-    private fun saveBidData(bid: String, bidType: String) {
+    private fun saveBidData(bid: String, bidType: String,dailyBudget: Int) {
         val dataMap = HashMap<String, Any?>()
         this.bidType = bidType
         try {
@@ -396,6 +406,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap["groupName"] = groupName
             dataMap[GROUPID] = groupId
             dataMap[NAME_EDIT] = true
+            dataMap[DAILY_BUDGET] = dailyBudget.toString()
             if (this.bidType == "browse") {
                 bidTypeData?.clear()
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))
