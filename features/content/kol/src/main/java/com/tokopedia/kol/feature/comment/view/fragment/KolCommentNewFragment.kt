@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -257,6 +258,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost, isFollowed, postType)
     }
 
+    @SuppressLint("Method Call Prohibited")
     override fun onMenuClicked(
         id: String,
         canDeleteComment: Boolean,
