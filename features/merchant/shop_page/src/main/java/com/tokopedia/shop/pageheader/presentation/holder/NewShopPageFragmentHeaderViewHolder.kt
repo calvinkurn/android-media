@@ -18,6 +18,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.ShopTickerType
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -175,13 +176,15 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
         val statusTitle = shopInfo.statusInfo.statusTitle
         val shopStatus = shopInfo.statusInfo.shopStatus
+        val shopTickerType = shopInfo.statusInfo.tickerType
         val statusMessage = shopInfo.statusInfo.statusMessage
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
         tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = when(shopStatus) {
-            ShopStatusDef.INCUBATED -> Ticker.TYPE_ANNOUNCEMENT
+        tickerShopStatus?.tickerType = when(shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_WARNING
         }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
