@@ -387,7 +387,10 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         bottomSheetOtherMethod?.show(childFragmentManager, getString(R.string.bottom_sheet_show))
     }
 
-    private fun isOnlyRegisterWithNumber(): Boolean = true
+    private fun isOnlyRegisterWithNumber(): Boolean {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(requireActivity())
+        return firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_ONLY_WITH_PHONE_NUMBER, false)
+    }
 
     private fun initObserver() {
         registerInitialViewModel.getProviderResponse.observe(viewLifecycleOwner, Observer {
