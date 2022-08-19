@@ -1801,6 +1801,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         every {
             PowerMerchantDeepLinkMapper.isEnablePMSwitchToWebView(context)
         } returns false
+        every {
+            PowerMerchantDeepLinkMapper.isLoginAndHasShop(context)
+        } returns true
         assertEqualsDeepLinkMapper(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, expectedDeepLink)
     }
 

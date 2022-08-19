@@ -226,7 +226,7 @@ object DeeplinkDFMapper : CoroutineScope {
     val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             // Base
-            add(DFP({ it.startsWith(ONBOARDING) }, DF_BASE, R.string.applink_title_on_boarding))
+            add(DFP({ it.startsWithPattern(ONBOARDING) }, DF_BASE, R.string.applink_title_on_boarding))
             // Category
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DF_BASE, R.string.applink_title_age_restriction))
             add(DFP({ it.startsWith(TRADEIN) }, DF_CATEGORY_TRADE_IN, R.string.applink_title_tradein))
@@ -442,6 +442,8 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
             add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalOperational.SUCCESS_RESO) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_resolution))
+
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
@@ -534,7 +536,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
-            add(DFP({ it.startsWith(INBOX) }, DF_BASE, R.string.title_inbox))
+            add(DFP({ it.startsWithPattern(INBOX) }, DF_BASE, R.string.title_inbox))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DF_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DF_BASE, R.string.talk_title))

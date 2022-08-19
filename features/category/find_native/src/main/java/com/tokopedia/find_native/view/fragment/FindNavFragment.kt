@@ -568,7 +568,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        productNavListAdapter?.updateWishlistStatus(productId, true)
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
     }
@@ -579,24 +579,24 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
-        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        productNavListAdapter?.updateWishlistStatus(productId, false)
         enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
     }
 
     private fun enableWishListButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId = if (productId.toIntOrNull() != null) {
-            productId.toInt()
+        productNavListAdapter?.setWishlistButtonEnabled(productId = if (!productId.isNullOrBlank()) {
+            productId
         } else {
-            0
+            ""
         }, isEnabled = true)
     }
 
     private fun disableWishListButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId = if (productId.toIntOrNull() != null) {
-            productId.toInt()
+        productNavListAdapter?.setWishlistButtonEnabled(productId = if (!productId.isNullOrBlank()) {
+            productId
         } else {
-            0
+            ""
         }, isEnabled = false)
     }
 
@@ -608,7 +608,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                     onSuccess = { result ->
                         when (result) {
                             is Success -> {
-                                productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+                                productNavListAdapter?.updateWishlistStatus(productId, true)
                                 enableWishListButton(productId)
 
                                 view?.let { v ->
@@ -644,7 +644,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                 onSuccess = { result ->
                     when (result) {
                         is Success -> {
-                            productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+                            productNavListAdapter?.updateWishlistStatus(productId, true)
                             enableWishListButton(productId)
 
                             view?.let { v ->
