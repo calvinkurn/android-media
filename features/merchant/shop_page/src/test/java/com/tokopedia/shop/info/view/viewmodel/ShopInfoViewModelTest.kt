@@ -297,7 +297,6 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
             }
         }
     }
-
     // endregion
 
     //start GetMessageId

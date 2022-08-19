@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.util.UnitTestFileUtils
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -17,8 +18,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
-import java.io.File
 import java.lang.reflect.Type
 
 /**
@@ -101,9 +100,7 @@ class GetShopPageHomeLayoutUseCaseTest {
 
 
     private fun String.getJsonFromFile(): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(this)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        return UnitTestFileUtils.getJsonFromAsset(this)
     }
 
 }
