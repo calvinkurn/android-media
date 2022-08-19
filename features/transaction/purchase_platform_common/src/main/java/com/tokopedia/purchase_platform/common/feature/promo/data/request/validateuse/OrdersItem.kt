@@ -23,5 +23,7 @@ data class OrdersItem(
         @SerializedName("product_details")
         var productDetails: List<ProductDetailsItem> = listOf(),
         @SerializedName("free_shipping_metadata")
-        var freeShippingMetadata: String = ""
+        var freeShippingMetadata: String = "",
+        @Transient
+        var boType: Int = 0,
 ) : Parcelable
