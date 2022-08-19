@@ -193,20 +193,27 @@ class PlayPinnedProductUiTest {
 
     @Test
     fun pinnedProduct_productBottomSheet_oneSection_hasPinned() {
+        val totalSection = 1
+        val productPerSection = 5
+
         val sectionPinned = 0
         val productPinned = 3
         val tagItem = buildTagItemWithPinned(
+            numOfSections = totalSection,
+            numOfProducts = productPerSection,
             hasPinned = { sectionIndex, productIndex ->
                 sectionIndex == sectionPinned && productIndex == productPinned
             }
         )
+
+        val position = sectionPinned * productPerSection + productPinned
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
         val robot = PlayActivityRobot(channelId)
         robot
             .openProductBottomSheet()
-            .scrollProductBottomSheet()
+            .scrollProductBottomSheet(position)
             .assertHasPinnedItemInProductBottomSheet(
                 buildMockProductName(sectionPinned, productPinned),
                 true,
@@ -215,21 +222,26 @@ class PlayPinnedProductUiTest {
 
     @Test
     fun pinnedProduct_productBottomSheet_threeSections_hasPinned_sectionThree_productThree() {
+        val numOfSections = 3
+        val productPerSection = 5
+
         val sectionPinned = 2
         val productPinned = 2
         val tagItem = buildTagItemWithPinned(
-            numOfSections = 3,
+            numOfSections = numOfSections,
+            numOfProducts = productPerSection,
             hasPinned = { sectionIndex, productIndex ->
                 sectionIndex == sectionPinned && productIndex == productPinned
             }
         )
+        val position = sectionPinned * productPerSection + productPinned
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
         val robot = PlayActivityRobot(channelId)
         robot
             .openProductBottomSheet()
-            .scrollProductBottomSheet(sectionPinned)
+            .scrollProductBottomSheet(position)
             .assertHasPinnedItemInProductBottomSheet(
                 buildMockProductName(sectionPinned, productPinned),
                 true,
