@@ -16,7 +16,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel

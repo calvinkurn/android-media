@@ -137,7 +137,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
@@ -150,6 +149,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companio
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
@@ -558,8 +558,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun renderTickerReminderIfNotYet() {
-        val ticker = viewModel.srwTickerReminder.value
-        if (ticker != null && ticker is Success) {
+        val ticker = viewModel.tickerReminder.value
+        if (ticker != null && ticker is Success && viewModel.isTickerNotShownYet) {
             onSuccessGetTickerReminder(ticker.data)
         }
     }
@@ -773,14 +773,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (isSeller()) {
             setupFirstTimeForSeller()
         }
+        viewModel.getTickerReminder(isSeller())
         interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstTimeForSeller() {
         viewModel.adjustInterlocutorWarehouseId(messageId)
-        if (!viewModel.isInTheMiddleOfThePage()) {
-            viewModel.getTickerReminder()
-        }
     }
 
     private fun reloadSrw() {
@@ -975,6 +973,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        renderTickerReminder(chatBubble)
+    }
+
+    private fun renderTickerReminder(chatBubble: BaseChatUiModel?) {
+        chatBubble?.tickerReminder?.let {
+            val reminderTickerUiModel = ReminderTickerUiModel.mapToReminderTickerUiModel(it)
+            if (viewModel.isTickerNotShownYet) {
+                onSuccessGetTickerReminder(reminderTickerUiModel)
+            }
+        }
     }
 
     override fun loadData(page: Int) {}
@@ -2724,7 +2733,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         }
 
-        viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
+        viewModel.tickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
                 else -> {}
@@ -2987,11 +2996,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onSuccessGetTickerReminder(
         data: ReminderTickerUiModel
     ) {
-        if (!data.enable) return
-        val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        if (!data.isEnable) return
+        val eligiblePosition = adapter.findTickerPosition(data.replyId.toString())
         if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
-        viewModel.removeTicker()
+        viewModel.isTickerNotShownYet = false
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -3152,7 +3161,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
-        viewModel.closeTickerReminder(element)
+        viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
     }
 

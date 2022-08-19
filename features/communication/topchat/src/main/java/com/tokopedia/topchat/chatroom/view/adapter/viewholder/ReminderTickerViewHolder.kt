@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -27,6 +27,7 @@ class ReminderTickerViewHolder(
         bindImpression(element)
         bindTitle(element)
         bindDescAndClose(element)
+        bindTickerType(element)
     }
 
     private fun bindImpression(element: ReminderTickerUiModel) {
@@ -46,7 +47,10 @@ class ReminderTickerViewHolder(
                 commonListener.getAnalytic().eventClickTickerReminderCta(
                     commonListener.getCommonShopId()
                 )
-                RouteManager.route(itemView.context, element.url)
+                itemView.context?.let { context ->
+                    val intent = RouteManager.getIntent(context, element.url)
+                    context.startActivity(intent)
+                }
             }
             override fun onDismiss() {
                 commonListener.getAnalytic().eventCloseTickerReminder(
@@ -57,7 +61,26 @@ class ReminderTickerViewHolder(
         })
     }
 
+    private fun bindTickerType(element: ReminderTickerUiModel) {
+        ticker?.tickerType = getTickerType(element)
+    }
+
+    private fun getTickerType(element: ReminderTickerUiModel): Int {
+       return when (element.tickerType) {
+           TYPE_WARNING -> Ticker.TYPE_WARNING
+           TYPE_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+           TYPE_ERROR -> Ticker.TYPE_ERROR
+           TYPE_INFORMATION -> Ticker.TYPE_INFORMATION
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+    }
+
     companion object {
+        private const val TYPE_WARNING = "warning"
+        private const val TYPE_ANNOUNCEMENT = "announcement"
+        private const val TYPE_ERROR = "error"
+        private const val TYPE_INFORMATION = "information"
+
         val LAYOUT = R.layout.item_chat_reminder_ticker
     }
 }
