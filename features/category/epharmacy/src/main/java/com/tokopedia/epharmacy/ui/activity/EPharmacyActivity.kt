@@ -13,6 +13,7 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.TrackerId.Companion.OPEN_SCREEN_ID
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.builder.Tracker
@@ -63,13 +64,9 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         orderId = if (intent.hasExtra(EXTRA_ORDER_ID_LONG))
             intent.getLongExtra(EXTRA_ORDER_ID_LONG, DEFAULT_ZERO_VALUE)
         else {
-            try {
-                val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
-                if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim()?.toLong()
-                    ?: DEFAULT_ZERO_VALUE else DEFAULT_ZERO_VALUE
-            }catch (e : NumberFormatException){
-                DEFAULT_ZERO_VALUE
-            }
+            val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
+            if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim()?.toLongOrZero()
+                ?: DEFAULT_ZERO_VALUE else DEFAULT_ZERO_VALUE
         }
     }
 
