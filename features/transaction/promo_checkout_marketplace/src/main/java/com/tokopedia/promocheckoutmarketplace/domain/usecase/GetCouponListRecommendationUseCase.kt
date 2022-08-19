@@ -83,6 +83,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 title
                                 sub_title
                                 icon_unify
+                                icon_url
                                 is_enabled
                                 id
                                 coupon_groups {
@@ -101,10 +102,24 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     is_recommended
                                     is_selected
                                     is_attempted
+                                    is_bebas_ongkir
                                     clashing_infos {
                                         code
                                         message
                                         icon
+                                    }
+                                    bo_clashing_infos {
+                                        code
+                                        message
+                                        icon
+                                    }
+                                    additional_bo_datas {
+                                        code
+                                        unique_id
+                                        shipping_id
+                                        sp_id
+                                        benefit_amount
+                                        promo_id
                                     }
                                     currency_details_str
                                     coachmark {

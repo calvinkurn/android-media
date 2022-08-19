@@ -18,6 +18,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_promo_list_header"
+        android:layout_width="48dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_promo_list_header_title"
         android:layout_width="0dp"

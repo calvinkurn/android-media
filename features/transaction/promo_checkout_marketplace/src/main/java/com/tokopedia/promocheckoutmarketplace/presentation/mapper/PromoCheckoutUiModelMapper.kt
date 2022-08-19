@@ -107,6 +107,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     title = couponSubSection.title
                     subTitle = couponSubSection.subTitle
                     iconUnify = couponSubSection.iconUnify
+                    iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
                     tabId = if (isHeaderEnabled) {
                         couponSubSection.id
@@ -148,6 +149,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     currencyDetailStr = couponItem.currencyDetailStr
                     coachMark = couponItem.coachMark
                     clashingInfos = couponItem.clashingInfos
+                    boClashingInfos = couponItem.boClashingInfos
+                    boAdditionalData = couponItem.additionalBoData
                     val tmpCurrentClashingPromoList = ArrayList<String>()
                     var tmpClashingIconUrl = ""
                     val tmpErrorMessage = StringBuilder()
@@ -193,6 +196,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isHighlighted = couponItem.isHighlighted
                     val lastPromo = couponSubSection.coupons.lastOrNull()
                     isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
+                    isBebasOngkir = couponItem.isBebasOngkir
                 }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()

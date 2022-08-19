@@ -231,7 +231,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         // Observe visitable data changes
         observeFragmentUiModel()
         observePromoRecommendationUiModel()
-        observePromoTabUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
         observeErrorStateUiModel()
@@ -393,7 +392,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (topItemPosition == RecyclerView.NO_POSITION) return
             val topVisibleUiModel = adapter.data[topItemPosition]
 
-            val isShow: Boolean = (topVisibleUiModel !is PromoInputUiModel &&
+            // hard code to hide tab
+            val isShow: Boolean = false && (topVisibleUiModel !is PromoInputUiModel &&
                     topVisibleUiModel !is PromoRecommendationUiModel &&
                     topVisibleUiModel !is PromoEligibilityHeaderUiModel) ||
                     (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled)
@@ -802,9 +802,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.labelTotalPromoAmount.gone()
                 it.buttonApplyPromo.gone()
                 it.buttonApplyNoPromo.show()
+                if (fragmentUiModel.uiState.hasPreAppliedBo) {
+                    it.labelBoClashing.text = fragmentUiModel.uiData.unApplyBoMessage
+                    it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.unApplyBoIcon)
+                    it.containerTickerBoClashing.show()
+                }
                 it.containerActionBottom.show()
             } else {
                 it.containerActionBottom.gone()
+                it.containerTickerBoClashing.gone()
             }
         }
     }
@@ -821,6 +827,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             it.buttonApplyPromo.text = applyPromoText
             it.buttonApplyPromo.show()
             it.buttonApplyNoPromo.gone()
+
+            if (fragmentUiModel.uiState.shouldShowTickerBoClashing && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
+                it.labelBoClashing.text = fragmentUiModel.uiData.boClashingMessage
+                it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.boClashingImage)
+                it.containerTickerBoClashing.show()
+            } else {
+                it.containerTickerBoClashing.gone()
+            }
             it.containerActionBottom.show()
         }
     }
