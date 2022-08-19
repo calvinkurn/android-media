@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.common.view
 import android.content.Context
 import android.os.Build
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -27,9 +26,8 @@ import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener
 import com.tokopedia.loginregister.common.view.emailextension.EmailExtension
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
-import com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -37,13 +35,11 @@ import com.tokopedia.unifyprinciples.Typography
  * @author by alvinatin on 11/06/18.
  */
 class PartialRegisterInputView : BaseCustomView {
-    var wrapperEmailPhone: TkpdHintTextInputLayout? = null
+    var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
     var etInputEmailPhone: AutoCompleteTextView? = null
-    var tvMessage: Typography? = null
-    var tvError: Typography? = null
     var btnAction: UnifyButton? = null
     var emailExtension: EmailExtension? = null
-    var wrapperPassword: TextFieldUnify? = null
+    var wrapperPassword: TextFieldUnify2? = null
     var btnForgotPassword: Typography? = null
     var btnChange: Typography? = null
     var registerAnalytics = RegisterAnalytics()
@@ -72,11 +68,9 @@ class PartialRegisterInputView : BaseCustomView {
 
     private fun init() {
         val view = View.inflate(context, R.layout.layout_partial_register_input, this)
-        etInputEmailPhone = view.findViewById(R.id.input_email_phone)
-        tvMessage = view.findViewById(R.id.message)
-        tvError = view.findViewById(R.id.error_message)
+        fieldUnifyInputEmailPhone = view.findViewById(R.id.input_email_phone)
+        etInputEmailPhone = fieldUnifyInputEmailPhone?.editText
         btnAction = view.findViewById(R.id.register_btn)
-        wrapperEmailPhone = view.findViewById(R.id.input_layout)
         wrapperPassword = view.findViewById(R.id.wrapper_password)
         btnForgotPassword = view.findViewById(R.id.forgot_pass)
         btnChange = view.findViewById(R.id.change_button)
@@ -87,14 +81,13 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     fun renderData() {
-        etInputEmailPhone?.inputType = InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             etInputEmailPhone?.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
         }
         val background = ContextCompat.getDrawable(context, R.drawable.bg_rounded_corner_autocomplete_partial_input)
         etInputEmailPhone?.setDropDownBackgroundDrawable(background)
         etInputEmailPhone?.onItemClickListener = OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long -> registerAnalytics.trackClickPhoneNumberSuggestion() }
-        etInputEmailPhone?.addTextChangedListener(watcher(wrapperEmailPhone))
+        etInputEmailPhone?.addTextChangedListener(watcher(fieldUnifyInputEmailPhone))
         etInputEmailPhone?.setOnEditorActionListener { v: TextView, actionId: Int, event: KeyEvent? ->
             var handled = false
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -107,7 +100,7 @@ class PartialRegisterInputView : BaseCustomView {
             }
             handled
         }
-        wrapperPassword?.textFieldInput?.addTextChangedListener(watcherUnify(wrapperPassword))
+        wrapperPassword?.editText?.addTextChangedListener(watcherUnify(wrapperPassword))
         btnAction?.setOnClickListener(ClickRegister())
         btnChange?.setOnClickListener(OnClickListener {
             showDefaultView()
@@ -115,43 +108,38 @@ class PartialRegisterInputView : BaseCustomView {
         })
     }
 
-    fun onErrorValidate(message: String?) {
-        setWrapperError(wrapperEmailPhone, message)
+    fun onErrorInputEmailPhoneValidate(message: String?) {
+        setWrapperInputEmailPhoneError(fieldUnifyInputEmailPhone, message)
     }
 
     fun onErrorPassword(message: String?) {
-        setWrapperErrorNew(wrapperPassword, message)
+        setWrapperErrorPassword(wrapperPassword, message)
     }
 
-    private fun setWrapperError(wrapper: TkpdHintTextInputLayout?, s: String?) {
+    private fun setWrapperInputEmailPhoneError(wrapper: TextFieldUnify2?, s: String?) {
         if (s == null) {
-            wrapper?.error = null
-            wrapper?.setErrorEnabled(false)
-            hideError()
+            defaultMessageInputEmailPhone()
         } else {
-            wrapper?.setErrorEnabled(true)
-            wrapper?.error = s
-            showError()
-        }
-    }
-
-    private fun setWrapperErrorNew(wrapper: TextFieldUnify?, s: String?) {
-        if (s == null) {
-            wrapper?.setError(false)
-            wrapper?.setMessage("")
-            hideError()
-        } else {
-            wrapper?.setError(true)
+            wrapper?.isInputError = true
             wrapper?.setMessage(s)
-            showError()
         }
     }
 
-    private fun watcher(wrapper: TkpdHintTextInputLayout?): TextWatcher {
+    private fun setWrapperErrorPassword(wrapper: TextFieldUnify2?, s: String?) {
+        if (s == null) {
+            wrapper?.isInputError = false
+            wrapper?.setMessage("")
+        } else {
+            wrapper?.isInputError = true
+            wrapper?.setMessage(s)
+        }
+    }
+
+    private fun watcher(wrapper: TextFieldUnify2?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                setWrapperError(wrapper, null)
+                setWrapperInputEmailPhoneError(wrapper, null)
                 if (s != null) {
                     if (isButtonValidatorActived) {
                         validateValue(s.toString())
@@ -175,11 +163,11 @@ class PartialRegisterInputView : BaseCustomView {
         }
     }
 
-    private fun watcherUnify(wrapper: TextFieldUnify?): TextWatcher {
+    private fun watcherUnify(wrapper: TextFieldUnify2?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                setWrapperErrorNew(wrapper, null)
+                setWrapperErrorPassword(wrapper, null)
                 if (s != null) {
                     if (isButtonValidatorActived) {
                         validateValue(s.toString())
@@ -232,7 +220,7 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     private fun onValidValue() {
-        hideError()
+        defaultMessageInputEmailPhone()
         btnAction?.isEnabled = true
     }
 
@@ -301,14 +289,14 @@ class PartialRegisterInputView : BaseCustomView {
         }
     }
 
-    private fun hideError() {
-        tvError?.text = ""
-        tvMessage?.visibility = View.VISIBLE
+    private fun defaultMessageInputEmailPhone() {
+        fieldUnifyInputEmailPhone?.isInputError = false
+        fieldUnifyInputEmailPhone?.setMessage(fieldUnifyInputEmailPhone?.context?.getString(R.string.default_placeholder).toString())
     }
 
-    private fun showError() {
-        tvError?.visibility = View.VISIBLE
-        tvMessage?.visibility = View.GONE
+    private fun hideMessageInputEmailPhone() {
+        fieldUnifyInputEmailPhone?.isInputError = false
+        fieldUnifyInputEmailPhone?.setMessage("")
     }
 
     fun showLoginEmailView(email: String) {
@@ -316,13 +304,12 @@ class PartialRegisterInputView : BaseCustomView {
         showForgotPassword()
         wrapperPassword?.visibility = View.VISIBLE
         btnChange?.visibility = View.VISIBLE
-        tvMessage?.visibility = View.GONE
-        tvMessage?.text = ""
-        wrapperEmailPhone?.setLabel(wrapperEmailPhone?.context?.getString(R.string.title_email))
+        fieldUnifyInputEmailPhone?.setLabel(this.context?.getString(R.string.title_email).toString())
         btnAction?.text = btnAction?.context?.getString(R.string.login)
         btnAction?.contentDescription = btnAction?.context?.getString(R.string.content_desc_register_btn)
         etInputEmailPhone?.setText(email)
         etInputEmailPhone?.isEnabled = false
+        hideMessageInputEmailPhone()
     }
 
     fun showDefaultView() {
@@ -330,16 +317,15 @@ class PartialRegisterInputView : BaseCustomView {
         hideForgotPassword()
         wrapperPassword?.visibility = View.GONE
         btnChange?.visibility = View.GONE
-        tvMessage?.visibility = View.VISIBLE
-        tvMessage?.text = tvMessage?.context?.getString(R.string.default_placeholder)
-        wrapperEmailPhone?.setLabel(wrapperEmailPhone?.context?.getString(R.string.phone_or_email_input))
+        defaultMessageInputEmailPhone()
+        fieldUnifyInputEmailPhone?.setLabel(this.context?.getString(R.string.phone_or_email_input).toString())
         etInputEmailPhone?.setText("")
         etInputEmailPhone?.isEnabled = true
     }
 
     fun resetErrorWrapper() {
-        setWrapperError(wrapperEmailPhone, null)
-        setWrapperErrorNew(wrapperPassword, null)
+        hideMessageInputEmailPhone()
+        setWrapperErrorPassword(wrapperPassword, null)
     }
 
     private fun showEmailExtension() {

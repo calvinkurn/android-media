@@ -24,4 +24,7 @@
     <dimen name="partial_input_10">10dp</dimen>
     <dimen name="partial_input_5">5dp</dimen>
     <dimen name="partial_input_20">20dp</dimen>
+
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_24">16dp</dimen>
 </resources>

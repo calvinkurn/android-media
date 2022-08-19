@@ -8,17 +8,25 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.util.Patterns
-import android.view.*
-import android.widget.*
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -72,14 +80,15 @@ import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAn
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
+import com.tokopedia.loginregister.registerinitial.view.util.isOnlyRegisterWithNumber
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
@@ -87,13 +96,13 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
-import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -107,10 +116,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_initial_register.*
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
-import javax.inject.Named
+import kotlinx.android.synthetic.main.fragment_initial_register.emailExtension
 
 /**
  * @author by nisie on 10/24/18.
@@ -122,7 +130,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private lateinit var optionTitle: Typography
     private lateinit var separator: View
     private lateinit var partialRegisterInputView: PartialRegisterInputView
-    private lateinit var emailPhoneEditText: AutoCompleteTextView
+    private var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
+    private var emailPhoneEditText: AutoCompleteTextView? = null
     private lateinit var registerButton: LoginTextView
     private var textTermAndCondition: Typography? = null
     private lateinit var container: ScrollView
@@ -248,7 +257,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         optionTitle = view.findViewById(R.id.register_option_title)
         separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
-        emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
+        fieldUnifyInputEmailPhone = partialRegisterInputView.findViewById(R.id.input_email_phone)
+        emailPhoneEditText = fieldUnifyInputEmailPhone?.editText
         registerButton = view.findViewById(R.id.register)
         socmedButton = view.findViewById(R.id.socmed_btn)
         textTermAndCondition = view.findViewById(R.id.text_term_privacy)
@@ -279,6 +289,19 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         initObserver()
         initData()
         setupToolbar()
+        initInputType()
+    }
+
+    private fun initInputType() {
+        fieldUnifyInputEmailPhone?.apply {
+            if (isOnlyRegisterWithNumber(requireActivity())) {
+                setInputType(InputType.TYPE_CLASS_PHONE)
+                setLabel(requireActivity().getString(R.string.text_field_label_phone_number))
+            } else {
+                setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
+                setLabel(requireActivity().getString(R.string.phone_or_email_input))
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -717,7 +740,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         dismissProgressBar()
         val messageError = ErrorHandler.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError.removeErrorCode())
-        partialRegisterInputView.onErrorValidate(messageError)
+        partialRegisterInputView.onErrorInputEmailPhoneValidate(messageError)
         phoneNumber = ""
     }
 
@@ -1257,10 +1280,10 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                             if (v?.windowVisibility == View.VISIBLE) {
                                 activity?.isFinishing?.let { isFinishing ->
                                     if (!isFinishing) {
-                                        if (hasFocus && ::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
-                                            emailPhoneEditText.showDropDown()
+                                        if (hasFocus && emailPhoneEditText?.hasFocus() == true) {
+                                            emailPhoneEditText?.showDropDown()
                                         } else {
-                                            emailPhoneEditText.dismissDropDown()
+                                            emailPhoneEditText?.dismissDropDown()
                                         }
                                     }
                                 }
@@ -1398,10 +1421,14 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun initTermPrivacyView() {
         context?.let {
             val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
-            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), TERM_AND_COND_START_SIZE, TERM_AND_COND_END_SIZE, 0)
-            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), PRIVACY_POLICY_START_SIZE, PRIVACY_POLICY_END_SIZE, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), TERM_AND_COND_START_SIZE, TERM_AND_COND_END_SIZE, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), PRIVACY_POLICY_START_SIZE, PRIVACY_POLICY_END_SIZE, 0)
+
+            val startIndexTermAndCondition = termPrivacy.indexOf(TERM_AND_CONDITION)
+            val endIndexTermAndCondition = startIndexTermAndCondition.plus(TERM_AND_CONDITION.length)
+            val startIndexPrivacyPolicy = termPrivacy.indexOf(PRIVACY_POLICY)
+            val endIndexPrivacyPolicy = startIndexPrivacyPolicy.plus(PRIVACY_POLICY.length)
+
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), startIndexTermAndCondition, endIndexTermAndCondition, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), startIndexPrivacyPolicy, endIndexPrivacyPolicy, 0)
 
             textTermAndCondition?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             textTermAndCondition?.movementMethod = LinkMovementMethod.getInstance()
@@ -1419,7 +1446,12 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
+                ds.isFakeBoldText = true
                 ds.isUnderlineText = false
+                ds.color = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
             }
         }
     }
@@ -1438,10 +1470,9 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         private const val REGISTER_BUTTON_CORNER_SIZE = 10
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
-        private const val TERM_AND_COND_START_SIZE = 34
-        private const val TERM_AND_COND_END_SIZE = 54
-        private const val PRIVACY_POLICY_START_SIZE = 61
-        private const val PRIVACY_POLICY_END_SIZE = 78
+
+        private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
+        private const val PRIVACY_POLICY = "Kebijakan Privasi"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
