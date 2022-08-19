@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -106,6 +107,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
+
+    private val _sourcePage ="?source=shop_page"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -244,7 +247,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun routeToWebViewPage(messageId: String) {
-        val url = getString(R.string.urlOfPageReport, messageId)
+        val url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId$_sourcePage"
         val appLink = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
         RouteManager.route(
             activity,
