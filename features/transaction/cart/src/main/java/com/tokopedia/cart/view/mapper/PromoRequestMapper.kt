@@ -59,6 +59,7 @@ object PromoRequestMapper {
                     }
                     shopId = cartShopHolderData.shopId.toLongOrZero()
                     uniqueId = cartShopHolderData.cartString
+                    boType = cartShopHolderData.boMetadata.boType
                 }
                 tmpOrders.add(ordersItem)
             }
@@ -152,6 +153,7 @@ object PromoRequestMapper {
             val order = Order(
                     shopId = cartShopHolderData.shopId.toLongOrZero(),
                     uniqueId = cartShopHolderData.cartString,
+                    boType = cartShopHolderData.boMetadata.boType,
                     product_details = listProductDetail,
                     codes = cartShopHolderData.promoCodes.toMutableList(),
                     isChecked = hasCheckedItem

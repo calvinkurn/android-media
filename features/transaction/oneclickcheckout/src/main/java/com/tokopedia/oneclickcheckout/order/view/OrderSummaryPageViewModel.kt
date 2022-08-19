@@ -363,7 +363,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun clearOldLogisticPromo(oldPromoCode: String) {
         launch(executorDispatchers.io) {
-            promoProcessor.clearOldLogisticPromo(oldPromoCode)
+            promoProcessor.clearOldLogisticPromo(oldPromoCode, orderCart)
         }
         promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, oldPromoCode)
     }
@@ -890,7 +890,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         globalEvent.value = OccGlobalEvent.Loading
         launch(executorDispatchers.immediate) {
-            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList, orderCart)
             if (isSuccess && orderProfile.value.isValidProfile) {
                 finalUpdate(onSuccessCheckout, true)
                 return@launch
