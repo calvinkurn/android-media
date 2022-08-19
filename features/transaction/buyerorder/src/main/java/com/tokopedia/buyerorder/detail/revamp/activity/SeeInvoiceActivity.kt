@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.detail.view.activity
+package com.tokopedia.buyerorder.detail.revamp.activity
 
 import android.annotation.TargetApi
 import android.content.Context
