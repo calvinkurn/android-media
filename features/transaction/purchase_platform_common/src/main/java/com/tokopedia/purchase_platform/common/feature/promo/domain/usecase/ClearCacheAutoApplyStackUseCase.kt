@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
@@ -21,15 +22,23 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext pr
         const val PARAM_PLACEHOLDER_SERVICE_ID = "serviceID"
         const val PARAM_PLACEHOLDER_PROMO_CODE = "promoCode"
         const val PARAM_PLACEHOLDER_IS_OCC = "isOCC"
+        const val PARAM_PLACEHOLDER_ORDER_DATA = "orderData"
 
         const val QUERY_CLEAR_CACHE_AUTO_APPLY = "ClearCacheAutoApplyQuery"
     }
 
-    fun setParams(serviceId: String, promoCodeList: ArrayList<String>, isOcc: Boolean = false): ClearCacheAutoApplyStackUseCase {
+    fun setParams(request: ClearPromoRequest): ClearCacheAutoApplyStackUseCase {
         params = mapOf(
-                PARAM_PLACEHOLDER_SERVICE_ID to serviceId,
-                PARAM_PLACEHOLDER_PROMO_CODE to promoCodeList,
-                PARAM_PLACEHOLDER_IS_OCC to isOcc
+                PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
+                PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
+                PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
+//                // temporary for old compatibility
+//                PARAM_PLACEHOLDER_PROMO_CODE to ArrayList<String>().apply {
+//                    addAll(request.orderData.codes)
+//                    request.orderData.orders.forEach {
+//                        addAll(it.codes)
+//                    }
+//                }
         )
         return this
     }

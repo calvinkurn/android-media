@@ -67,6 +67,9 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -1617,9 +1620,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         }
     }
 
-    override fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>) {
+    override fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest) {
         view?.showItemLoading()
-        clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
+        clearCacheAutoApplyStackUseCase.setParams(clearPromoRequest)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                         .subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
@@ -1628,10 +1631,20 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun doClearAllPromo() {
         lastValidateUseRequest?.let {
-            val codes = arrayListOf<String>()
-            it.codes.forEach { code -> codes.add(code) }
-            it.orders.forEach { order -> codes.addAll(order.codes) }
-            clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
+            val param = ClearPromoRequest(
+                    OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                    orderData = ClearPromoOrderData(
+                            codes = it.codes,
+                            orders = it.orders.map { order ->
+                                ClearPromoOrder(
+                                        uniqueId = order.uniqueId,
+                                        boType = order.boType,
+                                        codes = order.codes
+                                )
+                            }
+                    )
+            )
+            clearCacheAutoApplyStackUseCase.setParams(param)
             compositeSubscription.add(
                     // Do nothing on subscribe
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()

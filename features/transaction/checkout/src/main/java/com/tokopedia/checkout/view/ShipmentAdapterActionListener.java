@@ -23,7 +23,7 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onCancelVoucherLogisticClicked(String pslCode, int position);
+    void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel);
 
     void onDataEnableToCheckout();
 
