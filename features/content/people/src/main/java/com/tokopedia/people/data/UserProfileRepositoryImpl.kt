@@ -89,14 +89,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getPlayVideo(username: String, cursor: String): UserPostModel {
         return withContext(dispatcher.io) {
-            val result = playVodUseCase.executeOnBackground(
+            return@withContext playVodUseCase.executeOnBackground(
                 group = VAL_FEEDS_PROFILE,
                 cursor = cursor,
                 sourceType = VAL_SOURCE_BUYER,
                 sourceId = username,
             )
-
-            result
         }
     }
 
