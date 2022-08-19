@@ -17,7 +17,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/applink_manage_name"
+                    android:pathPattern="@string/path_manage_name"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

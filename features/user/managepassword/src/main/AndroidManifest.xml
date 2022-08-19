@@ -19,7 +19,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/applink_manage_password_has_password"
+                    android:pathPattern="@string/path_has_password"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -37,7 +37,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:path="@string/applink_manage_password_add_password"
+                    android:path="@string/path_add_password"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -55,7 +55,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:path="@string/applink_manage_password_forgot_password"
+                    android:path="@string/path_forgot_password"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
