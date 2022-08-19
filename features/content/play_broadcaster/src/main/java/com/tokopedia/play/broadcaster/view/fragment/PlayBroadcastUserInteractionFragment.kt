@@ -166,7 +166,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onImpressPinnedProduct(product: ProductUiModel) {
                 analytic.onImpressPinProductLiveRoom(product.id)
             }
-        })
+        }, scope = this.lifecycleScope)
     }
 
     /** Game */
