@@ -1,8 +1,8 @@
 package com.tokopedia.travel.country_code.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.travel.country_code.DummyGqlQueryInterface
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
-import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -48,7 +48,7 @@ class TravelCountryCodeByIdUseCaseTest{
 
 
         runBlockingTest {
-            val result = useCase.execute(TravelCountryCodeGqlQuery.ALL_COUNTRY, "ID")
+            val result = useCase.execute(DummyGqlQueryInterface(), "ID")
             assertTrue(result is Success)
             assertFalse(result is Fail)
 
@@ -71,7 +71,7 @@ class TravelCountryCodeByIdUseCaseTest{
 
 
         runBlockingTest {
-            val result = useCase.execute(TravelCountryCodeGqlQuery.ALL_COUNTRY, "ID")
+            val result = useCase.execute(DummyGqlQueryInterface(), "ID")
             assertTrue(result is Success)
             assertFalse(result is Fail)
 
@@ -91,7 +91,7 @@ class TravelCountryCodeByIdUseCaseTest{
         } returns Fail(Throwable(message = "failed to fetch"))
 
         runBlockingTest {
-            val result = useCase.execute(TravelCountryCodeGqlQuery.ALL_COUNTRY, "ID")
+            val result = useCase.execute(DummyGqlQueryInterface(), "ID")
             assertTrue(result is Fail)
             assertFalse(result is Success)
 

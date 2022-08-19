@@ -60,7 +60,7 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
      * @return boolean
      */
     private fun isNumber(text: String): Boolean{
-        return (text.toIntOrNull() != null)
+        return text.all { it in '0'..'9' }
     }
 
     /**

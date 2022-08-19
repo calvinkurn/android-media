@@ -18,7 +18,7 @@ object MethodCallDetector {
             explanation = EXPLAINATION,
             category = Category.CORRECTNESS,
             priority = Priority.Low.value,
-            severity = Severity.WARNING,
+            severity = Severity.ERROR,
             implementation = SourceCodeDetector.IMPLEMENTATION
 
     ).setAndroidSpecific(true)
@@ -55,7 +55,7 @@ object MethodCallDetector {
                       expectedClassMethod: MethodClassMapper?): String? {
 
         expectedClassMethod ?: return null
-        return "Usage of `${method}is prohibited, Use ${expectedClassMethod.className}.${expectedClassMethod.methodName}"
+        return "Usage of `${method} is prohibited, Use ${expectedClassMethod.className}.${expectedClassMethod.methodName}"
     }
 
 }

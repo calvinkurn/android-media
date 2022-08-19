@@ -884,7 +884,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToForgotPassword() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText?.text.toString().trim())
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
@@ -1510,7 +1510,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
@@ -1667,7 +1667,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToAddPin2FA(enableSkip2FA: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
@@ -1681,7 +1681,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun isFromAtcPage(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
-        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
+        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)

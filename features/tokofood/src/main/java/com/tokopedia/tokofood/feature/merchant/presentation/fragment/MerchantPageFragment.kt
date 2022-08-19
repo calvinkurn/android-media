@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -57,6 +58,7 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -636,6 +638,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                     binding?.toolbarParent?.hide()
                     binding?.productListLayout?.hide()
                     showGlobalError(errorType = GlobalError.SERVER_ERROR)
+                    logExceptionToServerLogger(
+                        result.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                 }
             }
         })
@@ -648,9 +655,28 @@ class MerchantPageFragment : BaseMultiFragment(),
 
                 is Fail -> {
                     validateAddressData()
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE
+                    )
                 }
             }
         })
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.MERCHANT,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     private suspend fun collectCartDataFlow() {
@@ -1297,7 +1323,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
-        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        var applicationLink = ApplinkConstInternalUserPlatform.ADD_PHONE
         if (appLink.isNotEmpty()) applicationLink = appLink
         context?.run {
             TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)

@@ -24,7 +24,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     var source = ""
 
     fun goToVerification(phone: String = "", email: String = "", otpType: Int, context: Context): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -75,7 +75,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     }
 
     fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = ""){
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.ADD_PIN)
+        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
@@ -85,7 +85,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
     }
 
     fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String){
-        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
+        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(fragment.context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
