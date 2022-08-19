@@ -721,9 +721,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onLoad(totalCount: Int) {
-        val size = adapter.getlist().size
-        if (adapter.getlist()[0] !is EmptyModel)
-            feedViewModel.getFeedNextPage()
+        val isNotEmpty = adapter.getlist().isNotEmpty()
+        if (isNotEmpty && adapter.getlist()[0] !is EmptyModel) feedViewModel.getFeedNextPage()
     }
 
     override fun onCreateView(
