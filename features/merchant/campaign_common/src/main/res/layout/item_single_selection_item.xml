@@ -19,7 +19,6 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgName"
         android:layout_width="0dp"
-        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:ellipsize="end"
         android:maxLines="1"
