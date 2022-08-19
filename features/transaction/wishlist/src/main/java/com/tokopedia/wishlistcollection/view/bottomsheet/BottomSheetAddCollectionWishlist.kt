@@ -34,6 +34,7 @@ import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBo
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_PDP
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
@@ -56,6 +57,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private var actionListener: ActionListener? = null
     private var isProductActive: Boolean = true
     private var toasterErrorMessage: String = ""
+    private var source: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -68,15 +70,6 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems)
         fun onFailedSaveItemToCollection(errorMessage: String)
     }
-
-    /*override fun onDismiss(dialog: DialogInterface) {
-        // TODO: need to change to applink if needed to show toaster
-        if (toasterErrorMessage.isNotEmpty()) {
-            showToaster(toasterErrorMessage, "", Toaster.TYPE_ERROR)
-            toasterErrorMessage = ""
-        }
-        super.onDismiss(dialog)
-    }*/
 
     companion object {
         private const val TAG: String = "AddToCollectionWishlistBottomSheet"
@@ -124,7 +117,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         binding?.rvAddWishlistCollection?.adapter = collectionAdapter
         binding?.rvAddWishlistCollection?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         setChild(binding?.root)
-        if (!isProductActive) {
+        if (!isProductActive && source == SOURCE_PDP) {
             binding?.tickerOos?.apply {
                 visible()
                 closeButtonVisibility = View.GONE
@@ -163,8 +156,8 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
 
     private fun loadData() {
         val productId = arguments?.get(PRODUCT_IDs).toString()
-        val source = arguments?.get(SOURCE).toString()
         isProductActive = arguments?.get(IS_PRODUCT_ACTIVE) as Boolean
+        source = arguments?.get(SOURCE).toString()
         val param = GetWishlistCollectionsBottomSheetParams(
             productIds = productId,
             source = source

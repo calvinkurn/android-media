@@ -1009,15 +1009,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 )
         }
         var inCollection = ""
-        var source = ""
         if (collectionId.isNotEmpty() && collectionId != "0") {
             inCollection = PARAM_INSIDE_COLLECTION
-        } else {
-            source = SRC_WISHLIST_COLLECTION
         }
         paramGetCollectionItems.inCollection = inCollection
         paramGetCollectionItems.page = currPage
-        if (source.isNotEmpty()) paramGetCollectionItems.source = source
         wishlistCollectionDetailViewModel.getWishlistCollectionItems(
             paramGetCollectionItems, wishlistPref?.getTypeLayout(),
             paramGetCollectionItems.source == SOURCE_AUTOMATIC_DELETION
@@ -2312,7 +2308,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
-            bulkDeleteAdditionalParams.totalOverlimitItems = count.toLong()
             doBulkDelete()
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))

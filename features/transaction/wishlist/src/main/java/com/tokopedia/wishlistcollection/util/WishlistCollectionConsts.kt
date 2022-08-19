@@ -8,6 +8,7 @@ object WishlistCollectionConsts {
     const val PAGE_NAME = "wishlist_collection"
     const val PARAM_INSIDE_COLLECTION = "inside"
     const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
+    const val SOURCE_PDP = "pdp"
 
     const val TYPE_COLLECTION_TICKER = "collection_ticker"
     const val TYPE_COLLECTION_ITEM = "collection_item"
