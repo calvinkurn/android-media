@@ -808,7 +808,7 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check change pin appLink then should return DF_USER_SETTINGS in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/change-pin"
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/change-pin"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
