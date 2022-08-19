@@ -81,6 +81,7 @@ import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodB
 import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
+import com.tokopedia.loginregister.registerinitial.view.util.isOnlyRegisterWithNumber
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -331,7 +332,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     @SuppressLint("RtlHardcoded")
     private fun prepareView() {
         activity?.let { act ->
-            if (!isOnlyRegisterWithNumber()) {
+            if (!isOnlyRegisterWithNumber(requireActivity())) {
                 bottomSheet = SocmedBottomSheet(context)
                 socmedButtonsContainer = bottomSheet?.getSocmedButtonContainer()
                 bottomSheet?.setCloseClickListener {
@@ -342,7 +343,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
             socmedButton.setOnClickListener {
                 registerAnalytics.trackClickSocmedButton()
-                if (!isOnlyRegisterWithNumber()) {
+                if (!isOnlyRegisterWithNumber(requireActivity())) {
                     bottomSheet?.show(act.supportFragmentManager, getString(R.string.bottom_sheet_show))
                 } else {
                     showOtherMethodBottomSheet()
@@ -386,8 +387,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         }
         bottomSheetOtherMethod?.show(childFragmentManager, getString(R.string.bottom_sheet_show))
     }
-
-    private fun isOnlyRegisterWithNumber(): Boolean = true
 
     private fun initObserver() {
         registerInitialViewModel.getProviderResponse.observe(viewLifecycleOwner, Observer {
@@ -566,7 +565,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetProvider(discoverData: DiscoverData) {
-        if (isOnlyRegisterWithNumber()) {
+        if (isOnlyRegisterWithNumber(requireActivity())) {
             //set button email
             val emailProvider = ProviderData(
                 id = LoginConstants.DiscoverLoginId.EMAIL,
@@ -606,7 +605,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetProvider(throwable: Throwable) {
-        if (isOnlyRegisterWithNumber()) {
+        if (isOnlyRegisterWithNumber(requireActivity())) {
             registerInitialViewModel.setOtherMethodState(
                 OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
             )
