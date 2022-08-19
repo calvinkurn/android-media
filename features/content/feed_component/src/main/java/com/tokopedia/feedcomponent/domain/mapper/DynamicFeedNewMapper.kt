@@ -7,7 +7,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -94,10 +93,6 @@ object DynamicFeedNewMapper {
             bannerList.add(BannerItemViewModel(
                     id, media.coverUrl, media.appLink
             ))
-        }
-        if (bannerList.size > 0) {
-            posts.add(BannerViewModel(bannerList)
-            )
         }
     }
 

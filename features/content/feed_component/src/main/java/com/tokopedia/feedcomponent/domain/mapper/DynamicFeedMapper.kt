@@ -12,7 +12,6 @@ import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
@@ -175,16 +174,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     trackBannerModel,
                     mapTrackingData(media.tracking)
             ))
-        }
-
-        if (bannerList.size > 0) {
-            posts.add(
-                    BannerViewModel(
-                            bannerList,
-                            feed.content.cardbanner.title,
-                            template
-                    )
-            )
         }
     }
 

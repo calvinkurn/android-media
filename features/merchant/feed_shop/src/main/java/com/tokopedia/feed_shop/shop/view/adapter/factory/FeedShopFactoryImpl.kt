@@ -19,7 +19,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
@@ -61,10 +60,6 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
         return DynamicPostViewHolder.LAYOUT
-    }
-
-    override fun type(bannerViewModel: BannerViewModel): Int {
-        return 0
     }
 
     override fun type(topadsShopUiModel: TopadsShopUiModel): Int {

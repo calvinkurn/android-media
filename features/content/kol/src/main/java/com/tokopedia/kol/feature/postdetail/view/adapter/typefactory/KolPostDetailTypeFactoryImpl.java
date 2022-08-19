@@ -19,7 +19,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPo
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel;
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
@@ -174,11 +173,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(@NotNull HighlightViewModel highlightViewModel) {
-        return 0;
-    }
-
-    @Override
-    public int type(@NotNull BannerViewModel bannerViewModel) {
         return 0;
     }
 

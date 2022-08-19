@@ -8,7 +8,6 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
@@ -26,10 +25,6 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
     : BaseAdapterTypeFactory(), DynamicFeedTypeFactory {
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
-        return 0
-    }
-
-    override fun type(bannerViewModel: BannerViewModel): Int {
         return 0
     }
 

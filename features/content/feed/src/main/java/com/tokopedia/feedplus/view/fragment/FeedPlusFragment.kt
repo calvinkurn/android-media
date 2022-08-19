@@ -68,7 +68,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -1434,14 +1433,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectUrl: String
     ) {
         onGoToLink(redirectUrl)
-
-        if (adapter.getlist()[positionInFeed] is BannerViewModel) {
-            val (itemViewModels) = adapter.getlist()[positionInFeed] as BannerViewModel
-            trackBannerClick(
-                adapterPosition,
-                itemViewModels[adapterPosition].trackingBannerModel
-            )
-        }
     }
 
     override fun onRecommendationAvatarClick(
@@ -3283,13 +3274,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     )
                 }
 
-            } else if (visitable is BannerViewModel) {
-                val (itemViewModels) = visitable
-                val trackingBannerModels = ArrayList<TrackingBannerModel>()
-                for ((_, _, _, trackingBannerModel, _) in itemViewModels) {
-                    trackingBannerModels.add(trackingBannerModel)
-                }
-                analytics.eventBannerImpression(trackingBannerModels, userId)
             } else if (visitable is TopadsShopUiModel) {
                 val (_, _, _, trackingList, _) = visitable
                 analytics.eventTopadsRecommendationImpression(

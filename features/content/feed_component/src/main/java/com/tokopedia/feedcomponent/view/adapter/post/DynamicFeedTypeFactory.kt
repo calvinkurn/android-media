@@ -1,7 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
@@ -16,8 +15,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
  */
 interface DynamicFeedTypeFactory {
     fun type(dynamicPostViewModel: DynamicPostViewModel): Int
-
-    fun type(bannerViewModel: BannerViewModel): Int
 
     fun type(topadsShopUiModel: TopadsShopUiModel): Int
 
