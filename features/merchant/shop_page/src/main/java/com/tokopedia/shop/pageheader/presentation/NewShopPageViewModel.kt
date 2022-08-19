@@ -168,7 +168,8 @@ class NewShopPageViewModel @Inject constructor(
                                 shopId,
                                 shopDomain,
                                 isRefresh,
-                                extParam
+                                extParam,
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -257,7 +258,8 @@ class NewShopPageViewModel @Inject constructor(
                         shopId,
                         shopDomain,
                         isRefresh,
-                        extParam
+                        extParam,
+                        widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -377,14 +379,20 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopP1Data(
-            shopId: String,
-            shopDomain: String,
-            isRefresh: Boolean,
-            extParam: String
+        shopId: String,
+        shopDomain: String,
+        isRefresh: Boolean,
+        extParam: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): ShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        useCase.params = GetShopPageP1DataUseCase.createParams(
+            shopId,
+            shopDomain,
+            extParam,
+            widgetUserAddressLocalData
+        )
         return useCase.executeOnBackground()
     }
 
@@ -392,11 +400,17 @@ class NewShopPageViewModel @Inject constructor(
         shopId: String,
         shopDomain: String,
         isRefresh: Boolean,
-        extParam: String
+        extParam: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): NewShopPageHeaderP1 {
         val useCase = newGetShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        useCase.params = GetShopPageP1DataUseCase.createParams(
+            shopId,
+            shopDomain,
+            extParam,
+            widgetUserAddressLocalData
+        )
         return useCase.executeOnBackground()
     }
 

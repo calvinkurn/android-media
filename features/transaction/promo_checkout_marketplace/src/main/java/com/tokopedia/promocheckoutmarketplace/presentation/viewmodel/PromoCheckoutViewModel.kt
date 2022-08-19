@@ -33,6 +33,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiMod
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.addPromo
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.containsPromoCode
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -941,11 +944,65 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* Network Call Section : Clear Promo */
     //------------------------------------//
 
-    fun clearPromo(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    fun clearPromo(promoRequest: PromoRequest, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
         val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
 
+        val globalPromo = arrayListOf<String>()
+        promoListUiModel.value?.forEach { visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !globalPromo.contains(visitable.uiData.promoCode)) {
+                globalPromo.add(visitable.uiData.promoCode)
+            }
+        }
+        validateUsePromoRequest.codes.forEach { promoGlobalCode ->
+            if (!bboPromoCodes.contains(promoGlobalCode) && !globalPromo.contains(promoGlobalCode)) {
+                globalPromo.add(promoGlobalCode)
+            }
+        }
+
+        val orders = arrayListOf<ClearPromoOrder>()
+        validateUsePromoRequest.orders.forEach { order ->
+            var clearOrder = orders.find { it.uniqueId == order.uniqueId }
+            if (clearOrder == null) {
+                clearOrder = ClearPromoOrder(
+                        uniqueId = order.uniqueId,
+                        boType = order.boType,
+                )
+                orders.add(clearOrder)
+            }
+            order.codes.forEach {
+                if (!bboPromoCodes.contains(it) && !clearOrder.codes.contains(it)) {
+                    clearOrder.codes.add(it)
+                }
+            }
+        }
+        promoListUiModel.value?.forEach { visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId > 0) {
+                val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
+                if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
+                    order.codes.add(visitable.uiData.promoCode)
+                } else if (order == null) {
+                    val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
+                    if (promoOrder != null) {
+                        orders.add(ClearPromoOrder(
+                                uniqueId = visitable.uiData.uniqueId,
+                                boType = promoOrder.boType,
+                                codes = arrayListOf(visitable.uiData.promoCode)
+                        ))
+                    }
+                }
+            }
+        }
+
+        val params = ClearPromoRequest(
+                ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI,
+                ClearPromoOrderData(
+                        codes = globalPromo,
+                        orders = orders
+                )
+        )
         PromoCheckoutIdlingResource.increment()
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, toBeRemovedPromoCodes, validateUsePromoRequest.cartType == PARAM_OCC_MULTI)
+        clearCacheAutoApplyStackUseCase.setParams(params)
         clearCacheAutoApplyStackUseCase.execute(
                 onSuccess = {
                     PromoCheckoutIdlingResource.decrement()

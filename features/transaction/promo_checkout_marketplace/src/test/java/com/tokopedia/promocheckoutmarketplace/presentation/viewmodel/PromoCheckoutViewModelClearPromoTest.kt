@@ -5,13 +5,13 @@ import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClea
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import io.mockk.coEvery
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import java.util.*
 
 class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
@@ -30,7 +30,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         //given
         val response = provideClearPromoResponseSuccess()
 
-        coEvery { clearCacheAutoApplyUseCase.setParams(any(), any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
         coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
@@ -38,7 +38,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
         //when
-        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
 
         //then
         assertNotNull(viewModel.clearPromoResponse.value)
@@ -51,13 +51,13 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         val response = provideClearPromoResponseSuccess()
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        coEvery { clearCacheAutoApplyUseCase.setParams(any(), any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
         coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
         //when
-        viewModel.clearPromo(validateUseRequest, ArrayList())
+        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList())
 
         //then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS)
@@ -69,13 +69,13 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         val response = provideClearPromoResponseFailed()
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        coEvery { clearCacheAutoApplyUseCase.setParams(any(), any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
         coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
         //when
-        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
 
         //then
         assertNotNull(viewModel.clearPromoResponse.value)
@@ -87,13 +87,13 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         val response = provideClearPromoResponseFailed()
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        coEvery { clearCacheAutoApplyUseCase.setParams(any(), any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
         coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
         //when
-        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
 
         //then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)

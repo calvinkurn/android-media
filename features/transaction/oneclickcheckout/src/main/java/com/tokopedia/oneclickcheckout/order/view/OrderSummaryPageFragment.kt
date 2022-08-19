@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -43,7 +44,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -238,8 +241,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.updatePromoStateWithoutCalculate(PromoUiModel().apply {
                         titleDescription = it.successDataModel.defaultEmptyPromoMessage
                     })
-                    // todo: reset BO -> if lastValidateUsePromoRequest do not contains BO promo then isApplyLogisticPromo = false, else no op
-                    // todo: flow auto unapply BO
                     viewModel.autoUnApplyBBO()
                     //refresh shipping section and calculate total
                     viewModel.reloadRates()
@@ -414,6 +415,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             putExtra(EXTRA_IS_FULL_FLOW, true)
                             putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
                             putExtra(CheckoutConstant.KERO_TOKEN, it.data.token)
+                            putExtra(PARAM_SOURCE, AddEditAddressSource.OCC.source)
                         }, REQUEST_CODE_ADD_NEW_ADDRESS)
                     } else {
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
@@ -767,6 +769,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
                 intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.address.state)
                 intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
+                intent.putExtra(PARAM_SOURCE, ManageAddressSource.DISTRICT_NOT_MATCH.source)
                 startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
             }
             AddressState.ERROR_CODE_OPEN_ANA -> {

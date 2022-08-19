@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
@@ -100,7 +101,9 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
@@ -895,6 +898,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
             intent.putExtra(KERO_TOKEN, token);
             intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
+            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.getSource());
             startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
         } else {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
@@ -909,6 +913,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState);
         intent.putExtra(EXTRA_IS_FROM_CHECKOUT_SNIPPET, true);
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CART.getSource());
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1107,7 +1112,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentCartItemModel.setStateHasLoadCourierState(true);
             }
             if (!shipmentCartItemModel.getBoCode().isEmpty()) {
-                shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode());
+                shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
                 shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
                 shipmentCartItemModel.setBoCode("");
             }
@@ -1482,6 +1487,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true);
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CHECKOUT.getSource());
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1621,8 +1627,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString, boolean forceHitValidateUse) {
-        // TODO: 04/07/22 CHECK IF BO GETS RED STATE, THEN HOW? -> last validate use request should remove BO code
-        // TODO: 04/07/22 CHECK IF PROMO GETS RED STATE, THEN should keep hit -> by last validate use request
         boolean stillHasPromo = false;
         ValidateUsePromoRequest lastValidateUseRequest = shipmentPresenter.getLastValidateUseRequest();
         if (lastValidateUseRequest != null) {
@@ -1713,9 +1717,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     // Project ARMY, clear from promo BBO ticker
     @Override
-    public void onCancelVoucherLogisticClicked(String pslCode, int position) {
+    public void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel) {
         checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic();
-        shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode);
+        shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode, shipmentCartItemModel);
         shipmentAdapter.cancelAllCourierPromo();
     }
 
@@ -1757,6 +1761,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
                                 notEligiblePromoHolderdata.setPromoTitle(voucherOrdersItemUiModel.getTitleDescription());
                                 notEligiblePromoHolderdata.setPromoCode(voucherOrdersItemUiModel.getCode());
+                                notEligiblePromoHolderdata.setUniqueId(voucherOrdersItemUiModel.getUniqueId());
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                         notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());
@@ -2111,7 +2116,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                             !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
                         String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
-                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode);
+                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                         ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
                         if (validateUsePromoRequest != null) {
                             for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
@@ -2529,6 +2534,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setCodes(listOrderCodes);
                     ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                     ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                    ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
                     setValidateUseSpIdParam(shipmentCartItemModel, ordersItem);
                     listOrderItem.add(ordersItem);
                 }
@@ -2630,6 +2636,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ordersItem.setCodes(listCodes);
                 ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                 ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
                 ordersItem.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() == null) {
                     ordersItem.setShippingId(0);
@@ -2977,39 +2984,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
         if (lastApplyUiModel == null) return;
-
-        ArrayList<Order> listOrder = new ArrayList<>();
-        Order order = new Order();
-        for (int i = 0; i < shipmentAdapter.getShipmentCartItemModelList().size(); i++) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelList().get(i);
-            order.setShopId(shipmentCartItemModel.getShopId());
-            order.setUniqueId(shipmentCartItemModel.getCartString());
-            order.setChecked(true);
-
-            ArrayList<String> listOrderCodes = new ArrayList<>();
-            for (int x = 0; x < lastApplyUiModel.getVoucherOrders().size(); x++) {
-                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyUiModel.getVoucherOrders().get(x).getUniqueId())) {
-                    listOrderCodes.add(lastApplyUiModel.getVoucherOrders().get(x).getCode());
-                    break;
-                }
-            }
-            order.setCodes(listOrderCodes);
-
-            ArrayList<ProductDetail> listProduct = new ArrayList<>();
-            for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-                CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(j);
-                ProductDetail productDetail = new ProductDetail();
-                productDetail.setProductId(cartItemModel.getProductId());
-                productDetail.setQuantity(cartItemModel.getQuantity());
-                listProduct.add(productDetail);
-            }
-            order.setProduct_details(listProduct);
-            listOrder.add(order);
-        }
-
-        PromoRequest promoRequest = new PromoRequest();
-        promoRequest.setState(CheckoutConstant.CHECKOUT);
-        promoRequest.setCodes(new ArrayList<>(lastApplyUiModel.getCodes()));
 
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();

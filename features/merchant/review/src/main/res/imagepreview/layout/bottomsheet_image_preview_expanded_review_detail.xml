@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
+        <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
             android:id="@+id/review_gallery_expanded_review_detail_basic_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

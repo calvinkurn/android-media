@@ -11,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.getFormattedPositionName
+import com.tokopedia.search.utils.orNone
 
 class InspirationCarouselDataView(
     val title: String = "",
@@ -104,6 +105,7 @@ class InspirationCarouselDataView(
             val inspirationCarouselTitle: String = "",
             val dimension90: String = "",
             val customVideoURL : String = "",
+            val externalReference: String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -190,6 +192,7 @@ class InspirationCarouselDataView(
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
+                    "dimension131", externalReference.orNone(),
                 )
             }
         }

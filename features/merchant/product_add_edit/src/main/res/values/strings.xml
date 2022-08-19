@@ -272,10 +272,6 @@
     <string name="label_draft_product_add_product">Tambah Produk</string>
     <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
 
-    <!-- set cash back -->
-    <string name="product_edit_set_cashback_success">Pengaturan Cashback untuk produk ini berhasil</string>
-    <string name="product_edit_set_cashback_error">Gagal mengatur cashback untuk produk ini. Coba lagi, ya.</string>
-
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
 

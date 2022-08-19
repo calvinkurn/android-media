@@ -993,7 +993,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.isError()) {
             mActionListener.onCancelVoucherLogisticClicked(
                     shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
-                    getAdapterPosition());
+                    getAdapterPosition(),
+                    shipmentCartItemModel);
         }
 
         renderFreeShippingCourierVisibility(selectedCourierItemData);
