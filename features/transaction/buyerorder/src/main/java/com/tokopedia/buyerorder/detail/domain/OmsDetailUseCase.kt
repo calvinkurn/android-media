@@ -28,12 +28,7 @@ class OmsDetailUseCase @Inject constructor(
         }
     }
 
-    private fun createRequest(): GraphqlRequest {
-        return GraphqlRequest(
-            QueryOmsDetails(),
-            DetailsData::class.java,
-            params)
-    }
+    private fun createRequest() = GraphqlRequest(QueryOmsDetails(), DetailsData::class.java, params)
 
     fun createParams(orderId: String, orderCategory: String, upstream: String){
         params = mapOf(

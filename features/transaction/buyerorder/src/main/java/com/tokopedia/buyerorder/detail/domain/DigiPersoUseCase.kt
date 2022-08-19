@@ -30,13 +30,11 @@ class DigiPersoUseCase @Inject constructor(
         }
     }
 
-    private fun createRequest(): GraphqlRequest{
-        return GraphqlRequest(
-            QueryDigiPerso(),
-            RecommendationDigiPersoResponse::class.java,
-            params
-        )
-    }
+    private fun createRequest() = GraphqlRequest(
+        QueryDigiPerso(),
+        RecommendationDigiPersoResponse::class.java,
+        params
+    )
 
     fun createParams(){
         params = mapOf(Key.INPUT to mapOf(
