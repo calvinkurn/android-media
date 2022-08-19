@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -1185,11 +1186,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setTrackingUserId(userId: String) {
         try {
-            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
+            val ctx = activity?.applicationContext
+            TkpdAppsFlyerMapper.getInstance(ctx).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
             val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
             if (!GlobalConfig.DEBUG && crashlytics != null)
                 crashlytics.setUserId(userId)
+            ctx?.let {
+                TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
+            }
 
             if (userSession.isLoggedIn) {
                 val userData = UserData()
