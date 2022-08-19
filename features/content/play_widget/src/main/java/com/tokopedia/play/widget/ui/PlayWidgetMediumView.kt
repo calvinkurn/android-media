@@ -310,14 +310,6 @@ class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
                 bottom = spacing16,
         )
         mLastOverlayImageUrl = data.overlayImageUrl
-
-        itemContainer.setMargin(
-            left = 0,
-//            top = if(isBackgroundAvailable(data)) spacing12 else spacing10,
-            top = 0,
-            right = 0,
-            bottom = 0,
-        )
     }
 
     private fun shouldLoadOverlayImage(imageUrl: String) = imageUrl.isNotBlank()
