@@ -7,12 +7,10 @@ import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.domain.DigiPersoUseCase
 import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
-import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
