@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductDeleteUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductSubmissionUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleReservedProductListUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +23,8 @@ class LandingContainerViewModel @Inject constructor(
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
-    private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase
+    private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase,
+    private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     data class UiState(
@@ -110,6 +112,20 @@ class LandingContainerViewModel @Inject constructor(
                 val params =
                     GetFlashSaleReservedProductListUseCase.Param("122402171660144143955", 0)
                 val response = getFlashSaleReservedProductListUseCase.execute(params)
+            },
+            onError = { error ->
+            }
+        )
+
+    }
+
+    fun getFlashSaleList() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val params =
+                    GetFlashSaleListForSellerUseCase.Param( "upcoming", 0)
+                val response = getFlashSaleListForSellerUseCase.execute(params)
             },
             onError = { error ->
             }

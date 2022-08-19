@@ -2,4 +2,7 @@
 <resources>
     <string name="campaign_common_oke">Oke</string>
     <string name="campaign_common_please_wait">Tunggu sebentar</string>
+
+    <!--Bottom Sheet -->
+    <string name="bottom_sheet_apply">Terapkan</string>
 </resources>
