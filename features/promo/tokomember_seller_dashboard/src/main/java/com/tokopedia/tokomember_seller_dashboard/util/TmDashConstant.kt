@@ -71,7 +71,8 @@ const val ADD_QUOTA = "addQuota"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
         "Tunggu ya, program lagi disiapkan!"
-const val TM_SUMMARY_DIALOG_TITLE = "<b>Tunggu Sebentar, ya</b>" + "<br>" +
+const val TM_SUMMARY_DIALOG_TITLE_START_TEXT = "Tunggu Sebentar, ya\n"
+const val TM_SUMMARY_DIALOG_TITLE = "Tunggu Sebentar, ya\n"  +
 "Kami sedang membuat kuponmu"
 
 const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
@@ -90,7 +91,7 @@ const val CASHBACK_PERCENTAGE = "percent"
 
 const val PROGRAM_AUTO_DATE = ""
 
-const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui \n"+
+const val COUPON_TERMS_CONDITION = "Dengan klik Buat Kupon, kamu menyetujui\n"+
         "syarat & ketentuan TokoMember."
 const val TERMS = "syarat"
 const val TERNS_AND_CONDITION = "syarat & ketentuan"

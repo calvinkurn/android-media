@@ -115,6 +115,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
                         .into(object : CustomTarget<Drawable>(){
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+
                                 flShop.background = resource
                             }
                             override fun onLoadCleared(placeholder: Drawable?) {

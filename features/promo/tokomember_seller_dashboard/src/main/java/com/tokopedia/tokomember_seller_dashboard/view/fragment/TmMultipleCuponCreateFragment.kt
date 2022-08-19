@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
 import android.text.InputType
@@ -11,6 +12,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -882,6 +884,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             clickableSpan,
             firstIndex,
             firstIndex + TERNS_AND_CONDITION.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
+            firstIndex,
+            firstIndex + TERMS.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 

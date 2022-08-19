@@ -2,6 +2,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Html
 import android.text.InputType
@@ -10,6 +11,10 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.LeadingMarginSpan
+import android.text.style.StyleSpan
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,64 +50,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
-import com.tokopedia.tokomember_seller_dashboard.util.ANDROID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
-import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_IDR
-import com.tokopedia.tokomember_seller_dashboard.util.CASHBACK_PERCENTAGE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_CASHBACK_PREVIEW
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_IDR
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DISCOUNT_TYPE_PERCENT
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_HEADER_TITLE_SINGLE_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_SHIPPING_PREVIEW
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TERMS_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_CASHBACK
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_TYPE_SHIPPING
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
-import com.tokopedia.tokomember_seller_dashboard.util.CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_FORMAT
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
-import com.tokopedia.tokomember_seller_dashboard.util.MAX_CASHBACK_LABEL
-import com.tokopedia.tokomember_seller_dashboard.util.MAX_GRATIS_LABEL
-import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
-import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_VALIDATION_CTA_TEXT
-import com.tokopedia.tokomember_seller_dashboard.util.RETRY
-import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
-import com.tokopedia.tokomember_seller_dashboard.util.TERMS
-import com.tokopedia.tokomember_seller_dashboard.util.TERNS_AND_CONDITION
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_DESC_END
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
-import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
-import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
-import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
-import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.util.UPDATE
-import com.tokopedia.tokomember_seller_dashboard.util.WAITING
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -188,7 +137,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         tmEligibilityViewModel.getSellerInfo()
         shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
@@ -804,7 +752,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             loaderDialog?.loaderText?.apply {
                 setType(Typography.DISPLAY_2)
             }
-            loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
+//
+            val ss = SpannableString(TM_SUMMARY_DIALOG_TITLE)
+            ss.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0, TM_SUMMARY_DIALOG_TITLE_START_TEXT.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            loaderDialog?.setLoadingText(ss)
+        loaderDialog?.loaderText?.gravity=Gravity.CENTER_HORIZONTAL
+
             loaderDialog?.show()
     }
 
@@ -1017,6 +974,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val firstIndex = COUPON_TERMS_CONDITION.indexOf(TERMS)
         ss.setSpan(
             clickableSpan,
+            firstIndex,
+            firstIndex + TERNS_AND_CONDITION.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
             firstIndex,
             firstIndex + TERNS_AND_CONDITION.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE

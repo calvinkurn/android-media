@@ -415,30 +415,37 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_marginTop="@dimen/tm_dash_dp_24"
             android:layout_marginStart="@dimen/tm_dash_dp_16"
-            android:orientation="horizontal">
+            >
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tm_kupon_tokomember"
                 android:textColor="@color/Unify_NN950"
-                app:typographyType="heading_3"/>
+                app:typographyType="heading_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/kuponTokomemberHeading"
+                />
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_width="@dimen/tm_dash_dp_10"
                 android:layout_height="@dimen/tm_dash_dp_10"
+                android:layout_marginTop="3dp"
                 android:layout_marginStart="@dimen/tm_dash_dp_4"
                 app:icon_name="INFORMATION"
                 app:icon_color_light_enable="#2E3137"
+                app:layout_constraintStart_toEndOf="@id/kuponTokomemberHeading"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

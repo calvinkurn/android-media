@@ -29,14 +29,16 @@
                 android:layout_marginStart="@dimen/tm_dash_dp_16"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/tm_dash_dp_16"
-                android:background="@drawable/tm_bg_round_home">
+                android:background="@drawable/tm_bg_round_home"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
