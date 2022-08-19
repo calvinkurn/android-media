@@ -347,7 +347,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
-        repo.removeCoolDownTimerJob()
     }
 
     fun submitAction(event: PlayBroadcastAction) {

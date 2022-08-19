@@ -145,9 +145,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun removeCoolDownTimerJob() {
-    }
-
     companion object {
         private const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
         private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
