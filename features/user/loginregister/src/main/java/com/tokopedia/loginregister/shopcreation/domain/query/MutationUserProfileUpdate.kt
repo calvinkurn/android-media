@@ -12,6 +12,7 @@ object MutationUserProfileUpdate {
     private const val birthdate = "\$birthdate"
     private const val phone = "\$phone"
     private const val email = "\$email"
+    private const val currValidateToken = "\$currValidateToken"
 
     fun getQuery(): String = """
         mutation userProfileUpdate(
@@ -19,14 +20,16 @@ object MutationUserProfileUpdate {
                 $gender: String,
                 $birthdate: String,
                 $phone: String,
-                $email: String
+                $email: String,
+                $currValidateToken: String
         ) {
             userProfileUpdate(
                     fullname: $fullname,
                     gender: $gender,
                     birthdate: $birthdate,
                     phone: $phone,
-                    email: $email
+                    email: $email,
+                    currValidateToken: $currValidateToken
             ) {
                 isSuccess,
                 completionScore,

@@ -37,6 +37,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
@@ -171,6 +172,8 @@ public interface ShipmentContract {
         void showPopUp(PopUpData popUpData);
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+
+        void onNeedUpdateViewItem(int position);
     }
 
     interface AnalyticsActionListener {
@@ -296,9 +299,9 @@ public interface ShipmentContract {
 
         void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList);
 
-        void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode);
+        void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode, ShipmentCartItemModel shipmentCartItemModel);
 
-        void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
+        void cancelAutoApplyPromoStackAfterClash(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
 
         void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
                                    ChosenAddressModel chosenAddressModel,
@@ -367,6 +370,8 @@ public interface ShipmentContract {
 
         String generateRatesMvcParam(String cartString);
 
+        String getCartDataForRates();
+
         void setCheckoutData(CheckoutData checkoutData);
 
         void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
@@ -374,6 +379,10 @@ public interface ShipmentContract {
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
         ShipmentUpsellModel getShipmentUpsellModel();
+
+        void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
+
+        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
     }
 
 }

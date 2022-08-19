@@ -30,5 +30,6 @@
     <string name="label_button_close">Tutup</string>
     <string name="label_promo_selectable_template">• %1$s</string>
     <string name="promo_checkout_toolbar_input_code_label">Masukan Kode</string>
+    <string name="label_has_already_selected_bo_promo">Kamu perlu pilih ulang pengirimanmu, ya!</string>
 
 </resources>

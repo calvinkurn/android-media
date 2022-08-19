@@ -729,6 +729,8 @@ const val CART_REVAMP_V3_QUERY =
                       success
                       cart_id
                       unique_id
+                      shipping_id
+                      sp_id
                       order_id
                       shop_id
                       is_po

@@ -71,6 +71,7 @@
             android:gravity="center_vertical"
             android:visibility="gone"
             tools:visibility="visible"
+            android:paddingHorizontal="16dp"
             android:layout_above="@id/container_action_bottom"
             android:background="@drawable/promo_checkout_marketplace_module_ticker_bo_clashing_background_and_shadow">
 
@@ -79,7 +80,6 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginVertical="16dp"
-                android:layout_marginStart="16dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>

@@ -83,12 +83,12 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
              products: ArrayList<Product>, cartString: String,
              isDisableOrderPrioritas: Boolean,
              isTradeInDropOff: Boolean, isFulFillment: Boolean,
-             preOrderTime: Int, mvc: String) {
+             preOrderTime: Int, mvc: String, cartData: String) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
         initData(shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
                 cartPosition, codHistory, isLeasing, pslCode, products, cartString,
-                isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc)
+                isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc, cartData)
         initBottomSheet(activity)
         initView(activity)
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
@@ -116,7 +116,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
     }
 
-    private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
+    private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String, cartData: String) {
         bundle = Bundle()
         bundle?.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
         bundle?.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
@@ -133,6 +133,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
         bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
         bundle?.putString(ARGUMENT_MVC, mvc)
+        bundle?.putString(ARGUMENT_CART_DATA, cartData)
     }
 
     private fun initializeInjector() {
@@ -178,8 +179,9 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val mvc = bundle!!.getString(ARGUMENT_MVC, "")
             val isFulfillment = bundle!!.getBoolean(ARGUMENT_IS_FULFILLMENT)
             val preOrderTime = bundle!!.getInt(ARGUMENT_PO_TIME)
+            val cartData = bundle!!.getString(ARGUMENT_CART_DATA)!!
             presenter!!.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress!!, isFulfillment, preOrderTime, mvc)
+                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress!!, isFulfillment, preOrderTime, mvc, cartData)
         }
     }
 
@@ -365,6 +367,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         private const val ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS"
         private const val ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF"
         private const val ARGUMENT_MVC = "ARGUMENT_MVC"
+        private const val ARGUMENT_CART_DATA = "ARGUMENT_CART_DATA"
         private const val ARGUMENT_IS_FULFILLMENT = "ARGUMENT_IS_FULFILLMENT"
         private const val ARGUMENT_PO_TIME = "ARGUMENT_PO_TIME"
         private const val CHOOSE_COURIER_TRACE = "mp_choose_courier"

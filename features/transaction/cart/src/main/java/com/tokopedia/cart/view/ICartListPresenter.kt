@@ -12,6 +12,7 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -116,7 +117,7 @@ interface ICartListPresenter {
 
     fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
 
-    fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>)
+    fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)
 
     fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel?
 

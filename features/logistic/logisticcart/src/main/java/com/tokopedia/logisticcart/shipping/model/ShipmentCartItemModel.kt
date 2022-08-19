@@ -47,6 +47,7 @@ class ShipmentCartItemModel(
         var cartString: String? = null,
         var shippingId: Int = 0,
         var spId: Int = 0,
+        var boCode: String = "",
         var dropshiperName: String? = null,
         var dropshiperPhone: String? = null,
         var isInsurance: Boolean = false,

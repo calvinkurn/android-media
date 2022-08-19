@@ -8,6 +8,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
 class GetOccCartData(
+        @SerializedName("cart_data")
+        val cartData: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("error_code")

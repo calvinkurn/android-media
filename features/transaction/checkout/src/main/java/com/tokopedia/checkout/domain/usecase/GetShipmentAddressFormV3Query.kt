@@ -608,6 +608,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 app_link
                 image
               }
+              cart_data
             }
           }
         }"""

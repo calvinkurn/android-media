@@ -144,7 +144,7 @@ class HomeFragmentRefreshTest {
          * - Membership data changes
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertEquals(TOTAL_PARTIAL_HEADER_REFRESH_COUNT, dataChangedCount)
+        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
 

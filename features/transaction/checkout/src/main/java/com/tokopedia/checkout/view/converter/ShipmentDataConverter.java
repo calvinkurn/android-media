@@ -277,6 +277,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
         shipmentCartItemModel.setSpId(groupShop.getSpId());
+        shipmentCartItemModel.setBoCode(groupShop.getBoCode());
         shipmentCartItemModel.setDropshiperName(groupShop.getDropshipperName());
         shipmentCartItemModel.setDropshiperPhone(groupShop.getDropshipperPhone());
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());

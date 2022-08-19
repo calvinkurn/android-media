@@ -12,6 +12,8 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var addressId: Int = -1,
         var titleDescription: String = "",
         var isPo: Int = -1,
+        var shippingId: Int = 0,
+        var spId: Int = 0,
         var type: String = "",
         var messageUiModel: MessageUiModel = MessageUiModel(),
         var duration: String = "",

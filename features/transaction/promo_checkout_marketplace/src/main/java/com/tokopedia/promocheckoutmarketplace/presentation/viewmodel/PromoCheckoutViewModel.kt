@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
+import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
@@ -18,6 +19,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomSheetUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
@@ -30,6 +32,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommen
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -88,6 +93,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private val _promoListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
     val promoListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _promoListUiModel
+
+    // BO Promo Bottom Sheet UI Model
+    private val _boInfoBottomSheetUiModel = MutableLiveData<BoInfoBottomSheetUiModel>()
+    val boInfoBottomSheetUiModel: LiveData<BoInfoBottomSheetUiModel>
+        get() = _boInfoBottomSheetUiModel
 
     // Temporary single data. This live data is used for modify or delete single item
     private val _tmpUiModel = MutableLiveData<Action<Visitable<*>>>()
@@ -211,6 +221,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
             if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
                 order.codes.add(it.uiData.promoCode)
+            } else if (it.uiState.isBebasOngkir){
+                val boData = it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                boData?.let {
+                    if (!order.codes.contains(boData.code)) {
+                        // if code is not already in request param, then add bo additional data
+                        order.shippingId = boData.shippingId
+                        order.spId = boData.shipperProductId
+                        order.codes.add(boData.code)
+                    } else {
+                        // if code already in request param, set shipping id and sp id again
+                        // in case user changes address from other page and the courier info changes
+                        order.shippingId = boData.shippingId
+                        order.spId = boData.shipperProductId
+                    }
+                }
             } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
                 promoRequest.codes.add(it.uiData.promoCode)
             }
@@ -219,6 +244,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
             if (it.uiData.uniqueId == order.uniqueId && order.codes.contains(it.uiData.promoCode)) {
                 order.codes.remove(it.uiData.promoCode)
+            } else if (it.uiState.isBebasOngkir) {
+                // if coupon is bebas ongkir promo, then remove code only
+                val boData = it.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    order.let {
+                        if (it.codes.contains(boData.code)) {
+                            it.codes.remove(boData.code)
+                        }
+                    }
+                }
             } else if (it.uiData.shopId == 0 && promoRequest.codes.contains(it.uiData.promoCode)) {
                 promoRequest.codes.remove(it.uiData.promoCode)
             }
@@ -279,6 +314,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         initGetPromoListResponseAction()
         setGetPromoListResponseActionClearData(tmpPromoCode)
         initPromoList(response)
+        initBoInfoBottomSheet(response)
 
         sendAnalyticsPromoPageLoaded()
 
@@ -286,8 +322,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val hasPreSelectedPromo = checkHasPreSelectedPromo()
         val preSelectedPromoCodes = getPreSelectedPromoList()
+        val clashingInfoPreAppliedBo = checkClashingInfoPreAppliedBo()
 
-        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo)
+        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, clashingInfoPreAppliedBo)
 
         calculateAndRenderTotalBenefit()
         updateRecommendationState()
@@ -414,6 +451,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         return tmpHasPreSelectedPromo
     }
 
+    private fun checkClashingInfoPreAppliedBo(): BoClashingInfo? {
+        var boClashingInfo: BoClashingInfo? = null
+        promoListUiModel.value?.forEach visitableLoop@{ visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir) {
+                boClashingInfo = visitable.uiData.boClashingInfos.firstOrNull()
+                return@visitableLoop
+            }
+        }
+        return boClashingInfo
+    }
+
     private fun setPromoInputState(response: CouponListRecommendationResponse, tmpPromoCode: String) {
         val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
         if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
@@ -498,6 +546,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         _promoListUiModel.value = couponList
     }
 
+    private fun initBoInfoBottomSheet(response: CouponListRecommendationResponse) {
+        val boInfoBottomSheetUiModel = uiModelMapper.mapBoInfoBottomSheetUiModel(response.couponListRecommendation.data.bottomSheet)
+        _boInfoBottomSheetUiModel.value = boInfoBottomSheetUiModel
+    }
+
     private fun getAllPreSelectedPromo(response: CouponListRecommendationResponse): ArrayList<String> {
         val preSelectedPromoList = ArrayList<String>()
 
@@ -544,13 +597,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean) {
+    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, clashingInfoPreAppliedBo: BoClashingInfo?) {
         fragmentUiModel.value?.let {
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
             it.uiState.hasAnyPromoSelected = hasPreSelectedPromo
             it.uiState.hasFailedToLoad = false
             it.uiData.exception = null
+
+            it.uiState.hasPreAppliedBo = clashingInfoPreAppliedBo != null
+            it.uiData.unApplyBoMessage = clashingInfoPreAppliedBo?.message ?: ""
+            it.uiData.unApplyBoIcon = clashingInfoPreAppliedBo?.icon ?: ""
             _fragmentUiModel.value = it
         }
     }
@@ -619,7 +676,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             errorMessage = fragmentUiModel.value?.uiData?.defaultErrorMessage ?: ""
         }
         promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && promoCodeList.contains(it.uiData.promoCode)) {
+            if (it is PromoListItemUiModel && promoCodeList.containsPromoCode(it)) {
                 analytics.eventViewErrorAfterClickPakaiPromo(getPageSource(), it.uiData.promoId, errorMessage)
             }
         }
@@ -751,11 +808,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         val selectedPromoList = ArrayList<String>()
         promoListUiModel.value?.forEach { visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected) {
-                if (visitable.uiState.isBebasOngkir) {
-                    selectedPromoList.addAll(visitable.uiData.boAdditionalData.map { it.code })
-                } else {
-                    selectedPromoList.add(visitable.uiData.promoCode)
-                }
+                selectedPromoList.addPromo(visitable)
             }
         }
 
@@ -851,9 +904,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun setPromoItemDisabled(redStateMap: HashMap<String, String>, it: PromoListItemUiModel) {
-        if (redStateMap.containsKey(it.uiData.promoCode)) {
+        if (redStateMap.keys.containsPromoCode(it)) {
             it.uiState.isSelected = false
-            it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
+            it.uiData.errorMessage = redStateMap[it.getPromoCode(redStateMap.keys)] ?: ""
             it.uiState.isDisabled = true
             _tmpUiModel.value = Update(it)
         }
@@ -906,11 +959,65 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* Network Call Section : Clear Promo */
     //------------------------------------//
 
-    fun clearPromo(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    fun clearPromo(promoRequest: PromoRequest, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
         val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
 
+        val globalPromo = arrayListOf<String>()
+        promoListUiModel.value?.forEach { visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
+                globalPromo.add(visitable.uiData.promoCode)
+            }
+        }
+        validateUsePromoRequest.codes.forEach { promoGlobalCode ->
+            if (!bboPromoCodes.contains(promoGlobalCode) && !globalPromo.contains(promoGlobalCode)) {
+                globalPromo.add(promoGlobalCode)
+            }
+        }
+
+        val orders = arrayListOf<ClearPromoOrder>()
+        validateUsePromoRequest.orders.forEach { order ->
+            var clearOrder = orders.find { it.uniqueId == order.uniqueId }
+            if (clearOrder == null) {
+                clearOrder = ClearPromoOrder(
+                        uniqueId = order.uniqueId,
+                        boType = order.boType,
+                )
+                orders.add(clearOrder)
+            }
+            order.codes.forEach {
+                if (!bboPromoCodes.contains(it) && !clearOrder.codes.contains(it)) {
+                    clearOrder.codes.add(it)
+                }
+            }
+        }
+        promoListUiModel.value?.forEach { visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId > 0) {
+                val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
+                if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
+                    order.codes.add(visitable.uiData.promoCode)
+                } else if (order == null) {
+                    val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
+                    if (promoOrder != null) {
+                        orders.add(ClearPromoOrder(
+                                uniqueId = visitable.uiData.uniqueId,
+                                boType = promoOrder.boType,
+                                codes = arrayListOf(visitable.uiData.promoCode)
+                        ))
+                    }
+                }
+            }
+        }
+
+        val params = ClearPromoRequest(
+                ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI,
+                ClearPromoOrderData(
+                        codes = globalPromo,
+                        orders = orders
+                )
+        )
         PromoCheckoutIdlingResource.increment()
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, toBeRemovedPromoCodes, validateUsePromoRequest.cartType == PARAM_OCC_MULTI)
+        clearCacheAutoApplyStackUseCase.setParams(params)
         clearCacheAutoApplyStackUseCase.execute(
                 onSuccess = {
                     PromoCheckoutIdlingResource.decrement()
@@ -981,8 +1088,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun addUnSelectedPromoCodes(toBeRemovedPromoCodes: ArrayList<String>) {
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.contains(visitable.uiData.promoCode)) {
-                toBeRemovedPromoCodes.add(visitable.uiData.promoCode)
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.containsPromoCode(visitable)) {
+                toBeRemovedPromoCodes.addPromo(visitable)
             }
         }
     }
@@ -1148,11 +1255,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
-        if (selectedItem.uiData.boClashingInfos.isNotEmpty()) {
+        if (selectedItem.uiData.boClashingInfos.isNotEmpty() && !selectedItem.uiState.isBebasOngkir) {
             fragmentUiModel.value?.let {
                 it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
                 it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.firstOrNull()?.icon ?: ""
-                it.uiState.hasSelectedBoClashingPromo = selectedItem.uiState.isSelected
+                it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
 
                 _fragmentUiModel.value = it
             }
@@ -1225,17 +1332,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         calculateClash(it)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                         analytics.eventClickPilihOnRecommendation(getPageSource(), it.uiData.promoCode, it.uiState.isCausingOtherPromoClash)
-                    } else if (it.uiState.isBebasOngkir) {
-                        val recommendedBoPromo = promoRecommendation.uiData.promoCodes.intersect(it.uiData.boAdditionalData.map { boData -> boData.code })
-                        if (recommendedBoPromo.isNotEmpty()) {
-                            uncheckSibling(it)
-                            it.uiState.isSelected = true
-                            it.uiState.isRecommended = true
-                            _tmpUiModel.value = Update(it)
-                            calculateClash(it)
-                            expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
-                            analytics.eventClickPilihOnRecommendation(getPageSource(), recommendedBoPromo.first().toString(), it.uiState.isCausingOtherPromoClash)
-                        }
                     }
                 }
             }
@@ -1320,24 +1416,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun uncheckSibling(promoItem: PromoListItemUiModel) {
-        var header: PromoListHeaderUiModel? = null
         promoListUiModel.value?.forEach {
-            if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
-                header = it
-                return@forEach
-            }
-        }
-
-        header?.let { section ->
-            var totalSelectedPromoInSection = 1
-            promoListUiModel.value?.forEach { promoListUiModel ->
-                if (promoListUiModel is PromoListItemUiModel && promoListUiModel.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && promoListUiModel.uiState.isSelected) {
-                    totalSelectedPromoInSection += 1
-                    if (totalSelectedPromoInSection > section.uiData.maximumSelectedPromo) {
-                        promoListUiModel.uiState.isSelected = false
-                        _tmpUiModel.value = Update(promoListUiModel)
-                    }
-                }
+            if (it is PromoListItemUiModel && it.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && it.uiState.isSelected) {
+                it.uiState.isSelected = false
+                _tmpUiModel.value = Update(it)
             }
         }
     }
@@ -1535,6 +1617,26 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             eCommerceMap["promoView"] = promoViewMap
 
             analytics.eventViewAvailablePromoListIneligibleProduct(getPageSource(), eCommerceMap)
+        }
+    }
+
+    // read promo code for gql request / response
+    // for comparing ui model please use `contains(promoListItemUiModel.uiData.promoCode)`
+    private fun Collection<String>.containsPromoCode(promoListItemUiModel: PromoListItemUiModel) : Boolean {
+        return if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code }).isNotEmpty()
+        } else {
+            this.contains(promoListItemUiModel.uiData.promoCode)
+        }
+    }
+
+    // add promo code for gql request / response
+    // for ui model usage please use `add(promoListItemUiModel.uiData.promoCode)`
+    private fun MutableCollection<String>.addPromo(promoListItemUiModel: PromoListItemUiModel) {
+        if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
+        } else {
+            this.add(promoListItemUiModel.uiData.promoCode)
         }
     }
 

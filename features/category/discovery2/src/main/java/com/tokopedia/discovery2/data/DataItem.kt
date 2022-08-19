@@ -457,6 +457,9 @@ data class DataItem(
         @SerializedName("time_description")
         val timeDescription: String? = null,
 
+        @SerializedName("template_name")
+        var templateName: String? = "",
+
         var quantity: Int = 0,
 
         @SerializedName("backgroud_image_url")
@@ -502,6 +505,8 @@ data class DataItem(
         var hasThreeDotsWishlist: Boolean = false,
 
         var hasATCWishlist: Boolean = false,
+
+        var hasSimilarProductWishlist: Boolean? = null,
 
         var isWishList: Boolean = false,
 

@@ -25,6 +25,8 @@ data class GroupShop(
         @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         val spId: Int = 0,
+        @SerializedName("bo_code")
+        val boCode: String = "",
         @SerializedName("dropshipper")
         val dropshiper: Dropshiper = Dropshiper(),
         @SerializedName("is_insurance")

@@ -15,7 +15,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleVie
 class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var bundleListItem: List<BundleUiModel> = listOf()
-    private val listener: ProductBundleListener? = null
+    private var listener: ProductBundleListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
@@ -71,6 +71,10 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
     fun updateDataSet(newList: List<BundleUiModel>) {
         bundleListItem = newList
         notifyDataSetChanged()
+    }
+
+    fun setListener(listener: ProductBundleListener) {
+        this.listener = listener
     }
 
 }

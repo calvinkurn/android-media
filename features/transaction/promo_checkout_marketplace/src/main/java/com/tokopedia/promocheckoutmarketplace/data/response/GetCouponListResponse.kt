@@ -38,7 +38,9 @@ data class Data(
         @SerializedName("attempted_promo_code_error")
         val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError(),
         @SerializedName("section_tabs")
-        val sectionTabs: List<SectionTab> = emptyList()
+        val sectionTabs: List<SectionTab> = emptyList(),
+        @SerializedName("bottom_sheet")
+        val bottomSheet: BottomSheet = BottomSheet()
 )
 
 data class GainRewardPointsTnc(
@@ -180,7 +182,7 @@ data class Coupon(
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
         @SerializedName("bo_clashing_infos")
-        val boClashingInfos: List<ClashingInfo> = emptyList(),
+        val boClashingInfos: List<BoClashingInfo> = emptyList(),
         @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
@@ -269,6 +271,15 @@ data class ClashingInfo(
         val icon: String = ""
 )
 
+data class BoClashingInfo(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("icon")
+        val icon: String = ""
+)
+
 data class PromoCoachmark(
         @SerializedName("is_shown")
         @Expose
@@ -293,4 +304,17 @@ data class SectionTab(
         val id: String = "",
         @SerializedName("title")
         val title: String = ""
+)
+
+data class BottomSheet(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("content_title")
+        val contentTitle: String = "",
+        @SerializedName("content_description")
+        val contentDescription: String = "",
+        @SerializedName("image_url")
+        val imageUrl: String = "",
+        @SerializedName("button_txt")
+        val buttonText: String = ""
 )

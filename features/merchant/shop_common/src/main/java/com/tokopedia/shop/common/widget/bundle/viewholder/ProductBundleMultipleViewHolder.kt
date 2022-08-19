@@ -77,7 +77,7 @@ class ProductBundleMultipleViewHolder(
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
-        initActionButton(bundleDetail.isPreOrder)
+        initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, bundleDetail.products)
     }
 
@@ -128,8 +128,10 @@ class ProductBundleMultipleViewHolder(
         constraintSet.applyTo(widgetContainer)
     }
 
-    private fun initActionButton(isPreOrder: Boolean) {
-        buttonAtc?.text = if (isPreOrder) {
+    private fun initActionButton(atcButtonText: String?, isPreOrder: Boolean) {
+        buttonAtc?.text = if (atcButtonText != null) {
+            atcButtonText
+        } else if (isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)

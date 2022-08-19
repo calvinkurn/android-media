@@ -97,7 +97,7 @@
                 android:id="@+id/tv_bundle_preorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="14dp"
+                android:layout_marginEnd="12dp"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="@id/tv_bundle_name"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -268,7 +268,7 @@
         app:unifyButtonSize="small"
         app:unifyButtonVariant="ghost"
         app:unifyButtonType="main"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="17dp"
         android:text="@string/product_bundle_action_button_text"
         />
 

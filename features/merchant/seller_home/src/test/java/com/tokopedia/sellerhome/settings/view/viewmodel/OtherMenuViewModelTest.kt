@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
+import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoList
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -124,7 +125,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetTopAdsKredit_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetShopBadge_thenReturn("")
-
+            onGetNewIklanAndPromotion_thenThrow()
             mViewModel.getAllOtherMenuData()
 
             assert(mViewModel.shouldShowMultipleErrorToaster.value == true)
@@ -238,6 +239,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
             )
+            onGetNewIklanPromotion_thenReturn(userSession.userId)
 
             mViewModel.getAllOtherMenuData()
 
@@ -260,6 +262,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetUserShopInfo_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetFreeShipping_thenThrow()
+            onGetNewIklanPromotion_thenError()
+            onGetNewIklanAndPromotion_thenThrow()
 
             mViewModel.getAllOtherMenuData()
 
@@ -557,59 +561,59 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getUserShopInfo returns RM status, should set user session data accordingly`() =
-            coroutineTestRule.runBlockingTest {
-                val userShopInfoWrapper = UserShopInfoWrapper(RegularMerchant.NeedUpgrade)
-                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+        coroutineTestRule.runBlockingTest {
+            val userShopInfoWrapper = UserShopInfoWrapper(RegularMerchant.NeedUpgrade)
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
-                mViewModel.getUserShopInfo()
+            mViewModel.getUserShopInfo()
 
-                verifyGetUserShopInfoCalled()
-                verifySetIsGoldMerchantCalled(false)
-                verifySetIsPowerMerchantIdleCalled(false)
-                verifySetIsOfficialStoreCalled(false)
-            }
+            verifyGetUserShopInfoCalled()
+            verifySetIsGoldMerchantCalled(false)
+            verifySetIsPowerMerchantIdleCalled(false)
+            verifySetIsOfficialStoreCalled(false)
+        }
 
     @Test
     fun `when getUserShopInfo returns PM Inactive status, should set user session data accordingly`() =
-            coroutineTestRule.runBlockingTest {
-                val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.NotActive)
-                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+        coroutineTestRule.runBlockingTest {
+            val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.NotActive)
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
-                mViewModel.getUserShopInfo()
+            mViewModel.getUserShopInfo()
 
-                verifyGetUserShopInfoCalled()
-                verifySetIsGoldMerchantCalled(false)
-                verifySetIsPowerMerchantIdleCalled(true)
-                verifySetIsOfficialStoreCalled(false)
-            }
+            verifyGetUserShopInfoCalled()
+            verifySetIsGoldMerchantCalled(false)
+            verifySetIsPowerMerchantIdleCalled(true)
+            verifySetIsOfficialStoreCalled(false)
+        }
 
     @Test
     fun `when getUserShopInfo returns PM Active status, should set user session data accordingly`() =
-            coroutineTestRule.runBlockingTest {
-                val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.Active)
-                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+        coroutineTestRule.runBlockingTest {
+            val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.Active)
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
-                mViewModel.getUserShopInfo()
+            mViewModel.getUserShopInfo()
 
-                verifyGetUserShopInfoCalled()
-                verifySetIsGoldMerchantCalled(true)
-                verifySetIsPowerMerchantIdleCalled(false)
-                verifySetIsOfficialStoreCalled(false)
-            }
+            verifyGetUserShopInfoCalled()
+            verifySetIsGoldMerchantCalled(true)
+            verifySetIsPowerMerchantIdleCalled(false)
+            verifySetIsOfficialStoreCalled(false)
+        }
 
     @Test
     fun `when getUserShopInfo returns OS status, should set user session data accordingly`() =
-            coroutineTestRule.runBlockingTest {
-                val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
-                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+        coroutineTestRule.runBlockingTest {
+            val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
-                mViewModel.getUserShopInfo()
+            mViewModel.getUserShopInfo()
 
-                verifyGetUserShopInfoCalled()
-                verifySetIsGoldMerchantCalled(true)
-                verifySetIsPowerMerchantIdleCalled(false)
-                verifySetIsOfficialStoreCalled(true)
-            }
+            verifyGetUserShopInfoCalled()
+            verifySetIsGoldMerchantCalled(true)
+            verifySetIsPowerMerchantIdleCalled(false)
+            verifySetIsOfficialStoreCalled(true)
+        }
 
     @Test
     fun `when getUserShopInfo error should set live data state error`() =
@@ -731,6 +735,30 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             verifyGetShareInfoCalled()
             assert(mViewModel.shopShareInfoLiveData.value == null)
+        }
+
+    @Test
+    fun `when getNewIklanAndPromotion is show tag centralize promo value success should set live data sucess`() =
+        runBlocking {
+            val merchantPromotionGetPromoList = MerchantPromotionGetPromoList()
+            onGetNewIklanPromotion_thenReturn(userSession.userId, merchantPromotionGetPromoList)
+
+            mViewModel.getAllOtherMenuData()
+
+            verifyGetNewIklanPromotionCalled()
+            assert(mViewModel.isShowTagCentralizePromo.value != null)
+        }
+
+    @Test
+    fun `when getNewIklanAndPromotion is show tag centralize promo value errpr should set live data false`() =
+        runBlocking {
+            val error = IllegalStateException()
+            onGetNewIklanPromotion_thenError(error)
+
+            mViewModel.getAllOtherMenuData()
+
+            verifyGetNewIklanPromotionCalled()
+            assert(mViewModel.isShowTagCentralizePromo.value != null)
         }
 
     @Test
@@ -866,6 +894,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coEvery { getTokoPlusBadgeUseCase.execute(any()) } throws exception
     }
 
+    private suspend fun onGetNewIklanAndPromotion_thenThrow(exception: Exception = IllegalStateException()) {
+        coEvery { getNewPromotionUseCase.execute(any()) } throws exception
+    }
+
     private suspend fun verifyGetFreeShippingCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { getTokoPlusBadgeUseCase.execute(any()) }
     }
@@ -896,6 +928,18 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     private suspend fun verifyGetShareInfoCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { shopShareInfoUseCase.execute(any()) }
+    }
+
+    private suspend fun onGetNewIklanPromotion_thenReturn(userId: String, datPromotionNew: MerchantPromotionGetPromoList = MerchantPromotionGetPromoList()) {
+        coEvery { getNewPromotionUseCase.execute(userId) } returns datPromotionNew
+    }
+
+    private suspend fun onGetNewIklanPromotion_thenError(exception: Exception = IllegalStateException()) {
+        coEvery { getNewPromotionUseCase.execute("0") } throws exception
+    }
+
+    private suspend fun verifyGetNewIklanPromotionCalled(atLeast: Int = 1) {
+        coVerify(atLeast = atLeast) { getNewPromotionUseCase.execute(any()) }
     }
 
     private fun verifySetIsGoldMerchantCalled(isGoldMerchant: Boolean) {

@@ -275,37 +275,37 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.layoutList) {
-            removeScrollListeners()
-            when (it) {
-                is Success -> onSuccessGetCategoryLayout(it.data)
-                is Fail -> {
-                    logExceptionTokoFoodCategory(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
-                    )
-                    onErrorGetCategoryLayout(it.throwable)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowLayoutList.collect {
+                it.first
+                removeScrollListeners()
+                when (it.first) {
+                    is Success -> onSuccessGetCategoryLayout((it.first as Success).data)
+                    is Fail ->  errorHandling((it.first as Fail).throwable, it.second)
+                }
+
+                addScrollListeners()
+                if (it.second) {
+                    resetSwipeLayout()
                 }
             }
-
-            addScrollListeners()
-            resetSwipeLayout()
         }
+    }
 
-        viewLifecycleOwner.observe(viewModel.loadMore) {
-            removeScrollListeners()
-            when (it) {
-                is Success -> showCategoryLayout(it.data)
-                is Fail -> {
-                    logExceptionTokoFoodCategory(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
-                    )
-                }
-            }
-            addScrollListeners()
+    private fun errorHandling(throwable: Throwable, isFirstTimeCall: Boolean) {
+        if (isFirstTimeCall) {
+            logExceptionTokoFoodCategory(
+                throwable,
+                TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+            )
+            onErrorGetCategoryLayout(throwable)
+        } else {
+            logExceptionTokoFoodCategory(
+                throwable,
+                TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
+                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
+            )
         }
     }
 
@@ -341,6 +341,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(pageTitle)
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -361,7 +362,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onErrorGetCategoryLayout(throwable: Throwable) {
-        viewModel.showErrorState(throwable)
+        viewModel.setErrorState(throwable)
     }
 
     private fun onShowCategoryLayout(data: TokoFoodListUiModel) {
@@ -374,7 +375,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun onLoadingCategorylayout(data: TokoFoodListUiModel) {
         showCategoryLayout(data)
-        getCategoryLayout()
     }
 
     private fun showCategoryLayout(data: TokoFoodListUiModel) {
@@ -382,8 +382,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         adapter.submitList(data.items)
     }
 
+
     private fun loadLayout() {
-        viewModel.showLoadingState()
+        getCategoryLayout()
     }
 
     private fun onRenderCategoryPage() {
@@ -402,7 +403,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun getCategoryLayout() {
         localCacheModel?.let {
-            viewModel.getCategoryLayout(
+            viewModel.setCategoryLayout(
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,

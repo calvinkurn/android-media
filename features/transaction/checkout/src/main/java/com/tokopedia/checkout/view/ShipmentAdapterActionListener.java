@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onCancelVoucherLogisticClicked(String pslCode, int position);
+    void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel);
 
     void onDataEnableToCheckout();
 
@@ -34,7 +34,7 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeAddress();
 
-    void onTotalPaymentChange(String totalPayment);
+    void onTotalPaymentChange(String totalPayment, boolean enable);
 
     void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse);
 

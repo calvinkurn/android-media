@@ -3,6 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
+import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -16,6 +17,17 @@ data class PromoListItemUiModel(
 
     override fun type(typeFactory: PromoCheckoutAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    // get promo code for gql request / response
+    // because bebas ongkir can have multiple promo code in `boAdditionalData`
+    // for ui model usage please use `promoListItemUiModel.uiData.promoCode`
+    fun getPromoCode(listOfPromoCodes: Collection<String>) : String {
+        return if (uiState.isBebasOngkir) {
+                uiData.boAdditionalData.map { it.code }.intersect(listOfPromoCodes).firstOrNull() ?: ""
+        } else {
+                uiData.promoCode
+        }
     }
 
     data class UiData(
@@ -48,7 +60,7 @@ data class PromoListItemUiModel(
 
             // Store clashing info with BO
             // When user choose promo that clashes with BO, info will be shown in bottomsheet
-            var boClashingInfos: List<ClashingInfo> = emptyList(),
+            var boClashingInfos: List<BoClashingInfo> = emptyList(),
             // Store BO promo data
             // When user choose BO promo, get unique id and promo code from here
             var boAdditionalData: List<AdditionalBoData> = emptyList(),

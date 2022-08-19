@@ -7,7 +7,8 @@ data class NotEligiblePromoHolderdata(
         var shopBadge: String = "",
         var iconType: Int = 0,
         var errorMessage: String = "",
-        var showShopSection: Boolean = false
+        var showShopSection: Boolean = false,
+        var uniqueId: String = "",
 ) {
     companion object {
         @JvmStatic

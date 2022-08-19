@@ -139,6 +139,7 @@ class ShipmentMapper @Inject constructor() {
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
             addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
             upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
+            cartData = shipmentAddressFormDataResponse.cartData
         }
     }
 
@@ -179,6 +180,7 @@ class ShipmentMapper @Inject constructor() {
                         unblockingErrorMessage = it.unblockingErrors.joinToString()
                         shippingId = it.shippingId
                         spId = it.spId
+                        boCode = it.boCode
                         dropshipperName = it.dropshiper.name
                         dropshipperPhone = it.dropshiper.telpNo
                         isUseInsurance = it.isInsurance

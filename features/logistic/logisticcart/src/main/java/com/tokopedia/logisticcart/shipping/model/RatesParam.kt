@@ -45,7 +45,7 @@ data class RatesParam(
         var is_fulfillment: Boolean = false,
         var mvc: String = "",
         var bo_metadata: String = "",
-        var cart_data: String = ""
+        private var cart_data: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -109,7 +109,10 @@ data class RatesParam(
             "mvc" to mvc,
             "po_time" to po_time,
             "is_fulfillment" to is_fulfillment,
-            "bo_metadata" to bo_metadata,
+            "bo_metadata" to bo_metadata
+    )
+
+    fun toMetadata(): Map<String, Any?> = mapOf(
             "cart_data" to cart_data
     )
 
@@ -189,6 +192,7 @@ data class RatesParam(
         var bo_metadata: String = RatesParamHelper.generateBoMetadata(shipping.boMetadata)
             private set
         var cart_data: String = ""
+            private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
