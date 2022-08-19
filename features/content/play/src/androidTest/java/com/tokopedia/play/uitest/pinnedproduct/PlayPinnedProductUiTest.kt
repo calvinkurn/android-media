@@ -206,6 +206,7 @@ class PlayPinnedProductUiTest {
         val robot = PlayActivityRobot(channelId)
         robot
             .openProductBottomSheet()
+            .scrollProductBottomSheet()
             .assertHasPinnedItemInProductBottomSheet(
                 buildMockProductName(sectionPinned, productPinned),
                 true,

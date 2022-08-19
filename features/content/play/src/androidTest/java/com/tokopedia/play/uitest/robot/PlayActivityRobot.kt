@@ -17,6 +17,7 @@ import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -122,7 +123,7 @@ class PlayActivityRobot(
     fun assertHasPinnedItemInProductBottomSheet(hasPinned: Boolean) = chainable {
         val viewMatcher = hasDescendant(withText(containsString("Pin Dipasang")))
         Espresso.onView(
-            RecyclerViewMatcher(R.id.rv_product)
+            RecyclerViewMatcher(R.id.rv_product_list)
                 .atPosition(0)
         ).check(
             if (hasPinned) matches(viewMatcher)
@@ -138,7 +139,7 @@ class PlayActivityRobot(
 
         Espresso.onView(
             allOf(
-                withId(R.id.rv_product),
+                withId(R.id.rv_product_list),
                 hasDescendant(withText(containsString(productName)))
             )
         ).check(

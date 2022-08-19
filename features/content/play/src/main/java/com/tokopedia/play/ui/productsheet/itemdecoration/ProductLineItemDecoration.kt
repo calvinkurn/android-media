@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created by jegul on 03/03/20
@@ -18,7 +19,15 @@ class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration(
         val position = parent.getChildAdapterPosition(view)
         val itemCount = parent.adapter?.itemCount.orZero()
 
-        outRect.top =  if (position == 0) topBottomOffset else defaultOffset
+        val adapter = parent.adapter as ProductSheetAdapter
+        if (position > 0 &&
+            adapter.getItem(position) is ProductSheetAdapter.Item.ProductWithSection &&
+                adapter.getItem(position - 1) is ProductSheetAdapter.Item.Product) {
+            outRect.top = defaultOffset
+        } else if (position == 0) {
+            outRect.top = topBottomOffset
+        }
+
         if(position == itemCount - 1) outRect.bottom = topBottomOffset
     }
 }
