@@ -38,13 +38,10 @@ class WatermarkToolUiComponent constructor(
     }
 
     private fun setButtonSelected(view: View) {
-        val padding = resources().getDimension(dimenR.editor_watermark_selected_padding).toInt()
-        view.setPadding(padding, padding, padding, padding)
         view.background = ContextCompat.getDrawable(context, R.drawable.editor_rect_green_selected_thumbnail)
     }
 
     private fun releaseButtonSelected(view: View) {
-        view.setPadding(0, 0, 0, 0)
         view.background = null
     }
 

@@ -18,13 +18,13 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            app:unify_image_corner_radius="2"
+            android:padding="@dimen/editor_watermark_selected_padding"
             android:id="@+id/watermark_type1"
             android:layout_width="64dp"
             android:layout_height="64dp"/>
 
         <androidx.appcompat.widget.AppCompatImageView
-            app:unify_image_corner_radius="2"
+            android:padding="@dimen/editor_watermark_selected_padding"
             android:layout_marginLeft="16dp"
             android:id="@+id/watermark_type2"
             android:layout_width="64dp"

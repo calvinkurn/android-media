@@ -10,7 +10,7 @@
     <dimen name="media_editor_slider_thumb_size">24dp</dimen>
     <dimen name="media_editor_slider_center_indicator_width">6dp</dimen>
     <dimen name="media_editor_slider_center_indicator_height">16dp</dimen>
-    
-    <dimen name="editor_watermark_rounded">30dp</dimen>
+
+    <dimen name="editor_watermark_rounded">2dp</dimen>
     <dimen name="editor_watermark_selected_padding">2dp</dimen>
 </resources>

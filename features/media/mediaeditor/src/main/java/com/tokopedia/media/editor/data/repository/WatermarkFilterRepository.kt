@@ -145,8 +145,12 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
             val roundedCorner =
                 context.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
-            buttonRef.first.loadImageRounded(resultBitmap1, roundedCorner)
-            buttonRef.second.loadImageRounded(resultBitmap2, roundedCorner)
+            buttonRef.first.loadImageRounded(resultBitmap1, roundedCorner){
+                centerCrop()
+            }
+            buttonRef.second.loadImageRounded(resultBitmap2, roundedCorner){
+                centerCrop()
+            }
         }
     }
 
