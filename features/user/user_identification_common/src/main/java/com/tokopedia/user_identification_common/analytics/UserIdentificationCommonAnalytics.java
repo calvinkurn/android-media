@@ -130,12 +130,12 @@ public class UserIdentificationCommonAnalytics {
         }
     }
 
-    public void eventViewSelfiePage(Boolean isLiveness) {
+    public void eventViewSelfiePage(Boolean isSelfie) {
         if(projectID ==4){
             sendTradeInViewEvent(Action.VIEW_SELFIE_PAGE);
         }
 
-        if (!isLiveness) {
+        if (isSelfie) {
             track(TrackAppUtils.gtmData(
                     Event.VIEW_ACCOUNT_IRIS,
                     Category.KYC_PAGE,
