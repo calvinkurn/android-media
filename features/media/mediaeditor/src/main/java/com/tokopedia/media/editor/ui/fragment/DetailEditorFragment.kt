@@ -405,19 +405,15 @@ class DetailEditorFragment @Inject constructor(
                 if(cropRotateData.isCrop) {
                     overlayView.setTargetAspectRatio(cropRotateData.imageWidth / cropRotateData.imageHeight.toFloat())
                     overlayView.setupCropBounds()
+                    cropView.zoomInImage(cropRotateData.scale)
 
                     if(!cropRotateData.isAutoCrop){
-                        Handler().postDelayed({
-                            cropView.zoomInImage(cropRotateData.scale)
-                        },500)
-
-                        Handler().postDelayed({
-                            // read current overlay bound position on the cropImageView position & translate to target
+                        cropView.post {
                             val cropImageMatrix = cropView.imageMatrix.values()
                             val ax = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                             val ay = (cropImageMatrix[5] * -1) + cropRotateData.translateY
                             cropView.postTranslate(ax, ay)
-                        },1000)
+                        }
                     }
                 }
             }
