@@ -33,9 +33,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/wishlist_collection_sticky_progress_deletion_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                layout="@layout/wishlist_deletion_progress_item" />
 
             <com.tokopedia.globalerror.GlobalError
                 android:id="@+id/global_error_wishlist_v2_collection"
@@ -64,9 +71,10 @@
                 android:layout_marginTop="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:visibility="visible"/>
+                android:visibility="visible"
+                android:layout_below="@id/wishlist_collection_sticky_progress_deletion_widget"/>
 
-        </FrameLayout>
+        </RelativeLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

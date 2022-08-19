@@ -5,7 +5,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
-import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
@@ -33,11 +33,11 @@ class WishlistCollectionViewModelTest {
     @RelaxedMockK
     lateinit var deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
 
-    private var collectionWishlistResponseDataStatusOk = WishlistCollectionResponse(
-        getWishlistCollections = WishlistCollectionResponse.GetWishlistCollections(status = "OK"))
+    private var collectionWishlistResponseDataStatusOk = GetWishlistCollectionResponse(
+        getWishlistCollections = GetWishlistCollectionResponse.GetWishlistCollections(status = "OK"))
 
-    private var collectionWishlistResponseDataStatusError = WishlistCollectionResponse(
-        getWishlistCollections = WishlistCollectionResponse.GetWishlistCollections(status = "ERROR"))
+    private var collectionWishlistResponseDataStatusError = GetWishlistCollectionResponse(
+        getWishlistCollections = GetWishlistCollectionResponse.GetWishlistCollections(status = "ERROR"))
 
     private val throwable = Fail(Throwable(message = "Error"))
 

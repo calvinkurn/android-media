@@ -12,14 +12,17 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
-import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,12 +31,13 @@ class WishlistCollectionViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val getWishlistCollectionUseCase: GetWishlistCollectionUseCase,
     private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
-    private val singleRecommendationUseCase: GetSingleRecommendationUseCase
+    private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+    private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collections =
-        MutableLiveData<Result<WishlistCollectionResponse.GetWishlistCollections>>()
-    val collections: LiveData<Result<WishlistCollectionResponse.GetWishlistCollections>>
+        MutableLiveData<Result<GetWishlistCollectionResponse.GetWishlistCollections>>()
+    val collections: LiveData<Result<GetWishlistCollectionResponse.GetWishlistCollections>>
         get() = _collections
 
     private val _collectionData = MutableLiveData<Result<List<WishlistCollectionTypeLayoutData>>>()
@@ -48,6 +52,10 @@ class WishlistCollectionViewModel @Inject constructor(
     private val _recommendationListResult = MutableLiveData<Result<List<RecommendationWidget>>>()
     val recommendationListResult: LiveData<Result<List<RecommendationWidget>>>
         get() = _recommendationListResult
+
+    private val _deleteWishlistProgressResult = MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
+    val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
+        get() = _deleteWishlistProgressResult
 
     fun getWishlistCollections() {
         launchCatchError(block = {
@@ -126,5 +134,18 @@ class WishlistCollectionViewModel @Inject constructor(
                 _collectionData.value = Fail(e)
             }
         }
+    }
+
+    fun getDeleteWishlistProgress() {
+        launchCatchError(block = {
+            val result = deleteWishlistProgressUseCase(Unit)
+            if (result.deleteWishlistProgress.status == WishlistV2CommonConsts.OK && result.deleteWishlistProgress.errorMessage.isEmpty()) {
+                _deleteWishlistProgressResult.postValue(Success(result.deleteWishlistProgress))
+            } else {
+                _deleteWishlistProgressResult.postValue(Fail(Throwable()))
+            }
+        }, onError = {
+            _deleteWishlistProgressResult.postValue(Fail(it))
+        })
     }
 }

@@ -5,15 +5,15 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistCollectionsQuery", GetWishlistCollectionUseCase.query)
 class GetWishlistCollectionUseCase @Inject constructor(@ApplicationContext private val repository: GraphqlRepository) :
-    CoroutineUseCase<Unit, WishlistCollectionResponse>(Dispatchers.IO) {
+    CoroutineUseCase<Unit, GetWishlistCollectionResponse>(Dispatchers.IO) {
 
-    override suspend fun execute(params: Unit): WishlistCollectionResponse {
+    override suspend fun execute(params: Unit): GetWishlistCollectionResponse {
         return repository.request(GetWishlistCollectionsQuery(), params)
     }
 
@@ -31,6 +31,7 @@ class GetWishlistCollectionUseCase @Inject constructor(@ApplicationContext priva
                     description
                   }
                   is_empty_state
+                  show_delete_progress
                   empty_wishlist_image_url
                   empty_state {
                     messages {

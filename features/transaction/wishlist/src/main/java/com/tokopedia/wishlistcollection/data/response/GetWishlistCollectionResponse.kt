@@ -2,7 +2,7 @@ package com.tokopedia.wishlistcollection.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class WishlistCollectionResponse(
+data class GetWishlistCollectionResponse(
 		@SerializedName("get_wishlist_collections")
 		val getWishlistCollections: GetWishlistCollections = GetWishlistCollections()
 	) {
@@ -22,6 +22,9 @@ data class WishlistCollectionResponse(
 
                 @SerializedName("is_empty_state")
 				val isEmptyState: Boolean = false,
+
+				@SerializedName("show_delete_progress")
+				val showDeleteProgress: Boolean = false,
 
                 @SerializedName("empty_wishlist_image_url")
 				val emptyWishlistImageUrl: String = "",

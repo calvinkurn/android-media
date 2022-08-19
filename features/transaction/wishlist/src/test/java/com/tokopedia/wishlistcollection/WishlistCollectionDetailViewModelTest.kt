@@ -12,7 +12,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
@@ -22,13 +21,10 @@ import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsPa
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
-import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -106,6 +107,7 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBott
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.PARAM_INSIDE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
@@ -238,7 +240,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val SRC_WISHLIST = "wishlist"
-        private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -486,7 +487,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 getDeleteWishlistProgress()
                             }
                             hideTotalLabel()
-                            // showStickyDeletionProgress()
                         } else {
                             hideStickyDeletionProgress()
                         }
@@ -1084,6 +1084,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         doRefresh()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateDeletionWidget(progressData: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         var message = getString(Rv2.string.wishlist_v2_default_message_deletion_progress)
         if (progressData.message.isNotEmpty()) message = progressData.message
@@ -1092,16 +1093,16 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val indicatorProgressBar = percentage * 100
 
         binding?.run {
-            wishlistCollectionDetailStickyCountManageLabel.cardWishlistCollectionDetailStickyDeletion.cardType =
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.stickyDeletionCard.cardType =
                 CardUnify2.TYPE_SHADOW
-            wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailStickyProgressDeletionWidget.visible()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailCountDeletionMessage.text =
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.rlDeletionProgress.visible()
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.deletionMessage.text =
                 message
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailCountDeletionProgressbar.setValue(
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.deletionProgressBar.setValue(
                 indicatorProgressBar.roundToInt(),
                 true
             )
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailLabelProgressBar.text =
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.labelProgressBar.text =
                 "${progressData.successfullyRemovedItems}/${progressData.totalItems}"
         }
     }
@@ -1146,13 +1147,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun hideStickyDeletionProgress() {
         binding?.run {
-            wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailStickyProgressDeletionWidget.gone()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailCountDeletionMessage.text =
+            wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.gone()
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.deletionMessage.text =
                 ""
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailCountDeletionProgressbar.setValue(
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.deletionProgressBar.setValue(
                 0
             )
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailLabelProgressBar.text =
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.labelProgressBar.text =
                 "0/0"
         }
     }

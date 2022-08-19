@@ -1,8 +1,11 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +35,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -39,6 +43,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
@@ -48,6 +53,7 @@ import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
@@ -59,6 +65,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishli
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
@@ -79,6 +86,12 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var onLoadMore = false
     private var isFetchRecommendation = false
     private var currRecommendationListPage = 1
+    private var hitCountDeletion = false
+    private var isOnProgressDeleteWishlist = false
+    private val handler = Handler(Looper.getMainLooper())
+    private val progressDeletionRunnable = Runnable {
+        getDeleteWishlistProgress()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -171,6 +184,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         observingWishlistCollections()
         observingWishlistData()
         observingDeleteWishlistCollection()
+        observingDeleteProgress()
     }
 
     private fun prepareLayout() {
@@ -296,6 +310,16 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                             }
                             collectionAdapter.setCarouselEmptyData(items)
                         }
+                        if (result.data.data.showDeleteProgress) {
+                            showDeletionProgress()
+                            if (!hitCountDeletion) {
+                                hitCountDeletion = true
+                                isOnProgressDeleteWishlist = true
+                                getDeleteWishlistProgress()
+                            }
+                        } else {
+                            hideDeletionProgress()
+                        }
                         if (result.data.data.totalCollection >= result.data.data.maxLimitCollection) {
                             isEligibleAddNewCollection = false
                             wordingMaxLimitCollection = result.data.data.wordingMaxLimitCollection
@@ -323,6 +347,80 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
                 }
             }
+        }
+    }
+
+    private fun getDeleteWishlistProgress() {
+        collectionViewModel.getDeleteWishlistProgress()
+    }
+
+    override fun onPause() {
+        stopProgressDeletionHandler()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkProgressDeletion()
+    }
+
+    private fun checkProgressDeletion() {
+        if (isOnProgressDeleteWishlist) {
+            getDeleteWishlistProgress()
+        }
+    }
+
+    private fun stopProgressDeletionHandler() {
+        handler.removeCallbacks(progressDeletionRunnable)
+    }
+
+    private fun stopDeletionAndShowToasterError(message: String) {
+        showToaster(message, "", Toaster.TYPE_ERROR)
+        finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
+        doRefresh()
+    }
+
+    private fun finishDeletionWidget(data: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        isOnProgressDeleteWishlist = false
+        stopProgressDeletionHandler()
+        collectionViewModel.deleteWishlistProgressResult.removeObservers(this)
+        if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
+            val finishData =
+                DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress(
+                    totalItems = data.totalItems,
+                    successfullyRemovedItems = data.totalItems,
+                    message = data.message,
+                    tickerColor = data.tickerColor,
+                    success = data.success,
+                    toasterMessage = data.toasterMessage
+                )
+            updateDeletionWidget(finishData)
+            showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
+        }
+        hideDeletionProgress()
+        doRefresh()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateDeletionWidget(progressData: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        var message = getString(R.string.wishlist_v2_default_message_deletion_progress)
+        if (progressData.message.isNotEmpty()) message = progressData.message
+
+        val percentage = progressData.successfullyRemovedItems.toDouble() / progressData.totalItems
+        val indicatorProgressBar = percentage * 100
+
+        binding?.run {
+            wishlistCollectionStickyProgressDeletionWidget.stickyDeletionCard.cardType =
+                CardUnify2.TYPE_SHADOW
+            wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.visible()
+            wishlistCollectionStickyProgressDeletionWidget.deletionMessage.text =
+                message
+            wishlistCollectionStickyProgressDeletionWidget.deletionProgressBar.setValue(
+                indicatorProgressBar.roundToInt(),
+                true
+            )
+            wishlistCollectionStickyProgressDeletionWidget.labelProgressBar.text =
+                "${progressData.successfullyRemovedItems}/${progressData.totalItems}"
         }
     }
 
@@ -361,6 +459,38 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
+    private fun observingDeleteProgress() {
+        collectionViewModel.deleteWishlistProgressResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.status == OK) {
+                        val data = result.data.data
+                        if (data.success) {
+                            if (data.successfullyRemovedItems >= data.totalItems) {
+                                finishDeletionWidget(data)
+                            } else {
+                                updateDeletionWidget(data)
+                                handler.postDelayed(progressDeletionRunnable,
+                                    DELAY_REFETCH_PROGRESS_DELETION
+                                )
+                            }
+                        } else {
+                            stopDeletionAndShowToasterError(data.toasterMessage)
+                        }
+                    } else {
+                        if (result.data.errorMessage.isNotEmpty()) {
+                            stopDeletionAndShowToasterError(result.data.errorMessage[0])
+                        }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = getString(R.string.wishlist_v2_common_error_msg)
+                    stopDeletionAndShowToasterError(errorMessage)
+                }
+            }
+        }
+    }
+
     private fun showToaster(message: String, actionText: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
@@ -380,6 +510,18 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onKebabMenuClicked(collectionId: String, collectionName: String) {
         showBottomSheetKebabMenu(collectionId, collectionName)
+    }
+
+    private fun showDeletionProgress() {
+        binding?.run {
+            wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.visible()
+        }
+    }
+
+    private fun hideDeletionProgress() {
+        binding?.run {
+            wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.gone()
+        }
     }
 
     private fun showBottomSheetKebabMenu(collectionId: String, collectionName: String) {
