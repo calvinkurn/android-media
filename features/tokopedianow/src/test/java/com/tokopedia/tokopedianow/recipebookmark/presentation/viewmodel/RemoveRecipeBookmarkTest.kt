@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.RecipeBookmarksMapper.mapResponseToUiModelList
-import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
@@ -11,7 +9,6 @@ import com.tokopedia.tokopedianow.util.TestUtils.verifyFail
 import com.tokopedia.tokopedianow.util.TestUtils.verifySuccess
 import com.tokopedia.tokopedianow.util.TestUtils.verifyThrowable
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Test
 
 class RemoveRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
@@ -48,7 +45,7 @@ class RemoveRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
             )
 
         verifyList(
-            isSuccess = true,
+            isAdding = false,
             recipeBookmarkResponse = recipeBookmarkResponse
         )
         removeAndVerifyToaster()
@@ -85,7 +82,7 @@ class RemoveRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
             )
 
         verifyList(
-            isSuccess = false,
+            isAdding = true,
             recipeBookmarkResponse = recipeBookmarkResponse
         )
     }
@@ -122,7 +119,7 @@ class RemoveRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
             )
 
         verifyList(
-            isSuccess = false,
+            isAdding = true,
             recipeBookmarkResponse = recipeBookmarkResponse
         )
     }
@@ -138,48 +135,6 @@ class RemoveRecipeBookmarkTest: TokoNowRecipeBookmarkViewModelTestFixture() {
                 recipeId = "7",
                 isRemoving = true
             )
-    }
-
-    private fun mockRecipeBookmark(): GetRecipeBookmarksResponse {
-        val recipeBookmarkResponse = "recipebookmark/recipebookmarksuccessequalsto10hasnext.json"
-            .jsonToObject<GetRecipeBookmarksResponse>()
-
-        getRecipeBookmarksUseCase
-            .mockGetRecipeBookmark(
-                response = recipeBookmarkResponse
-            )
-
-        return recipeBookmarkResponse
-    }
-
-    private fun verifyList(isSuccess: Boolean, recipeBookmarkResponse: GetRecipeBookmarksResponse) {
-        val uiModelList = recipeBookmarkResponse
-            .tokonowGetRecipeBookmarks
-            .data
-            .recipes
-            .mapResponseToUiModelList()
-            .toMutableList()
-
-        if (isSuccess) {
-            uiModelList.removeAt(0)
-        }
-
-        viewModel.loadRecipeBookmarks
-            .value
-            .verifyEquals(
-                data = uiModelList
-            )
-    }
-
-    private fun removeAndVerifyToaster() {
-        viewModel
-            .removeToaster()
-
-        Assert.assertEquals(viewModel
-            .toaster
-            .value,
-            null
-        )
     }
 
 }

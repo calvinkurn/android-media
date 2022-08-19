@@ -15,13 +15,7 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
 
     @Test
     fun `when calling the loadMore() function, the request should be successful and the response data are obtained (10 recipes of the first page and 8 recipes of the second page)`(): Unit = runBlocking {
-        val firstPageResponse = "recipebookmark/recipebookmarksuccessequalsto10hasnext.json"
-            .jsonToObject<GetRecipeBookmarksResponse>()
-
-        getRecipeBookmarksUseCase
-            .mockGetRecipeBookmark(
-                response = firstPageResponse
-            )
+        val firstPageResponse = mockRecipeBookmark()
 
         viewModel.loadFirstPage()
 
@@ -47,13 +41,7 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
 
     @Test
     fun `when calling the loadMore() function, the request should be successful and the response data are obtained (10 recipes of the first and the second page)`(): Unit = runBlocking {
-        val firstPageResponse = "recipebookmark/recipebookmarksuccessequalsto10hasnext.json"
-            .jsonToObject<GetRecipeBookmarksResponse>()
-
-        getRecipeBookmarksUseCase
-            .mockGetRecipeBookmark(
-                response = firstPageResponse
-            )
+        val firstPageResponse = mockRecipeBookmark()
 
         viewModel.loadFirstPage()
 
@@ -79,13 +67,7 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
 
     @Test
     fun `when calling the loadMore() function, the request should fail and the data are only from loadFirstPage() (10 recipes)`(): Unit = runBlocking {
-        val firstPageResponse = "recipebookmark/recipebookmarksuccessequalsto10hasnext.json"
-            .jsonToObject<GetRecipeBookmarksResponse>()
-
-        getRecipeBookmarksUseCase
-            .mockGetRecipeBookmark(
-                response = firstPageResponse
-            )
+        val firstPageResponse = mockRecipeBookmark()
 
         viewModel.loadFirstPage()
 
@@ -110,13 +92,7 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
 
     @Test
     fun `when calling the loadMore() function, the request should fail because useCase throws an throwable and the data are only from loadFirstPage() (10 recipes)`(): Unit = runBlocking {
-        val firstPageResponse = "recipebookmark/recipebookmarksuccessequalsto10hasnext.json"
-            .jsonToObject<GetRecipeBookmarksResponse>()
-
-        getRecipeBookmarksUseCase
-            .mockGetRecipeBookmark(
-                response = firstPageResponse
-            )
+        val firstPageResponse = mockRecipeBookmark()
 
         viewModel.loadFirstPage()
 
@@ -143,19 +119,7 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
 
     @Test
     fun `when calling the loadMore() function but noNeedLoadMore is false, the last of layout is RecipeProgressBarUiModel and the position is not at the end of the bottom should not get any data`(): Unit = runBlocking {
-        viewModel
-            .mockPrivateField(
-                name = "noNeedLoadMore",
-                value = false
-            )
-
-        viewModel
-            .mockPrivateField(
-                name = "layout",
-                value = listOf(
-                    RecipeProgressBarUiModel()
-                )
-            )
+        mockNoNeedLoadMoreAndLayout()
 
         viewModel
             .loadMore(
@@ -171,19 +135,7 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
 
     @Test
     fun `when calling the loadMore() function but noNeedLoadMore is false, the last of layout is RecipeProgressBarUiModel and even the position is at the end of the bottom should not get any data`(): Unit = runBlocking {
-        viewModel
-            .mockPrivateField(
-                name = "noNeedLoadMore",
-                value = false
-            )
-
-        viewModel
-            .mockPrivateField(
-                name = "layout",
-                value = listOf(
-                    RecipeProgressBarUiModel()
-                )
-            )
+        mockNoNeedLoadMoreAndLayout()
 
         viewModel
             .loadMore(
@@ -209,6 +161,22 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .value,
             true
         )
+    }
+
+    private fun mockNoNeedLoadMoreAndLayout() {
+        viewModel
+            .mockPrivateField(
+                name = "noNeedLoadMore",
+                value = false
+            )
+
+        viewModel
+            .mockPrivateField(
+                name = "layout",
+                value = listOf(
+                    RecipeProgressBarUiModel()
+                )
+            )
     }
 
 }
