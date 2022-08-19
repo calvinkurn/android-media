@@ -23,8 +23,6 @@ import javax.inject.Inject
 class OrderDetailViewModel @Inject constructor(
     private val omsDetailUseCase: OmsDetailUseCase,
     private val digiPersoUseCase: DigiPersoUseCase,
-    private val orderListAnalytics: OrderListAnalytics,
-    private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatcher,
 ): BaseViewModel(dispatcher) {
 
@@ -41,7 +39,6 @@ class OrderDetailViewModel @Inject constructor(
             block = {
                 omsDetailUseCase.createParams(orderId, orderCategory, upstream)
                 val result = omsDetailUseCase.executeOnBackground()
-                orderListAnalytics.sendOrderDetailImpression(userSession.userId)
                 _omsDetail.postValue(Success(result))
             },
             onError = {
