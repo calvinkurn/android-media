@@ -7,11 +7,14 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.utils.isDark
+import com.tokopedia.media.loader.loadImageRounded
 
 interface WatermarkFilterRepository {
     fun watermark(
@@ -21,6 +24,13 @@ interface WatermarkFilterRepository {
         shopNameParam: String,
         isThumbnail: Boolean
     ): Bitmap
+
+    fun watermarkDrawerItem(
+        context: Context,
+        implementedBaseBitmap: Bitmap?,
+        shopName: String,
+        buttonRef: Pair<ImageView, ImageView>
+    )
 }
 
 class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepository {
@@ -110,7 +120,37 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         return result
     }
 
-    // tengah gambar
+    override fun watermarkDrawerItem(
+        context: Context,
+        implementedBaseBitmap: Bitmap?,
+        shopName: String,
+        buttonRef: Pair<ImageView, ImageView>
+    ) {
+        implementedBaseBitmap?.let { bitmap ->
+            val resultBitmap1 = watermark(
+                context,
+                bitmap,
+                WatermarkToolUiComponent.WATERMARK_TOKOPEDIA,
+                shopName,
+                true
+            )
+
+            val resultBitmap2 = watermark(
+                context,
+                bitmap,
+                WatermarkToolUiComponent.WATERMARK_SHOP,
+                shopName,
+                true
+            )
+
+            val roundedCorner =
+                context.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
+            buttonRef.first.loadImageRounded(resultBitmap1, roundedCorner)
+            buttonRef.second.loadImageRounded(resultBitmap2, roundedCorner)
+        }
+    }
+
+    // Tokopedia text & shop name only on center image
     private fun watermark2(
         width: Int,
         height: Int,
@@ -134,7 +174,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         topedDrawable?.draw(canvas)
     }
 
-    // miring & full image
+    // Tokopedia text & shop name fill image
     private fun watermark1(
         width: Int,
         height: Int,

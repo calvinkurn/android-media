@@ -505,31 +505,16 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun setWatermarkDrawerItem() {
-        implementedBaseBitmap?.let { bitmap ->
-            val text = if (userSession.shopName.isEmpty())
+        implementedBaseBitmap?.let {
+            val shopName = if (userSession.shopName.isEmpty())
                 DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
-            val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
-                requireContext(),
-                bitmap,
-                WatermarkToolUiComponent.WATERMARK_TOKOPEDIA,
-                text,
-                true
-            )
 
-            val resultBitmap2 = watermarkFilterRepositoryImpl.watermark(
+            watermarkFilterRepositoryImpl.watermarkDrawerItem(
                 requireContext(),
-                bitmap,
-                WatermarkToolUiComponent.WATERMARK_SHOP,
-                text,
-                true
+                it,
+                shopName,
+                watermarkComponent.getButtonRef()
             )
-
-            watermarkComponent.getButtonRef().apply {
-                val roundedCorner =
-                    context?.resources?.getDimension(editorR.dimen.editor_watermark_rounded) ?: 0f
-                this.first.loadImageRounded(resultBitmap1, roundedCorner)
-                this.second.loadImageRounded(resultBitmap2, roundedCorner)
-            }
         }
     }
 

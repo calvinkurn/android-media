@@ -20,7 +20,6 @@ class WatermarkToolUiComponent constructor(
     fun setupView() {
         container().show()
 
-
         buttonType1.setOnClickListener {
             listener.onWatermarkChanged(WATERMARK_TOKOPEDIA)
             setButtonSelected(it)

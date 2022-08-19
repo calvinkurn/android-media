@@ -10,6 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -27,6 +33,8 @@ import com.tokopedia.media.editor.utils.writeBitmapToStorage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -139,21 +147,22 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     ) {
         activeImageUrl = originalUrl
 
-        val editorUiModel = viewModel.getEditState(originalUrl)
+        viewModel.getEditState(originalUrl)?.let { editorUiModel ->
+            loadImageWithEmptyTarget(requireContext(),
+                editorUiModel.getImageUrl(),
+                properties = {},
+                mediaTarget = MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        if (isAutoCrop != null && editorUiModel.editList.size == 0) {
+                            cropImage(bitmap, editorUiModel)
+                        }
 
-        viewBinding?.imgMainPreview?.loadImage(editorUiModel?.getImageUrl()) {
-            this.listener(onSuccess = { bitmap, _ ->
-                if(isAutoCrop != null && editorUiModel?.editList?.size == 0){
-                    cropImage(bitmap, editorUiModel)
-                }
-
-                editorUiModel?.let {
-                    renderUndoText(it)
-                    renderRedoText(it)
-
-                    renderToolsIconActiveState(it)
-                }
-            })
+                        renderUndoText(editorUiModel)
+                        renderRedoText(editorUiModel)
+                        renderToolsIconActiveState(editorUiModel)
+                    },
+                    onCleared = {}
+                ))
         }
     }
 
@@ -262,24 +271,30 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             var topMargin = 0
             var leftMargin = 0
 
+            var scaledTarget = 1f
+
             if(newHeight <= bitmapHeight && newWidth <= bitmapWidth){
                 leftMargin = (bitmapWidth - newWidth) / 2
                 topMargin = (bitmapHeight - newHeight) / 2
             } else if(newHeight > bitmapHeight){
                 val diffValue = newHeight - bitmapHeight
-                val scaledTarget = 1f + (diffValue.toFloat() / bitmapHeight)
+                scaledTarget = bitmapHeight.toFloat() /newHeight
 
-                scaledBitmap = Bitmap.createScaledBitmap(sourceBitmap,
-                    (bitmapWidth*scaledTarget).toInt(),
-                    newHeight,
-                    false
-                )
+//                scaledBitmap = Bitmap.createScaledBitmap(sourceBitmap,
+//                    (bitmapWidth*scaledTarget).toInt(),
+//                    newHeight,
+//                    false
+//                )
 
-                leftMargin = ((scaledBitmap?.width ?: 0) - newWidth) / 2
-                topMargin = ((scaledBitmap?.height ?: 0) - newHeight) / 2
+                // new value after rescale small
+                newWidth = (newWidth * scaledTarget).toInt()
+                newHeight = (newHeight * scaledTarget).toInt()
+
+                leftMargin = (bitmapWidth - newWidth) / 2
+                topMargin = (bitmapHeight - newHeight) / 2
             }
 
-            val bitmapResult = Bitmap.createBitmap((scaledBitmap ?: it), leftMargin, topMargin, newWidth, newHeight)
+            val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
             val savedFile = writeBitmapToStorage(
                 requireContext(),
                 bitmapResult
@@ -291,8 +306,12 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 resultUrl = savedFile?.path ?: "",
             )
             newEditorDetailUiModel.cropRotateValue.apply {
+                offsetX = leftMargin
+                offsetY = topMargin
                 imageWidth = newWidth
                 imageHeight = newHeight
+                scaleX = 1f
+                scaleY = 1f
                 isCrop = true
                 isAutoCrop = true
             }
