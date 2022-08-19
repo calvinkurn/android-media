@@ -83,5 +83,6 @@
     <string name="collection_save_to_existing_collection">Simpan</string>
     <string name="collection_ticker_oos">Kamu akan mendapatkan notifikasi saat stok kembali.</string>
     <string name="collection_CTA_lihat">Lihat</string>
+    <string name="collection_CTA_oke">Oke</string>
 
 </resources>

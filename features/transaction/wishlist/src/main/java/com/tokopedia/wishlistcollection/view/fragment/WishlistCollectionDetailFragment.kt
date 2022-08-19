@@ -508,6 +508,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
                             showRvWishlist()
+                            showSearchBar()
+                            showFilter()
                             if (!collectionDetail.showDeleteProgress) updateTotalLabel(
                                 collectionDetail.totalData
                             )
@@ -1681,6 +1683,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun showToasterActionOke(message: String, type: Int) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, getString(Rv2.string.collection_CTA_oke)) {}.show()
+        }
+    }
+
     private fun showToasterAtc(message: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
@@ -2509,18 +2518,20 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (data.status == OK && data.dataItem.success) {
             showToaster(data.dataItem.message, "", Toaster.TYPE_NORMAL)
         } else {
-            val errorMessage = data.errorMessage.first().ifEmpty {
-                context?.getString(
-                    com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg
-                )
+            val errorMessage = if (data.errorMessage.isNotEmpty()) {
+                data.errorMessage.firstOrNull() ?: ""
+            } else if (data.dataItem.message.isNotEmpty()) {
+                data.dataItem.message
+            } else {
+                getString(com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg)
             }
-            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+            showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         }
         turnOffBulkDeleteMode()
     }
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
-        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         turnOffBulkDeleteMode()
     }
 

@@ -325,20 +325,20 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
-                        dismiss()
                         actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem)
-                    } else {
                         dismiss()
+                    } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
                             getString(Rwishlist.string.wishlist_common_error_msg)
                         }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
+                        dismiss()
                     }
                 }
                 is Fail -> {
-                    dismiss()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
+                    dismiss()
                 }
             }
         }

@@ -51,7 +51,6 @@ class WishlistCollectionDetailActivity: BaseSimpleActivity() {
         val intent = Intent()
         intent.putExtra(EXTRA_NEED_REFRESH, isNeedRefresh)
         setResult(Activity.RESULT_OK, intent)
-        finish()
         super.onBackPressed()
     }
 }

@@ -119,12 +119,11 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         val intent = Intent()
         intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
         intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
-        activity?.setResult(Activity.RESULT_OK, intent)
+        parentFragment?.activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     override fun onSuccessSaveToNewCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
-        bottomSheetCollection.dismiss()
         val intent = Intent()
         intent.putExtra(BOOLEAN_EXTRA_SUCCESS, true)
         intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, data.message)
@@ -134,7 +133,6 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
     }
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {
-        bottomSheetCollection.dismiss()
         val intent = Intent()
         intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
         intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
