@@ -13,7 +13,7 @@ class InspirationSizeDataView(
     override val data: InspirationWidgetDataView = InspirationWidgetDataView(),
     val optionSizeData: List<InspirationSizeOptionDataView> = listOf(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.Both,
-): InspirationWidgetVisitable, VerticalSeparable {
+): InspirationWidgetVisitable {
 
     override fun addTopSeparator(): VerticalSeparable = this
     override fun addBottomSeparator(): VerticalSeparable = this

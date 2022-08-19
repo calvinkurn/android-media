@@ -25,6 +25,7 @@ import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsCollectionContaining.hasItem
 import org.hamcrest.core.IsInstanceOf.instanceOf
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import rx.Subscriber
 
@@ -126,12 +127,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then assert visitable list does not contain Separator`(visitableList: List<Visitable<*>>) {
-        val separatorIndex = visitableList.indexOfFirst { it is VerticalSeparable && it.verticalSeparator !is VerticalSeparator.None  }
-
-        separatorIndex.shouldBe(
-            -1,
-            "Separator is found on visitable list index $separatorIndex"
-        )
+        assertFalse(visitableList.any { it is VerticalSeparable && it.verticalSeparator !is VerticalSeparator.None })
     }
 
     private fun `Then assert view will show product list`() {
