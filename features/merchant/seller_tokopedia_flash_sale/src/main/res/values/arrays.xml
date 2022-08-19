@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Common Bottomsheet-->
+    <string-array name="sort_items">
+        <item>Terdekat</item>
+        <item>Terbaru</item>
+    </string-array>
+    <string-array name="sort_items_id">
+        <item>nearest</item>
+        <item>latest</item>
+    </string-array>
+    <string-array name="status_filter_items">
+        <item>Selesai</item>
+        <item>Terlewat</item>
+        <item>Dibatalkan</item>
+    </string-array>
+    <string-array name="status_filter_items_id">
+        <item>ended</item>
+        <item>missed</item>
+        <item>canceled</item>
+    </string-array>
+</resources>

@@ -3,6 +3,7 @@
     <string name="fs_canceled_lable">Batalkan</string>
     <string name="title_detail_category">Detail Category</string>
     <string name="quantity_product">%1$d/%2$d Produk</string>
+    <string name="action_apply">Terapkan</string>
 
     <!--Campaign Detail Bottomsheet-->
     <string name="campaigndetail_bottomsheet_title">Detail Campaign</string>
@@ -22,5 +23,8 @@
         <item><![CDATA[Sesuai syarat & ketentuan Tokopedia, susu formula bayi usia 0–12 bulan tidak boleh mengikuti Flash Sale/campaign.]]></item>
     </string-array>
 
+    <!--Common Bottomsheet-->
+    <string name="commonbs_sort_title">Urutkan</string>
+    <string name="commonbs_status_filter_title">Mau cari status apa?</string>
 
 </resources>
