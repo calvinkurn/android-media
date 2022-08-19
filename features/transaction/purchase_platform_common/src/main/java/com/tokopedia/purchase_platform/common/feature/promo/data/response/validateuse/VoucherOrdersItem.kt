@@ -25,14 +25,6 @@ data class VoucherOrdersItem(
         @field:SerializedName("is_po")
         val isPo: Int = 0,
 
-        @SuppressLint("Invalid Data Type")
-        @field:SerializedName("sp_id")
-        val spId: Int = 0,
-
-        @SuppressLint("Invalid Data Type")
-        @field:SerializedName("shipping_id")
-        val shippingId: Int = 0,
-
         @field:SerializedName("type")
         val type: String = "",
 
