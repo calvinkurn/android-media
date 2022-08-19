@@ -243,7 +243,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 && userSession?.userId == header?.userId)
     }
 
-    @SuppressLint
+    @SuppressLint("Method Call Prohibited")
     fun reportAction(
         id: String,
         reasonType: String,

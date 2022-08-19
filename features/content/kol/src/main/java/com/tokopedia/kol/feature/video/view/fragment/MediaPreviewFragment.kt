@@ -454,7 +454,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    @SuppressLint
+    @SuppressLint("Method Call Prohibited")
     private fun doComment() {
         activity?.let {
             val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)

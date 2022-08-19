@@ -1575,7 +1575,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    @SuppressLint
+    @SuppressLint("Method Call Prohibited")
     private fun getGridPostModel(
         feedXCard: FeedXCard,
         products: List<FeedXProduct>

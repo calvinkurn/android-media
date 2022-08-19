@@ -54,7 +54,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
             .inject(this)
     }
 
-    @SuppressLint
+    @SuppressLint("Method Call Prohibited")
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         postId = intent.data?.lastPathSegment

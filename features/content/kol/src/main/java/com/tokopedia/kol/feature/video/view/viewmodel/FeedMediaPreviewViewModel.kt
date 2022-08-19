@@ -98,7 +98,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
 
     fun isMyShop(shopId: String): Boolean = shopId == userSession.shopId
 
-    @SuppressLint
+    @SuppressLint("Method Call Prohibited")
     fun doLikePost(isLikeAction: Boolean, onFail: (Throwable) -> Unit) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toInt(),
                 if (isLikeAction) LikeKolPostUseCase.LikeKolPostAction.Like else LikeKolPostUseCase.LikeKolPostAction.Unlike),
