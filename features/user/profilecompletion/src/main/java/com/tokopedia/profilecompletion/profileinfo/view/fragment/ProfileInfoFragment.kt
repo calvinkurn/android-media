@@ -700,13 +700,13 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun goToAddDob() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(title_add_bod))
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(R.string.profile_info_title_add_bod))
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeDob(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(title_change_bod))
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(R.string.profile_info_title_change_bod))
         intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
