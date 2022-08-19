@@ -48,6 +48,8 @@ class MultiLineGraphViewHolder(
 
         @LayoutRes
         private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_multi_line_chart_tooltip
+
+        private const val ANIMATION_DURATION = 200
     }
 
     private val binding by lazy { ShcMultiLineGraphWidgetBinding.bind(itemView) }
@@ -435,8 +437,8 @@ class MultiLineGraphViewHolder(
         val lineChartData: LineChartData? = getHighestYAxisValue(lineChartDataSets)
 
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { !shouldShowEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
@@ -695,7 +697,7 @@ class MultiLineGraphViewHolder(
 
     private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 200L
+        animator.duration = ANIMATION_DURATION.toLong()
         animator.addUpdateListener { valueAnimator ->
             this?.context?.let {
                 scaleX = (valueAnimator.animatedValue as? Float).orZero()
