@@ -4,8 +4,8 @@
     <corners android:radius="6dp" />
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/Unify_N200"
+        android:color="@color/Unify_N75"
         android:dashWidth="@dimen/dp_2"
         android:dashGap="@dimen/dp_2" />
-    <solid android:color="@color/Unify_NN50" />
+    <solid android:color="@android:color/transparent" />
 </shape>
