@@ -609,6 +609,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             registerInitialViewModel.setOtherMethodState(
                 OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
             )
+            bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         }
         dismissLoadingDiscover()
         dismissProgressBar()

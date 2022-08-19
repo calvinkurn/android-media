@@ -74,7 +74,7 @@ class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): Bottom
                     )
                 layoutParams.setMargins(SOCMED_BUTTON_MARGIN_0, SOCMED_BUTTON_MARGIN_0, SOCMED_BUTTON_MARGIN_0, SOCMED_BUTTON_MARGIN_10)
 
-                //set button other social media
+                //set button social media
                 discoverData.providers.forEach { provider ->
                     val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     loginTextView.setText(provider.name)
