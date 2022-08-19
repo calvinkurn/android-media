@@ -392,6 +392,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (topItemPosition == RecyclerView.NO_POSITION) return
             val topVisibleUiModel = adapter.data[topItemPosition]
 
+            // hard code to hide tab
             val isShow: Boolean = false && (topVisibleUiModel !is PromoInputUiModel &&
                     topVisibleUiModel !is PromoRecommendationUiModel &&
                     topVisibleUiModel !is PromoEligibilityHeaderUiModel) ||
