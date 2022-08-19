@@ -165,10 +165,9 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     @Test
-    fun `when user not login and fail to get chat existing message id`() {
+    fun `when user not login to get chat existing message id`() {
         runBlocking {
             //define return expected
-            onGetMessageIdChat_thenReturn_Error()
             isLoginSession_returnFalse()
 
             //on exceute
@@ -179,6 +178,22 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
             assert(actualResultOfMessageId is Fail)
             val failData = actualResultOfMessageId as Fail
             assert(failData.throwable is UserNotLoginException)
+        }
+    }
+
+    @Test
+    fun `when user login but error to get chat existing message id`() {
+        runBlocking {
+            //define return expected
+            isLoginSession_returnTrue()
+            onGetMessageIdChat_thenReturn_Error()
+
+            //on exceute
+            viewModel.getMessageIdOnChatExist("0")
+
+            //on assertion result
+            val actualResultOfMessageId = (viewModel.messageIdOnChatExist.value)
+            assert(actualResultOfMessageId is Fail)
         }
     }
 
