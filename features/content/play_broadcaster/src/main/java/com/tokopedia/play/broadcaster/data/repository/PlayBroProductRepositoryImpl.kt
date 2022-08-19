@@ -131,7 +131,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
                 setPinnedProductUseCase.apply {
                     setRequestParams(createParam(channelId, product))
                 }.executeOnBackground().data.success.apply {
-                    if (this) lastRequestTime = System.currentTimeMillis()
+                    if (this && !product.pinStatus.isPinned) lastRequestTime = System.currentTimeMillis()
                     else if (!this) throw PinnedProductException(
                         String.format(
                             "Gagal %1s pin di produk. Coba lagi, ya.",

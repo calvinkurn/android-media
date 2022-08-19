@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.SetPinnedProduct
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
