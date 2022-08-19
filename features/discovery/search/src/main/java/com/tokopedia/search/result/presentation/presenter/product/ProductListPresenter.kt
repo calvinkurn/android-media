@@ -9,7 +9,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
-import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
@@ -25,7 +24,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -36,7 +34,6 @@ import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
-import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
@@ -61,6 +58,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -71,6 +69,8 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
+import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
@@ -145,10 +145,13 @@ class ProductListPresenter @Inject constructor(
     private val bannerDelegate: BannerPresenterDelegate,
     private val requestParamsGenerator: RequestParamsGenerator,
     private val paginationImpl: PaginationImpl,
+    private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
-    BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper){
+    BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
+    DynamicFilterModelProvider,
+    LastFilterPresenter by lastFilterPresenterDelegate{
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
@@ -207,7 +210,6 @@ class ProductListPresenter @Inject constructor(
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var categoryIdL2 = ""
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
     override var pageComponentId: String = ""
@@ -255,6 +257,11 @@ class ProductListPresenter @Inject constructor(
     //endregion
 
     //region Load Data / Load More / Recommendations
+    override fun clearData() {
+        postProcessingFilter.resetCount()
+        paginationImpl.clearData()
+    }
+
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
@@ -646,7 +653,7 @@ class ProductListPresenter @Inject constructor(
         bannerDelegate.setBannerData(productDataView.bannerDataView)
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         paginationImpl.totalData = productDataView.totalData
-        categoryIdL2 = productDataView.categoryIdL2
+        lastFilterPresenterDelegate.categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
         pageComponentId = productDataView.pageComponentId
@@ -654,11 +661,13 @@ class ProductListPresenter @Inject constructor(
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
+        if (!productDataView.isQuerySafe) view.showAdultRestriction()
+
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
                 searchProductModel.isPostProcessing,
                 searchParameter,
-                totalData,
+                productDataView.totalData,
                 ::loadData
             ) {
                 getViewToHandleEmptyProductList(
@@ -677,8 +686,6 @@ class ProductListPresenter @Inject constructor(
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER) {
             processFilters(searchProductModel)
         }
-
-        view.updateScrollListener()
 
         getViewToSendTrackingSearchAttempt(productDataView)
     }
@@ -724,6 +731,8 @@ class ProductListPresenter @Inject constructor(
 
             getViewToShowRecommendationItem()
         }
+
+        view.updateScrollListener()
     }
 
     private fun isShowBroadMatch() =
@@ -963,8 +972,6 @@ class ProductListPresenter @Inject constructor(
         val searchProduct = searchProductModel.searchProduct
         val list = mutableListOf<Visitable<*>>()
 
-        if (!productDataView.isQuerySafe) view.showAdultRestriction()
-
         addPageTitle(list)
 
         isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productDataView)
@@ -1043,6 +1050,8 @@ class ProductListPresenter @Inject constructor(
         view.backToTop()
         if (hasNextPage())
             view.addLoading()
+
+        view.updateScrollListener()
     }
 
     private fun addLastFilterDataView(
@@ -2431,41 +2440,6 @@ class ProductListPresenter @Inject constructor(
                     it.url,
             )
         }
-    }
-    //endregion
-
-    //region Save Last Filter
-    override fun updateLastFilter(
-        searchParameter: Map<String, Any>,
-        savedOptionList: List<SavedOption>,
-    ) {
-        val searchParams = requestParamsGenerator.createInitializeSearchParam(
-            searchParameter,
-            chooseAddressDelegate.getChooseAddressParams(),
-        )
-        val saveLastFilterInput = SaveLastFilterInput(
-            lastFilter = savedOptionList,
-            mapParameter = searchParams.parameters,
-            categoryIdL2 = categoryIdL2,
-        )
-
-        val requestParams = RequestParams.create()
-        requestParams.putObject(INPUT_PARAMS, saveLastFilterInput)
-
-        saveLastFilterUseCase.get().unsubscribe()
-        saveLastFilterUseCase.get().execute(requestParams, emptySubscriber())
-    }
-
-    private fun <T> emptySubscriber() = object : Subscriber<T>() {
-        override fun onCompleted() {}
-
-        override fun onError(e: Throwable?) {}
-
-        override fun onNext(t: T?) {}
-    }
-
-    override fun closeLastFilter(searchParameter: Map<String, Any>) {
-        updateLastFilter(searchParameter, listOf())
     }
     //endregion
 

@@ -40,7 +40,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/applink_new_profile_info"
+                    android:pathPattern="@string/path_new_profile_info"
                     android:scheme="@string/internal_scheme" />
 
             </intent-filter>
@@ -60,11 +60,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_name_register"
                     android:scheme="@string/internal_scheme" />
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_name_register_clean_view"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -89,7 +89,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_change_gender"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -108,7 +108,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_email"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -127,7 +127,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_phone"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -145,7 +145,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_change_pin"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -164,7 +164,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_bod"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -201,7 +201,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_pin"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -219,7 +219,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_add_pin_from_2fa"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -257,7 +257,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_change_name"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -276,7 +276,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_user"
                     android:pathPattern="@string/path_profile_completion"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

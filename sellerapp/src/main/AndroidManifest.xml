@@ -648,6 +648,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:resizeableActivity="true"
         android:requestLegacyExternalStorage="true"
+        android:taskAffinity="@string/ompyqgcgdk"
         tools:replace="android:icon,android:label,android:hasCode,android:roundIcon,android:allowBackup,android:resizeableActivity">
         <activity
             android:name=".SplashScreenActivity"
