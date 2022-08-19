@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.bottomsheet
+package com.tokopedia.tkpd.flashsale.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -26,5 +26,6 @@
     <!--Common Bottomsheet-->
     <string name="commonbs_sort_title">Urutkan</string>
     <string name="commonbs_status_filter_title">Mau cari status apa?</string>
+    <string name="commonbs_category_filter_title">Mau cari kategori apa?</string>
 
 </resources>

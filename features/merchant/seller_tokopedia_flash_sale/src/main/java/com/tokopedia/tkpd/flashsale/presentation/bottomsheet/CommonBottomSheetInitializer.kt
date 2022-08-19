@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.bottomsheet
+package com.tokopedia.tkpd.flashsale.presentation.bottomsheet
 
 import android.content.Context
 import androidx.annotation.ArrayRes
