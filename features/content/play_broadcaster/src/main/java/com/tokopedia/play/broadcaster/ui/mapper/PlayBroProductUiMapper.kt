@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
@@ -82,7 +83,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                     } else DiscountedPrice(
                         originalPrice = data.campaign.originalPriceFmt,
                         originalPriceNumber = 0.0,
-                        discountPercent = data.campaign.discountedPercentage.toInt(),
+                        discountPercent = data.campaign.discountedPercentage.toIntSafely(),
                         discountedPrice = data.campaign.discountedPriceFmt,
                         discountedPriceNumber = 0.0,
                     )
