@@ -1,7 +1,9 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
+import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -41,7 +43,16 @@ data class PromoListItemUiModel(
             var tabId: String = "",
             var shippingOptions: String = "",
             var paymentOptions: String = "",
-            var benefitDetail: BenefitDetail = BenefitDetail()
+            var benefitDetail: BenefitDetail = BenefitDetail(),
+
+            // fields related to bebas ongkir promo
+
+            // Store clashing info with BO
+            // When user choose promo that clashes with BO, info will be shown in bottomsheet
+            var boClashingInfos: List<BoClashingInfo> = emptyList(),
+            // Store BO promo data
+            // When user choose BO promo, get unique id and promo code from here
+            var boAdditionalData: List<AdditionalBoData> = emptyList(),
     )
 
     data class UiState(
@@ -53,7 +64,8 @@ data class PromoListItemUiModel(
             var isDisabled: Boolean = false,
             var isHighlighted: Boolean = false,
             var isUpdateSelectionStateAction: Boolean = false,
-            var isLastPromoItem: Boolean = false
+            var isLastPromoItem: Boolean = false,
+            var isBebasOngkir: Boolean = false,
     )
 
 }

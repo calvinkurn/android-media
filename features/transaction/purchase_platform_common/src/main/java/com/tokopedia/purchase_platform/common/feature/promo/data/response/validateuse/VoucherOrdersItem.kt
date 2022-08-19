@@ -11,11 +11,11 @@ data class VoucherOrdersItem(
         @field:SerializedName("unique_id")
         val uniqueId: String = "",
 
-        @SuppressLint("Invalid Data Type")
+        @field:SuppressLint("Invalid Data Type")
         @field:SerializedName("shipping_id")
         val shippingId: Int = 0,
 
-        @SuppressLint("Invalid Data Type")
+        @field:SuppressLint("Invalid Data Type")
         @field:SerializedName("sp_id")
         val spId: Int = 0,
 

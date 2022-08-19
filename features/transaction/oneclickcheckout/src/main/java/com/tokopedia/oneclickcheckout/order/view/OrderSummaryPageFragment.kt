@@ -241,8 +241,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.updatePromoStateWithoutCalculate(PromoUiModel().apply {
                         titleDescription = it.successDataModel.defaultEmptyPromoMessage
                     })
-                    // todo: reset BO -> if lastValidateUsePromoRequest do not contains BO promo then isApplyLogisticPromo = false, else no op
-                    // todo: flow auto unapply BO
                     viewModel.autoUnApplyBBO()
                     //refresh shipping section and calculate total
                     viewModel.reloadRates()

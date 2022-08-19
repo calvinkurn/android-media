@@ -359,10 +359,14 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO }
                 promoInfoList.forEach {
                     val promoInfoView = PromoCheckoutMarketplaceModuleSubLayoutPromoInfoBinding.inflate(LayoutInflater.from(itemView.context))
-                    if (IconHelper.isCustomIcon(it.icon)) {
-                        renderCustomIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                    if (IconHelper.shouldShowIcon(it.icon)) {
+                        if (IconHelper.isCustomIcon(it.icon)) {
+                            renderCustomIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                        } else {
+                            renderIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                        }
                     } else {
-                        renderIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                        promoInfoView.iconPromoInfo.gone()
                     }
                     promoInfoView.textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
                     if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.errorMessage.isNotBlank()) {
