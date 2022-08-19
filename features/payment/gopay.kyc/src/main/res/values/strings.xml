@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">GoPay Kyc</string>
     <string name="gopay_kyc_upgrade_now">Upgrade Sekarang</string>
-    <string name="gopay_kyc_benefit_header_description_text">Cukup upload selfie dan e-KTP, bisa langsung nikmatin semua keuntungan khusus buat kamu.</string>
-    <string name="gopay_kyc_benefit_header_title_text">Upgrade ke GoPay Plus, gratis!</string>
+    <string name="gopay_kyc_benefit_header_description_text">Tinggal upload e-KTP dan selfie di aplikasi Tokopedia.</string>
+    <string name="gopay_kyc_benefit_header_title_text">Upgrade ke GoPay Plus gratis, bisa isi saldo dan belanja makin banyak</string>
+    <string name="gopay_kyc_benefit_title_text">Langsung nikmatin fitur lengkap GoPay!</string>
 
     <string name="gopay_kyc_wallet_benefit_title_text">Isi saldo sampai Rp10 juta</string>
     <string name="gopay_kyc_wallet_benefit_description_text">Per bulannya, kamu bisa punya saldo sampai Rp10 juta, lho.</string>
@@ -67,5 +68,6 @@
     <string name="gopay_kyc_captured_image_description">Captured Image</string>
     <string name="gopay_kyc_image_capture_loading_text">Loading</string>
     <string name="gopay_kyc_finish_kyc_button_text">Oke</string>
+    <string name="kyc_header_title">GoPay | Tokopedia</string>
 
 </resources>

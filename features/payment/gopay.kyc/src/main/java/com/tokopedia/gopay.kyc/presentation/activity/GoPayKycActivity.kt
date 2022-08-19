@@ -6,9 +6,12 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.di.DaggerGoPayKycComponent
 import com.tokopedia.gopay.kyc.di.GoPayKycComponent
 import com.tokopedia.gopay.kyc.presentation.fragment.GoPayPlusKycBenefitFragment
+import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
+import kotlinx.android.synthetic.main.activity_gopay_kyc_layout.*
 
 class GoPayKycActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent> {
 
@@ -21,11 +24,6 @@ class GoPayKycActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent> {
                     .baseAppComponent
             ).build()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
-    }
-
     /*
     * This helps in redirecting to entry point activity if user wants to exit the kyc flow
     * */
@@ -34,6 +32,9 @@ class GoPayKycActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent> {
         if (intent?.hasExtra(IS_EXIT_KYC) == true)
             finish()
     }
+
+    override fun getLayoutRes() = R.layout.activity_gopay_kyc_layout
+    override fun getParentViewResourceID(): Int = R.id.kycFrameLayout
     override fun getNewFragment() = GoPayPlusKycBenefitFragment.newInstance()
     override fun getScreenName() = null
     override fun getComponent() = kycComponent
