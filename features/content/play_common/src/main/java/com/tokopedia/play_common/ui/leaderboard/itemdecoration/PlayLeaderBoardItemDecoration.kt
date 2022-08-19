@@ -8,6 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play_common.R
+import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayGameViewHolder
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -15,23 +16,42 @@ import com.tokopedia.unifyprinciples.R as unifyR
  */
 class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_leaderboard_winner_separator_height)
+    private val dividerHeight =
+        context.resources.getDimensionPixelOffset(R.dimen.play_leaderboard_winner_separator_height)
     private val bottomOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
+    private val startOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl6)
+    private val topOffset =
+        context.resources.getDimensionPixelOffset(R.dimen.play_dp_12)
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, unifyR.color.Unify_NN300)
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        outRect.bottom = bottomOffset
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        for (index in 1 until parent.childCount) {
+            val child = parent.getChildAt(index)
+            when (parent.getChildViewHolder(child)) {
+                is PlayGameViewHolder.Header -> outRect.bottom = bottomOffset
+                is PlayGameViewHolder.Quiz -> outRect.bottom = topOffset
+                else -> super.getItemOffsets(outRect, view, parent, state)
+            }
+        }
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        for (index in 0 until parent.childCount) {
+        for (index in 1 until parent.childCount) {
             val child = parent.getChildAt(index)
 
-            if (index != 0) { c.drawRect(
-                Rect(child.left, child.top - dividerHeight, parent.width, child.top), mPaint)
+            when (parent.getChildViewHolder(child)) {
+                is PlayGameViewHolder.Winner ->
+                    c.drawRect(
+                        Rect(child.left, child.top - dividerHeight, parent.width, child.top), mPaint
+                    )
             }
         }
     }

@@ -20,6 +20,7 @@ import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayGameAdapter
+import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderBoardItemDecoration
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayGameViewHolder
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -65,7 +66,6 @@ class PlayGameLeaderBoardViewComponent(
     }, object : PlayGameViewHolder.Winner.Listener {
         override fun onChatButtonClicked(item: LeaderboardGameUiModel.Winner, position: Int) {
         }
-
     })
 
     init {
@@ -78,6 +78,7 @@ class PlayGameLeaderBoardViewComponent(
         rvLeaderboard.apply {
             adapter = leaderboardAdapter
             layoutManager = layoutManager
+            addItemDecoration(PlayLeaderBoardItemDecoration(this.context))
         }
 
         btnRefreshError.setOnClickListener {
