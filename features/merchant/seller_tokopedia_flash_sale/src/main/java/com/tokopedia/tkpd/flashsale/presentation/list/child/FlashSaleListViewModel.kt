@@ -58,7 +58,7 @@ class FlashSaleListViewModel @Inject constructor(
         object ChangeSort : UiEvent()
         data class ApplySort(val selectedSort: SingleSelectionItem) : UiEvent()
         object ChangeCategory : UiEvent()
-        data class ApplyCategoryFilter(val selectedCategoryIds: List<MultipleSelectionItem>) : UiEvent()
+        data class ApplyCategoryFilter(val categories: List<MultipleSelectionItem>) : UiEvent()
         object ClearFilter : UiEvent()
     }
 
@@ -73,80 +73,94 @@ class FlashSaleListViewModel @Inject constructor(
 
     fun processEvent(event : UiEvent) {
         when (event) {
-            is UiEvent.Init -> {
-                _uiState.update {
-                    it.copy(
-                        isLoading = true,
-                        tabName = event.tabName,
-                        tabId = event.tabId,
-                        offset = 0,
-                        shouldResetList = false
-                    )
-                }
-
-                getFlashSaleList()
-                getFlashSaleListCategory()
-            }
-            is UiEvent.LoadPage -> {
-                _uiState.update {
-                    it.copy(
-                        offset = event.offset,
-                        shouldResetList = false
-                    )
-                }
-
-                getFlashSaleList()
-            }
-            is UiEvent.ChangeSort -> {
-                _uiEffect.tryEmit(UiEffect.ShowSortBottomSheet(_uiState.value.selectedSort.id))
-            }
-            is UiEvent.ApplySort -> {
-                _uiState.update {
-                    it.copy(
-                        isLoading = true,
-                        selectedSort = event.selectedSort,
-                        shouldResetList = true,
-                        offset = 0
-                    )
-                }
-
-                getFlashSaleList()
-            }
-            is UiEvent.ChangeCategory -> {
-                _uiEffect.tryEmit(
-                    UiEffect.ShowCategoryBottomSheet(
-                        _uiState.value.selectedCategoryIds,
-                        _uiState.value.flashSaleCategories
-                    )
-                )
-            }
-            is UiEvent.ApplyCategoryFilter -> {
-                val categoryIds = event.selectedCategoryIds.map { category -> category.id.toLongOrZero() }
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = true,
-                        shouldResetList = true,
-                        selectedCategoryIds = categoryIds,
-                        offset = 0
-                    )
-                }
-
-                getFlashSaleList()
-            }
-            UiEvent.ClearFilter -> {
-                _uiState.update {
-                    it.copy(
-                        isLoading = true,
-                        selectedCategoryIds = listOf(),
-                        selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
-                        shouldResetList = true,
-                        offset = 0
-                    )
-                }
-                getFlashSaleList()
-            }
+            is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId)
+            is UiEvent.LoadPage -> onLoadPage(event.offset)
+            is UiEvent.ChangeSort -> onChangeSort()
+            is UiEvent.ApplySort -> onApplySort(event.selectedSort)
+            is UiEvent.ChangeCategory -> onChangeCategory()
+            is UiEvent.ApplyCategoryFilter -> onApplyCategory(event.categories)
+            UiEvent.ClearFilter -> onClearFilter()
         }
+    }
+
+    private fun onPageFirstAppear(tabName: String, tabId: Int) {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                tabName = tabName,
+                tabId = tabId,
+                offset = 0,
+                shouldResetList = false
+            )
+        }
+
+        getFlashSaleList()
+        getFlashSaleListCategory()
+    }
+
+    private fun onLoadPage(offset: Int) {
+        _uiState.update {
+            it.copy(
+                offset = offset,
+                shouldResetList = false
+            )
+        }
+
+        getFlashSaleList()
+    }
+
+    private fun onChangeSort() {
+        _uiEffect.tryEmit(UiEffect.ShowSortBottomSheet(_uiState.value.selectedSort.id))
+    }
+
+    private fun onApplySort(selectedSort: SingleSelectionItem) {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                selectedSort = selectedSort,
+                shouldResetList = true,
+                offset = 0
+            )
+        }
+
+        getFlashSaleList()
+    }
+
+    private fun onChangeCategory() {
+        _uiEffect.tryEmit(
+            UiEffect.ShowCategoryBottomSheet(
+                _uiState.value.selectedCategoryIds,
+                _uiState.value.flashSaleCategories
+            )
+        )
+    }
+
+    private fun onApplyCategory(categories: List<MultipleSelectionItem>) {
+        val categoryIds = categories.map { category -> category.id.toLongOrZero() }
+
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                shouldResetList = true,
+                selectedCategoryIds = categoryIds,
+                offset = 0
+            )
+        }
+
+        getFlashSaleList()
+    }
+
+    private fun onClearFilter() {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                selectedCategoryIds = listOf(),
+                selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
+                shouldResetList = true,
+                offset = 0
+            )
+        }
+        getFlashSaleList()
     }
 
     private fun getFlashSaleListCategory() {
