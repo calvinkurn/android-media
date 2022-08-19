@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -70,7 +71,10 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             )
         }.executeOnBackground()
 
-        return@withContext productMapper.mapProductsInEtalase(response, PRODUCTS_IN_ETALASE_PER_PAGE)
+        return@withContext productMapper.mapProductsInEtalase(
+            response,
+            PRODUCTS_IN_ETALASE_PER_PAGE
+        )
     }
 
     override suspend fun getProductsInCampaign(
@@ -104,26 +108,50 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProductTagSummarySection(channelID: String) = withContext(dispatchers.io) {
-        val response = getProductTagSummarySectionUseCase.apply {
-            setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
-        }.executeOnBackground()
+    override suspend fun getProductTagSummarySection(channelID: String) =
+        withContext(dispatchers.io) {
+            val response = getProductTagSummarySectionUseCase.apply {
+                setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
+            }.executeOnBackground()
 
-        return@withContext productMapper.mapProductTagSection(response)
-    }
+            return@withContext productMapper.mapProductTagSection(response)
+        }
 
-    override suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean = withContext(dispatchers.io){
-        return@withContext setPinnedProductUseCase.apply {
-            setRequestParams(createParam(channelId, product))
-        }.executeOnBackground().data.success
-    }
+
+    private var lastRequestTime: Long = 0L
+    private val isEligibleForPin: Boolean
+        get() {
+            val diff = System.currentTimeMillis() - lastRequestTime
+            return diff >= DELAY_MS
+        }
+
+    override suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean =
+        withContext(dispatchers.io) {
+            return@withContext if (isEligibleForPin || product.pinStatus.isPinned) {
+                setPinnedProductUseCase.apply {
+                    setRequestParams(createParam(channelId, product))
+                }.executeOnBackground().data.success.apply {
+                    if (this) lastRequestTime = System.currentTimeMillis()
+                    else if (!this) throw PinnedProductException(
+                        String.format(
+                            "Gagal %1s pin di produk. Coba lagi, ya.",
+                            if (product.pinStatus.isPinned) "lepas" else "pasang"
+                        )
+                    )
+                    else return@apply
+                }
+            } else {
+                throw PinnedProductException()
+            }
+        }
 
     override fun removeCoolDownTimerJob() {
-        setPinnedProductUseCase.cancelTimerJob()
     }
 
     companion object {
         private const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
         private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
+
+        private const val DELAY_MS = 5000L
     }
 }
