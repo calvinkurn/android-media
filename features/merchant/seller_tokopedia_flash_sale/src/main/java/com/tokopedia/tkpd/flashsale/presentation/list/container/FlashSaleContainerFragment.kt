@@ -96,12 +96,8 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: FlashSaleContainerViewModel.UiEffect) {
         when (effect) {
-            is FlashSaleContainerViewModel.UiEffect.FetchTabMetaError -> {
+            is FlashSaleContainerViewModel.UiEffect.ShowToaster -> {
                 binding?.root.showToasterError(effect.throwable)
-                binding?.globalError?.visible()
-                binding?.globalError?.setActionClickListener {
-                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
-                }
             }
         }
     }
@@ -109,6 +105,15 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
         renderTabs(uiState.tabsMetadata)
+        renderErrorState(uiState.error)
+    }
+
+    private fun renderErrorState(error: Throwable?) {
+        val isError = error != null
+        binding?.globalError?.isVisible = isError
+        binding?.globalError?.setActionClickListener {
+            viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        }
     }
 
 

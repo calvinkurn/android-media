@@ -13,11 +13,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
+import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -27,11 +28,11 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlas
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.unifycomponents.ChipsUnify
 
 class FlashSaleListFragment : BaseDaggerFragment() {
 
@@ -84,6 +85,8 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         arguments?.getInt(BUNDLE_KEY_CAMPAIGN_COUNT).orZero()
     }
 
+    private val sort by lazy {  SortFilterItem(getString(R.string.stfs_sort)) }
+    private val category by lazy { SortFilterItem(getString(R.string.stfs_all_category)) }
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
@@ -185,62 +188,89 @@ class FlashSaleListFragment : BaseDaggerFragment() {
             is FlashSaleListViewModel.UiEffect.FetchFlashSaleError -> {
                 binding?.root.showToasterError(effect.throwable)
             }
+            is FlashSaleListViewModel.UiEffect.ShowSortBottomSheet -> {
+                showSortBottomSheet(effect.selectedSortId)
+            }
+            is FlashSaleListViewModel.UiEffect.ShowCategoryBottomSheet -> {
+
+            }
+
         }
     }
 
 
     private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
-        renderFlashSaleList(uiState.flashSales)
+        renderFlashSaleList(uiState.shouldResetList, uiState.flashSales)
+        renderSortChips(uiState.selectedSort)
     }
-
 
     private fun renderLoadingState(isLoading: Boolean) {
         binding?.loader?.isVisible = isLoading
+        binding?.recyclerView?.isVisible = !isLoading
+    }
+
+    private fun renderFlashSaleList(shouldResetList: Boolean, flashSales: List<DelegateAdapterItem>) {
+        flashSaleAdapter.removeItem(LoadingItem)
+
+        if (shouldResetList) {
+            flashSaleAdapter.submit(flashSales)
+        } else {
+
+            if (flashSales.isNotEmpty()) {
+                flashSaleAdapter.addItems(flashSales)
+            }
+        }
 
     }
 
-    private fun renderFlashSaleList(flashSales: List<DelegateAdapterItem>) {
-        flashSaleAdapter.removeItem(LoadingItem)
-
-        if (flashSales.isNotEmpty()) {
-            flashSaleAdapter.addItems(flashSales)
+    private fun renderSortChips(selectedSort: SingleSelectionItem) {
+        if (selectedSort.id == "DEFAULT_VALUE_PLACEHOLDER") {
+            sort.type = ChipsUnify.TYPE_NORMAL
+            sort.selectedItem = arrayListOf(getString(R.string.stfs_sort))
+        } else {
+            sort.type = ChipsUnify.TYPE_SELECTED
+            sort.selectedItem = arrayListOf(selectedSort.name)
         }
     }
 
     private fun setupSortFilter() {
-
-        val sortFilter = SortFilterItem(getString(R.string.stfs_sort))
         val onSortClicked = {
-            sortFilter.type = if(sortFilter.type == ChipsUnify.TYPE_NORMAL) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
-            sortFilter.selectedItem = arrayListOf("Jabodetabek", "Bali")
+            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ChangeSort)
         }
 
-        sortFilter.listener = { onSortClicked() }
-        sortFilter.chevronListener = { onSortClicked() }
+        sort.listener = { onSortClicked() }
+        sort.chevronListener = { onSortClicked() }
 
-        val categoryFilter = SortFilterItem(getString(R.string.stfs_all_category))
         val onCategoryClicked = {
-            sortFilter.type = if(sortFilter.type == ChipsUnify.TYPE_NORMAL) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
-            sortFilter.selectedItem = arrayListOf("Jabodetabek", "Bali")
+            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ChangeCategory)
         }
-        categoryFilter.listener = { onCategoryClicked() }
-        categoryFilter.chevronListener = { onCategoryClicked() }
+        category.listener = { onCategoryClicked() }
+        category.chevronListener = { onCategoryClicked() }
 
 
-        val items = arrayListOf(sortFilter, categoryFilter)
+        val items = arrayListOf(sort, category)
 
         binding?.sortFilter?.addItem(items)
         binding?.sortFilter?.parentListener = {}
-        binding?.sortFilter?.dismissListener = {}
+        binding?.sortFilter?.dismissListener = {
+            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ClearFilter)
+        }
+    }
+
+    private fun showSortBottomSheet(selectedSortId : String) {
+        if (!isAdded) return
+
+        val sortOptions = arrayListOf(
+            SingleSelectionItem(id = "CAMPAIGN_START_DATE", getString(R.string.stfs_nearest), direction = "ASC"),
+            SingleSelectionItem(id = "CAMPAIGN_ID", getString(R.string.stfs_newest), direction = "DESC")
+        )
+        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedSortId, sortOptions)
+        bottomSheet.setBottomSheetTitle(getString(R.string.stfs_sort_title))
+        bottomSheet.setOnApplyButtonClick { sort ->
+            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ApplySort(sort))
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
 }

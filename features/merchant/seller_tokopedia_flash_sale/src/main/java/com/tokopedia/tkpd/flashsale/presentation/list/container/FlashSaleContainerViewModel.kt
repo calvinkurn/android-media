@@ -29,7 +29,7 @@ class FlashSaleContainerViewModel @Inject constructor(
     }
 
     sealed class UiEffect {
-        data class FetchTabMetaError(val throwable: Throwable) : UiEffect()
+        data class ShowToaster(val throwable: Throwable) : UiEffect()
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -41,8 +41,10 @@ class FlashSaleContainerViewModel @Inject constructor(
 
     fun processEvent(event : UiEvent) {
         when (event) {
-            is UiEvent.GetTabsMetadata -> getTabsMetaData()
-            else -> {}
+            is UiEvent.GetTabsMetadata -> {
+                _uiState.update { it.copy(isLoading = true) }
+                getTabsMetaData()
+            }
         }
     }
 
@@ -51,11 +53,11 @@ class FlashSaleContainerViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val tabs = getFlashSaleListForSellerMetaUseCase.execute()
-                _uiState.update { it.copy(isLoading = false, tabsMetadata = tabs) }
+                _uiState.update { it.copy(isLoading = false,  error = null, tabsMetadata = tabs) }
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false) }
-                _uiEffect.emit(UiEffect.FetchTabMetaError(error))
+                _uiState.update { it.copy(isLoading = false, error = error) }
+                _uiEffect.emit(UiEffect.ShowToaster(error))
             }
         )
 

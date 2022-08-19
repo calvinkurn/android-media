@@ -20,14 +20,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sortFilter"
         tools:itemCount="3"
-        tools:listitem="@layout/stfs_item_upcoming_flash_sale"
-        tools:visibility="gone" />
+        tools:listitem="@layout/stfs_item_upcoming_flash_sale" />
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyState"
@@ -44,7 +44,6 @@
         app:unifyEmptyStateType="section"
         tools:visibility="visible" />
 
-
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
         android:layout_width="@dimen/unify_space_48"
@@ -53,7 +52,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

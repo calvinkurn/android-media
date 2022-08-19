@@ -5,8 +5,6 @@
     <string name="quantity_product">%1$d/%2$d Produk</string>
 
     <!--Flash Sale List-->
-
-    <!--Flash Sale Status-->
     <string name="stfs_tab_name_upcoming">Akan Datang</string>
     <string name="stfs_tab_name_registered">Terdaftar</string>
     <string name="stfs_tab_name_ongoing">Berlangsung</string>
@@ -37,6 +35,10 @@
     <string name="stfs_ends_in">Berakhir dalam</string>
     <string name="stfs_sort">Urutkan</string>
     <string name="stfs_all_category">Semua Kategori</string>
+    <string name="stfs_nearest">Terdekat</string>
+    <string name="stfs_newest">Terbaru</string>
+    <string name="stfs_sort_title">Mau filter dengan urutan apa?</string>
+    <string name="stfs_category_title">Mau cari kategori apa?</string>
 
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
