@@ -12,20 +12,20 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
+import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
-import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 
 class FlashSaleContainerFragment : BaseDaggerFragment() {
 
@@ -113,6 +113,10 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.globalError?.isVisible = isError
         binding?.globalError?.setActionClickListener {
             viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        }
+
+        if (isError) {
+            binding?.tabsUnify?.gone()
         }
     }
 

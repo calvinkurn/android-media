@@ -86,7 +86,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
             requestHeader,
             param.tabName,
             GetFlashSaleListForSellerRequest.Pagination(param.rows, param.offset),
-            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.campaignIds, param.statusIds),
+            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.categoryIds, param.statusIds),
             GetFlashSaleListForSellerRequest.Sort(param.sortOrderBy, param.sortOrderRule),
             GetFlashSaleListForSellerRequest.AdditionalParam()
         )
@@ -111,10 +111,4 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         val sortOrderRule: String = "ASC"
     )
 
-
-    /**sort
-     * DEFAULT_VALUE_PLACEHOLDER
-    CAMPAIGN_ID
-    CAMPAIGN_START_DATE
-     */
 }

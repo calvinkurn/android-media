@@ -45,5 +45,6 @@
     <string name="stfs_placeholder_timer_days">%s hari</string>
     <string name="stfs_placeholder_period">%s - %s</string>
     <string name="stfs_placeholder_sold_count">%s dari %s</string>
+    <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
 
 </resources>
