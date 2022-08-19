@@ -10,7 +10,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerVi
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -37,10 +36,6 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
     }
 
     override fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model):Int {
-        return 0
-    }
-
-    override fun type(highlightViewModel: HighlightViewModel): Int {
         return 0
     }
 

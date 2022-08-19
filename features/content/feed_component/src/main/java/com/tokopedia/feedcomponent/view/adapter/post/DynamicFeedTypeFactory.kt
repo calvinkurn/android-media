@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.view.adapter.post
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -21,8 +20,6 @@ interface DynamicFeedTypeFactory {
     fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int
 
     fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model): Int
-
-    fun type(highlightViewModel: HighlightViewModel): Int
 
     fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int
 

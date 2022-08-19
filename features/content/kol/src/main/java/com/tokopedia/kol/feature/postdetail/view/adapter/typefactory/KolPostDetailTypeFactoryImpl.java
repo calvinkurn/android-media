@@ -21,7 +21,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerVi
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel;
@@ -169,11 +168,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(EntryPointViewModel entryPointViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + EntryPointViewModel.class.getSimpleName());
-    }
-
-    @Override
-    public int type(@NotNull HighlightViewModel highlightViewModel) {
-        return 0;
     }
 
     @Override

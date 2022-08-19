@@ -16,7 +16,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -101,11 +100,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     TYPE_CARDPOST -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
                             mapCardPost(posts, feed, templateData.template)
-                        }
-                    }
-                    TYPE_CARDHIGHLIGHT -> {
-                        if (feed.activity != ACTIVITY_TOPADS) {
-                            mapCardHighlight(posts, feed, templateData.template)
                         }
                     }
                     TYPE_CARDPLAYCAROUSEL -> {
@@ -475,18 +469,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
-    }
-
-    private fun mapCardHighlight(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed.content.cardHighlight, template)
-        if (shouldAddHighlightSection(contentList)) {
-            posts.add(HighlightViewModel(
-                    feed.id.toString(),
-                    feed.content.cardHighlight.title,
-                    contentList,
-                    template
-            ))
-        }
     }
 
     private fun shouldAddHighlightSection(contentList: MutableList<HighlightCardViewModel>): Boolean {
