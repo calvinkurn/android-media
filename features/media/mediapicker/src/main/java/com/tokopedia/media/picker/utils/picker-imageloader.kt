@@ -7,7 +7,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
-fun ImageView.loadAlbumImage(path: String) {
+fun ImageView.loadPickerImage(path: String, onLoaded: () -> Unit = {}) {
     val thumbnailSize = context.resources.getDimensionPixelOffset(R.dimen.picker_thumbnail_size)
     val roundedSize = context.resources.getDimension(R.dimen.picker_thumbnail_rounded)
 
@@ -30,5 +30,9 @@ fun ImageView.loadAlbumImage(path: String) {
         } else {
             centerCrop()
         }
+
+        listener(onSuccess = { _, _ ->
+            onLoaded()
+        })
     }
 }

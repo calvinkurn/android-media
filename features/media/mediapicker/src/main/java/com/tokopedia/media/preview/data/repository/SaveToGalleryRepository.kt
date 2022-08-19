@@ -1,4 +1,4 @@
-package com.tokopedia.media.preview.managers
+package com.tokopedia.media.preview.data.repository
 
 import android.content.Context
 import android.os.Environment
@@ -7,13 +7,13 @@ import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFi
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 
-interface SaveToGalleryManager {
+interface SaveToGalleryRepository {
     fun dispatch(filePath: String): File?
 }
 
-class SaveToGalleryManagerImpl constructor(
+class SaveToGalleryRepositoryImpl constructor(
     private val context: Context
-) : SaveToGalleryManager {
+) : SaveToGalleryRepository {
 
     override fun dispatch(filePath: String): File? {
         val file = filePath.asPickerFile()
