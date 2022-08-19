@@ -11,10 +11,6 @@ import com.tokopedia.tokopedianow.util.TestUtils.verifyThrowable
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-/**
- * Load First Page Recipe Bookmark
- */
-
 class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
 
     @Test
@@ -23,8 +19,8 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = recipeBookmarkResponse
+            .mockGetRecipeBookmark(
+                response = recipeBookmarkResponse
             )
 
         viewModel
@@ -49,8 +45,8 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = recipeBookmarkResponse
+            .mockGetRecipeBookmark(
+                response = recipeBookmarkResponse
             )
 
         viewModel
@@ -75,8 +71,8 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = recipeBookmarkResponse
+            .mockGetRecipeBookmark(
+                response = recipeBookmarkResponse
             )
 
         viewModel
@@ -99,7 +95,7 @@ class GetLoadFirstPageTest: TokoNowRecipeBookmarkViewModelTestFixture() {
         val throwable = Throwable()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
+            .mockGetRecipeBookmark(
                 throwable = throwable
             )
 

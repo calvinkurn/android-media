@@ -11,10 +11,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-/**
- * Load More Recipe Bookmarks
- */
-
 class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture() {
 
     @Test
@@ -23,8 +19,8 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = firstPageResponse
+            .mockGetRecipeBookmark(
+                response = firstPageResponse
             )
 
         viewModel.loadFirstPage()
@@ -33,8 +29,8 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = secondPageResponse
+            .mockGetRecipeBookmark(
+                response = secondPageResponse
             )
 
         viewModel.loadMore(
@@ -55,8 +51,8 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = firstPageResponse
+            .mockGetRecipeBookmark(
+                response = firstPageResponse
             )
 
         viewModel.loadFirstPage()
@@ -65,8 +61,8 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = secondPageResponse
+            .mockGetRecipeBookmark(
+                response = secondPageResponse
             )
 
         viewModel.loadMore(
@@ -87,8 +83,8 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = firstPageResponse
+            .mockGetRecipeBookmark(
+                response = firstPageResponse
             )
 
         viewModel.loadFirstPage()
@@ -97,8 +93,8 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = secondPageResponse
+            .mockGetRecipeBookmark(
+                response = secondPageResponse
             )
 
         viewModel.loadMore(
@@ -118,15 +114,15 @@ class GetLoadMoreRecipeBookmarkTest : TokoNowRecipeBookmarkViewModelTestFixture(
             .jsonToObject<GetRecipeBookmarksResponse>()
 
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
-                recipeBookmarkResponse = firstPageResponse
+            .mockGetRecipeBookmark(
+                response = firstPageResponse
             )
 
         viewModel.loadFirstPage()
 
         val throwable = Throwable()
         getRecipeBookmarksUseCase
-            .mockRecipeBookmark(
+            .mockGetRecipeBookmark(
                 throwable = throwable
             )
 

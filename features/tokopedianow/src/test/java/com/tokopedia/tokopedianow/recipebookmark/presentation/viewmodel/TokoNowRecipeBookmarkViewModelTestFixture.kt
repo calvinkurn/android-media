@@ -2,7 +2,9 @@ package com.tokopedia.tokopedianow.recipebookmark.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
+import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.GetRecipeBookmarksUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
@@ -45,23 +47,56 @@ abstract class TokoNowRecipeBookmarkViewModelTestFixture {
         )
     }
 
-    protected fun GetRecipeBookmarksUseCase.mockRecipeBookmark(recipeBookmarkResponse: GetRecipeBookmarksResponse) {
+    protected fun GetRecipeBookmarksUseCase.mockGetRecipeBookmark(response: GetRecipeBookmarksResponse) {
         coEvery {
-            this@mockRecipeBookmark.execute(
+            this@mockGetRecipeBookmark.execute(
                 limit = any(),
                 page = any(),
                 warehouseId = any()
             )
-        } returns recipeBookmarkResponse
+        } returns response
     }
 
-    protected fun GetRecipeBookmarksUseCase.mockRecipeBookmark(throwable: Throwable) {
+    protected fun GetRecipeBookmarksUseCase.mockGetRecipeBookmark(throwable: Throwable) {
         coEvery {
-            this@mockRecipeBookmark.execute(
+            this@mockGetRecipeBookmark.execute(
                 limit = any(),
                 page = any(),
                 warehouseId = any()
             )
         } throws throwable
     }
+
+    protected fun AddRecipeBookmarkUseCase.mockAddRecipeBookmark(response: AddRecipeBookmarkResponse) {
+        coEvery {
+            this@mockAddRecipeBookmark.execute(
+                recipeId = any()
+            )
+        } returns response.tokonowAddRecipeBookmark
+    }
+
+    protected fun AddRecipeBookmarkUseCase.mockAddRecipeBookmark(throwable: Throwable) {
+        coEvery {
+            this@mockAddRecipeBookmark.execute(
+                recipeId = any()
+            )
+        } throws throwable
+    }
+
+    protected fun RemoveRecipeBookmarkUseCase.mockRemoveRecipeBookmark(response: RemoveRecipeBookmarkResponse) {
+        coEvery {
+            this@mockRemoveRecipeBookmark.execute(
+                recipeId = any()
+            )
+        } returns response.tokonowRemoveRecipeBookmark
+    }
+
+    protected fun RemoveRecipeBookmarkUseCase.mockRemoveRecipeBookmark(throwable: Throwable) {
+        coEvery {
+            this@mockRemoveRecipeBookmark.execute(
+                recipeId = any()
+            )
+        } throws throwable
+    }
+
 }

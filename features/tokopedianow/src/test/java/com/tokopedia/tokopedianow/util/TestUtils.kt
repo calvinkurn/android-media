@@ -53,17 +53,17 @@ object TestUtils {
         return this as UiState.Fail<T>
     }
 
-    fun<T: Any> UiState.Success<T>?.verifyEquals(data: T?): UiState<T>? {
+    fun<T: Any> UiState<T>?.verifyEquals(data: T?): UiState<T>? {
         Assert.assertEquals(this?.data, data)
         return this
     }
 
-    fun<T: Any> UiState.Fail<T>?.verifyThrowable(throwable: Throwable): UiState<T>? {
+    fun<T: Any> UiState<T>?.verifyThrowable(throwable: Throwable): UiState<T>? {
         Assert.assertEquals(this?.throwable, throwable)
         return this
     }
 
-    fun<T: Any> UiState.Fail<T>?.verifyErrorCode(errorCode: String): UiState<T>? {
+    fun<T: Any> UiState<T>?.verifyErrorCode(errorCode: String): UiState<T>? {
         Assert.assertEquals(this?.errorCode, errorCode)
         return this
     }
