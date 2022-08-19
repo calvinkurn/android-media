@@ -29,7 +29,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionVie
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -272,16 +271,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         mapTrackingData(card.tracking)
                 ))
             }
-        }
-
-        if (cards.size > 0) {
-            posts.add(
-                    FeedRecommendationViewModel(
-                            feed.content.cardRecommendation.title,
-                            cards,
-                            template
-                    )
-            )
         }
     }
 
