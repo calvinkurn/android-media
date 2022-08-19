@@ -392,6 +392,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (topItemPosition == RecyclerView.NO_POSITION) return
             val topVisibleUiModel = adapter.data[topItemPosition]
 
+            // hard code to hide tab
             val isShow: Boolean = false && (topVisibleUiModel !is PromoInputUiModel &&
                     topVisibleUiModel !is PromoRecommendationUiModel &&
                     topVisibleUiModel !is PromoEligibilityHeaderUiModel) ||
@@ -801,11 +802,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.labelTotalPromoAmount.gone()
                 it.buttonApplyPromo.gone()
                 it.buttonApplyNoPromo.show()
+                if (fragmentUiModel.uiState.hasPreAppliedBo) {
+                    it.labelBoClashing.text = fragmentUiModel.uiData.unApplyBoMessage
+                    it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.unApplyBoIcon)
+                    it.containerTickerBoClashing.show()
+                }
                 it.containerActionBottom.show()
             } else {
                 it.containerActionBottom.gone()
+                it.containerTickerBoClashing.gone()
             }
-            it.containerTickerBoClashing.gone()
         }
     }
 
@@ -822,7 +828,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             it.buttonApplyPromo.show()
             it.buttonApplyNoPromo.gone()
 
-            if (fragmentUiModel.uiState.hasSelectedBoClashingPromo && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
+            if (fragmentUiModel.uiState.shouldShowTickerBoClashing && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
                 it.labelBoClashing.text = fragmentUiModel.uiData.boClashingMessage
                 it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.boClashingImage)
                 it.containerTickerBoClashing.show()

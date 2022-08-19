@@ -36,8 +36,6 @@ const val VALIDATE_USE_QUERY = """
              cart_id
              order_id
              shop_id
-             shipping_id
-             sp_id
              is_po
              duration
              warehouse_id

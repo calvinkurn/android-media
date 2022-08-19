@@ -18,7 +18,7 @@ data class VoucherOrdersItem(
         @field:SuppressLint("Invalid Data Type")
         @field:SerializedName("sp_id")
         val spId: Int = 0,
-        
+
         @field:SerializedName("title_description")
         val titleDescription: String = "",
 
