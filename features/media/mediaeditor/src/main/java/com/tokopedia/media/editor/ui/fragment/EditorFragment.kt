@@ -2,24 +2,15 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -30,8 +21,6 @@ import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.writeBitmapToStorage
-import com.tokopedia.media.loader.common.Properties
-import com.tokopedia.media.loader.listener.MediaListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -41,7 +30,6 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-import kotlin.math.round
 
 class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
@@ -155,6 +143,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     onReady = { bitmap ->
                         if (isAutoCrop != null && editorUiModel.editList.size == 0) {
                             cropImage(bitmap, editorUiModel)
+                        } else {
+                            viewBinding?.imgMainPreview?.setImageBitmap(bitmap)
                         }
 
                         renderUndoText(editorUiModel)
@@ -250,14 +240,12 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             Handler().removeCallbacksAndMessages(null)
             Handler().postDelayed({
                 it.hide()
-            }, 1500)
+            }, UNDO_REDO_NOTIFY_TIME)
         }
     }
 
     private fun cropImage(sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel){
         sourceBitmap?.let { it ->
-            var scaledBitmap: Bitmap? = null
-
             val bitmapWidth = sourceBitmap.width
             val bitmapHeight = sourceBitmap.height
 
@@ -277,14 +265,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 leftMargin = (bitmapWidth - newWidth) / 2
                 topMargin = (bitmapHeight - newHeight) / 2
             } else if(newHeight > bitmapHeight){
-                val diffValue = newHeight - bitmapHeight
                 scaledTarget = bitmapHeight.toFloat() /newHeight
-
-//                scaledBitmap = Bitmap.createScaledBitmap(sourceBitmap,
-//                    (bitmapWidth*scaledTarget).toInt(),
-//                    newHeight,
-//                    false
-//                )
 
                 // new value after rescale small
                 newWidth = (newWidth * scaledTarget).toInt()
@@ -359,6 +340,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         private const val SCREEN_NAME = "Main Editor"
         private const val TOAST_UNDO = 0
         private const val TOAST_REDO = 1
+        private const val UNDO_REDO_NOTIFY_TIME = 1500L
     }
 
 }
