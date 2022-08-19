@@ -31,6 +31,8 @@ const val VALIDATE_USE_QUERY = """
              code
              success
              unique_id
+             shipping_id
+             sp_id
              cart_id
              order_id
              shop_id

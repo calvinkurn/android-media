@@ -1,5 +1,6 @@
 package com.tokopedia.cart.data.model.response.promo
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -16,5 +17,13 @@ data class VoucherOrders (
         var message: MessageVoucherOrders = MessageVoucherOrders(),
 
         @SerializedName("cart_id")
-        val cartId: String = ""
+        val cartId: String = "",
+
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("shipping_id")
+        val shippingId: Int = 0,
+
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("sp_id")
+        val spId: Int = 0,
 )
