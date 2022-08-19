@@ -25,5 +25,5 @@ data class OrdersItem(
         @SerializedName("free_shipping_metadata")
         var freeShippingMetadata: String = "",
         @Transient
-        var boType: Int = 0
+        var boType: Int = 0,
 ) : Parcelable
