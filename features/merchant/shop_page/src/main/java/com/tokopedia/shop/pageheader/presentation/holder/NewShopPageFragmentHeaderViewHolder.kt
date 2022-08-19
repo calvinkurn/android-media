@@ -231,10 +231,18 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
             override fun onDismiss() {}
 
         })
-        if (isMyShop) {
-            tickerShopStatus?.closeButtonVisibility = View.GONE
-        } else {
+
+        // special handling for shop status incubated
+        if (shopInfo.statusInfo.shopStatus == ShopStatusDef.INCUBATED) {
+            // always show ticker close button if shop is incubated
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+        } else {
+            // default general condition for shop ticker
+            if (isMyShop) {
+                tickerShopStatus?.closeButtonVisibility = View.GONE
+            } else {
+                tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+            }
         }
     }
 
