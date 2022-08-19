@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -53,6 +54,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
             .inject(this)
     }
 
+    @SuppressLint
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         postId = intent.data?.lastPathSegment

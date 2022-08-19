@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -242,6 +243,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 && userSession?.userId == header?.userId)
     }
 
+    @SuppressLint
     fun reportAction(
         id: String,
         reasonType: String,

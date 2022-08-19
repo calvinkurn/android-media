@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -453,6 +454,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint
     private fun doComment() {
         activity?.let {
             val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
