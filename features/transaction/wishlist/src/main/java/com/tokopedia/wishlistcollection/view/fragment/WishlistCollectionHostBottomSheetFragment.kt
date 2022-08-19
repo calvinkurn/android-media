@@ -102,8 +102,13 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
 
         } else {
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
-            val errorMessage = data.errorMessage.first().ifEmpty { context?.getString(
-                R.string.wishlist_v2_common_error_msg) }
+            val errorMessage = if (data.errorMessage.isNotEmpty()) {
+                data.errorMessage.firstOrNull() ?: ""
+            } else if (data.dataItem.message.isNotEmpty()) {
+                data.dataItem.message
+            } else {
+                getString(R.string.wishlist_v2_common_error_msg)
+            }
             intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
         }
         activity?.setResult(Activity.RESULT_OK, intent)

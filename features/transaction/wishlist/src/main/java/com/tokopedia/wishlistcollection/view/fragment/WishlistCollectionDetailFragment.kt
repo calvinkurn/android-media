@@ -106,6 +106,7 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBott
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.PARAM_INSIDE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
@@ -1008,11 +1009,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 )
         }
         var inCollection = ""
+        var source = ""
         if (collectionId.isNotEmpty() && collectionId != "0") {
-            inCollection = "inside"
+            inCollection = PARAM_INSIDE_COLLECTION
+        } else {
+            source = SRC_WISHLIST_COLLECTION
         }
         paramGetCollectionItems.inCollection = inCollection
         paramGetCollectionItems.page = currPage
+        if (source.isNotEmpty()) paramGetCollectionItems.source = source
         wishlistCollectionDetailViewModel.getWishlistCollectionItems(
             paramGetCollectionItems, wishlistPref?.getTypeLayout(),
             paramGetCollectionItems.source == SOURCE_AUTOMATIC_DELETION

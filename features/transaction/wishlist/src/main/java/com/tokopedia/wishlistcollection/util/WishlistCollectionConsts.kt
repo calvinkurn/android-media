@@ -6,6 +6,7 @@ object WishlistCollectionConsts {
     const val SRC_WISHLIST_COLLECTION = "wishlist"
     const val SOURCE_COLLECTION = "collection"
     const val PAGE_NAME = "wishlist_collection"
+    const val PARAM_INSIDE_COLLECTION = "inside"
 
     const val TYPE_COLLECTION_TICKER = "collection_ticker"
     const val TYPE_COLLECTION_ITEM = "collection_item"

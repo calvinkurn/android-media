@@ -207,8 +207,20 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         getCollectionsViewModel.saveItemToCollections.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    actionListener?.onSuccessSaveItemToCollection(result.data)
-                    dismiss()
+                    if (result.data.dataItem.success) {
+                        actionListener?.onSuccessSaveItemToCollection(result.data)
+                        dismiss()
+                    } else {
+                        val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
+                            result.data.errorMessage.firstOrNull() ?: ""
+                        } else if (result.data.dataItem.message.isNotEmpty()) {
+                            result.data.dataItem.message
+                        } else {
+                            getString(R.string.wishlist_v2_common_error_msg)
+                        }
+                        actionListener?.onFailedSaveItemToCollection(errorMessage)
+                        dismiss()
+                    }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
