@@ -8,7 +8,7 @@ import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.util.NumberFormatter.formatFloatToString
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
-import com.tokopedia.tokopedianow.recipedetail.domain.model.RecipeResponse
+import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionTabUiModel

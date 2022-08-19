@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.recipedetail.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokopedianow.recipedetail.domain.model.RecipeResponse
+import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.model.TokoNowGetRecipe
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe.PARAM_RECIPE_ID
