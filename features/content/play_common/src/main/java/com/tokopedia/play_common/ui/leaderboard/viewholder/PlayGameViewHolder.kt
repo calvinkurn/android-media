@@ -15,7 +15,6 @@ import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.setTextGradient
-import com.tokopedia.play_common.view.updatePadding
 import java.util.*
 
 /**
@@ -72,11 +71,7 @@ class PlayGameViewHolder {
     }
 
     internal class Quiz(binding: ItemQuizOptionBinding, listener: Listener) :
-        QuizChoiceViewHolder(binding, listener) {
-            init {
-                binding.root.updatePadding(left = 16, right = 16, top = 16, bottom = 16)
-            }
-        }
+        QuizChoiceViewHolder(binding, listener) {}
 
     internal class Winner(
         private val binding: ItemPlayInteractiveLeaderboardWinnerBinding,
