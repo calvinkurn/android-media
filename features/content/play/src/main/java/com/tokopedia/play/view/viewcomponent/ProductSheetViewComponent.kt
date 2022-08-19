@@ -169,6 +169,7 @@ class ProductSheetViewComponent(
 //    })
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
+    private val itemDecoration: ProductLineItemDecoration
 
     init {
         findViewById<ImageView>(commonR.id.iv_sheet_close)
@@ -180,7 +181,9 @@ class ProductSheetViewComponent(
             adapter = productAdapter
             layoutManager = LinearLayoutManager(rvProductList.context)
             addOnScrollListener(StopFlingScrollListener())
-            addItemDecoration(ProductLineItemDecoration(context))
+
+            itemDecoration = ProductLineItemDecoration(context, this)
+            addItemDecoration(itemDecoration)
             setHasFixedSize(true)
         }
 
@@ -224,10 +227,10 @@ class ProductSheetViewComponent(
         showContent(true)
         tvSheetTitle.text = title
 
-        val newProductList = buildProductList(
-            sectionList.filterIsInstance<ProductSectionUiModel.Section>()
-        )
+        val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
+        val newProductList = buildProductList(sections)
         productAdapter.setItemsAndAnimateChanges(newProductList)
+        itemDecoration.setGradient(sections.first().config.background.gradients) //TODO("MOCK")
         if (productAdapter.getItems() != newProductList) {
             rvProductList.invalidateItemDecorations()
         }
