@@ -92,6 +92,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String USER_ID_PARAM = "uid";
     private static final String ENV_PARAM = "t";
     private static final String ENV_VALUE = "android";
+    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_REDIRECTION";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -304,9 +305,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
         new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
                 newUri.toString(), "", "", "", userSession.isLoggedIn());
-        if (redirectionUrl!=null && !redirectionUrl.isEmpty()){
+        if (redirectionUrl != null && !redirectionUrl.isEmpty()) {
             RouteManager.route(context, redirectionUrl);
+        } else {
+            logRequest(uriData);
+            RouteManager.route(context, ApplinkConst.HOME);
         }
+    }
+
+    private void logRequest(Uri uriData) {
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "request");
+        map.put("uri", uriData.toString());
+        ServerLogger.log(Priority.P2, TOP_ADS_REDIRECTION, map);
     }
 
     private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {

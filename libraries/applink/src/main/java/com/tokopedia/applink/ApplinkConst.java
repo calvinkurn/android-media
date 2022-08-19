@@ -266,6 +266,7 @@ public interface ApplinkConst {
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
+    String RESOLUTION_SUCCESS = "tokopedia://resolution/success-create?url={redirect_url}";
     String TOKOPEDIA_CARE_HELP = "tokopedia://webview?url=https://www.tokopedia.com/help/seller";
 
     String ORDER_LIST = "tokopedia://order";
@@ -642,7 +643,6 @@ public interface ApplinkConst {
     interface AttachProduct {
         String TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY = "TKPD_ATTACH_PRODUCT_SHOP_ID";
         String TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY = "TKPD_ATTACH_PRODUCT_IS_SELLER";
-        String TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY = "TKPD_ATTACH_PRODUCT_SHOP_NAME";
         String TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED = "TKPD_ATTACH_PRODUCT_MAX_CHECKED";
         String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
         String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";

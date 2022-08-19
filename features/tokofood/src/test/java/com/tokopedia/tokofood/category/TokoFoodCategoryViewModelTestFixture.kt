@@ -1,16 +1,13 @@
 package com.tokopedia.tokofood.category
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantListResponse
+import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addErrorState
+import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.addProgressBar
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -28,10 +25,6 @@ abstract class TokoFoodCategoryViewModelTestFixture {
 
     protected lateinit var viewModel: TokoFoodCategoryViewModel
 
-    private val privatePageKey by lazy {
-        viewModel.getPrivateField<String>("pageKey")
-    }
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -39,26 +32,6 @@ abstract class TokoFoodCategoryViewModelTestFixture {
             tokoFoodMerchantListUseCase,
             CoroutineTestDispatchersProvider
         )
-    }
-
-    protected fun verifyGetCategoryLayoutResponseSuccess(expectedResponse: TokoFoodListUiModel) {
-        val actualResponse = viewModel.layoutList.value
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-    }
-
-    protected fun verifyGetCategoryLayoutResponseFail() {
-        val actualResponse = viewModel.layoutList.value
-        Assert.assertTrue(actualResponse is Fail)
-    }
-
-    protected fun verifyLoadMoreLayoutResponseSuccess(expectedResponse: TokoFoodListUiModel) {
-        val actualResponse = viewModel.loadMore.value
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-    }
-
-    protected fun verifyLoadMoreLayoutResponseFail() {
-        val actualResponse = viewModel.loadMore.value
-        Assert.assertTrue(actualResponse is Fail)
     }
 
     protected fun verifyCategoryIsShowingErrorState(actualResponse: Boolean) {
@@ -75,14 +48,16 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         option: Int = 0,
         sortBy: Int = 0,
         cuisine: String = "",
-        pageKey: String = "0"
+        pageKey: String = "0",
+        brandUId: String = ""
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(
             localCacheModel = localCacheModel,
             pageKey = pageKey,
             option = option,
             sortBy = sortBy,
-            cuisine = cuisine
+            cuisine = cuisine,
+            brandUId = brandUId
         ) } returns layoutResponse
     }
 
@@ -92,30 +67,24 @@ abstract class TokoFoodCategoryViewModelTestFixture {
         option: Int = 0,
         sortBy: Int = 0,
         cuisine: String = "",
-        pageKey: String = "0"
+        pageKey: String = "0",
+        brandUId: String = ""
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(
             localCacheModel = localCacheModel,
             pageKey = pageKey,
             option = option,
             sortBy = sortBy,
-            cuisine = cuisine) } throws error
+            cuisine = cuisine,
+            brandUId = brandUId
+        ) } throws error
     }
 
-    protected fun verifyGetErrorLayoutShown() {
-        val homeLayoutList = viewModel.layoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoFoodErrorStateUiModel }
-        Assert.assertNotNull(actualResponse)
+    fun mockProgressBar() {
+        viewModel.categoryLayoutItemList.addProgressBar()
     }
 
-    protected fun verifyPageKey(expectedPageKey: String){
-        Assert.assertEquals(privatePageKey, expectedPageKey)
-    }
-
-    inline fun <reified T>Any.getPrivateField(name: String): T {
-        return this::class.java.getDeclaredField(name).let {
-            it.isAccessible = true
-            return@let it.get(this) as T
-        }
+    fun mockErrorState(throwable: Throwable) {
+        viewModel.categoryLayoutItemList.addErrorState(throwable)
     }
 }

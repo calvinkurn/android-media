@@ -20,5 +20,6 @@ object SellerHomePerformanceMonitoringConstant {
     const val SELLER_HOME_RECOMMENDATION_TRACE = "seller_home_widget_recommendation"
     const val SELLER_HOME_MILESTONE_TRACE = "seller_home_widget_milestone"
     const val SELLER_HOME_CALENDAR_TRACE = "seller_home_widget_calendar"
+    const val SELLER_HOME_UNIFICATION_TRACE = "seller_home_widget_unification"
     const val SELLER_HOME_TICKER_TRACE = "seller_home_widget_ticker"
 }

@@ -36,7 +36,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -74,6 +73,7 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
@@ -100,6 +100,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -826,7 +827,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     fun showSearchInvoiceScreen() {
         activity?.let {
-            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.toIntOrZero(), this)
+            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.convertMessageIdToLong(), this)
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
         }

@@ -182,6 +182,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
+    public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -302,4 +303,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
+
+    public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 }

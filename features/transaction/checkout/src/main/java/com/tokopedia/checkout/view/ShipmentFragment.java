@@ -46,6 +46,8 @@ import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionId
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -167,6 +169,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
@@ -894,6 +897,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
             intent.putExtra(KERO_TOKEN, token);
             intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
+            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.CART.getSource());
             startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
         } else {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
@@ -908,6 +912,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_PREVIOUS_STATE_ADDRESS, addressState);
         intent.putExtra(EXTRA_IS_FROM_CHECKOUT_SNIPPET, true);
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CART.getSource());
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1465,6 +1470,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
         intent.putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true);
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.CHECKOUT.getSource());
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
@@ -1595,8 +1601,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onTotalPaymentChange(String totalPayment) {
-        shipmentPresenter.getShipmentButtonPaymentModel().setTotalPrice(totalPayment);
+    public void onTotalPaymentChange(String totalPayment, boolean enable) {
+        ShipmentButtonPaymentModel shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel();
+        shipmentButtonPaymentModel.setTotalPrice(totalPayment);
+        shipmentButtonPaymentModel.setEnable(enable);
         onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
     }
 

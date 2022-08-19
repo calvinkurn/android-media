@@ -35,7 +35,7 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeAddress();
 
-    void onTotalPaymentChange(String totalPayment);
+    void onTotalPaymentChange(String totalPayment, boolean enable);
 
     void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
 

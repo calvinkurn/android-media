@@ -54,6 +54,7 @@ import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -648,6 +649,25 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
 
         // Then
         assertEquals(listOf(ShipmentCrossSellModel()), presenter.listShipmentCrossSellModel)
+    }
+
+    @Test
+    fun `GIVEN load checkout page with empty cross sell data WHEN load checkout page THEN should set cross sell data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val crossSell = arrayListOf<CrossSellModel>()
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), crossSell = crossSell))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertTrue(presenter.listShipmentCrossSellModel.size == 0)
     }
 
     @Test

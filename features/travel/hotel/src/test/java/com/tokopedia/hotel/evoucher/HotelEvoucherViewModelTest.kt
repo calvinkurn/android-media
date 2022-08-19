@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataResponse
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -53,7 +54,7 @@ class HotelEvoucherViewModelTest {
         } returns Success(HotelOrderDetail(status = HotelOrderDetail.Status(status = 30)))
 
         //when
-        hotelEVoucherViewModel.getOrderDetail("", "")
+        hotelEVoucherViewModel.getOrderDetail(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelEVoucherViewModel.orderDetailData.value is Success)
@@ -68,7 +69,7 @@ class HotelEvoucherViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelEVoucherViewModel.getOrderDetail("", "")
+        hotelEVoucherViewModel.getOrderDetail(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelEVoucherViewModel.orderDetailData.value is Fail)
@@ -86,7 +87,7 @@ class HotelEvoucherViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelEVoucherViewModel.sendPdf("", listOf(), "")
+        hotelEVoucherViewModel.sendPdf(DummyHotelGqlQueryInterfaceImpl(), listOf(), "")
 
         //then
         assert(hotelEVoucherViewModel.sharePdfData.value is Success)
@@ -105,7 +106,7 @@ class HotelEvoucherViewModelTest {
         } returns graphqlErrorResponse
 
         //when
-        hotelEVoucherViewModel.sendPdf("", listOf(), "")
+        hotelEVoucherViewModel.sendPdf(DummyHotelGqlQueryInterfaceImpl(), listOf(), "")
 
         //then
         assert(hotelEVoucherViewModel.sharePdfData.value is Fail)

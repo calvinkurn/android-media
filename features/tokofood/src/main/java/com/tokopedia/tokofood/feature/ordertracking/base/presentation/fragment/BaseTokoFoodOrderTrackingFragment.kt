@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
@@ -252,6 +253,7 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.ERROR_PAGE,
                         TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
                     )
+                    hideStickyButtons()
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
@@ -312,6 +314,17 @@ class BaseTokoFoodOrderTrackingFragment :
         orderTrackingAdapter.hideLoadingShimmer()
     }
 
+    private fun hideStickyButtons() {
+        binding?.run {
+            if (containerOrderTrackingHelpButton.isVisible) {
+                containerOrderTrackingHelpButton.hide()
+            }
+            if (containerOrderTrackingActionsButton.isVisible) {
+                containerOrderTrackingActionsButton.hide()
+            }
+        }
+    }
+
     private fun observeOrderCompletedLiveTracking() {
         observe(viewModel.orderCompletedLiveTracking) {
             orderTrackingAdapter.removeOrderTrackingData()
@@ -325,6 +338,7 @@ class BaseTokoFoodOrderTrackingFragment :
                         TokofoodErrorLogger.ErrorType.ERROR_COMPLETED_ORDER_POST_PURCHASE,
                         TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
                     )
+                    hideStickyButtons()
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }

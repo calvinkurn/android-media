@@ -8,12 +8,10 @@ import android.text.TextPaint
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -21,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -46,6 +43,7 @@ class AddNameFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String = ""
     private var isError = false
+    private var validateToken = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -66,6 +64,10 @@ class AddNameFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        arguments?.let {
+            validateToken = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+        }
+
         initViews()
         initObserver()
         setViewListener()
@@ -194,7 +196,7 @@ class AddNameFragment : BaseDaggerFragment() {
     fun showLoading(){
         binding?.let {
             it.btnContinue.isEnabled = false
-            it.addNameLinearLayout.alpha = 0.5F
+            it.addNameLinearLayout.alpha = ADD_NAME_ALPHA_0_5
             it.addNameProgressbar.show()
         }
     }
@@ -202,7 +204,7 @@ class AddNameFragment : BaseDaggerFragment() {
     fun dismissLoading(){
         binding?.let {
             it.btnContinue?.isEnabled = true
-            it.addNameLinearLayout?.alpha = 1.0F
+            it.addNameLinearLayout?.alpha = ADD_NAME_ALPHA_1_0
             it.addNameProgressbar?.hide()
         }
     }
@@ -215,7 +217,7 @@ class AddNameFragment : BaseDaggerFragment() {
     private fun onContinueClick() {
         showLoading()
         KeyboardHandler.DropKeyboard(activity, view)
-        viewModel.updateName(binding?.etName?.textFieldInput?.text.toString())
+        viewModel.updateName(binding?.etName?.textFieldInput?.text.toString(), validateToken)
     }
 
 
@@ -225,5 +227,8 @@ class AddNameFragment : BaseDaggerFragment() {
             fragment.arguments = bundle
             return fragment
         }
+
+        private const val ADD_NAME_ALPHA_0_5 = 0.5F
+        private const val ADD_NAME_ALPHA_1_0 = 0.5F
     }
 }
