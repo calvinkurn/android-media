@@ -19,8 +19,6 @@ import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.util.ColorUtil
@@ -44,7 +42,6 @@ import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import java.net.URLEncoder
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.kol.R as kolR
 
@@ -996,8 +993,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
         listener?.onHashtagClicked(hashtag, feed)
-        val encodeHashtag = URLEncoder.encode(hashtag, "UTF-8")
-        RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
     }
 
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
