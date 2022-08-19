@@ -31,8 +31,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItem
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.addPromo
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.containsPromoCode
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
@@ -1619,6 +1617,26 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             eCommerceMap["promoView"] = promoViewMap
 
             analytics.eventViewAvailablePromoListIneligibleProduct(getPageSource(), eCommerceMap)
+        }
+    }
+
+    // read promo code for gql request / response
+    // for comparing ui model please use `contains(promoListItemUiModel.uiData.promoCode)`
+    private fun Collection<String>.containsPromoCode(promoListItemUiModel: PromoListItemUiModel) : Boolean {
+        return if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code }).isNotEmpty()
+        } else {
+            this.contains(promoListItemUiModel.uiData.promoCode)
+        }
+    }
+
+    // add promo code for gql request / response
+    // for ui model usage please use `add(promoListItemUiModel.uiData.promoCode)`
+    private fun MutableCollection<String>.addPromo(promoListItemUiModel: PromoListItemUiModel) {
+        if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
+        } else {
+            this.add(promoListItemUiModel.uiData.promoCode)
         }
     }
 
