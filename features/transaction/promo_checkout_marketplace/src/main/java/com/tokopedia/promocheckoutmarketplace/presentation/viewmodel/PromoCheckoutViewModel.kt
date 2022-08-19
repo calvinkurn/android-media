@@ -676,7 +676,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             errorMessage = fragmentUiModel.value?.uiData?.defaultErrorMessage ?: ""
         }
         promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && promoCodeList.contains(it.uiData.promoCode)) {
+            if (it is PromoListItemUiModel && promoCodeList.containsPromoCode(it)) {
                 analytics.eventViewErrorAfterClickPakaiPromo(getPageSource(), it.uiData.promoId, errorMessage)
             }
         }
@@ -808,11 +808,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         val selectedPromoList = ArrayList<String>()
         promoListUiModel.value?.forEach { visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected) {
-                if (visitable.uiState.isBebasOngkir) {
-                    selectedPromoList.addAll(visitable.uiData.boAdditionalData.map { it.code })
-                } else {
-                    selectedPromoList.add(visitable.uiData.promoCode)
-                }
+                selectedPromoList.addPromo(visitable)
             }
         }
 
@@ -908,9 +904,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun setPromoItemDisabled(redStateMap: HashMap<String, String>, it: PromoListItemUiModel) {
-        if (redStateMap.containsKey(it.uiData.promoCode)) {
+        if (redStateMap.keys.containsPromoCode(it)) {
             it.uiState.isSelected = false
-            it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
+            it.uiData.errorMessage = redStateMap[it.getPromoCode(redStateMap.keys)] ?: ""
             it.uiState.isDisabled = true
             _tmpUiModel.value = Update(it)
         }
@@ -968,7 +964,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val globalPromo = arrayListOf<String>()
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !globalPromo.contains(visitable.uiData.promoCode)) {
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
                 globalPromo.add(visitable.uiData.promoCode)
             }
         }
@@ -1092,8 +1088,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun addUnSelectedPromoCodes(toBeRemovedPromoCodes: ArrayList<String>) {
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.contains(visitable.uiData.promoCode)) {
-                toBeRemovedPromoCodes.add(visitable.uiData.promoCode)
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.containsPromoCode(visitable)) {
+                toBeRemovedPromoCodes.addPromo(visitable)
             }
         }
     }
@@ -1621,6 +1617,26 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             eCommerceMap["promoView"] = promoViewMap
 
             analytics.eventViewAvailablePromoListIneligibleProduct(getPageSource(), eCommerceMap)
+        }
+    }
+
+    // read promo code for gql request / response
+    // for comparing ui model please use `contains(promoListItemUiModel.uiData.promoCode)`
+    private fun Collection<String>.containsPromoCode(promoListItemUiModel: PromoListItemUiModel) : Boolean {
+        return if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.intersect(promoListItemUiModel.uiData.boAdditionalData.map { it.code }).isNotEmpty()
+        } else {
+            this.contains(promoListItemUiModel.uiData.promoCode)
+        }
+    }
+
+    // add promo code for gql request / response
+    // for ui model usage please use `add(promoListItemUiModel.uiData.promoCode)`
+    private fun MutableCollection<String>.addPromo(promoListItemUiModel: PromoListItemUiModel) {
+        if (promoListItemUiModel.uiState.isBebasOngkir) {
+            this.addAll(promoListItemUiModel.uiData.boAdditionalData.map { it.code })
+        } else {
+            this.add(promoListItemUiModel.uiData.promoCode)
         }
     }
 

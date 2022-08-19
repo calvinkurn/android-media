@@ -19,6 +19,17 @@ data class PromoListItemUiModel(
         return typeFactory.type(this)
     }
 
+    // get promo code for gql request / response
+    // because bebas ongkir can have multiple promo code in `boAdditionalData`
+    // for ui model usage please use `promoListItemUiModel.uiData.promoCode`
+    fun getPromoCode(listOfPromoCodes: Collection<String>) : String {
+        return if (uiState.isBebasOngkir) {
+                uiData.boAdditionalData.map { it.code }.intersect(listOfPromoCodes).firstOrNull() ?: ""
+        } else {
+                uiData.promoCode
+        }
+    }
+
     data class UiData(
             var promoId: String = "",
             var uniqueId: String = "",
