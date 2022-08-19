@@ -664,7 +664,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
-        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.getRates()
@@ -1306,7 +1306,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         val response = AkamaiErrorException("")
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws response
-        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1348,7 +1348,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         DetailsItemUiModel(amount = discountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
         )), globalSuccess = true), status = "OK", errorCode = "200")
-        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When Choose Logistic Promo
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1597,7 +1597,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val throwable = AkamaiErrorException("")
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws throwable
-        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
@@ -1745,7 +1745,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         ), globalSuccess = true), status = "OK", errorCode = "200")
@@ -1768,7 +1768,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.clearBboIfExist()
 
         // Then
-        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) }
+        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any()) }
     }
 
     @Test
@@ -1786,7 +1786,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.clearBboIfExist()
 
         // Then
-        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) }
+        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any()) }
     }
 
     @Test
@@ -1801,7 +1801,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.clearBboIfExist()
 
         // Then
-        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) }
+        verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any()) }
     }
 
     @Test

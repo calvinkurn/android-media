@@ -14,9 +14,12 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -130,10 +133,10 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, "code")
+        presenter.cancelAutoApplyPromoStackLogistic(0, "code", ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
 
         // Then
         verify {
@@ -154,10 +157,10 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, "code")
+        presenter.cancelAutoApplyPromoStackLogistic(0, "code", ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
 
         // Then
         verifySequence {
@@ -187,10 +190,10 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode)
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
 
         // Then
         verifySequence {
@@ -219,10 +222,10 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode)
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
 
         // Then
         verifySequence {
@@ -249,10 +252,10 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode)
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
 
         // Then
         verifySequence {
@@ -280,10 +283,10 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode)
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
 
         // Then
         verifySequence {
@@ -295,7 +298,7 @@ class ShipmentPresenterClearPromoTest {
     fun `WHEN clear non eligible promo success THEN should render success`() {
         // Given
         val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
-            add(NotEligiblePromoHolderdata(promoCode = "code"))
+            add(NotEligiblePromoHolderdata(promoCode = "code", iconType = NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL))
         }
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
                 ClearPromoUiModel(
@@ -304,7 +307,7 @@ class ShipmentPresenterClearPromoTest {
                         )
                 )
         )
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
         presenter.cancelNotEligiblePromo(notEligilePromoList)
@@ -321,7 +324,7 @@ class ShipmentPresenterClearPromoTest {
         presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "", "message")
 
         val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
-            add(NotEligiblePromoHolderdata(promoCode = "code"))
+            add(NotEligiblePromoHolderdata(promoCode = "code", iconType = NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL))
         }
 
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
@@ -333,7 +336,7 @@ class ShipmentPresenterClearPromoTest {
                 )
         )
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
         presenter.cancelNotEligiblePromo(notEligilePromoList)

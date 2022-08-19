@@ -109,11 +109,10 @@ data class RatesParam(
             "mvc" to mvc,
             "po_time" to po_time,
             "is_fulfillment" to is_fulfillment,
-            "bo_metadata" to bo_metadata,
-            "metadata" to constructMetadata()
+            "bo_metadata" to bo_metadata
     )
 
-    private fun constructMetadata(): Map<String, Any?> = mapOf(
+    fun toMetadata(): Map<String, Any?> = mapOf(
             "cart_data" to cart_data
     )
 
