@@ -1627,10 +1627,28 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
 
             if(tmCouponStartTimeUnix != null && type == 0 && firstTimeStart){
-                defaultTime.time = tmCouponStartTimeUnix?.time
+                tmCouponStartTimeUnix?.get(Calendar.HOUR_OF_DAY)?.let {
+                    defaultTime.set(Calendar.HOUR_OF_DAY,
+                        it
+                    )
+                }
+                tmCouponStartTimeUnix?.get(Calendar.MINUTE)?.let {
+                    defaultTime.set(Calendar.MINUTE,
+                        it
+                    )
+                }
             }
             if(tmCouponEndTimeUnix != null && type == 1 && firstTimeEnd){
-                defaultTime.time = tmCouponEndTimeUnix?.time
+                tmCouponEndTimeUnix?.get(Calendar.HOUR_OF_DAY)?.let {
+                    defaultTime.set(Calendar.HOUR_OF_DAY,
+                        it
+                    )
+                }
+                tmCouponEndTimeUnix?.get(Calendar.MINUTE)?.let {
+                    defaultTime.set(Calendar.MINUTE,
+                        it
+                    )
+                }
             }
 
             val timerPickerUnify = DateTimePickerUnify(

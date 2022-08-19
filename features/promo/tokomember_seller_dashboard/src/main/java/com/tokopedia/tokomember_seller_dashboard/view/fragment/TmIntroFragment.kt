@@ -38,6 +38,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.TM_INTRO_BG
 import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.TM_NOT_ELIGIBLE_DESC
@@ -105,11 +108,7 @@ class TmIntroFragment : BaseDaggerFragment(),
             tmTracker?.viewIntroPage(it.toString())
             tmIntroViewModel.getIntroInfo(it)
             btnContinue.setOnClickListener { _ ->
-                if (openBS) {
-                    redirectSellerOs()
-                } else {
-                    openCreationActivity()
-                }
+                proceedIntroLogic()
                 tmTracker?.clickIntroLanjut(it.toString())
             }
         }
@@ -134,12 +133,47 @@ class TmIntroFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun proceedIntroLogic() {
+        if (com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck.isConnectedToInternet(context)) {
+            if (openBS) {
+                redirectSellerOs()
+            } else {
+                openCreationActivity()
+            }
+        }
+        else {
+            noInternetUi {
+                proceedIntroLogic()
+            }
+        }
+    }
+
     override fun getScreenName() = ""
 
     override fun initInjector() {
         DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = 0,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        bottomsheet.show(childFragmentManager,"")
+    }
     private fun observeViewModel() {
 
         tmIntroViewModel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {

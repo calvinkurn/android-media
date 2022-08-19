@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,8 +36,22 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCardColorAdapter
@@ -251,6 +264,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         containerViewFlipper.displayedChild = DATA
         renderCardCarousel(data)
         btnContinueCard?.setOnClickListener {
+
             mTmCardModifyInput =  TmCardModifyInput(
                 apiVersion = "3.0.0",
                 isMerchantCard = true,
@@ -265,8 +279,38 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     numberOfLevel = 2
                 )
             )
+            proceedIntroLogic(mTmCardModifyInput)
+        }
+    }
+
+    private fun proceedIntroLogic(mTmCardModifyInput: TmCardModifyInput) {
+        if (TmInternetCheck.isConnectedToInternet(context)) {
             tmDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
         }
+        else{
+            noInternetUi { proceedIntroLogic(mTmCardModifyInput) }
+        }
+    }
+
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = 0,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        bottomsheet.show(childFragmentManager,"")
     }
 
     @SuppressLint("NotifyDataSetChanged")
