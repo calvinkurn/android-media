@@ -10,7 +10,6 @@
     <string name="path_change_inactive_phone">/change-inactive-phone</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
-    <string name="path_add_password">/add-password</string>
     <string name="path_liveness_detection">/liveness-detection</string>
     <string name="path_telephony_masking">/telephony-masking</string>
 
