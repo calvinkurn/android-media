@@ -530,7 +530,6 @@ open class DynamicProductDetailFragment :
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
-        observeAffiliateCookie()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -2036,21 +2035,6 @@ open class DynamicProductDetailFragment :
                     onSuccessUpdateAddress()
                 }
             })
-        }
-    }
-
-    private fun observeAffiliateCookie() {
-        viewModel.affiliateCookie.observe(viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
-                    isSuccess = true
-                )
-            }) { throwable ->
-                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
-                    isSuccess = false,
-                    errorMessage = throwable.message ?: ""
-                )
-            }
         }
     }
 
