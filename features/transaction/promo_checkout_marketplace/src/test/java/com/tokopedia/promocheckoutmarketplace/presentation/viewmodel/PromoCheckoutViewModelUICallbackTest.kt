@@ -108,7 +108,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert((viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
-        assert(viewModel.fragmentUiModel.value?.uiState?.hasSelectedBoClashingPromo == true)
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
         assert(viewModel.fragmentUiModel.value?.uiData?.boClashingMessage == promoListItemUiModel.uiData.boClashingInfos.first().message)
         assert(viewModel.fragmentUiModel.value?.uiData?.boClashingImage == promoListItemUiModel.uiData.boClashingInfos.first().icon)
     }
@@ -131,7 +131,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
-        assert(viewModel.fragmentUiModel.value?.uiState?.hasSelectedBoClashingPromo == false)
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
 
     @Test
@@ -191,7 +191,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
-        assert(viewModel.fragmentUiModel.value?.uiState?.hasSelectedBoClashingPromo == false)
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
 
     @Test
@@ -234,30 +234,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
-    }
-
-    @Test
-    fun `WHEN apply recommended promo of BO promo item THEN should get promo code from additional bo datas`() {
-        // GIVEN
-        val data = GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo()
-        viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
-            uiData = PromoRecommendationUiModel.UiData().apply {
-                promoCodes = listOf(
-                    "PLUSAA"
-                )
-            },
-                uiState = PromoRecommendationUiModel.UiState())
-        )
-
-        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
-        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
-
-        // WHEN
-        viewModel.applyRecommendedPromo()
-
-        // THEN
-        assert((viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
     }
 
     @Test
