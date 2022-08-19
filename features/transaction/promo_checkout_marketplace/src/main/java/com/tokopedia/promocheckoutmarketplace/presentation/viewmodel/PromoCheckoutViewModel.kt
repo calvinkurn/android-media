@@ -450,7 +450,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun checkHasSelectedPromoBo(): Boolean {
         var hasSelectedPromoBo = false
         promoListUiModel.value?.forEach visitableLoop@{ visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir && visitable.uiState.isSelected) {
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir) {
                 hasSelectedPromoBo = true
                 return@visitableLoop
             }

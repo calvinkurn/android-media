@@ -809,8 +809,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.containerActionBottom.show()
             } else {
                 it.containerActionBottom.gone()
+                it.containerTickerBoClashing.gone()
             }
-            it.containerTickerBoClashing.gone()
         }
     }
 
