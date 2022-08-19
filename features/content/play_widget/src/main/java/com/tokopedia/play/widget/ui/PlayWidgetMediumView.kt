@@ -96,7 +96,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 channelPositionInList = position,
             )
 
-            mAnalyticListener?.onImpressReminderIcon(
+            if(item.isUpcoming)
+                mAnalyticListener?.onImpressReminderIcon(
                 view = this@PlayWidgetMediumView,
                 item = item,
                 channelPositionInList = position,
