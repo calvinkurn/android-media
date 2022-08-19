@@ -148,7 +148,6 @@ class ProductTagViewComponent(
     }
 
     fun hideCoachMark(){
-        job.cancel()
         coachMark.dismissCoachMark()
     }
 
@@ -156,7 +155,6 @@ class ProductTagViewComponent(
     fun onDestroy() {
         rvProductTag.removeOnScrollListener(scrollListener)
         adapter.unregisterAdapterDataObserver(adapterObserver)
-        job.cancel()
     }
 
     companion object {
