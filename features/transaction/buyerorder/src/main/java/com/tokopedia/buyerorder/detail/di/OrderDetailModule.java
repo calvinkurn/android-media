@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -41,8 +43,8 @@ public class OrderDetailModule {
     }
 
     @Provides
-    MultiRequestGraphqlUseCase provideMultiGraphQlUseCase(){
-        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
+    GraphqlRepository provideRepository(){
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
     }
 
 }
