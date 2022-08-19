@@ -1053,9 +1053,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 affiliatePageDetail = affiliatePageDetail,
                 uuid = uuid
             )
-
         }, onError = {
-            _affiliateCookie.postValue(it.asFail())
+            // no op, expect to be handled by Affiliate SDK
         })
     }
 
