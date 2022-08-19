@@ -130,7 +130,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         setupView()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId))
+        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalCampaign))
     }
 
 
@@ -149,13 +149,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
             endlessRecyclerViewScrollListener =
                 object : EndlessRecyclerViewScrollListener(layoutManager) {
                     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                        val currentItemCount = flashSaleAdapter.getItems().size
-                        if (currentItemCount < totalCampaign) {
-                            flashSaleAdapter.addItem(LoadingItem)
-                            viewModel.processEvent(
-                                FlashSaleListViewModel.UiEvent.LoadPage(page * PAGE_SIZE)
-                            )
-                        }
+                        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadNextPage(page * PAGE_SIZE))
                     }
                 }
             addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
@@ -199,7 +193,8 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
-        renderFlashSaleList(uiState.shouldResetList, uiState.flashSales)
+        renderLoadNextPage(uiState.isLoadingNextPage)
+        renderList(uiState.flashSales)
         renderSortChips(uiState.selectedSort)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
     }
@@ -209,18 +204,29 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         binding?.recyclerView?.isVisible = !isLoading
     }
 
-    private fun renderFlashSaleList(shouldResetList: Boolean, flashSales: List<DelegateAdapterItem>) {
-        flashSaleAdapter.removeItem(LoadingItem)
-
-        if (shouldResetList) {
-            flashSaleAdapter.submit(flashSales)
+    private fun renderLoadNextPage(isLoading: Boolean) {
+        if (isLoading) {
+            flashSaleAdapter.addItem(LoadingItem)
         } else {
+            flashSaleAdapter.removeItem(LoadingItem)
+        }
+    }
 
-            if (flashSales.isNotEmpty()) {
-                flashSaleAdapter.addItems(flashSales)
+
+    private fun renderList(flashSales: List<DelegateAdapterItem>) {
+        if (flashSales.isNotEmpty()) {
+            val allItems = flashSaleAdapter.getItems() + flashSales
+            flashSaleAdapter.submit(allItems)
+
+            val hasNextPage = flashSales.size >= PAGE_SIZE
+
+            endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+            endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+
+            if (flashSaleAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage) {
+                endlessRecyclerViewScrollListener?.loadMoreNextPage()
             }
         }
-
     }
 
     private fun renderSortChips(selectedSort: SingleSelectionItem) {

@@ -41,8 +41,9 @@ class FlashSaleListViewModel @Inject constructor(
 
      data class UiState(
          val isLoading: Boolean = true,
+         val totalItem: Int = 0,
+         val isLoadingNextPage: Boolean = false,
          val flashSales: List<DelegateAdapterItem> = emptyList(),
-         val shouldResetList: Boolean = false,
          val tabName: String = "",
          val tabId: Int = TabConstant.TAB_ID_UPCOMING,
          val offset: Int = 0,
@@ -53,8 +54,8 @@ class FlashSaleListViewModel @Inject constructor(
     )
 
     sealed class UiEvent {
-        data class Init(val tabName : String, val tabId: Int) : UiEvent()
-        data class LoadPage( val offset : Int) : UiEvent()
+        data class Init(val tabName : String, val tabId: Int, val totalItem: Int) : UiEvent()
+        data class LoadNextPage(val offset : Int) : UiEvent()
         object ChangeSort : UiEvent()
         data class ApplySort(val selectedSort: SingleSelectionItem) : UiEvent()
         object ChangeCategory : UiEvent()
@@ -73,8 +74,8 @@ class FlashSaleListViewModel @Inject constructor(
 
     fun processEvent(event : UiEvent) {
         when (event) {
-            is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId)
-            is UiEvent.LoadPage -> onLoadPage(event.offset)
+            is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalItem)
+            is UiEvent.LoadNextPage -> onLoadNextPage(event.offset)
             is UiEvent.ChangeSort -> onChangeSort()
             is UiEvent.ApplySort -> onApplySort(event.selectedSort)
             is UiEvent.ChangeCategory -> onChangeCategory()
@@ -83,14 +84,14 @@ class FlashSaleListViewModel @Inject constructor(
         }
     }
 
-    private fun onPageFirstAppear(tabName: String, tabId: Int) {
+    private fun onPageFirstAppear(tabName: String, tabId: Int, totalItem: Int) {
         _uiState.update {
             it.copy(
                 isLoading = true,
                 tabName = tabName,
                 tabId = tabId,
                 offset = 0,
-                shouldResetList = false
+                totalItem = totalItem
             )
         }
 
@@ -98,15 +99,12 @@ class FlashSaleListViewModel @Inject constructor(
         getFlashSaleListCategory()
     }
 
-    private fun onLoadPage(offset: Int) {
-        _uiState.update {
-            it.copy(
-                offset = offset,
-                shouldResetList = false
-            )
-        }
-
+    private fun onLoadNextPage(offset: Int) {
+        print("Loading offset $offset")
+        _uiState.update { it.copy(isLoadingNextPage = true, offset = offset) }
         getFlashSaleList()
+
+
     }
 
     private fun onChangeSort() {
@@ -118,7 +116,7 @@ class FlashSaleListViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 selectedSort = selectedSort,
-                shouldResetList = true,
+                flashSales = emptyList(),
                 offset = 0
             )
         }
@@ -141,8 +139,8 @@ class FlashSaleListViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = true,
-                shouldResetList = true,
                 selectedCategoryIds = categoryIds,
+                flashSales = emptyList(),
                 offset = 0
             )
         }
@@ -156,7 +154,7 @@ class FlashSaleListViewModel @Inject constructor(
                 isLoading = true,
                 selectedCategoryIds = listOf(),
                 selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
-                shouldResetList = true,
+                flashSales = emptyList(),
                 offset = 0
             )
         }
@@ -188,11 +186,13 @@ class FlashSaleListViewModel @Inject constructor(
                     sortOrderBy = _uiState.value.selectedSort.id,
                     sortOrderRule = _uiState.value.selectedSort.direction
                 )
-                val campaigns = getFlashSaleListForSellerUseCase.execute(params)
-                _uiState.update { it.copy(isLoading = false, error = null, flashSales = formatFlashSaleData(_uiState.value.tabId, campaigns)) }
+                val flashSales = getFlashSaleListForSellerUseCase.execute(params)
+                val formattedFlashSales = formatFlashSaleData(_uiState.value.tabId, flashSales)
+
+                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false, error = null, flashSales = formattedFlashSales) }
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false, error = error) }
+                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false,  error = error) }
             }
         )
 
