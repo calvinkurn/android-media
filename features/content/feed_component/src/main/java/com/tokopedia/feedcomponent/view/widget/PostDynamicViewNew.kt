@@ -641,10 +641,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
             sendHeaderTopadsEvent(positionInFeed,author.appLink,cpmData,true)
         }
-        val textFollowAction = if (followers.transitionFollow || (followers.isFollowed && isTopads)) {
-            context.getString(R.string.kol_Action_following_color)
+        val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
+            context.getString(R.string.kol_action_following_color)
         } else {
-            context.getString(R.string.kol_Action_following)
+            context.getString(R.string.kol_action_follow_color)
         }
         if (!isFollowed || followers.transitionFollow) {
             this.authorFollowAction.text = MethodChecker.fromHtml(
