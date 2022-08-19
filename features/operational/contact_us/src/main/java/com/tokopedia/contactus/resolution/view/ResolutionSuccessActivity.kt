@@ -1,4 +1,4 @@
-package com.tokopedia.resolution
+package com.tokopedia.contactus.resolution.view
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity

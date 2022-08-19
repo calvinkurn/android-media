@@ -442,6 +442,8 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
             add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalOperational.SUCCESS_RESO) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_resolution))
+
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))

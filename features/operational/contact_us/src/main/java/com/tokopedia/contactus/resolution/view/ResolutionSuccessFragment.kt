@@ -1,4 +1,4 @@
-package com.tokopedia.resolution
+package com.tokopedia.contactus.resolution.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.contactus.R
+import com.tokopedia.contactus.databinding.FragmentResolutionSuccessBinding
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.resolution.databinding.FragmentResolutionSuccessBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
