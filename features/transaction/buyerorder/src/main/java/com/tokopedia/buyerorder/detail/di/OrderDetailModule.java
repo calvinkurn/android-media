@@ -19,6 +19,8 @@ import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.Interceptor;
 
 @Module
@@ -45,6 +47,11 @@ public class OrderDetailModule {
     @Provides
     GraphqlRepository provideRepository(){
         return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @Provides
+    CoroutineDispatcher provideCoroutineDispatcher(){
+        return Dispatchers.getIO();
     }
 
 }
