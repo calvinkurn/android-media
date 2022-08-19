@@ -114,7 +114,10 @@ object PromoRequestMapper {
         cartShopHolderData: CartShopHolderData
     ): Pair<Int, Int> {
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
+            if (voucherOrder.uniqueId == cartShopHolderData.cartString
+                && voucherOrder.shippingId > 0
+                && voucherOrder.spId > 0
+            ) {
                 return Pair(voucherOrder.shippingId, voucherOrder.spId)
             }
         }
@@ -126,7 +129,10 @@ object PromoRequestMapper {
         cartShopHolderData: CartShopHolderData
     ): Pair<Int, Int> {
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
+            if (voucherOrder.uniqueId == cartShopHolderData.cartString
+                && voucherOrder.shippingId > 0
+                && voucherOrder.spId > 0
+            ) {
                 return Pair(voucherOrder.shippingId, voucherOrder.spId)
             }
         }
