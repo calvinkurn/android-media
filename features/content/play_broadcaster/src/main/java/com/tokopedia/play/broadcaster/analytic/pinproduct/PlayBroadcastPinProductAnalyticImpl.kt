@@ -39,49 +39,49 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
     override fun onClickPinProductBottomSheet(productId: String) {
         sendClickContent(
             eventAction = "click - pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $productId - $",
+            eventLabel = "$partnerId - $channelId - $productId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onImpressPinProductLiveRoom(productId: String) {
         sendImpressionContent(
             eventAction = "view - pin product live room",
-            eventLabel = "$partnerId - $channelId - $productId - $",
+            eventLabel = "$partnerId - $channelId - $productId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onImpressPinProductBottomSheet(productId: String) {
         sendImpressionContent(
             eventAction = "view - pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $productId - $",
+            eventLabel = "$partnerId - $channelId - $productId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onImpressFailPinProductLiveRoom() {
         sendImpressionContent(
             eventAction = "view - fail pin product live room",
-            eventLabel = "$partnerId - $channelId - $",
+            eventLabel = "$partnerId - $channelId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onImpressFailPinProductBottomSheet() {
         sendImpressionContent(
             eventAction = "view - fail pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $",
+            eventLabel = "$partnerId - $channelId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onImpressFailUnPinProductLiveRoom() {
         sendImpressionContent(
             eventAction = "view - fail un-pin product live room",
-            eventLabel = "$partnerId - $channelId - $",
+            eventLabel = "$partnerId - $channelId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
     override fun onImpressFailUnPinProductBottomSheet() {
         sendImpressionContent(
             eventAction = "view - fail un-pin product bottom sheet",
-            eventLabel = "$partnerId - $channelId - $",
+            eventLabel = "$partnerId - $channelId - $KEY_TRACK_CATEGORY_SELLER",
         )
     }
 
