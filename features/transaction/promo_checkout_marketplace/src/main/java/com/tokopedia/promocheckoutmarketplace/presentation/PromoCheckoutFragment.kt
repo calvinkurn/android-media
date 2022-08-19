@@ -801,9 +801,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.buttonApplyPromo.gone()
                 it.buttonApplyNoPromo.show()
                 if (fragmentUiModel.uiState.hasPreAppliedBo) {
-                    it.labelBoClashing.text = getString(R.string.label_has_already_selected_bo_promo)
-                    // todo
-                    it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.boClashingImage)
+                    it.labelBoClashing.text = fragmentUiModel.uiData.unApplyBoMessage
+                    it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.unApplyBoIcon)
                     it.containerTickerBoClashing.show()
                 }
                 it.containerActionBottom.show()

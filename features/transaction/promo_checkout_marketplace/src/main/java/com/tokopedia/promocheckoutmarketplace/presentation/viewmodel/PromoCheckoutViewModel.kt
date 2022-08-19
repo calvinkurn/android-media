@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
+import com.tokopedia.promocheckoutmarketplace.data.response.BoClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
@@ -318,9 +319,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val hasPreSelectedPromo = checkHasPreSelectedPromo()
         val preSelectedPromoCodes = getPreSelectedPromoList()
-        val hasSelectedPromoBo = checkHasSelectedPromoBo()
+        val clashingInfoPreAppliedBo = checkClashingInfoPreAppliedBo()
 
-        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, hasSelectedPromoBo)
+        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, clashingInfoPreAppliedBo)
 
         calculateAndRenderTotalBenefit()
         updateRecommendationState()
@@ -447,15 +448,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         return tmpHasPreSelectedPromo
     }
 
-    private fun checkHasSelectedPromoBo(): Boolean {
-        var hasSelectedPromoBo = false
+    private fun checkClashingInfoPreAppliedBo(): BoClashingInfo? {
+        var boClashingInfo: BoClashingInfo? = null
         promoListUiModel.value?.forEach visitableLoop@{ visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir) {
-                hasSelectedPromoBo = true
+                boClashingInfo = visitable.uiData.boClashingInfos.firstOrNull()
                 return@visitableLoop
             }
         }
-        return hasSelectedPromoBo
+        return boClashingInfo
     }
 
     private fun setPromoInputState(response: CouponListRecommendationResponse, tmpPromoCode: String) {
@@ -593,14 +594,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, hasSelectedBoPromo: Boolean) {
+    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, clashingInfoPreAppliedBo: BoClashingInfo?) {
         fragmentUiModel.value?.let {
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
             it.uiState.hasAnyPromoSelected = hasPreSelectedPromo
-            it.uiState.hasPreAppliedBo = hasSelectedBoPromo
             it.uiState.hasFailedToLoad = false
             it.uiData.exception = null
+
+            it.uiState.hasPreAppliedBo = clashingInfoPreAppliedBo != null
+            it.uiData.unApplyBoMessage = clashingInfoPreAppliedBo?.message ?: ""
+            it.uiData.unApplyBoIcon = clashingInfoPreAppliedBo?.icon ?: ""
             _fragmentUiModel.value = it
         }
     }
@@ -1198,7 +1202,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
-        if (selectedItem.uiData.boClashingInfos.isNotEmpty()) {
+        if (selectedItem.uiData.boClashingInfos.isNotEmpty() && !selectedItem.uiState.isBebasOngkir) {
             fragmentUiModel.value?.let {
                 it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
                 it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.firstOrNull()?.icon ?: ""
