@@ -41,7 +41,7 @@ class OrderDetailViewModel @Inject constructor(
     val actionButton: LiveData<Result<Pair<Int, List<ActionButton>>>>
         get() = _actionButton
 
-    fun requestOmsDetail(orderId: String, orderCategory: String, upstream: String){
+    fun requestOmsDetail(orderId: String, orderCategory: String, upstream: String?){
         launchCatchError(
             block = {
                 omsDetailUseCase.get().createParams(orderId, orderCategory, upstream)

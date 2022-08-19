@@ -16,7 +16,7 @@ class OmsDetailUseCase @Inject constructor(
     private val repository: GraphqlRepository
 ): GraphqlUseCase<DetailsData>(repository) {
 
-    private var params: Map<String, Any> = mapOf()
+    private var params: Map<String, Any?> = mapOf()
 
     override suspend fun executeOnBackground(): DetailsData {
         val gqlResponse = repository.response(listOf(createRequest()))
@@ -30,7 +30,7 @@ class OmsDetailUseCase @Inject constructor(
 
     private fun createRequest() = GraphqlRequest(QueryOmsDetails(), DetailsData::class.java, params)
 
-    fun createParams(orderId: String, orderCategory: String, upstream: String){
+    fun createParams(orderId: String, orderCategory: String, upstream: String?){
         params = mapOf(
             Key.ORDER_CATEGORY to orderCategory,
             Key.ORDER_ID to orderId,
