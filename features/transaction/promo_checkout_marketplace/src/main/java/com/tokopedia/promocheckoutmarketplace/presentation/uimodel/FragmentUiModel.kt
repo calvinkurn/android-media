@@ -14,8 +14,8 @@ data class FragmentUiModel(
             var defaultErrorMessage: String = "",
             var boClashingMessage: String = "",
             var boClashingImage: String = "",
-            var unApplyBoMessage: String = ""
-            var unApplyBoIcon: String = ""
+            var unApplyBoMessage: String = "",
+            var unApplyBoIcon: String = "",
     )
 
     data class UiState(
