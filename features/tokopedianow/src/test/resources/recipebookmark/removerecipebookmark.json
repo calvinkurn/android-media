@@ -1,0 +1,10 @@
+{
+  "TokonowRemoveRecipeBookmark": {
+    "header": {
+      "success": true,
+      "statusCode": "200",
+      "message": "",
+      "processTime": 0.066808018
+    }
+  }
+}

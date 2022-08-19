@@ -22,15 +22,12 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiMo
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val chooseAddressData: LocalCacheModel,
-    private val userSessionInterface: UserSessionInterface,
     private val getRecipeBookmarksUseCase: GetRecipeBookmarksUseCase,
     private val removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase,
     private val addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase,
@@ -47,8 +44,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val _toaster: MutableStateFlow<UiState<ToasterUiModel>?> = MutableStateFlow(null)
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    private val userId: String
-        get() = userSessionInterface.userId
     private val warehouseId: String
         get() = chooseAddressData.warehouse_id
 
