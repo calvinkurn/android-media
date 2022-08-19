@@ -1201,9 +1201,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
             val abTestToolbarState = abTestPlatform.getString(
                 key = RollenceKey.PdpToolbar.key,
-                defaultValue = RollenceKey.PdpToolbar.solid
+                defaultValue = ""
             )
-            _toolbarTransparentState.value = abTestToolbarState != RollenceKey.PdpToolbar.solid
+            _toolbarTransparentState.value = abTestToolbarState == RollenceKey.PdpToolbar.transparent
         } catch (throwable: Throwable) {
             _toolbarTransparentState.value = false
         }

@@ -79,6 +79,6 @@ object RollenceKey {
 
     object PdpToolbar {
         const val key = "pdp_dyn_container"
-        const val solid = "solid"
+        const val transparent = "var_container"
     }
 }
