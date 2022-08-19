@@ -11,14 +11,14 @@
 
     <FrameLayout
         android:id="@+id/flPhotoContainer"
-        android:layout_width="@dimen/chatcommon_40dp"
-        android:layout_height="@dimen/chatcommon_40dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_centerVertical="true">
 
         <ImageView
             android:id="@+id/user_avatar"
-            android:layout_width="@dimen/chatcommon_40dp"
-            android:layout_height="@dimen/chatcommon_40dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:contentDescription="user_avatar"
             tools:src="@color/Unify_Y500" />
 
@@ -36,17 +36,17 @@
 
     <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/header_menu"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_lvl2"
-        app:unifyImageButtonVariant="image"
         android:layout_marginRight="@dimen/spacing_lvl2"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN900"
         android:contentDescription="header_menu"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
+        app:unifyImageButtonVariant="image"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,7 +81,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -116,11 +116,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/chatcommon_1dp"
             android:includeFontPadding="false"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN600"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
-            app:typographyType="display_3"
+            app:typographyType="body_3"
             tools:text="Terakhir online 3 menit yang lalu"
             tools:visibility="visible" />
 
