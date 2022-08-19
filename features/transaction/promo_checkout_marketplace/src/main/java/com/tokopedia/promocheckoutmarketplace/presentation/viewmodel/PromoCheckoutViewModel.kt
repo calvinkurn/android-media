@@ -229,11 +229,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         order.shippingId = boData.shippingId
                         order.spId = boData.shipperProductId
                         order.codes.add(boData.code)
-                    } else {
-                        // if code already in request param, set shipping id and sp id again
-                        // in case user changes address from other page and the courier info changes
-                        order.shippingId = boData.shippingId
-                        order.spId = boData.shipperProductId
                     }
                 }
             } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
