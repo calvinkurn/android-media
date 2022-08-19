@@ -949,7 +949,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val globalPromo = arrayListOf<String>()
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !globalPromo.contains(visitable.uiData.promoCode)) {
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
                 globalPromo.add(visitable.uiData.promoCode)
             }
         }
