@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.video.view.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -97,6 +98,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
 
     fun isMyShop(shopId: String): Boolean = shopId == userSession.shopId
 
+    @SuppressLint("Method Call Prohibited")
     fun doLikePost(isLikeAction: Boolean, onFail: (Throwable) -> Unit) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toInt(),
                 if (isLikeAction) LikeKolPostUseCase.LikeKolPostAction.Like else LikeKolPostUseCase.LikeKolPostAction.Unlike),
