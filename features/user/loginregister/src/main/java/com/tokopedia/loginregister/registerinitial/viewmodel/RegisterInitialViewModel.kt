@@ -24,11 +24,11 @@ import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConsta
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
+import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -41,7 +41,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-14.
@@ -133,6 +132,13 @@ class RegisterInitialViewModel @Inject constructor(
         get() = _checkOvoResponse
 
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
+
+    private var _otherMethodState: OtherMethodState<DiscoverData?> = OtherMethodState.Loading()
+    val otherMethodState get() = _otherMethodState
+
+    fun setOtherMethodState(state: OtherMethodState<DiscoverData?>) {
+        _otherMethodState = state
+    }
 
     fun getProvider() {
         launchCatchError(block = {

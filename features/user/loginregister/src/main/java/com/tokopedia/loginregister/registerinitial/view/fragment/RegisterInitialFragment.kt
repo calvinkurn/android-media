@@ -84,6 +84,8 @@ import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodBottomSheet
+import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.view.util.isOnlyRegisterWithNumber
@@ -139,7 +141,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bannerRegister: ImageUnify
     private lateinit var socmedButton: UnifyButton
-    private lateinit var bottomSheet: SocmedBottomSheet
+    private var bottomSheet: SocmedBottomSheet? = null
+    private var bottomSheetOtherMethod: OtherMethodBottomSheet? = null
     private var socmedButtonsContainer: LinearLayout? = null
     private lateinit var sharedPrefs: SharedPreferences
 
@@ -353,15 +356,22 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     @SuppressLint("RtlHardcoded")
     private fun prepareView() {
         activity?.let { act ->
-            bottomSheet = SocmedBottomSheet(context)
-            socmedButtonsContainer = bottomSheet.getSocmedButtonContainer()
-            bottomSheet.setCloseClickListener {
-                registerAnalytics.trackClickCloseSocmedButton()
-                bottomSheet.dismiss()
+            if (!isOnlyRegisterWithNumber(requireActivity())) {
+                bottomSheet = SocmedBottomSheet(context)
+                socmedButtonsContainer = bottomSheet?.getSocmedButtonContainer()
+                bottomSheet?.setCloseClickListener {
+                    registerAnalytics.trackClickCloseSocmedButton()
+                    bottomSheet?.dismiss()
+                }
             }
+
             socmedButton.setOnClickListener {
                 registerAnalytics.trackClickSocmedButton()
-                bottomSheet.show(act.supportFragmentManager, getString(R.string.bottom_sheet_show))
+                if (!isOnlyRegisterWithNumber(requireActivity())) {
+                    bottomSheet?.show(act.supportFragmentManager, getString(R.string.bottom_sheet_show))
+                } else {
+                    showOtherMethodBottomSheet()
+                }
             }
 
             registerButton.visibility = View.GONE
@@ -383,6 +393,23 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
             initTermPrivacyView()
         }
+    }
+
+    private fun showOtherMethodBottomSheet() {
+        bottomSheetOtherMethod = OtherMethodBottomSheet(registerInitialViewModel.otherMethodState)
+        bottomSheetOtherMethod?.setCloseClickListener {
+            registerAnalytics.trackClickCloseSocmedButton()
+            bottomSheetOtherMethod?.dismiss()
+        }
+        bottomSheetOtherMethod?.setOnGoogleClickedListener {
+            bottomSheetOtherMethod?.dismiss()
+            onRegisterGoogleClick()
+        }
+        bottomSheetOtherMethod?.setOnEmailClickedListener {
+            bottomSheetOtherMethod?.dismiss()
+            //go to new page
+        }
+        bottomSheetOtherMethod?.show(childFragmentManager, getString(R.string.bottom_sheet_show))
     }
 
     private fun initObserver() {
@@ -562,34 +589,52 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetProvider(discoverData: DiscoverData) {
-        dismissLoadingDiscover()
+        if (isOnlyRegisterWithNumber(requireActivity())) {
+            //set button email
+            val emailProvider = ProviderData(
+                id = LoginConstants.DiscoverLoginId.EMAIL,
+                name = getString(R.string.other_method_email)
+            )
+            discoverData.providers.add(0, emailProvider)
 
-        val layoutParams = LinearLayout.LayoutParams(
+            registerInitialViewModel.setOtherMethodState(OtherMethodState.Success(discoverData))
+            bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
+        } else {
+            dismissLoadingDiscover()
+
+            val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 requireContext().resources.getDimensionPixelSize(R.dimen.dp_52))
-        layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
+            layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
 
-        socmedButtonsContainer?.removeAllViews()
+            socmedButtonsContainer?.removeAllViews()
 
-        discoverData.providers.forEach { provider ->
-            context?.let {
-                val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                loginTextView.setText(provider.name)
-                loginTextView.setImage(provider.image)
-                loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
+            discoverData.providers.forEach { provider ->
+                context?.let {
+                    val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    loginTextView.setText(provider.name)
+                    loginTextView.setImage(provider.image)
+                    loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
 
-                setDiscoverOnClickListener(provider, loginTextView)
+                    setDiscoverOnClickListener(provider, loginTextView)
 
-                socmedButtonsContainer?.run {
-                    addView(loginTextView, childCount,
-                        layoutParams)
+                    socmedButtonsContainer?.run {
+                        addView(loginTextView, childCount,
+                            layoutParams)
+                    }
                 }
-            }
 
+            }
         }
     }
 
     private fun onFailedGetProvider(throwable: Throwable) {
+        if (isOnlyRegisterWithNumber(requireActivity())) {
+            registerInitialViewModel.setOtherMethodState(
+                OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
+            )
+            bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
+        }
         dismissLoadingDiscover()
         dismissProgressBar()
         val forbiddenMessage = context?.getString(
@@ -1056,14 +1101,16 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private fun setDiscoverOnClickListener(provider: ProviderData, loginTextView: LoginTextView) {
         when (provider.id.lowercase(Locale.getDefault())) {
-            LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
+            LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener {
+                bottomSheet?.dismiss()
+                onRegisterGoogleClick()
+            }
         }
     }
 
     private fun onRegisterGoogleClick() {
         activity?.let {
             showProgressBar()
-            bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
             goToRegisterGoogle()
