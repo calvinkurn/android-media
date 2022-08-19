@@ -8,6 +8,7 @@ import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSele
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -65,6 +66,20 @@ class CommonBottomSheetInitializer @Inject constructor(@ApplicationContext priva
         val title = context.getString(R.string.commonbs_status_filter_title)
         val actionText = context.getString(R.string.action_apply)
         val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedItemIds, multipleSelectionItems)
+        return bottomSheet.apply {
+            setBottomSheetTitle(title)
+            setBottomSheetButtonTitle(actionText)
+        }
+    }
+
+    fun initFilterCategoryBottomSheet(
+        selectedItemIds: List<String>,
+        categoryItems: List<Category>
+    ): MultipleSelectionBottomSheet{
+        val items = categoryItems.map { MultipleSelectionItem(it.categoryId, it.categoryName) }
+        val title = context.getString(R.string.commonbs_category_filter_title)
+        val actionText = context.getString(R.string.action_apply)
+        val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedItemIds, items)
         return bottomSheet.apply {
             setBottomSheetTitle(title)
             setBottomSheetButtonTitle(actionText)

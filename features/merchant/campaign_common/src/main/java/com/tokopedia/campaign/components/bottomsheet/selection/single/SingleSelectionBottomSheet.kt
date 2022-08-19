@@ -31,6 +31,12 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+
+        @JvmStatic
+        fun newInstance(
+            selectedItemIds: List<String>,
+            items: List<SingleSelectionItem>
+        ): SingleSelectionBottomSheet = newInstance(ArrayList(selectedItemIds), ArrayList(items))
     }
 
 

@@ -31,6 +31,12 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+
+        @JvmStatic
+        fun newInstance(
+            selectedItemIds: List<String>,
+            items: List<MultipleSelectionItem>
+        ): MultipleSelectionBottomSheet = newInstance(ArrayList(selectedItemIds), ArrayList(items))
     }
 
 
