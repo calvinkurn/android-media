@@ -310,6 +310,9 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             override fun onButtonClick(errorCount: Int) {
                 action()
             }})
+        bottomsheet.setSecondaryCta {
+            activity?.onBackPressed()
+        }
         bottomsheet.show(childFragmentManager,"")
     }
 

@@ -106,7 +106,7 @@ class TmIntroFragment : BaseDaggerFragment(),
         observeViewModel()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
-            tmIntroViewModel.getIntroInfo(it)
+            introLogic(it)
             btnContinue.setOnClickListener { _ ->
                 proceedIntroLogic()
                 tmTracker?.clickIntroLanjut(it.toString())
@@ -129,6 +129,17 @@ class TmIntroFragment : BaseDaggerFragment(),
                 toolbar_tokomember.switchToTransparentMode()
                 toolbar_tokomember.applyAlphaToToolbarBackground(0F)
                 activity?.window?.statusBarColor = Color.TRANSPARENT
+            }
+        }
+    }
+
+    private fun introLogic(it: Int) {
+        if (com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck.isConnectedToInternet(context)) {
+            tmIntroViewModel.getIntroInfo(it)
+        }
+        else {
+            noInternetUi {
+                introLogic(it)
             }
         }
     }

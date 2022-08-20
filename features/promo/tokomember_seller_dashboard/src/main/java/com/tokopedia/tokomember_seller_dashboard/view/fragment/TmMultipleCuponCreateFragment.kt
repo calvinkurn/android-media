@@ -366,29 +366,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             if(programActionType == ProgramActionType.EXTEND){
                                 source = SOURCE_MULTIPLE_COUPON_EXTEND
                             }
-
-                            if (TmInternetCheck.isConnectedToInternet(context)) {
-                                tmDashCreateViewModel.validateProgram(
-                                    arguments?.getInt(
-                                        BUNDLE_SHOP_ID
-                                    ).toString(),
-                                    getTimeInMillis(updatedStartTimeCoupon),
-                                    getTimeInMillis(updatedEndTimeCoupon),
-                                    source
-                                )
-                            }
-                            else{
-                                noInternetUi{
-                                    tmDashCreateViewModel.validateProgram(
-                                        arguments?.getInt(
-                                            BUNDLE_SHOP_ID
-                                        ).toString(),
-                                        getTimeInMillis(updatedStartTimeCoupon),
-                                        getTimeInMillis(updatedEndTimeCoupon),
-                                        source
-                                    )
-                                }
-                            }
+                            validateProgram(source)
                         } else {
                             closeLoadingDialog()
                             view?.let { v ->
@@ -517,6 +495,22 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun validateProgram(source: String) {
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.validateProgram(
+                arguments?.getInt(
+                    BUNDLE_SHOP_ID
+                ).toString(),
+                getTimeInMillis(updatedStartTimeCoupon),
+                getTimeInMillis(updatedEndTimeCoupon),
+                source
+            )
+        }
+        else{
+            noInternetUi{validateProgram(source)}
+        }
+    }
+
     private fun handleServerError(){
         setButtonState()
         closeLoadingDialog()
@@ -551,7 +545,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 tmDashCreateViewModel.getInitialCouponData(CREATE, "")
             }
             else{
-                noInternetUi{ tmDashCreateViewModel.getInitialCouponData(CREATE, "")}
+                noInternetUi{ handleDataError()}
             }
         }
     }
@@ -976,12 +970,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
                 couponVip = tmVipCoupon?.getSingleCouponData()
 
-                if (TmInternetCheck.isConnectedToInternet(context)) {
-                    preValidateCouponPremium(couponPremiumData)
-                }
-                else{
-                    noInternetUi{ preValidateCouponPremium(couponPremiumData)}
-                }
+                preValidateCouponPremium(couponPremiumData)
             }
         }
     }
@@ -1015,9 +1004,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             tmDashCreateViewModel.preValidateMultipleCoupon(validationRequest)
         }
         else{
-            noInternetUi{
-                tmDashCreateViewModel.preValidateMultipleCoupon(validationRequest)
-            }
+            noInternetUi{ preValidateCouponVip(coupon) }
         }
     }
 
@@ -1046,7 +1033,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
             }
         }
-        tmDashCreateViewModel.preValidateCoupon(validationRequest)
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.preValidateCoupon(validationRequest)
+        }
+        else{
+            noInternetUi{ preValidateCouponPremium(couponPremiumData)}
+        }
     }
 
     private fun uploadImagePremium() {
@@ -1062,7 +1054,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     tmDashCreateViewModel.uploadImagePremium(file)
                 }
                 else{
-                    noInternetUi{ tmDashCreateViewModel.uploadImagePremium(file) }
+                    noInternetUi{ uploadImagePremium() }
                 }
             }
         }

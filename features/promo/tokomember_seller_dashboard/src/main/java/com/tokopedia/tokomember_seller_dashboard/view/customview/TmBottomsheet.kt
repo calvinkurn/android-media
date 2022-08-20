@@ -17,6 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TokomemberBottomsheet : BottomSheetUnify() {
 
+    private var secondaryCta: (() -> Unit)? = null
     private val childLayoutRes = R.layout.tm_dash_intro_bottomsheet
     private var mBottomSheetClickListener: BottomSheetClickListener? = null
     private lateinit var imgBottomsheet: ImageUnify
@@ -70,7 +71,12 @@ class TokomemberBottomsheet : BottomSheetUnify() {
            btnSecondary.visibility = View.GONE
        }
        btnSecondary.setOnClickListener {
-           activity?.finish()
+           if(secondaryCta != null){
+               secondaryCta?.invoke()
+           }
+           else {
+               activity?.finish()
+           }
        }
        tvHeading.text = tmIntroBottomSheetModel.title
        tvDesc.text = tmIntroBottomSheetModel.desc
@@ -79,6 +85,10 @@ class TokomemberBottomsheet : BottomSheetUnify() {
            dismiss()
            mBottomSheetClickListener?.onButtonClick(tmIntroBottomSheetModel.errorCount)
        }
+    }
+
+    fun setSecondaryCta(action:() -> Unit){
+        secondaryCta = action
     }
 
     private fun setDefaultParams() {

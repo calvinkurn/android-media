@@ -7,5 +7,6 @@ data class TmIntroBottomsheetModel(
     val ctaName: String = "",
     val type: String = "",
     val errorCount:Int = 0,
-    val showSecondaryCta: Boolean = false
+    val showSecondaryCta: Boolean = false,
+    val secondaryCta: (() -> Unit)? = null
 )
