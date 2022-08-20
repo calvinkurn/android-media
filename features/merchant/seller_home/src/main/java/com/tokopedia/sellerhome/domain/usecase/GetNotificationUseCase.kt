@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,14 +21,18 @@ import com.tokopedia.user.session.UserSessionInterface
 class GetNotificationUseCase(
     private val gqlRepository: GraphqlRepository,
     private val mapper: NotificationMapper,
-    private val userSession: UserSessionInterface
+    userSession: UserSessionInterface
 ) : BaseGqlUseCase<NotificationUiModel>() {
+
+    init {
+        params.parameters[PARAM_SHOP_ID] = userSession.shopId
+    }
 
     override suspend fun executeOnBackground(): NotificationUiModel {
         val gqlRequest = GraphqlRequest(
             GetNotificationGqlQuery(),
             GetNotificationsResponse::class.java,
-            getParams(userSession.shopId)
+            params.parameters
         )
         val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
@@ -42,17 +45,6 @@ class GetNotificationUseCase(
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
-
-    private fun getParams(shopId: String): Map<String, Any?> {
-        return mapOf(
-            PARAM_INPUT to Param(shopId)
-        )
-    }
-
-    data class Param(
-        @SerializedName(PARAM_SHOP_ID)
-        var shopId: String
-    )
 
     companion object {
         private const val PARAM_INPUT = "input"

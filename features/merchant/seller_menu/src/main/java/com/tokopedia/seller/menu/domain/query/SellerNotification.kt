@@ -34,5 +34,5 @@ internal object SellerMenuNotification {
 
 data class Param(
     @SerializedName(PARAM_SHOP_ID)
-    var shopId: String
+    val shopId: String
 )

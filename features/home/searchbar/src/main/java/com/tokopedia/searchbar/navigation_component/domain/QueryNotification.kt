@@ -1,11 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.domain
 
-import com.google.gson.annotations.SerializedName
-import com.tokopedia.searchbar.navigation_component.domain.QueryNotification.PARAM_SHOP_ID
-
 object QueryNotification {
     private const val PARAM_INPUT = "input"
-    const val PARAM_SHOP_ID = "shop_id"
     val query: String = "" +
             "query Notification($$PARAM_INPUT: NotificationRequest) {\n" +
             "                  status\n" +
@@ -60,15 +56,4 @@ object QueryNotification {
             "                    notif_unread\n" +
             "                  }\n" +
             "                }"
-
-    fun getNotificationParam(shopId: String): Map<String, Any> {
-        return mapOf(
-            PARAM_INPUT to Param(shopId)
-        )
-    }
 }
-
-data class Param(
-    @SerializedName(PARAM_SHOP_ID)
-    var shopId: String
-)

@@ -38,7 +38,7 @@ class GetUohPmsCounterUseCase @Inject constructor(@ApplicationContext private va
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: String
+        val shopId: String
     )
 
     companion object {

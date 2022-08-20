@@ -1,11 +1,11 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -15,8 +15,10 @@ import javax.inject.Inject
 
 class GetShopInfoUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<ShopData>,
-        private val userSession: UserSessionInterface
+        userSession: UserSessionInterface
 ) : UseCase<Result<ShopData>>() {
+
+    var params: RequestParams = RequestParams.EMPTY
 
     init {
         val query =
@@ -39,11 +41,12 @@ class GetShopInfoUseCase @Inject constructor(
 
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(ShopData::class.java)
+        params.parameters[PARAM_SHOP_ID] = userSession.shopId
     }
 
     override suspend fun executeOnBackground(): Result<ShopData> {
         return try{
-            graphqlUseCase.setRequestParams(getParams())
+            graphqlUseCase.setRequestParams(params.parameters)
             val data = graphqlUseCase.executeOnBackground()
             return Success(data)
         } catch (e: Exception) {
@@ -66,17 +69,6 @@ class GetShopInfoUseCase @Inject constructor(
                         .setSessionIncluded(true)
                         .build())
     }
-
-    private fun getParams(): Map<String, Any?> {
-        return mapOf(
-            PARAM_INPUT to Param(userSession.shopId)
-        )
-    }
-
-    data class Param(
-        @SerializedName(PARAM_SHOP_ID)
-        var shopId: String
-    )
 
     companion object {
         private const val PARAM_INPUT = "input"
