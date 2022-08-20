@@ -50,8 +50,4 @@ class BroadCastUiModel : BaseChatUiModel, Visitable<TopChatTypeFactory> {
     fun hasCampaignLabel(): Boolean {
         return banner?.isCampaign == true
     }
-
-    private fun getProductBundling() {
-
-    }
 }
