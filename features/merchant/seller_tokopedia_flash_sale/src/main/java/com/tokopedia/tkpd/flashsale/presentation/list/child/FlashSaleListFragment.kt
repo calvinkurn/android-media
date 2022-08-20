@@ -211,7 +211,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
             is FlashSaleListViewModel.UiEffect.LoadNextPageSuccess -> {
-                renderList(effect.currentPageItems, effect.currentPageItems.size == getPerPage())
+                renderList(effect.allItems, effect.currentPageItems.size == getPerPage())
             }
         }
     }
@@ -382,10 +382,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
-
-            adapter?.submit(list)
-
-
+        adapter?.submit(list)
     }
 
     override fun loadData(page: Int) {

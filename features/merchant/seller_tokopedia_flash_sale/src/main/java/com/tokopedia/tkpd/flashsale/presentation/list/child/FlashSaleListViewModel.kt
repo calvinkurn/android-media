@@ -53,6 +53,7 @@ class FlashSaleListViewModel @Inject constructor(
          val flashSaleCategories : List<FlashSaleCategory> = emptyList(),
          val isUsingFilter: Boolean = false,
          val error: Throwable? = null,
+         val allItems : List<DelegateAdapterItem> = emptyList()
     )
 
     sealed class UiEvent {
@@ -73,7 +74,7 @@ class FlashSaleListViewModel @Inject constructor(
             val selectedCategoryIds: List<Long>,
             val categories: List<FlashSaleCategory>
         ) : UiEffect()
-        data class LoadNextPageSuccess(val currentPageItems : List<DelegateAdapterItem>): UiEffect()
+        data class LoadNextPageSuccess(val allItems: List<DelegateAdapterItem>, val currentPageItems : List<DelegateAdapterItem>): UiEffect()
     }
 
     fun processEvent(event : UiEvent) {
@@ -189,8 +190,10 @@ class FlashSaleListViewModel @Inject constructor(
                 val flashSales = getFlashSaleListForSellerUseCase.execute(params)
                 val formattedFlashSales = formatFlashSaleData(_uiState.value.tabId, flashSales)
 
-                _uiEffect.emit(UiEffect.LoadNextPageSuccess(formattedFlashSales))
-                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false, error = null) }
+                val allItems = _uiState.value.allItems + formattedFlashSales
+                _uiEffect.emit(UiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
+
+                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false, error = null, allItems = allItems) }
             },
             onError = { error ->
                 _uiEffect.tryEmit(UiEffect.FetchFlashSaleError(error))

@@ -59,20 +59,13 @@ class CompositeAdapter(
         }
     }
 
-/*    fun submit(newItems: List<DelegateAdapterItem>) {
+    fun submit(newItems: List<DelegateAdapterItem>) {
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         this.items.clear()
         this.items.addAll(newItems)
         diffResult.dispatchUpdatesTo(this)
-    }*/
-
-    fun submit(newCampaigns: List<DelegateAdapterItem>) {
-        val oldItemsSize = this.items.size
-        this.items.addAll(newCampaigns)
-        notifyItemRangeChanged(oldItemsSize, this.items.size)
-
     }
 
 
