@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,22 +15,25 @@ import javax.inject.Inject
 
 class FlashSaleContainerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase
+    private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
+    private val preferenceDataStore: PreferenceDataStore
 ) : BaseViewModel(dispatchers.main) {
 
     data class UiState(
         val isLoading: Boolean = true,
         val tabsMetadata: List<TabMetadata> = emptyList(),
         val targetTabPosition: Int = 0,
+        val showTicker: Boolean = false,
         val error: Throwable? = null
     )
 
     sealed class UiEvent {
         object GetTabsMetadata : UiEvent()
+        object DismissMultiLocationTicker: UiEvent()
     }
 
     sealed class UiEffect {
-        data class ShowToaster(val throwable: Throwable) : UiEffect()
+        data class ErrorFetchTabsMetaData(val throwable: Throwable) : UiEffect()
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -45,6 +49,10 @@ class FlashSaleContainerViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = true, error = null) }
                 getTabsMetaData()
             }
+            UiEvent.DismissMultiLocationTicker -> {
+                preferenceDataStore.markMultiLocationTickerAsDismissed()
+                _uiState.update { it.copy(showTicker = false) }
+            }
         }
     }
 
@@ -53,11 +61,14 @@ class FlashSaleContainerViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val tabs = getFlashSaleListForSellerMetaUseCase.execute()
-                _uiState.update { it.copy(isLoading = false,  error = null, tabsMetadata = tabs) }
+
+                val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
+                val showTicker = !isMultiLocationTickerPreviouslyDismissed
+                _uiState.update { it.copy(isLoading = false,  error = null, tabsMetadata = tabs, showTicker = showTicker) }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
-                _uiEffect.emit(UiEffect.ShowToaster(error))
+                _uiEffect.emit(UiEffect.ErrorFetchTabsMetaData(error))
             }
         )
 

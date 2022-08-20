@@ -11,7 +11,9 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -23,6 +25,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragmen
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -73,6 +76,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         setupView()
         observeUiEffect()
         observeUiState()
+        applyUnifyBackgroundColor()
         viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
     }
 
@@ -96,7 +100,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: FlashSaleContainerViewModel.UiEffect) {
         when (effect) {
-            is FlashSaleContainerViewModel.UiEffect.ShowToaster -> {
+            is FlashSaleContainerViewModel.UiEffect.ErrorFetchTabsMetaData -> {
                 binding?.root.showToasterError(effect.throwable)
             }
         }
@@ -104,6 +108,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
+        renderTicker(uiState.showTicker, uiState.error)
         renderTabs(uiState.tabsMetadata)
         renderErrorState(uiState.error)
     }
@@ -166,6 +171,24 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
             }
+        }
+    }
+
+    private fun renderTicker(shouldDisplayTicker: Boolean, error: Throwable?) {
+        binding?.run {
+            val isError = error != null
+            ticker.isVisible = shouldDisplayTicker && !isError
+            ticker.setHtmlDescription(getString(R.string.stfs_multi_location_ticker))
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
+                }
+
+            })
         }
     }
 }

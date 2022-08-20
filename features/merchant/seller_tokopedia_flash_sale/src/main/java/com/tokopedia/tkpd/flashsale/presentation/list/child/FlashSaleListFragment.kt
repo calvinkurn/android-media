@@ -19,8 +19,8 @@ import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -51,6 +51,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val BUNDLE_KEY_TOTAL_FLASH_SALE_COUNT = "campaign_count"
         private const val PAGE_SIZE = 10
+        private const val ONE = 1
         private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
 
 
@@ -159,6 +160,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalFlashSaleCount))
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupView()
         observeUiEffect()
         observeUiState()
@@ -212,7 +214,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
 
     private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
-        renderLoadingState(uiState.isLoading)
         renderSortChips(uiState.selectedSort, uiState.totalFlashSaleCount)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
         renderEmptyState(uiState.isFilterActive, totalFlashSaleCount)
@@ -243,11 +244,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
             binding?.emptyState?.setDescription(emptyStateConfig.description)
             handleEmptyStatePrimaryAction(emptyStateConfig)
         }
-    }
-
-    private fun renderLoadingState(isLoading: Boolean) {
-        binding?.loader?.isVisible = isLoading
-        binding?.recyclerView?.isVisible = !isLoading
     }
 
     private fun renderSortChips(selectedSort: SingleSelectionItem, totalFlashSaleItemCount: Int) {
@@ -339,6 +335,8 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+
+
     override fun createAdapter(): CompositeAdapter {
         return flashSaleAdapter
     }
@@ -364,10 +362,10 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     private fun getFlashSales(page: Int) {
-        val offset = if (page == 1) {
-            0
+        val offset = if (page == ONE) {
+            Int.ZERO
         } else {
-            (page - 1) * PAGE_SIZE
+            (page - ONE) * PAGE_SIZE
         }
         viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(offset))
     }

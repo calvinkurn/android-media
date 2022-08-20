@@ -45,7 +45,6 @@ class FlashSaleListViewModel @Inject constructor(
         get() = _uiState.value
 
     data class UiState(
-        val isLoading: Boolean = true,
         val totalFlashSaleCount: Int = 0,
         val tabName: String = "",
         val tabId: Int = TabConstant.TAB_ID_UPCOMING,
@@ -59,7 +58,6 @@ class FlashSaleListViewModel @Inject constructor(
         val selectedCategoryIds: List<Long> = emptyList(),
         val flashSaleCategories: List<FlashSaleCategory> = emptyList(),
         val isFilterActive: Boolean = false,
-        val error: Throwable? = null,
         val allItems : List<DelegateAdapterItem> = emptyList()
     )
 
@@ -99,7 +97,6 @@ class FlashSaleListViewModel @Inject constructor(
     private fun onPageFirstAppear(tabName: String, tabId: Int, totalFlashSaleCount: Int) {
         _uiState.update {
             it.copy(
-                isLoading = true,
                 tabName = tabName,
                 tabId = tabId,
                 totalFlashSaleCount = totalFlashSaleCount
@@ -121,7 +118,6 @@ class FlashSaleListViewModel @Inject constructor(
     private fun onApplySort(selectedSort: SingleSelectionItem) {
         _uiState.update {
             it.copy(
-                isLoading = true,
                 selectedSort = selectedSort,
                 offset = 0,
                 allItems = listOf(),
@@ -146,7 +142,6 @@ class FlashSaleListViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                isLoading = true,
                 selectedCategoryIds = categoryIds,
                 offset = 0,
                 allItems = listOf(),
@@ -176,11 +171,10 @@ class FlashSaleListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val categories = getFlashSaleListForSellerCategoryUseCase.execute(currentState.tabName)
-                _uiState.update { it.copy(isLoading = false, error = null, flashSaleCategories = categories) }
+                _uiState.update { it.copy(flashSaleCategories = categories) }
             },
             onError = { error ->
                 _uiEffect.tryEmit(UiEffect.FetchCategoryError(error))
-                _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
 
@@ -203,11 +197,10 @@ class FlashSaleListViewModel @Inject constructor(
                 val allItems = currentState.allItems + formattedFlashSales
                 _uiEffect.emit(UiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
 
-                _uiState.update { it.copy(isLoading = false, error = null, allItems = allItems) }
+                _uiState.update { it.copy(allItems = allItems) }
             },
             onError = { error ->
                 _uiEffect.tryEmit(UiEffect.FetchFlashSaleError(error))
-                _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
 

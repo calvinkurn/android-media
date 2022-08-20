@@ -56,5 +56,6 @@
     <string name="stfs_placeholder_period">%s - %s</string>
     <string name="stfs_placeholder_sold_count">%s dari %s</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
+    <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
 
 </resources>
