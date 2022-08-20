@@ -17,6 +17,7 @@ class CompositeAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val delegateAdapter = delegates[getItemViewType(position)]
 
+        println("Debug: Item position $position")
         if (delegateAdapter != null) {
             delegateAdapter.bindViewHolder(items[position], holder)
         } else {
@@ -58,14 +59,22 @@ class CompositeAdapter(
         }
     }
 
-    fun submit(newItems: List<DelegateAdapterItem>) {
+/*    fun submit(newItems: List<DelegateAdapterItem>) {
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         this.items.clear()
         this.items.addAll(newItems)
         diffResult.dispatchUpdatesTo(this)
+    }*/
+
+    fun submit(newCampaigns: List<DelegateAdapterItem>) {
+        val oldItemsSize = this.items.size
+        this.items.addAll(newCampaigns)
+        notifyItemRangeChanged(oldItemsSize, this.items.size)
+
     }
+
 
     fun getItems(): List<DelegateAdapterItem> {
         return this.items

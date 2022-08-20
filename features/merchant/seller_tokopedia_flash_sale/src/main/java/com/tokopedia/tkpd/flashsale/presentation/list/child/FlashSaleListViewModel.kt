@@ -45,7 +45,6 @@ class FlashSaleListViewModel @Inject constructor(
          val isLoading: Boolean = true,
          val totalFlashSaleCount: Int = 0,
          val isLoadingNextPage: Boolean = false,
-         val flashSales: List<DelegateAdapterItem> = emptyList(),
          val tabName: String = "",
          val tabId: Int = TabConstant.TAB_ID_UPCOMING,
          val offset: Int = 0,
@@ -53,12 +52,12 @@ class FlashSaleListViewModel @Inject constructor(
          val selectedCategoryIds: List<Long> = emptyList(),
          val flashSaleCategories : List<FlashSaleCategory> = emptyList(),
          val isUsingFilter: Boolean = false,
-         val error: Throwable? = null
+         val error: Throwable? = null,
     )
 
     sealed class UiEvent {
         data class Init(val tabName : String, val tabId: Int, val totalFlashSaleCount: Int) : UiEvent()
-        data class LoadNextPage(val offset : Int) : UiEvent()
+        data class LoadPage(val offset : Int) : UiEvent()
         object ChangeSort : UiEvent()
         data class ApplySort(val selectedSort: SingleSelectionItem) : UiEvent()
         object ChangeCategory : UiEvent()
@@ -67,18 +66,20 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     sealed class UiEffect {
+        data class FetchCategoryError(val throwable: Throwable) : UiEffect()
         data class FetchFlashSaleError(val throwable: Throwable) : UiEffect()
         data class ShowSortBottomSheet(val selectedSortId : String) : UiEffect()
         data class ShowCategoryBottomSheet(
             val selectedCategoryIds: List<Long>,
             val categories: List<FlashSaleCategory>
         ) : UiEffect()
+        data class LoadNextPageSuccess(val currentPageItems : List<DelegateAdapterItem>): UiEffect()
     }
 
     fun processEvent(event : UiEvent) {
         when (event) {
             is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalFlashSaleCount)
-            is UiEvent.LoadNextPage -> onLoadNextPage(event.offset)
+            is UiEvent.LoadPage -> onLoadPage(event.offset)
             is UiEvent.ChangeSort -> onChangeSort()
             is UiEvent.ApplySort -> onApplySort(event.selectedSort)
             is UiEvent.ChangeCategory -> onChangeCategory()
@@ -93,16 +94,14 @@ class FlashSaleListViewModel @Inject constructor(
                 isLoading = true,
                 tabName = tabName,
                 tabId = tabId,
-                offset = 0,
                 totalFlashSaleCount = totalFlashSaleCount
             )
         }
 
-        getFlashSaleList()
         getFlashSaleListCategory()
     }
 
-    private fun onLoadNextPage(offset: Int) {
+    private fun onLoadPage(offset: Int) {
         _uiState.update { it.copy(isLoadingNextPage = true, offset = offset) }
         getFlashSaleList()
     }
@@ -116,9 +115,8 @@ class FlashSaleListViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 selectedSort = selectedSort,
-                flashSales = emptyList(),
                 offset = 0,
-                isUsingFilter = true
+                isUsingFilter = _uiState.value.selectedCategoryIds.isNotEmpty() && _uiState.value.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
 
@@ -141,9 +139,8 @@ class FlashSaleListViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 selectedCategoryIds = categoryIds,
-                flashSales = emptyList(),
                 offset = 0,
-                isUsingFilter = categoryIds.isNotEmpty()
+                isUsingFilter = categories.isNotEmpty() && _uiState.value.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
 
@@ -153,14 +150,13 @@ class FlashSaleListViewModel @Inject constructor(
     private fun onClearFilter() {
         _uiState.update {
             it.copy(
-                isLoading = true,
                 selectedCategoryIds = listOf(),
                 selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
-                flashSales = emptyList(),
                 offset = 0,
                 isUsingFilter = false
             )
         }
+
         getFlashSaleList()
     }
 
@@ -172,6 +168,7 @@ class FlashSaleListViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false, error = null, flashSaleCategories = categories) }
             },
             onError = { error ->
+                _uiEffect.tryEmit(UiEffect.FetchCategoryError(error))
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
@@ -192,9 +189,11 @@ class FlashSaleListViewModel @Inject constructor(
                 val flashSales = getFlashSaleListForSellerUseCase.execute(params)
                 val formattedFlashSales = formatFlashSaleData(_uiState.value.tabId, flashSales)
 
-                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false, error = null, flashSales = formattedFlashSales) }
+                _uiEffect.emit(UiEffect.LoadNextPageSuccess(formattedFlashSales))
+                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false, error = null) }
             },
             onError = { error ->
+                _uiEffect.tryEmit(UiEffect.FetchFlashSaleError(error))
                 _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false,  error = error) }
             }
         )
@@ -208,7 +207,7 @@ class FlashSaleListViewModel @Inject constructor(
                 TabConstant.TAB_ID_REGISTERED -> flashSale.toRegisteredItem()
                 TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem()
                 TabConstant.TAB_ID_FINISHED -> flashSale.toFinishedItem()
-                else -> throw IllegalArgumentException("Unknown")
+                else -> throw IllegalArgumentException("Cannot map to model. Tab id is not registered.")
             }
         }
     }

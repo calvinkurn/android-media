@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
@@ -34,8 +33,8 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDeleg
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
-import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
+import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
 import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant
@@ -45,13 +44,12 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class FlashSaleListFragment : BaseDaggerFragment() {
+class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateAdapterItem>() {
 
     companion object {
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val BUNDLE_KEY_TOTAL_FLASH_SALE_COUNT = "campaign_count"
         private const val PAGE_SIZE = 10
-        private const val ONE_PAGE = 1
         private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
 
 
@@ -138,7 +136,6 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleListViewModel::class.java) }
-    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     override fun getScreenName(): String = FlashSaleListFragment::class.java.canonicalName.orEmpty()
 
@@ -147,6 +144,11 @@ class FlashSaleListFragment : BaseDaggerFragment() {
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        println("Debug: onStart")
     }
 
     override fun onCreateView(
@@ -159,34 +161,20 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalFlashSaleCount))
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalFlashSaleCount))
+        println("Debug: OnViewCreated")
     }
 
 
     private fun setupView() {
         setupSortFilter()
         setupClickListener()
-        setupRecyclerView()
     }
 
-    private fun setupRecyclerView() {
-        binding?.recyclerView?.run {
-            layoutManager =
-                LinearLayoutManager(activity ?: return, LinearLayoutManager.VERTICAL, false)
-            adapter = flashSaleAdapter
-
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
-                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadNextPage(page * PAGE_SIZE))
-                    }
-                }
-            addOnScrollListener(endlessRecyclerViewScrollListener ?: return)
-        }
-    }
 
     private fun setupClickListener() {
         binding?.run {
@@ -197,6 +185,7 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            println("Debug: Collecting uistate")
             viewModel.uiState.collect { state -> handleUiState(state) }
         }
     }
@@ -209,16 +198,21 @@ class FlashSaleListFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: FlashSaleListViewModel.UiEffect) {
         when (effect) {
-            is FlashSaleListViewModel.UiEffect.FetchFlashSaleError -> {
-                binding?.root.showToasterError(effect.throwable)
-            }
             is FlashSaleListViewModel.UiEffect.ShowSortBottomSheet -> {
                 showSortBottomSheet(effect.selectedSortId)
             }
             is FlashSaleListViewModel.UiEffect.ShowCategoryBottomSheet -> {
                 showCategoryFilterBottomSheet(effect.selectedCategoryIds, effect.categories)
             }
-
+            is FlashSaleListViewModel.UiEffect.FetchFlashSaleError -> {
+                binding?.recyclerView.showToasterError(effect.throwable)
+            }
+            is FlashSaleListViewModel.UiEffect.FetchCategoryError -> {
+                binding?.recyclerView.showToasterError(effect.throwable)
+            }
+            is FlashSaleListViewModel.UiEffect.LoadNextPageSuccess -> {
+                renderList(effect.currentPageItems, effect.currentPageItems.size == getPerPage())
+            }
         }
     }
 
@@ -226,13 +220,23 @@ class FlashSaleListFragment : BaseDaggerFragment() {
     private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
         renderLoadNextPage(uiState.isLoadingNextPage)
-        renderList(uiState.flashSales)
+        //renderFlashSaleList(uiState)
+
         renderSortChips(uiState.selectedSort, uiState.totalFlashSaleCount)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
         renderEmptyState(uiState.isUsingFilter, totalFlashSaleCount)
-        renderEmptySearchResult(uiState.isUsingFilter, uiState.flashSales.size)
+      //  renderEmptySearchResult(uiState.isUsingFilter, uiState.flashSales.size)
     }
 
+
+ /*   private fun renderFlashSaleList(uiState: FlashSaleListViewModel.UiState) {
+        if (uiState.isUsingFilter) {
+            clearAllData()
+            renderList(uiState.flashSales, uiState.flashSales.size == getPerPage())
+        } else {
+            renderList(uiState.flashSales, uiState.flashSales.size == getPerPage())
+        }
+    }*/
 
     private fun renderEmptyState(isUsingFilter : Boolean, totalFlashSaleCount: Int) {
         if (!isUsingFilter && totalFlashSaleCount == Int.ZERO) {
@@ -254,8 +258,6 @@ class FlashSaleListFragment : BaseDaggerFragment() {
             binding?.emptyState?.setTitle(emptyStateConfig.title)
             binding?.emptyState?.setDescription(emptyStateConfig.description)
             handleEmptyStatePrimaryAction(emptyStateConfig)
-        } else {
-            binding?.emptyState?.gone()
         }
     }
 
@@ -272,22 +274,6 @@ class FlashSaleListFragment : BaseDaggerFragment() {
         }
     }
 
-
-    private fun renderList(flashSales: List<DelegateAdapterItem>) {
-        if (flashSales.isNotEmpty()) {
-            val allItems = flashSaleAdapter.getItems() + flashSales
-            flashSaleAdapter.submit(allItems)
-
-            val hasNextPage = flashSales.size >= PAGE_SIZE
-
-            endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-            endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
-
-            if (flashSaleAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage) {
-                endlessRecyclerViewScrollListener?.loadMoreNextPage()
-            }
-        }
-    }
 
 
     private fun renderSortChips(selectedSort: SingleSelectionItem, totalFlashSaleItemCount: Int) {
@@ -377,6 +363,68 @@ class FlashSaleListFragment : BaseDaggerFragment() {
             viewModel.processEvent(FlashSaleListViewModel.UiEvent.ApplyCategoryFilter(filter))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    override fun createAdapter(): CompositeAdapter {
+        return flashSaleAdapter
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView? {
+        return binding?.recyclerView
+    }
+
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        return null
+    }
+
+    override fun getPerPage(): Int {
+        return PAGE_SIZE
+    }
+
+    override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
+
+            adapter?.submit(list)
+
+
+    }
+
+    override fun loadData(page: Int) {
+        getFlashSales(page)
+    }
+
+    private fun getFlashSales(page: Int) {
+        val offset = if (page == 1) {
+            0
+        } else {
+            (page - 1 )* PAGE_SIZE
+        }
+        println("Debug: Loading offset $offset")
+        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(offset))
+    }
+
+    override fun clearAdapterData() {
+        adapter?.submit(listOf())
+    }
+
+    override fun onShowLoading() {
+       // adapter?.showLoading()
+    }
+
+    override fun onHideLoading() {
+       // adapter?.hideLoading()
+    }
+
+    override fun onDataEmpty() {
+       // adapter?.hideLoading()
+    }
+
+    override fun onGetListError(message: String) {
+        //adapter?.hideLoading()
+    }
+
+
+    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+
     }
 
 }
