@@ -33,6 +33,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDeleg
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
@@ -146,11 +147,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
             .inject(this)
     }
 
-    override fun onStart() {
-        super.onStart()
-        println("Debug: onStart")
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -166,7 +162,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         setupView()
         observeUiEffect()
         observeUiState()
-        println("Debug: OnViewCreated")
     }
 
 
@@ -219,27 +214,14 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
         renderLoadingState(uiState.isLoading)
-        renderLoadNextPage(uiState.isLoadingNextPage)
-        //renderFlashSaleList(uiState)
-
         renderSortChips(uiState.selectedSort, uiState.totalFlashSaleCount)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
-        renderEmptyState(uiState.isUsingFilter, totalFlashSaleCount)
+        renderEmptyState(uiState.isFilterActive, totalFlashSaleCount)
         if (uiState.allItems.isEmpty()) {
             endlessRecyclerViewScrollListener?.resetState()
         }
-      //  renderEmptySearchResult(uiState.isUsingFilter, uiState.flashSales.size)
+        renderEmptySearchResult(uiState.isFilterActive, uiState.allItems.size)
     }
-
-
- /*   private fun renderFlashSaleList(uiState: FlashSaleListViewModel.UiState) {
-        if (uiState.isUsingFilter) {
-            clearAllData()
-            renderList(uiState.flashSales, uiState.flashSales.size == getPerPage())
-        } else {
-            renderList(uiState.flashSales, uiState.flashSales.size == getPerPage())
-        }
-    }*/
 
     private fun renderEmptyState(isUsingFilter : Boolean, totalFlashSaleCount: Int) {
         if (!isUsingFilter && totalFlashSaleCount == Int.ZERO) {
@@ -268,16 +250,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         binding?.loader?.isVisible = isLoading
         binding?.recyclerView?.isVisible = !isLoading
     }
-
-    private fun renderLoadNextPage(isLoading: Boolean) {
-        if (isLoading) {
-        //    flashSaleAdapter.addItem(LoadingItem)
-        } else {
-       //     flashSaleAdapter.removeItem(LoadingItem)
-        }
-    }
-
-
 
     private fun renderSortChips(selectedSort: SingleSelectionItem, totalFlashSaleItemCount: Int) {
         if (selectedSort.id == "DEFAULT_VALUE_PLACEHOLDER") {
@@ -398,7 +370,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         } else {
             (page - 1 )* PAGE_SIZE
         }
-        println("Debug: Loading offset $offset")
         viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(offset))
     }
 
@@ -407,19 +378,19 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     override fun onShowLoading() {
-       // adapter?.showLoading()
+        flashSaleAdapter.addLoading(LoadingItem)
     }
 
     override fun onHideLoading() {
-       // adapter?.hideLoading()
+        flashSaleAdapter.removeLoading(LoadingItem)
     }
 
     override fun onDataEmpty() {
-       // adapter?.hideLoading()
+        flashSaleAdapter.removeLoading(LoadingItem)
     }
 
     override fun onGetListError(message: String) {
-        //adapter?.hideLoading()
+        flashSaleAdapter.removeLoading(LoadingItem)
     }
 
 

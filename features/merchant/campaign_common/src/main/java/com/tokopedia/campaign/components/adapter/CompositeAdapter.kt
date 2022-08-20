@@ -41,6 +41,28 @@ class CompositeAdapter(
         addItems(newItems)
     }
 
+    fun addLoading(loadingItem: DelegateAdapterItem) {
+        val newItems = getItems().toMutableList()
+        newItems.add(loadingItem)
+
+        val diffCallback = DiffCallback(this.items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.items.add(loadingItem)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun removeLoading(loadingItem: DelegateAdapterItem) {
+        val newItems = getItems().toMutableList()
+        newItems.remove(loadingItem)
+
+        val diffCallback = DiffCallback(this.items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.items.remove(loadingItem)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
     fun addItems(items : List<DelegateAdapterItem>) {
         val newItems = getItems().toMutableList()
         newItems.addAll(items)

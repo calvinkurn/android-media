@@ -41,19 +41,26 @@ class FlashSaleListViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
-     data class UiState(
-         val isLoading: Boolean = true,
-         val totalFlashSaleCount: Int = 0,
-         val isLoadingNextPage: Boolean = false,
-         val tabName: String = "",
-         val tabId: Int = TabConstant.TAB_ID_UPCOMING,
-         val offset: Int = 0,
-         val selectedSort : SingleSelectionItem = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
-         val selectedCategoryIds: List<Long> = emptyList(),
-         val flashSaleCategories : List<FlashSaleCategory> = emptyList(),
-         val isUsingFilter: Boolean = false,
-         val error: Throwable? = null,
-         val allItems : List<DelegateAdapterItem> = emptyList()
+    private val currentState: UiState
+        get() = _uiState.value
+
+    data class UiState(
+        val isLoading: Boolean = true,
+        val totalFlashSaleCount: Int = 0,
+        val tabName: String = "",
+        val tabId: Int = TabConstant.TAB_ID_UPCOMING,
+        val offset: Int = 0,
+        val selectedSort: SingleSelectionItem = SingleSelectionItem(
+            "DEFAULT_VALUE_PLACEHOLDER",
+            name = "",
+            isSelected = false,
+            direction = "ASC"
+        ),
+        val selectedCategoryIds: List<Long> = emptyList(),
+        val flashSaleCategories: List<FlashSaleCategory> = emptyList(),
+        val isFilterActive: Boolean = false,
+        val error: Throwable? = null,
+        val allItems : List<DelegateAdapterItem> = emptyList()
     )
 
     sealed class UiEvent {
@@ -103,12 +110,12 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun onLoadPage(offset: Int) {
-        _uiState.update { it.copy(isLoadingNextPage = true, offset = offset) }
+        _uiState.update { it.copy(offset = offset) }
         getFlashSaleList()
     }
 
     private fun onChangeSort() {
-        _uiEffect.tryEmit(UiEffect.ShowSortBottomSheet(_uiState.value.selectedSort.id))
+        _uiEffect.tryEmit(UiEffect.ShowSortBottomSheet(currentState.selectedSort.id))
     }
 
     private fun onApplySort(selectedSort: SingleSelectionItem) {
@@ -118,7 +125,7 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedSort = selectedSort,
                 offset = 0,
                 allItems = listOf(),
-                isUsingFilter = _uiState.value.selectedCategoryIds.isNotEmpty() && _uiState.value.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
+                isFilterActive = currentState.selectedCategoryIds.isNotEmpty() && currentState.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
 
@@ -128,8 +135,8 @@ class FlashSaleListViewModel @Inject constructor(
     private fun onChangeCategory() {
         _uiEffect.tryEmit(
             UiEffect.ShowCategoryBottomSheet(
-                _uiState.value.selectedCategoryIds,
-                _uiState.value.flashSaleCategories
+                currentState.selectedCategoryIds,
+                currentState.flashSaleCategories
             )
         )
     }
@@ -143,7 +150,7 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedCategoryIds = categoryIds,
                 offset = 0,
                 allItems = listOf(),
-                isUsingFilter = categories.isNotEmpty() && _uiState.value.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
+                isFilterActive = categories.isNotEmpty() && currentState.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
 
@@ -157,7 +164,7 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
                 offset = 0,
                 allItems = listOf(),
-                isUsingFilter = false
+                isFilterActive = false
             )
         }
 
@@ -168,7 +175,7 @@ class FlashSaleListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val categories = getFlashSaleListForSellerCategoryUseCase.execute(_uiState.value.tabName)
+                val categories = getFlashSaleListForSellerCategoryUseCase.execute(currentState.tabName)
                 _uiState.update { it.copy(isLoading = false, error = null, flashSaleCategories = categories) }
             },
             onError = { error ->
@@ -184,23 +191,23 @@ class FlashSaleListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val params = GetFlashSaleListForSellerUseCase.Param(
-                    _uiState.value.tabName,
-                    _uiState.value.offset,
-                    categoryIds = _uiState.value.selectedCategoryIds,
-                    sortOrderBy = _uiState.value.selectedSort.id,
-                    sortOrderRule = _uiState.value.selectedSort.direction
+                    currentState.tabName,
+                    currentState.offset,
+                    categoryIds = currentState.selectedCategoryIds,
+                    sortOrderBy = currentState.selectedSort.id,
+                    sortOrderRule = currentState.selectedSort.direction
                 )
                 val flashSales = getFlashSaleListForSellerUseCase.execute(params)
-                val formattedFlashSales = formatFlashSaleData(_uiState.value.tabId, flashSales)
+                val formattedFlashSales = formatFlashSaleData(currentState.tabId, flashSales)
 
-                val allItems = _uiState.value.allItems + formattedFlashSales
+                val allItems = currentState.allItems + formattedFlashSales
                 _uiEffect.emit(UiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
 
-                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false, error = null, allItems = allItems) }
+                _uiState.update { it.copy(isLoading = false, error = null, allItems = allItems) }
             },
             onError = { error ->
                 _uiEffect.tryEmit(UiEffect.FetchFlashSaleError(error))
-                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false,  error = error) }
+                _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
 
