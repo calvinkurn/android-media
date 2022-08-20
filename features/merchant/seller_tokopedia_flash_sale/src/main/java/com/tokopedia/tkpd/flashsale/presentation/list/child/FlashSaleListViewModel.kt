@@ -117,6 +117,7 @@ class FlashSaleListViewModel @Inject constructor(
                 isLoading = true,
                 selectedSort = selectedSort,
                 offset = 0,
+                allItems = listOf(),
                 isUsingFilter = _uiState.value.selectedCategoryIds.isNotEmpty() && _uiState.value.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
@@ -141,6 +142,7 @@ class FlashSaleListViewModel @Inject constructor(
                 isLoading = true,
                 selectedCategoryIds = categoryIds,
                 offset = 0,
+                allItems = listOf(),
                 isUsingFilter = categories.isNotEmpty() && _uiState.value.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
@@ -154,6 +156,7 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedCategoryIds = listOf(),
                 selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
                 offset = 0,
+                allItems = listOf(),
                 isUsingFilter = false
             )
         }

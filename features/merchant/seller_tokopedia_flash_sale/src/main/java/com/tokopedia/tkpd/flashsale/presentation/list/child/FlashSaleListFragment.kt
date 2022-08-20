@@ -225,6 +225,9 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         renderSortChips(uiState.selectedSort, uiState.totalFlashSaleCount)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
         renderEmptyState(uiState.isUsingFilter, totalFlashSaleCount)
+        if (uiState.allItems.isEmpty()) {
+            endlessRecyclerViewScrollListener?.resetState()
+        }
       //  renderEmptySearchResult(uiState.isUsingFilter, uiState.flashSales.size)
     }
 

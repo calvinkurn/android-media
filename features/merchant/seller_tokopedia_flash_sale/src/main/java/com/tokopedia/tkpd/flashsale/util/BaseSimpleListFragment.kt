@@ -27,7 +27,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     var adapter: T? = null
     var recyclerView: RecyclerView? = null
     var swipeToRefresh: SwipeRefreshLayout? = null
-    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
     private val recyclerViewLayoutManager
         get() = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
