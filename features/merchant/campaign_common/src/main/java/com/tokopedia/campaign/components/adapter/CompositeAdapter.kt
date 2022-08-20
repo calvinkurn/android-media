@@ -17,7 +17,6 @@ class CompositeAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val delegateAdapter = delegates[getItemViewType(position)]
 
-        println("Debug: Item position $position")
         if (delegateAdapter != null) {
             delegateAdapter.bindViewHolder(items[position], holder)
         } else {
@@ -36,23 +35,41 @@ class CompositeAdapter(
 
     override fun getItemCount() = items.size
 
-    fun addItem(item: DelegateAdapterItem) {
-        val newItems = getItems() + listOf(item)
-        addItems(newItems)
-    }
 
-    fun addLoading(loadingItem: DelegateAdapterItem) {
+    fun addItems(items : List<DelegateAdapterItem>) {
         val newItems = getItems().toMutableList()
-        newItems.add(loadingItem)
+        newItems.addAll(items)
 
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-        this.items.add(loadingItem)
+        this.items.addAll(items)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun removeLoading(loadingItem: DelegateAdapterItem) {
+    fun addItem(item: DelegateAdapterItem) {
+        val newItems = getItems().toMutableList()
+        newItems.add(item)
+
+        val diffCallback = DiffCallback(this.items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.items.add(item)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun removeItem(items: List<DelegateAdapterItem>) {
+        val newItems = getItems().toMutableList()
+        newItems.removeAll(items)
+
+        val diffCallback = DiffCallback(this.items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.items.removeAll(items)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun removeItem(loadingItem: DelegateAdapterItem) {
         val newItems = getItems().toMutableList()
         newItems.remove(loadingItem)
 
@@ -63,29 +80,13 @@ class CompositeAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun addItems(items : List<DelegateAdapterItem>) {
-        val newItems = getItems().toMutableList()
-        newItems.addAll(items)
-        submit(newItems)
-    }
-
-    fun removeItem(item: DelegateAdapterItem) {
-        removeItems(listOf(item))
-    }
-
-    fun removeItems(items : List<DelegateAdapterItem>) {
-        if (items.isNotEmpty()) {
-            val newItems = this.items.toMutableList()
-            newItems.removeAll(items)
-            submit(newItems)
-        }
-    }
 
     fun submit(newItems: List<DelegateAdapterItem>) {
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         this.items.clear()
+
         this.items.addAll(newItems)
         diffResult.dispatchUpdatesTo(this)
     }

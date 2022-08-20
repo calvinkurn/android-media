@@ -180,7 +180,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            println("Debug: Collecting uistate")
             viewModel.uiState.collect { state -> handleUiState(state) }
         }
     }
@@ -368,7 +367,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         val offset = if (page == 1) {
             0
         } else {
-            (page - 1 )* PAGE_SIZE
+            (page - 1) * PAGE_SIZE
         }
         viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(offset))
     }
@@ -378,19 +377,19 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     override fun onShowLoading() {
-        flashSaleAdapter.addLoading(LoadingItem)
+        flashSaleAdapter.addItem(LoadingItem)
     }
 
     override fun onHideLoading() {
-        flashSaleAdapter.removeLoading(LoadingItem)
+        flashSaleAdapter.removeItem(LoadingItem)
     }
 
     override fun onDataEmpty() {
-        flashSaleAdapter.removeLoading(LoadingItem)
+        flashSaleAdapter.removeItem(LoadingItem)
     }
 
     override fun onGetListError(message: String) {
-        flashSaleAdapter.removeLoading(LoadingItem)
+        flashSaleAdapter.removeItem(LoadingItem)
     }
 
 
