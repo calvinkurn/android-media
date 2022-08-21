@@ -52,27 +52,46 @@ class WishlistCollectionItemViewHolder(
                 binding.singleCollectionItem.apply {
                     visible()
                     clearImage()
+                    loadImage(R.drawable.placeholder_img) {
+                        setCacheStrategy(MediaCacheStrategy.NONE)
+                    }
                 }
             } else {
                 when (item.dataObject.images.size) {
                     TOTAL_IMG_4 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
-                        binding.imgCollection1.loadImage(item.dataObject.images[0]) {
-                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
-                            setPlaceHolder(R.drawable.placeholder_img)
+                        binding.imgCollection1.apply {
+                            visible()
+                            loadImage(item.dataObject.images[0]) {
+                                setCacheStrategy(MediaCacheStrategy.NONE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
+                            scaleType = ImageView.ScaleType.CENTER_CROP
                         }
-                        binding.imgCollection2.loadImage(item.dataObject.images[1]) {
-                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
-                            setPlaceHolder(R.drawable.placeholder_img)
+                        binding.imgCollection2.apply {
+                            visible()
+                            loadImage(item.dataObject.images[1]) {
+                                setCacheStrategy(MediaCacheStrategy.NONE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
+                            scaleType = ImageView.ScaleType.CENTER_CROP
                         }
-                        binding.imgCollection3.loadImage(item.dataObject.images[2]) {
-                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
-                            setPlaceHolder(R.drawable.placeholder_img)
+                        binding.imgCollection3.apply {
+                            visible()
+                            loadImage(item.dataObject.images[2]) {
+                                setCacheStrategy(MediaCacheStrategy.NONE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
+                            scaleType = ImageView.ScaleType.CENTER_CROP
                         }
-                        binding.imgCollection4.loadImage(item.dataObject.images[3]) {
-                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
-                            setPlaceHolder(R.drawable.placeholder_img)
+                        binding.imgCollection4.apply {
+                            visible()
+                            loadImage(item.dataObject.images[3]) {
+                                setCacheStrategy(MediaCacheStrategy.NONE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
+                            scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                     }
                     TOTAL_IMG_3 -> {
@@ -84,9 +103,10 @@ class WishlistCollectionItemViewHolder(
                         params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
+                            visible()
                             layoutParams = params1
                             loadImage(item.dataObject.images[0]) {
-                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -95,16 +115,18 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.setMargins(0, 0, 0, WishlistV2Utils.toDp(3))
                         binding.imgCollection2.apply {
+                            visible()
                             layoutParams = params2
                             loadImage(item.dataObject.images[1]) {
-                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                         binding.imgCollection3.apply {
+                            visible()
                             loadImage(item.dataObject.images[2]) {
-                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -120,9 +142,10 @@ class WishlistCollectionItemViewHolder(
                         params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
+                            visible()
                             layoutParams = params1
                             loadImage(item.dataObject.images[0]) {
-                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -133,9 +156,10 @@ class WishlistCollectionItemViewHolder(
                         params2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
                         params2.height = WishlistV2Utils.toDp(MERGE_SIZE)
                         binding.imgCollection2.apply {
+                            visible()
                             layoutParams = params2
                             loadImage(item.dataObject.images[1]) {
-                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -148,9 +172,10 @@ class WishlistCollectionItemViewHolder(
                         binding.singleCollectionItem.apply {
                             visible()
                             loadImage(item.dataObject.images[0]) {
-                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
+                            scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                     }
                 }
