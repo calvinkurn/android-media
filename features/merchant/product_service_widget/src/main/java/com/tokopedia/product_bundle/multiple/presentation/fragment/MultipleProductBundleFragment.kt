@@ -213,6 +213,21 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 } else {
+                    // track the buy button click
+                    val userId = viewModel.getUserId()
+                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+                    val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
+                    val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+                    MultipleProductBundleTracking.trackMultipleBuyClick(
+                            userId = userId,
+                            bundleId = atcResult.requestParams.bundleId,
+                            productId = selectedProductIds,
+                            atcResult = atcResult,
+                            source =
+                            bundleName = selectedProductBundleMaster.bundleName,
+                            bundlePrice =
+                    )
+
                     RouteManager.route(context, ApplinkConst.CART)
                 }
             }
@@ -276,7 +291,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 if (isAddToCartInputValid) {
                     // collect required data
                     val bundleId = selectedProductBundleMaster.bundleId
-                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+//                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
                     val userId = viewModel.getUserId()
                     val shopId = selectedProductBundleMaster.shopId
                     // map product bundle details to product details
@@ -285,11 +300,13 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                         shopId,
                         selectedBundleDetails
                     )
-                    // track the buy button click
-                    MultipleProductBundleTracking.trackMultipleBuyClick(
-                        bundleId = bundleId.toString(),
-                        productId = selectedProductIds
-                    )
+//                    // track the buy button click
+//                    MultipleProductBundleTracking.trackMultipleBuyClick(
+//                            shopId = shopId,
+//                            userId = userId,
+//                            bundleId = bundleId.toString(),
+//                            productId = selectedProductIds
+//                    )
                     // add product bundle to cart
                     viewModel.addProductBundleToCart(
                         parentProductId = viewModel.parentProductID,

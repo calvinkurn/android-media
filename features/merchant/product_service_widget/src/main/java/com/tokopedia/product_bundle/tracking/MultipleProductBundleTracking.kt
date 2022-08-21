@@ -1,5 +1,7 @@
 package com.tokopedia.product_bundle.tracking
 
+import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
+
 object MultipleProductBundleTracking: BaseProductBundleTracking() {
 
     private const val BUNDLING_TYPE = "multiple"
@@ -27,8 +29,27 @@ object MultipleProductBundleTracking: BaseProductBundleTracking() {
         )
     }
 
-    fun trackMultipleBuyClick(bundleId: String, productId: String) {
-        trackBuyClick("bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;", productId)
+    fun trackMultipleBuyClick(
+            userId: String,
+            bundleId: String,
+            productId: String,
+            atcResult: AddToCartDataResult,
+            source: String,
+            bundleName: String,
+            bundlePrice: Long
+    ) {
+        trackBuyClick(
+                userId = userId,
+                label = "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
+                productId = productId,
+                atcResult = atcResult,
+                source = source,
+                bundleName = bundleName,
+                bundleType = VALUE_MULTIPLE_BUNDLING,
+                bundlePrice = bundlePrice
+        )
+
+//        trackBuyClick("bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;", productId)
     }
 
     fun trackMultipleBackClick(bundleId: String, productId: String) {
