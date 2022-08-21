@@ -55,7 +55,7 @@
         app:unify_text_field_append_text="%    "
         app:unify_text_field_clearable="false"
         app:unify_text_field_input_type="number"
-        app:unify_text_field_label="Persentase Cashback"
+        app:unify_text_field_label="Persentase cashback"
         app:unify_text_field_label_static="false" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
@@ -69,7 +69,7 @@
         app:layout_goneMarginTop="@dimen/tm_dash_dp_20"
         app:unify_text_field_clearable="false"
         app:unify_text_field_input_type="number"
-        app:unify_text_field_label="Maks. Cashback"
+        app:unify_text_field_label="Maks. cashback"
         app:unify_text_field_label_static="false"
         app:unify_text_field_prepend_text="Rp" />
 
@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textFieldMaxCashback"
         app:unify_text_field_clearable="false"
         app:unify_text_field_input_type="number"
-        app:unify_text_field_label="Min. Transaksi"
+        app:unify_text_field_label="Min. transaksi"
         app:unify_text_field_label_static="false"
         app:unify_text_field_prepend_text="Rp" />
 
@@ -126,7 +126,7 @@
         android:id="@+id/ivPreviewContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvKuponTitle">

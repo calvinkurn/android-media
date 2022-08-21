@@ -2,8 +2,12 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,23 +99,40 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         })
     }
     private fun setMainUi(membershipGetProgramForm: MembershipGetProgramForm?) {
-        tvProgramPeriod.setText("${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+        val startDateString = membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
             TmDateUtil.setDatePreview(
                 it
             )
-        }}, ${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
-            TmDateUtil.setTime(
-                it
-            )
-        }} - ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+        }
+
+        val endDateString = membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
             TmDateUtil.setDatePreview(
                 it
             )
-        }}, ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+        }
+
+        val startTimeString = membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
             TmDateUtil.setTime(
                 it
             )
-        }}")
+        }
+
+        val endTimeString = membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+            TmDateUtil.setTime(
+                it
+            )
+        }
+        val finalString = "$startDateString, $startTimeString - $endDateString, $endTimeString"
+        tvProgramPeriod.text = getDateTimeSpannable(finalString,startDateString?.length ?: 0,endDateString?.length ?: 0)
+//        tvProgramPeriod.setText("${getDateSpannable(startDateString)}, ${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+//            TmDateUtil.setTime(
+//                it
+//            )
+//        }} - ${getDateSpannable(endDateString)}, ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
+//            TmDateUtil.setTime(
+//                it
+//            )
+//        }}")
         tvMemberCount.text = membershipGetProgramForm?.programForm?.analytics?.totalNewMember
         tvProgramStatus.visibility = View.VISIBLE
         tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr
@@ -152,6 +173,23 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         header_program_detail.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
+    }
+
+    private fun getDateTimeSpannable(dateTimeString:String?,startDateLen:Int,endDateLen:Int) : SpannableString{
+      val ss = SpannableString(dateTimeString)
+        val delimiterIdx = ss.indexOf("-")
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0,startDateLen,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
+            delimiterIdx+2,delimiterIdx+2+endDateLen,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return ss
     }
 
     override fun getScreenName() = ""

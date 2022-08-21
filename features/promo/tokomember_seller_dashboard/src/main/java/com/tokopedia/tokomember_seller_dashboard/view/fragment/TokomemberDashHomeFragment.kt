@@ -1,7 +1,11 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.R.attr.bitmap
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,20 +21,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_CTA_PRIMARY
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_DESC
-import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TM_SUCCESS_HAPPY
-import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
@@ -38,6 +36,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tm_dash_home_fragment.*
 import javax.inject.Inject
+
 
 class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
@@ -61,7 +60,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.tm_dash_home_fragment, container, false)
     }
@@ -103,20 +102,19 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-
         tokomemberDashHomeViewmodel.tokomemberHomeResultLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING ->{
 
                 }
                 TokoLiveDataResult.STATUS.SUCCESS->{
+                    Log.i("from home frag" , " url : -> ${it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl}")
                     Glide.with(flShop)
                         .asDrawable()
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
                         .into(object : CustomTarget<Drawable>(){
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-
-                                flShop.background = resource
+                               flShop.background = resource
                             }
                             override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -169,6 +167,8 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             addItems(R.layout.tm_dash_home_ticker_item, list as ArrayList<Any>, itemParam)
         }
     }
+
+
 
     override fun getScreenName() = ""
 

@@ -65,8 +65,8 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         programStartTime.text = item.timeWindow?.startTime?.let { getTime(it) }
         programEndTime.text = item.timeWindow?.endTime?.let { getTime(it) }
 
-        programMemberValue.text = item.analytics?.totalNewMember
-        programMemberTransaksivalue.text = item.analytics?.trxCount
+        programMemberValue.text = item.analytics?.totalNewMember ?: "-"
+        programMemberTransaksivalue.text = item.analytics?.trxCount ?: "-"
 
         if(item.actions?.tripleDots.isNullOrEmpty()){
             optionMenu.hide()
@@ -110,6 +110,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.show()
             }
             ACTIVE ->{
+                programStatus.text = itemView.context.getString(R.string.tm_program_status_value,item.statusStr ?: "")
                 programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
                 view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
                 btn_edit.hide()

@@ -70,7 +70,7 @@
             android:layout_marginTop="@dimen/tm_dash_dp_8"
             android:id="@+id/tvProgramPeriod"
             android:textColor="@color/Unify_NN0"
-            app:typographyType="heading_5" />
+            app:typographyType="display_2" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,8 +88,8 @@
                 app:typographyType="display_2"/>
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_width="@dimen/tm_dash_dp_10"
-                android:layout_height="@dimen/tm_dash_dp_10"
+                android:layout_width="@dimen/tm_dash_dp_16"
+                android:layout_height="@dimen/tm_dash_dp_16"
                 app:icon_color_light_enable="@color/Unify_NN0"
                 app:icon_name="INFORMATION"/>
 
@@ -129,7 +129,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvMemberCount"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="heading_4"
+                        />
 
                 </LinearLayout>
 
@@ -162,7 +163,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvTransactionCount"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="heading_4"
+                        />
 
                 </LinearLayout>
 
@@ -195,7 +197,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tvIncome"
                         android:textColor="@color/Unify_NN950"
-                        app:typographyType="heading_6"/>
+                        app:typographyType="heading_4"
+                        />
 
                 </LinearLayout>
 
@@ -243,7 +246,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_8"
                         android:text="@string/tm_premium_level_1"
                         android:textColor="@color/Unify_NN950"
                         app:typographyType="display_3"/>
@@ -340,7 +343,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/tm_dash_dp_10"
+                        android:layout_marginStart="@dimen/tm_dash_dp_8"
                         android:text="@string/tm_vip_level_2"
                         android:textColor="@color/Unify_NN950"
                         app:typographyType="display_3"/>
@@ -434,8 +437,8 @@
                 />
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_width="@dimen/tm_dash_dp_10"
-                android:layout_height="@dimen/tm_dash_dp_10"
+                android:layout_width="@dimen/tm_dash_dp_16"
+                android:layout_height="@dimen/tm_dash_dp_16"
                 android:layout_marginTop="3dp"
                 android:layout_marginStart="@dimen/tm_dash_dp_4"
                 app:icon_name="INFORMATION"

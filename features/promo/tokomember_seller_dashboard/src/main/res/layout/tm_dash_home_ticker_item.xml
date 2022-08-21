@@ -12,8 +12,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivTicker"
-            android:layout_width="@dimen/tm_dash_dp_50"
-            android:layout_height="@dimen/unify_space_40"
+            android:layout_width="@dimen/tm_dash_dp_48"
+            android:layout_height="@dimen/tm_dash_dp_48"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
