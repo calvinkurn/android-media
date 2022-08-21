@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -102,14 +101,15 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         when (effect) {
             is FlashSaleContainerViewModel.UiEffect.ErrorFetchTabsMetaData -> {
                 binding?.root.showToasterError(effect.throwable)
+
             }
         }
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
-        renderLoadingState(uiState.isLoading)
+        renderLoadingState(uiState.isLoading, uiState.error)
         renderTicker(uiState.showTicker, uiState.error)
-        renderTabs(uiState.tabsMetadata)
+        renderTabs(uiState.tabsMetadata, uiState.error)
         renderErrorState(uiState.error)
     }
 
@@ -119,20 +119,19 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.globalError?.setActionClickListener {
             viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
         }
-
-        if (isError) {
-            binding?.tabsUnify?.gone()
-        }
     }
 
 
-    private fun renderLoadingState(isLoading: Boolean) {
-        binding?.shimmer?.content?.isVisible = isLoading
-        binding?.tabsUnify?.isVisible = !isLoading
+    private fun renderLoadingState(isLoading: Boolean, error: Throwable?) {
+        val isError = error != null
+        binding?.shimmer?.content?.isVisible = isLoading && !isError
+        binding?.tabsUnify?.isVisible = !isLoading && !isError
     }
 
-    private fun renderTabs(tabs: List<TabMetadata>) {
-        if (tabs.isEmpty()) return
+    private fun renderTabs(tabs: List<TabMetadata>, error: Throwable?) {
+        val isError = error != null
+        binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError
+
         displayTabs(predefinedTabs, tabs)
     }
 
