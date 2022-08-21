@@ -64,10 +64,8 @@ class FlashSaleContainerViewModel @Inject constructor(
 
                 val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
                 val showTicker = !isMultiLocationTickerPreviouslyDismissed
-                //_uiState.update { it.copy(isLoading = false,  error = null, tabsMetadata = tabs, showTicker = showTicker) }
+                _uiState.update { it.copy(isLoading = false,  error = null, tabsMetadata = tabs, showTicker = showTicker) }
 
-                _uiState.update { it.copy(isLoading = false, error = MessageErrorException("hmm")) }
-                _uiEffect.emit(UiEffect.ErrorFetchTabsMetaData(MessageErrorException("")))
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false, error = error) }
