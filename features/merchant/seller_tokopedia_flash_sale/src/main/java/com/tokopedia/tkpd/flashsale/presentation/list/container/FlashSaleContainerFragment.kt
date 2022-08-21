@@ -125,14 +125,16 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun renderLoadingState(isLoading: Boolean, error: Throwable?) {
         val isError = error != null
         binding?.shimmer?.content?.isVisible = isLoading && !isError
-        binding?.tabsUnify?.isVisible = !isLoading && !isError
     }
 
     private fun renderTabs(tabs: List<TabMetadata>, error: Throwable?) {
         val isError = error != null
         binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError
+        binding?.viewPager?.isVisible = tabs.isNotEmpty() && !isError
 
-        displayTabs(predefinedTabs, tabs)
+        if (tabs.isNotEmpty()) {
+            displayTabs(predefinedTabs, tabs)
+        }
     }
 
     private fun createFragments(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>): List<Pair<String, Fragment>> {
