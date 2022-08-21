@@ -51,7 +51,6 @@ class FlashSaleContainerViewModel @Inject constructor(
             }
             UiEvent.DismissMultiLocationTicker -> {
                 preferenceDataStore.markMultiLocationTickerAsDismissed()
-                _uiState.update { it.copy(showTicker = false) }
             }
         }
     }
