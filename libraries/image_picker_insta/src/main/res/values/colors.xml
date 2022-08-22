@@ -3,4 +3,5 @@
     <color name="dms_imagepicker_insta_came_overlay">#80000000</color>
     <color name="dms_imagepicker_insta_camera_timer_progress">#7FFF4A</color>
     <color name="dms_imagepicker_insta_camera_btn_bg">#f5751d</color>
+    <color name="dms_imagepicker_insta_duration_bg">#B22E3137</color>
 </resources>
