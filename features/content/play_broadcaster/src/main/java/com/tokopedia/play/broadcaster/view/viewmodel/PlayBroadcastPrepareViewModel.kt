@@ -64,7 +64,8 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         override fun onChanged(t: String?) {}
     }
 
-    val isFirstSwitchAccount = sharedPref.isFirstSwitchAccount()
+    val isFirstSwitchAccount: Boolean
+        get() = sharedPref.isFirstSwitchAccount()
 
     init {
         _observableIngestUrl.observeForever(ingestUrlObserver)
