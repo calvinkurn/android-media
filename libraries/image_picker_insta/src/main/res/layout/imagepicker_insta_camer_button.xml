@@ -16,7 +16,8 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
-        android:progressDrawable="@drawable/imagepicker_insta_timer_1" />
+        android:progressDrawable="@drawable/imagepicker_insta_timer_1"
+        tools:ignore="UnifyComponentUsage" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_capture"
