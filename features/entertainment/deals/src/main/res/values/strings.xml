@@ -69,4 +69,6 @@
     <string name="deals_image_brand_content_description">Image Brand</string>
     <string name="deals_image_category_empty_content_description">Image Category Empty</string>
 
+    <string name="deals_pdp_buy_now">Beli Sekarang</string>
+
 </resources>
