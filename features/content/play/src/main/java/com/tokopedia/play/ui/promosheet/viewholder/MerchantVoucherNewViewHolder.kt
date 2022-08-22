@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.productsheet.viewholder
+package com.tokopedia.play.ui.promosheet.viewholder
 
 import android.view.View
 import android.widget.TextView

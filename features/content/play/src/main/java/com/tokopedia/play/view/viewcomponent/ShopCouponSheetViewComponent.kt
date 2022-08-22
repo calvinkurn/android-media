@@ -15,9 +15,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
-import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
-import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherNewViewHolder
+import com.tokopedia.play.ui.promosheet.adapter.MerchantVoucherAdapter
+import com.tokopedia.play.ui.promosheet.itemdecoration.MerchantVoucherItemDecoration
+import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 

@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.productsheet.itemdecoration
+package com.tokopedia.play.ui.promosheet.itemdecoration
 
 import android.content.Context
 import android.graphics.Canvas

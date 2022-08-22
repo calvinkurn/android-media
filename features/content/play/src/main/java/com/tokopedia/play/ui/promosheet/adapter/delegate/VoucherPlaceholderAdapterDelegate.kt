@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.productsheet.adapter.delegate
+package com.tokopedia.play.ui.promosheet.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup

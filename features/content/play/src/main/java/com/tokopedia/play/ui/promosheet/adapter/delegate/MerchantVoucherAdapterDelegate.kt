@@ -1,10 +1,10 @@
-package com.tokopedia.play.ui.productsheet.adapter.delegate
+package com.tokopedia.play.ui.promosheet.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherNewViewHolder
+import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 

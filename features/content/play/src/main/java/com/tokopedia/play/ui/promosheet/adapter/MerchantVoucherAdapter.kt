@@ -1,9 +1,9 @@
-package com.tokopedia.play.ui.productsheet.adapter
+package com.tokopedia.play.ui.promosheet.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.ui.productsheet.adapter.delegate.MerchantVoucherAdapterDelegate
-import com.tokopedia.play.ui.productsheet.adapter.delegate.VoucherPlaceholderAdapterDelegate
-import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherNewViewHolder
+import com.tokopedia.play.ui.promosheet.adapter.delegate.MerchantVoucherAdapterDelegate
+import com.tokopedia.play.ui.promosheet.adapter.delegate.VoucherPlaceholderAdapterDelegate
+import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 
 /**
