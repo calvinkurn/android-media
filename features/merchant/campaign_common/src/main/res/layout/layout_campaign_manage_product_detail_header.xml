@@ -39,7 +39,7 @@
             tools:text="Product NameProduct" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_parent_original_price"
+            android:id="@+id/text_header_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -59,8 +59,8 @@
             android:layout_marginTop="2dp"
             android:visibility="gone"
             app:labelType="highlight_light_grey"
-            app:layout_constraintLeft_toLeftOf="@id/text_parent_original_price"
-            app:layout_constraintTop_toBottomOf="@id/text_parent_original_price"
+            app:layout_constraintLeft_toLeftOf="@id/text_header_original_price"
+            app:layout_constraintTop_toBottomOf="@id/text_header_original_price"
             tools:labelTitle="6 Varian Produk"
             tools:visibility="visible" />
 
@@ -69,13 +69,15 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginTop="6dp"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/label_total_variant"
             app:layout_constraintTop_toBottomOf="@id/label_total_variant"
             app:srcCompat="@drawable/ic_campaign_common_product_icon"
-            app:unify_image_corner_radius="0" />
+            app:unify_image_corner_radius="0"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_parent_total_stock"
+            android:id="@+id/text_header_total_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -92,8 +94,10 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_parent_total_stock" />
+            app:layout_constraintTop_toBottomOf="@id/text_header_total_stock"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_variant_name"

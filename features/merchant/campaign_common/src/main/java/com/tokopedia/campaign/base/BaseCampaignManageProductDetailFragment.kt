@@ -31,27 +31,47 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> : BaseDaggerFragment() {
+abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
+    BaseDaggerFragment() {
 
     private var viewBinding by autoClearedNullable<FragmentBaseCampaignManageProductDetailBinding>()
 
-    protected var headerUnify: HeaderUnify? = null
-    protected var tickerHeader: Ticker? = null
-    protected var loadingSpinner: View? = null
-    protected var containerProductDataLayout: View? = null
-    protected var layoutGlobalError: GlobalError? = null
-    protected var imageProduct: ImageUnify? = null
-    protected var textProductName: Typography? = null
-    protected var textProductOriginalPrice: Typography? = null
-    protected var labelTotalVariant: Label? = null
-    protected var textTotalStock: Typography? = null
-    protected var dividerProductHeader: DividerUnify? = null
-    protected var textProductVariantName: Typography? = null
-    protected var widgetBulkApply: WidgetCampaignLabelBulkApply? = null
-    protected var imageIconProduct: ImageUnify? = null
-    protected var rvManageProductDetail: RecyclerView? = null
-    protected var buttonSubmit: UnifyButton? = null
-    protected var adapter: BaseListAdapter<Visitable<*>, F>? = null
+    var headerUnify: HeaderUnify? = null
+        private set
+    var tickerHeader: Ticker? = null
+        private set
+    var loadingSpinner: View? = null
+        private set
+    var containerProductDataLayout: View? = null
+        private set
+    var layoutGlobalError: GlobalError? = null
+        private set
+    var imageProduct: ImageUnify? = null
+        private set
+    var textProductName: Typography? = null
+        private set
+    var textProductOriginalPrice: Typography? = null
+        private set
+    var labelTotalVariant: Label? = null
+        private set
+    var textTotalStock: Typography? = null
+        private set
+    var dividerProductHeader: DividerUnify? = null
+        private set
+    var textProductVariantName: Typography? = null
+        private set
+    var widgetBulkApply: WidgetCampaignLabelBulkApply? = null
+        private set
+    var imageIconProduct: ImageUnify? = null
+        private set
+    var dividerThick: DividerUnify? = null
+        private set
+    var rvManageProductDetail: RecyclerView? = null
+        private set
+    var buttonSubmit: UnifyButton? = null
+        private set
+    var adapter: BaseListAdapter<Visitable<*>, F>? = null
+        private set
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,6 +104,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
             containerProductDataLayout = it.containerProductDataLayout
             layoutGlobalError = it.globalError
             initViewProductHeader(it.campaignManageProductDetailHeader)
+            dividerThick = it.dividerThick
             buttonSubmit = it.buttonSubmit
             rvManageProductDetail = it.rvManageProductDetail
         }
@@ -92,10 +113,10 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
     private fun initViewProductHeader(binding: LayoutCampaignManageProductDetailHeaderBinding) {
         imageProduct = binding.imgProduct
         textProductName = binding.textProductName
-        textProductOriginalPrice = binding.textOriginalPrice
+        textProductOriginalPrice = binding.textHeaderOriginalPrice
         labelTotalVariant = binding.labelTotalVariant
         imageIconProduct = binding.iconProduct
-        textTotalStock = binding.textTotalStock
+        textTotalStock = binding.textHeaderTotalStock
         dividerProductHeader = binding.dividerProductHeader
         textProductVariantName = binding.textProductVariantName
         widgetBulkApply = binding.widgetBulkApply
@@ -169,6 +190,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
         labelTotalVariant?.showIfWithBlock(productTotalVariantFormatted.isNotEmpty()) {
             setLabel(productTotalVariantFormatted)
         }
+        imageIconProduct?.showWithCondition(productStockTextFormatted.isNotEmpty())
         textTotalStock?.showIfWithBlock(productStockTextFormatted.isNotEmpty()) {
             text = productStockTextFormatted
         }
@@ -177,6 +199,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
             text = productVariantName
         }
         widgetBulkApply?.showWithCondition(isShowWidgetBulkApply)
+        dividerThick?.show()
     }
 
     /**
@@ -202,7 +225,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
     /**
      * You can override this function to define the action when clicking widget bulk apply
      */
-    protected fun onWidgetBulkApplyClicked(){}
+    protected fun onWidgetBulkApplyClicked() {}
 
     /**
      * Can be used to set widget bulk apply title

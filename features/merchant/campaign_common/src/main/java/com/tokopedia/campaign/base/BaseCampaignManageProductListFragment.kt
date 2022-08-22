@@ -30,14 +30,22 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
     override fun getScreenName(): String =
         BaseCampaignManageProductListFragment::class.java.canonicalName.orEmpty()
 
-    protected var rvProductList: RecyclerView? = null
-    protected var containerButtonSubmit: ViewGroup? = null
-    protected var buttonSubmit: UnifyButton? = null
-    protected var labelBulkApply: WidgetCampaignLabelBulkApply? = null
-    protected var headerUnify: HeaderUnify? = null
-    protected var ticker: Ticker? = null
-    protected var textTotalProduct: Typography? = null
-    protected var adapter: BaseListAdapter<Visitable<*>, F>? = null
+    var rvProductList: RecyclerView? = null
+        private set
+    var containerButtonSubmit: ViewGroup? = null
+        private set
+    var buttonSubmit: UnifyButton? = null
+        private set
+    var labelBulkApply: WidgetCampaignLabelBulkApply? = null
+        private set
+    var headerUnify: HeaderUnify? = null
+        private set
+    var ticker: Ticker? = null
+        private set
+    var textTotalProduct: Typography? = null
+        private set
+    var adapter: BaseListAdapter<Visitable<*>, F>? = null
+        private set
 
     override fun onCreateView(
         inflater: LayoutInflater,

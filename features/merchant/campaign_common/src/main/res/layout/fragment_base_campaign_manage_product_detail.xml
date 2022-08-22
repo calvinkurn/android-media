@@ -61,8 +61,11 @@
                     android:layout_marginBottom="8dp" />
 
                 <com.tokopedia.unifycomponents.DividerUnify
+                    android:id="@+id/divider_thick"
                     android:layout_width="match_parent"
-                    android:layout_height="8dp" />
+                    android:layout_height="8dp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_manage_product_detail"
@@ -75,7 +78,6 @@
             android:id="@+id/container_button_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:background="@drawable/base_campaign_manage_product_list_submit_button_top_shadow"
             app:layout_constraintLeft_toLeftOf="parent">
 
