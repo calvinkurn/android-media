@@ -45,6 +45,7 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -475,6 +476,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
                 toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
+                setToolbarSearchHint()
             }
         }
     }
@@ -486,6 +488,26 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
                 .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
         navToolbar?.setIcon(icons)
+    }
+
+    private fun setToolbarSearchHint() {
+        navToolbar?.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_nav_toolbar_gofood_home)
+                )
+            ),
+            searchbarClickCallback = { onSearchBarClick() }
+        )
+    }
+
+    private fun onSearchBarClick() {
+        context?.let { context ->
+            RouteManager.route(
+                context,
+                ""
+            )
+        }
     }
 
     private fun onClickShareButton() {
