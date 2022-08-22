@@ -1,5 +1,7 @@
 package com.tokopedia.app.common;
 
+import android.annotation.SuppressLint;
+
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -32,13 +34,11 @@ import java.io.File;
 
 public abstract class MainApplication extends CoreNetworkApplication {
 
-    private LocationUtils locationUtils;
     private DaggerCommonAppComponent.Builder daggerBuilder;
     private CommonAppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
-    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
     private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
     private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
@@ -84,7 +84,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-        upgradeSecurityProvider();
         createAndCallBgWork();
         TokoPatch.init(this);
     }
@@ -103,8 +102,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     @NotNull
     private Boolean executeInBackground(){
-        locationUtils = new LocationUtils(MainApplication.this);
-        locationUtils.initLocationBackground();
+        new LocationUtils(MainApplication.this).initLocationBackground();
         upgradeSecurityProvider();
         return true;
     }
@@ -120,14 +118,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
         }
     }
 
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        if(locationUtils != null) {
-            locationUtils.deInitLocationBackground();
-        }
-    }
 
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {

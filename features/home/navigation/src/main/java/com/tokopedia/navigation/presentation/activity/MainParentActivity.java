@@ -44,6 +44,7 @@ import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
+import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -976,59 +977,30 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    @Override
-    public void checkAppUpdateAndInApp() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // if download finished or flexible update is in progress, we do not need to show the update dialog
-            AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
-                if (!isOnProgress) {
-                    checkAppUpdateRemoteConfig();
-                }
-                return null;
-            });
-        } else {
-            checkAppUpdateRemoteConfig();
-        }
-    }
-
-    private void checkAppUpdateRemoteConfig() {
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+    protected InAppCallback getInAppCallback(){
+        return new InAppCallback() {
             @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isFinishing()) {
-                    AppUpdateDialogBuilder appUpdateDialogBuilder =
-                            new AppUpdateDialogBuilder(
-                                    MainParentActivity.this,
-                                    detail,
-                                    new AppUpdateDialogBuilder.Listener() {
-                                        @Override
-                                        public void onPositiveButtonClicked(DetailUpdate detail) {
-                                            globalNavAnalytics.get().eventClickAppUpdate(detail.isForceUpdate());
-                                        }
-
-                                        @Override
-                                        public void onNegativeButtonClicked(DetailUpdate detail) {
-                                            globalNavAnalytics.get().eventClickCancelAppUpdate(detail.isForceUpdate());
-                                        }
-                                    }
-                            );
-                    appUpdateDialogBuilder.getAlertDialog().show();
-                    globalNavAnalytics.get().eventImpressionAppUpdate(detail.isForceUpdate());
-                }
+            public void onPositiveButtonInAppClicked(DetailUpdate detailUpdate) {
+                globalNavAnalytics.get().eventClickAppUpdate(detailUpdate.isForceUpdate());
             }
 
             @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
+            public void onNegativeButtonInAppClicked(DetailUpdate detailUpdate) {
+                globalNavAnalytics.get().eventClickCancelAppUpdate(detailUpdate.isForceUpdate());
             }
 
             @Override
-            public void onNotNeedUpdate() {
+            public void onNotNeedUpdateInApp() {
                 if (!isFinishing()) {
                     checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
                 }
             }
-        });
+
+            @Override
+            public void onNeedUpdateInApp(DetailUpdate detailUpdate) {
+                globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
+            }
+        };
     }
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {

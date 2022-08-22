@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
+import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -37,6 +38,8 @@ import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -356,8 +359,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private void checkAppUpdateRemoteConfig(WeakReference<BaseActivity> activityReference) {
         BaseActivity context = activityReference.get();
-        if (context != null) {
+        if (!isFinishing() && context != null) {
             ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(context);
+            InAppCallback inAppCallback = getInAppCallback();
             appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
                 @Override
                 public void onNeedUpdate(DetailUpdate detail) {
@@ -370,16 +374,23 @@ public abstract class BaseActivity extends AppCompatActivity implements
                                         new AppUpdateDialogBuilder.Listener() {
                                             @Override
                                             public void onPositiveButtonClicked(DetailUpdate detail) {
-                                                /* no op */
+                                                if (inAppCallback!= null) {
+                                                    inAppCallback.onPositiveButtonInAppClicked(detail);
+                                                }
                                             }
 
                                             @Override
                                             public void onNegativeButtonClicked(DetailUpdate detail) {
-                                                /* no op */
+                                                if (inAppCallback!= null) {
+                                                    inAppCallback.onNegativeButtonInAppClicked(detail);
+                                                }
                                             }
                                         }
                                 );
                         appUpdateDialogBuilder.getAlertDialog().show();
+                        if (inAppCallback!= null) {
+                            inAppCallback.onNeedUpdateInApp(detail);
+                        }
                     }
                 }
 
@@ -390,9 +401,17 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
                 @Override
                 public void onNotNeedUpdate() {
-                    /* no op */
+                    if (inAppCallback!= null) {
+                        inAppCallback.onNotNeedUpdateInApp();
+                    }
                 }
             });
         }
     }
+
+    protected @Nullable
+    InAppCallback getInAppCallback() {
+        return null;
+    }
+
 }
