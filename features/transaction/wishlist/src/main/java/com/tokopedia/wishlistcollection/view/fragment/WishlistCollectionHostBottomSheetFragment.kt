@@ -119,7 +119,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         val intent = Intent()
         intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
         intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, errorMessage)
-        parentFragment?.activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 

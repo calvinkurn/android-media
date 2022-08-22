@@ -1146,13 +1146,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hideStickyDeletionProgress() {
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.gone()
-            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.deletionMessage.text =
-                ""
-            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.deletionProgressBar.setValue(
-                0
-            )
-            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.labelProgressBar.text =
-                "0/0"
+            wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.rlDeletionProgress.gone()
         }
     }
 
@@ -2515,6 +2509,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems) {
+        println("++ onSuccessSaveItemToCollection WishlistCollectionDetailFragment - status = ${data.status}, success = ${data.dataItem.success}")
         if (data.status == OK && data.dataItem.success) {
             showToaster(data.dataItem.message, "", Toaster.TYPE_NORMAL)
         } else {
@@ -2531,6 +2526,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
+        println("++ onFailedSaveItemToCollection WishlistCollectionDetailFragment - errorMessage = $errorMessage")
         showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         turnOffBulkDeleteMode()
     }
@@ -2540,6 +2536,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {
-        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+        errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
     }
 }

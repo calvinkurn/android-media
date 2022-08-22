@@ -324,12 +324,16 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         createNewCollectionViewModel.addWishlistCollectionItem.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.status == OK) {
+                    if (result.data.status == OK && result.data.dataItem.success) {
                         actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem)
                         dismiss()
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty {
-                            getString(Rwishlist.string.wishlist_common_error_msg)
+                        val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
+                            result.data.errorMessage.firstOrNull() ?: ""
+                        } else if (result.data.dataItem.message.isNotEmpty()) {
+                            result.data.dataItem.message
+                        } else {
+                            getString(com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg)
                         }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
                         dismiss()
