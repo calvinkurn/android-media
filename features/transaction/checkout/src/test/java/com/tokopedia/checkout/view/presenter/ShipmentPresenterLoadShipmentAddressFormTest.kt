@@ -654,13 +654,13 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             userAddress = UserAddress(state = 0)
         }
         val crossSell = arrayListOf<CrossSellModel>()
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), crossSell = crossSell))
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", false)
 
         // Then
         assertTrue(presenter.listShipmentCrossSellModel.size == 0)
