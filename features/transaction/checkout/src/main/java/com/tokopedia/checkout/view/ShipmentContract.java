@@ -174,6 +174,8 @@ public interface ShipmentContract {
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
 
         void onNeedUpdateViewItem(int position);
+
+        void checkUnapplyBoPromoShipment();
     }
 
     interface AnalyticsActionListener {

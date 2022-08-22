@@ -2474,6 +2474,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         // loop for red state first, then do auto apply BO
+        boolean hasUnappliedBo = false;
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
@@ -2481,8 +2482,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shippingId > 0 && spId > 0) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel);
+                    if (!hasUnappliedBo) {
+                        hasUnappliedBo = true;
+                    }
                 }
             }
+        }
+        if (hasUnappliedBo) {
+            getView().checkUnapplyBoPromoShipment();
         }
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
@@ -2510,7 +2517,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
         if (itemPosition != -1) {
             getView().resetCourier(itemPosition);
-            // todo: show micro interaction (nanti aja)
             clearOrderPromoCodeFromLastValidateUseRequest(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
             getView().onNeedUpdateViewItem(itemPosition);
         }
@@ -2561,12 +2567,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .cartData(cartData)
-                .mvc("");
-
-        boolean skipMvc = false;
-        if (!skipMvc) {
-            ratesParamBuilder.mvc(mvc);
-        }
+                .mvc(mvc);
 
         RatesParam param = ratesParamBuilder.build();
 

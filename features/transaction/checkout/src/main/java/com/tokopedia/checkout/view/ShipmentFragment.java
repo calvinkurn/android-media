@@ -1343,9 +1343,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                     doUpdateButtonPromoCheckout(promoUiModel);
                     shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                    // todo: reset BO -> loop shipment items: if (lastValidateUsePromoRequest with matching uniqueId do not contains BO code) voucherLogisticItemUiModel = null & reset shipment else no op
-                    // todo: flow auto unapply BO
-//                    doUnapplyBo()
                     shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false);
                 }
 
@@ -3505,5 +3502,29 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void checkUnapplyBoPromoShipment() {
+        if (getActivity() != null) {
+            List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
+            int firstFoundPosition = 0;
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
+                        if (firstFoundPosition == 0) {
+                            firstFoundPosition = i;
+                        }
+                        shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                        shipmentCartItemModel.setStateAllItemViewExpanded(false);
+                        shipmentCartItemModel.setShippingBorderRed(true);
+                        onNeedUpdateViewItem(i);
+                    }
+                }
+            }
+
+            rvShipment.smoothScrollToPosition(firstFoundPosition);
+        }
     }
 }
