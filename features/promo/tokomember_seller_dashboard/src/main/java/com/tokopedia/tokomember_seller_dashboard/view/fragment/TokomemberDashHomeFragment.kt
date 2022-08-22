@@ -3,7 +3,6 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,7 +106,6 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
                 }
                 TokoLiveDataResult.STATUS.SUCCESS->{
-                    Log.i("from home frag" , " url : -> ${it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl}")
                     Glide.with(flShop)
                         .asDrawable()
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
