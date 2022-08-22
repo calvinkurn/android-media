@@ -51,8 +51,8 @@
     <string name="sfs_subscribe_pm_pro">Daftar PM Pro</string>
     <string name="sfs_campaign_cancelled">%s berhasil dibatalkan.</string>
     <string name="sfs_campaign_stopped">%s berhasil dihentikan.</string>
-    <string name="sfs_quota_monitoring_value_placeholder">Sisa Kuota: <b>%d</b> dari <b>%2d</b>  |</string>
-    <string name="sfs_quota_source_monitoring_value_placeholder">Sumber Kuota: <b>%d</b> sumber</string>
+    <string name="sfs_quota_monitoring_value_placeholder">Sisa Kuota: &lt;b>%d&lt;/b> dari &lt;b>%2d&lt;/b> |</string>
+    <string name="sfs_quota_source_monitoring_value_placeholder">Sumber Kuota: &lt;b>%d&lt;/b> sumber</string>
 
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>

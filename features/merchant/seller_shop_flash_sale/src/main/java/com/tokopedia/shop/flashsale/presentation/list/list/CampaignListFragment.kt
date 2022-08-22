@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
@@ -178,6 +179,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     override fun onResume() {
         super.onResume()
         viewModel.getCampaignPrerequisiteData()
+        viewModel.getVpsPackages()
     }
 
 
@@ -495,14 +497,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         }
 
         binding?.run {
-            tgQuotaValue.text = getString(
-                R.string.sfs_quota_monitoring_value_placeholder,
-                totalCurrentQuota,
-                totalQuota
+            tgQuotaValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.sfs_quota_monitoring_value_placeholder,
+                    totalCurrentQuota,
+                    totalQuota
+                )
             )
-            tgQuotaSourceValue.text = getString(
-                R.string.sfs_quota_source_monitoring_value_placeholder,
-                totalQuotaSource
+            tgQuotaSourceValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.sfs_quota_source_monitoring_value_placeholder,
+                    totalQuotaSource
+                )
             )
         }
     }
