@@ -311,7 +311,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         _observableChatList.value = mutableListOf()
 
-        submitAction(PlayBroadcastAction.GetFeedAccountList)
+        submitAction(PlayBroadcastAction.GetAccountList)
     }
 
     override fun onCleared() {
@@ -328,8 +328,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetFeedAccountList -> handleFeedAccountList()
-            is PlayBroadcastAction.SelectFeedAccount -> handleSetSelectedFeedAccount(event.contentAccount)
+            is PlayBroadcastAction.GetAccountList -> handleFeedAccountList()
+            is PlayBroadcastAction.SelectAccount -> handleSetSelectedFeedAccount(event.contentAccount)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
