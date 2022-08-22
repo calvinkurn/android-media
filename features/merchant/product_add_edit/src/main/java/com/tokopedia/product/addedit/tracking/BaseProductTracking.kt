@@ -162,6 +162,7 @@ object ProductAddEditTracking {
                 KEY_LABEL to label,
                 KEY_TRACKER_ID to trackerId
         )
+        getTracker().sendGeneralEvent(map)
     }
 }
 

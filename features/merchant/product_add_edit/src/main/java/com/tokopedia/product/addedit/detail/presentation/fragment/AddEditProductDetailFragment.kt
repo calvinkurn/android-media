@@ -1603,6 +1603,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             }
             priceSuggestionBottomSheet?.setCloseClickListener {
                 if (viewModel.isEditing) ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent()
+                priceSuggestionBottomSheet?.dismiss()
             }
             priceSuggestionBottomSheet?.setClickListener(this)
             priceSuggestionBottomSheet?.show(childFragmentManager)
