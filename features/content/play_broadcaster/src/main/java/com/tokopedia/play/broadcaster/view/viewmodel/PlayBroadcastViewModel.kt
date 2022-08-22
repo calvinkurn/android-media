@@ -328,8 +328,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountList -> handleFeedAccountList()
-            is PlayBroadcastAction.SelectAccount -> handleSetSelectedFeedAccount(event.contentAccount)
+            is PlayBroadcastAction.GetAccountList -> handleAccountList()
+            is PlayBroadcastAction.SelectAccount -> handleSelectedAccount(event.contentAccount)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1443,7 +1443,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleFeedAccountList() {
+    private fun handleAccountList() {
         viewModelScope.launchCatchError(block = {
             val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
 
@@ -1468,7 +1468,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }, onError = {})
     }
 
-    private fun handleSetSelectedFeedAccount(contentAccount: ContentAccountUiModel) {
+    private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
             val current = _selectedFeedAccount.value
             if(current.id != contentAccount.id) {
