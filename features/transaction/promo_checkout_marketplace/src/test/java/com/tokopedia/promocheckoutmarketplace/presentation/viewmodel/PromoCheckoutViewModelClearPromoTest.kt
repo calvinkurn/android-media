@@ -1,10 +1,13 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoBoRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequestInvalid
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -97,6 +100,28 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
         //then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
+    }
+
+    @Test
+    fun `WHEN clear promo and show BO promo THEN should include real BO promo code instead of hard coded BO promo code`() {
+        // given
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val validateUseRequest = provideApplyPromoBoRequest()
+        val promoBo = "PLUSAA"
+        val response = provideClearPromoResponseSuccess()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList())
+
+        //then
+        print(validateUseRequest.orders[0].codes)
+        assert(!validateUseRequest.orders[0].codes.contains(promoBo))
+
     }
 
 }

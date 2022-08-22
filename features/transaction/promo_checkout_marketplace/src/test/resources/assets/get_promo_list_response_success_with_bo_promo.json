@@ -148,7 +148,7 @@
                   "shop_id": 0,
                   "benefit_amount": 30000,
                   "is_recommended": false,
-                  "is_selected": false,
+                  "is_selected": true,
                   "is_attempted": false,
                   "is_bebas_ongkir": true,
                   "clashing_infos": [
@@ -168,7 +168,13 @@
                       "icon": "www.tokopedia.com"
                     }
                   ],
-                  "bo_clashing_infos": [],
+                  "bo_clashing_infos": [
+                    {
+                      "code": "www.tokopedia.com",
+                      "message": "Bebas Ongkir tidak tersedia di promo pilihanmu",
+                      "icon": "www.tokopedia.com"
+                    }
+                  ],
                   "additional_bo_datas": [
                     {
                       "code": "WANTER",

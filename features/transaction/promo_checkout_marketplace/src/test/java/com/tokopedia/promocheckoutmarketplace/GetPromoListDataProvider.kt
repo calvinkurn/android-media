@@ -27,6 +27,10 @@ object GetPromoListDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_bo_promo.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideGetPromoListResponseSuccessWithBoPromoNotSelected(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_bo_promo_unselected.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideGetPromoListResponseSuccessWithPreSelectedPromo(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_pre_selected_promo.json"), CouponListRecommendationResponse::class.java)
     }
