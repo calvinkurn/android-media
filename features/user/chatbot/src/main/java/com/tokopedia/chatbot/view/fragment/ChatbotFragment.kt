@@ -643,7 +643,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         ticker.tickerType = getTickerType(tickerData.type ?: "")
         ticker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(view?.context, linkUrl.toString())
+                onGoToWebView(linkUrl.toString(), linkUrl.toString())
             }
 
             override fun onDismiss() {
@@ -665,7 +665,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         ticker.addPagerView(adapter, mockData)
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                RouteManager.route(view?.context, linkUrl.toString())
+                onGoToWebView(linkUrl.toString(), linkUrl.toString())
             }
         })
     }
