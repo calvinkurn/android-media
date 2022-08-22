@@ -6,14 +6,12 @@ import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.di.modules.LoginUseCaseModuleStub
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.di.LoginModule
-import com.tokopedia.loginregister.login.di.LoginQueryModule
 import com.tokopedia.loginregister.login.di.LoginViewModelModule
 import dagger.Component
 
 @ActivityScope
 @Component(modules = [
     LoginModule::class,
-    LoginQueryModule::class,
     LoginUseCaseModuleStub::class,
     LoginViewModelModule::class,
 ], dependencies = [BaseAppComponent::class])

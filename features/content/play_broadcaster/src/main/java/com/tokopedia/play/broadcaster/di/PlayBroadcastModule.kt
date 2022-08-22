@@ -11,6 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
@@ -102,6 +103,7 @@ class PlayBroadcastModule {
         setupProductAnalytic: PlayBroSetupProductAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
+        pinProductAnalytic: PlayBroadcastPinProductAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -112,6 +114,7 @@ class PlayBroadcastModule {
             setupProductAnalytic,
             summaryAnalytic,
             scheduleAnalytic,
+            pinProductAnalytic,
         )
     }
 
