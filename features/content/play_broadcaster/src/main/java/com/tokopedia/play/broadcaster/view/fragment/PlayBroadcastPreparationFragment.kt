@@ -780,29 +780,20 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (!::switchAccountConfirmationDialog.isInitialized) {
             switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
-                    String.format(
-                        getString(R.string.play_bro_switch_account_title_dialog),
-                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer) + "mu"
-                        else getString(R.string.play_bro_switch_account_shop)
-                    )
+                    if (feedAccount.isShop) getString(R.string.play_bro_switch_account_title_buyer_dialog)
+                    else getString(R.string.play_bro_switch_account_title_shop_dialog)
                 )
                 setDescription(
-                    String.format(
-                        getString(R.string.play_bro_switch_account_description_dialog),
-                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer)
-                        else getString(R.string.play_bro_switch_account_shop)
-                    )
+                    if (feedAccount.isShop) getString(R.string.play_bro_switch_account_description_buyer_dialog)
+                    else getString(R.string.play_bro_switch_account_description_shop_dialog)
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
                 setSecondaryCTAText(
-                    String.format(
-                        getString(R.string.play_bro_switch_account_secondary_cta_dialog),
-                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer).replaceFirstChar { it.uppercase() }
-                        else getString(R.string.play_bro_switch_account_shop).replaceFirstChar { it.uppercase() }
-                    )
+                    if (feedAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
+                    else getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
                 )
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(feedAccount))

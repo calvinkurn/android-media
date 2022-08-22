@@ -301,11 +301,12 @@
     <string name="play_bro_finished_bottomsheet_option_empty">Yaah, nggak ada yang ikutan quiz ini</string>
 
     <!-- switch account -->
-    <string name="play_bro_switch_account_title_dialog">Yakin mau ganti ke profil %s?</string>
-    <string name="play_bro_switch_account_description_dialog">Persiapan akan tersimpan di profil ini. Kamu mungkin ulang prosesnya di profile %s.</string>
+    <string name="play_bro_switch_account_title_shop_dialog">Yakin mau ganti ke profil tokomu?</string>
+    <string name="play_bro_switch_account_title_buyer_dialog">Yakin mau ganti ke profil pembeli?</string>
+    <string name="play_bro_switch_account_description_shop_dialog">Persiapan akan tersimpan di profil ini. Kamu mungkin ulang prosesnya di profile toko.</string>
+    <string name="play_bro_switch_account_description_buyer_dialog">Persiapan akan tersimpan di profil ini. Kamu mungkin ulang prosesnya di profile pembeli.</string>
     <string name="play_bro_switch_account_primary_cta_dialog">Batal</string>
-    <string name="play_bro_switch_account_secondary_cta_dialog">Ganti ke Profil %s</string>
-    <string name="play_bro_switch_account_shop">toko</string>
-    <string name="play_bro_switch_account_buyer">pembeli</string>
+    <string name="play_bro_switch_account_secondary_cta_shop_dialog">Ganti ke Profil Toko</string>
+    <string name="play_bro_switch_account_secondary_cta_buyer_dialog">Ganti ke Profil Pembeli</string>
 
 </resources>
