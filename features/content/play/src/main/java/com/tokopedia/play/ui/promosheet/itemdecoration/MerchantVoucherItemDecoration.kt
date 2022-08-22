@@ -32,21 +32,22 @@ class MerchantVoucherItemDecoration(context: Context) : RecyclerView.ItemDecorat
             }
             position == 0 -> {
                 outRect.top = space16
-                outRect.bottom = space16
             }
             else -> super.getItemOffsets(outRect, view, parent, state)
         }
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        for (index in 1 until parent.childCount) {
+        for (index in 0 until parent.childCount) {
             val child = parent.getChildAt(index)
 
             when (parent.getChildViewHolder(child)) {
-                is MerchantVoucherNewViewHolder -> c.drawRect(
-                    Rect(child.left, child.top - dividerHeight, parent.width, child.top),
-                    mPaint
-                )
+                is MerchantVoucherNewViewHolder -> {
+                    c.drawRect(
+                        Rect(child.left, child.bottom - dividerHeight, child.right, child.bottom),
+                        mPaint
+                    )
+                }
             }
         }
     }
