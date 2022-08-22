@@ -82,7 +82,7 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         rvProductList = viewBinding?.rvProductList
         containerButtonSubmit = viewBinding?.containerButtonSubmit
         buttonSubmit = viewBinding?.buttonSubmit
-        labelBulkApply = viewBinding?.labelBulkApply
+        labelBulkApply = viewBinding?.widgetBulkApply
         headerUnify = viewBinding?.headerUnify
         ticker = viewBinding?.ticker
         textTotalProduct = viewBinding?.textTotalProduct
@@ -97,6 +97,9 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         }
     }
 
+    /**
+     * Can be override if you want to use different implementation
+     */
     protected fun RecyclerView.setDecoration() {
         val dividerDrawable = MethodChecker.getDrawable(
             context,
@@ -109,11 +112,31 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         addItemDecoration(dividerItemDecoration)
     }
 
+    /**
+     * Can be used to show button submit
+     */
     protected fun showButtonSubmit() {
         containerButtonSubmit?.show()
     }
 
+    /**
+     * Can be used to hide button submit
+     */
     protected fun hideButtonSubmit() {
         containerButtonSubmit?.hide()
+    }
+
+    /**
+     * Can be used to enable button submit
+     */
+    protected fun enableButtonSubmit() {
+        buttonSubmit?.isEnabled = true
+    }
+
+    /**
+     * Can be used to disable button submit
+     */
+    protected fun disableButtonSubmit() {
+        buttonSubmit?.isEnabled = false
     }
 }

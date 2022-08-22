@@ -2,4 +2,8 @@
 <resources>
     <string name="campaign_common_oke">Oke</string>
     <string name="campaign_common_please_wait">Tunggu sebentar</string>
+    <string name="campaign_common_discount_amount_placeholder">Harga diskon</string>
+    <string name="campaign_common_prefix_rupiah">Rp</string>
+    <string name="campaign_common_discount_placeholder">Diskon</string>
+
 </resources>
