@@ -117,7 +117,7 @@ class ProductSheetSectionViewHolder(
         if (background.gradients.isNotEmpty()) {
 //            binding.root.setGradientBackground(background.gradients)
         } else if (background.imageUrl.isNotBlank()) {
-            binding.ivBg.loadImage(background.imageUrl)
+//            binding.ivBg.loadImage(background.imageUrl)
         }
     }
 

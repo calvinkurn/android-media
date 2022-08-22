@@ -17,6 +17,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -66,6 +67,10 @@ class ProductSheetViewComponent(
     private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
+
+    private val defaultSectionColor by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    }
 
     private val productCardListener = object : ProductBottomSheetCardView.Listener {
         override fun onClicked(
@@ -347,26 +352,33 @@ class ProductSheetViewComponent(
         return sectionList.map { section ->
             val startIndex = currentIndex + 1
             val endIndex = startIndex + section.productList.size - 1
-            val background = if (section.productList.isEmpty()) {
-                ProductLineItemDecoration.Background.None
-            } else if (section.config.background.imageUrl.isNotBlank()) {
-                ProductLineItemDecoration.Background.Image(
-                    getBitmapFromUrl(rootView.context, section.config.background.imageUrl)
-                )
-            } else if (section.config.background.gradients.isNotEmpty()) {
-                if (section.config.background.gradients.size > 1) {
-                    ProductLineItemDecoration.Background.Color.Gradient(
-                        LinearGradient(
-                            0f, 0f, 0f, rvProductList.height.toFloat(),
-                            Color.parseColor(section.config.background.gradients.first()),
-                            Color.parseColor(section.config.background.gradients[1]),
-                            Shader.TileMode.CLAMP,
-                        )
+            val background = when {
+                section.productList.isEmpty() -> {
+                    ProductLineItemDecoration.Background.Color.Solid(defaultSectionColor)
+                }
+                section.config.background.imageUrl.isNotBlank() -> {
+                    ProductLineItemDecoration.Background.Image(
+                        getBitmapFromUrl(rootView.context, section.config.background.imageUrl)
                     )
-                } else ProductLineItemDecoration.Background.Color.Solid(
-                    Color.parseColor(section.config.background.gradients.first()),
-                )
-            } else ProductLineItemDecoration.Background.None
+                }
+                section.config.background.gradients.isNotEmpty() -> {
+                    if (section.config.background.gradients.size > 1) {
+                        ProductLineItemDecoration.Background.Color.Gradient(
+                            LinearGradient(
+                                0f, 0f, 0f, rvProductList.height.toFloat(),
+                                Color.parseColor(section.config.background.gradients.first()),
+                                Color.parseColor(section.config.background.gradients[1]),
+                                Shader.TileMode.CLAMP,
+                            )
+                        )
+                    } else ProductLineItemDecoration.Background.Color.Solid(
+                        Color.parseColor(section.config.background.gradients.first()),
+                    )
+                }
+                else -> {
+                    ProductLineItemDecoration.Background.Color.Solid(defaultSectionColor)
+                }
+            }
 
             currentIndex = endIndex
 

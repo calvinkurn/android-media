@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.Shader
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,10 +29,6 @@ class ProductLineItemDecoration(
     private val topBottomOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl2)
 
     private val mPaint = Paint()
-
-    private val defaultColor by lazy(LazyThreadSafetyMode.NONE) {
-        MethodChecker.getColor(context, unifyR.color.Unify_Background)
-    }
 
     private var mGuidelines = emptyList<BackgroundGuideline>()
 
@@ -87,15 +85,34 @@ class ProductLineItemDecoration(
             }
 
             mPaint.shader = null
-            when (it.background) {
-                is Background.Color.Gradient -> mPaint.shader = it.background.gradient
-                is Background.Color.Solid -> mPaint.color = it.background.color
-                else -> mPaint.color = defaultColor
-            }
 
-            c.drawRect(
-                0f, top.toFloat(), parent.width.toFloat(), bottom.toFloat(), mPaint
-            )
+            when (it.background) {
+                is Background.Color -> {
+                    when (it.background) {
+                        is Background.Color.Gradient -> mPaint.shader = it.background.gradient
+                        is Background.Color.Solid -> mPaint.color = it.background.color
+                    }
+                    c.drawRect(
+                        0f, top.toFloat(), parent.width.toFloat(), bottom.toFloat(), mPaint
+                    )
+                }
+                is Background.Image -> {
+                    if (it.background.image.width <= 0) return@forEach
+                    c.drawBitmap(
+                        it.background.image,
+                        Matrix().apply {
+                            val scaledRatio = parent.width.toFloat() / it.background.image.width
+                            preScale(scaledRatio, scaledRatio)
+
+                            val scaledHeight = it.background.image.height * scaledRatio
+                            if (bottom < scaledHeight) {
+                                postTranslate(0f, bottom.toFloat() - scaledHeight)
+                            }
+                        },
+                        mPaint,
+                    )
+                }
+            }
         }
     }
 
@@ -105,7 +122,6 @@ class ProductLineItemDecoration(
             data class Gradient(val gradient: LinearGradient) : Color
             data class Solid(val color: Int) : Color
         }
-        object None : Background
     }
 
     data class BackgroundGuideline(
