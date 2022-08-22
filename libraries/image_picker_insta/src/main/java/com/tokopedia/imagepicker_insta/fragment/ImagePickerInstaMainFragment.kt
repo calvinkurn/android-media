@@ -494,7 +494,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             viewModel.feedAccountListState.collectLatest {
                 if(viewModel.isAllowChangeAccount) {
                     if (Prefs.getShouldShowCoachMarkValue(requireContext())) {
-                        Prefs.saveShouldShowCoachMarkValue(activity as Context)
+                        Prefs.saveShouldShowCoachMarkValue(requireContext())
                         toolbarCommon.showCoachMarkSwitchAccount()
                     }
 
