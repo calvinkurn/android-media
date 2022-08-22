@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.di.CreatePostModule
@@ -25,8 +24,7 @@ import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.util.ConnectionLiveData
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -147,7 +145,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         isFromTemplateToken: Boolean,
     ) {
         val feedAccountList = feedContentForm.authors.map {
-            FeedAccountUiModel(
+            ContentAccountUiModel(
                 id = it.id,
                 name = it.name,
                 iconUrl = it.thumbnail,

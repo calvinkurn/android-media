@@ -1,7 +1,6 @@
 package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -30,7 +29,7 @@ import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
@@ -47,11 +46,8 @@ import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
@@ -110,10 +106,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         when(childFragment) {
             is FeedAccountTypeBottomSheet -> {
                 childFragment.setAnalytic(feedAccountAnalytic)
-                childFragment.setData(viewModel.feedAccountList)
+                childFragment.setData(viewModel.contentAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                        viewModel.setSelectedFeedAccount(feedAccount)
+                    override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        viewModel.setSelectedFeedAccount(contentAccount)
                     }
                 })
             }
@@ -484,14 +480,14 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun setObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.selectedFeedAccount.collectLatest {
+            viewModel.selectedContentAccount.collectLatest {
                 toolbarCommon.subtitle = it.name
                 toolbarCommon.icon = it.iconUrl
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.feedAccountListState.collectLatest {
+            viewModel.contentAccountListState.collectLatest {
                 if(viewModel.isAllowChangeAccount) {
                     if (Prefs.getShouldShowCoachMarkValue(requireContext())) {
                         Prefs.saveShouldShowCoachMarkValue(requireContext())

@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.action
 
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -23,7 +23,7 @@ sealed interface PlayBroadcastAction {
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
     object GetFeedAccountList: PlayBroadcastAction
-    data class SelectFeedAccount(val feedAccount: FeedAccountUiModel): PlayBroadcastAction
+    data class SelectFeedAccount(val contentAccount: ContentAccountUiModel): PlayBroadcastAction
 
     object ExitLive : PlayBroadcastAction
 

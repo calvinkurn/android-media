@@ -27,7 +27,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
@@ -43,7 +42,7 @@ import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
@@ -550,7 +549,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
 
-    override fun setFeedAccountList(feedAccountList: List<FeedAccountUiModel>) {
+    override fun setFeedAccountList(contentAccountList: List<ContentAccountUiModel>) {
 
     }
 
@@ -592,8 +591,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
             intent.putExtra(PARAM_SHOP_BADGE, createPostModel.shopBadge)
             intent.putExtra(PARAM_PRODUCT_TAG_SOURCE, createPostModel.productTagSources.joinToString(separator = ","))
-            intent.putExtra(PARAM_AUTHOR_ID, (requireActivity() as CreatePostActivityNew).selectedFeedAccount.id)
-            intent.putExtra(PARAM_AUTHOR_TYPE, (requireActivity() as CreatePostActivityNew).selectedFeedAccount.type)
+            intent.putExtra(PARAM_AUTHOR_ID, (requireActivity() as CreatePostActivityNew).selectedContentAccount.id)
+            intent.putExtra(PARAM_AUTHOR_TYPE, (requireActivity() as CreatePostActivityNew).selectedContentAccount.type)
             startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
         }
     }

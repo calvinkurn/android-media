@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.databinding.BottomSheetFeedAccountTypeBinding
 import com.tokopedia.content.common.ui.adapter.FeedAccountTypeAdapter
 import com.tokopedia.content.common.ui.itemdecoration.FeedAccountTypeItemDecoration
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.viewholder.FeedAccountTypeViewHolder
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -24,7 +24,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
 
     private val adapter: FeedAccountTypeAdapter by lazy {
         FeedAccountTypeAdapter(object : FeedAccountTypeViewHolder.Listener {
-            override fun onClick(item: FeedAccountUiModel) {
+            override fun onClick(item: ContentAccountUiModel) {
                 mAnalytic?.clickAccountTypeItem(item)
                 dismiss()
                 mListener?.onAccountClick(item)
@@ -32,7 +32,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
+    private val mFeedAccountList = mutableListOf<ContentAccountUiModel>()
     private var mListener: Listener? = null
     private var mAnalytic: FeedAccountTypeAnalytic? = null
 
@@ -76,9 +76,9 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         if(!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(feedAccountList: List<FeedAccountUiModel>): FeedAccountTypeBottomSheet {
+    fun setData(contentAccountList: List<ContentAccountUiModel>): FeedAccountTypeBottomSheet {
         mFeedAccountList.clear()
-        mFeedAccountList.addAll(feedAccountList)
+        mFeedAccountList.addAll(contentAccountList)
 
         if(isAdded) adapter.updateData(mFeedAccountList)
 
@@ -105,6 +105,6 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onAccountClick(feedAccount: FeedAccountUiModel)
+        fun onAccountClick(contentAccount: ContentAccountUiModel)
     }
 }

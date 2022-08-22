@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.databinding.ItemFeedAccountTypeBinding
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 
@@ -17,7 +17,7 @@ class FeedAccountTypeViewHolder(
     private val listener: Listener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: FeedAccountUiModel) {
+    fun bind(item: ContentAccountUiModel) {
         binding.apply {
             tvAccountName.text = item.name
             ivAvatar.loadImageCircle(item.iconUrl)
@@ -48,6 +48,6 @@ class FeedAccountTypeViewHolder(
     }
 
     interface Listener {
-        fun onClick(item: FeedAccountUiModel)
+        fun onClick(item: ContentAccountUiModel)
     }
 }

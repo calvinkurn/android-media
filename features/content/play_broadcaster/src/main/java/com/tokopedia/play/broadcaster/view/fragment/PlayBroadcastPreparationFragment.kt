@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -226,12 +226,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is FeedAccountTypeBottomSheet -> {
-                childFragment.setData(parentViewModel.feedAccountList)
+                childFragment.setData(parentViewModel.contentAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                    override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         // TODO check if has draft then showing dialog
-                        if (!getSwitchAccountConfirmationDialog(feedAccount).isShowing)
-                            getSwitchAccountConfirmationDialog(feedAccount).show()
+                        if (!getSwitchAccountConfirmationDialog(contentAccount).isShowing)
+                            getSwitchAccountConfirmationDialog(contentAccount).show()
                     }
                 })
             }
@@ -407,7 +407,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                renderAccountInfo(prevState?.selectedFeedAccount, state.selectedFeedAccount)
+                renderAccountInfo(prevState?.selectedContentAccount, state.selectedContentAccount)
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
@@ -497,8 +497,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun renderAccountInfo(
-        prevState: FeedAccountUiModel?,
-        state: FeedAccountUiModel
+        prevState: ContentAccountUiModel?,
+        state: ContentAccountUiModel
     ) {
         if (prevState == state) return
 
@@ -777,15 +777,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return earlyLiveStreamDialog
     }
 
-    private fun getSwitchAccountConfirmationDialog(feedAccount: FeedAccountUiModel): DialogUnify {
+    private fun getSwitchAccountConfirmationDialog(contentAccount: ContentAccountUiModel): DialogUnify {
         if (!::switchAccountConfirmationDialog.isInitialized) {
             switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
-                    if (feedAccount.isShop) getString(R.string.play_bro_switch_account_title_buyer_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_title_buyer_dialog)
                     else getString(R.string.play_bro_switch_account_title_shop_dialog)
                 )
                 setDescription(
-                    if (feedAccount.isShop) getString(R.string.play_bro_switch_account_description_buyer_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_description_buyer_dialog)
                     else getString(R.string.play_bro_switch_account_description_shop_dialog)
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
@@ -793,11 +793,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
                 setSecondaryCTAText(
-                    if (feedAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                     else getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(feedAccount))
+                    parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(contentAccount))
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }

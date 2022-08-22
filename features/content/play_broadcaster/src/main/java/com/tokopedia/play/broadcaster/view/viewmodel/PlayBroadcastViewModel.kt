@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -179,17 +179,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
     private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
 
-    private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
+    private val _selectedFeedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
-    private val _feedAccountListState = MutableStateFlow<List<FeedAccountUiModel>>(emptyList())
-    val feedAccountListState: Flow<List<FeedAccountUiModel>>
+    private val _feedAccountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
+    val contentAccountListState: Flow<List<ContentAccountUiModel>>
         get() = _feedAccountListState
 
-    val feedAccountList: List<FeedAccountUiModel>
+    val contentAccountList: List<ContentAccountUiModel>
         get() = _feedAccountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = feedAccountList.size > 1 && feedAccountList.find { it.isUserPostEligible } != null
+        get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -274,7 +274,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizDetail = quizDetail,
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
-            selectedFeedAccount = selectedFeedAccount
+            selectedContentAccount = selectedFeedAccount
         )
     }.stateIn(
         viewModelScope,
@@ -329,7 +329,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetFeedAccountList -> handleFeedAccountList()
-            is PlayBroadcastAction.SelectFeedAccount -> handleSetSelectedFeedAccount(event.feedAccount)
+            is PlayBroadcastAction.SelectFeedAccount -> handleSetSelectedFeedAccount(event.contentAccount)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1448,7 +1448,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
 
             val feedAccountList = response.whitelist.authors.map {
-                FeedAccountUiModel(
+                ContentAccountUiModel(
                     id = it.id,
                     name = it.name,
                     iconUrl = it.thumbnail,
@@ -1468,11 +1468,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }, onError = {})
     }
 
-    private fun handleSetSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
+    private fun handleSetSelectedFeedAccount(contentAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
             val current = _selectedFeedAccount.value
-            if(current.id != feedAccount.id) {
-                _selectedFeedAccount.value = feedAccount
+            if(current.id != contentAccount.id) {
+                _selectedFeedAccount.value = contentAccount
             }
         }, onError = { })
     }
