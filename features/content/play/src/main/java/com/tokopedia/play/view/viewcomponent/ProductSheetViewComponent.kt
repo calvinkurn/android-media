@@ -161,7 +161,7 @@ class ProductSheetViewComponent(
 
     fun setProductSheet(
         sectionList: List<ProductSectionUiModel>,
-        voucherList: List<PlayVoucherUiModel.MerchantVoucherUiModel>,
+        voucherList: List<PlayVoucherUiModel>,
         title: String,
     ) {
         showContent(true)
@@ -177,8 +177,8 @@ class ProductSheetViewComponent(
             }
 
             voucherList.let {
-                tvVoucherHeaderTitle.text = it.getOrNull(0)?.title ?: ""
-                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
+                tvVoucherHeaderTitle.text = it.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().getOrNull(0)?.title ?: ""
+                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, (it.size - 1).toString())
             }
             clProductVoucher.show()
         }

@@ -105,7 +105,7 @@ class ShopCouponSheetViewComponent(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    fun setVoucherList(voucherList: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
+    fun setVoucherList(voucherList: List<PlayVoucherUiModel>) {
         rvVoucherList.shouldShowWithAction(voucherList.isNotEmpty()) {
             voucherAdapter.setItemsAndAnimateChanges(voucherList)
         }

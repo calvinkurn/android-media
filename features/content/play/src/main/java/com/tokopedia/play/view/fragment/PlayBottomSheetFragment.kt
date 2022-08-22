@@ -708,7 +708,7 @@ class PlayBottomSheetFragment @Inject constructor(
         } else if (tagItem.product.productSectionList.isNotEmpty()) {
             productSheetView.setProductSheet(
                 sectionList = tagItem.product.productSectionList,
-                voucherList = tagItem.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>(),
+                voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
             productAnalyticHelper.sendImpressedProductSheets()
@@ -720,7 +720,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun renderVoucherSheet(tagItem: TagItemUiModel) {
         if (tagItem.voucher.voucherList.isNotEmpty()) {
             couponSheetView.setVoucherList(
-                voucherList = tagItem.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+                voucherList = tagItem.voucher.voucherList
             )
         }
     }
