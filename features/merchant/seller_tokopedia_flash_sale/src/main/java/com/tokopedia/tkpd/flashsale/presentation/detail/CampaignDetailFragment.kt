@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -31,6 +33,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         fun newInstance() = CampaignDetailFragment()
         const val DATE_WITH_TIME = "dd MMM yyyy, HH:mm 'WIB'"
         const val TIME_WIB = "HH.mm 'WIB'"
+        const val DATE_MONTH_ONLY = "dd MMM"
     }
 
     @Inject
@@ -97,6 +100,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcoming(campaign: Campaign) {
         val campaignStatus = when {
+            !campaign.hasEligibleProduct -> UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE
             campaign.remainingQuota == 0 -> UpcomingCampaignStatus.FULL_QUOTA
             viewModel.isCampaignRegisterClosed(campaign) -> UpcomingCampaignStatus.CLOSED
             else -> UpcomingCampaignStatus.AVAILABLE
@@ -113,8 +117,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         inflatedView.inflate()
         upcomingCdpHeaderBinding?.run {
             when (campaignStatus) {
-                UpcomingCampaignStatus.AVAILABLE -> {
-                    tickerHeader.gone()
+                UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
+                    tickerHeader.visible()
+                    tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_product_not_eligible_state))
                     tgCampaignStatus.text = getString(R.string.registration_over_in_label)
                 }
                 UpcomingCampaignStatus.FULL_QUOTA -> {
@@ -131,6 +136,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_registration_close_state))
                     tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
                 }
+                else -> {
+                    tickerHeader.gone()
+                    tgCampaignStatus.text = getString(R.string.registration_over_in_label)
+                }
             }
             startUpcomingTimer(this, campaign)
             tgCampaignName.text = campaign.name
@@ -144,7 +153,49 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
         inflatedView.inflate()
         upcomingCdpMidBinding?.run {
-            tgRegisterPeriod.text = campaign.submissionStartDateUnix.toString()
+            when (campaignStatus) {
+                UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
+                    tgCampaignQuota.text = getString(
+                        R.string.campaign_quota_value_placeholder,
+                        campaign.remainingQuota
+                    )
+                    btnCheckReason.visible()
+                }
+                UpcomingCampaignStatus.FULL_QUOTA -> {
+                    tgCampaignQuota.apply {
+                        text = getString(R.string.full_quota_label)
+                        setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_R500
+                            )
+                        )
+                    }
+                }
+                UpcomingCampaignStatus.CLOSED -> {
+                    tgCampaignQuota.text = getString(
+                        R.string.campaign_quota_value_placeholder_2,
+                        campaign.remainingQuota
+                    )
+                }
+                else -> {
+                    tgCampaignQuota.text = getString(
+                        R.string.campaign_quota_value_placeholder,
+                        campaign.remainingQuota
+                    )
+                }
+            }
+            val startSubmissionDate = campaign.submissionStartDateUnix.epochToDate().formatTo(
+                DATE_MONTH_ONLY
+            )
+            val endSubmissionDate = campaign.submissionEndDateUnix.epochToDate().formatTo(
+                DATE_MONTH_ONLY
+            )
+            tgRegisterPeriod.text = getString(
+                R.string.register_period_value_placeholder_2,
+                startSubmissionDate,
+                endSubmissionDate
+            )
             tgCampaignQuota.text = getString(
                 R.string.campaign_quota_value_placeholder,
                 campaign.remainingQuota

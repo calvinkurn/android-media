@@ -18,6 +18,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 campaign.endDateUnix,
                 campaign.maxProductSubmission,
                 campaign.name,
+                campaign.hasEligibleProduct,
                 campaign.toProductMeta(),
                 campaign.remainingQuota,
                 campaign.reviewEndDateUnix,

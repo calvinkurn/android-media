@@ -8,6 +8,7 @@ data class Campaign(
     val endDateUnix: Long,
     val maxProductSubmission: Int,
     val name: String,
+    val hasEligibleProduct: Boolean,
     val productMeta: ProductMeta,
     val remainingQuota: Int,
     val reviewEndDateUnix: Long,
