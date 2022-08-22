@@ -320,11 +320,12 @@ class CampaignInformationViewModel @Inject constructor(
                 val vpsPackages = vpsPackagesDeferred.await()
 
                 val updatedVpsPackage = applySelectionRule(campaignDetail.packageInfo.packageId, vpsPackages)
+                val sortedVpsPackages = applySortRule(updatedVpsPackage)
 
                 relatedCampaigns = campaignDetail.relatedCampaigns
                 isCampaignRuleSubmit = campaignDetail.isCampaignRuleSubmit
 
-                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, updatedVpsPackage)
+                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, sortedVpsPackages)
                 _campaignDetail.postValue(Success(combinedCampaignData))
             },
             onError = { error ->

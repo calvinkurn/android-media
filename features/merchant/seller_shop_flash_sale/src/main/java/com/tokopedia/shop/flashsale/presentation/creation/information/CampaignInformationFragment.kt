@@ -1027,6 +1027,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val vpsPackages = ArrayList(viewModel.getStoredVpsPackages())
         val bottomSheet = VpsPackageBottomSheet.newInstance(selectedVpsPackageId, vpsPackages)
         bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
+            binding?.tauVpsPackageName?.isInputError = false
             viewModel.setSelectedVpsPackage(selectedVpsPackage)
             displaySelectedVpsPackage(selectedVpsPackage)
         }
