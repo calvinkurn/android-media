@@ -226,7 +226,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private fun showFailToaster(throwable: Throwable?, data: ToasterUiModel?) {
         data?.model?.apply {
             setupToaster(
-                message = if (throwable == null) message else getString(if (data.isRemoving) R.string.tokopedianow_recipe_bookmark_toaster_description_fail_removing_recipe else R.string.tokopedianow_recipe_bookmark_toaster_description_fail_adding_recipe),
+                message = if (throwable == null) message else getString(if (data.isRemoving) R.string.tokopedianow_recipe_failed_remove_bookmark else R.string.tokopedianow_recipe_failed_add_bookmark),
                 isSuccess = isSuccess,
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                 clickListener = {
