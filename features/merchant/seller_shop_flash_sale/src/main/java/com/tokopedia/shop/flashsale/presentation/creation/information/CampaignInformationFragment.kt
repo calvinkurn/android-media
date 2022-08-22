@@ -688,7 +688,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val modifiedEndDate = if (differenceInDays > SIX_DAYS) {
             viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
         } else {
-            viewModel.getSelectedEndDate()
+            startDate.advanceMinuteBy(THIRTY_MINUTE)
         }
 
         viewModel.setSelectedEndDate(modifiedEndDate)
