@@ -530,6 +530,19 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
             override fun onButtonClick(errorCount: Int) {
                 action()
             }})
+        if(programActionType == ProgramActionType.CREATE){
+            bottomsheet.setSecondaryCta {
+                arguments?.getInt(BUNDLE_SHOP_ID)?.let {
+                    TokomemberDashIntroActivity.openActivity(
+                        it,
+                        arguments?.getString(BUNDLE_SHOP_AVATAR).toString(),
+                        arguments?.getString(BUNDLE_SHOP_NAME).toString(),
+                        context = context
+                    )
+                }
+                activity?.finish()
+            }
+        }
         bottomsheet.show(childFragmentManager,"")
     }
     private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
