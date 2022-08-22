@@ -92,7 +92,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private val productSheetView by viewComponent {
-        ProductSheetViewComponent(it, this)
+        ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }

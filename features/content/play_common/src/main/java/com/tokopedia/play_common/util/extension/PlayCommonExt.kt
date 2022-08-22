@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -27,6 +28,9 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.unifycomponents.Toaster
@@ -35,6 +39,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.reflect.KProperty1
 
 /**
@@ -380,4 +385,30 @@ inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit):
     val builder = SpannableStringBuilder()
     builder.builderAction()
     return SpannedString(builder)
+}
+
+suspend fun getBitmapFromUrl(
+    context: Context,
+    url: String,
+): Bitmap = suspendCancellableCoroutine { cont ->
+    val target = object : CustomTarget<Bitmap>() {
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            cont.resume(resource)
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {
+            cont.resumeWithException(
+                IllegalStateException("Failed to load image from url: $url")
+            )
+        }
+    }
+
+    Glide.with(context)
+        .asBitmap()
+        .load(url)
+        .into(target)
+
+    cont.invokeOnCancellation {
+        Glide.with(context).clear(target)
+    }
 }

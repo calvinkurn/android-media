@@ -1,5 +1,8 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -27,12 +30,15 @@ import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.util.extension.getBitmapFromUrl
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * Created by jegul on 31/07/20
@@ -40,6 +46,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
+    private val scope: CoroutineScope,
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
@@ -230,9 +237,13 @@ class ProductSheetViewComponent(
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
         productAdapter.setItemsAndAnimateChanges(newProductList)
-        itemDecoration.setGradient(sections.first().config.background.gradients) //TODO("MOCK")
-        if (productAdapter.getItems() != newProductList) {
-            rvProductList.invalidateItemDecorations()
+//        itemDecoration.setGradient(sections.first().config.background.gradients) //TODO("MOCK")
+
+        scope.launch {
+            itemDecoration.setGuidelines(getBackgroundGuidelines(sections)) //TODO("MOCK")
+            if (productAdapter.getItems() != newProductList) {
+                rvProductList.invalidateItemDecorations()
+            }
         }
 
         if (voucherList.isEmpty()) {
@@ -326,6 +337,44 @@ class ProductSheetViewComponent(
                     )
                 }
             }
+        }
+    }
+
+    private suspend fun getBackgroundGuidelines(
+        sectionList: List<ProductSectionUiModel.Section>
+    ): List<ProductLineItemDecoration.BackgroundGuideline> {
+        var currentIndex = -1
+        return sectionList.map { section ->
+            val startIndex = currentIndex + 1
+            val endIndex = startIndex + section.productList.size - 1
+            val background = if (section.productList.isEmpty()) {
+                ProductLineItemDecoration.Background.None
+            } else if (section.config.background.imageUrl.isNotBlank()) {
+                ProductLineItemDecoration.Background.Image(
+                    getBitmapFromUrl(rootView.context, section.config.background.imageUrl)
+                )
+            } else if (section.config.background.gradients.isNotEmpty()) {
+                if (section.config.background.gradients.size > 1) {
+                    ProductLineItemDecoration.Background.Color.Gradient(
+                        LinearGradient(
+                            0f, 0f, 0f, rvProductList.height.toFloat(),
+                            Color.parseColor(section.config.background.gradients.first()),
+                            Color.parseColor(section.config.background.gradients[1]),
+                            Shader.TileMode.CLAMP,
+                        )
+                    )
+                } else ProductLineItemDecoration.Background.Color.Solid(
+                    Color.parseColor(section.config.background.gradients.first()),
+                )
+            } else ProductLineItemDecoration.Background.None
+
+            currentIndex = endIndex
+
+            ProductLineItemDecoration.BackgroundGuideline(
+                startIndex = startIndex,
+                endIndex = endIndex,
+                background = background,
+            )
         }
     }
 
