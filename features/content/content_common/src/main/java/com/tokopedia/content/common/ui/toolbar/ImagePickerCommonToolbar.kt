@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
@@ -17,6 +16,7 @@ import com.tokopedia.content.common.R.color.soft_gray
 import com.tokopedia.content.common.databinding.ImagepickerInstaComToolbarBinding
 import com.tokopedia.content.common.ui.toolbar.ContentColor.*
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R.color.Unify_NN0
 import com.tokopedia.unifyprinciples.R.color.Unify_NN400
@@ -58,21 +58,21 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         set(value) {
             field = value
             mBinding.imgComToolbarIcon.loadImageCircle(value)
-            mBinding.imgComToolbarIcon.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
+            mBinding.imgComToolbarIcon.showWithCondition(value.isNotEmpty())
         }
 
     var title: String = ""
         set(value) {
             field = value
             mBinding.textComToolbarTitle.text = value
-            mBinding.textComToolbarTitle.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
+            mBinding.textComToolbarTitle.showWithCondition(value.isNotEmpty())
         }
 
     var subtitle: String = ""
         set(value) {
             field = value
             mBinding.textComToolbarSubtitle.text = value
-            mBinding.textComToolbarSubtitle.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
+            mBinding.textComToolbarSubtitle.showWithCondition(value.isNotEmpty())
         }
 
     var navIcon: Int = 0
@@ -112,7 +112,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     }
 
     fun showHideExpandIcon(shouldShowExpandIcon: Boolean){
-        mBinding.imgContentCreatorExpand.visibility = if(shouldShowExpandIcon) View.VISIBLE else View.GONE
+        mBinding.imgContentCreatorExpand.showWithCondition(shouldShowExpandIcon)
     }
 
     fun setOnBackClickListener(listener: AccountClickListener?) {
@@ -126,6 +126,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     }
 
     fun showCoachMarkSwitchAccount() {
+        if (::coachMark.isInitialized && coachMark.isShowing) return
         getToolbarParentView().addOneTimeGlobalLayoutListener {
             coachMark = CoachMark2(context)
             coachMark.showCoachMark(
