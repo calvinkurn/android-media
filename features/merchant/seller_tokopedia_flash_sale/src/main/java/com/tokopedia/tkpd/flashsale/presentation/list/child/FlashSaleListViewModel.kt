@@ -7,15 +7,15 @@ import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusEnum
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerCategoryUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEffect
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -37,69 +37,27 @@ class FlashSaleListViewModel @Inject constructor(
         private const val PERCENT = 100
     }
 
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(FlashSaleListUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
+    private val _uiEffect = MutableSharedFlow<FlashSaleListUiEffect>(replay = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
-    private val currentState: UiState
+    private val currentState: FlashSaleListUiState
         get() = _uiState.value
+    
 
-    data class UiState(
-        val isLoading: Boolean = false,
-        val totalFlashSaleCount: Int = 0,
-        val tabName: String = "",
-        val tabId: Int = TabConstant.TAB_ID_UPCOMING,
-        val offset: Int = 0,
-        val selectedSort: SingleSelectionItem = SingleSelectionItem(
-            "DEFAULT_VALUE_PLACEHOLDER",
-            name = "",
-            isSelected = false,
-            direction = "ASC"
-        ),
-        val selectedCategoryIds: List<Long> = emptyList(),
-        val flashSaleCategories: List<FlashSaleCategory> = emptyList(),
-        val selectedStatusIds: List<String> = emptyList(),
-        val isFilterActive: Boolean = false,
-        val allItems : List<DelegateAdapterItem> = emptyList()
-    )
-
-    sealed class UiEvent {
-        data class Init(val tabName : String, val tabId: Int, val totalFlashSaleCount: Int) : UiEvent()
-        data class LoadPage(val offset : Int) : UiEvent()
-        object ChangeSort : UiEvent()
-        data class ApplySort(val selectedSort: SingleSelectionItem) : UiEvent()
-        object ChangeCategory : UiEvent()
-        data class ApplyCategoryFilter(val categories: List<MultipleSelectionItem>) : UiEvent()
-        object ChangeStatus : UiEvent()
-        data class ApplyStatusFilter(val statuses: List<MultipleSelectionItem>) : UiEvent()
-        object ClearFilter : UiEvent()
-    }
-
-    sealed class UiEffect {
-        data class FetchCategoryError(val throwable: Throwable) : UiEffect()
-        data class FetchFlashSaleError(val throwable: Throwable) : UiEffect()
-        data class ShowSortBottomSheet(val selectedSortId : String) : UiEffect()
-        data class ShowCategoryBottomSheet(
-            val selectedCategoryIds: List<Long>,
-            val categories: List<FlashSaleCategory>
-        ) : UiEffect()
-        data class ShowStatusBottomSheet(val selectedStatusIds: List<String>) : UiEffect()
-        data class LoadNextPageSuccess(val allItems: List<DelegateAdapterItem>, val currentPageItems : List<DelegateAdapterItem>): UiEffect()
-    }
-
-    fun processEvent(event : UiEvent) {
+    fun processEvent(event : FlashSaleListUiEvent) {
         when (event) {
-            is UiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalFlashSaleCount)
-            is UiEvent.LoadPage -> onLoadPage(event.offset)
-            is UiEvent.ChangeSort -> onChangeSort()
-            is UiEvent.ApplySort -> onApplySort(event.selectedSort)
-            is UiEvent.ChangeCategory -> onChangeCategory()
-            is UiEvent.ApplyCategoryFilter -> onApplyCategory(event.categories)
-            UiEvent.ChangeStatus -> onChangeStatus()
-            is UiEvent.ApplyStatusFilter -> onApplyStatusFilter(event.statuses)
-            UiEvent.ClearFilter -> onClearFilter()
+            is FlashSaleListUiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalFlashSaleCount)
+            is FlashSaleListUiEvent.LoadPage -> onLoadPage(event.offset)
+            is FlashSaleListUiEvent.ChangeSort -> onChangeSort()
+            is FlashSaleListUiEvent.ApplySort -> onApplySort(event.selectedSort)
+            is FlashSaleListUiEvent.ChangeCategory -> onChangeCategory()
+            is FlashSaleListUiEvent.ApplyCategoryFilter -> onApplyCategory(event.categories)
+            FlashSaleListUiEvent.ChangeStatus -> onChangeStatus()
+            is FlashSaleListUiEvent.ApplyStatusFilter -> onApplyStatusFilter(event.statuses)
+            FlashSaleListUiEvent.ClearFilter -> onClearFilter()
         }
     }
 
@@ -121,7 +79,7 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun onChangeSort() {
-        _uiEffect.tryEmit(UiEffect.ShowSortBottomSheet(currentState.selectedSort.id))
+        _uiEffect.tryEmit(FlashSaleListUiEffect.ShowSortBottomSheet(currentState.selectedSort.id))
     }
 
     private fun onApplySort(selectedSort: SingleSelectionItem) {
@@ -139,7 +97,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     private fun onChangeCategory() {
         _uiEffect.tryEmit(
-            UiEffect.ShowCategoryBottomSheet(
+            FlashSaleListUiEffect.ShowCategoryBottomSheet(
                 currentState.selectedCategoryIds,
                 currentState.flashSaleCategories
             )
@@ -162,7 +120,7 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun onChangeStatus() {
-        _uiEffect.tryEmit(UiEffect.ShowStatusBottomSheet(currentState.selectedStatusIds))
+        _uiEffect.tryEmit(FlashSaleListUiEffect.ShowStatusBottomSheet(currentState.selectedStatusIds))
     }
 
     private fun onApplyStatusFilter(statuses: List<MultipleSelectionItem>) {
@@ -203,7 +161,7 @@ class FlashSaleListViewModel @Inject constructor(
                 _uiState.update { it.copy(flashSaleCategories = categories) }
             },
             onError = { error ->
-                _uiEffect.tryEmit(UiEffect.FetchCategoryError(error))
+                _uiEffect.tryEmit(FlashSaleListUiEffect.FetchCategoryError(error))
             }
         )
 
@@ -227,13 +185,13 @@ class FlashSaleListViewModel @Inject constructor(
                 val formattedFlashSales = formatFlashSaleData(currentState.tabId, flashSales)
 
                 val allItems = currentState.allItems + formattedFlashSales
-                _uiEffect.emit(UiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
+                _uiEffect.emit(FlashSaleListUiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
 
                 _uiState.update { it.copy(isLoading = false, allItems = allItems) }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false) }
-                _uiEffect.tryEmit(UiEffect.FetchFlashSaleError(error))
+                _uiEffect.tryEmit(FlashSaleListUiEffect.FetchFlashSaleError(error))
             }
         )
 

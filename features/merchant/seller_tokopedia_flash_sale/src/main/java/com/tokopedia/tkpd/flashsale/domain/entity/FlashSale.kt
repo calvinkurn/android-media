@@ -22,7 +22,7 @@ data class FlashSale(
     val submissionStartDateUnix: Date,
     val useMultiLocation: Boolean,
     val formattedDate: FormattedDate,
-    val statusEnum: FlashSaleStatusEnum
+    val status: FlashSaleStatus
 ) {
     data class ProductMeta(
         val acceptedProduct: Int,

@@ -28,8 +28,8 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSa
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusFilter
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusEnum
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.FinishedFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
@@ -37,6 +37,10 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFl
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEffect
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.TabConfig
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.constant.BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION
@@ -102,71 +106,64 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
             .build()
     }
 
-    private val emptyStateConfig by lazy {
-        mapOf(
-            TabConstant.TAB_ID_UPCOMING to EmptyStateConfig(
-                RemoteImageUrlConstant.IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN,
-                getString(R.string.stfs_empty_state_upcoming_title),
-                getString(R.string.stfs_empty_state_upcoming_description),
-                getString(R.string.stfs_read_article),
-                primaryCtaAction = { routeToUrl(SELLER_EDU_URL) }
-            ),
-            TabConstant.TAB_ID_REGISTERED to EmptyStateConfig(
-                RemoteImageUrlConstant.IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN,
-                getString(R.string.stfs_empty_state_registered_title),
-                getString(R.string.stfs_empty_state_registered_description)
-            ),
-            TabConstant.TAB_ID_ONGOING to EmptyStateConfig(
-                RemoteImageUrlConstant.IMAGE_URL_EMPTY_ONGOING_CAMPAIGN,
-                getString(R.string.stfs_empty_state_ongoing_title),
-                getString(R.string.stfs_empty_state_ongoing_description)
-            ),
-            TabConstant.TAB_ID_FINISHED to EmptyStateConfig(
-                RemoteImageUrlConstant.IMAGE_URL_EMPTY_FINISHED_CAMPAIGN,
-                getString(R.string.stfs_empty_search_result_title),
-                getString(R.string.stfs_empty_search_result_description)
-            )
-        )
-    }
-
     private val sortChips by lazy {  SortFilterItem(getString(R.string.stfs_sort)) }
     private val categoryChips by lazy { SortFilterItem(getString(R.string.stfs_all_category)) }
     private val statusChips by lazy { SortFilterItem(getString(R.string.stfs_all_status)) }
 
-
-    private val sortFilterItemsConfig by lazy {
+    private val tabConfig by lazy {
         mapOf(
-            TabConstant.TAB_ID_UPCOMING to arrayListOf(sortChips, categoryChips),
-            TabConstant.TAB_ID_REGISTERED to arrayListOf(sortChips, categoryChips, statusChips),
-            TabConstant.TAB_ID_ONGOING to arrayListOf(sortChips, categoryChips),
-            TabConstant.TAB_ID_FINISHED to arrayListOf(sortChips, categoryChips, statusChips)
-        )
-    }
-
-    private val statusConfig by lazy {
-        mapOf(
-            TabConstant.TAB_ID_UPCOMING to listOf(),
-            TabConstant.TAB_ID_REGISTERED to listOf(
-                FlashSaleStatus(FlashSaleStatusEnum.NO_REGISTERED_PRODUCT.value, getString(R.string.stfs_status_product_not_registered)),
-                FlashSaleStatus(FlashSaleStatusEnum.WAITING_FOR_SELECTION.value, getString(R.string.stfs_status_waiting_for_selection)),
-                FlashSaleStatus(FlashSaleStatusEnum.ON_SELECTION_PROCESS.value,  getString(R.string.stfs_status_on_selection)),
-                FlashSaleStatus(FlashSaleStatusEnum.SELECTION_FINISHED.value, getString(R.string.stfs_status_selection_finished))
+            TabConstant.TAB_ID_UPCOMING to TabConfig(
+                filters = arrayListOf(sortChips, categoryChips),
+                statusFilters = listOf(),
+                emptyStateConfig = EmptyStateConfig(
+                    RemoteImageUrlConstant.IMAGE_URL_EMPTY_UPCOMING_CAMPAIGN,
+                    getString(R.string.stfs_empty_state_upcoming_title),
+                    getString(R.string.stfs_empty_state_upcoming_description),
+                    getString(R.string.stfs_read_article),
+                    primaryCtaAction = { routeToUrl(SELLER_EDU_URL) }
+                )),
+            TabConstant.TAB_ID_REGISTERED to TabConfig(
+                filters = arrayListOf(sortChips, categoryChips, statusChips),
+                statusFilters = listOf(
+                    FlashSaleStatusFilter(FlashSaleStatus.NO_REGISTERED_PRODUCT.id, getString(R.string.stfs_status_product_not_registered)),
+                    FlashSaleStatusFilter(FlashSaleStatus.WAITING_FOR_SELECTION.id, getString(R.string.stfs_status_waiting_for_selection)),
+                    FlashSaleStatusFilter(FlashSaleStatus.ON_SELECTION_PROCESS.id, getString(R.string.stfs_status_on_selection)),
+                    FlashSaleStatusFilter(FlashSaleStatus.SELECTION_FINISHED.id, getString(R.string.stfs_status_selection_finished))
+                ),
+                emptyStateConfig = EmptyStateConfig(
+                    RemoteImageUrlConstant.IMAGE_URL_EMPTY_REGISTERED_CAMPAIGN,
+                    getString(R.string.stfs_empty_state_registered_title),
+                    getString(R.string.stfs_empty_state_registered_description)
+                )
             ),
-            TabConstant.TAB_ID_ONGOING to listOf(),
-            TabConstant.TAB_ID_FINISHED to listOf(
-                FlashSaleStatus(FlashSaleStatusEnum.FINISHED.value, getString(R.string.stfs_status_finished)),
-                FlashSaleStatus(FlashSaleStatusEnum.CANCELLED.value, getString(R.string.stfs_status_cancelled)),
-                FlashSaleStatus(FlashSaleStatusEnum.REJECTED.value, getString(R.string.stfs_status_rejected)),
-                FlashSaleStatus(FlashSaleStatusEnum.MISSED.value, getString(R.string.stfs_status_skipped))
+            TabConstant.TAB_ID_ONGOING to TabConfig(
+                filters = arrayListOf(sortChips, categoryChips),
+                statusFilters = listOf(),
+                emptyStateConfig = EmptyStateConfig(
+                    RemoteImageUrlConstant.IMAGE_URL_EMPTY_ONGOING_CAMPAIGN,
+                    getString(R.string.stfs_empty_state_ongoing_title),
+                    getString(R.string.stfs_empty_state_ongoing_description)
+                )
+            ),
+            TabConstant.TAB_ID_FINISHED to TabConfig(
+                filters = arrayListOf(sortChips, categoryChips, statusChips),
+                statusFilters = listOf(
+                    FlashSaleStatusFilter(FlashSaleStatus.FINISHED.id, getString(R.string.stfs_status_finished)),
+                    FlashSaleStatusFilter(FlashSaleStatus.CANCELLED.id, getString(R.string.stfs_status_cancelled)),
+                    FlashSaleStatusFilter(FlashSaleStatus.REJECTED.id, getString(R.string.stfs_status_rejected)),
+                    FlashSaleStatusFilter(FlashSaleStatus.MISSED.id, getString(R.string.stfs_status_skipped))
+                ),
+                emptyStateConfig = EmptyStateConfig(
+                    RemoteImageUrlConstant.IMAGE_URL_EMPTY_FINISHED_CAMPAIGN,
+                    getString(R.string.stfs_empty_state_done_title),
+                    getString(R.string.stfs_empty_state_done_description)
+                )
             )
         )
     }
 
-
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
 
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -191,7 +188,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.processEvent(FlashSaleListViewModel.UiEvent.Init(tabName, tabId, totalFlashSaleCount))
+        viewModel.processEvent(FlashSaleListUiEvent.Init(tabName, tabId, totalFlashSaleCount))
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupView()
@@ -225,25 +222,25 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         }
     }
 
-    private fun handleEffect(effect: FlashSaleListViewModel.UiEffect) {
+    private fun handleEffect(effect: FlashSaleListUiEffect) {
         when (effect) {
-            is FlashSaleListViewModel.UiEffect.ShowSortBottomSheet -> {
+            is FlashSaleListUiEffect.ShowSortBottomSheet -> {
                 showSortBottomSheet(effect.selectedSortId)
             }
-            is FlashSaleListViewModel.UiEffect.ShowCategoryBottomSheet -> {
+            is FlashSaleListUiEffect.ShowCategoryBottomSheet -> {
                 showCategoryFilterBottomSheet(effect.selectedCategoryIds, effect.categories)
             }
-            is FlashSaleListViewModel.UiEffect.ShowStatusBottomSheet -> {
+            is FlashSaleListUiEffect.ShowStatusBottomSheet -> {
                 showStatusFilterBottomSheet(effect.selectedStatusIds)
             }
-            is FlashSaleListViewModel.UiEffect.FetchFlashSaleError -> {
+            is FlashSaleListUiEffect.FetchFlashSaleError -> {
                 flashSaleAdapter.removeItem(LoadingItem)
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
-            is FlashSaleListViewModel.UiEffect.FetchCategoryError -> {
+            is FlashSaleListUiEffect.FetchCategoryError -> {
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
-            is FlashSaleListViewModel.UiEffect.LoadNextPageSuccess -> {
+            is FlashSaleListUiEffect.LoadNextPageSuccess -> {
                 renderList(effect.allItems, effect.currentPageItems.size == getPerPage())
             }
 
@@ -251,7 +248,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
 
-    private fun handleUiState(uiState: FlashSaleListViewModel.UiState) {
+    private fun handleUiState(uiState: FlashSaleListUiState) {
         renderSortChips(uiState.selectedSort, uiState.totalFlashSaleCount)
         renderCategoryFilterChips(uiState.selectedCategoryIds)
         renderStatusChips(uiState.selectedStatusIds)
@@ -277,7 +274,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         if (!isLoading && isUsingFilter && allItems.isEmpty()) {
             binding?.emptyState?.visible()
 
-            val emptyStateConfig = emptyStateConfig[tabId] ?: return
+            val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
             binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
             binding?.emptyState?.setTitle(emptyStateConfig.title)
             binding?.emptyState?.setDescription(emptyStateConfig.description)
@@ -331,31 +328,31 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun setupSortFilter() {
         val onSortClicked = {
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ChangeSort)
+            viewModel.processEvent(FlashSaleListUiEvent.ChangeSort)
         }
 
         sortChips.listener = { onSortClicked() }
         sortChips.chevronListener = { onSortClicked() }
 
         val onCategoryClicked = {
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ChangeCategory)
+            viewModel.processEvent(FlashSaleListUiEvent.ChangeCategory)
         }
         categoryChips.listener = { onCategoryClicked() }
         categoryChips.chevronListener = { onCategoryClicked() }
 
 
         val onStatusClicked = {
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ChangeStatus)
+            viewModel.processEvent(FlashSaleListUiEvent.ChangeStatus)
         }
         statusChips.listener = { onStatusClicked() }
         statusChips.chevronListener = { onStatusClicked() }
 
-        val items = sortFilterItemsConfig[tabId] ?: return
+        val items = tabConfig[tabId]?.filters ?: return
 
         binding?.sortFilter?.addItem(items)
         binding?.sortFilter?.parentListener = {}
         binding?.sortFilter?.dismissListener = {
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ClearFilter)
+            viewModel.processEvent(FlashSaleListUiEvent.ClearFilter)
         }
     }
 
@@ -369,7 +366,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedSortId, sortOptions)
         bottomSheet.setBottomSheetTitle(getString(R.string.stfs_sort_title))
         bottomSheet.setOnApplyButtonClick { sort ->
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ApplySort(sort))
+            viewModel.processEvent(FlashSaleListUiEvent.ApplySort(sort))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -387,7 +384,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
         bottomSheet.setBottomSheetTitle(getString(R.string.stfs_category_title))
         bottomSheet.setOnApplyButtonClick { filter ->
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ApplyCategoryFilter(filter))
+            viewModel.processEvent(FlashSaleListUiEvent.ApplyCategoryFilter(filter))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -395,7 +392,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     private fun showStatusFilterBottomSheet(selectedStatusIds : List<String>) {
         if (!isAdded) return
 
-        val statuses : List<FlashSaleStatus> = statusConfig[tabId] ?: return
+        val statuses = tabConfig[tabId]?.statusFilters ?: return
         val mappedStatuses = statuses.map { status -> MultipleSelectionItem(status.statusId, status.statusName) }
 
         val bottomSheet = MultipleSelectionBottomSheet.newInstance(
@@ -405,7 +402,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
         bottomSheet.setBottomSheetTitle(getString(R.string.stfs_status_title))
         bottomSheet.setOnApplyButtonClick { filter ->
-            viewModel.processEvent(FlashSaleListViewModel.UiEvent.ApplyStatusFilter(filter))
+            viewModel.processEvent(FlashSaleListUiEvent.ApplyStatusFilter(filter))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -441,7 +438,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         } else {
             (page - ONE) * PAGE_SIZE
         }
-        viewModel.processEvent(FlashSaleListViewModel.UiEvent.LoadPage(offset))
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
     }
 
     override fun clearAdapterData() {
