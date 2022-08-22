@@ -49,7 +49,7 @@ class FlashSaleListViewModel @Inject constructor(
 
     fun processEvent(event : FlashSaleListUiEvent) {
         when (event) {
-            is FlashSaleListUiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId, event.totalFlashSaleCount)
+            is FlashSaleListUiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId)
             is FlashSaleListUiEvent.LoadPage -> onLoadPage(event.offset)
             is FlashSaleListUiEvent.ChangeSort -> onChangeSort()
             is FlashSaleListUiEvent.ApplySort -> onApplySort(event.selectedSort)
@@ -61,13 +61,9 @@ class FlashSaleListViewModel @Inject constructor(
         }
     }
 
-    private fun onPageFirstAppear(tabName: String, tabId: Int, totalFlashSaleCount: Int) {
+    private fun onPageFirstAppear(tabName: String, tabId: Int) {
         _uiState.update {
-            it.copy(
-                tabName = tabName,
-                tabId = tabId,
-                totalFlashSaleCount = totalFlashSaleCount
-            )
+            it.copy(tabName = tabName, tabId = tabId)
         }
 
         getFlashSaleListCategory()
@@ -181,13 +177,19 @@ class FlashSaleListViewModel @Inject constructor(
                     sortOrderBy = currentState.selectedSort.id,
                     sortOrderRule = currentState.selectedSort.direction
                 )
-                val flashSales = getFlashSaleListForSellerUseCase.execute(params)
-                val formattedFlashSales = formatFlashSaleData(currentState.tabId, flashSales)
+                val response = getFlashSaleListForSellerUseCase.execute(params)
+                val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
 
                 val allItems = currentState.allItems + formattedFlashSales
                 _uiEffect.emit(FlashSaleListUiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
 
-                _uiState.update { it.copy(isLoading = false, allItems = allItems) }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        allItems = allItems,
+                        totalFlashSaleCount = response.totalFlashSaleCount
+                    )
+                }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false) }

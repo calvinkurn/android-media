@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_CANCELLED
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_FINISHED
@@ -22,8 +23,15 @@ import javax.inject.Inject
 
 class GetFlashSaleListForSellerMapper @Inject constructor() {
 
-    fun map(response: GetFlashSaleListForSellerResponse): List<FlashSale> {
-        return response.getFlashSaleListForSeller.campaignList.map { flashSale ->
+    fun map(response: GetFlashSaleListForSellerResponse): FlashSaleData {
+        return FlashSaleData(
+            response.getFlashSaleListForSeller.totalCampaign,
+            response.toFlashSale()
+        )
+    }
+
+    private fun GetFlashSaleListForSellerResponse.toFlashSale(): List<FlashSale> {
+        return getFlashSaleListForSeller.campaignList.map { flashSale ->
             FlashSale(
                 flashSale.campaignId.toLongOrZero(),
                 flashSale.cancellationReason,
@@ -48,6 +56,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
             )
         }
     }
+
 
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toCampaignStatus(): FlashSaleStatus {
         return when (statusId.toIntOrZero()) {

@@ -140,18 +140,13 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun createFragments(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
-        predefinedTabs.forEachIndexed { index, currentTab ->
+        predefinedTabs.forEachIndexed { _, currentTab ->
             val tab = tabs.find { tab -> tab.tabId == currentTab.tabId }
             val totalFlashSaleCount = tab?.totalFlashSaleCount.orZero()
             val tabName = tab?.tabName.orEmpty()
             val tabId = tab?.tabId.orZero()
 
-            val fragment = FlashSaleListFragment.newInstance(
-                index,
-                tabId,
-                tabName,
-                totalFlashSaleCount
-            )
+            val fragment = FlashSaleListFragment.newInstance(tabId, tabName)
 
             val displayedTabName = "${currentTab.displayName} (${totalFlashSaleCount})"
             pages.add(Pair(displayedTabName, fragment))
