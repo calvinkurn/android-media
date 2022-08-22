@@ -163,7 +163,7 @@ class AffiliatePromotionShopItemVH(
             item?.itemId,
             adapterPosition + 1,
             item?.title,
-            "${item?.itemId} - ${item?.commission?.percentage} - ${getStatus(item)}",
+            "${item?.itemId} - ${item?.commission?.amount} - ${getStatus(item)}",
             AffiliateAnalytics.ItemKeys.AFFILIATE_SEARCH_SHOP_CLICK
         )
     }

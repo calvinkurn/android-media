@@ -188,7 +188,7 @@ class AffiliateAdapter(
             item.itemId,
             position,
             item.title,
-            "${item.itemId} - ${item.commission?.percentage} - $status"
+            "${item.itemId} - ${item.commission?.amount} - $status"
         )
     }
 }
