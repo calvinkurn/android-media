@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/universalSearchCarouselTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/universalSearchCarouselSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/universalSearchCarouselTitle"
+        app:typographyType="paragraph_3"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/universalSearchCarouselHeaderBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="universalSearchCarouselTitle, universalSearchCarouselSubtitle"
+        app:barrierDirection="bottom"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/universalSearchCarouselSeeAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_GN500"
+        android:text="@string/universal_search_see_more"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/universalSearchCarouselHeaderBarrier"/>
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:id="@+id/universalSearchCarousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/universalSearchCarouselHeaderBarrier"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

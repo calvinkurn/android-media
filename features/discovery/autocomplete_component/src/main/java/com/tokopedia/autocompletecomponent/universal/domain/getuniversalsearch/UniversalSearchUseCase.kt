@@ -17,7 +17,7 @@ internal class UniversalSearchUseCase(
         val graphqlRequest = GraphqlRequest(
             UniversalSearchQuery.GQL_QUERY,
             UniversalSearchModel::class.java,
-            mapOf(),
+            mapOf("param" to "q=susu&device=desktop&user_id=12341243&source=universe&app_version=5.23&user_discrict_id=23"),
         )
 
         val graphqlResponse = graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
@@ -41,9 +41,8 @@ internal class UniversalSearchUseCase(
                   time_process
                 }
                 data {
-                  items {        
+                  items {
                     id
-                    url
                     applink
                     image_url
                     template
@@ -53,9 +52,8 @@ internal class UniversalSearchUseCase(
                     component_id
                     tracking_option
                     campaign_code
-                    product{
+                    product {
                       id
-                      url
                       applink
                       image_url
                       title
@@ -75,7 +73,7 @@ internal class UniversalSearchUseCase(
                         title
                         image_url
                         show
-                      }          
+                      }
                     }
                     curated{
                       id

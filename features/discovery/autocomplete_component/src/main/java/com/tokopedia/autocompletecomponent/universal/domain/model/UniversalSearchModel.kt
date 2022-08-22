@@ -35,7 +35,7 @@ internal data class UniversalSearchModel(
     internal data class UniversalSearchData(
         @SerializedName("items")
         @Expose
-        val items: UniversalSearchItem = UniversalSearchItem(),
+        val items: List<UniversalSearchItem> = listOf(),
     )
 
     internal data class UniversalSearchItem(
@@ -89,7 +89,7 @@ internal data class UniversalSearchModel(
 
         @SerializedName("curated")
         @Expose
-        val curated: Curated = Curated()
+        val curated: List<Curated> = listOf(),
     )
 
     internal data class Product(
@@ -147,7 +147,7 @@ internal data class UniversalSearchModel(
 
         @SerializedName("badge")
         @Expose
-        val badge: Badge = Badge(),
+        val badge: List<Badge> = listOf(),
     )
 
     internal data class Shop(

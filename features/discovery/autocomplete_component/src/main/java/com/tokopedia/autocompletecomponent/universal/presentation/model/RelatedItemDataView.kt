@@ -1,11 +1,7 @@
-package com.tokopedia.autocompletecomponent.universal.presenter.model
+package com.tokopedia.autocompletecomponent.universal.presentation.model
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
-
-class CuratedDataView(
+class RelatedItemDataView(
     val id: String = "",
-    val url: String = "",
     val applink: String = "",
     val imageUrl: String = "",
     val title: String = "",

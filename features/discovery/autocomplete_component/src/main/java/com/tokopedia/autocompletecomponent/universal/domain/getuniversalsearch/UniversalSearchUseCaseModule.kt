@@ -1,7 +1,7 @@
 package com.tokopedia.autocompletecomponent.universal.domain.getuniversalsearch
 
 import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchScope
-import com.tokopedia.autocompletecomponent.universal.domain.UniversalConstant
+import com.tokopedia.autocompletecomponent.universal.UniversalConstant
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.data.model.CacheType

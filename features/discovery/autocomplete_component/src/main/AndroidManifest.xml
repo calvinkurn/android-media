@@ -3,4 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.autocompletecomponent">
 
+    <application>
+        <activity
+            android:name=".universal.UniversalSearchActivity"
+            android:exported="false" />
+    </application>
+
 </manifest>
