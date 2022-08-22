@@ -8,7 +8,7 @@ data class TransactionInvoiceUiModel(
         val createdTime: String = "", val statusId: Int = 0, val status: String = "",
         val amount: String = "", val invoiceUrl: String = "", val imageUrl: String = "",
         val userId: String = "", val userName: String = "", val invoiceNumber: String = "",
-        var invoiceType: Int = 0, var invoiceTypeStr: String,
+        var invoiceType: Int = 0, var invoiceTypeStr: String, var color: String
 ) : Visitable<TransactionInvoiceListAdapterTypeFactory> {
     override fun type(typeFactory: TransactionInvoiceListAdapterTypeFactory): Int {
         return typeFactory.type(this)

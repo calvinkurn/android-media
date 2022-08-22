@@ -73,7 +73,10 @@ data class Attributes(
         val imageUrl: String = "",
         @SerializedName("FailedTime")
         @Expose
-        val failedTime: String = ""
+        val failedTime: String = "",
+        @SerializedName("Color")
+        @Expose
+        val color : String = ""
 )
 
 

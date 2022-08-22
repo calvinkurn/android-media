@@ -84,7 +84,7 @@ class TransactionInvoiceListViewModel @Inject constructor(private val userSessio
                     it.attributes.description, it.attributes.createTime, it.attributes.statusId,
                     it.attributes.status, it.attributes.totalAmount, it.attributes.invoiceUrl,
                     it.attributes.imageUrl, userSession.userId, userSession.name, it.attributes.code,
-                    it.typeId, it.type))
+                    it.typeId, it.type, it.attributes.color))
         }
         return result
     }
