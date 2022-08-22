@@ -284,12 +284,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launch {
             when(pageSource) {
                 PAGE_SOURCE_FEED -> {
-//                    _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
-                    _productTagSourceStack.update {
-                        val newStack = it.toMutableSet()
-                        newStack.add(ProductTagSource.Autocomplete)
-                        newStack
-                    }
+                    _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
                 }
                 PAGE_SOURCE_PLAY -> {
                     _productTagSourceStack.update {
