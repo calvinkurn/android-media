@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="imagepicker_insta_toolbar_title">@color/Unify_NN600</color>
-    <color name="imagepicker_insta_menu">@color/Unify_GN500</color>
-    <color name="imagepicker_insta_menu_inactive">@color/Unify_NN400</color>
-    <color name="imagepicker_insta_image_bg">@color/Unify_NN50</color>
-    <color name="imagepicker_insta_empty_bg">@color/Unify_NN100</color>
     <color name="dms_imagepicker_insta_came_overlay">#80000000</color>
     <color name="dms_imagepicker_insta_camera_timer_progress">#7FFF4A</color>
     <color name="dms_imagepicker_insta_camera_btn_bg">#f5751d</color>
-    <color name="imagepicker_insta_title_black">@color/Unify_NN950</color>
-    <color name="imagepicker_insta_message_grey">@color/Unify_NN600</color>
-    <color name="imagepicker_insta_message_divider">@color/Unify_NN300</color>
 </resources>
