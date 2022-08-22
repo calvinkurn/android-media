@@ -138,6 +138,13 @@ class ComparatorKtTest {
     }
 
     @Test
+    fun `new number regex should match given price`() {
+        val reg = """^([1-9][0-9]+|[1-9])(?:\\.[0-9]+)?"""
+        val obj = 749000.5
+        assertTrue(regexEquals(reg, obj))
+    }
+
+    @Test
     fun `regex match given bool regex when compared to bool json val should return true`() {
         val tesVal = "true|false"
         val objVal = true
