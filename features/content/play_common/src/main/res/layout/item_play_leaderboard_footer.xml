@@ -12,7 +12,6 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:gravity="start"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
