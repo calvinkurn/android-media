@@ -42,7 +42,8 @@
                         android:adjustViewBounds="true"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintVertical_bias="0"/>
+                        app:layout_constraintVertical_bias="0"
+                        app:unify_image_corner_radius="0"/>
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/iv_sah_other_ornament_anniv"

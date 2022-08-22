@@ -1528,7 +1528,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `fail hit affiliate cookie return throwable`() {
+    fun `when init affiliate cookie throw, no op`() {
 
         val productId = "321"
         val shopId = "123"
@@ -1574,10 +1574,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         } throws Throwable("gagal bro")
 
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
-
         viewModel.hitAffiliateCookie(
             productInfo = mockProductInfoP1,
             affiliateUuid = affiliateUUID,
@@ -1593,9 +1589,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 uuid
             )
         }
+        // no op, expect to be handled by Affiliate SDK
 
-        Assert.assertEquals((viewModel.affiliateCookie.value as Fail).throwable.message,
-                "gagal bro")
     }
     //endregion
 

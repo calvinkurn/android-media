@@ -29,7 +29,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/patternSob"
@@ -37,7 +38,8 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/logoSob"

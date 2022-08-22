@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -529,7 +530,6 @@ open class DynamicProductDetailFragment :
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
-        observeAffiliateCookie()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -1527,6 +1527,41 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    override fun onSeeReviewCredibility(
+        reviewID: String,
+        reviewerUserID: String,
+        userStatistics: String,
+        userLabel: String,
+        componentTrackData: ComponentTrackDataModel
+    ) {
+        viewModel.getDynamicProductInfoP1?.run {
+            val routed = RouteManager.route(
+                context,
+                Uri.parse(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                        reviewerUserID,
+                        ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL
+                    )
+                ).buildUpon()
+                    .appendQueryParameter(ReviewApplinkConst.PARAM_PRODUCT_ID, basic.productID)
+                    .build()
+                    .toString()
+            )
+            if (routed) {
+                DynamicProductDetailTracking.Click.onClickReviewerName(
+                    dynamicProductInfoP1 = this,
+                    reviewID = reviewID,
+                    userId = viewModel.userId,
+                    reviewerUserID = reviewerUserID,
+                    statistics = userStatistics,
+                    label = userLabel,
+                    componentTrackData = componentTrackData
+                )
+            }
+        }
+    }
+
     override fun onTickerShopClicked(
         tickerTitle: String, tickerType: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
@@ -2000,21 +2035,6 @@ open class DynamicProductDetailFragment :
                     onSuccessUpdateAddress()
                 }
             })
-        }
-    }
-
-    private fun observeAffiliateCookie() {
-        viewModel.affiliateCookie.observe(viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
-                    isSuccess = true
-                )
-            }) { throwable ->
-                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
-                    isSuccess = false,
-                    errorMessage = throwable.message ?: ""
-                )
-            }
         }
     }
 

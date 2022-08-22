@@ -276,9 +276,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
     val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> = _playWidgetReminderSwitch
 
-    private val _affiliateCookie = MutableLiveData<Result<Boolean>>()
-    val affiliateCookie: LiveData<Result<Boolean>> = _affiliateCookie
-
     var videoTrackerData: Pair<Long, Long>? = null
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -1053,9 +1050,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 affiliatePageDetail = affiliatePageDetail,
                 uuid = uuid
             )
-
         }, onError = {
-            _affiliateCookie.postValue(it.asFail())
+            // no op, expect to be handled by Affiliate SDK
         })
     }
 

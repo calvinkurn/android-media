@@ -124,7 +124,7 @@ object DeeplinkMapper {
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = getQuery(deeplink, uri)
-                val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
+                val tempDeeplink = getRegisteredNavigationFromSellerapp(context, uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
@@ -390,7 +390,7 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
 
             DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
-            DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalGlobal.FORGOT_PASSWORD),
+            DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD),
             DLP.matchPattern(ApplinkConst.KOL_COMMENT) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
             DLP.matchPattern(ApplinkConst.CONTENT_DETAIL,
                     targetDeeplink = { _, _, deeplink, _ -> getKolDeepLink(deeplink) }),
@@ -407,14 +407,14 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
             DLP.exact(ApplinkConst.SELLER_WAREHOUSE_DATA, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
             DLP.exact(ApplinkConst.SETTING_ADDRESS, ApplinkConstInternalLogistic.MANAGE_ADDRESS),
-            DLP.exact(ApplinkConst.SETTING_PAYMENT, ApplinkConstInternalGlobal.PAYMENT_SETTING),
-            DLP.exact(ApplinkConst.SETTING_ACCOUNT, ApplinkConstInternalGlobal.ACCOUNT_SETTING),
+            DLP.exact(ApplinkConst.SETTING_PAYMENT, ApplinkConstInternalUserPlatform.PAYMENT_SETTING),
+            DLP.exact(ApplinkConst.SETTING_ACCOUNT, ApplinkConstInternalUserPlatform.ACCOUNT_SETTING),
             DLP.exact(ApplinkConst.ADD_CREDIT_CARD, ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD),
             DLP.exact(ApplinkConst.PMS, ApplinkConstInternalPayment.PMS_PAYMENT_LIST),
             DLP.exact(ApplinkConst.GOPAY_KYC, ApplinkConstInternalPayment.GOPAY_KYC),
             DLP.exact(ApplinkConst.SETTING_NOTIFICATION, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING),
             DLP.exact(ApplinkConst.REGISTER, ApplinkConstInternalGlobal.INIT_REGISTER),
-            DLP.exact(ApplinkConst.ADD_NAME_PROFILE, ApplinkConstInternalGlobal.MANAGE_NAME),
+            DLP.exact(ApplinkConst.ADD_NAME_PROFILE, ApplinkConstInternalUserPlatform.MANAGE_NAME),
             DLP.exact(ApplinkConst.KYC_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE),
             DLP.exact(ApplinkConst.KYC_FORM_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE),
             DLP.startWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM) { _, _, deeplink, _ ->
@@ -443,7 +443,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.SHOP_SETTINGS_NOTE, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
             DLP.exact(ApplinkConst.SHOP_SETTINGS_INFO, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
             DLP.exact(ApplinkConst.MY_SHOP_ETALASE_LIST, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST),
-            DLP.exact(ApplinkConst.HAS_PASSWORD, ApplinkConstInternalGlobal.HAS_PASSWORD),
+            DLP.exact(ApplinkConst.HAS_PASSWORD, ApplinkConstInternalUserPlatform.HAS_PASSWORD),
             DLP.exact(ApplinkConst.THANK_YOU_PAGE_NATIVE, ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE),
             DLP.exact(ApplinkConst.HOWTOPAY, ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY),
             DLP.startWith(ApplinkConst.PAYLATER, ApplinkConstInternalFintech.PAYLATER),
@@ -451,13 +451,13 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.OPTIMIZED_CHECKOUT, ApplinkConstInternalFintech.OCC_CHECKOUT),
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
-            DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
+            DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalUserPlatform.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
             DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalGlobal.INIT_REGISTER),
             DLP.exact(ApplinkConst.OVO_FINAL_PAGE, ApplinkConstInternalGlobal.OVO_FINAL_PAGE),
             DLP.host(ApplinkConst.SHARING_HOST) { _, _, deeplink, _ -> DeeplinkMapperExternal.getRegisteredNavigation(deeplink) },
-            DLP.exact(ApplinkConst.LINK_ACCOUNT, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW),
+            DLP.exact(ApplinkConst.LINK_ACCOUNT, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW),
             DLP.exact(ApplinkConst.EXPLICIT_PROFILE, ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE),
             DLP.startWith(ApplinkConst.SELLER_CENTER) { _, _, _, _ -> DeeplinkMapperMerchant.getRegisteredSellerCenter() },
             DLP.startWith(ApplinkConst.SNAPSHOT_ORDER) { ctx, _, deeplink, _ -> DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(ctx, deeplink) },
@@ -586,7 +586,7 @@ object DeeplinkMapper {
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
      */
-    private fun getRegisteredNavigationFromSellerapp(uri: Uri, deeplink: String): String {
+    private fun getRegisteredNavigationFromSellerapp(context: Context, uri: Uri, deeplink: String): String {
         return when (UriUtil.trimDeeplink(uri, deeplink)) {
             ApplinkConst.SellerApp.WEBVIEW -> ApplinkConstInternalGlobal.WEBVIEW_BASE
             ApplinkConst.SellerApp.BROWSER -> ApplinkConstInternalGlobal.BROWSER
@@ -607,7 +607,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.SELLER_SEARCH -> ApplinkConstInternalSellerapp.SELLER_SEARCH
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
-            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(context)
             ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE -> ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE
             ApplinkConst.SellerApp.CREATE_VOUCHER -> ApplinkConstInternalSellerapp.CREATE_VOUCHER
             ApplinkConst.SellerApp.VOUCHER_LIST -> ApplinkConstInternalSellerapp.VOUCHER_LIST
