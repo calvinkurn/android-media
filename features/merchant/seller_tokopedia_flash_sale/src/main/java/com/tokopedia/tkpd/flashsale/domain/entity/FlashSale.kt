@@ -35,10 +35,6 @@ data class FlashSale(
 
     data class FormattedDate(
         val startDate: String,
-        val endDate: String,
-        val submissionStartDate: String,
-        val submissionEndDate: String,
-        val reviewStartDate: String,
-        val reviewEndDate: String
+        val endDate: String
     )
 }

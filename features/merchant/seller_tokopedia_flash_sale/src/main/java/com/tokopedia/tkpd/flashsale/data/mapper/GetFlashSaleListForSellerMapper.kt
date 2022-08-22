@@ -88,11 +88,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.formatDate(): FlashSale.FormattedDate {
         return FlashSale.FormattedDate(
             startDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            endDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            submissionStartDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            submissionEndDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            reviewStartDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            reviewEndDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+            endDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
         )
     }
 }

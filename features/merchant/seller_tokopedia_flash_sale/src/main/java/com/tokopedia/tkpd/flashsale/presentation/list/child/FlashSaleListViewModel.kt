@@ -251,14 +251,17 @@ class FlashSaleListViewModel @Inject constructor(
             campaignId,
             name,
             coverImage,
-            remainingQuota,
-            maxProductSubmission,
+            startDateUnix,
+            endDateUnix,
             formattedDate.startDate,
             formattedDate.endDate,
-            endDateUnix,
-            findQuotaUsagePercentage(),
-            hoursDifference(now, submissionEndDateUnix),
-            submissionEndDateUnix
+            reviewStartDateUnix,
+            reviewEndDateUnix,
+            hoursDifference(now, startDateUnix),
+            hoursDifference(now, reviewStartDateUnix),
+            hoursDifference(now, reviewEndDateUnix),
+            status,
+            statusText
         )
     }
 

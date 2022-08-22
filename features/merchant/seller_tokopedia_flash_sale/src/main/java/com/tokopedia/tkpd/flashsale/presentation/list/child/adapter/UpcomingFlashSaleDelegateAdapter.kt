@@ -32,8 +32,8 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
         private const val QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL = 76
         private const val QUOTA_USAGE_ALMOST_FULL = 99
         private const val QUOTA_USAGE_FULL = 100
-
     }
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemUpcomingFlashSaleBinding.inflate(
             LayoutInflater.from(parent.context),

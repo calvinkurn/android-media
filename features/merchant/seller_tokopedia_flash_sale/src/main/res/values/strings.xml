@@ -12,6 +12,7 @@
     <string name="stfs_status_registration_ended">Pendaftaran Berakhir</string>
     <string name="stfs_status_registration_closed">Pendaftaran Ditutup</string>
     <string name="stfs_status_registration_closed_alternative">Pendaftaran ditutup</string>
+    <string name="stfs_status_registration_already_closed">Pendaftaran Sudah Ditutup</string>
     <string name="stfs_status_product_not_registered">Belum Daftar Produk</string>
     <string name="stfs_status_waiting_for_selection">Menunggu Seleksi</string>
     <string name="stfs_status_on_selection">Proses Seleksi</string>
@@ -30,7 +31,7 @@
     <string name="stfs_register">Daftar</string>
     <string name="stfs_add_product">Tambah Produk</string>
     <string name="stfs_change_product">Ubah Produk</string>
-    <string name="stfs_view_detail">Lihat detail</string>
+    <string name="stfs_view_detail">Lihat Detail</string>
     <string name="stfs_sold_count">Stok terjual</string>
     <string name="stfs_all_product_rejected">Semua Produk Ditolak</string>
     <string name="stfs_ends_in">Berakhir dalam</string>
