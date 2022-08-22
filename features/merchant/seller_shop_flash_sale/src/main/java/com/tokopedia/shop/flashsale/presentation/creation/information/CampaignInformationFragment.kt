@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -351,6 +352,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         if (isUsingVpsPackage && vpsPackage?.remainingQuota == EMPTY_QUOTA) {
             displayVpsQuotaEmptyError(vpsPackage.originalQuota)
+            binding?.btnCreateCampaign?.disable()
         }
     }
 
@@ -547,7 +549,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
                 viewModel.submit(selection)
             }
-
         }
     }
 
@@ -688,7 +689,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val modifiedEndDate = if (differenceInDays > SIX_DAYS) {
             viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
         } else {
-            viewModel.getSelectedEndDate()
+            startDate.advanceMinuteBy(THIRTY_MINUTE)
         }
 
         viewModel.setSelectedEndDate(modifiedEndDate)
@@ -1027,8 +1028,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val vpsPackages = ArrayList(viewModel.getStoredVpsPackages())
         val bottomSheet = VpsPackageBottomSheet.newInstance(selectedVpsPackageId, vpsPackages)
         bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
+            binding?.tauVpsPackageName?.isInputError = false
             viewModel.setSelectedVpsPackage(selectedVpsPackage)
             displaySelectedVpsPackage(selectedVpsPackage)
+            val campaignName = binding?.tauCampaignName?.editText?.text.toString()
+            binding?.btnCreateCampaign?.isEnabled = viewModel.shouldEnableProceedButton(campaignName, selectedVpsPackage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
