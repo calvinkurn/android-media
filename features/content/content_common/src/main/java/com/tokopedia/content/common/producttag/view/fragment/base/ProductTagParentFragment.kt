@@ -203,9 +203,15 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
-        showBreadcrumb(viewModel.isUser && productTagSourceStack.isNotEmpty() && productTagSourceStack.last() != ProductTagSource.Autocomplete)
-
         if(viewModel.isUser) {
+
+            if(productTagSourceStack.isNotEmpty() && productTagSourceStack.last() == ProductTagSource.Autocomplete) {
+                showBreadcrumb(false)
+                return
+            }
+
+            showBreadcrumb(true)
+
             /** Update the First Part */
             if(productTagSourceStack.isNotEmpty()) {
                 val firstSource = productTagSourceStack.first()
