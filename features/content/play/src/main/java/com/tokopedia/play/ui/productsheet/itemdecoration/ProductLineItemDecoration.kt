@@ -44,8 +44,7 @@ class ProductLineItemDecoration(
 
         val adapter = parent.adapter as ProductSheetAdapter
         if (position > 0 &&
-            adapter.getItem(position) is ProductSheetAdapter.Item.ProductWithSection &&
-                adapter.getItem(position - 1) is ProductSheetAdapter.Item.Product) {
+            adapter.getItem(position) is ProductSheetAdapter.Item.ProductWithSection) {
             outRect.top = defaultOffset
         } else if (position == 0) {
             outRect.top = topBottomOffset
@@ -66,8 +65,7 @@ class ProductLineItemDecoration(
                 val adapterPos = parent.getChildAdapterPosition(firstChild)
                 val adapter = parent.adapter as ProductSheetAdapter
                 if (adapterPos > 0 &&
-                    adapter.getItem(adapterPos) is ProductSheetAdapter.Item.ProductWithSection &&
-                    adapter.getItem(adapterPos - 1) is ProductSheetAdapter.Item.Product) {
+                    adapter.getItem(adapterPos) is ProductSheetAdapter.Item.ProductWithSection) {
                     (firstChild.top - defaultOffset).coerceAtLeast(0)
                 } else if (adapterPos == 0) {
                     (firstChild.top - topBottomOffset).coerceAtLeast(0)
@@ -81,39 +79,94 @@ class ProductLineItemDecoration(
                 val lastChild = layoutManager.getChildAt(it.endIndex - firstChildPos) ?: return@forEach
                 lastChild.bottom
             } else {
-                parent.bottom
+                parent.height
             }
 
             mPaint.shader = null
 
             when (it.background) {
                 is Background.Color -> {
-                    when (it.background) {
-                        is Background.Color.Gradient -> mPaint.shader = it.background.gradient
-                        is Background.Color.Solid -> mPaint.color = it.background.color
-                    }
-                    c.drawRect(
-                        0f, top.toFloat(), parent.width.toFloat(), bottom.toFloat(), mPaint
+                    setColorBackground(
+                        canvas = c,
+                        sectionTop = top.toFloat(),
+                        sectionBottom = bottom.toFloat(),
+                        parent = parent,
+                        background = it.background,
                     )
                 }
                 is Background.Image -> {
-                    if (it.background.image.width <= 0) return@forEach
-                    c.drawBitmap(
-                        it.background.image,
-                        Matrix().apply {
-                            val scaledRatio = parent.width.toFloat() / it.background.image.width
-                            preScale(scaledRatio, scaledRatio)
-
-                            val scaledHeight = it.background.image.height * scaledRatio
-                            if (bottom < scaledHeight) {
-                                postTranslate(0f, bottom.toFloat() - scaledHeight)
-                            }
-                        },
-                        mPaint,
+                    setImageBackground(
+                        canvas = c,
+                        sectionTop = top.toFloat(),
+                        sectionBottom = bottom.toFloat(),
+                        parent = parent,
+                        background = it.background,
                     )
                 }
             }
         }
+    }
+
+    private fun setColorBackground(
+        canvas: Canvas,
+        sectionTop: Float,
+        sectionBottom: Float,
+        parent: RecyclerView,
+        background: Background.Color,
+    ) {
+        when (background) {
+            is Background.Color.Gradient -> mPaint.shader = background.gradient
+            is Background.Color.Solid -> mPaint.color = background.color
+        }
+        canvas.save()
+
+        if (sectionBottom < parent.height) {
+            canvas.translate(0f, sectionBottom - parent.height)
+            canvas.drawRect(
+                0f,
+                0f,
+                parent.width.toFloat(),
+                parent.height.toFloat(),
+                mPaint
+            )
+        } else {
+            canvas.translate(0f, sectionTop)
+            canvas.drawRect(
+                0f,
+                0f,
+                parent.width.toFloat(),
+                parent.height.toFloat(),
+                mPaint
+            )
+        }
+
+        canvas.restore()
+    }
+
+    private fun setImageBackground(
+        canvas: Canvas,
+        sectionTop: Float,
+        sectionBottom: Float,
+        parent: RecyclerView,
+        background: Background.Image,
+    ) {
+        if (background.image.width <= 0) return
+        canvas.drawBitmap(
+            background.image,
+            Matrix().apply {
+                val scaledRatio = parent.width.toFloat() / background.image.width
+                preScale(scaledRatio, scaledRatio)
+
+                val scaledHeight = background.image.height * scaledRatio
+
+                if (sectionBottom < scaledHeight) {
+                    postTranslate(0f, sectionBottom - scaledHeight)
+                } else {
+                    postTranslate(0f, sectionTop)
+                }
+            },
+            mPaint,
+        )
     }
 
     sealed interface Background {

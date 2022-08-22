@@ -32,7 +32,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.getBitmapFromUrl
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -40,6 +39,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by jegul on 31/07/20
@@ -193,7 +193,6 @@ class ProductSheetViewComponent(
             adapter = productAdapter
             layoutManager = LinearLayoutManager(rvProductList.context)
             addOnScrollListener(StopFlingScrollListener())
-
             itemDecoration = ProductLineItemDecoration(context, this)
             addItemDecoration(itemDecoration)
             setHasFixedSize(true)

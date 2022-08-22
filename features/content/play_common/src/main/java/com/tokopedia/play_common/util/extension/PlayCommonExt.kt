@@ -393,10 +393,11 @@ suspend fun getBitmapFromUrl(
 ): Bitmap = suspendCancellableCoroutine { cont ->
     val target = object : CustomTarget<Bitmap>() {
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            cont.resume(resource)
+            if (cont.isActive) cont.resume(resource)
         }
 
         override fun onLoadCleared(placeholder: Drawable?) {
+            if (!cont.isActive || cont.isCompleted) return
             cont.resumeWithException(
                 IllegalStateException("Failed to load image from url: $url")
             )
