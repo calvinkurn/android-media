@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.tkpd.flashsale.presentation.landing.LandingActivity"
+            android:name="com.tokopedia.tkpd.flashsale.presentation.list.LandingActivity"
             android:exported="false"
             android:configChanges="orientation"
             android:label="@string/fs_tkpd_title"

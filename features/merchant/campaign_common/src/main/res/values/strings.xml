@@ -6,4 +6,6 @@
     <string name="campaign_common_prefix_rupiah">Rp</string>
     <string name="campaign_common_discount_placeholder">Diskon</string>
 
+    <!--Bottom Sheet -->
+    <string name="bottom_sheet_apply">Terapkan</string>
 </resources>

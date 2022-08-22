@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.landing
+package com.tokopedia.tkpd.flashsale.presentation.list
 
 import android.content.Context
 import android.content.Intent
