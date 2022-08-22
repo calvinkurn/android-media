@@ -1892,6 +1892,18 @@ open class ProductManageFragment :
         stockInfoBottomSheet.show()
     }
 
+    override fun onClickNotifyMeBuyerInformation(product: ProductUiModel) {
+        val notifyMeInfoBottomSheet = NotifyMeBuyerInformationBottomSheet.createInstance(product.notifyMeOOSWording)
+        notifyMeInfoBottomSheet.setOnClickEditProductStock {
+            if (product.isVariant()){
+                onClickEditVariantStockButton(product)
+            }else{
+                onClickEditStockButton(product)
+            }
+        }
+        notifyMeInfoBottomSheet.show(childFragmentManager)
+    }
+
     override fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean) {
         val stockReminderInfoBottomSheet = StockReminderInformationBottomSheet(
             childFragmentManager,

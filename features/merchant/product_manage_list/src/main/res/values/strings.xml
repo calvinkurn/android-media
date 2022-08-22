@@ -225,4 +225,7 @@
     <string name="content_coach_mark_nav_home_stock_reminder_desc">Kamu akan menerima notifikasi saat stok produk menipis lewat ikon lonceng di Home. Selain itu, kamu juga akan diingatkan lewat email.</string>
     <string name="product_stock_reminder_label_variant">Varian</string>
 
+    <string name="product_manage_notify_me_buyer_manage_stock_now">Atur Stok Sekarang</string>
+    <string name="product_manage_notify_me_title">Produkmu ditunggu pembeli!</string>
+    <string name="product_manage_notify_me_buyer_description"><![CDATA[Ada <b>%s</b> pembeli memasang pengingat jika stok kembali tersedia. Yuk, atur stokmu.]]></string>
 </resources>

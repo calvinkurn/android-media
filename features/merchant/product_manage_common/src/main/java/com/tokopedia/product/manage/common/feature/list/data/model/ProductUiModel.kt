@@ -27,10 +27,13 @@ data class ProductUiModel(
     val campaignTypeList: List<ProductCampaignType>?,
     val isProductBundling: Boolean,
     val suspendLevel: Int,
-    val hasStockAlert:Boolean,
+    val hasStockAlert: Boolean,
     val stockAlertActive: Boolean,
-    val stockAlertCount:Int,
-    val maxStock: Int?
+    val stockAlertCount: Int,
+    val maxStock: Int?,
+    val haveNotifyMeOOS: Boolean,
+    val notifyMeOOSCount: String,
+    val notifyMeOOSWording: String
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

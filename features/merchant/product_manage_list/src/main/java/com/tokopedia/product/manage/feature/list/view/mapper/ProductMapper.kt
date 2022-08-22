@@ -65,7 +65,10 @@ object ProductMapper {
                 hasStockAlert = it.hasStockAlert,
                 stockAlertActive = it.stockAlertActive,
                 stockAlertCount = it.stockAlertCount,
-                maxStock = maxStock
+                maxStock = maxStock,
+                haveNotifyMeOOS = it.haveNotifyMeOOS,
+                notifyMeOOSCount = it.notifyMeOOSCount,
+                notifyMeOOSWording = it.notifyMeOOSWording
             )
         } ?: emptyList()
     }

@@ -222,6 +222,20 @@
         app:layout_constraintLeft_toRightOf="@id/textStockCount"
         app:layout_constraintRight_toLeftOf="@id/labelActive"
         app:layout_constraintTop_toBottomOf="@id/textPrice">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imageNotifyMeBuyer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/imageStockInformation"
+            app:srcCompat="@drawable/ic_notify_me_buyer"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageStockInformation"
             android:layout_width="wrap_content"
@@ -229,7 +243,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageNotifyMeBuyer"
             app:layout_constraintEnd_toStartOf="@id/imageStockReminder"
             app:srcCompat="@drawable/ic_attention"
             tools:ignore="ContentDescription"

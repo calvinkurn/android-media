@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -46,6 +47,7 @@ class ProductViewHolder(
 
         showProductImage(product)
         showStockHintImage(product)
+        showNotifyMeBuyer(product)
         showStockAlertImage(product)
         showStockAlertActiveImage(product)
 
@@ -154,12 +156,25 @@ class ProductViewHolder(
 
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
-            ?.showWithCondition((product.isEmpty() && product.isNotViolation()) || product.isSuspend())
+            ?.showWithCondition((product.isEmpty() && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
                         || binding?.imageStockReminder?.isVisible.orFalse()
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
+                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+            )
+    }
+
+    private fun showNotifyMeBuyer(product: ProductUiModel) {
+        binding?.imageNotifyMeBuyer
+            ?.showWithCondition((product.isEmpty() && product.haveNotifyMeOOS))
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -180,6 +195,7 @@ class ProductViewHolder(
                 binding?.imageStockInformation?.isVisible.orFalse()
                         || binding?.imageStockReminder?.isVisible.orFalse()
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
+                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
 
     }
@@ -196,6 +212,7 @@ class ProductViewHolder(
                 binding?.imageStockInformation?.isVisible.orFalse()
                         || binding?.imageStockReminder?.isVisible.orFalse()
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
+                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
     }
 
@@ -223,6 +240,9 @@ class ProductViewHolder(
                 product.stockAlertCount,
                 product.stockAlertActive
             )
+        }
+        binding?.imageNotifyMeBuyer?.setOnClickListener {
+            listener.onClickNotifyMeBuyerInformation(product)
         }
         binding?.btnContactCS?.setOnClickListener { listener.onClickContactCsButton(product) }
     }
@@ -325,6 +345,7 @@ class ProductViewHolder(
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
+        fun onClickNotifyMeBuyerInformation(product: ProductUiModel)
         fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
