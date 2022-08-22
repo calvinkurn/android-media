@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="40dp">
+    android:layout_marginHorizontal="-4dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerTokopediaPlus"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="56dp"
+        tools:layout_height="40dp"
         android:layout_gravity="center"
-        android:paddingVertical="4dp"
         android:paddingHorizontal="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -18,7 +19,6 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -30,7 +30,6 @@
             android:layout_marginEnd="8dp"
             android:orientation="vertical"
             android:gravity="center_vertical"
-            android:paddingVertical="8dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iconTokopediaPlus"
@@ -40,7 +39,11 @@
                 android:id="@+id/titleTokopediaPlus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:typographyType="display_1"
+                app:typographyType="display_3"
+                tools:visibility="visible"
+                android:lines="1"
+                android:ellipsize="end"
+                tools:text="Title"
                 app:typographyWeight="bold"/>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -49,6 +52,10 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_NN600"
                 android:layout_marginTop="2dp"
+                tools:visibility="gone"
+                tools:text="Description"
+                android:lines="1"
+                android:ellipsize="end"
                 app:typographyType="small"
                 app:typographyWeight="reguler"/>
 

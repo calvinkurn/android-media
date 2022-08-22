@@ -62,12 +62,12 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     protected lateinit var viewModel: TokoFoodHomeViewModel
 
-    private val privateHomeLayoutItemList by lazy {
-        viewModel.getPrivateField<MutableList<TokoFoodItemUiModel>>("homeLayoutItemList")
-    }
-
     private val privateHasTickerBeenRemoved by lazy {
         viewModel.getPrivateField<Boolean>("hasTickerBeenRemoved")
+    }
+
+    private val privateHomeLayoutItemList by lazy {
+        viewModel.getPrivateField<MutableList<TokoFoodItemUiModel>>("homeLayoutItemList")
     }
 
     @Before
@@ -86,70 +86,20 @@ abstract class TokoFoodHomeViewModelTestFixture {
         )
     }
 
-    protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: TokoFoodListUiModel) {
-        val actualResponse = viewModel.layoutList.value
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    protected fun onGetEligibleForAnaRevamp_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureResponse) {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse.data)
+        }
     }
 
-    protected fun verifyGetHomeLayoutResponseFail() {
-        val actualResponse = viewModel.layoutList.value
-        Assert.assertTrue(actualResponse is Fail)
-    }
-
-    protected fun verifyGetErrorLayoutShown() {
-        val homeLayoutList = viewModel.layoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoFoodErrorStateUiModel }
-        Assert.assertNotNull(actualResponse)
-    }
-
-    protected fun verifyGetChooseAddressFail() {
-        val actualResponse = viewModel.chooseAddress.value
-        Assert.assertTrue(actualResponse is Fail)
-    }
-
-    protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
-        val actualResponse = viewModel.chooseAddress.value
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-    }
-
-    protected fun verifyIsUpdateAddressManualTrue() {
-        Assert.assertTrue(viewModel.isAddressManuallyUpdated)
-    }
-
-    protected fun verifyIsUpdateAddressManualFalse() {
-        Assert.assertFalse(viewModel.isAddressManuallyUpdated)
-    }
-
-    protected fun verifyHomeIsShowingEmptyState(actualResponse: Boolean) {
-        Assert.assertTrue(actualResponse)
-    }
-
-    protected fun verifyHomeIsNotShowingEmptyState(actualResponse: Boolean) {
-        Assert.assertFalse(actualResponse)
-    }
-
-    protected fun verifyEligibleForAnaRevampFail() {
-        val actualResponse = viewModel.eligibleForAnaRevamp.value
-        Assert.assertTrue(actualResponse is Fail)
-    }
-
-    protected fun verfifyEligibleForAnaRevampSuccess(expectedResponse: EligibleForAddressFeature) {
-        val actualResponse = viewModel.eligibleForAnaRevamp.value
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-    }
-
-    protected fun verifyKeroEditAddressFail(expectedResponse: String) {
-        val actualResponse = viewModel.errorMessage.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verfifyKeroEditAddressSuccess(expectedResponse: Boolean) {
-        val actualResponse = viewModel.updatePinPointState.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyTickerHasBeenRemoved(){
-        Assert.assertTrue(privateHasTickerBeenRemoved)
+    protected fun onGetEligibleForAnaRevamp_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(errorThrowable)
+        }
     }
 
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
@@ -168,26 +118,6 @@ abstract class TokoFoodHomeViewModelTestFixture {
         }
     }
 
-    protected fun onGetEligibleForAnaRevamp_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureResponse) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse.data)
-        }
-    }
-
-    protected fun onGetEligibleForAnaRevamp_thenReturn(errorThrowable: Throwable) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable)-> Unit>().invoke(errorThrowable)
-        }
-    }
-
-    protected fun verifyGetChooseAddress() {
-        coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
-    }
-
     protected fun onGetKeroEditAddress_thenReturn(keroEditAddressResponse: KeroEditAddressResponse) {
         coEvery {
             keroEditAddressUseCase.execute("", "", "")
@@ -198,6 +128,14 @@ abstract class TokoFoodHomeViewModelTestFixture {
         coEvery {
             keroEditAddressUseCase.execute("", "", "")
         } throws errorThrowable
+    }
+
+    protected fun verifyIsUpdateAddressManualTrue() {
+        Assert.assertTrue(viewModel.isAddressManuallyUpdated)
+    }
+
+    protected fun verifyIsUpdateAddressManualFalse() {
+        Assert.assertFalse(viewModel.isAddressManuallyUpdated)
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TokoFoodHomeTickerResponse) {
@@ -260,6 +198,10 @@ abstract class TokoFoodHomeViewModelTestFixture {
         coVerify { tokoFoodDynamicChanelUseCase.execute(any()) }
     }
 
+    protected fun verifyTickerHasBeenRemoved(){
+        Assert.assertTrue(privateHasTickerBeenRemoved)
+    }
+
     protected fun onGetMerchantList_thenReturn(
         layoutResponse: TokoFoodMerchantListResponse,
         localCacheModel: LocalCacheModel = LocalCacheModel(),
@@ -274,6 +216,16 @@ abstract class TokoFoodHomeViewModelTestFixture {
         pageKey: String = "0"
     ) {
         coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } throws error
+    }
+
+    protected fun verifyHomeIsShowingEmptyState(actualResponse: Boolean?) {
+        actualResponse?.let {
+            Assert.assertTrue(actualResponse)
+        }
+    }
+
+    protected fun verifyHomeIsNotShowingEmptyState(actualResponse: Boolean) {
+        Assert.assertFalse(actualResponse)
     }
 
     inline fun <reified T>Any.getPrivateField(name: String): T {

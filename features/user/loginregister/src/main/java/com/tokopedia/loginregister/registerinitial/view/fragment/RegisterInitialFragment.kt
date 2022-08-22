@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -1200,6 +1201,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             }
 
+            TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
+
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
             it.finish()
             saveFirstInstallTime()
@@ -1214,7 +1217,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun isFromAtc(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     private fun onGoToChangeName() {
-        registerInitialRouter.goToChangeName(this)
+        registerInitialRouter.goToChangeName(this, validateToken)
     }
 
     private fun onGoToForbiddenPage() {

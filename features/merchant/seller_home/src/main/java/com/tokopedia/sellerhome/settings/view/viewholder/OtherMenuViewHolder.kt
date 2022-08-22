@@ -57,13 +57,16 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener) : LifecycleObserver {
+    private var listener: Listener
+) : LifecycleObserver {
 
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
 
-        private const val ANNIVERSARY_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
-        private const val ANNIVERSARY_ORNAMENT_URL = "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
+        private const val ANNIVERSARY_PATTERN_URL =
+            "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
+        private const val ANNIVERSARY_ORNAMENT_URL =
+            "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
     }
 
     private val otherMenuAdapter by lazy {
@@ -224,6 +227,12 @@ class OtherMenuViewHolder(
                 SCROLLVIEW_INITIAL_POSITION,
                 SCROLLVIEW_INITIAL_POSITION
             )
+        }
+    }
+
+    fun setCentralizePromoTag(state: SettingResponseState<Boolean>) {
+        if (state is SettingResponseState.SettingSuccess) {
+            otherMenuAdapter?.setCentralizedPromoTag(state.data)
         }
     }
 

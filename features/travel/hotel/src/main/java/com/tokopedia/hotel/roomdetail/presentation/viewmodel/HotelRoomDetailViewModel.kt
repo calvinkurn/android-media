@@ -3,6 +3,7 @@ package com.tokopedia.hotel.roomdetail.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.usecase.HotelAddToCartUseCase
@@ -21,7 +22,7 @@ class HotelRoomDetailViewModel @Inject constructor(
 
     val addCartResponseResult = MutableLiveData<Result<HotelAddCartData.Response>>()
 
-    fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
+    fun addToCart(rawQuery: GqlQueryInterface, hotelAddCartParam: HotelAddCartParam) {
         launch {
             addCartResponseResult.postValue(useCase.execute(rawQuery, hotelAddCartParam))
         }

@@ -30,13 +30,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
-import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
@@ -55,9 +51,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -113,7 +106,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var containerPowerMerchant: View? = null
     private var containerOfficialStore: View? = null
     private var tvRegularMerchantType: Typography? = null
-    private var isGetNewOperationalHours: Boolean = false
 
     override fun getScreenName(): String? {
         return null
@@ -122,36 +114,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopId = userSession.shopId
-        checkNewOperationalHoursAbTest()
+        loadShopBasicData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentShopSettingsInfoBinding.inflate(inflater, container, false)
         return binding?.root as View
-    }
-
-    private fun checkNewOperationalHoursAbTest() {
-        ShopAbTestPlatform(requireContext()).apply {
-            requestParams = ShopAbTestPlatform.createRequestParam(
-                    listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
-                    shopId = shopId
-            )
-            fetch(object : RemoteConfig.Listener {
-                override fun onComplete(remoteConfig: RemoteConfig?) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        when (getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)) {
-                            AB_TEST_OPERATIONAL_HOURS_NO_KEY, AB_TEST_OPERATIONAL_HOURS_KEY -> {
-                                // user get new ops hour experience
-                                isGetNewOperationalHours = true
-                            }
-                        }
-                        loadShopBasicData()
-                    }
-                }
-
-                override fun onError(e: java.lang.Exception?) {}
-            })
-        }
     }
 
     private fun showShopStatusManageMenu() {
@@ -251,11 +219,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
 
         vgShopStatusContainer?.setOnClickListener {
-            if (isGetNewOperationalHours) {
-                moveToNewShopOperationalHours()
-            } else {
-                showShopStatusManageMenu()
-            }
+            moveToNewShopOperationalHours()
             ShopSettingsTracking.clickStatusToko(shopId, getShopType())
         }
 
@@ -568,26 +532,21 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopDescription?.text = shopBasicData.description
             }
 
-            if (isGetNewOperationalHours) {
-                if (shopBasicData.isClosed) {
-                    if (isShopClosedBySchedule) {
-                        // is shop closed by schedule, then show its schedule.
-                        val startDate = Date(shopBasicData.closeSchedule.toLongOrZero() * 1000L)
-                        val endDate = Date(shopBasicData.closeUntil.toLongOrZero() * 1000L)
-                        tvShopStatus?.text = getString(
-                                R.string.shop_settings_info_holiday_text,
-                                OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate, isShortDateFormat = true)
-                        )
-                    } else {
-                        // shop shop closed by weekly operational, then get operational hour list
-                        shopSettingsInfoViewModel.getOperationalHoursList(shopId)
-                    }
+            if (shopBasicData.isClosed) {
+                if (isShopClosedBySchedule) {
+                    // is shop closed by schedule, then show its schedule.
+                    val startDate = Date(shopBasicData.closeSchedule.toLongOrZero() * 1000L)
+                    val endDate = Date(shopBasicData.closeUntil.toLongOrZero() * 1000L)
+                    tvShopStatus?.text = getString(
+                            R.string.shop_settings_info_holiday_text,
+                            OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate, isShortDateFormat = true)
+                    )
                 } else {
+                    // shop shop closed by weekly operational, then get operational hour list
                     shopSettingsInfoViewModel.getOperationalHoursList(shopId)
                 }
             } else {
-                // render old shop status
-                tvShopStatus?.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
+                shopSettingsInfoViewModel.getOperationalHoursList(shopId)
             }
         }
     }

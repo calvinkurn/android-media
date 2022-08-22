@@ -5,16 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.common.utils.ParamCacheManager
-import com.tokopedia.media.picker.di.DaggerPickerComponent
+import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.media.picker.ui.PickerUiConfig
@@ -49,7 +49,8 @@ open class PickerActivity : BaseActivity()
     , PickerActivityContract
     , BottomNavComponent.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
+    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
     @Inject lateinit var pickerAnalytics: PickerAnalytics
 
@@ -60,7 +61,7 @@ open class PickerActivity : BaseActivity()
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            factory
+            viewModelFactory
         )[PickerViewModel::class.java]
     }
 
@@ -88,9 +89,11 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_picker)
         initInjector()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_picker)
 
         setupParamQueryAndDataIntent()
         restoreDataState(savedInstanceState)
@@ -270,8 +273,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        val file = media.file?: return 0
-        return VideoDurationRetriever.get(applicationContext, file)
+        return VideoDurationRetriever.get(applicationContext, media.file)
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {
@@ -293,10 +295,14 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        container.cameraFragment().run {
+        if (!param.get().isIncludeVideoFile()) {
+            return super.dispatchTouchEvent(ev)
+        }
+
+        container.cameraFragment()?.run {
             val cameraFragment = this
 
-            if (cameraFragment != null && cameraFragment.isAdded) {
+            if (cameraFragment.isAdded && cameraFragment.view != null) {
                 cameraFragment.gestureDetector.onTouchEvent(ev)
             }
         }
@@ -308,6 +314,7 @@ open class PickerActivity : BaseActivity()
         if (container.isFragmentActive(FragmentType.GALLERY)) {
             pickerAnalytics.clickCloseButton()
         }
+
         finish()
     }
 
@@ -369,7 +376,7 @@ open class PickerActivity : BaseActivity()
         return model.file?.isSizeMoreThan(param.get().maxImageFileSize()) == true
     }
 
-    override fun isMinStorageThreshold() = viewModel.isDeviceStorageFull()
+    override fun isMinStorageThreshold() = viewModel.isDeviceStorageAlmostFull()
 
     override fun onShowMediaLimitReachedGalleryToast() {
         onShowValidationToaster(
@@ -488,13 +495,15 @@ open class PickerActivity : BaseActivity()
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
-        return PickerFragmentFactoryImpl()
+        return PickerFragmentFactoryImpl(
+            fragmentManager = supportFragmentManager,
+            classLoader = applicationContext.classLoader
+        )
     }
 
     protected open fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        PickerInjector
+            .get(this)
             .inject(this)
     }
 

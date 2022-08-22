@@ -17,6 +17,10 @@
     <string name="user_consent_agreement_single_purpose_term_condition_policy">Saya menyetujui %s serta %s %s.</string>
     <string name="user_consent_agreement_multiple_purpose_term_condition_optional">Saya menyetujui %s:</string>
     <string name="user_consent_agreement_multiple_purpose_term_condition_policy_optional">Saya menyetujui %s serta %s:</string>
+    <string name="user_consent_agreement_default_term_condition_mandatory">Saya menyetujui %s yang  berlaku di Tokopedia.</string>
+    <string name="user_consent_agreement_default_term_condition_policy_mandatory">Saya menyetujui %s serta %s yang  berlaku di Tokopedia.</string>
+    <string name="user_consent_agreement_default_term_condition_optional">Dengan klik tombol di bawah, kamu menyetujui %s yang berlaku di Tokopedia.</string>
+    <string name="user_consent_agreement_default_term_condition_policy_optional">Dengan klik tombol di bawah, kamu menyetujui %s serta %s yang berlaku di Tokopedia.</string>
 
     <!--EXPLICIT PROFILE-->
     <string name="explicit_failed_title">Konten gagal ditampilkan</string>

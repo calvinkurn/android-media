@@ -29,14 +29,32 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"/>
 
+            <FrameLayout
+                android:id="@+id/fl_illustration_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topTicker"
+                android:layout_marginTop="@dimen/spacing_lvl5">
+
+            <ImageView
+                android:id="@+id/ivIllustrationView"
+                android:layout_width="@dimen/thank_success_img_width"
+                android:layout_height="@dimen/thank_success_img_height"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                android:contentDescription="@string/thank_you_page_success_illustration"/>
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieAnimationView"
                 android:layout_width="@dimen/thank_success_img_width"
                 android:layout_height="@dimen/thank_success_img_height"
-                android:layout_marginTop="@dimen/spacing_lvl5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/topTicker" />
+                android:visibility="gone"/>
+
+            </FrameLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_success"
@@ -49,7 +67,7 @@
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView"
+                app:layout_constraintTop_toBottomOf="@+id/fl_illustration_view"
                 app:typographyType="heading_4"
                 tools:visibility="visible" />
 

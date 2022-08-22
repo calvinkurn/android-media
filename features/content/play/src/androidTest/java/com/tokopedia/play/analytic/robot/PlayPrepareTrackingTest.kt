@@ -20,18 +20,10 @@ internal class PlayPrepareTrackingTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    /**
-     * database that holds all the analytics every user journey
-     */
-    private val gtmLogDbSource = GtmLogDBSource(targetContext)
-
     private lateinit var fileName: String
 
     fun setup(testRule: IntentsTestRule<PlayActivity>) {
         this.intentsTestRule = testRule
-
-        // delete all data in the database
-        gtmLogDbSource.deleteAll().subscribe()
     }
 
     /**
@@ -56,8 +48,6 @@ internal class PlayPrepareTrackingTest {
     }
 
     infix fun test(action: PlayTrackingTest.() -> Unit) = PlayTrackingTest(
-            targetContext,
-            gtmLogDbSource,
             fileName
     ).apply { action() }
 }

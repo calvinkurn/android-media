@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -1103,6 +1103,16 @@ class DiscoveryFragment :
         }
     }
 
+    fun scrollToComponentWithID(componentID:String){
+        val position = discoveryViewModel.scrollToPinnedComponent(
+            discoveryAdapter.currentList, componentID
+        )
+        if (position >= 0) {
+            userPressed = false
+            smoothScrollToComponentWithPosition(position)
+        }
+    }
+
     private fun setAnimationOnScroll() {
         recyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
@@ -1731,17 +1741,21 @@ class DiscoveryFragment :
                 if (position >= 0) {
                     userPressed = false
                     anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, true)
-                    val smoothScroller: RecyclerView.SmoothScroller =
-                        object : LinearSmoothScroller(context) {
-                            override fun getVerticalSnapPreference(): Int {
-                                return SNAP_TO_START
-                            }
-                        }
-                    smoothScroller.targetPosition = position
-                    staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+                    smoothScrollToComponentWithPosition(position)
                 }
             }
         }
+    }
+
+    private fun smoothScrollToComponentWithPosition(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     fun updateSelectedSection(sectionID: String) {

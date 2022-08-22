@@ -445,7 +445,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewIntegrity"
         app:icon_color_light_enable="@color/Unify_YN300"
-        app:icon_color_night_enable="@color/Unify_YN300"
+        app:icon_color_night_enable="@color/Unify_YN600"
         app:icon_name="STAR_FILLED"
         tools:visibility="visible" />
 
