@@ -1,6 +1,10 @@
 package com.tokopedia.product_bundle.common.data.constant
 
 object ProductBundleConstants {
+
+    /**
+     * Deprecated - Please use BundlingPageSource
+     */
     // page sources
     const val PAGE_SOURCE_CART = "cart"
     const val PAGE_SOURCE_MINI_CART = "minicart"
@@ -13,12 +17,5 @@ object ProductBundleConstants {
 
     // image resource links
     const val BUNDLE_EMPTY_IMAGE_URL = "https://images.tokopedia.net/img/android/merchant/product_service/product_bundle/product_bundle_empty.png"
-
-    object PageSource {
-        const val PRODUCT_DETAIL_PAGE = "pdp"
-        const val CART_PAGE = "cart"
-        const val MINI_CART_PAGE = "minicart"
-        const val SHOP_PAGE = "shoppage"
-    }
 
 }

@@ -36,6 +36,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -110,6 +111,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     // product bundle detail components
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
+
+    // need to put this as local variable so when user click ATC we can get the updated value
+    private var totalBundlePriceText: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -203,7 +207,17 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe add to cart result
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
+                val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+                val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
+                val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+
                 if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
+                    sendTrackerBundleAtcClickEvent(
+                            atcResult = atcResult,
+                            selectedProductIds = selectedProductIds,
+                            selectedProductBundleMaster = selectedProductBundleMaster,
+                            bundlePrice = totalBundlePriceText.toLong()
+                    )
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
@@ -213,21 +227,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 } else {
-                    // track the buy button click
-                    val userId = viewModel.getUserId()
-                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
-                    val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
-                    val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
-                    MultipleProductBundleTracking.trackMultipleBuyClick(
-                            userId = userId,
-                            bundleId = atcResult.requestParams.bundleId,
-                            productId = selectedProductIds,
+                    sendTrackerBundleAtcClickEvent(
                             atcResult = atcResult,
-                            source =
-                            bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice =
+                            selectedProductIds = selectedProductIds,
+                            selectedProductBundleMaster = selectedProductBundleMaster,
+                            bundlePrice = totalBundlePriceText.toLong()
                     )
-
                     RouteManager.route(context, ApplinkConst.CART)
                 }
             }
@@ -250,6 +255,24 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun sendTrackerBundleAtcClickEvent(
+            atcResult: AddToCartDataResult,
+            selectedProductIds: String,
+            selectedProductBundleMaster: ProductBundleMaster,
+            bundlePrice: Long
+    ) {
+        val _userId = viewModel.getUserId()
+        MultipleProductBundleTracking.trackMultipleBuyClick(
+                userId = _userId,
+                bundleId = atcResult.requestParams.bundleId,
+                productId = selectedProductIds,
+                atcResult = atcResult,
+                source = viewModel.pageSource,
+                bundleName = selectedProductBundleMaster.bundleName,
+                bundlePrice = bundlePrice
+        )
     }
 
     private fun setupProductBundleMasterView(view: View) {
@@ -367,10 +390,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
         val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount)
         val totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
-        val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
+        val _totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
         val totalSavingText = Utility.formatToRupiahFormat(totalSaving.roundToInt())
+        totalBundlePriceText = _totalBundlePriceText
         productBundleOverView?.setTitleText(totalDiscountText, totalPriceText)
-        productBundleOverView?.amountView?.text = totalBundlePriceText
+        productBundleOverView?.amountView?.text = _totalBundlePriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
 
