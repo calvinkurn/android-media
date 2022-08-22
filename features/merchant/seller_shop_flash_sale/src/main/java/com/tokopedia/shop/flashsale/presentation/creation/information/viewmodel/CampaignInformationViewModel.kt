@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -462,7 +463,8 @@ class CampaignInformationViewModel @Inject constructor(
             block = {
                 val result = getSellerCampaignPackageListUseCase.execute()
                 val vpsPackages = applySelectionRule(selectedPackageId, result)
-                _vpsPackages.postValue(Success(vpsPackages))
+                val sortedVpsPackages = applySortRule(vpsPackages)
+                _vpsPackages.postValue(Success(sortedVpsPackages))
             },
             onError = { error ->
                 _vpsPackages.postValue(Fail(error))
@@ -475,7 +477,6 @@ class CampaignInformationViewModel @Inject constructor(
         selectedPackageId: Long,
         vpsPackages: List<VpsPackage>
     ): List<VpsPackageUiModel> {
-        val sortRule = compareBy<VpsPackageUiModel> { it.packageId }.thenBy { it.packageEndTime }
         return vpsPackages
             .map { vpsPackage ->
                 VpsPackageUiModel(
@@ -491,7 +492,13 @@ class CampaignInformationViewModel @Inject constructor(
                     vpsPackage.isShopTierBenefit()
                 )
             }
-            .sortedWith(sortRule)
+    }
+
+    private fun applySortRule(vpsPackages: List<VpsPackageUiModel>) : List<VpsPackageUiModel> {
+        val shopTierBenefit = vpsPackages.find { vpsPackage -> vpsPackage.isShopTierBenefit } ?: return listOf()
+        val nonEmptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
+        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> vpsPackage.remainingQuota == EMPTY_QUOTA }
+        return listOf(shopTierBenefit) + nonEmptyVpsPackages + emptyVpsPackages
     }
 
     private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
