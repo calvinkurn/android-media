@@ -230,7 +230,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
                         // TODO check if has draft then showing dialog
-                        getSwitchAccountConfirmationDialog(feedAccount).show()
+                        if (!getSwitchAccountConfirmationDialog(feedAccount).isShowing)
+                            getSwitchAccountConfirmationDialog(feedAccount).show()
                     }
                 })
             }
