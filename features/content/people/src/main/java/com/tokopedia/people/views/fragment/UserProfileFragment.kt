@@ -384,6 +384,10 @@ class UserProfileFragment @Inject constructor(
                         view?.showErrorToast(message)
                     }
                     is UserProfileUiEvent.ErrorLoadProfile -> {
+                        if(binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+
                         showGlobalError(
                             when (event.throwable) {
                                 is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
