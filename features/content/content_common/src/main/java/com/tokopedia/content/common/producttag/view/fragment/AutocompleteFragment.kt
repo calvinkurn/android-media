@@ -1,17 +1,23 @@
 package com.tokopedia.content.common.producttag.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.databinding.FragmentAutocompleteBinding
 import com.tokopedia.content.common.producttag.util.extension.hideKeyboard
+import com.tokopedia.content.common.producttag.util.extension.showKeyboard
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -52,6 +58,11 @@ class AutocompleteFragment @Inject constructor(
         setupView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        showSearchKeyboard()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -84,8 +95,21 @@ class AutocompleteFragment @Inject constructor(
         }
     }
 
+    private fun showSearchKeyboard() {
+        lifecycleScope.launch {
+            delay(DELAY_SHOW_KEYBOARD)
+
+            binding.sbAutocomplete.searchBarTextField.apply {
+                requestFocus()
+                showKeyboard()
+            }
+        }
+    }
+
     companion object {
         const val TAG = "AutocompleteFragment"
+
+        private const val DELAY_SHOW_KEYBOARD = 200L
 
         fun getFragmentPair(
             fragmentManager: FragmentManager,
