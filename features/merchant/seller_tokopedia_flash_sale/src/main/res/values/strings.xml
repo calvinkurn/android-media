@@ -12,14 +12,15 @@
     <string name="stfs_status_registration_ended">Pendaftaran Berakhir</string>
     <string name="stfs_status_registration_closed">Pendaftaran Ditutup</string>
     <string name="stfs_status_registration_closed_alternative">Pendaftaran ditutup</string>
-    <string name="stfs_status_product_not_registered">Belum daftar produk</string>
-    <string name="stfs_status_waiting_for_selection">Menunggu seleksi</string>
+    <string name="stfs_status_product_not_registered">Belum Daftar Produk</string>
+    <string name="stfs_status_waiting_for_selection">Menunggu Seleksi</string>
     <string name="stfs_status_on_selection">Proses Seleksi</string>
     <string name="stfs_status_selection_finished">Seleksi Selesai</string>
     <string name="stfs_status_ongoing">Berlangsung</string>
     <string name="stfs_status_finished">Selesai</string>
     <string name="stfs_status_skipped">Terlewat</string>
     <string name="stfs_status_cancelled">Dibatalkan</string>
+    <string name="stfs_status_rejected">Ditolak</string>
     <string name="stfs_registration_ends_in">Pendaftaran berakhir dalam</string>
     <string name="stfs_selection_starts_in">Seleksi dimulai dalam</string>
     <string name="stfs_selection_ends_in">Seleksi berakhir dalam</string>
@@ -35,10 +36,12 @@
     <string name="stfs_ends_in">Berakhir dalam</string>
     <string name="stfs_sort">Urutkan</string>
     <string name="stfs_all_category">Semua Kategori</string>
+    <string name="stfs_all_status">Semua Status</string>
     <string name="stfs_nearest">Terdekat</string>
     <string name="stfs_newest">Terbaru</string>
     <string name="stfs_sort_title">Mau filter dengan urutan apa?</string>
     <string name="stfs_category_title">Mau cari kategori apa?</string>
+    <string name="stfs_status_title">Mau cari status apa?</string>
     <string name="stfs_read_article">Baca Artikel</string>
     <string name="stfs_empty_state_upcoming_title">Oops belum ada campaign yang bisa kamu ikuti, nih!</string>
     <string name="stfs_empty_state_upcoming_description">Baca artikel untuk mempelajari potensi partisipasimu di campaign selanjutnya, ya</string>
@@ -56,6 +59,7 @@
     <string name="stfs_placeholder_period">%s - %s</string>
     <string name="stfs_placeholder_sold_count">%s dari %s</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
+    <string name="stfs_placeholder_selected_status_count">%d Status</string>
     <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
 
 </resources>

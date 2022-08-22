@@ -8,6 +8,8 @@ import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusEnum
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerCategoryUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
@@ -45,6 +47,7 @@ class FlashSaleListViewModel @Inject constructor(
         get() = _uiState.value
 
     data class UiState(
+        val isLoading: Boolean = false,
         val totalFlashSaleCount: Int = 0,
         val tabName: String = "",
         val tabId: Int = TabConstant.TAB_ID_UPCOMING,
@@ -57,6 +60,7 @@ class FlashSaleListViewModel @Inject constructor(
         ),
         val selectedCategoryIds: List<Long> = emptyList(),
         val flashSaleCategories: List<FlashSaleCategory> = emptyList(),
+        val selectedStatusIds: List<String> = emptyList(),
         val isFilterActive: Boolean = false,
         val allItems : List<DelegateAdapterItem> = emptyList()
     )
@@ -68,6 +72,8 @@ class FlashSaleListViewModel @Inject constructor(
         data class ApplySort(val selectedSort: SingleSelectionItem) : UiEvent()
         object ChangeCategory : UiEvent()
         data class ApplyCategoryFilter(val categories: List<MultipleSelectionItem>) : UiEvent()
+        object ChangeStatus : UiEvent()
+        data class ApplyStatusFilter(val statuses: List<MultipleSelectionItem>) : UiEvent()
         object ClearFilter : UiEvent()
     }
 
@@ -79,6 +85,7 @@ class FlashSaleListViewModel @Inject constructor(
             val selectedCategoryIds: List<Long>,
             val categories: List<FlashSaleCategory>
         ) : UiEffect()
+        data class ShowStatusBottomSheet(val selectedStatusIds: List<String>) : UiEffect()
         data class LoadNextPageSuccess(val allItems: List<DelegateAdapterItem>, val currentPageItems : List<DelegateAdapterItem>): UiEffect()
     }
 
@@ -90,6 +97,8 @@ class FlashSaleListViewModel @Inject constructor(
             is UiEvent.ApplySort -> onApplySort(event.selectedSort)
             is UiEvent.ChangeCategory -> onChangeCategory()
             is UiEvent.ApplyCategoryFilter -> onApplyCategory(event.categories)
+            UiEvent.ChangeStatus -> onChangeStatus()
+            is UiEvent.ApplyStatusFilter -> onApplyStatusFilter(event.statuses)
             UiEvent.ClearFilter -> onClearFilter()
         }
     }
@@ -121,7 +130,7 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedSort = selectedSort,
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = currentState.selectedCategoryIds.isNotEmpty() && currentState.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
+                isFilterActive = selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
             )
         }
 
@@ -145,7 +154,26 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedCategoryIds = categoryIds,
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = categories.isNotEmpty() && currentState.selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
+                isFilterActive = categories.isNotEmpty()
+            )
+        }
+
+        getFlashSaleList()
+    }
+
+    private fun onChangeStatus() {
+        _uiEffect.tryEmit(UiEffect.ShowStatusBottomSheet(currentState.selectedStatusIds))
+    }
+
+    private fun onApplyStatusFilter(statuses: List<MultipleSelectionItem>) {
+        val statusIds = statuses.map { status -> status.id }
+
+        _uiState.update {
+            it.copy(
+                selectedStatusIds = statusIds,
+                offset = 0,
+                allItems = listOf(),
+                isFilterActive = statusIds.isNotEmpty()
             )
         }
 
@@ -157,6 +185,7 @@ class FlashSaleListViewModel @Inject constructor(
             it.copy(
                 selectedCategoryIds = listOf(),
                 selectedSort = SingleSelectionItem("DEFAULT_VALUE_PLACEHOLDER", name = "", isSelected = false, direction = "ASC"),
+                selectedStatusIds = listOf(),
                 offset = 0,
                 allItems = listOf(),
                 isFilterActive = false
@@ -181,6 +210,8 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun getFlashSaleList() {
+        _uiState.update { it.copy(isLoading = true) }
+
         launchCatchError(
             dispatchers.io,
             block = {
@@ -188,6 +219,7 @@ class FlashSaleListViewModel @Inject constructor(
                     currentState.tabName,
                     currentState.offset,
                     categoryIds = currentState.selectedCategoryIds,
+                    statusIds = currentState.selectedStatusIds,
                     sortOrderBy = currentState.selectedSort.id,
                     sortOrderRule = currentState.selectedSort.direction
                 )
@@ -197,9 +229,10 @@ class FlashSaleListViewModel @Inject constructor(
                 val allItems = currentState.allItems + formattedFlashSales
                 _uiEffect.emit(UiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
 
-                _uiState.update { it.copy(allItems = allItems) }
+                _uiState.update { it.copy(isLoading = false, allItems = allItems) }
             },
             onError = { error ->
+                _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.tryEmit(UiEffect.FetchFlashSaleError(error))
             }
         )

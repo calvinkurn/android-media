@@ -6,6 +6,17 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusEnum
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_CANCELLED
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_FINISHED
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_MISSED
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_NO_REGISTERED_PRODUCT
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_ONGOING
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_ON_SELECTION_PROCESS
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_REJECTED
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_SELECTION_FINISHED
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_UPCOMING
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_WAITING_FOR_SELECTION
 import com.tokopedia.tkpd.flashsale.util.extension.epochToDate
 import javax.inject.Inject
 
@@ -32,11 +43,28 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.submissionEndDateUnix.epochToDate(),
                 flashSale.submissionStartDateUnix.epochToDate(),
                 flashSale.useMultilocation,
-                flashSale.formatDate()
+                flashSale.formatDate(),
+                flashSale.toCampaignStatus()
             )
         }
     }
 
+    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toCampaignStatus(): FlashSaleStatusEnum {
+        return when (statusId.toIntOrZero()) {
+            FLASH_SALE_STATUS_ID_UPCOMING -> FlashSaleStatusEnum.UPCOMING
+            FLASH_SALE_STATUS_ID_NO_REGISTERED_PRODUCT -> FlashSaleStatusEnum.NO_REGISTERED_PRODUCT
+            FLASH_SALE_STATUS_ID_WAITING_FOR_SELECTION -> FlashSaleStatusEnum.WAITING_FOR_SELECTION
+            FLASH_SALE_STATUS_ID_ON_SELECTION_PROCESS -> FlashSaleStatusEnum.ON_SELECTION_PROCESS
+            FLASH_SALE_STATUS_ID_SELECTION_FINISHED -> FlashSaleStatusEnum.SELECTION_FINISHED
+            FLASH_SALE_STATUS_ID_ONGOING -> FlashSaleStatusEnum.ONGOING
+            FLASH_SALE_STATUS_ID_FINISHED -> FlashSaleStatusEnum.FINISHED
+            FLASH_SALE_STATUS_ID_CANCELLED -> FlashSaleStatusEnum.CANCELLED
+            FLASH_SALE_STATUS_ID_REJECTED -> FlashSaleStatusEnum.REJECTED
+            FLASH_SALE_STATUS_ID_MISSED -> FlashSaleStatusEnum.MISSED
+            else -> FlashSaleStatusEnum.UPCOMING
+        }
+    }
+    
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toProductMeta(): FlashSale.ProductMeta {
         return FlashSale.ProductMeta(
             productMeta.acceptedProduct,
