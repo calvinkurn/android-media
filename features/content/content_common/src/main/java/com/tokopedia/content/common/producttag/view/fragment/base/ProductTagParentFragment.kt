@@ -191,7 +191,6 @@ class ProductTagParentFragment @Inject constructor(
                 }
             }
         }
-
     }
 
     private fun renderSelectedProductTagSource(
@@ -201,13 +200,51 @@ class ProductTagParentFragment @Inject constructor(
         if(prevState == currState) return
 
         updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
+
+        updateActionBar(currState.productTagSourceStack)
         updateBreadcrumb(currState.productTagSourceStack)
+    }
+
+    private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {
+        binding.groupActionBar.showWithCondition(
+            productTagSourceStack.currentSource != ProductTagSource.Autocomplete
+        )
+    }
+
+    private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
+        if(currStack.isEmpty()) {
+            mListener?.onCloseProductTag() ?: run {
+                requireActivity().finish()
+            }
+            return
+        }
+
+        val selectedSource = currStack.currentSource
+        val (fragment, tag) = getFragmentAndTag(selectedSource)
+        if(currStack.size >= prevStack.size) {
+            childFragmentManager.beginTransaction()
+                .replace(binding.flCcProductTagContainer.id, fragment, tag)
+                .apply {
+                    if(currStack.size > prevStack.size)
+                        addToBackStack(null)
+                }
+                .commit()
+        }
+        else {
+            repeat(currStack.size - prevStack.size) {
+                childFragmentManager.popBackStackImmediate()
+            }
+
+            childFragmentManager.beginTransaction()
+                .replace(binding.flCcProductTagContainer.id, fragment, tag)
+                .commit()
+        }
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
         if(viewModel.isUser) {
 
-            if(productTagSourceStack.isNotEmpty() && productTagSourceStack.last() == ProductTagSource.Autocomplete) {
+            if(productTagSourceStack.currentSource == ProductTagSource.Autocomplete) {
                 showBreadcrumb(false)
                 return
             }
@@ -253,36 +290,6 @@ class ProductTagParentFragment @Inject constructor(
                     }
                 }
             }
-        }
-    }
-
-    private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
-        if(currStack.isEmpty()) {
-            mListener?.onCloseProductTag() ?: run {
-                requireActivity().finish()
-            }
-            return
-        }
-
-        val selectedSource = currStack.currentSource
-        val (fragment, tag) = getFragmentAndTag(selectedSource)
-        if(currStack.size >= prevStack.size) {
-            childFragmentManager.beginTransaction()
-                .replace(binding.flCcProductTagContainer.id, fragment, tag)
-                .apply {
-                    if(currStack.size > prevStack.size)
-                        addToBackStack(null)
-                }
-                .commit()
-        }
-        else {
-            repeat(currStack.size - prevStack.size) {
-                childFragmentManager.popBackStackImmediate()
-            }
-
-            childFragmentManager.beginTransaction()
-                .replace(binding.flCcProductTagContainer.id, fragment, tag)
-                .commit()
         }
     }
 
