@@ -48,10 +48,10 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
             val child = parent.getChildAt(index)
 
             when (parent.getChildViewHolder(child)) {
-                is PlayGameViewHolder.Header -> c.drawRect(
-                    Rect(child.left , child.top - dividerHeight, parent.width, child.top), mPaint)
+                is PlayGameViewHolder.Footer -> c.drawRect(
+                    Rect(child.left , child.bottom - dividerHeight, parent.width, child.bottom), mPaint)
                 is PlayGameViewHolder.Winner -> c.drawRect(
-                    Rect(startOffset , child.top, parent.width, child.bottom + dividerHeight), mPaint)
+                    Rect(startOffset , child.bottom - dividerHeight, parent.width, child.bottom), mPaint)
             }
         }
     }
