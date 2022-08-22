@@ -52,7 +52,7 @@ class HydraSharedPreferences @Inject constructor(
 
     fun isFirstSwitchAccount(): Boolean {
         return mSharedPrefs.getBoolean(
-            String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.shopId),
+            String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
             true
         )
     }
@@ -60,7 +60,7 @@ class HydraSharedPreferences @Inject constructor(
     fun setNotFirstSwitchAccount() {
         mSharedPrefs.edit()
             .putBoolean(
-                String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.shopId),
+                String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
                 false
             ).apply()
     }
