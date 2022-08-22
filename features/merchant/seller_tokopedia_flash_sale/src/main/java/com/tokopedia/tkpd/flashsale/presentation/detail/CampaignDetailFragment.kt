@@ -107,7 +107,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
         setupUpcomingHeader(campaign, campaignStatus)
         setupUpcomingMid(campaign, campaignStatus)
-        setupUpcomingBody(campaign, campaignStatus)
+        setupUpcomingBody(campaign)
     }
 
     private fun setupUpcomingHeader(campaign: Campaign, campaignStatus: UpcomingCampaignStatus) {
@@ -142,6 +142,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 }
             }
             startUpcomingTimer(this, campaign)
+            imageCampaign.setImageUrl(campaign.coverImage)
             tgCampaignName.text = campaign.name
             setUpcomingCampaignPeriod(this, campaign)
         }
@@ -203,7 +204,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupUpcomingBody(campaign: Campaign, campaignStatus: UpcomingCampaignStatus) {
+    private fun setupUpcomingBody(campaign: Campaign) {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
