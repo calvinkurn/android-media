@@ -554,5 +554,13 @@ class CampaignInformationViewModel @Inject constructor(
         }
     }
 
+    fun shouldEnableProceedButton(campaignName : String, selectedVpsPackage: VpsPackageUiModel): Boolean {
+        return when {
+            campaignName.length < MIN_CAMPAIGN_NAME_LENGTH -> false
+            selectedVpsPackage.isShopTierBenefit -> true
+            !selectedVpsPackage.isShopTierBenefit && selectedVpsPackage.remainingQuota.isMoreThanZero() -> true
+            else -> false
+        }
+    }
 
 }
