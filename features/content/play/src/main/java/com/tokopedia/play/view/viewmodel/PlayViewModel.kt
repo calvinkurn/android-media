@@ -52,6 +52,7 @@ import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
@@ -1143,7 +1144,11 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val warehouseId = _warehouseInfo.value.warehouseId
             val tagItem = repo.getTagItem(channelId, warehouseId)
+
             _tagItems.value = tagItem
+            _tagItems.update {
+                it.copy(voucher = createNewVoucherList(tagItem.voucher.voucherList))
+            }
 
             checkReminderStatus()
 
@@ -1155,6 +1160,16 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
         }
+    }
+
+    private fun createNewVoucherList(vouchers: List<PlayVoucherUiModel>): VoucherUiModel {
+        val newVoucher = mutableListOf<PlayVoucherUiModel>().apply {
+            PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name)
+            addAll(vouchers)
+        }
+        return VoucherUiModel(
+            newVoucher
+        )
     }
 
     private fun checkReminderStatus(){
@@ -1670,14 +1685,12 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is MerchantVoucher -> {
-                val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
-
+                val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result)
                 _tagItems.update {
                     it.copy(
-                        voucher = it.voucher.copy(
-                            voucherList = mappedVouchers,
-                        ),
+                        voucher = createNewVoucherList(mappedVoucher)
                     )
+
                 }
             }
             is ChannelInteractiveStatus -> {

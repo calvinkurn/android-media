@@ -9,9 +9,9 @@ import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
@@ -46,7 +46,7 @@ class PlayUiModelMapper @Inject constructor(
         return input.map(productTagMapper::mapSection)
     }
 
-    fun mapMerchantVouchers(input: List<Voucher>): List<MerchantVoucherUiModel> {
+    fun mapMerchantVouchers(input: List<Voucher>): List<PlayVoucherUiModel.MerchantVoucherUiModel> {
         return input.map(merchantVoucherMapper::mapMerchantVoucher)
     }
 

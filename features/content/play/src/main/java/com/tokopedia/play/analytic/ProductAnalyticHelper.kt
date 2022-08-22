@@ -1,8 +1,8 @@
 package com.tokopedia.play.analytic
 
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 
@@ -18,7 +18,7 @@ class ProductAnalyticHelper(
     private val impressedProducts = mutableListOf<Pair<PlayProductUiModel.Product, Int>>()
 
     @TrackingField
-    private val impressedVouchers = mutableListOf<MerchantVoucherUiModel>()
+    private val impressedVouchers = mutableListOf<PlayVoucherUiModel.MerchantVoucherUiModel>()
 
     private var sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
@@ -34,7 +34,7 @@ class ProductAnalyticHelper(
         sectionInfo = section
     }
 
-    fun trackImpressedVouchers(vouchers: List<MerchantVoucherUiModel>) {
+    fun trackImpressedVouchers(vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
         if (vouchers.isNotEmpty()) impressedVouchers.addAll(vouchers)
     }
 

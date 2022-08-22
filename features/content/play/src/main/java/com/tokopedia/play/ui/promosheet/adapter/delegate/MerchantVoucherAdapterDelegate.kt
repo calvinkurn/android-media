@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 
 /**
@@ -13,9 +12,9 @@ import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
  */
 class MerchantVoucherAdapterDelegate(
         listener: MerchantVoucherNewViewHolder.Listener
-) : TypedAdapterDelegate<MerchantVoucherUiModel, PlayVoucherUiModel, MerchantVoucherNewViewHolder>(R.layout.item_shop_coupon), MerchantVoucherNewViewHolder.Listener by listener {
+) : TypedAdapterDelegate<PlayVoucherUiModel.MerchantVoucherUiModel, PlayVoucherUiModel, MerchantVoucherNewViewHolder>(R.layout.item_shop_coupon), MerchantVoucherNewViewHolder.Listener by listener {
 
-    override fun onBindViewHolder(item: MerchantVoucherUiModel, holder: MerchantVoucherNewViewHolder) {
+    override fun onBindViewHolder(item: PlayVoucherUiModel.MerchantVoucherUiModel, holder: MerchantVoucherNewViewHolder) {
         holder.bind(item)
     }
 

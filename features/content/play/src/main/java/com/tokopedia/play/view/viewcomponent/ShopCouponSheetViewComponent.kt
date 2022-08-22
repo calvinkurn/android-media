@@ -18,7 +18,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.promosheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.promosheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -40,7 +40,7 @@ class ShopCouponSheetViewComponent(
 
     private val voucherAdapter =
         MerchantVoucherAdapter(object : MerchantVoucherNewViewHolder.Listener {
-            override fun onCopyItemVoucherClicked(voucher: MerchantVoucherUiModel) {
+            override fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
                 listener.onCopyVoucherCodeClicked(this@ShopCouponSheetViewComponent, voucher)
             }
         })
@@ -105,7 +105,7 @@ class ShopCouponSheetViewComponent(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    fun setVoucherList(voucherList: List<MerchantVoucherUiModel>) {
+    fun setVoucherList(voucherList: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
         rvVoucherList.shouldShowWithAction(voucherList.isNotEmpty()) {
             voucherAdapter.setItemsAndAnimateChanges(voucherList)
         }
@@ -122,7 +122,7 @@ class ShopCouponSheetViewComponent(
         sendImpression()
     }
 
-    fun getVisibleVouchers(): List<MerchantVoucherUiModel> {
+    fun getVisibleVouchers(): List<PlayVoucherUiModel.MerchantVoucherUiModel> {
         val vouchers = voucherAdapter.getItems()
         if (vouchers.isNotEmpty()) {
             val startPosition = layoutManagerVoucherList.findFirstCompletelyVisibleItemPosition()
@@ -130,7 +130,7 @@ class ShopCouponSheetViewComponent(
             if (startPosition > -1 && endPosition < vouchers.size) {
                 return vouchers
                     .slice(startPosition..endPosition)
-                    .filterIsInstance<MerchantVoucherUiModel>()
+                    .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
             }
         }
         return emptyList()
@@ -154,12 +154,12 @@ class ShopCouponSheetViewComponent(
         fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int)
         fun onVouchersImpressed(
             view: ShopCouponSheetViewComponent,
-            vouchers: List<MerchantVoucherUiModel>
+            vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>
         )
 
         fun onCopyVoucherCodeClicked(
             view: ShopCouponSheetViewComponent,
-            voucher: MerchantVoucherUiModel
+            voucher: PlayVoucherUiModel.MerchantVoucherUiModel
         )
     }
 }

@@ -33,9 +33,9 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.action.AtcProductAction
 import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
@@ -271,11 +271,11 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideCouponSheet()
     }
 
-    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
+    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
         trackImpressedVoucher(vouchers)
     }
 
-    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: MerchantVoucherUiModel) {
+    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
         copyToClipboard(content = voucher.code)
         doShowToaster(
             bottomSheetType = BottomInsetsType.CouponSheet,
@@ -672,7 +672,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
-    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
+    private fun trackImpressedVoucher(vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 
@@ -708,7 +708,7 @@ class PlayBottomSheetFragment @Inject constructor(
         } else if (tagItem.product.productSectionList.isNotEmpty()) {
             productSheetView.setProductSheet(
                 sectionList = tagItem.product.productSectionList,
-                voucherList = tagItem.voucher.voucherList,
+                voucherList = tagItem.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>(),
                 title = bottomSheetTitle,
             )
             productAnalyticHelper.sendImpressedProductSheets()
@@ -720,7 +720,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun renderVoucherSheet(tagItem: TagItemUiModel) {
         if (tagItem.voucher.voucherList.isNotEmpty()) {
             couponSheetView.setVoucherList(
-                voucherList = tagItem.voucher.voucherList
+                voucherList = tagItem.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
             )
         }
     }

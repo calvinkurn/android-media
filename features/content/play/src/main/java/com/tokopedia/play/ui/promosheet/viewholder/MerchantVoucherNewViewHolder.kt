@@ -8,7 +8,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.utils.date.DateUtil
 
 /**
@@ -26,7 +26,7 @@ class MerchantVoucherNewViewHolder(
     private val ivCopyVoucher: IconUnify = itemView.findViewById(R.id.iv_play_voucher_copy)
     private val tvVoucherCode: TextView = itemView.findViewById(R.id.tv_play_voucher_code)
 
-    fun bind(item: MerchantVoucherUiModel) {
+    fun bind(item: PlayVoucherUiModel.MerchantVoucherUiModel) {
         tvVoucherTitle.text = item.title
         tvVoucherDescription.text = item.description
 
@@ -49,6 +49,6 @@ class MerchantVoucherNewViewHolder(
         DateUtil.getDayDiffFromToday(expiredDate)
 
     interface Listener {
-        fun onCopyItemVoucherClicked(voucher: MerchantVoucherUiModel)
+        fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
     }
 }
