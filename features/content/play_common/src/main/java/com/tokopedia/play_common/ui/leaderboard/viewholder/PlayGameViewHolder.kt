@@ -25,7 +25,7 @@ class PlayGameViewHolder {
         BaseViewHolder(binding.root) {
         fun bind(item: LeaderboardGameUiModel.Header) {
             binding.tvLeaderboardTitle.text = item.title
-            binding.ivLeaderboard.setImage(newIconId = if(item.leaderBoardType == LeadeboardType.Giveaway) IconUnify.GIFT else IconUnify.GAME)
+            binding.ivLeaderboard.setImage(newIconId = if (item.leaderBoardType == LeadeboardType.Giveaway) IconUnify.GIFT else IconUnify.GAME)
             binding.tvReward.showWithCondition(item.reward.isNotEmpty())
             binding.ivReward.showWithCondition(item.reward.isNotEmpty())
             binding.tvReward.text = getString(R.string.play_leaderboard_reward_name, item.reward)
@@ -35,7 +35,10 @@ class PlayGameViewHolder {
                         itemView.context,
                         R.color.play_dms_quiz_header_gradient_start
                     ),
-                    MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)
+                    MethodChecker.getColor(
+                        itemView.context,
+                        R.color.play_dms_quiz_header_gradient_end
+                    )
                 )
             )
             if (item.endsIn == 0) hideTimer() else showTimer(item.endsIn.toLong())
@@ -78,7 +81,7 @@ class PlayGameViewHolder {
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
         fun bind(winner: LeaderboardGameUiModel.Winner) {
-            with(binding){
+            with(binding) {
                 tvWinnerNumber.text = winner.rank.toString()
                 tvWinnerName.text = winner.name
                 imgWinner.setImageUrl(winner.imageUrl)
@@ -87,7 +90,12 @@ class PlayGameViewHolder {
 
                 if (winner.allowChat()) {
                     tvWinnerChat.show()
-                    tvWinnerChat.setOnClickListener { listener.onChatButtonClicked(winner, adapterPosition) }
+                    tvWinnerChat.setOnClickListener {
+                        listener.onChatButtonClicked(
+                            winner,
+                            adapterPosition
+                        )
+                    }
                 } else {
                     tvWinnerChat.hide()
                     tvWinnerChat.setOnClickListener(null)
@@ -117,8 +125,9 @@ class PlayGameViewHolder {
     internal class Footer(private val binding: ItemPlayLeaderboardFooterBinding) :
         BaseViewHolder(binding.root) {
         fun bind(item: LeaderboardGameUiModel.Footer) {
-            //TODO() need to adjust
-            binding.tvLeaderboardFooter.text = item.otherParticipantText
+            binding.tvLeaderboardFooter.text =
+                if (item.totalParticipant > 0) item.otherParticipantText
+                else item.emptyLeaderBoardCopyText
         }
     }
 }
