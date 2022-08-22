@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.tracking
 
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 
 object MultipleProductBundleTracking: BaseProductBundleTracking() {
@@ -46,7 +47,8 @@ object MultipleProductBundleTracking: BaseProductBundleTracking() {
                 source = source,
                 bundleName = bundleName,
                 bundleType = VALUE_MULTIPLE_BUNDLING,
-                bundlePrice = bundlePrice
+                bundlePrice = bundlePrice,
+                trackerId = ADD_TO_CART_BUNDLING
         )
 
 //        trackBuyClick("bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;", productId)

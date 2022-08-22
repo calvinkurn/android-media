@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.tracking
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_MULTIPLE_BUNDLING
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_SINGLE_BUNDLING
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -60,6 +61,7 @@ abstract class BaseProductBundleTracking {
         private const val SINGLE_TYPE = "single"
         private const val PRODUCT_BUNDLING = "product bundling"
         const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
+        const val VALUE_SINGLE_BUNDLING = "single bundling"
     }
 
     var gtmTracker: ContextAnalytics? = null
@@ -103,7 +105,8 @@ abstract class BaseProductBundleTracking {
             source: String,
             bundleName: String,
             bundleType: String,
-            bundlePrice: Long
+            bundlePrice: Long,
+            trackerId: String
     ) {
         initializeTracker().sendBundleAtcClickEvent(
                 userId = userId,
@@ -113,7 +116,8 @@ abstract class BaseProductBundleTracking {
                 source = source,
                 bundleName = bundleName,
                 bundleType = bundleType,
-                bundlePrice = bundlePrice
+                bundlePrice = bundlePrice,
+                trackerId = trackerId
         )
 
 //        initializeTracker().sendBundleClickEvent(
@@ -156,7 +160,8 @@ abstract class BaseProductBundleTracking {
             source: String,
             bundleName: String,
             bundleType: String,
-            bundlePrice: Long
+            bundlePrice: Long,
+            trackerId: String
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
@@ -180,7 +185,7 @@ abstract class BaseProductBundleTracking {
         bundle.putString(TrackAppUtils.EVENT_ACTION, EA_BUY_BUNDLE)
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, VALUE_EVENT_CATEGORY)
         bundle.putString(TrackAppUtils.EVENT_LABEL, label)
-        bundle.putString(KEY_TRACKER_ID, ADD_TO_CART_MULTIPLE_BUNDLING)
+        bundle.putString(KEY_TRACKER_ID, trackerId)
         bundle.putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT)
         bundle.putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE)
         bundle.putParcelableArrayList(KEY_ITEMS, itemBundle)

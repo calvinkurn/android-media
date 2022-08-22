@@ -6,6 +6,6 @@ object ProductServiceWidgetConstant {
     const val USECASE_GIFTING_VALUE = "product_gifting_page"
 
     object TrackerId {
-        const val ADD_TO_CART_MULTIPLE_BUNDLING = "20010"
+        const val ADD_TO_CART_BUNDLING = "20010"
     }
 }

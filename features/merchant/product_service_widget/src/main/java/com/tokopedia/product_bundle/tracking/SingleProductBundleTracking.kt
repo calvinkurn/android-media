@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.tracking
 
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 
 object SingleProductBundleTracking: BaseProductBundleTracking() {
@@ -42,8 +43,9 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
                     atcResult = atcResult,
                     source = source,
                     bundleName = bundleName,
-                    bundleType = VALUE_MULTIPLE_BUNDLING,
-                    bundlePrice = bundlePrice
+                    bundleType = VALUE_SINGLE_BUNDLING,
+                    bundlePrice = bundlePrice,
+                    trackerId = ADD_TO_CART_BUNDLING
             )
 
 //            super.trackBuyClick(
