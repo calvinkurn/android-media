@@ -4,6 +4,7 @@
     <dimen name="content_common_space_6">6dp</dimen>
     <dimen name="content_common_space_8">8dp</dimen>
     <dimen name="content_common_space_10">10dp</dimen>
+    <dimen name="content_common_space_14">14dp</dimen>
     <dimen name="content_common_space_20">20dp</dimen>
     <dimen name="content_common_space_32">32dp</dimen>
 </resources>
