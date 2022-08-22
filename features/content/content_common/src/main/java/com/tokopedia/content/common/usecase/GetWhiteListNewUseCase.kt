@@ -26,7 +26,7 @@ class GetWhiteListNewUseCase @Inject constructor(
         setTypeClass(WhitelistQuery::class.java)
     }
 
-    fun createRequestParams(type: String, id: String = "") {
+    private fun createRequestParams(type: String, id: String = "") {
         val request = mapOf(
             PARAM_TYPE to type,
             PARAM_ID to id,
