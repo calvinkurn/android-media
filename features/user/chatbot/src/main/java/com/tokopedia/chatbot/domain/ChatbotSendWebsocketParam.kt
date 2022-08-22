@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.util.convertMessageIdToLong
 
 object ChatbotSendWebsocketParam {
 
@@ -18,7 +19,7 @@ object ChatbotSendWebsocketParam {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
-        data.addProperty("message_id", Integer.valueOf(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", "Uploaded Image")
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
@@ -40,7 +41,7 @@ object ChatbotSendWebsocketParam {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
-        data.addProperty("message_id", Integer.valueOf(messageId))
+        data.addProperty("message_id",messageId.convertMessageIdToLong())
         data.addProperty("from", name)
         data.addProperty("from_user_name", name)
         data.addProperty("message", "Uploaded Image")

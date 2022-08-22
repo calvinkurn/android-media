@@ -17,7 +17,7 @@
         android:textColor="@color/Unify_N700"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="Pilih Warna : " />
 

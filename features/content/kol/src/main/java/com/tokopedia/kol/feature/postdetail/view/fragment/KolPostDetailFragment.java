@@ -605,7 +605,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow, @NotNull String postType, boolean isVideo) {
+    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow, @NotNull String postType, boolean isVideo, boolean isBottomSheetMenuOnFeed) {
 
         if (userSession != null && userSession.isLoggedIn()) {
 

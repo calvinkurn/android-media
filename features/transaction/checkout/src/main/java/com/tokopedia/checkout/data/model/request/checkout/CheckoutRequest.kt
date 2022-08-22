@@ -2,8 +2,18 @@ package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.*
+import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
@@ -63,7 +73,9 @@ data class ShopOrder(
         @SerializedName("warehouse_id")
         var warehouseId: Long = 0,
         @SerializedName("items")
-        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList()
+        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
+        @SerializedName("order_metadata")
+        var orderMetadata: List<OrderMetadata> = emptyList()
 )
 
 data class Bundle(
@@ -170,6 +182,17 @@ data class TokopediaCorner(
         var cornerId: Long = 0
 )
 
+data class OrderMetadata(
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("value")
+        val value: String = ""
+) {
+    companion object {
+        const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+    }
+}
+
 object CheckoutRequestMapper {
 
     fun map(checkoutRequest: CheckoutRequest): Carts {
@@ -242,6 +265,7 @@ object CheckoutRequestMapper {
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
                 checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
+                orderMetadata = mapOrderMetadata(it)
             })
         }
 
@@ -332,5 +356,13 @@ object CheckoutRequestMapper {
             listCheckoutGiftingAddOn.add(addOnRequest)
         }
         return listCheckoutGiftingAddOn.toList()
+    }
+
+    private fun mapOrderMetadata(shopProductCheckoutRequest: ShopProductCheckoutRequest): List<OrderMetadata> {
+        val orderMetadata = arrayListOf<OrderMetadata>()
+        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
+            orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
+        }
+        return orderMetadata
     }
 }

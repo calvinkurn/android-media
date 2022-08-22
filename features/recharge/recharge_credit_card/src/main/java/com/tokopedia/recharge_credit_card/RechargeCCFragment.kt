@@ -236,8 +236,9 @@ class RechargeCCFragment :
                 setLoading(false)
                 val clientNumber = getInputNumber()
                 if (clientNumber.length in DEFAULT_MIN_CC_LENGTH..DEFAULT_MAX_CC_LENGTH) {
-                    if (isValid) {
-                        if (!clientNumber.isMasked() && !RechargeCCUtil.isCreditCardValid(clientNumber)) {
+                    if (isValid && rechargeCCViewModel.creditCardSelected.value?.operatorId?.isEmpty() == false) {
+                        if (!clientNumber.isMasked() &&
+                            !RechargeCCUtil.isCreditCardValid(clientNumber)) {
                             setErrorInputField(getString(R.string.cc_error_invalid_number))
                         } else {
                             clearErrorState()
@@ -343,7 +344,11 @@ class RechargeCCFragment :
                         validateCCNumber(clientNumber)
                     }
                 } else {
-                    cc_widget_client_number.clearErrorState()
+                    cc_widget_client_number.run {
+                        clearErrorState()
+                        setLoading(false)
+                        hideOperatorIcon()
+                    }
                 }
             }
         }
@@ -530,17 +535,59 @@ class RechargeCCFragment :
     }
 
     override fun onShowFilterChip(isLabeled: Boolean) {
-        // do nothing
+        if (isLabeled) {
+            creditCardAnalytics.impressionFavoriteContactChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            creditCardAnalytics.impressionFavoriteNumberChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        }
     }
 
     override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         token = favorite.token
+        if (isLabeled) {
+            creditCardAnalytics.clickFavoriteContactChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId,
+            )
+        } else {
+            creditCardAnalytics.clickFavoriteNumberChips(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        }
     }
     //endregion
 
     //region AutoCompleteListener
     override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         token = favorite.token
+        if (favorite.name.isNotEmpty()) {
+            creditCardAnalytics.clickFavoriteContactAutoComplete(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        } else {
+            creditCardAnalytics.clickFavoriteNumberAutoComplete(
+                rechargeCCViewModel.categoryName,
+                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                rechargeCCViewModel.loyaltyStatus,
+                userSession.userId
+            )
+        }
     }
     //endregion
 

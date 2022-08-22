@@ -221,6 +221,7 @@ class FeedAnalyticTracker
         const val SHOP_ID = "shop_id"
         const val CATEGORY_ID = "category_id"
         const val DIMENSION_40 = "dimension40"
+        const val DIMENSION_39 = "dimension39"
         const val SHOP_NAME = "shop_name"
         const val SHOP_TYPE = "shop_type"
         const val MEDIA_PREVIEW = "/feed media preview - {role} post"
@@ -1089,7 +1090,7 @@ class FeedAnalyticTracker
     ) {
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
-            if (isProductDetailPage) CONTENT_FEED_TIMELINE else CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
             String.format(
                 FORMAT_THREE_PARAM,
                 "impression",
@@ -1168,6 +1169,7 @@ class FeedAnalyticTracker
                     shopId,
                     products[position - 1].id
             )
+        val postType = getPostType(type, isFollowed, mediaType)
 
         trackEnhancedEcommerceEventNew(
             PRODUCT_CLICK,
@@ -1176,12 +1178,12 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "product",
-                getPostType(type, isFollowed, mediaType)
+                 postType
             ),
             finalLabel,
             DataLayer.mapOf(CLICK, mapOf(
                 "actionField" to mapOf(
-                    "list" to "/feed - ${getPostType(type, isFollowed, mediaType)}"
+                    "list" to "/feed - ${if( postType == ASGC || postType == ASGC_RECOM) "$postType detail" else postType}"
                 ),
                 "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed, mediaType)
             )
@@ -1285,7 +1287,7 @@ class FeedAnalyticTracker
     }
     private fun getSingleProductListASGC(feedXProduct: FeedXProduct, index: Int, type: String, isFollowed: Boolean, mediaType: String = ""): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
-        val map = if (type == ASGC) createItemMapASGC(feedXProduct,
+        val map = if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) createItemMapASGC(feedXProduct,
             index.toString(),type) else createItemMapSGC(feedXProduct, index.toString(), type, isFollowed, mediaType)
             list.add(map)
         return list
@@ -1301,7 +1303,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
-            "dimension39", "/feed - $type detail"
+            "dimension39", "/feed - asgc detail"
         )
     private fun createItemMapSGC(feedXProduct: FeedXProduct, index: String, type: String, isFollowed: Boolean, mediaType: String=""): Map<String, Any> =
         DataLayer.mapOf(
@@ -2861,7 +2863,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.BRAND, "",
             Product.CATEGORY, "",
-            Product.DIMENSION_40, "/feed - ${getPostType(type, isFollowed, mediaType)}"
+            Product.DIMENSION_39, "/feed - ${getPostType(type, isFollowed, mediaType)}"
     )
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {

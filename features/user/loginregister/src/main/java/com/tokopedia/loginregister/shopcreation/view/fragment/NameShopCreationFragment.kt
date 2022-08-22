@@ -47,6 +47,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var phone: String
     private lateinit var buttonContinue: UnifyButton
     private lateinit var textFieldName: TextFieldUnify
+    private var validateToken: String = ""
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -119,6 +120,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         val phone = arguments?.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "")
         if (phone != null)
             this.phone = phone
+        validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
     }
 
     private fun initView() {
@@ -183,7 +185,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 val name = textFieldName.textFieldInput.text.toString()
                 if (name.isNotEmpty()) {
                     buttonContinue.isLoading = true
-                    shopCreationViewModel.addName(name)
+                    shopCreationViewModel.addName(name, validateToken)
                 } else {
                     emptyStatePhoneField()
                 }

@@ -100,6 +100,13 @@ interface DynamicProductDetailListener {
     fun onMediaReviewClick(reviewID: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?, detailedMediaResult: ProductrevGetReviewMedia)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSeeReviewCredibility(
+        reviewID: String,
+        reviewerUserID: String,
+        userStatistics: String,
+        userLabel: String,
+        componentTrackData: ComponentTrackDataModel
+    )
 
     /**
      * ProductMerchantVoucherViewHolder
@@ -164,6 +171,7 @@ interface DynamicProductDetailListener {
     fun onRetryClicked(forceRefresh: Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
+    fun onImpressPageNotFound()
 
     /**
      * ImpressionComponent

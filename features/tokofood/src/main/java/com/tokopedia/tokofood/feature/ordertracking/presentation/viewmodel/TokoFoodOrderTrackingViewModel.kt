@@ -59,7 +59,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val orderLiveTrackingStatus: SharedFlow<Result<OrderStatusLiveTrackingUiModel>> =
         _orderLiveTrackingStatus
 
-    private val _orderId = MutableSharedFlow<String>(Int.ONE)
+    val orderIdFlow = MutableSharedFlow<String>(Int.ONE)
 
     private val _orderCompletedLiveTracking = MutableLiveData<Result<OrderDetailResultUiModel>>()
     val orderCompletedLiveTracking: LiveData<Result<OrderDetailResultUiModel>>
@@ -76,7 +76,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _orderId
+            orderIdFlow
                 .debounce(DELAY_ORDER_STATE)
                 .flatMapLatest { orderId ->
                     if (orderId.isNotBlank()) {
@@ -107,7 +107,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun updateOrderId(orderId: String) {
         this.orderId = orderId
-        _orderId.tryEmit(this.orderId)
+        orderIdFlow.tryEmit(this.orderId)
     }
 
     fun onSavedInstanceState() {
@@ -115,7 +115,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     }
 
     fun onRestoreSavedInstanceState() {
-        _orderId.tryEmit(
+        orderIdFlow.tryEmit(
             savedStateHandle.get<String>(ORDER_ID).orEmpty()
         )
     }

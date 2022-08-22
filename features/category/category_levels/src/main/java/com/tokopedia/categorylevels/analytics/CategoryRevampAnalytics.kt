@@ -121,7 +121,8 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         id: String,
         parentPosition: Int,
         dataItem: DataItem,
-        tabPosition1: Int
+        tabPosition1: Int,
+        eventAction: String
     ) {
         dataItem.title = dataItem.name
         trackClickNavigationChips(dataItem, tabPosition1)

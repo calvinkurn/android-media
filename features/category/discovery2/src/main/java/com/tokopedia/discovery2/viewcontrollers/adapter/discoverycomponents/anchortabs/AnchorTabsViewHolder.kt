@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.di.getSubComponent
@@ -98,13 +99,18 @@ class AnchorTabsViewHolder(itemView: View, val fragment: Fragment) :
             (fragment as DiscoveryFragment).getScrollLiveData().observe(it, observer)
 
             viewModel.shouldShowMissingSectionToaster().observe(it, { shouldShowToast ->
-                if (shouldShowToast)
-                    Toaster.build(
-                        itemView,
-                        itemView.context.getString(R.string.discovery_this_section_is_still_empty),
-                        Toast.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    ).show()
+                if (shouldShowToast) {
+                    fragment.activity?.let { activity ->
+                        SnackbarManager.getContentView(activity)
+                    }?.let { contentView ->
+                        Toaster.build(
+                            contentView,
+                            itemView.context.getString(R.string.discovery_this_section_is_still_empty),
+                            Toast.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
             })
 
         }

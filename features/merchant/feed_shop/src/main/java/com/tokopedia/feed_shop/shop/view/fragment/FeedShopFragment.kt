@@ -91,6 +91,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import com.tokopedia.universal_sharing.R as universalSharingR
 
 /**
  * @author by yfsx on 08/05/19.
@@ -598,7 +599,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollow: Boolean,
         postType: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        isBottomSheetMenuOnFeed: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
@@ -1061,7 +1063,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(R.string.label_close), View.OnClickListener { })
+                    getString(universalSharingR.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -1069,7 +1071,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.label_close), View.OnClickListener { })
+                    getString(universalSharingR.string.label_close), View.OnClickListener { })
         }
     }
 

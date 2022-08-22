@@ -2,10 +2,6 @@ package com.tokopedia.remoteconfig
 
 object RollenceKey {
 
-    // Shop Settings
-    const val AB_TEST_OPERATIONAL_HOURS_KEY = "operational_hour"
-    const val AB_TEST_OPERATIONAL_HOURS_NO_KEY = "no_key"
-
     //    Shop Page
     const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
@@ -19,8 +15,6 @@ object RollenceKey {
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-
-    const val HOME_BEAUTY_FEST = "home_cantik"
 
     //home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
@@ -49,8 +43,6 @@ object RollenceKey {
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
     const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
 
-    //Search
-    const val SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION = "ContentTrackerUni"
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform

@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.data.model
 
+import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ShopPageGetDynamicTabResponse(
@@ -30,7 +32,11 @@ data class ShopPageGetDynamicTabResponse(
             var iconFocus: String = "",
             @SerializedName("type")
             var type: String = "",
-            @SerializedName("shopLayoutFeature")
+            @SerializedName("bgColors")
+            var listBackgroundColor: List<String> = listOf(),
+            @SerializedName("textColor")
+            var textColor: String = "",
+            @SerializedName("shopLayoutFeatures")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
             @SerializedName("data")
             var data: Data = Data()
@@ -45,6 +51,10 @@ data class ShopPageGetDynamicTabResponse(
             data class Data(
                 @SerializedName("homeLayoutData")
                 val homeLayoutData: HomeLayoutData = HomeLayoutData(),
+
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("widgetIDList")
+                val widgetIdList: List<WidgetIdList> = listOf()
             )
         }
     }

@@ -8,7 +8,6 @@
         order by name
     -->
     <string name="path_change_inactive_phone">/change-inactive-phone</string>
-    <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
     <string name="path_add_name_register">/add-name-register</string>
@@ -40,12 +39,7 @@
     <string name="path_change_pin">/change-pin</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
-    <string name="path_cotp">/cotp</string>
     <string name="path_silent_verif">/silent-verification</string>
-    <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
-    <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
-    <string name="path_qr_login">/qr-login</string>
-    <string name="path_qr_login_result">/qr-login-result</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
     <string name="path_video_picker">/video-picker</string>

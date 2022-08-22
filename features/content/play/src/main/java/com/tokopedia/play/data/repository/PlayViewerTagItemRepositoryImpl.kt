@@ -35,9 +35,10 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
 
     override suspend fun getTagItem(
         channelId: String,
+        warehouseId: String,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
-            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId).parameters)
+            setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId, warehouseId).parameters)
         }.executeOnBackground()
 
         val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)
@@ -61,7 +62,8 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getVariant(
-        product: PlayProductUiModel.Product
+        product: PlayProductUiModel.Product,
+        isProductFeatured: Boolean,
     ): VariantUiModel = withContext(dispatchers.io) {
         val response = getProductVariantUseCase.apply {
             params = getProductVariantUseCase.createParams(product.id)
@@ -78,6 +80,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             selectedVariants = selectedVariants,
             categories = categories.orEmpty(),
             stockWording = "",
+            isFeatured = isProductFeatured,
         )
     }
 

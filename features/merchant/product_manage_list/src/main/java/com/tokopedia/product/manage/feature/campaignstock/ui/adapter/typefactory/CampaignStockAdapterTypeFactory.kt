@@ -10,9 +10,9 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCamp
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class CampaignStockAdapterTypeFactory(private val onVariantReservedEventInfoClicked: (String, MutableList<ReservedEventInfoUiModel>) -> Unit = { _,_ -> },
-                                      private val onTotalStockChanged: (Int) -> Unit = {},
+                                      private val onTotalStockChanged: (String, Int, Int?) -> Unit = { _,_,_ -> },
                                       private val onActiveStockChanged: (Boolean) -> Unit = {},
-                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit = { _,_ -> },
+                                      private val onVariantStockChanged: (productId: String, stock: Int, maxStock: Int?) -> Unit = { _,_,_ -> },
                                       private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit = { _,_ -> },
                                       private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit = {},
                                       private val source: String = "",

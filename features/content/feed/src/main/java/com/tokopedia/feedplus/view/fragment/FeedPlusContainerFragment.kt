@@ -79,7 +79,8 @@ import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedplus.view.customview.FeedFloatingButton
+import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+import com.tokopedia.feedcomponent.R as feedComponentR
 
 
 /**
@@ -110,6 +111,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
         const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
+        const val FEED_FRAGMENT_INDEX = 0
 
         const val TITLE = "title"
         const val SUB_TITLE = "subtitle"
@@ -637,7 +639,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                                 intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
                                     MAX_MULTI_SELECT_ALLOWED_VALUE)
                                 intent.putExtra(TITLE,
-                                    getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
+                                    getString(feedComponentR.string.feed_post_sebagai))
                                 val name: String = MethodChecker.fromHtml(authors.first().name).toString()
                                 intent.putExtra(SUB_TITLE, name)
                                 intent.putExtra(TOOLBAR_ICON_URL,
@@ -879,10 +881,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
     fun updateFeedUpdateVisibility(position: Int) {
         try {
-            val fragment = pagerAdapter.getRegisteredFragment(position)
-            if (fragment is FeedPlusFragment) {
-                fragment.updateFeedVisibilityVariable(position == 0)
-            }
+            val feedFragment = pagerAdapter.getRegisteredFragment(FEED_FRAGMENT_INDEX)
+                (feedFragment as FeedPlusFragment).updateFeedVisibilityVariable(position == FEED_FRAGMENT_INDEX)
         } catch (e: IllegalStateException) {
             Timber.e(e)
         }

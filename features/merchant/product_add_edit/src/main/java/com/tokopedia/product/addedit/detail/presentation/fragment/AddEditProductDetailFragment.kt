@@ -55,6 +55,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductDetailLayoutBinding
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
@@ -346,6 +347,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
         subscribeToProductNameValidationFromNetwork()
+        subscribeToMaxStockThreshold()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -652,7 +654,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     override fun onNameItemClicked(productName: String) {
         var newProductName = productName
-        val maxLengthKeyword = resources.getInteger(R.integer.max_product_name_length)
+        val maxLengthKeyword = context?.resources?.getInteger(R.integer.max_product_name_length).orZero()
 
         if (productName.trim().length > maxLengthKeyword) {
             newProductName = productName.take(maxLengthKeyword)
@@ -780,10 +782,11 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
+                    val fieldText = toString().filterDigit()
                     val minOrderInput = productMinOrderField.getTextIntOrZero().toString()
                     val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(index)
                             ?: ""
-                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString(), minOrderInput, previousQuantity)
+                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(fieldText, minOrderInput, previousQuantity)
                     productWholeSaleQuantityField.setError(errorMessage.isNotEmpty())
                     productWholeSaleQuantityField.setMessage(errorMessage)
                 }
@@ -793,9 +796,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 // Product price
                 val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
                 productWholeSalePriceField?.textFieldInput?.editableText?.run {
-                    val wholeSalePriceInput = this.toString().replace(".", "")
-                    val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-                    val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(index)?.replace(".", "")
+                    val wholeSalePriceInput = this.toString().filterDigit()
+                    val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().filterDigit()
+                    val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(index)?.filterDigit()
                             ?: ""
                     val errorMessage = viewModel.validateProductWholeSalePriceInput(wholeSalePriceInput, productPriceInput, previousPrice)
                     productWholeSalePriceField.setError(errorMessage.isNotEmpty())
@@ -836,8 +839,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                         val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
                         val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                         val item = WholeSaleInputModel(
-                                productWholeSalePriceField.getText(),
-                                productWholeSaleQuantityField.getText()
+                                productWholeSalePriceField.getTextIntOrZero().toString(),
+                                productWholeSaleQuantityField.getTextIntOrZero().toString()
                         )
                         inputResult.add(item)
                     }
@@ -1254,6 +1257,18 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
     }
 
+    private fun subscribeToMaxStockThreshold() {
+        viewModel.maxStockThreshold.observe(viewLifecycleOwner) {
+            val productStockInput = productStockField?.getEditableValue().toString()
+            viewModel.validateProductStockInput(productStockInput)
+            viewModel.isProductStockInputError.value?.let { isError ->
+                if (isError) {
+                    productStockField?.requestFocus()
+                }
+            }
+        }
+    }
+
     private fun validateSpecificationList() {
         if (viewModel.validateSelectedSpecificationList()) {
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
@@ -1440,6 +1455,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
             productStockInput.let { viewModel.validateProductStockInput(it) }
         }
+
+        // max stock as threshold when seller inserts stock
+        viewModel.getMaxStockThreshold(userSession.shopId)
     }
 
     private fun setupWholesaleViews() {
@@ -1480,7 +1498,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 ProductAddMainTracking.clickAddWholesale(shopId)
             }
 
-            val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+            val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().filterDigit()
             wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
@@ -1537,7 +1555,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 // clean any kind of number formatting here
-                val productPriceInput = charSequence?.toString()?.replace(".", "")
+                val productPriceInput = charSequence?.toString()?.filterDigit()
 
                 productPriceInput?.let {
                     // do the validation first
@@ -1819,8 +1837,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
         val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
-        val contentTitles = resources.getStringArray(R.array.array_price_recommendation_content_titles)
-        val contentDescriptions = resources.getStringArray(R.array.array_price_recommendation_content_descriptions)
+        val contentTitles = context?.resources?.getStringArray(R.array.array_price_recommendation_content_titles).orEmpty()
+        val contentDescriptions = context?.resources?.getStringArray(R.array.array_price_recommendation_content_descriptions).orEmpty()
 
         contentTitles.forEachIndexed { index, title ->
             val description = contentDescriptions.getOrNull(index).orEmpty()
@@ -2091,8 +2109,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     override fun getValidationCurrentWholeSalePrice(price: String, position: Int): String {
-        val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.replace(".", "")
+        val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().filterDigit()
+        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.filterDigit()
                 ?: ""
         val validation = viewModel.validateProductWholeSalePriceInput(price, productPriceInput, previousPrice)
         viewModel.isTheLastOfWholeSale.value = validation.isNotEmpty()

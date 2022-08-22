@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.merchant.presentation.mapper
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.metadata.CartMetadataVariantTokoFood
@@ -10,7 +9,6 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
-import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryFilter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 
@@ -84,7 +82,6 @@ object TokoFoodMerchantUiModelMapper {
         )
         val subTotal = calculateSubtotalPrice(
                 baseProductPrice = productUiModel.price,
-                quantity = productUiModel.orderQty,
                 addOnUiModels = selectedCustomListItems.map { it.addOnUiModel }
         )
         val subTotalFmt = subTotal.getCurrencyFormatted()
@@ -97,7 +94,7 @@ object TokoFoodMerchantUiModelMapper {
         )
     }
 
-    private fun calculateSubtotalPrice(baseProductPrice: Double, quantity: Int, addOnUiModels: List<AddOnUiModel?>): Double {
+    private fun calculateSubtotalPrice(baseProductPrice: Double, addOnUiModels: List<AddOnUiModel?>): Double {
         var subTotalPrice = baseProductPrice
         addOnUiModels.forEach { addOnUiModel ->
             addOnUiModel?.run {
@@ -106,7 +103,7 @@ object TokoFoodMerchantUiModelMapper {
                 subTotalPrice += subTotalOptionPrice
             }
         }
-        return subTotalPrice * quantity
+        return subTotalPrice
     }
 
     private fun mapCartTokoFoodVariantsToSelectedCustomListItems(
@@ -183,8 +180,8 @@ object TokoFoodMerchantUiModelMapper {
     }
 
     fun getMerchantFoodAppLink(merchantId: String, productId: String): String {
-        return UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, mapOf(ShareComponentConstants.Merchant.MERCHANT_ID to merchantId)).apply {
-            UriUtil.buildUriAppendParam(this, mapOf(ShareComponentConstants.Merchant.PRODUCT_ID to productId))
-        }
+        var merchantFoodAppLink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, mapOf("{"+ShareComponentConstants.Merchant.MERCHANT_ID+"}" to merchantId))
+        merchantFoodAppLink = UriUtil.buildUri(merchantFoodAppLink, mapOf("{"+ShareComponentConstants.Merchant.PRODUCT_ID+"}" to productId))
+        return merchantFoodAppLink
     }
 }

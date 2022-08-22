@@ -11,6 +11,8 @@
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         app:unify_image_type="circle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="2dp"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="@id/tvOrderTrackingDriverName"
         app:layout_constraintStart_toEndOf="@id/imgOrderTrackingDriver"

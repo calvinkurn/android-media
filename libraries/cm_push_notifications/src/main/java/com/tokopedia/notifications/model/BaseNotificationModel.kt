@@ -160,7 +160,13 @@ data class BaseNotificationModel(
         var payloadExtra: PayloadExtra? = null,
 
         @ColumnInfo(name = "push_payload_extra")
-        var pushPayloadExtra: PushPayloadExtra? = null
+        var pushPayloadExtra: PushPayloadExtra? = null,
+
+        @ColumnInfo(name = "groupId")
+        var groupId : Int = 0,
+
+        @ColumnInfo(name = "groupName")
+        var groupName : String? = null
 
 ) : Parcelable {
 

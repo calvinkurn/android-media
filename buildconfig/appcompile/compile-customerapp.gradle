@@ -177,6 +177,8 @@ includeIfEnabled("features:tokopedianow")
 
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")
+includeIfEnabled("features:operational:resolution")
+
 includeIfEnabled("features:ovop2p")
 
 includeIfEnabled("features:ordermanagement:snapshot")
@@ -241,6 +243,7 @@ includeIfEnabled("features:communication:orderhistory")
 includeIfEnabled("features:communication:inbox")
 includeIfEnabled("features:communication:inbox_common")
 includeIfEnabled("features:communication:attachvoucher")
+includeIfEnabled("features:communication:topchat")
 
 includeIfEnabled("features:user:campaign_shake_landing")
 includeIfEnabled("features:user:chatbot")
@@ -263,7 +266,6 @@ includeIfEnabled("features:user:sessioncommon")
 includeIfEnabled("features:user:additional_check")
 
 includeIfEnabled("features:user:usercomponents")
-includeIfEnabled("features:user:topchat")
 includeIfEnabled("features:user:updateinactivephone")
 includeIfEnabled("features:user:user_identification_common")
 includeIfEnabled("features:user:kyc_centralized")

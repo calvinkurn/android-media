@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -283,7 +284,7 @@ private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
-    val imageSalesRatingFloat = findViewById<ImageView?>(R.id.imageSalesRatingFloat)
+    val imageSalesRatingFloat = findViewById<IconUnify?>(R.id.productCardImageSalesRatingFloat)
     val salesRatingFloat = findViewById<Typography?>(R.id.salesRatingFloat)
     val willShowSalesRatingFloat = productCardModel.willShowRating()
 

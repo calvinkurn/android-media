@@ -4,21 +4,27 @@ import android.graphics.Paint
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.databinding.ViewFreeShippingEtaBinding
 import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.FreeShipping
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingListener
+import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
@@ -31,6 +37,8 @@ class ProductShippingHeaderViewHolder(view: View,
                                       private val chooseAddressListener: ChooseAddressWidget.ChooseAddressWidgetListener) : AbstractViewHolder<ProductShippingHeaderDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_product_shipping_header
+
+        private const val MIN_MULTI_ETAS = 1
     }
 
     private val txtShippingFrom: Typography? = itemView.findViewById(R.id.txt_shipping_header_from)
@@ -46,6 +54,7 @@ class ProductShippingHeaderViewHolder(view: View,
     private val dividerFreeOngkir: View? = itemView.findViewById(R.id.div_pdp_shipping_bo)
     private val txtFreeOngkirPriceOriginal: Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_price_original)
     private val txtFreeOngkirDesc: Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_desc)
+    private val viewFreeOngkirEtas: LinearLayout? = itemView.findViewById(R.id.view_pdp_shipping_bo_etas)
 
     override fun bind(element: ProductShippingHeaderDataModel) {
         txtShippingTo?.bindChooseAddress(chooseAddressListener)
@@ -58,9 +67,9 @@ class ProductShippingHeaderViewHolder(view: View,
             element.freeOngkirPrice,
             element.shouldShowTxtTokoNow(),
             element.freeOngkirTokoNowText,
-            element.freeOngkirPriceOriginal,
             element.freeOngkirDesc,
-            element.isFreeOngkirQuotaEmpty
+            element.isFreeOngkirQuotaEmpty,
+            element.freeOngkirEtas
         )
         renderWeight(element.weight)
     }
@@ -70,7 +79,7 @@ class ProductShippingHeaderViewHolder(view: View,
             icShippingLine?.setMargin(0, 0, 0, 0)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.tokoCabangTitle).boldOrLinkText(false, context, element.tokoCabangTitle to {})
             renderGeneralContentTokoCabang(element.tokoCabangContent)
-        } else if (element.isFulfillment && element.boType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA) {
+        } else if (shouldRenderFulFillment(element)) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
             renderGeneralContentTokoCabang(element.tokoCabangContent, element.uspTokoCabangImgUrl)
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
@@ -81,6 +90,16 @@ class ProductShippingHeaderViewHolder(view: View,
             icTokoCabang?.setImage(IconUnify.LOCATION)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.shippingFrom).boldOrLinkText(false, context, element.shippingFrom to {})
         }
+    }
+
+    private fun shouldRenderFulFillment(element: ProductShippingHeaderDataModel): Boolean {
+        val boTypes = listOf(
+            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL,
+            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA,
+            ProductDetailCommonConstant.BO_PLUS,
+            ProductDetailCommonConstant.BO_PLUS_DT
+        )
+        return element.isFulfillment && boTypes.contains(element.boType)
     }
 
     private fun renderGeneralContentTokoCabang(tokoCabangContent: String, uspTokoCabangImgUrl: String = "") = with(itemView) {
@@ -105,52 +124,99 @@ class ProductShippingHeaderViewHolder(view: View,
         freeOngkirPrice: String,
         shouldShowTxtTokoNow: Boolean,
         freeOngkirTokoNowText: String,
-        freeOngkirPriceOriginal: Double,
         freeOngkirDesc: String,
-        isFreeOngkirQuotaEmpty: Boolean
+        isFreeOngkirQuotaEmpty: Boolean,
+        freeOngkirEtas: List<FreeShipping.Eta>
     ) {
         if (shouldShowTxtTokoNow) {
             renderBoTokoNow(shouldShowTxtTokoNow, freeOngkirEstimation, freeOngkirPrice, freeOngkirTokoNowText)
         } else {
-            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice, freeOngkirPriceOriginal, freeOngkirDesc, isFreeOngkirQuotaEmpty)
+            renderBoNormal(isFreeOngkir, freeOngkirImageUrl, freeOngkirDesc, isFreeOngkirQuotaEmpty, freeOngkirEtas)
         }
     }
 
     private fun renderBoNormal(
         isFreeOngkir: Boolean,
-        freeOngkirEstimation: String,
         freeOngkirImageUrl: String,
-        freeOngkirPrice: String,
-        freeOngkirPriceOriginal: Double,
         freeOngkirDesc: String,
-        isFreeOngkirQuotaEmpty: Boolean
+        isFreeOngkirQuotaEmpty: Boolean,
+        freeOngkirEtas: List<FreeShipping.Eta>
     ) = with(itemView) {
-        txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPrice.isNotEmpty()) {
-            txtFreeOngkirPrice.text = freeOngkirPrice
-        }
 
         imgFreeOngkir?.shouldShowWithAction(isFreeOngkir && freeOngkirImageUrl.isNotEmpty()) {
             imgFreeOngkir.loadImage(freeOngkirImageUrl)
-        }
-        txtFreeOngkirEstimation?.shouldShowWithAction(isFreeOngkir && freeOngkirEstimation.isNotEmpty()) {
-            txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
 
         txtFreeOngkirDesc?.showIfWithBlock(isFreeOngkir && freeOngkirDesc.isNotEmpty()) {
             text = freeOngkirDesc
         }
 
-        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > 0){
-            text = freeOngkirPriceOriginal.getCurrencyFormatted()
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-        }
-
         dividerFreeOngkir?.showWithCondition(isFreeOngkir)
 
         txtTokoNow?.hide()
+
+        if (freeOngkirEtas.size > MIN_MULTI_ETAS) renderMultipleBoEta(
+            freeOngkirEtas,
+            isFreeOngkir,
+            isFreeOngkirQuotaEmpty
+        )
+        else renderSingleBoEta(freeOngkirEtas.firstOrNull(), isFreeOngkir, isFreeOngkirQuotaEmpty)
+    }
+
+    private fun renderSingleBoEta(
+        freeOngkirEta: FreeShipping.Eta?,
+        isFreeOngkir: Boolean,
+        isFreeOngkirQuotaEmpty: Boolean
+    ) {
+        if (freeOngkirEta == null) return
+        val freeOngkirPrice = freeOngkirEta.shippingPrice
+        val freeOngkirEstimation = freeOngkirEta.etaText
+        val freeOngkirPriceOriginal = freeOngkirEta.rawShippingRate
+
+        txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPrice.isNotEmpty()) {
+            txtFreeOngkirPrice.text = freeOngkirPrice
+        }
+        txtFreeOngkirEstimation?.shouldShowWithAction(isFreeOngkir && freeOngkirEstimation.isNotEmpty()) {
+            txtFreeOngkirEstimation.text = freeOngkirEstimation
+        }
+
+        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > Int.ZERO) {
+            text = freeOngkirPriceOriginal.getCurrencyFormatted()
+            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        }
+    }
+
+    private fun renderMultipleBoEta(
+        freeOngkirEtas: List<FreeShipping.Eta>,
+        isFreeOngkir: Boolean,
+        isFreeOngkirQuotaEmpty: Boolean
+    ) {
+        viewFreeOngkirEtas?.removeAllViews()
+
+        freeOngkirEtas.forEach { eta ->
+            val etaView = ViewFreeShippingEtaBinding.inflate(itemView.context.layoutInflater)
+
+            etaView.pdpFreeShippingEtaText.showIfWithBlock(isFreeOngkir && eta.etaText.isNotEmpty()) {
+                text = eta.etaText
+            }
+
+            etaView.pdpFreeShippingOriginalPrice.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && eta.rawShippingRate > Int.ZERO) {
+                text = eta.rawShippingRate.getCurrencyFormatted()
+                paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            }
+
+            etaView.pdpFreeShippingPrice.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && eta.shippingPrice.isNotEmpty()) {
+                text = eta.shippingPrice
+            }
+
+            viewFreeOngkirEtas?.addView(etaView.root)
+        }
     }
 
     private fun renderBoTokoNow(shouldShowTxtTokoNow: Boolean, freeOngkirEstimation: String, freeOngkirPrice: String, freeOngkirTokoNowText: String) = with(itemView) {
+
+        dividerFreeOngkir?.show()
+
         txtFreeOngkirPrice?.shouldShowWithAction(shouldShowTxtTokoNow && freeOngkirPrice.isNotEmpty()) {
             txtFreeOngkirPrice.text = freeOngkirPrice
         }

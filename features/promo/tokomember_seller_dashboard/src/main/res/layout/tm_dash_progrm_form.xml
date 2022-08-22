@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerViewFlipper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:clickable="true"
+    tools:ignore="MissingDefaultResource"
+    android:focusable="true">
+
+    <include
+        layout="@layout/tm_dash_program_shimmer"/>
+
+    <FrameLayout
+        android:id="@+id/containerParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@color/Unify_Background"
+        android:clickable="true"
+        tools:ignore="MissingDefaultResource"
+        android:focusable="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rootProgram"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_Background"
+            android:clickable="true"
+            android:focusable="true">
+
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/progressProgram"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/unify_space_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:text="@string/tm_program_detail_informasi"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressProgram"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvDurasi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/tm_program_durasi"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@id/tvDetail"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.tokomember_common_widget.TokomemberChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@id/tvDurasi" />
+
+            <com.tokopedia.unifycomponents.CardUnify
+                android:id="@+id/cardEditInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:backgroundTint="@color/Unify_BN200"
+                app:card_background_color="@color/Unify_BN50"
+                app:card_type="shadow_active"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDetailLevel">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/eta_info"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:drawableTint="#2E3137"
+                    android:padding="@dimen/spacing_lvl3"
+                    android:text="@string/tm_string_edit_skema"
+                    app:typographyType="display_3" />
+
+            </com.tokopedia.unifycomponents.CardUnify>
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/textFieldDuration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@id/chipGroup"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+                app:unify_text_field_clearable="false"
+                app:unify_text_field_input_type="text|number"
+                app:unify_text_field_label="Mulai"
+                app:unify_text_field_label_static="false"
+                app:unify_text_field_message="Program mulai pukul 00:00 WIB" />
+
+            <View
+                android:id="@+id/viewDivider"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textFieldDuration" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvDetailLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/tm_program_skema_level"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@id/viewDivider"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconInfo"
+                android:layout_width="@dimen/tm_dash_dp_14"
+                android:layout_height="@dimen/tm_dash_dp_14"
+                android:paddingTop="@dimen/unify_space_2"
+                android:layout_marginStart="@dimen/unify_space_4"
+                app:icon_name="INFORMATION"
+                app:layout_constraintTop_toTopOf="@+id/tvDetailLevel"
+                app:layout_constraintBottom_toBottomOf="@id/tvDetailLevel"
+                app:layout_constraintStart_toEndOf="@id/tvDetailLevel"/>
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/textFieldTranskPremium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@id/cardEditInfo"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+                app:unify_text_field_clearable="false"
+                app:unify_text_field_input_type="number"
+                app:unify_text_field_label="Min. transaksi Premium (Level 1)"
+                app:unify_text_field_label_static="false"
+                app:unify_text_field_prepend_text="Rp" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerInfo"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/unify_space_48"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="Undangan TokoMember diberikan ke pembeli yang belanja senilai nominal transaksi minimum."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@+id/textFieldTranskPremium"
+                app:tickerShapeType="loose"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/textFieldTranskVip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tvDetail"
+                app:layout_constraintTop_toBottomOf="@id/tickerInfo"
+                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+                app:unify_text_field_clearable="false"
+                app:unify_text_field_input_type="number"
+                app:unify_text_field_label="Min. transaksi VIP (Level 2)"
+                app:unify_text_field_label_static="false"
+                app:unify_text_field_prepend_text="Rp" />
+
+            <View
+                android:id="@+id/viewDividerTwo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textFieldTranskVip" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnCreateProgram"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="@string/tm_buat_program"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unifyButtonSize="large" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        android:background="@color/Unify_Background"
+        android:layout_gravity="center"
+        app:globalerrors_type="SERVER_ERROR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</ViewFlipper>

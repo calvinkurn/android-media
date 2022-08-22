@@ -15,6 +15,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
+import com.tokopedia.notifications.factory.BaseNotification
 import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification
 import com.tokopedia.notifications.image.ImageDownloadManager
@@ -216,6 +217,14 @@ class PushController(val context: Context) : CoroutineScope {
                 } else {
                     notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
                 }
+                val isNougatAndAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                if (isNougatAndAbove) {
+                    postSummaryNotification(
+                        baseNotificationModel,
+                        baseNotification,
+                        notificationManager
+                    )
+                }
             }
         } catch (e: Exception) {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
@@ -237,6 +246,19 @@ class PushController(val context: Context) : CoroutineScope {
     private fun getNotificationIdReplyChat(replyChatNotification: ReplyChatNotification): Int {
         val messageId = replyChatNotification.baseNotificationModel.payloadExtra?.topchat?.messageId
         return replyChatNotification.getTruncatedMessageId(messageId)
+    }
+
+    private fun postSummaryNotification(
+        baseNotificationModel: BaseNotificationModel,
+        baseNotification: BaseNotification,
+        notificationManager: NotificationManager
+    ) {
+        baseNotificationModel.groupId.let { id ->
+            if (id.toString().isNotBlank() && id != 0) {
+                val summaryNotification = baseNotification.summaryNotificationBuilder
+                notificationManager.notify(id, summaryNotification)
+            }
+        }
     }
 
     private fun checkOtpPushNotif(applink: String?): Boolean {

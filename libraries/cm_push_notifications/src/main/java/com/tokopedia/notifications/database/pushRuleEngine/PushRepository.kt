@@ -27,6 +27,10 @@ class PushRepository private constructor(val context: Context) {
         return pushDataStore.getNotification()
     }
 
+    suspend fun getNotificationByGroup(groupId: Int): List<BaseNotificationModel> {
+        return pushDataStore.getNotificationByGroup(groupId)
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: PushRepository? = null

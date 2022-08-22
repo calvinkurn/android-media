@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -57,11 +58,12 @@ import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
-import com.tokopedia.home_account.linkaccount.view.LinkAccountWebviewFragment
+import com.tokopedia.home_account.privacy_account.view.LinkAccountWebViewActivity
+import com.tokopedia.home_account.privacy_account.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -85,6 +87,7 @@ import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -114,6 +117,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -127,7 +132,7 @@ import javax.inject.Inject
  */
 
 open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener,
-    BalanceAndPointListener {
+    BalanceAndPointListener, TokopediaPlusListener {
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -140,6 +145,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
+
+    @Inject
+    lateinit var tokopediaAnalytics: TokopediaPlusAnalytics
 
     @Inject
     lateinit var biometricTracker: BiometricTracker
@@ -184,8 +192,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     var memberLocalLoad: LocalLoad? = null
     var balanceAndPointCardView: CardUnify? = null
     var memberCardView: CardUnify? = null
-    var memberTitle: Typography? = null
-    var memberIcon: ImageUnify? = null
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -193,8 +199,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun isEnableLinkAccount(): Boolean  {
-        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
+    private fun isEnablePrivacyAccount(): Boolean  {
+        return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -262,7 +268,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         balanceAndPointAdapter = HomeAccountBalanceAndPointAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
-        adapter = HomeAccountUserAdapter(this, balanceAndPointAdapter, memberAdapter, userSession, shopAdsNewPositionCallback)
+        adapter = HomeAccountUserAdapter(this,
+            this,
+            balanceAndPointAdapter,
+            memberAdapter,
+            userSession,
+            shopAdsNewPositionCallback)
+
         setupList()
         setLoadMore()
         showLoading()
@@ -417,7 +429,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
         initCoachMark(position, itemView, data)
-        if (position == 0) {
+        if (position == POSITION_0) {
             initMemberLocalLoad(itemView)
             initBalanceAndPointLocalLoad(itemView)
         }
@@ -557,7 +569,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
-        if (position == 2)
+        if (position == POSITION_2)
             this.commonAdapter = commonAdapter
     }
 
@@ -573,7 +585,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     balanceAndPointUiModel
                 )
             )
-            adapter?.notifyItemChanged(0)
             viewModel.getBalanceAndPoint(balanceAndPointUiModel.id, balanceAndPointUiModel.hideTitle)
         } else if (!balanceAndPointUiModel.applink.isEmpty()) {
             goToApplink(balanceAndPointUiModel.applink)
@@ -659,7 +670,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         })
 
-
         viewModel.phoneNo.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
                 getData()
@@ -677,6 +687,21 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             hideLoading()
         })
+
+        viewModel.tokopediaPlusData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessLoadTokpediaPlusWidget(it.data)
+                }
+                is Fail -> {
+                    adapter?.onFailedLoadTokopediaWidget(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessLoadTokpediaPlusWidget(data: TokopediaPlusDataModel) {
+        adapter?.setTokopediaPlusContent(data)
     }
 
     fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintResult) {
@@ -739,7 +764,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 )
             }
         }
-        adapter?.notifyItemChanged(0)
         getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
@@ -763,21 +787,21 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 balanceAndPoint
             )
         )
-        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(POSITION_0)
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         balanceAndPointAdapter?.changeItemToFailedById(walletId)
-        adapter?.notifyItemChanged(0)
+        adapter?.notifyItemChanged(POSITION_0)
     }
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
         displayMemberLocalLoad(false)
         adapter?.run {
             if(isFirstItemIsProfile()) {
-                (getItem(0) as ProfileDataView).memberStatus =
+                (getItem(POSITION_0) as ProfileDataView).memberStatus =
                     shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier
-                notifyDataSetChanged()
+                notifyItemChanged(POSITION_0)
             }
         }
         val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
@@ -794,8 +818,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun setDefaultMemberTitle() {
-        memberTitle?.text = getString(R.string.default_member_title)
-        adapter?.notifyItemChanged(0)
+        adapter?.setDefaultMemberTitle(getString(R.string.default_member_title))
+        adapter?.notifyItemChanged(POSITION_0)
     }
 
     private fun onFailedGetBuyerAccount() {
@@ -808,17 +832,16 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun onFailGetData() {
         adapter?.run {
             if (isFirstItemIsProfile()) {
-                removeItemAt(0)
+                removeItemAt(POSITION_0)
             }
-            addItem(
-                0, ProfileDataView(
+            addItem(POSITION_0, ProfileDataView(
                     name = userSession.name,
                     phone = userSession.phoneNumber,
                     email = userSession.email,
                     avatar = userSession.profilePicture
                 )
             )
-            notifyDataSetChanged()
+            notifyItemChanged(POSITION_0)
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
@@ -831,17 +854,17 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun isFirstItemIsProfile(): Boolean =
-        adapter?.getItem(0) is ProfileDataView
+        adapter?.getItem(POSITION_0) is ProfileDataView
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
-                removeItemAt(0)
+                removeItemAt(POSITION_0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
-            notifyDataSetChanged()
+            addItem(POSITION_0, mapper.mapToProfileDataView(buyerAccount))
+            notifyItemChanged(POSITION_0)
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
@@ -854,7 +877,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         widgetTitle = recommendation.title
         addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
         addTopAdsHeadLine()
-        adapter?.notifyDataSetChanged()
         addRecommendationItem(recommendation.recommendationItemList, tdnBanner)
     }
 
@@ -871,8 +893,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         list.forEachIndexed { index, recommendationItem ->
             if (index == TDN_INDEX) tdnBanner?.let { adapter?.addItem(it) }
             adapter?.addItem(recommendationItem)
+            adapter?.notifyItemChanged(index)
         }
-        adapter?.notifyDataSetChanged()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
@@ -927,7 +949,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getProfileData() {
         getWallet()
+        loadTokopediaPlus()
         viewModel.getShortcutData()
+    }
+
+    private fun loadTokopediaPlus() {
+        viewModel.getTokopediaWidgetContent()
     }
 
     private fun getWallet() {
@@ -940,7 +967,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun getData() {
-        binding?.homeAccountUserFragmentRv?.scrollToPosition(0)
+        binding?.homeAccountUserFragmentRv?.scrollToPosition(POSITION_0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData()
         setupSettingList()
@@ -988,12 +1015,25 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
 
-        userSettingsMenu.items.forEach {
-            if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
-                userSettingsMenu.items.remove(it)
-            } else if (it.id == AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE && !isEnableExplicitProfileMenu()) {
-                userSettingsMenu.items.remove(it)
-            }
+        val settingsMenuIterator = userSettingsMenu.items.listIterator()
+
+        while (settingsMenuIterator.hasNext()) {
+            val value = settingsMenuIterator.next()
+
+            settingsMenuIterator.shouldRemove(
+                when(value.id) {
+                    AccountConstants.SettingCode.SETTING_LINK_ACCOUNT -> {
+                        isEnablePrivacyAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
+                        !isEnablePrivacyAccount()
+                    }
+                    AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
+                        !isEnableExplicitProfileMenu()
+                    }
+                    else -> false
+                }
+            )
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
@@ -1007,24 +1047,32 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         addItem(SettingDataView("", arrayListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
-        adapter?.notifyDataSetChanged()
+    }
+
+    private fun MutableListIterator<CommonDataView>.shouldRemove(shouldRemove: Boolean){
+        if (shouldRemove) this.remove()
     }
 
     private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
-        if (position != -1) {
-            adapter?.removeItemAt(position)
-            adapter?.notifyItemRemoved(position)
-            adapter?.addItem(position, item)
-            if (addSeparator) {
-                adapter?.addItem(position, SeparatorView())
+        try {
+            if (position != -1) {
+                adapter?.removeItemAt(position)
+                adapter?.notifyItemRemoved(position)
+                adapter?.addItem(position, item)
+                if (addSeparator) {
+                    adapter?.addItem(position, SeparatorView())
+                }
+            } else {
+                adapter?.addItem(item)
+                if (addSeparator) {
+                    adapter?.addItem(SeparatorView())
+                }
             }
-        } else {
-            adapter?.addItem(item)
-            if (addSeparator) {
-                adapter?.addItem(SeparatorView())
-            }
+
+            adapter?.notifyItemInserted(adapter?.itemCount.orZero())
+        } catch (e: Exception) {
+            e.message
         }
-        adapter?.notifyDataSetChanged()
     }
 
     private fun goToApplink(applink: String) {
@@ -1304,15 +1352,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun updateLocationSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyDataSetChanged()
-        adapter?.notifyDataSetChanged()
+        commonAdapter?.notifyItemChanged(POSITION_1)
+        adapter?.notifyItemChanged(POSITION_3)
     }
 
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyItemChanged(2)
-        adapter?.notifyDataSetChanged()
+        commonAdapter?.notifyItemChanged(POSITION_2)
+        adapter?.notifyItemChanged(POSITION_3)
     }
 
     private fun goToApplicationDetailActivity() {
@@ -1643,6 +1691,22 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
     }
 
+    override fun isShown(isShown: Boolean, pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) { }
+
+    override fun onClick(
+        pageSource: String,
+        tokopediaPlusDataModel: TokopediaPlusDataModel
+    ) {
+        tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
+
+        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
+        startActivity(intent)
+    }
+
+    override fun onRetry() {
+        viewModel.getTokopediaWidgetContent()
+    }
+
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroyView()
@@ -1670,12 +1734,16 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             "android_user_home_account_tokopoints"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
-        private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
+        private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
         private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         private const val COACHMARK_SIZE = 3
-        private const val FIRST_INDEX = 0
+
+        private const val POSITION_0 = 0
+        private const val POSITION_1 = 1
+        private const val POSITION_2 = 2
+        private const val POSITION_3 = 3
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

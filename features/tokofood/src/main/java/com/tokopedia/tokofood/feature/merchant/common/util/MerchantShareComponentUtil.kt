@@ -97,7 +97,7 @@ class MerchantShareComponentUtil(
             shareLinkUrl = ShareComponentConstants.Merchant.MERCHANT_URL,
             shareLinkDeepLink = UriUtil.buildUri(
                 ApplinkConst.TokoFood.MERCHANT, mapOf(
-                    ShareComponentConstants.Merchant.MERCHANT_ID to merchantId
+                    "{"+ShareComponentConstants.Merchant.MERCHANT_ID+"}" to merchantId
                 )
             ),
             ogTitle = "${tokoFoodMerchantProfile?.name.orEmpty()}, ${tokoFoodMerchantProfile?.address.orEmpty()} | ${ShareComponentConstants.TOKOPEDIA}",

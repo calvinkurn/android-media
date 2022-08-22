@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageProduct"
+            android:id="@+id/productCardImage"
             android:contentDescription="@string/content_desc_imageProduct"
             android:layout_width="@dimen/product_card_list_image_size"
             android:layout_height="@dimen/product_card_list_image_size"

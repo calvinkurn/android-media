@@ -38,6 +38,7 @@
     <string name="log_server_channel_sl">Log Server Channel</string>
     <string name="log_date_time_sl">Log Date Time</string>
     <string name="tokopedia_label">Tokopedia</string>
+    <string name="warehouse_id">Warehouse Id</string>
 
 
 </resources>

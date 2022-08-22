@@ -52,7 +52,11 @@ data class FeeDetailData(
     @SerializedName("type_description")
     val feeType: String,
     @SerializedName("amount")
-    val amount: Double
+    val amount: Double,
+    @SerializedName("is_late")
+    val isLate: Boolean,
+    @SerializedName("last_update_deposit")
+    val lastUpdateDetail:String?
 )
 
 data class WithdrawalInfoHistory(

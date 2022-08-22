@@ -11,6 +11,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,6 +22,7 @@ import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
@@ -92,6 +94,7 @@ import javax.inject.Inject;
 import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -122,6 +125,10 @@ public abstract class SellerRouterApplication extends MainApplication implements
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
 
+    private static final int REDIRECTION_HOME = 1;
+    private static final int REDIRECTION_WEBVIEW = 2;
+    private static final int REDIRECTION_DEFAULT= 0;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -146,7 +153,15 @@ public abstract class SellerRouterApplication extends MainApplication implements
     private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
+        initSeamlessLoginWorker();
         return true;
+    }
+
+    private void initSeamlessLoginWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initResourceDownloadManager() {
@@ -219,12 +234,31 @@ public abstract class SellerRouterApplication extends MainApplication implements
         return null;
     }
 
+
     @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
-        Intent intent = new Intent(activity, SplashScreenActivity.class);
+        Intent intent = new Intent(context, SplashScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
+        forceLogout();
+        if(redirectionType == REDIRECTION_WEBVIEW) {
+            Intent homeIntent = new Intent(context, SplashScreenActivity.class);
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+            TaskStackBuilder task = TaskStackBuilder.create(this);
+            task.addNextIntent(homeIntent);
+            task.addNextIntent(webViewIntent);
+            task.startActivities();
+        } else {
+            Intent intent = new Intent(context, SplashScreenActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     private void forceLogout() {
@@ -430,8 +464,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NonNull
     @Override
-    public Fragment getProductManageFragment(@NonNull ArrayList<String> filterOptions, @NonNull String searchKeyword, View navigationMenu) {
-        ProductManageSellerFragment productManageSellerFragment = ProductManageSellerFragment.newInstance(filterOptions, searchKeyword);
+    public Fragment getProductManageFragment(@NonNull ArrayList<String> filterOptions, @NonNull String searchKeyword, @NonNull String tab, View navigationMenu) {
+        ProductManageSellerFragment productManageSellerFragment = ProductManageSellerFragment.newInstance(filterOptions, tab, searchKeyword);
         productManageSellerFragment.setNavigationHomeMenuView(navigationMenu);
         return productManageSellerFragment;
     }

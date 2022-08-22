@@ -9,7 +9,6 @@ import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +18,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
+const val PRODUCT_PER_PAGE = 1
 
 class ProductCardSingleViewModel(
     val application: Application,
@@ -77,8 +78,14 @@ class ProductCardSingleViewModel(
                 }
             }
             prodComponentsItem?.data?.firstOrNull()?.let {
-                it.hasThreeDotsWishlist = true
-                it.hasATCWishlist = true
+                it.hasThreeDotsWishlist = (it.show3Dots == true)
+                if (it.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && it.isActiveProductCard == true) {
+                    it.hasATCWishlist = true
+                    it.hasSimilarProductWishlist = false
+                }else if(it.isActiveProductCard != true && it.targetComponentId?.isNotEmpty() == true){
+                    it.hasATCWishlist = false
+                    it.hasSimilarProductWishlist = true
+                }
             }
             productData.value = prodComponentsItem
 

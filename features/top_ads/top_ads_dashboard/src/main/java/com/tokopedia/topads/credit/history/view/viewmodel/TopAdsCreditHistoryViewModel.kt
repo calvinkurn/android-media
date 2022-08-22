@@ -1,5 +1,6 @@
 package com.tokopedia.topads.credit.history.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_END_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_START_DATE
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,17 +27,26 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TopAdsCreditHistoryViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-        private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse>,
-        @Named("Main")
-        val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+    private val userSessionInterface: UserSessionInterface,
+    private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
+    private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+    private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse>,
+    @Named("Main") val dispatcher: CoroutineDispatcher,
+    private val pendingRewardUseCase: TopadsGetFreeDepositUseCase,
+) : BaseViewModel(dispatcher) {
 
     val creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
     val getAutoTopUpStatus = MutableLiveData<Result<AutoTopUpStatus>>()
     val creditAmount = MutableLiveData<String>()
+
+    private val _expiryDateHiddenTrial: MutableLiveData<String?> = MutableLiveData()
+    val expiryDateHiddenTrial: LiveData<String?> = _expiryDateHiddenTrial
+
+    fun loadPendingReward() {
+        pendingRewardUseCase.execute {
+            _expiryDateHiddenTrial.postValue(it.pendingRebateCredit)
+        }
+    }
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
         val params = mapOf(

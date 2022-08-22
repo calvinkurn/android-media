@@ -27,5 +27,8 @@ class TopupBillsMenuDetail(
         val banners: List<TopupBillsBanner> = listOf(),
         @SerializedName("express_checkout")
         @Expose
-        val isExpressCheckout: Boolean = false
+        val isExpressCheckout: Boolean = false,
+        @SerializedName("menu_label")
+        @Expose
+        val menuLabel: String = ""
 )

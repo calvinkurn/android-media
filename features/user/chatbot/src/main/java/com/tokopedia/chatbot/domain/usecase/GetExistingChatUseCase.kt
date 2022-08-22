@@ -4,11 +4,11 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import rx.Subscriber
-import java.lang.NumberFormatException
 import javax.inject.Inject
 
 /**
@@ -50,14 +50,8 @@ class GetExistingChatUseCase @Inject constructor(
             return requestParams
         }
 
-        private fun verifyMessageId(messageId: String): Int {
-            return if (messageId.isNotBlank()) {
-                try {
-                    messageId.toInt()
-                } catch (e: NumberFormatException) {
-                    0
-                }
-            } else 0
+        private fun verifyMessageId(messageId: String): Long {
+            return messageId.convertMessageIdToLong()
         }
     }
 

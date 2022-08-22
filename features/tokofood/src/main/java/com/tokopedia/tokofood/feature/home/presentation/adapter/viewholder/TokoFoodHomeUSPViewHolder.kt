@@ -28,7 +28,7 @@ class TokoFoodHomeUSPViewHolder(
 
         private const val USP_SIZE = 3
         private const val GO_FOOD_IMAGE_LIGHT = "https://images.tokopedia.net/img/powered_by_gofood_light.png"
-        private const val GO_FOOD_IMAGE_DARK = "https://images.tokopedia.net/img/powered_by_gofood_dark.png"
+        private const val GO_FOOD_IMAGE_DARK = "https://images.tokopedia.net/img/powered_by_gofood_dark_new.png"
     }
 
     private var binding: ItemTokofoodUspBinding? by viewBinding()

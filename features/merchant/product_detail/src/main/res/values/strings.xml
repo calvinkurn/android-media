@@ -133,9 +133,10 @@
     <string name="shop_online_last_date"><![CDATA[Terakhir online <b>%1s</b>]]></string>
     <string name="shop_online">• Online</string>
     <string name="location_dot_builder">• %1s</string>
-    <string name="product_shop_rating">rating toko</string>
+    <string name="product_average_review">rata-rata ulasan</string>
     <string name="product_shop_total_product">total produk</string>
     <string name="product_shop_process_product">pesanan diproses</string>
+    <string name="product_shop_finish_rate_product">pesanan selesai</string>
     <string name="product_shop_chat_reply">balas chat &amp; diskusi</string>
     <string name="product_shop_start_sell">mulai jualan</string>
 
@@ -178,8 +179,6 @@
 
     <string name="pdp_shipping_cod_label">COD</string>
     <string name="pdp_shipping_choose_courier_label">Lihat Pilihan Kurir</string>
-    <string name="pdp_shipping_other_courier_label">Kurir lainnya:</string>
-    <string name="pdp_shipping_khusus_label">Khusus:</string>
     <string name="pdp_shipping_dilayani_label">Dilayani oleh</string>
     <string name="pdp_shipping_failed_label">Ongkir gagal ditampilkan</string>
     <string name="pdp_shipping_success_change_address">Alamat berhasil dipilih. Nikmati pengalaman belanja yang sesuai dengan alamatmu!</string>
@@ -191,7 +190,6 @@
 
     <string name="pdp_bundling_button_see">Lihat Paket</string>
     <string name="pdp_bundling_saving">Hemat</string>
-    <string name="pdp_bundling_quantity">(Total %1s barang)</string>
 
     <string name="pdp_choose_variant">Pilih Varian</string>
 
@@ -200,5 +198,5 @@
     <string name="pdp_title_topads_headline">Toko lainnya yang cocok buatmu</string>
 
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
-
+    <string name="pdp_general_info_see">Lihat</string>
 </resources>

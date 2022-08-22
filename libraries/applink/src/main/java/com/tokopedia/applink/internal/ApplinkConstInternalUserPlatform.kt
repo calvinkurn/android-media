@@ -87,4 +87,59 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
 
+    /**
+     * GotoSeamlessLandingActivity
+     * @Applink : tokopedia-android-internal://user/goto-seamless-login
+     **/
+    const val GOTO_SEAMLESS_LOGIN = "${NEW_INTERNAL_USER}/goto-seamless-login"
+
+    /**
+    * PrivacyAccountActivity
+    * @Applink : tokopedia-android-internal://user/privacy-account
+    **/
+    const val PRIVACY_ACCOUNT = "${NEW_INTERNAL_USER}/privacy-account"
+
+
+    /**
+     * ChooseAccountActivity
+     * @Applink : tokopedia-android-internal://user/choose-account
+     **/
+    const val CHOOSE_ACCOUNT = "${NEW_INTERNAL_USER}/choose-account"
+
+    /**
+     * ChooseAccountActivity
+     * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
+     **/
+    const val CHOOSE_ACCOUNT_FINGERPRINT = "${NEW_INTERNAL_USER}/choose-account-fingerprint"
+
+    /**
+     * VerificationActivity
+     * @Applink : tokopedia-android-internal://user/cotp
+     **/
+    const val COTP = "${NEW_INTERNAL_USER}/cotp"
+
+    /**
+     * LoginByQrResultActivity
+     * @Applink : tokopedia-android-internal://user/qr-login-result
+     **/
+    const val QR_LOGIN_RESULT = "${NEW_INTERNAL_USER}/qr-login-result"
+
+    /**
+     * LoginByQrActivity
+     * @Applink : tokopedia-android-internal://user/qr-login
+     **/
+    const val QR_LOGIN = "${NEW_INTERNAL_USER}/qr-login"
+
+    /**
+     * ReceiverNotifActivity
+     * @Applink : tokopedia-android-internal://global/otp-push-notif-receiver
+     **/
+    const val OTP_PUSH_NOTIF_RECEIVER = "${NEW_INTERNAL_USER}/otp-push-notif-receiver"
+
+    /**
+     * SettingNotifActivity
+     * @Applink : tokopedia-android-internal://global/otp-push-notif-receiver
+     **/
+    const val OTP_PUSH_NOTIF_SETTING = "${NEW_INTERNAL_USER}/otp-push-notif-setting"
+
 }

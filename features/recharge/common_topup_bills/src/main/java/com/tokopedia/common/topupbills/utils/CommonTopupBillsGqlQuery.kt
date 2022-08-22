@@ -158,6 +158,7 @@ object CommonTopupBillsGqlQuery {
               app_link
             }
             express_checkout
+            menu_label
           }
         }
     """.trimIndent()

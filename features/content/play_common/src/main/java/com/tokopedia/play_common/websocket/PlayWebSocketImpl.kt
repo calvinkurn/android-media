@@ -72,11 +72,11 @@ class PlayWebSocketImpl(
         }
     }
 
-    override fun connect(channelId: String, gcToken: String, source: String) {
+    override fun connect(channelId: String, warehouseId: String, gcToken: String, source: String) {
         close()
-        val url = generateUrl(channelId, gcToken)
+        val url = generateUrl(channelId, warehouseId, gcToken)
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, gcToken, source).toString())
+        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, warehouseId, gcToken, source).toString())
     }
 
     override fun close() {
@@ -93,14 +93,14 @@ class PlayWebSocketImpl(
         mWebSocket?.send(message)
     }
 
-    private fun generateUrl(channelId: String, gcToken: String): String {
+    private fun generateUrl(channelId: String, warehouseId: String, gcToken: String): String {
         val wsBaseUrl = localCacheHandler.getString(
             KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
             TokopediaUrl.getInstance().WS_PLAY
         )
 
         return buildString {
-            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId")
+            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId$PLAY_WEB_SOCKET_GROUP_CHAT_WH$warehouseId")
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
     }
@@ -114,16 +114,18 @@ class PlayWebSocketImpl(
                 .build()
     }
 
-    private fun buildGeneralInfo(channelId: String, gcToken: String, source: String): Map<String, String> {
+    private fun buildGeneralInfo(channelId: String, warehouseId: String, gcToken: String, source: String): Map<String, String> {
         return mapOf(
             "source" to if(source.isEmpty()) "\"\"" else source,
             "channelId" to if(channelId.isEmpty()) "\"\"" else channelId,
+            "warehouseId" to if(warehouseId.isEmpty()) "\"\"" else warehouseId,
             "gcToken" to if(gcToken.isEmpty()) "\"\"" else gcToken,
         )
     }
 
     companion object {
         private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
+        private const val PLAY_WEB_SOCKET_GROUP_CHAT_WH = "&warehouse_id="
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
     }

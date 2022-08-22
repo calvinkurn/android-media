@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         app:typographyWeight="reguler"
-        tools:text="Semua Barang Terbaru"
+        tools:text="@string/feed_detail_page_header"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

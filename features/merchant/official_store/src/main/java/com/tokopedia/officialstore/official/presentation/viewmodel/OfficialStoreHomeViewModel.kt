@@ -32,6 +32,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
@@ -67,7 +68,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
         private val dispatchers: CoroutineDispatchers,
-        private val officialStoreConfig: OfficialStoreConfig
+        private val officialStoreConfig: OfficialStoreConfig,
+        private val topAdsAddressHelper: TopAdsAddressHelper,
 ) : BaseViewModel(dispatchers.main) {
 
     var currentSlug: String = ""
@@ -159,7 +161,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 item = VALUE_ITEM,
                 seenAds = getSeenShopAdsWidgetCount()
             )
-            getTopAdsHeadlineUseCase.setParams(params)
+            getTopAdsHeadlineUseCase.setParams(params, topAdsAddressHelper.getAddressData())
             val data = getTopAdsHeadlineUseCase.executeOnBackground()
             OfficialTopAdsHeadlineDataModel(data)
 
