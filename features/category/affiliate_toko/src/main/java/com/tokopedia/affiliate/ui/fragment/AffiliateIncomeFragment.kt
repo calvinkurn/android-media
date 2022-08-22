@@ -77,6 +77,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
 
     companion object {
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
         fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateIncomeFragment().apply {
                 userName = userNameParam
@@ -171,15 +172,17 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             onGetValidateUserData(validateUserdata)
         })
         affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
-            sendTickerImpression(
-                announcementData.getAffiliateAnnouncementV2?.data?.type,
-                announcementData.getAffiliateAnnouncementV2?.data?.id
-            )
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
-                announcementData,
-                activity,
-                source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
-            )
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                sendTickerImpression(
+                    announcementData.getAffiliateAnnouncementV2?.data?.type,
+                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                )
+                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                    announcementData,
+                    activity,
+                    source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
+                )
+            }
         }
     }
 

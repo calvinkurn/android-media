@@ -79,6 +79,8 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     private val tabFragments = arrayListOf<Fragment>()
 
     companion object {
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
+
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -239,12 +241,17 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             onGetValidateUserData(validateUserdata)
         }
         affiliatePromoViewModel.getAffiliateAnnouncement().observe(this) {
-            sendTickerImpression(it.getAffiliateAnnouncementV2?.data?.type, it.getAffiliateAnnouncementV2?.data?.id)
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
-                it,
-                activity,
-                source = PAGE_ANNOUNCEMENT_PROMOSIKAN
-            )
+            if (it.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                sendTickerImpression(
+                    it.getAffiliateAnnouncementV2?.data?.type,
+                    it.getAffiliateAnnouncementV2?.data?.id
+                )
+                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                    it,
+                    activity,
+                    source = PAGE_ANNOUNCEMENT_PROMOSIKAN
+                )
+            }
         }
     }
 
