@@ -231,7 +231,7 @@ class ProductTagParentFragment @Inject constructor(
                 .commit()
         }
         else {
-            repeat(currStack.size - prevStack.size) {
+            repeat(prevStack.size - currStack.size) {
                 childFragmentManager.popBackStackImmediate()
             }
 
