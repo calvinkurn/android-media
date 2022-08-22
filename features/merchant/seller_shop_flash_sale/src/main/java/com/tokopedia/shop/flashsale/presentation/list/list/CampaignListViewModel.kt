@@ -11,14 +11,17 @@ import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,7 +36,8 @@ class CampaignListViewModel @Inject constructor(
     private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
     private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase,
     private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase,
-    private val getShopPageHomeTypeUseCase : GqlShopPageGetHomeType,
+    private val getShopPageHomeTypeUseCase: GqlShopPageGetHomeType,
+    private val getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase,
     private val userSession: UserSessionInterface,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
@@ -61,6 +65,10 @@ class CampaignListViewModel @Inject constructor(
     private val _shopDecorStatus = MutableLiveData<Result<String>>()
     val shopDecorStatus: LiveData<Result<String>>
         get() = _shopDecorStatus
+
+    private val _vpsPackages = MutableLiveData<Result<List<VpsPackage>>>()
+    val vpsPackages: LiveData<Result<List<VpsPackage>>>
+        get() = _vpsPackages
 
     private var drafts: List<CampaignUiModel> = emptyList()
     private var campaignId: Long = 0
@@ -152,7 +160,8 @@ class CampaignListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val requestParams = GqlShopPageGetHomeType.createParams(userSession.shopId, extParam = "")
+                val requestParams =
+                    GqlShopPageGetHomeType.createParams(userSession.shopId, extParam = "")
                 getShopPageHomeTypeUseCase.params = requestParams
                 getShopPageHomeTypeUseCase.isFromCacheFirst = false
                 val shopHome = getShopPageHomeTypeUseCase.executeOnBackground()
@@ -164,6 +173,19 @@ class CampaignListViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun getVpsPackages() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignPackageListUseCase.execute()
+                _vpsPackages.postValue(Success(result))
+            },
+            onError = { error ->
+                _vpsPackages.postValue(Fail(error))
+            }
+        )
     }
 
     fun setCampaignDrafts(drafts: List<CampaignUiModel>) {
