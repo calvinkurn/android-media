@@ -30,7 +30,7 @@ import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
@@ -60,7 +60,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     lateinit var viewModel: PickerViewModel
 
-    private lateinit var toolbarCommon: ImagePickerCommonToolbar
+    private lateinit var toolbarCommon: ContentAccountToolbar
     lateinit var rv: RecyclerView
     lateinit var selectedMediaView: MediaView
     lateinit var recentSection: LinearLayout

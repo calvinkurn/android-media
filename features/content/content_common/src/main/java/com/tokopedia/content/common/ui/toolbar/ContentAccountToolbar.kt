@@ -13,7 +13,7 @@ import com.tokopedia.content.common.R.color.Unify_NN1000
 import com.tokopedia.content.common.R.color.Unify_NN950
 import com.tokopedia.content.common.R.color.soft_dark
 import com.tokopedia.content.common.R.color.soft_gray
-import com.tokopedia.content.common.databinding.ImagepickerInstaComToolbarBinding
+import com.tokopedia.content.common.databinding.ContentAccountToolbarBinding
 import com.tokopedia.content.common.ui.toolbar.ContentColor.*
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -24,13 +24,13 @@ import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 import com.tokopedia.content.common.R as contentCommonR
 
-class ImagePickerCommonToolbar @JvmOverloads constructor(
+class ContentAccountToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : Toolbar(context, attrs) {
 
     private var mOnClickListener: AccountClickListener? = null
     private var mOnBackListener: BackClickListener? = null
-    private var mBinding = ImagepickerInstaComToolbarBinding.inflate(LayoutInflater.from(context), this)
+    private var mBinding = ContentAccountToolbarBinding.inflate(LayoutInflater.from(context), this)
     private lateinit var coachMark: CoachMark2
 
     init {

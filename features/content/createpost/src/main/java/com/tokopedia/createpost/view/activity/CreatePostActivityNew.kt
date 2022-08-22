@@ -35,7 +35,7 @@ import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -45,7 +45,7 @@ import javax.inject.Inject
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListener {
 
     /** View */
-    private lateinit var toolbarCommon: ImagePickerCommonToolbar
+    private lateinit var toolbarCommon: ContentAccountToolbar
 
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics

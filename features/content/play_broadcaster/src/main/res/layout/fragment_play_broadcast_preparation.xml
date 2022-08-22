@@ -8,7 +8,7 @@
     android:background="@color/play_bro_dms_preparation_overlay"
     >
 
-    <com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
+    <com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
         android:id="@+id/toolbar_content_common"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
