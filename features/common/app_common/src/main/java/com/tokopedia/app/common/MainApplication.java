@@ -36,7 +36,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     private DaggerCommonAppComponent.Builder daggerBuilder;
     private CommonAppComponent appComponent;
-    private UserSession userSession;
+    protected UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
     private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
