@@ -18,8 +18,7 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 
 public class LocationUtils {
     private final Context context;
-    private LocationCallback locationCallback;
-    private FusedLocationProviderClient fusedLocationClient;
+    private final FusedLocationProviderClient fusedLocationClient;
 
     public LocationUtils(Context ctx) {
         context = ctx;
@@ -48,19 +47,16 @@ public class LocationUtils {
     }
 
     private LocationCallback getLocationCallback() {
-        if (locationCallback == null) {
-            locationCallback = new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
-                    Location lastLocation = locationResult.getLastLocation();
-                    if (lastLocation != null) {
-                        saveLocation(lastLocation);
-                        fusedLocationClient.removeLocationUpdates(this);
-                    }
+        return new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Location lastLocation = locationResult.getLastLocation();
+                if (lastLocation != null) {
+                    saveLocation(lastLocation);
+                    fusedLocationClient.removeLocationUpdates(this);
                 }
-            };
-        }
-        return locationCallback;
+            }
+        };
     }
 }
