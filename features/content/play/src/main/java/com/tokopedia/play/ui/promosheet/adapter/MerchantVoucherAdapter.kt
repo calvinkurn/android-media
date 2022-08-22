@@ -2,6 +2,7 @@ package com.tokopedia.play.ui.promosheet.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.promosheet.adapter.delegate.MerchantVoucherAdapterDelegate
+import com.tokopedia.play.ui.promosheet.adapter.delegate.VoucherInfoHeaderAdapterDelegate
 import com.tokopedia.play.ui.promosheet.adapter.delegate.VoucherPlaceholderAdapterDelegate
 import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -15,6 +16,7 @@ class MerchantVoucherAdapter(
 
     init {
         delegatesManager
+                .addDelegate(VoucherInfoHeaderAdapterDelegate())
                 .addDelegate(MerchantVoucherAdapterDelegate(listener))
                 .addDelegate(VoucherPlaceholderAdapterDelegate())
     }
