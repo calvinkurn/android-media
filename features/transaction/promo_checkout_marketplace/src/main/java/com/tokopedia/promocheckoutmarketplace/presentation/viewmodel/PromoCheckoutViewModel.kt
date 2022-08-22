@@ -1252,8 +1252,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
         if (selectedItem.uiData.boClashingInfos.isNotEmpty() && !selectedItem.uiState.isBebasOngkir) {
             fragmentUiModel.value?.let {
-                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
-                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.firstOrNull()?.icon ?: ""
+                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.first().message
+                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.first().icon
                 it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
 
                 _fragmentUiModel.value = it
