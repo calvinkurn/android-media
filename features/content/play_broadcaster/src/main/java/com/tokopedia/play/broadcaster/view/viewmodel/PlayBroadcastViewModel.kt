@@ -313,7 +313,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         _observableChatList.value = mutableListOf()
 
-        submitAction(PlayBroadcastAction.FeedAccountList)
+        submitAction(PlayBroadcastAction.GetFeedAccountList)
     }
 
     override fun onCleared() {
