@@ -210,12 +210,12 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
-    const val DF_CONTENT_PROFILE = "df_content_profile"
     const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
     const val DF_TOKOFOOD = "df_tokofood"
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
     const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
     const val DF_CREATE_POST = "df_createpost"
+    const val DF_PEOPLE = "df_people"
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
 
@@ -226,7 +226,7 @@ object DeeplinkDFMapper : CoroutineScope {
     val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             // Base
-            add(DFP({ it.startsWith(ONBOARDING) }, DF_BASE, R.string.applink_title_on_boarding))
+            add(DFP({ it.startsWithPattern(ONBOARDING) }, DF_BASE, R.string.applink_title_on_boarding))
             // Category
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DF_BASE, R.string.applink_title_age_restriction))
             add(DFP({ it.startsWith(TRADEIN) }, DF_CATEGORY_TRADE_IN, R.string.applink_title_tradein))
@@ -241,7 +241,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
 
             // Content
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL) }, DF_CONTENT_PROFILE, R.string.applink_title_profile))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL) }, DF_PEOPLE, R.string.applink_title_people))
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
             add(DFP({ it.startsWithPattern(COMMENT) }, DF_BASE, R.string.applink_kol_title_comment))
             add(DFP({ it.startsWithPattern(INTERNAL_CONTENT_POST_DETAIL) }, DF_BASE, R.string.applink_kol_title_post_detail))
@@ -534,7 +534,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
-            add(DFP({ it.startsWith(INBOX) }, DF_BASE, R.string.title_inbox))
+            add(DFP({ it.startsWithPattern(INBOX) }, DF_BASE, R.string.title_inbox))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DF_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DF_BASE, R.string.talk_title))

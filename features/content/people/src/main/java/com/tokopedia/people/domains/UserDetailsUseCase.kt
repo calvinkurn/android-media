@@ -49,7 +49,7 @@ const val USER_DETAILS = """
 @GqlQuery("UserDetails", USER_DETAILS)
 class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun getUserProfileDetail(userName: String, profileId: MutableList<String>): GraphqlResponse {
+    suspend fun getUserProfileDetail(userName: String): GraphqlResponse {
         val request = GraphqlRequest(
             UserDetails.GQL_QUERY,
             ProfileHeaderBase::class.java,

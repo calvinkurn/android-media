@@ -66,8 +66,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
 import com.tokopedia.search.analytics.RecommendationTracking
 import com.tokopedia.search.analytics.SearchEventTracking
@@ -76,7 +74,6 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
@@ -102,6 +99,9 @@ import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
@@ -759,18 +759,21 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
         val pageComponentId = presenter?.pageComponentId ?: ""
 
-        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, pageComponentId))
+        dataLayerList.add(
+            item.getProductAsObjectDataLayer(
+                filterSortParams,
+                pageComponentId,
+            )
+        )
         productItemDataViews.add(item)
 
-        trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(
-                it,
-                dataLayerList,
-                eventLabel,
-                irisSessionId,
-                userId
-            )
-        }
+        SearchTracking.eventImpressionSearchResultProduct(
+            trackingQueue,
+            dataLayerList,
+            eventLabel,
+            irisSessionId,
+            userId,
+        )
     }
 
     private fun getSearchProductTrackingEventLabel(item: ProductItemDataView, suggestedRelatedKeyword: String): String {
@@ -796,6 +799,7 @@ class ProductListFragment: BaseDaggerFragment(),
             irisSessionId,
             item.topadsTag,
             item.dimension115,
+            item.dimension131,
             pageComponentId,
         )
     }
@@ -839,6 +843,7 @@ class ProductListFragment: BaseDaggerFragment(),
             item.dimension90,
             item.topadsTag,
             item.dimension115,
+            item.dimension131,
             pageComponentId,
         )
     }
@@ -858,7 +863,7 @@ class ProductListFragment: BaseDaggerFragment(),
             isOrganicAds = item.isOrganicAds,
             topadsTag = item.topadsTag,
             filterSortParams = filterSortParams,
-            componentId = pageComponentId
+            componentId = pageComponentId,
         )
         SearchTracking.trackEventClickSearchResultProduct(
             item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
