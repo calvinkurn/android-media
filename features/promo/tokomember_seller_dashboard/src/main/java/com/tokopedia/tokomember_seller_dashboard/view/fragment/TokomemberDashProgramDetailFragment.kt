@@ -124,15 +124,7 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         }
         val finalString = "$startDateString, $startTimeString - $endDateString, $endTimeString"
         tvProgramPeriod.text = getDateTimeSpannable(finalString,startDateString?.length ?: 0,endDateString?.length ?: 0)
-//        tvProgramPeriod.setText("${getDateSpannable(startDateString)}, ${membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
-//            TmDateUtil.setTime(
-//                it
-//            )
-//        }} - ${getDateSpannable(endDateString)}, ${membershipGetProgramForm?.programForm?.timeWindow?.endTime?.let {
-//            TmDateUtil.setTime(
-//                it
-//            )
-//        }}")
+
         tvMemberCount.text = membershipGetProgramForm?.programForm?.analytics?.totalNewMember
         tvProgramStatus.visibility = View.VISIBLE
         tvProgramStatus.text = membershipGetProgramForm?.programForm?.statusStr

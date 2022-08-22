@@ -1,8 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
-import android.R.attr.bitmap
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.shape.CornerFamily
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -114,7 +113,12 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
                         .into(object : CustomTarget<Drawable>(){
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                               flShop.background = resource
+                                val bitmap = cropImage(resource)
+                                flShopbg.setImageBitmap(bitmap)
+                                flShopbg.shapeAppearanceModel=flShopbg.shapeAppearanceModel.toBuilder().setTopRightCorner(
+                                    CornerFamily.ROUNDED,30f)
+                                    .setTopLeftCorner(CornerFamily.ROUNDED,30f)
+                                    .build()
                             }
                             override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -166,6 +170,11 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             infinite = true
             addItems(R.layout.tm_dash_home_ticker_item, list as ArrayList<Any>, itemParam)
         }
+    }
+
+    private fun cropImage(resource:Drawable) : Bitmap{
+        val bm = resource.toBitmap()
+        return Bitmap.createBitmap(bm,0,0,bm.width-15,bm.height-15)
     }
 
 

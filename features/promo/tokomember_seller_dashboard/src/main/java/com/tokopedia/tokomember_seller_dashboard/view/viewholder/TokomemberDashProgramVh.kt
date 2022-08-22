@@ -65,8 +65,10 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         programStartTime.text = item.timeWindow?.startTime?.let { getTime(it) }
         programEndTime.text = item.timeWindow?.endTime?.let { getTime(it) }
 
-        programMemberValue.text = item.analytics?.totalNewMember ?: "-"
-        programMemberTransaksivalue.text = item.analytics?.trxCount ?: "-"
+        programMemberValue.text = if(item.analytics?.totalNewMember.isNullOrEmpty()) "-"
+                                  else item.analytics?.totalNewMember
+        programMemberTransaksivalue.text = if(item.analytics?.trxCount.isNullOrEmpty()) "-"
+                                           else item.analytics?.trxCount
 
         if(item.actions?.tripleDots.isNullOrEmpty()){
             optionMenu.hide()

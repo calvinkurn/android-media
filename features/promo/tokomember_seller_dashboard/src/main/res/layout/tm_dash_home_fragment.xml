@@ -29,17 +29,17 @@
                 android:layout_marginStart="@dimen/tm_dash_dp_16"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/tm_dash_dp_16"
-                android:background="@drawable/tm_bg_round_home"
                 >
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/flShopbg"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="@drawable/tm_bg_round_home"-->
-<!--                    android:adjustViewBounds="true"-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    />-->
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/flShopbg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"

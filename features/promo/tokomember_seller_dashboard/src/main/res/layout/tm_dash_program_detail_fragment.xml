@@ -270,7 +270,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/tm_min_transaksi"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="body_3"/>
@@ -280,7 +280,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTransactionPremium"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/dp_10"
+                            android:layout_marginStart="@dimen/tm_dash_dp_16"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="heading_6"/>
 
@@ -367,7 +367,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/tm_dash_dp_10"
+                            android:layout_marginStart="@dimen/tm_dash_dp_16"
                             android:text="@string/tm_min_transaksi"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="body_3"/>
@@ -377,7 +377,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/tvTransactionVip"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/tm_dash_dp_10"
+                            android:layout_marginStart="@dimen/tm_dash_dp_16"
                             android:textColor="@color/Unify_NN950"
                             app:typographyType="heading_6"/>
 
