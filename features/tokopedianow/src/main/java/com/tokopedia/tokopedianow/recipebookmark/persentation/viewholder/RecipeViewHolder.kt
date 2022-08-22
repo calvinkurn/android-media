@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
@@ -41,6 +40,10 @@ class RecipeViewHolder(
                 binding = this,
                 element = element
             )
+
+            root.setOnClickListener {
+                listener.onClickBookmark(element.id)
+            }
         }
     }
 
@@ -75,5 +78,6 @@ class RecipeViewHolder(
 
     interface RecipeListener {
         fun onRemoveBookmark(title: String, position: Int, recipeId: String)
+        fun onClickBookmark(recipeId: String)
     }
 }
