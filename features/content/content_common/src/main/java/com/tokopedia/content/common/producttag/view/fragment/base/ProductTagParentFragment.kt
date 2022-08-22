@@ -198,8 +198,8 @@ class ProductTagParentFragment @Inject constructor(
     ) {
         if(prevState == currState) return
 
-        updateBreadcrumb(currState.productTagSourceStack)
         updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
+        updateBreadcrumb(currState.productTagSourceStack)
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
@@ -275,7 +275,7 @@ class ProductTagParentFragment @Inject constructor(
         }
         else {
             repeat(currStack.size - prevStack.size) {
-                childFragmentManager.popBackStack()
+                childFragmentManager.popBackStackImmediate()
             }
 
             childFragmentManager.beginTransaction()
