@@ -71,7 +71,7 @@
         tools:text="Flash Sale Deals Serba 10rb 7 July 2022 - 24 Jam" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_campaign_time"
+        android:id="@+id/tg_campaign_period"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

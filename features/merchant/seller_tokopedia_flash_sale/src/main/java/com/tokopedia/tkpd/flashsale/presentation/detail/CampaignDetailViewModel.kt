@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tkpd.flashsale.common.extension.dateOnly
+import com.tokopedia.tkpd.flashsale.common.extension.epochToDate
 import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import java.util.*
 import javax.inject.Inject
 
 class CampaignDetailViewModel @Inject constructor(
@@ -36,4 +39,14 @@ class CampaignDetailViewModel @Inject constructor(
             }
         )
     }
-}
+
+    fun isCampaignRegisterClosed(campaign: Campaign): Boolean {
+        return Date() > campaign.submissionEndDateUnix.epochToDate()
+    }
+
+    fun isFlashSalePeriodOnTheSameDate(campaign: Campaign): Boolean {
+        val startDate = campaign.startDateUnix.epochToDate().dateOnly()
+        val endDate = campaign.endDateUnix.epochToDate().dateOnly()
+        return startDate == endDate
+    }
+ }
