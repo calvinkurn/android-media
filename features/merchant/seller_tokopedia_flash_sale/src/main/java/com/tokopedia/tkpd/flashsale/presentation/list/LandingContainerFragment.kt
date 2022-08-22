@@ -15,6 +15,7 @@ import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSele
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -61,6 +62,8 @@ class LandingContainerFragment : BaseDaggerFragment() {
         viewModel.deleteProduct()
         viewModel.getReservedProduct()
         viewModel.getFlashSaleList()
+
+        context?.let { CampaignDetailActivity.start(context = it) }
     }
 
     private fun observeUiState() {

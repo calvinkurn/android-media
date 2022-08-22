@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:text="@string/register_period_label"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        tools:text="Periode pendaftaran" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_register_period_info"
@@ -44,11 +44,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:text="@string/campaign_quota_label"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_register_period_label"
-        app:typographyType="body_3"
-        tools:text="Kuota Campaign" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_campaign_quota"
@@ -68,11 +68,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:text="@string/campaign_criteria_label"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_campaign_quota_label"
-        app:typographyType="body_3"
-        tools:text="Kriteria Campaign" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_see_criteria"
@@ -81,13 +81,13 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         android:paddingTop="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_4"
+        android:text="@string/see_criteria_label"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/tg_campaign_criteria_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tg_campaign_criteria_label"
         app:typographyType="display_2"
-        app:typographyWeight="bold"
-        tools:text="Lihat Kriteria" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_check_reason"

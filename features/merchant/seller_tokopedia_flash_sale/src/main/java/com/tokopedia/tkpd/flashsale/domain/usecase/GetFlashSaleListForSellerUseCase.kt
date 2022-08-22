@@ -86,7 +86,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
             requestHeader,
             param.tabName,
             GetFlashSaleListForSellerRequest.Pagination(param.rows, param.offset),
-            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.campaignIds, param.statusIds),
+            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.categoryIds, param.statusIds),
             GetFlashSaleListForSellerRequest.Sort(),
             GetFlashSaleListForSellerRequest.AdditionalParam()
         )
