@@ -722,9 +722,6 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any())
         } returns Unit
-        coEvery {
-            gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
-        } returns ShopOperationalHourStatus()
         shopPageViewModel.initAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
@@ -742,9 +739,6 @@ class NewShopPageViewModelTest {
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any())
         } throws Exception()
-        coEvery {
-            gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
-        } returns ShopOperationalHourStatus()
         shopPageViewModel.initAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
