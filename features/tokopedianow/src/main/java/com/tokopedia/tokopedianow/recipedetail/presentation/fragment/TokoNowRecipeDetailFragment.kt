@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -58,6 +61,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         private const val RECIPE_INFO_POSITION = 1
         private const val BOOKMARK_BTN_POSITION = 0
         private const val SHARE_BTN_POSITION = 1
+
+        private const val REQUEST_CODE_LOGIN = 101
 
         fun newInstance(): TokoNowRecipeDetailFragment {
             return TokoNowRecipeDetailFragment()
@@ -115,16 +120,35 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         getMiniCart()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode != Activity.RESULT_OK) return
+
+        when(requestCode) {
+            REQUEST_CODE_LOGIN -> {
+                viewModel.refreshPage()
+            }
+        }
+    }
+
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
     }
 
     override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        viewModel.onQuantityChanged(productId, shopId, quantity)
+        if(userSession.isLoggedIn) {
+            viewModel.onQuantityChanged(productId, shopId, quantity)
+        } else {
+            goToLoginPage()
+        }
     }
 
     override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        viewModel.addItemToCart(productId, shopId, quantity)
+        if(userSession.isLoggedIn) {
+            viewModel.addItemToCart(productId, shopId, quantity)
+        } else {
+            goToLoginPage()
+        }
     }
 
     override fun deleteCartItem(productId: String) {
@@ -408,7 +432,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
-        showToaster(message = message)
+        val actionText = getString(R.string.tokopedianow_lihat)
+        showToaster(message = message, actionText = actionText, onClickAction = {
+            showMiniCartBottomSheet()
+        })
         getMiniCart()
     }
 
@@ -487,6 +514,15 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             )
             setToolbarClickListener()
         }
+    }
+
+    private fun showMiniCartBottomSheet() {
+        binding?.miniCart?.showMiniCartListBottomSheet(this)
+    }
+
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun injectDependencies() {
