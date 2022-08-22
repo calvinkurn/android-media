@@ -6,3 +6,7 @@ enum class UpcomingCampaignStatus {
     FULL_QUOTA,
     CLOSED
 }
+
+fun UpcomingCampaignStatus.isFlashSaleAvailable(): Boolean {
+    return this == UpcomingCampaignStatus.AVAILABLE
+}

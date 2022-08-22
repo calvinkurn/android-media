@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -20,6 +19,7 @@ import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -105,6 +105,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             viewModel.isCampaignRegisterClosed(campaign) -> UpcomingCampaignStatus.CLOSED
             else -> UpcomingCampaignStatus.AVAILABLE
         }
+
+        binding?.run {
+            if (campaignStatus.isFlashSaleAvailable()) {
+                cardBottomButtonGroup.visible()
+            } else {
+                cardBottomButtonGroup.gone()
+            }
+        }
+
         setupUpcomingHeader(campaign, campaignStatus)
         setupUpcomingMid(campaign, campaignStatus)
         setupUpcomingBody(campaign)

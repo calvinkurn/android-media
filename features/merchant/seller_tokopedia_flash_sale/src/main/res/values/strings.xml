@@ -40,4 +40,7 @@
     <string name="campaign_quota_value_placeholder">Sisa %d kuota!</string>
     <string name="campaign_quota_value_placeholder_2">Tersedia (%d)</string>
     <string name="register_period_value_placeholder_2">%s - %2s</string>
+    <string name="label_register">Daftar</string>
+    <string name="product_eligible_card_title_label">Yay, produkmu sesuai kriteria!</string>
+    <string name="product_eligible_card_description_label">Tunggu apa lagi? Yuk, daftar campaign sekarang!</string>
 </resources>
