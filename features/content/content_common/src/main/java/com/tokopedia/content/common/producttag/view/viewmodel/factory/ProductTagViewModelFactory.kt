@@ -4,6 +4,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import com.tokopedia.content.common.producttag.util.*
 import com.tokopedia.content.common.producttag.util.AUTHOR_ID
 import com.tokopedia.content.common.producttag.util.AUTHOR_TYPE
 import com.tokopedia.content.common.producttag.util.PRODUCT_TAG_SOURCE_RAW
@@ -22,6 +23,7 @@ class ProductTagViewModelFactory @AssistedInject constructor(
     @Assisted(SHOP_BADGE) private val shopBadge: String,
     @Assisted(AUTHOR_ID) private val authorId: String,
     @Assisted(AUTHOR_TYPE) private val authorType: String,
+    @Assisted(PAGE_SOURCE) private val pageSource: String,
     private val productTagViewModelFactory: ProductTagViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
@@ -33,6 +35,7 @@ class ProductTagViewModelFactory @AssistedInject constructor(
             @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted(AUTHOR_ID) authorId: String,
             @Assisted(AUTHOR_TYPE) authorType: String,
+            @Assisted(PAGE_SOURCE) pageSource: String,
         ): ProductTagViewModelFactory
     }
 
@@ -46,6 +49,7 @@ class ProductTagViewModelFactory @AssistedInject constructor(
             shopBadge,
             authorId,
             authorType,
+            pageSource,
         ) as T
     }
 }

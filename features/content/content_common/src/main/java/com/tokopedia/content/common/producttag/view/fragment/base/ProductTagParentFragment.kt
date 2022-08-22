@@ -203,6 +203,8 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
+        showBreadcrumb(viewModel.isUser && productTagSourceStack.isNotEmpty() && productTagSourceStack.last() != ProductTagSource.Autocomplete)
+
         if(viewModel.isUser) {
             /** Update the First Part */
             if(productTagSourceStack.isNotEmpty()) {
@@ -278,6 +280,7 @@ class ProductTagParentFragment @Inject constructor(
             ProductTagSource.MyShop -> MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.GlobalSearch -> GlobalSearchFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.Shop -> ShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.Autocomplete -> ContentAutocompleteFragment.getFragmentPair(childFragmentManager, classLoader)
             else -> {
                 if(viewModel.isSeller) MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
                 else LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
@@ -304,6 +307,7 @@ class ProductTagParentFragment @Inject constructor(
                 getStringArgument(EXTRA_SHOP_BADGE),
                 getStringArgument(EXTRA_AUTHOR_ID),
                 getStringArgument(EXTRA_AUTHOR_TYPE),
+                getStringArgument(EXTRA_PAGE_SOURCE),
             )
         )
     }
@@ -366,7 +370,7 @@ class ProductTagParentFragment @Inject constructor(
         private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
         private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
         private const val EXTRA_AUTHOR_TYPE = "EXTRA_AUTHOR_TYPE"
-        private const val EXTRA_SOURCE = "source"
+        private const val EXTRA_PAGE_SOURCE = "EXTRA_PAGE_SOURCE"
 
         const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
         const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
@@ -376,8 +380,8 @@ class ProductTagParentFragment @Inject constructor(
         const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
         const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
 
-        const val SOURCE_FEED = "feed"
-        const val SOURCE_PLAY = "play"
+        private const val PAGE_SOURCE_FEED = "feed"
+        private const val PAGE_SOURCE_PLAY = "play"
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
@@ -392,7 +396,7 @@ class ProductTagParentFragment @Inject constructor(
             authorType: String,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, SOURCE_FEED)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_FEED)
         }
 
         fun getFragmentWithPlaySource(
@@ -404,7 +408,7 @@ class ProductTagParentFragment @Inject constructor(
             authorType: String,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, SOURCE_PLAY)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_PLAY)
         }
 
         private fun createFragment(
@@ -414,7 +418,7 @@ class ProductTagParentFragment @Inject constructor(
             shopBadge: String,
             authorId: String,
             authorType: String,
-            source: String,
+            pageSource: String,
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
@@ -427,7 +431,7 @@ class ProductTagParentFragment @Inject constructor(
                     putSerializable(EXTRA_SHOP_BADGE, shopBadge)
                     putSerializable(EXTRA_AUTHOR_ID, authorId)
                     putSerializable(EXTRA_AUTHOR_TYPE, authorType)
-                    putString(EXTRA_SOURCE, source)
+                    putString(EXTRA_PAGE_SOURCE, pageSource)
                 }
             }
         }

@@ -10,6 +10,7 @@ enum class ProductTagSource(val tag: String, val labelAnalytic: String) {
     LastPurchase("last_purchase", "terakhir dibeli"),
     LastTagProduct("last_tag_product", "tokopedia"),
     Shop("shop", "toko"),
+    Autocomplete("autocomplete", ""),
     Unknown("", "");
 
     companion object {

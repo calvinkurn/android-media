@@ -37,6 +37,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted(SHOP_BADGE) val shopBadge: String,
     @Assisted(AUTHOR_ID) private val authorId: String,
     @Assisted(AUTHOR_TYPE) private val authorType: String,
+    @Assisted(PAGE_SOURCE) private val pageSource: String,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
     private val sharedPref: ProductTagPreference,
@@ -49,6 +50,7 @@ class ProductTagViewModel @AssistedInject constructor(
             @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted(AUTHOR_ID) authorId: String,
             @Assisted(AUTHOR_TYPE) authorType: String,
+            @Assisted(PAGE_SOURCE) pageSource: String,
         ): ProductTagViewModel
     }
 
@@ -280,7 +282,20 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenAutoCompletePage() {
         viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
+            /**
+             * TODO: just mocking feed here for testing
+             */
+            if(pageSource == "feed") {
+//                _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
+                _productTagSourceStack.update {
+                    val newStack = it.toMutableSet()
+                    newStack.add(ProductTagSource.Autocomplete)
+                    newStack
+                }
+            }
+            else {
+                _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
+            }
         }
     }
 
