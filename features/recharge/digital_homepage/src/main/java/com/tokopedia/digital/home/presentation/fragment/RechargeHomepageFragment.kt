@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -308,7 +309,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
                     platformId,
-                    listOf(sectionID.toIntOrZero()),
+                    listOf(sectionID.toIntSafely()),
                     enablePersonalize
                 )
             )
@@ -374,7 +375,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             if (toggleTracking && section != null && section.items.isNotEmpty()) {
                 viewModel.triggerRechargeSectionAction(
                     viewModel.createRechargeHomepageSectionActionParams(
-                        sectionID.toIntOrZero(),
+                        sectionID.toIntSafely(),
                         "ActionClose",
                         section.objectId,
                         section.items.first().objectId
@@ -395,7 +396,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 with(section) {
                     viewModel.triggerRechargeSectionAction(
                         viewModel.createRechargeHomepageSectionActionParams(
-                            id.toIntOrZero(),
+                            id.toIntSafely(),
                             "ActionClose",
                             objectId,
                             items.first().objectId
@@ -519,10 +520,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList, platformId)
         val homeComponentIDs: List<Int> =
             mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
-                homeComponent.visitableId()?.toInt()
+                homeComponent.visitableId()?.toIntSafely()
             }
         homeComponentsData =
-            sections.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
+            sections.filter { section -> section.id.toIntSafely() in homeComponentIDs }
         adapter.renderList(mappedData)
     }
 

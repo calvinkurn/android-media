@@ -12,6 +12,7 @@ import com.tokopedia.digital.home.old.model.DigitalQuickBuyItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 
@@ -110,7 +111,7 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
     }
 
     open fun hasPrice(element: DigitalQuickBuyItem): Boolean {
-        return element.price.toIntOrZero() > 0
+        return element.price.toIntSafely() > 0
                 || element.pricePrefix.isNotEmpty()
                 || element.originalPrice.isNotEmpty()
     }
