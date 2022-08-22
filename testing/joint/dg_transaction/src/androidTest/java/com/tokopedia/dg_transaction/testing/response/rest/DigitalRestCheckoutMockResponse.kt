@@ -7,7 +7,7 @@ import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.network.data.model.response.DataResponse
 import java.lang.reflect.Type
 
-class DigitalCheckoutMockResponse: MockRestResponse<ResponseCheckout>() {
+class DigitalRestCheckoutMockResponse: MockRestResponse<ResponseCheckout>() {
 
     override fun getToken(): Type =
         object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
