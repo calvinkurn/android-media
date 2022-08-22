@@ -33,6 +33,8 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
         initViews()
+
+        showHideExpandIcon(false)
     }
 
     private fun initViews() {
