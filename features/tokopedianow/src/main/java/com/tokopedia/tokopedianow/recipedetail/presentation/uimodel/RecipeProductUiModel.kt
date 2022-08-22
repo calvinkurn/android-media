@@ -7,7 +7,7 @@ data class RecipeProductUiModel(
     val id: String,
     val shopId: String,
     val name: String,
-    val quantity: Int,
+    val quantity: Int = 0,
     val stock: Int,
     val minOrder: Int,
     val maxOrder: Int,

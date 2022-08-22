@@ -139,7 +139,6 @@ object RecipeDetailMapper {
                 id = it.id,
                 shopId = detail.shopID,
                 name = detail.name,
-                quantity = it.quantity,
                 stock = detail.stock,
                 minOrder = detail.minOrder,
                 maxOrder = detail.maxOrder,

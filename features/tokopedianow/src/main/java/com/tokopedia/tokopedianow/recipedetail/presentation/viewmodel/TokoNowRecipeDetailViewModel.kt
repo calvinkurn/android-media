@@ -291,6 +291,10 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
             layoutItemList.add(recipeInfo)
             layoutItemList.add(recipeTab)
 
+            miniCartData?.let {
+                updateProductQuantity(it)
+            }
+
             _recipeInfo.postValue(recipeInfo)
             _layoutList.postValue(layoutItemList)
         }) {
