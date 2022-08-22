@@ -202,6 +202,8 @@
     <string name="tokopedianow_recipe_bookmark_toaster_cta_try_again">Coba Lagi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_cancel">Batalkan</string>
     <string name="tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe">\"%s\" sudah dihapus dari Buku Resep.</string>
+    <string name="tokopedianow_recipe_bookmark_toaster_description_fail_removing_recipe">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
+    <string name="tokopedianow_recipe_bookmark_toaster_description_fail_adding_recipe">Wah belum bisa di simpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
 
     <string name="tokopedianow_share_recipe_text">Coba cek resep ini, deh: “%1$s” di Tokopedia NOW! Bisa belanja bahannya langsung disini, lho! %2$s</string>
     <string name="tokopedianow_share_recipe_title">%1$s - Untuk %2$d orang, %3$d menit</string>
