@@ -1,15 +1,13 @@
 package com.tokopedia.content.common.producttag.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.databinding.FragmentAutocompleteBinding
+import com.tokopedia.content.common.databinding.FragmentContentAutocompleteBinding
 import com.tokopedia.content.common.producttag.util.extension.hideKeyboard
 import com.tokopedia.content.common.producttag.util.extension.showKeyboard
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
@@ -23,14 +21,14 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on August 22, 2022
  */
-class AutocompleteFragment @Inject constructor(
+class ContentAutocompleteFragment @Inject constructor(
 
 ) : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "AutocompleteFragment"
 
-    private var _binding: FragmentAutocompleteBinding? = null
-    private val binding: FragmentAutocompleteBinding
+    private var _binding: FragmentContentAutocompleteBinding? = null
+    private val binding: FragmentContentAutocompleteBinding
         get() = _binding!!
 
     private lateinit var viewModel: ProductTagViewModel
@@ -45,7 +43,7 @@ class AutocompleteFragment @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAutocompleteBinding.inflate(
+        _binding = FragmentContentAutocompleteBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,
             false
@@ -121,12 +119,12 @@ class AutocompleteFragment @Inject constructor(
         private fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): AutocompleteFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? AutocompleteFragment
+        ): ContentAutocompleteFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentAutocompleteFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                AutocompleteFragment::class.java.name
-            ) as AutocompleteFragment
+                ContentAutocompleteFragment::class.java.name
+            ) as ContentAutocompleteFragment
         }
     }
 }
