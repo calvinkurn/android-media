@@ -6,6 +6,7 @@ import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -26,7 +27,7 @@ class CassavaTestRule(
 ) : TestRule {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+    private val dao = CassavaDatabase.getInstance(context).cassavaDao()
     private val daoSource = GtmLogDBSource(context)
     private val analyticsParser = AnalyticsParser()
     private val engine = ValidatorEngine(daoSource, analyticsParser)
