@@ -340,7 +340,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupObserver() {
-        observerAccountList()
         observeTitle()
         observeCover()
         observeCreateLiveStream()
@@ -348,16 +347,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
-    }
-
-    private fun observerAccountList() = with(binding.toolbarContentCommon) {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            parentViewModel.selectedFeedAccount.collectLatest {
-                title = getString(contentCommonR.string.feed_content_live_sebagai)
-                subtitle = it.name
-                icon = it.iconUrl
-            }
-        }
     }
 
     private fun observeTitle() {
@@ -418,6 +407,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
+                renderAccountInfo(prevState?.selectedFeedAccount, state.selectedFeedAccount)
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
@@ -504,6 +494,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             viewLifecycleOwner.lifecycleScope,
             eventBus,
         )
+    }
+
+    private fun renderAccountInfo(
+        prevState: FeedAccountUiModel?,
+        state: FeedAccountUiModel
+    ) {
+        if (prevState == state) return
+
+        with(binding.toolbarContentCommon) {
+            title = getString(contentCommonR.string.feed_content_live_sebagai)
+            subtitle = state.name
+            icon = state.iconUrl
+        }
     }
 
     private fun renderProductMenu(

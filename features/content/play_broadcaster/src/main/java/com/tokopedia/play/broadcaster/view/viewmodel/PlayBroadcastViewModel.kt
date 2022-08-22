@@ -179,12 +179,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
     private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
 
-    val selectedFeedAccountId: String
-        get() = _selectedFeedAccount.value.id
-
     private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
-    val selectedFeedAccount: Flow<FeedAccountUiModel>
-        get() = _selectedFeedAccount
 
     private val _feedAccountListState = MutableStateFlow<List<FeedAccountUiModel>>(emptyList())
     val feedAccountListState: Flow<List<FeedAccountUiModel>>
@@ -252,6 +247,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState,
         _onboarding,
         _quizBottomSheetUiState,
+        _selectedFeedAccount,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -263,7 +259,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         interactiveSetup,
         quizDetail,
         onBoarding,
-        quizBottomSheetUiState ->
+        quizBottomSheetUiState,
+        selectedFeedAccount ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -277,6 +274,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizDetail = quizDetail,
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
+            selectedFeedAccount = selectedFeedAccount
         )
     }.stateIn(
         viewModelScope,
