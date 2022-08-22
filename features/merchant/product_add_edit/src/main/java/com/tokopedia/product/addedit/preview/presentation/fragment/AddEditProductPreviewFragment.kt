@@ -819,16 +819,18 @@ class AddEditProductPreviewFragment :
     }
 
     private fun displayEmptyStockCoachmark(anchor: View) {
-        val items = listOf(
-            CoachMark2Item(anchor, "",
-                getString(R.string.label_coachmark_out_of_stock),
-                CoachMarkContentPosition.BOTTOM.position
+        if(activity?.isDestroyed == false && activity?.isFinishing == false) {
+            val items = listOf(
+                CoachMark2Item(anchor, "",
+                    getString(R.string.label_coachmark_out_of_stock),
+                    CoachMarkContentPosition.BOTTOM.position
+                )
             )
-        )
-        outOfStockCoachMark = CoachMark2(context ?: return)
-        outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
-        outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
-        outOfStockCoachMark?.showCoachMark(ArrayList(items))
+            outOfStockCoachMark = CoachMark2(context ?: return)
+            outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
+            outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
+            outOfStockCoachMark?.showCoachMark(ArrayList(items))
+        }
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
