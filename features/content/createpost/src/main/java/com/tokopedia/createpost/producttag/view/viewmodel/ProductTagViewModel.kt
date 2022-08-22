@@ -414,6 +414,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val newParam = myShopProduct.param.copy().apply {
                 shopId = userSession.shopId
+                userId = userSession.userId
             }
 
             val result = repo.searchAceProducts(param = newParam)
@@ -807,6 +808,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val newParam = shopProduct.param.copy().apply {
                 shopId = shopProduct.shop.shopId
+                userId = userSession.userId
             }
 
             val result = repo.searchAceProducts(param = newParam)
