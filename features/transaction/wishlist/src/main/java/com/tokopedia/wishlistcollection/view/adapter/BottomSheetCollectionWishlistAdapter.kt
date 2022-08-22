@@ -19,6 +19,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_
 class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<BottomSheetWishlistCollectionTypeLayoutData>()
+    private var source = ""
 
     companion object {
         const val LAYOUT_MAIN_SECTION = 0
@@ -72,7 +73,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
                 (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionAdditionalItemViewHolder).bind(element)
             }
             TYPE_COLLECTION_ITEM -> {
-                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder).bind(element, actionListener)
+                (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionItemViewHolder).bind(element, actionListener, source)
             }
             TYPE_CREATE_NEW_COLLECTION -> {
                 (holder as com.tokopedia.wishlistcollection.view.adapter.viewholder.BottomSheetWishlistCollectionCreateItemViewHolder).bind(element, actionListener)
@@ -81,7 +82,6 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
     }
 
     override fun getItemCount(): Int {
-        println("++ size = ${listTypeData.size}")
         return listTypeData.size
     }
 
@@ -107,5 +107,9 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
 
     fun setActionListener(fragment: WishlistCollectionDetailFragment) {
         this.actionListener = fragment
+    }
+
+    fun setSource(pageOrigin: String) {
+        source = pageOrigin
     }
 }

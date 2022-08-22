@@ -11,5 +11,4 @@ class BottomSheetWishlistCollectionMainItemViewHolder(private val binding: AddWi
             binding.mainSectionText.text = HtmlLinkHelper(itemView.context, item.dataObject).spannedString
         }
     }
-
 }

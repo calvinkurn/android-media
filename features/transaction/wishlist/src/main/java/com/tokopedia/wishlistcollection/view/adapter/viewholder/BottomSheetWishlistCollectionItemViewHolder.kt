@@ -3,9 +3,14 @@ package com.tokopedia.wishlistcollection.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
+import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
+import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 
 class BottomSheetWishlistCollectionItemViewHolder(
@@ -14,27 +19,35 @@ class BottomSheetWishlistCollectionItemViewHolder(
     RecyclerView.ViewHolder(binding.root) {
     fun bind(
         item: BottomSheetWishlistCollectionTypeLayoutData,
-        actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?
+        actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?,
+        source: String
     ) {
         if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data.MainSection.CollectionsItem) {
-            if (item.dataObject.label.isNotEmpty()) {
-                binding.labelCollectionItem.visible()
-                binding.labelCollectionItem.text = item.dataObject.label
-            } else {
-                binding.labelCollectionItem.gone()
-            }
-            binding.collectionItemImage.setImageUrl(item.dataObject.imageUrl)
-            binding.mainCollectionItemName.text = item.dataObject.name
-            binding.mainCollectionTotalItem.text =
-                "${item.dataObject.totalItem} ${item.dataObject.itemText}"
+            binding.run {
+                if (item.dataObject.label.isNotEmpty()) {
+                    labelCollectionItem.visible()
+                    labelCollectionItem.text = item.dataObject.label
+                } else {
+                    labelCollectionItem.gone()
+                }
+                collectionItemImage.apply {
+                    loadImage(item.dataObject.imageUrl) {
+                        setCacheStrategy(MediaCacheStrategy.NONE)
+                        setPlaceHolder(R.drawable.placeholder_img)
+                    }
+                }
+                mainCollectionItemName.text = item.dataObject.name
+                mainCollectionTotalItem.text =
+                    "${item.dataObject.totalItem} ${item.dataObject.itemText}"
 
-            if (item.dataObject.isContainProduct) {
-                binding.icCheck.visible()
-            } else {
-                binding.icCheck.gone()
-            }
+                if (item.dataObject.isContainProduct && source != SRC_WISHLIST_COLLECTION_BULK_ADD) {
+                    icCheck.visible()
+                } else {
+                    icCheck.gone()
+                }
 
-            binding.root.setOnClickListener { actionListener?.onCollectionItemClicked(item.dataObject.name, item.dataObject.id) }
+                root.setOnClickListener { actionListener?.onCollectionItemClicked(item.dataObject.name, item.dataObject.id) }
+            }
         }
     }
 }

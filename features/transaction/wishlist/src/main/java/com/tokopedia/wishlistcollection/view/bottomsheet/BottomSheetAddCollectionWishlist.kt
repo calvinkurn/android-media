@@ -35,6 +35,8 @@ import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottom
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_PDP
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
@@ -113,6 +115,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     }
 
     private fun initLayout() {
+        collectionAdapter.setSource(source)
         binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.rvAddWishlistCollection?.adapter = collectionAdapter
         binding?.rvAddWishlistCollection?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -158,9 +161,11 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         val productId = arguments?.get(PRODUCT_IDs).toString()
         isProductActive = arguments?.get(IS_PRODUCT_ACTIVE) as Boolean
         source = arguments?.get(SOURCE).toString()
+        var sourceParam = source
+        if (sourceParam == SRC_WISHLIST_COLLECTION_BULK_ADD) sourceParam = SRC_WISHLIST_COLLECTION
         val param = GetWishlistCollectionsBottomSheetParams(
             productIds = productId,
-            source = source
+            source = sourceParam
         )
         getCollectionsViewModel.getWishlistCollections(param)
     }

@@ -111,6 +111,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.PARAM_INSIDE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
@@ -1973,7 +1974,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 showBottomSheetCollection(
                                     childFragmentManager,
                                     listSelectedProductIds.joinToString(),
-                                    SRC_WISHLIST_COLLECTION
+                                    SRC_WISHLIST_COLLECTION_BULK_ADD
                                 )
                             }
                         }
@@ -2509,9 +2510,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems) {
-        println("++ onSuccessSaveItemToCollection WishlistCollectionDetailFragment - status = ${data.status}, success = ${data.dataItem.success}")
         if (data.status == OK && data.dataItem.success) {
-            showToaster(data.dataItem.message, "", Toaster.TYPE_NORMAL)
+            showToasterActionLihat(data.dataItem.message, Toaster.TYPE_NORMAL, data.dataItem.collectionId)
         } else {
             val errorMessage = if (data.errorMessage.isNotEmpty()) {
                 data.errorMessage.firstOrNull() ?: ""
@@ -2526,7 +2526,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
-        println("++ onFailedSaveItemToCollection WishlistCollectionDetailFragment - errorMessage = $errorMessage")
         showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         turnOffBulkDeleteMode()
     }

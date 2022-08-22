@@ -25,19 +25,15 @@
             android:id="@+id/main_collection_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name testing"
             app:typographyType="body_2"
-            app:typographyWeight="reguler"
-            android:layout_alignParentTop="true"/>
+            app:typographyWeight="reguler"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/main_collection_total_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyWeight="reguler"
-            app:typographyType="body_3"
-            android:text="1 barang"
-            android:layout_below="@id/main_collection_item_name"/>
+            app:typographyType="body_3"/>
 
     </LinearLayout>
 
@@ -47,7 +43,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_toEndOf="@id/ll_collection_info"
-        android:text="test label"
         app:labelType="highlight_light_grey"/>
 
     <com.tokopedia.iconunify.IconUnify
@@ -56,7 +51,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/label_collection_item"
         app:icon_name="CHECK"
         app:icon_color_light_enable="@color/Unify_G500"
         app:icon_color_night_enable="@color/Unify_G500"
