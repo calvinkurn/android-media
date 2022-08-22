@@ -330,7 +330,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.FeedAccountList -> handleFeedAccountList()
+            is PlayBroadcastAction.GetFeedAccountList -> handleFeedAccountList()
             is PlayBroadcastAction.SelectFeedAccount -> handleSetSelectedFeedAccount(event.feedAccount)
 
             /** Game */
@@ -1463,6 +1463,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _feedAccountListState.value = feedAccountList
 
+            //TODO can't force to select first account need to check it first (eligible/last
             if(feedAccountList.isNotEmpty()) {
                 _selectedFeedAccount.value = feedAccountList.first()
             }
