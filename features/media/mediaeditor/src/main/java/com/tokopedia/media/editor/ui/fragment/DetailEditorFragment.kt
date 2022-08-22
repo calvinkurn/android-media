@@ -84,6 +84,7 @@ class DetailEditorFragment @Inject constructor(
     private var removeBackgroundRetryLimit = 3
 
     private var isEdited = false
+    private var initialImageMatrix: Matrix? = null
 
     fun isShowDialogConfirmation(): Boolean{
         return isEdited
@@ -166,8 +167,6 @@ class DetailEditorFragment @Inject constructor(
             }
             // set result null, just use it as temporary for save image to cache
             data.resultUrl = null
-
-            isEdited = true
         }
     }
 
@@ -184,6 +183,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onImageMirror() {
         rotateFilterRepositoryImpl.mirror(viewBinding?.imgUcropPreview)
+        isEdited = true
     }
 
     override fun onImageRotate(rotateDegree: Float) {
@@ -192,6 +192,7 @@ class DetailEditorFragment @Inject constructor(
             RotateToolUiComponent.ROTATE_BTN_DEGREE,
             true
         )
+        isEdited = true
     }
 
     override fun onCropRatioClicked(ratio: Float) {
@@ -218,6 +219,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeBrightness() {
         viewModel.brightnessFilter.observe(viewLifecycleOwner) {
             viewBinding?.imgUcropPreview?.cropImageView?.colorFilter = it
+            isEdited = true
         }
     }
 
@@ -230,6 +232,7 @@ class DetailEditorFragment @Inject constructor(
                 )
 
                 viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(contrastBitmap)
+                isEdited = true
             }
         }
     }
@@ -238,6 +241,7 @@ class DetailEditorFragment @Inject constructor(
         viewModel.removeBackground.observe(viewLifecycleOwner) {
             data.removeBackgroundUrl = it?.path
             viewBinding?.imgUcropPreview?.cropImageView?.loadImage(it?.path)
+            isEdited = true
         }
     }
 
@@ -269,6 +273,7 @@ class DetailEditorFragment @Inject constructor(
                     false
                 )
                 viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(result)
+                isEdited = true
             }
         }
     }
@@ -339,6 +344,8 @@ class DetailEditorFragment @Inject constructor(
                     }
                 }
                 cropComponent.setupView()
+
+                initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
             }
         }
     }
@@ -519,7 +526,17 @@ class DetailEditorFragment @Inject constructor(
             activity?.finish()
         }
 
-        viewBinding?.btnSave?.setOnClickListener {
+        viewBinding?.btnSave?.setOnClickListener { _ ->
+            // check if user move crop area via image matrix translation
+            initialImageMatrix?.values()?.let { initialMatrixValue ->
+                val currentMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
+                currentMatrix?.let {
+                    initialMatrixValue.forEachIndexed { index, value ->
+                        if(value != currentMatrix[index]) isEdited = true
+                    }
+                }
+            }
+
             // if no editing perform, then skip save
             if(isEdited) {
                 if(data.isToolRemoveBackground()){
