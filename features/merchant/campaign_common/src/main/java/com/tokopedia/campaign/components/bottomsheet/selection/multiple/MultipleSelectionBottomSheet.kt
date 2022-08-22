@@ -75,6 +75,7 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
     private fun setupView() {
         setupClickListeners()
         setupRecyclerView()
+        binding?.btnApply?.isEnabled = selectedItemIds.isNotEmpty()
     }
 
     private fun setupClickListeners() {
