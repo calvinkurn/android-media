@@ -2489,7 +2489,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
         if (hasUnappliedBo) {
-            getView().checkUnapplyBoPromoShipment();
+            getView().renderUnapplyBoIncompleteShipment();
         }
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();

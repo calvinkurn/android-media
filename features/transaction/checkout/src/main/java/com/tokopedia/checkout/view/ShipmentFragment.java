@@ -3505,7 +3505,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void checkUnapplyBoPromoShipment() {
+    public void renderUnapplyBoIncompleteShipment() {
         if (getActivity() != null) {
             List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
             int firstFoundPosition = 0;

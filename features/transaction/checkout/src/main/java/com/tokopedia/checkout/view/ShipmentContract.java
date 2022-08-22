@@ -175,7 +175,7 @@ public interface ShipmentContract {
 
         void onNeedUpdateViewItem(int position);
 
-        void checkUnapplyBoPromoShipment();
+        void renderUnapplyBoIncompleteShipment();
     }
 
     interface AnalyticsActionListener {
