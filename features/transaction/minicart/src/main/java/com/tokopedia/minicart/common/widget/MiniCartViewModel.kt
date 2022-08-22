@@ -412,10 +412,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
-            /**
-            * Don't remove this line of code. Need to wait get product bundle recom from BE to production
-            **/
-//            getProductBundleRecommendation(tmpMiniCartListUiModel)
+            getProductBundleRecommendation(tmpMiniCartListUiModel)
 
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
