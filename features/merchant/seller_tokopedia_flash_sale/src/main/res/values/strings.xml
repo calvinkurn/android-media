@@ -62,4 +62,24 @@
     <string name="stfs_placeholder_selected_status_count">%d Status</string>
     <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
 
+
+    <!--Campaign Detail Bottomsheet-->
+    <string name="campaigndetail_bottomsheet_title">Detail Campaign</string>
+    <string name="campaigndetail_criteria_title">Kriteria Umum</string>
+    <string name="campaigndetail_product_criteria_title">Kriteria Produk</string>
+    <string name="campaigndetail_timeline_title">Timeline</string>
+    <string name="campaigndetail_campaign_ended">Selesai</string>
+    <string name="campaigndetail_submission_limit_format">Maks. %d</string>
+    <string name="campaigndetail_max_shown_format">Maks. %1d dalam %2d hari</string>
+    <string-array name="criteria_items">
+        <item>Pastikan harga diskon produkmu lebih rendah dari harga termurah di Tokopedia untuk produk serupa.</item>
+        <item>Tampilan foto produk harus terlihat jelas, tidak terpotong, dengan pencahayaan terang, dan tidak berlatar putih polos. Foto produk yang terhalang logo kurir tertentu, watermark, atau tulisan tidak dapat mengikuti campaign.</item>
+        <item>Judul, gambar, dan deskripsi harus sesuai dengan produk didaftarkan tanpa melanggar Hak Merek Dagang dan sesuai syarat &amp; ketentuan Tokopedia.</item>
+        <item>Khusus untuk produk kategori makanan, pastikan produk memiliki surat keterangan BPOM dengan tanggal kedaluwarsa produk tidak kurang dari 1 bulan.</item>
+        <item>Pastikan produkmu sesuai dengan kategori yang dipilih dan tema campaign yang diikuti.</item>
+        <item>Stok produk harus memadai, dalam kondisi baru, dan tidak terdaftar di campaign lain di dalam periode yang sama.</item>
+        <item><![CDATA[Sesuai syarat & ketentuan Tokopedia, susu formula bayi usia 0–12 bulan tidak boleh mengikuti Flash Sale/campaign.]]></item>
+    </string-array>
+
+
 </resources>
