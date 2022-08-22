@@ -4,32 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
-import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -39,10 +35,9 @@ import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.*
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
@@ -56,12 +51,13 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.unifyprinciples.R as unifyR
-import java.util.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Jonathan Darwin on January 24, 2022
@@ -122,6 +118,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         override fun onCancelSetupSchedule(wrapper: SchedulePicker) {
             eventBus.emit(Event.CloseSetupSchedule)
         }
+    }
+
+    private val loadingDialogFragment: LoadingDialogFragment by lazy(LazyThreadSafetyMode.NONE) {
+        val setupClass = LoadingDialogFragment::class.java
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val fragment = fragmentFactory.instantiate(requireActivity().classLoader, setupClass.name) as LoadingDialogFragment
+        fragment.setLoaderType(LoadingDialogFragment.LoaderType.CIRCULAR)
+        fragment
     }
 
     /** Lifecycle */
@@ -281,8 +285,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
             icBroPreparationSwitchCamera.setOnClickListener {
                 analytic.clickSwitchCameraOnPreparation()
-
-                parentViewModel.switchCamera()
+                broadcaster.flip()
             }
         }
     }
@@ -307,7 +310,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeTitle()
         observeCover()
         observeCreateLiveStream()
-        observeLiveStreamState()
 
         observeUiState()
         observeUiEvent()
@@ -355,32 +357,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun observeCreateLiveStream() {
         viewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
-                is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
+                is NetworkResult.Success -> startBroadcast(it.data.ingestUrl)
                 is NetworkResult.Fail -> {
-                    showCountdown(false)
+                    showLoading(false)
                     toaster.showError(
                         err = it.error,
                         customErrMessage = it.error.message
                     )
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
-            }
-        }
-    }
-
-    private fun observeLiveStreamState(){
-        parentViewModel.observableLiveViewState.observe(viewLifecycleOwner) {
-            if (!isVisible) return@observe
-
-            when (it) {
-                is PlayLiveViewState.Started -> {
-                    openBroadcastLivePage()
-                    parentViewModel.setFirstTimeLiveStreaming()
-                }
-                is PlayLiveViewState.Error -> {
-                    showCountdown(false)
-                    handleLivePushError(it)
-                }
+                NetworkResult.Loading -> showLoading(true)
             }
         }
     }
@@ -404,7 +390,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         toaster.showErrorInView(
                             toasterContainer,
                             event.error,
-                            bottomMargin = resources.getDimensionPixelOffset(
+                            bottomMargin = requireContext().resources.getDimensionPixelOffset(
                                 unifyR.dimen.spacing_lvl3
                             )
                         )
@@ -421,6 +407,28 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         toaster.showToaster(
                             message = getString(R.string.play_broadcast_schedule_deleted)
                         )
+                    }
+                    is PlayBroadcastEvent.ShowError -> {
+                        showLoading(false)
+                        if (event.onRetry == null) toaster.showError(event.error)
+                        else {
+                            toaster.showError(event.error,
+                                duration = Toaster.LENGTH_INDEFINITE,
+                                actionLabel = getString(R.string.play_broadcast_try_again),
+                                actionListener = {
+                                    showLoading(true)
+                                    event.onRetry.invoke()
+                                })
+                        }
+                    }
+                    PlayBroadcastEvent.BroadcastStarted -> {
+                        showLoading(false)
+                        openBroadcastLivePage()
+                        parentViewModel.startTimer()
+                    }
+                    is PlayBroadcastEvent.ShowBroadcastError -> {
+                        showLoading(false)
+                        handleBroadcastError(event.error)
                     }
                     else -> {}
                 }
@@ -612,42 +620,46 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return ErrorHandler.getErrorMessage(context, err)
     }
 
-    private fun handleLivePushError(state: PlayLiveViewState.Error) {
-        when(state.error.type) {
-            PlayLivePusherErrorType.ConnectFailed -> toaster.showError(
-                err = state.error,
-                customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
-                actionLabel = getString(R.string.play_broadcast_try_again),
-                actionListener = {
-                    showCountdown(true)
-                    parentViewModel.reconnectLiveStream()
+    private fun handleBroadcastError(error: Throwable) {
+        analytic.viewErrorOnFinalSetupPage(error.localizedMessage)
+        if (error is BroadcasterException) {
+            when(error.errorType) {
+                BroadcasterErrorType.InternetUnavailable,
+                BroadcasterErrorType.StreamFailed -> {
+                    toaster.showError(error, getString(R.string.play_live_broadcast_connect_fail),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = {
+                            broadcaster.start()
+                        })
                 }
-            )
-            PlayLivePusherErrorType.SystemError -> toaster.showError(
-                err = state.error,
-                customErrMessage = getString(R.string.play_dialog_unsupported_device_desc),
-                actionLabel = getString(R.string.play_ok),
-                actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
-            )
-            PlayLivePusherErrorType.NetworkLoss,
-            PlayLivePusherErrorType.NetworkPoor -> toaster.showError(
-                err = state.error,
-                customErrMessage = getString(R.string.play_bro_error_network_problem),
-                actionLabel = getString(R.string.play_ok)
-            )
-            else -> toaster.showError(
-                err = state.error,
-                customErrMessage = getString(R.string.play_broadcaster_default_error),
-                actionLabel = getString(R.string.play_ok)
-            )
-        }
-        analytic.viewErrorOnFinalSetupPage(state.error.reason)
-        if (GlobalConfig.DEBUG) {
-            Toast.makeText(
-                requireContext(),
-                "reason: ${state.error.reason} \n\n(Important! this message only appears in debug mode)",
-                Toast.LENGTH_LONG
-            ).show()
+                BroadcasterErrorType.AuthFailed,
+                BroadcasterErrorType.UrlEmpty -> {
+                    toaster.showError(error, getString(R.string.play_live_broadcast_connect_fail),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = {
+                            viewModel.createLiveStream()
+                        })
+                }
+                BroadcasterErrorType.ServiceNotReady,
+                BroadcasterErrorType.StartFailed -> {
+                    toaster.showError(error, getString(R.string.play_broadcaster_default_error),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = {
+                            broadcaster.start()
+                        })
+                }
+                else -> {
+                    toaster.showError(error, getString(R.string.play_live_broadcast_unrecoverable_error),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_ok),
+                        actionListener = {
+                            activity?.finish()
+                        })
+                }
+            }
         }
     }
 
@@ -660,9 +672,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             .build()
 
         binding.playPreparationCountdownTimer.startCountDown(animationProperty, object : PlayTimerLiveCountDown.Listener {
-            override fun onTick(milisUntilFinished: Long) {}
+            override fun onTick(millisUntilFinished: Long) {}
 
             override fun onFinish() {
+                showCountdown(false)
                 viewModel.createLiveStream()
             }
 
@@ -713,6 +726,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
         return earlyLiveStreamDialog
+    }
+
+    private fun showLoading(isShow: Boolean) {
+        if(isShow) {
+            if(!isLoadingDialogVisible())
+                loadingDialogFragment.show(childFragmentManager)
+        } else if(loadingDialogFragment.isAdded) {
+            loadingDialogFragment.dismiss()
+        }
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        return loadingDialogFragment.isVisible
+    }
+
+    private fun startBroadcast(ingestUrl: String) {
+        broadcaster.start(ingestUrl)
     }
 
     companion object {

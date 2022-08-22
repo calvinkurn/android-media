@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
@@ -72,6 +74,8 @@ class ProductCardViewHolder(
             )
         }
 
+        binding.qeuProductQtyEditor.setupEditText()
+        binding.qeuProductQtyEditor.maxValue = TokofoodExt.MAXIMUM_QUANTITY
         binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -79,7 +83,7 @@ class ProductCardViewHolder(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
                 val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-                val quantity = p0.toString().toIntOrZero()
+                val quantity = binding.qeuProductQtyEditor.getValue().orZero()
                 if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
                     clickListener.onUpdateProductQty(
                             productId = productUiModel.id,

@@ -103,9 +103,14 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
             bottomLeftRadius = R.dimen.dp_topchat_20,
             bottomRightRadius = R.dimen.dp_topchat_20,
             shadowColor = R.color.topchat_dms_chat_bubble_shadow,
-            elevation = R.dimen.dp_topchat_2,
+            elevation = R.dimen.dp_topchat_1,
             shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
+            shadowGravity = Gravity.NO_GRAVITY,
+            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
+            strokeWidth = R.dimen.dp_topchat_1,
+            //Hide the top shadow
+            shadowTop = 0,
+            isInsetElevation = false
         )
     }
 

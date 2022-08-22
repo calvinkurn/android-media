@@ -18,6 +18,7 @@ object ShopPageGqlQueryConstant {
                   product_url
                   stock
                   minimum_order
+                  max_order
                   status
                   price{
                     text_idr

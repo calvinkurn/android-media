@@ -116,6 +116,9 @@ class SomListGetOrderListUseCase @Inject constructor(
                       product_qty
                     }
                   }
+                  plus_data {
+                    logo_url
+                  }
                 }
               }
             }

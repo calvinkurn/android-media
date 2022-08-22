@@ -113,4 +113,22 @@ object SomNavigator {
             }
         }
     }
+
+    fun openAppLink(context: Context?, appLink: String): Boolean {
+        val intent: Intent? = RouteManager.getIntentNoFallback(context, appLink)
+        return if (intent == null) {
+            if (appLink.startsWith(SomConsts.PREFIX_HTTP)) {
+                openWebView(context, appLink)
+                true
+            } else false
+        } else {
+            context?.startActivity(intent)
+            true
+        }
+    }
+
+    fun openWebView(context: Context?, url: String) {
+        val intent: Intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        context?.startActivity(intent)
+    }
 }

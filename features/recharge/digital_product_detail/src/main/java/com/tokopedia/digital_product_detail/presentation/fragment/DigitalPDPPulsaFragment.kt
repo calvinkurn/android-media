@@ -87,6 +87,9 @@ import com.tokopedia.recharge_component.model.client_number.RechargeClientNumber
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -110,8 +113,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     DigitalHistoryIconListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
-    ClientNumberAutoCompleteListener
-{
+    ClientNumberAutoCompleteListener {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -142,6 +144,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -195,8 +201,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             rechargePdpPulsaSvContainer.setupDynamicScrollListener(
                 { !viewModel.isEligibleToBuy },
                 { rechargePdpPulsaClientNumberWidget.getInputNumber().isEmpty() },
-                { viewModel.runThrottleJob { onCollapseAppBar() }},
-                { viewModel.runThrottleJob { onExpandAppBar() }}
+                { viewModel.runThrottleJob { onCollapseAppBar() } },
+                { viewModel.runThrottleJob { onExpandAppBar() } }
             )
         }
     }
@@ -224,7 +230,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
                 val isOperatorChanged = operator.id != selectedOperator.operator.id
                 val productIdFromDefaultPrefix =
-                        selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
+                    selectedOperator.operator.attributes.defaultProductId.toIntOrZero()
 
                 /* set default product id when prefix changed */
                 if (isOperatorChanged && operator.id.isEmpty() && productIdFromApplink.isMoreThanZero()) {
@@ -333,7 +339,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     onSuccessDenomGrid(denomData.data.denomWidgetModel, selectedPositionDenom)
                     onSuccessMCCM(denomData.data.mccmFlashSaleModel, selectedPositionMCCM)
 
-                    if (viewModel.isEmptyDenomMCCM(denomData.data.denomWidgetModel.listDenomData, denomData.data.mccmFlashSaleModel.listDenomData)){
+                    if (viewModel.isEmptyDenomMCCM(
+                            denomData.data.denomWidgetModel.listDenomData,
+                            denomData.data.mccmFlashSaleModel.listDenomData
+                        )
+                    ) {
                         showEmptyState(false)
                     } else hideEmptyState()
 
@@ -398,7 +408,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getRecommendations() {
-        val clientNumbers = listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
+        val clientNumbers =
+            listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
@@ -453,7 +464,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             if (favoriteChips.isNotEmpty()) {
-                setFavoriteNumber(DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
+                setFavoriteNumber(
+                    DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(
+                        favoriteChips
+                    )
+                )
                 setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
             } else setupDynamicScrollViewPadding()
         }
@@ -462,7 +477,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
-                setAutoCompleteList(DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete))
+                setAutoCompleteList(
+                    DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(
+                        autoComplete
+                    )
+                )
             }
         }
     }
@@ -680,7 +699,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 selectedInitialPosition = null
             }
             if (denomGrid.listDenomData.isNotEmpty()) {
-                val colorHexInt = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                val colorHexInt = ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 
                 it.rechargePdpPulsaPromoWidget.show()
@@ -895,12 +917,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
                 ?: TopupBillsExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
         }
 
@@ -928,7 +950,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.addToCart(
             DeviceUtil.getDigitalIdentifierParam(requireActivity()),
             DigitalSubscriptionParams(),
-            userSession.userId
+            userSession.userId,
+            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
         )
     }
 
@@ -943,9 +966,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
         binding?.rechargePdpPulsaClientNumberWidget
-            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(
+                        this
+                    )
                     binding?.run {
                         val defaultPadding: Int = context?.resources?.displayMetrics?.let {
                             rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
@@ -1105,7 +1131,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_GRID_TYPE)
+                viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_GRID_TYPE
+            )
                 onClearSelectedMCCM(viewModel.selectedGridProduct.position)
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
@@ -1128,8 +1155,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onDenomGridImpression(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
-        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE){
+    override fun onDenomGridImpression(
+        denomGrid: DenomData,
+        layoutType: DenomWidgetEnum,
+        position: Int
+    ) {
+        if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1139,7 +1170,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 layoutType,
                 position
             )
-        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1168,7 +1199,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPAnalytics.clickChevronBuyWidget(
-            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toIntOrZero()),
             operator.attributes.name,
             denom.price,
             denom.slashPrice,

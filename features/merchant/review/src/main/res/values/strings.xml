@@ -429,6 +429,7 @@
     <string name="review_media_image_player_see_more_button_text">Lihat Semua</string>
     <string name="review_image_player_see_more">Tersedia %1$d foto &amp; video dari pembeli</string>
     <string name="review_image_player_toaster_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_image_player_toaster_error_message_with_error_code">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya! Kode Error: (%1$s)</string>
     <string name="review_image_player_toaster_error_action">Refresh</string>
 
     <string name="ic_create_review_image_remove_content_description">Buang gambar</string>

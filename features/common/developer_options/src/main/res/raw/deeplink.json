@@ -345,6 +345,11 @@
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE"
      }, 
      {
+          "destination_activity": "com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/shop-flash-sale/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE"
+     }, 
+     {
           "destination_activity": "com.tokopedia.product_bundle.activity.ProductBundleActivity", 
           "deeplink": "tokopedia-android-internal://merchant/product-bundle/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE"
@@ -826,13 +831,13 @@
      }, 
      {
           "destination_activity": "com.tokopedia.chooseaccount.view.general.ChooseAccountActivity", 
-          "deeplink": "tokopedia-android-internal://global/choose-account", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.CHOOSE_ACCOUNT"
+          "deeplink": "tokopedia-android-internal://user/choose-account", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT"
      }, 
      {
           "destination_activity": "com.tokopedia.chooseaccount.view.fingerprint.ChooseAccountFingerprintActivity", 
-          "deeplink": "tokopedia-android-internal://global/choose-account-fingerprint", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.CHOOSE_ACCOUNT_FINGERPRINT"
+          "deeplink": "tokopedia-android-internal://user/choose-account-fingerprint", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT"
      }, 
      {
           "destination_activity": "com.tokopedia.changephonenumber.features.ChangePhoneNumberActivity", 
@@ -2412,6 +2417,11 @@
      {
           "destination_activity": "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity", 
           "deeplink": "https://www.tokopedia.com.*", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity", 
+          "deeplink": "https://ta.tokopedia.com/promo/v1/clicks/.*", 
           "deeplink_variable": ""
      }, 
      {

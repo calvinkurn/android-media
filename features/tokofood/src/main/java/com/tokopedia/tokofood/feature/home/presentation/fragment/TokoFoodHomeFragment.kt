@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -41,6 +42,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
@@ -220,9 +222,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return null
     }
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return null
-    }
+    override fun getFragmentToolbar(): Toolbar? = null
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
@@ -465,6 +465,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -539,6 +540,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                         intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
                         intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
                         intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+                        intent.putExtra(PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
                         startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
                     } else {
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
@@ -816,7 +818,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
                 shopId = chooseAddressData.tokonow.shopId.toString(),
                 warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
@@ -850,10 +853,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showMiniCartHome() {
+        setRvPadding(isShowMiniCart = true)
         miniCartHome?.show()
     }
 
     private fun hideMiniCartHome() {
+        setRvPadding(isShowMiniCart = false)
         miniCartHome?.hide()
     }
 
@@ -1001,6 +1006,17 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 showJumpToTop(recyclerView)
             } else {
                 hideJumpToTop()
+            }
+        }
+    }
+
+    private fun setRvPadding(isShowMiniCart: Boolean) {
+        rvHome?.let {
+            if (isShowMiniCart){
+                it.setPadding(0,0, 0, context?.resources?.
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            } else {
+                it.setPadding(0,0, 0,0)
             }
         }
     }

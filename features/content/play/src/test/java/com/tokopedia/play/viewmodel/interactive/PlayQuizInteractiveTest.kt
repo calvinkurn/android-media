@@ -150,7 +150,7 @@ class PlayQuizInteractiveTest {
                 it.viewModel.submitAction(
                     PlayViewerNewAction.ClickQuizOptionAction(item = choice)
                 )
-            }.last().assertEqualTo(QuizAnsweredEvent)
+            }.last().assertEqualTo(QuizAnsweredEvent(isTrue = true))
             mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
         }
     }
@@ -232,7 +232,7 @@ class PlayQuizInteractiveTest {
                 viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = selectedChoice))
                 mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
             }
-            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent)
+            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent(isTrue = false))
             (eventAndState.first.interactive.interactive as InteractiveUiModel.Quiz).listOfChoices.forEach { quizChoice ->
                 quizChoice.assertType<QuizChoicesUiModel> { choice ->
                     if(choice.id == selectedId) choice.type is PlayQuizOptionState.Answered

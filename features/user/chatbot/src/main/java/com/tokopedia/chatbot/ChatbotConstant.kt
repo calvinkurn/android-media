@@ -7,6 +7,7 @@ object ChatbotConstant {
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
+    const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
 
     object CsatRating {
         const val RATING_ONE = 1
@@ -38,6 +39,7 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val SESSION_CHANGE = "31"
     }
 
     object ChatbotUnification{

@@ -102,7 +102,7 @@ data class AllowedWhenInactiveEvent(
 /**
  * Interactive
  * */
-object QuizAnsweredEvent : PlayViewerNewUiEvent()
+data class QuizAnsweredEvent(val isTrue: Boolean) : PlayViewerNewUiEvent()
 
 object OpenKebabEvent : PlayViewerNewUiEvent()
 object OpenUserReportEvent : PlayViewerNewUiEvent()

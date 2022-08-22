@@ -68,6 +68,7 @@ import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
 import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
@@ -828,6 +829,80 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
     }
+
+    @Test
+    fun `when removeLeftCarouselAtc should remove left carousel atc widget from layout list`() {
+        val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val dynamicChannelResponse = createDynamicChannelLayoutList(
+            listOf(
+                HomeLayoutResponse(
+                    id = "2122",
+                    layout = "left_carousel_atc",
+                    header = Header(
+                        name = "Mix Left Atc Carousel",
+                        serverTimeUnix = 0
+                    )
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = dynamicChannelResponse,
+            localCacheModel = localCacheModel
+        )
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = emptyList()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        val expectedResultWithLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                    createLeftCarouselAtcDataModel(
+                        id = "2122",
+                        headerName = "Mix Left Atc Carousel",
+                    )
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithLeftCarouselAtcWidget)
+
+        viewModel.removeLeftCarouselAtc("2122")
+
+        val expectedResultWithoutLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithoutLeftCarouselAtcWidget)
+    }
+
+    @Test
+    fun `when removeLeftCarouselAtc throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.removeLeftCarouselAtc("1")
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
 
     @Test
     fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
@@ -1680,7 +1755,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
-        val expected = HomeAddToCartTracker(
+        val expected = HomeRemoveFromCartTracker(
             position = 0,
             quantity = 0,
             cartId = cartId,
@@ -1691,8 +1766,31 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
 
-        viewModel.homeAddToCartTracker
+        viewModel.homeRemoveFromCartTracker
             .verifyValueEquals(expected)
+    }
+
+
+    @Test
+    fun `homeLayoutItemList does NOT contain product recom when remove from cart should NOT track the product`() {
+        val warehouseId = "1"
+        val productId = "1"
+        val shopId = "5"
+        val cartId = "1999"
+        val type = TokoNowLayoutType.PRODUCT_RECOM
+
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetMiniCart_thenReturn(miniCartResponse)
+        onRemoveItemCart_thenReturn(RemoveFromCartData())
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.addProductToCart(productId, 0, shopId, type)
+
+        viewModel.homeRemoveFromCartTracker
+            .verifyValueEquals(null)
     }
 
     @Test

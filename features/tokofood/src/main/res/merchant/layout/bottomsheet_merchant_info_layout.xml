@@ -23,7 +23,7 @@
         app:layout_constraintLeft_toRightOf="@id/iu_place_marker"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1"
+        app:typographyType="display_1"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tpg_merchant_name"
         app:layout_constraintTop_toBottomOf="@id/tpg_merchant_name"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/du_top"
@@ -54,7 +54,7 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/text_ops_hour_title"
         app:layout_constraintTop_toBottomOf="@id/du_top"
-        app:typographyType="body_1"
+        app:typographyType="display_1"
         app:typographyWeight="bold" />
 
     <androidx.recyclerview.widget.RecyclerView

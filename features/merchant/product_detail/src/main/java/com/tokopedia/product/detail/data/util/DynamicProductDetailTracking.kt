@@ -1613,7 +1613,7 @@ object DynamicProductDetailTracking {
             val dimension53 = productInfo?.data?.campaign?.discountedPrice?.toLong()?.toString()
                     ?: ""
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
-            val dimension83 = TrackingUtil.getBoTypeString(boType)
+            val dimension83 = ProductCartHelper.getBoTrackerString(boType)
             val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
             val dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
             val dimension98 = if (isStockAvailable == "0") "not available" else "available"

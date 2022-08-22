@@ -5,9 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.*
 
 object VisitableDataHelper {
+
+    private const val INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION = 1
+    private const val INDEX_AFTER_FROM_UNAVAILABLE_SECTION = 2
 
     fun MutableList<Visitable<*>>.getAddressUiModel(): Pair<Int, TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
@@ -134,6 +138,10 @@ object VisitableDataHelper {
         return partiallyLoadedModels
     }
 
+    fun MutableList<Visitable<*>>.getProductWithChangedQuantity(): List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel> {
+        return this.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
+            .filter { it.isAvailable && it.isEnabled && it.isQuantityChanged }
+    }
 
     fun MutableList<Visitable<*>>.isLastAvailableProduct(): Boolean {
         val count = this.count { it is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && it.isAvailable }
@@ -159,6 +167,21 @@ object VisitableDataHelper {
                 variants.isEmpty() || isSameVariants && variants.size == this.variantsParam.size
             } != false
         }?.cartId
+    }
+
+    fun MutableList<Visitable<*>>.setCollapsedUnavailableProducts(dataList: MutableList<Visitable<*>>,
+                                                                  mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
+        val unavailableReasonData = dataList.getUnavailableReasonUiModel()
+        unavailableReasonData?.let { mUnavailableReasonData ->
+            val from = mUnavailableReasonData.first + INDEX_AFTER_FROM_UNAVAILABLE_SECTION
+            val to = mAccordionData.first - INDEX_BEFORE_FROM_UNAVAILABLE_ACCORDION
+            clear()
+            addAll(dataList.subList(from, to).toMutableList())
+        }
+    }
+
+    fun MutableList<Visitable<*>>?.setCartId(index: Int, cartId: String) {
+        (this?.getOrNull(index) as? TokoFoodPurchaseProductTokoFoodPurchaseUiModel)?.cartId = cartId
     }
 
 }

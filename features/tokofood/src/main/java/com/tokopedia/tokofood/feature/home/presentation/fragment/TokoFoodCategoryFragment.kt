@@ -341,6 +341,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(pageTitle)
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -460,10 +461,12 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun showMiniCartCategory() {
+        setRvPadding(isShowMiniCart = true)
         miniCartCategory?.show()
     }
 
     private fun hideMiniCartCategory() {
+        setRvPadding(isShowMiniCart = false)
         miniCartCategory?.hide()
     }
 
@@ -483,5 +486,16 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             userSession.deviceId.orEmpty(),
             description
         )
+    }
+
+    private fun setRvPadding(isShowMiniCart: Boolean) {
+        rvCategory?.let {
+            if (isShowMiniCart){
+                it.setPadding(0,0, 0, context?.resources?.
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            } else {
+                it.setPadding(0,0, 0,0)
+            }
+        }
     }
 }

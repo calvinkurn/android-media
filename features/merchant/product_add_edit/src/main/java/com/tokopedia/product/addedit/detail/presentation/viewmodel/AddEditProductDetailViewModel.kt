@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SPECIFICATION_COUNTER
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_WHOLESALE_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
@@ -347,6 +348,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         val wholeSaleQuantity = wholeSaleQuantityInput.toBigIntegerOrNull().orZero()
         if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
+        } else if (wholeSaleQuantity >= MAX_WHOLESALE_QUANTITY.toBigInteger()) {
+            return provider.getWholeSaleMaxErrorMessage(MAX_WHOLESALE_QUANTITY)
         }
         if (minOrderInput.isNotBlank()) {
             if (wholeSaleQuantity < minOrderInput.toBigIntegerOrNull().orZero()) {

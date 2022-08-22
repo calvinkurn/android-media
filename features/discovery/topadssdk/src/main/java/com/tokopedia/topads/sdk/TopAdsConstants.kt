@@ -10,8 +10,14 @@ object TopAdsConstants {
     const val LAYOUT_13 = 13
     const val CONST_5 = 5
 
-    object TopAdsClickUrlTrackerConstant{
+    object TopAdsClickUrlTrackerConstant {
         const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
         const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
+    }
+
+    object TdnBannerConstants {
+        const val TYPE_CAROUSEL = "carousel"
+        const val TYPE_SINGLE = "single"
+
     }
 }

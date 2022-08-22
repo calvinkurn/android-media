@@ -1721,7 +1721,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedAnalytics.evenClickMenu(finalId, postType, isFollowed, authorId, mediaType)
             val sheet = MenuOptionsBottomSheet.newInstance(
                 reportable, isFollowed,
-                deletable
+                deletable,
+                isEditable = postType != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
             )
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {

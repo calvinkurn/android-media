@@ -20,8 +20,6 @@ object RollenceKey {
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
-    const val HOME_BEAUTY_FEST = "home_cantik"
-
     //home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
     const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
@@ -49,8 +47,6 @@ object RollenceKey {
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
     const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
 
-    //Search
-    const val SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION = "ContentTrackerUni"
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform

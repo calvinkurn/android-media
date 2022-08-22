@@ -206,5 +206,33 @@
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="feed_asgc_diskon_toko">Barang Diskon</string>
 
+    <string name="feed_fab_create_content">Buat Konten</string>
+    <string name="feed_fab_create_post">Buat Post</string>
 
+    <string name="feed_webview_template">%s?url=%s</string>
+    <!-- Feed UGC Onboarding -->
+    <string name="feed_ugc_complete_onboarding_title">Bikin username dulu</string>
+    <string name="feed_ugc_tnc_onboarding_title">Yang perlu kamu tahu</string>
+    <string name="feed_ugc_complete_onboarding_desc">Sebelum buat postingan, bikin username yang unik supaya kamu lebih mudah dikenal.</string>
+    <string name="feed_ugc_complete_onboarding_username">Username</string>
+    <string name="feed_ugc_complete_onboarding_username_prepend">\@</string>
+    <string name="feed_ugc_complete_onboarding_tnc_title">Pastikan postinganmu nanti sesuai ketentuan berikut:</string>
+    <string name="feed_ugc_onboarding_tnc_1">Hanya posting pengalaman belanja di Tokopedia</string>
+    <string name="feed_ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
+    <string name="feed_ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
+    <string name="feed_ugc_onboarding_continue">Lanjut</string>
+    <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
+    <string name="feed_post_sebagai">Post sebagai</string>
+    <string name="feed_ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
+    <string name="feed_ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
+    <string name="feed_ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
+    <string name="feed_ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
+    <string name="feed_ugc_onboarding_unknown_error">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+
+    <!-- Shop Recommendation -->
+    <string name="other_shops_based_on_your_recommendation">Toko lain sesuai rekomendasimu</string>
+    <string name="btn_text_follow">Follow</string>
+    <string name="btn_text_following">Following</string>
+    <string name="empty_page_title">Belum ada postingan</string>
+    <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
 </resources>

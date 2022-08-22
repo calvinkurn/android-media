@@ -1,20 +1,23 @@
 package com.tokopedia.tokofood.postpurchase
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.tokofood.utils.JsonResourcesUtil
 import com.tokopedia.tokofood.utils.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -75,10 +78,24 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
     @Test
     fun `when set savedStateHandle should return the orderId has value`() {
         runBlocking {
+            every {
+                savedStateHandle.get<String>(TokoFoodOrderTrackingViewModel.ORDER_ID)
+            } returns ORDER_ID_DUMMY
             viewModel.updateOrderId(ORDER_ID_DUMMY)
             viewModel.onSavedInstanceState()
             viewModel.onRestoreSavedInstanceState()
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
+        }
+    }
+
+    @Test
+    fun `when set savedStateHandle should return the orderId has subscription value`() {
+        runBlocking {
+            every<String?> {
+                savedStateHandle.get(any())
+            } returns null
+            viewModel.onRestoreSavedInstanceState()
+            assertEquals(Int.ONE, viewModel.orderIdFlow.subscriptionCount.value)
         }
     }
 

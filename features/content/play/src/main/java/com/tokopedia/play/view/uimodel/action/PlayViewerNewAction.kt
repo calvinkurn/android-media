@@ -21,6 +21,7 @@ sealed class PlayViewerNewAction {
     object StartPlayingInteractive : PlayViewerNewAction()
     object StopPlayingInteractive : PlayViewerNewAction()
     object FollowInteractive : PlayViewerNewAction()
+    object AutoOpenInteractive: PlayViewerNewAction()
 
     object Follow : PlayViewerNewAction()
 }

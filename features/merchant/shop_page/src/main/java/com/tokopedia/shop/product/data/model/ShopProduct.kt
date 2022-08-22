@@ -55,6 +55,10 @@ data class ShopProduct(
         @Expose
         val minimumOrder: Int = 0,
 
+        @SerializedName("max_order")
+        @Expose
+        val maximumOrder: Int = 0,
+
         @SerializedName("freeOngkir")
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir(),

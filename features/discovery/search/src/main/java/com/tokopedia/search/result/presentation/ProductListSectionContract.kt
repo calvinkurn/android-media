@@ -14,8 +14,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
@@ -121,7 +122,7 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
-    interface Presenter : CustomerPresenter<View>, Pagination {
+    interface Presenter : CustomerPresenter<View>, Pagination, BannerAdsPresenter {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
@@ -153,17 +154,16 @@ interface ProductListSectionContract {
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onInspirationCarouselChipsClick(
-                adapterPosition: Int,
-                inspirationCarouselViewModel: InspirationCarouselDataView,
-                clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-                searchParameter: Map<String, Any>
+            adapterPosition: Int,
+            inspirationCarouselViewModel: InspirationCarouselDataView,
+            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+            searchParameter: Map<String, Any>
         )
         fun updateLastFilter(
             searchParameter: Map<String, Any>,
             savedOptionList: List<SavedOption>,
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
-        fun shopAdsImpressionCount(impressionCount: Int)
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

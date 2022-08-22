@@ -22,6 +22,7 @@ import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
@@ -31,6 +32,8 @@ import com.tokopedia.topads.view.model.AdChooserViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
@@ -80,7 +83,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         viewModel = ViewModelProvider(this, viewModelFactory).get(AdChooserViewModel::class.java)
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_create_fragment_onboarding),
+        val view = inflater.inflate(context?.resources?.getLayout(R.layout.topads_create_fragment_onboarding),
             container, false)
         setUpView(view)
         return view
@@ -138,8 +141,12 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
-            viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
-
+            when (it) {
+                is Success -> viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
+                is Fail -> it.throwable.message?.let { errorMessage ->
+                    view.showErrorAutoAds(errorMessage)
+                }
+            }
         })
         imageView7?.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
         context?.let {
@@ -150,15 +157,14 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         }
 
         topCornerIcon1?.setImageResource(R.drawable.ic_iklan_otomatis)
-        icon2?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon3?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon4?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        icon2?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon3?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon4?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
 
         topCornerIcon2?.setImageResource(R.drawable.ic_iklan_manual)
-        icon6?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon7?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon8?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-
+        icon6?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon7?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon8?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
 
         btnStartAutoAds?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
