@@ -16,11 +16,7 @@ import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import io.mockk.clearStaticMockk
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
+import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -800,7 +796,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/login"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/login"
         assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)
     }
 
@@ -951,7 +947,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register appLink then should return empty in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, expectedDeepLink)
     }
 
@@ -1045,7 +1041,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register init then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER_INIT, expectedDeepLink)
     }
 
@@ -1570,7 +1566,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `create shop`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/landing-shop-creation"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/landing-shop-creation"
         assertEqualsDeepLinkMapper(ApplinkConst.CREATE_SHOP, expectedDeepLink)
     }
 
