@@ -46,7 +46,7 @@
         app:layout_constraintStart_toEndOf="@+id/tg_campaign_status"
         app:layout_constraintTop_toTopOf="@+id/tg_campaign_status"
         app:timer_unify_single_type="minute"
-        app:timer_unify_single_variant="informative" />
+        app:timer_unify_single_variant="general" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_campaign"

@@ -22,7 +22,7 @@ class CampaignDetailViewModel @Inject constructor(
 
     private var _campaign = MutableLiveData<Result<Campaign>>()
     val campaign: LiveData<Result<Campaign>>
-    get() = _campaign
+        get() = _campaign
 
     fun getCampaignDetail(campaignId: Long) {
         launchCatchError(
@@ -49,4 +49,9 @@ class CampaignDetailViewModel @Inject constructor(
         val endDate = campaign.endDateUnix.epochToDate().dateOnly()
         return startDate == endDate
     }
- }
+
+    fun isCampaignClosedMoreThan24Hours(campaign: Campaign): Boolean {
+        val hourDifference = campaign.submissionEndDateUnix.epochToDate().time - Date().time
+        return hourDifference > 24
+    }
+}

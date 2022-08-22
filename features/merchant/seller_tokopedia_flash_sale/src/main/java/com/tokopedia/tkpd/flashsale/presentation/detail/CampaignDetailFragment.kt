@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +14,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
-import com.tokopedia.tkpd.flashsale.common.extension.epochToDate
-import com.tokopedia.tkpd.flashsale.common.extension.formatTo
+import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -131,8 +132,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
                 }
             }
+            startUpcomingTimer(this, campaign)
             tgCampaignName.text = campaign.name
-            setCampaignPeriod(this, campaign)
+            setUpcomingCampaignPeriod(this, campaign)
         }
     }
 
@@ -162,7 +164,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setCampaignPeriod(binding: StfsCdpUpcomingHeaderBinding, campaign: Campaign) {
+    private fun setUpcomingCampaignPeriod(
+        binding: StfsCdpUpcomingHeaderBinding,
+        campaign: Campaign
+    ) {
         binding.run {
             val startDate = campaign.startDateUnix.epochToDate().formatTo(DATE_WITH_TIME)
             tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(campaign)) {
@@ -172,6 +177,20 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 val endDate = campaign.endDateUnix.epochToDate().formatTo(DATE_WITH_TIME)
                 "$startDate - $endDate"
             }
+        }
+    }
+
+    private fun startUpcomingTimer(binding: StfsCdpUpcomingHeaderBinding, campaign: Campaign) {
+        val targetDate = campaign.submissionEndDateUnix.epochToDate()
+        if (viewModel.isCampaignClosedMoreThan24Hours(campaign)) {
+            binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
+            binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+        } else if (targetDate.removeTimeZone().minuteDifference() >= 60) {
+            binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
+            binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+        } else {
+            binding.timer.timerFormat = TimerUnifySingle.FORMAT_MINUTE
+            binding.timer.targetDate = targetDate.toCalendar()
         }
     }
 }
