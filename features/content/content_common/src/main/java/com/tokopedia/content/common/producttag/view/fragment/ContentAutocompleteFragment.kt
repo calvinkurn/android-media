@@ -67,6 +67,10 @@ class ContentAutocompleteFragment @Inject constructor(
     }
 
     private fun setupView() {
+        binding.icBack.setOnClickListener {
+            viewModel.submitAction(ProductTagAction.BackPressed)
+        }
+
         binding.sbAutocomplete.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.sbAutocomplete.searchBarTextField.text.toString()
