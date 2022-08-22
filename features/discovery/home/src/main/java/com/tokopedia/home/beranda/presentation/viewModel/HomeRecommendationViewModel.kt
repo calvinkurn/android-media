@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -101,13 +102,13 @@ class HomeRecommendationViewModel @Inject constructor(
                 newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
             }
         }
-        if (topAdsBanner.isEmpty()) {
+         if (topAdsBanner.isEmpty()) {
             homeBannerTopAds.firstOrNull()?.let { newList.remove(it) }
         } else {
             topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
                 val visitableBanner = homeBannerTopAds[index]
                 if (newList.first() is HomeRecommendationHeadlineTopAdsDataModel) {
-                    if (newList.size > visitableBanner.position){
+                    if (newList.size > visitableBanner.position + Int.ONE) {
                         newList[visitableBanner.position + 1] =
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
                     }
