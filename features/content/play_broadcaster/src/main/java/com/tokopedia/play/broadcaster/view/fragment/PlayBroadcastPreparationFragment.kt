@@ -250,6 +250,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
+        with(binding.toolbarContentCommon) {
+            if (parentViewModel.isAllowChangeAccount) {
+                if (viewModel.isFirstSwitchAccount) {
+                    showCoachMarkSwitchAccount()
+                    viewModel.setNotFirstSwitchAccount()
+                }
+
+                setOnAccountClickListener {
+                    hideCoachMarkSwitchAccount()
+                    openFeedAccountBottomSheet()
+                }
+            } else setOnAccountClickListener(null)
+        }
     }
 
     private fun setupInsets() {
@@ -343,22 +356,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 title = getString(contentCommonR.string.feed_content_live_sebagai)
                 subtitle = it.name
                 icon = it.iconUrl
-            }
-        }
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            parentViewModel.feedAccountListState.collectLatest {
-                if(parentViewModel.isAllowChangeAccount) {
-                    if (viewModel.isFirstSwitchAccount) {
-                        showCoachMarkSwitchAccount()
-                        viewModel.setNotFirstSwitchAccount()
-                    }
-
-                    setOnAccountClickListener {
-                        hideCoachMarkSwitchAccount()
-                        openFeedAccountBottomSheet()
-                    }
-                }
-                else setOnAccountClickListener(null)
             }
         }
     }
