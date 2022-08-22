@@ -215,7 +215,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     sendTrackerBundleAtcClickEvent(
                             atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
-                            selectedProductBundleMaster = selectedProductBundleMaster,
+                            bundleName = selectedProductBundleMaster.bundleName,
                             bundlePrice = totalBundlePriceText.toLong()
                     )
                     val intent = Intent()
@@ -230,7 +230,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     sendTrackerBundleAtcClickEvent(
                             atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
-                            selectedProductBundleMaster = selectedProductBundleMaster,
+                            bundleName = selectedProductBundleMaster.bundleName,
                             bundlePrice = totalBundlePriceText.toLong()
                     )
                     RouteManager.route(context, ApplinkConst.CART)
@@ -260,7 +260,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private fun sendTrackerBundleAtcClickEvent(
             atcResult: AddToCartDataResult,
             selectedProductIds: String,
-            selectedProductBundleMaster: ProductBundleMaster,
+            bundleName: String,
             bundlePrice: Long
     ) {
         val _userId = viewModel.getUserId()
@@ -270,7 +270,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 productId = selectedProductIds,
                 atcResult = atcResult,
                 source = viewModel.pageSource,
-                bundleName = selectedProductBundleMaster.bundleName,
+                bundleName = bundleName,
                 bundlePrice = bundlePrice
         )
     }

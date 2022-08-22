@@ -1,5 +1,7 @@
 package com.tokopedia.product_bundle.tracking
 
+import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
+
 object SingleProductBundleTracking: BaseProductBundleTracking() {
 
     private const val BUNDLING_TYPE = "single"
@@ -20,17 +22,34 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
     }
 
     fun trackSingleBuyClick(
-        bundleId: String?,
-        parentProductId: String,
-        selectedProductId: String?
+            userId: String,
+            atcResult: AddToCartDataResult,
+            source: String,
+            bundleName: String,
+            bundlePrice: Long,
+            parentProductId: String,
+            bundleId: String?,
+            selectedProductId: String?
     ) {
         if (bundleId != null) {
             // selectedProductId null means variant not selected yet
             val productId = selectedProductId ?: parentProductId
-            super.trackBuyClick(
-                "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                productId
+
+            trackBuyClick(
+                    userId = userId,
+                    label = "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
+                    productId = productId,
+                    atcResult = atcResult,
+                    source = source,
+                    bundleName = bundleName,
+                    bundleType = VALUE_MULTIPLE_BUNDLING,
+                    bundlePrice = bundlePrice
             )
+
+//            super.trackBuyClick(
+//                "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
+//                productId
+//            )
         }
     }
 

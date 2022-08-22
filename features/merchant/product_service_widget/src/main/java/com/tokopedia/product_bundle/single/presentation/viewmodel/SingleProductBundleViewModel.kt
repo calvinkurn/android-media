@@ -63,6 +63,10 @@ class SingleProductBundleViewModel @Inject constructor(
     val throwableError: LiveData<Throwable>
         get() = mThrowableError
 
+    fun getUserId(): String {
+        return userSession.userId
+    }
+
     fun setBundleInfo(
         context: Context,
         bundleInfo: List<BundleInfo>,

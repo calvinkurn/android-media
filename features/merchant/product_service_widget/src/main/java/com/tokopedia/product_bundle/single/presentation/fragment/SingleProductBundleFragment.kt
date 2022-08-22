@@ -34,12 +34,14 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
+import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -77,6 +79,7 @@ class SingleProductBundleFragment(
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
     private var adapter = SingleProductBundleAdapter(this)
+    private var slashPrice: String = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -200,6 +203,7 @@ class SingleProductBundleFragment(
     private fun observeTotalAmountUiModel() {
         viewModel.totalAmountUiModel.observe(viewLifecycleOwner, {
             updateTotalAmount(it.price, it.discount, it.slashPrice, it.priceGap)
+            slashPrice = it.slashPrice
         })
     }
 
@@ -207,6 +211,12 @@ class SingleProductBundleFragment(
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
             if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+                sendTrackerBundleAtcClickEvent(
+                        atcResult = it,
+                        selectedProductIds = parentProductID,
+                        bundleName = "",
+                        bundlePrice = slashPrice.toLong()
+                )
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
@@ -215,9 +225,34 @@ class SingleProductBundleFragment(
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             } else {
+                sendTrackerBundleAtcClickEvent(
+                        atcResult = it,
+                        selectedProductIds = parentProductID,
+                        bundleName = "",
+                        bundlePrice = slashPrice.toLong()
+                )
                 RouteManager.route(context, ApplinkConst.CART)
             }
         })
+    }
+
+    private fun sendTrackerBundleAtcClickEvent(
+            atcResult: AddToCartDataResult,
+            selectedProductIds: String,
+            bundleName: String,
+            bundlePrice: Long
+    ) {
+        val _userId = viewModel.getUserId()
+        SingleProductBundleTracking.trackSingleBuyClick(
+                userId = _userId,
+                atcResult = atcResult,
+                source = pageSource,
+                bundleName = bundleName,
+                bundlePrice = bundlePrice,
+                parentProductId = selectedProductIds,
+                bundleId = adapter.getSelectedBundleId(),
+                selectedProductId = adapter.getSelectedProductId()
+        )
     }
 
     private fun observeToasterError() {
@@ -315,11 +350,13 @@ class SingleProductBundleFragment(
                 priceGap = defaultPrice
             )
             amountCtaView.setOnClickListener {
-                SingleProductBundleTracking.trackSingleBuyClick(
-                    adapter.getSelectedBundleId(),
-                    parentProductID,
-                    adapter.getSelectedProductId()
-                )
+
+//                SingleProductBundleTracking.trackSingleBuyClick(
+//                    adapter.getSelectedBundleId(),
+//                    parentProductID,
+//                    adapter.getSelectedProductId()
+//                )
+
                 atcProductBundle()
             }
         }
