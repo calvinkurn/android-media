@@ -1058,7 +1058,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackDiscoOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String) {
+    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String) {
         if (screenName.isNotEmpty()) {
             val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn,campaignId, variantId)
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)

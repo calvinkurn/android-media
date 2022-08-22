@@ -1466,9 +1466,9 @@ class DiscoveryFragment :
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackDiscoOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
         } else {
-            getDiscoveryAnalytics().trackDiscoOpenScreen(identifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
         }
         openScreenStatus = true
     }
