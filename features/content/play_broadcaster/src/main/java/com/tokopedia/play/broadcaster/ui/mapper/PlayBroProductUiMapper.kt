@@ -126,7 +126,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                         DiscountedPrice(
                             originalPrice = data.campaign.originalPrice,
                             originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                            discountPercent = data.campaign.discountPercentage.toInt(),
+                            discountPercent = data.campaign.discountPercentage.toIntSafely(),
                             discountedPrice = data.campaign.discountedPrice,
                             discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
                         )
@@ -190,7 +190,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                         else DiscountedPrice(
                             originalPrice = product.originalPriceFmt,
                             originalPriceNumber = product.originalPrice.toDouble(),
-                            discountPercent = product.discount.toInt(),
+                            discountPercent = product.discount.toIntSafely(),
                             discountedPrice = product.priceFmt,
                             discountedPriceNumber = product.price.toDouble(),
                         ),
