@@ -51,7 +51,7 @@
     <string name="stfs_empty_state_ongoing_description">Jika sudah ada campaign yang sedang berlangsung, kamu bisa rutin pantau perkembangannya di sini, ya.</string>
     <string name="stfs_empty_state_done_title">Belum ada campaign yang selesai nih!</string>
     <string name="stfs_empty_state_done_description">Kamu bisa melihat riwayat campaign yang kamu ikuti di tab ini ya.</string>
-    <string name="stfs_empty_search_result_title">Oops, promo yang kamu cari nggak ditemukan</string>
+    <string name="stfs_empty_search_result_title">Oops, campaign yang kamu cari nggak ditemukan</string>
     <string name="stfs_empty_search_result_description">Coba ulangi pencarianmu menggunakan pilihan filter yang berbeda, ya.</string>
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
