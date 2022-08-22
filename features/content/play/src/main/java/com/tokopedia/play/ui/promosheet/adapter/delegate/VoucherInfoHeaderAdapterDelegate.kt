@@ -3,11 +3,13 @@ package com.tokopedia.play.ui.promosheet.adapter.delegate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.text.bold
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayVoucherHeaderBinding
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play_common.util.extension.buildSpannedString
 
 /**
  * @author by astidhiyaa on 22/08/22
@@ -35,9 +37,15 @@ class VoucherInfoHeaderAdapterDelegate :
 }
 
 class VoucherInfoHeaderViewHolder(private val view: ItemPlayVoucherHeaderBinding) :
-    RecyclerView.ViewHolder(view.root) {
+    BaseViewHolder(view.root) {
 
        fun bind(item: PlayVoucherUiModel.InfoHeader){
-            view.textView4.text = item.shopName
+            view.textView4.text = buildSpannedString {
+                append(getString(R.string.play_voucher_header))
+                append(" ")
+                bold {
+                    append(item.shopName)
+                }
+            }
        }
 }

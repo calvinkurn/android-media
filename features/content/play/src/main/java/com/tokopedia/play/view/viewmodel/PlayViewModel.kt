@@ -1164,7 +1164,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun createNewVoucherList(vouchers: List<PlayVoucherUiModel>): VoucherUiModel {
         val newVoucher = mutableListOf<PlayVoucherUiModel>().apply {
-            PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name)
+            add(PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name))
             addAll(vouchers)
         }
         return VoucherUiModel(

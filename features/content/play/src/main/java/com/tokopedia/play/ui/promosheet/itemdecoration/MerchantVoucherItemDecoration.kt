@@ -8,6 +8,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
+import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 
 /**
  * Created by jegul on 03/03/20
@@ -15,6 +17,7 @@ import com.tokopedia.play.R
 class MerchantVoucherItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_product_line_divider_height)
+    private val space16 = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, R.color.play_dms_product_sheet_divider)
@@ -23,21 +26,28 @@ class MerchantVoucherItemDecoration(context: Context) : RecyclerView.ItemDecorat
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
 
-        if (position != 0) {
-            outRect.top = dividerHeight
-        } else super.getItemOffsets(outRect, view, parent, state)
+        when {
+            position != 0 -> {
+                outRect.top = dividerHeight
+            }
+            position == 0 -> {
+                outRect.top = space16
+                outRect.bottom = space16
+            }
+            else -> super.getItemOffsets(outRect, view, parent, state)
+        }
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        for (index in 0 until parent.childCount) {
+        for (index in 1 until parent.childCount) {
             val child = parent.getChildAt(index)
 
-            if (index != 0) {
-                    c.drawRect(
-                        Rect(child.left, child.top - dividerHeight, parent.width, child.top),
-                        mPaint
-                    )
-                }
+            when (parent.getChildViewHolder(child)) {
+                is MerchantVoucherNewViewHolder -> c.drawRect(
+                    Rect(child.left, child.top - dividerHeight, parent.width, child.top),
+                    mPaint
+                )
             }
         }
+    }
 }

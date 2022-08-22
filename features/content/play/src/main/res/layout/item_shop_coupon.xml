@@ -64,6 +64,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tv_min_transaction"
         app:layout_constraintStart_toStartOf="@+id/tv_min_transaction"
         app:layout_constraintTop_toBottomOf="@+id/tv_min_transaction"
+        app:layout_constraintBottom_toTopOf="@+id/view_voucher_copyable"
         app:typographyType="body_3"
         tools:text="Berakhir dalam 10 hari"
         tools:visibility="visible" />
@@ -114,6 +115,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tv_expired_date"
         app:layout_constraintStart_toStartOf="@+id/tv_expired_date"
-        app:layout_constraintTop_toBottomOf="@+id/tv_expired_date" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_expired_date"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
