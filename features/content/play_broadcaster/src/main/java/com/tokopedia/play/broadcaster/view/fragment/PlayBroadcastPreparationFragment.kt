@@ -794,7 +794,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     )
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
-                setPrimaryCTAClickListener { dismiss() }
+                setPrimaryCTAClickListener {
+                    if (switchAccountConfirmationDialog.isShowing) dismiss()
+                }
                 setSecondaryCTAText(
                     String.format(
                         getString(R.string.play_bro_switch_account_secondary_cta_dialog),
@@ -804,7 +806,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(feedAccount))
-                    dismiss()
+                    if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }
         }
