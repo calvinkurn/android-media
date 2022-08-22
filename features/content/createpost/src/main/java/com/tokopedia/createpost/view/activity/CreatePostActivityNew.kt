@@ -109,7 +109,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     ) {
     }
 
-    override fun setFeedAccountList(contentAccountList: List<ContentAccountUiModel>) {
+    override fun setContentAccountList(contentAccountList: List<ContentAccountUiModel>) {
         setupToolbar(contentAccountList)
     }
 

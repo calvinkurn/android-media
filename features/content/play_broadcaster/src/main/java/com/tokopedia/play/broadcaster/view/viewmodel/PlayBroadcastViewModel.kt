@@ -179,14 +179,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
     private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
 
-    private val _selectedFeedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
+    private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
-    private val _feedAccountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
+    private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     val contentAccountListState: Flow<List<ContentAccountUiModel>>
-        get() = _feedAccountListState
+        get() = _accountListState
 
     val contentAccountList: List<ContentAccountUiModel>
-        get() = _feedAccountListState.value
+        get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
         get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
@@ -247,7 +247,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState,
         _onboarding,
         _quizBottomSheetUiState,
-        _selectedFeedAccount,
+        _selectedAccount,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -1459,20 +1459,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
 
-            _feedAccountListState.value = feedAccountList
+            _accountListState.value = feedAccountList
 
             //TODO can't force to select first account need to check it first (eligible/last
             if(feedAccountList.isNotEmpty()) {
-                _selectedFeedAccount.value = feedAccountList.first()
+                _selectedAccount.value = feedAccountList.first()
             }
         }, onError = {})
     }
 
     private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
-            val current = _selectedFeedAccount.value
+            val current = _selectedAccount.value
             if(current.id != contentAccount.id) {
-                _selectedFeedAccount.value = contentAccount
+                _selectedAccount.value = contentAccount
             }
         }, onError = { })
     }

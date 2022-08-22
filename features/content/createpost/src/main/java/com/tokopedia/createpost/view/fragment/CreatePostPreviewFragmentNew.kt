@@ -549,7 +549,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
 
-    override fun setFeedAccountList(contentAccountList: List<ContentAccountUiModel>) {
+    override fun setContentAccountList(contentAccountList: List<ContentAccountUiModel>) {
 
     }
 

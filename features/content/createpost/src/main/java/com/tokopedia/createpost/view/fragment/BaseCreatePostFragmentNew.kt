@@ -156,7 +156,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
             )
         }
 
-        activityListener?.setFeedAccountList(feedAccountList)
+        activityListener?.setContentAccountList(feedAccountList)
         createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
         createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token
