@@ -39,7 +39,7 @@ class GetPaymentListCountUseCase @Inject constructor(
 
     data class Param(
         @SerializedName(PARAM_SHOP_ID)
-        var shopId: String
+        val shopId: String
     )
 
     companion object {

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerappwidget.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -29,6 +30,11 @@ class GetChatUseCase(
         }
     }
 
+    data class Param(
+        @SerializedName(PARAM_SHOP_ID)
+        val shopId: String
+    )
+
     companion object {
         private const val KEY_PARAM_PAGE = "page"
         private const val KEY_PARAM_FILTER = "filter"
@@ -45,7 +51,7 @@ class GetChatUseCase(
                 putInt(KEY_PARAM_PAGE, VALUE_PARAM_PAGE)
                 putString(KEY_PARAM_FILTER, VALUE_PARAM_FILTER)
                 putString(KEY_PARAM_TAB, VALUE_PARAM_TAB)
-                putString(PARAM_SHOP_ID, shopId)
+                putObject(PARAM_INPUT, Param(shopId))
             }
         }
 

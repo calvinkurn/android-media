@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.domain.usecase
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers 
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topchat.chatlist.domain.pojo.param.NotificationParam
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
@@ -41,14 +41,9 @@ open class InboxNotificationUseCase @Inject constructor(
 
     private fun getParams(shopId: String): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(shopId)
+            PARAM_INPUT to NotificationParam(shopId)
         )
     }
-
-    data class Param(
-        @SerializedName(PARAM_SHOP_ID)
-        val shopId: String
-    )
 
     private val query = """
         query notifications_inbox_counter($$PARAM_INPUT: NotificationRequest) {
@@ -88,6 +83,5 @@ open class InboxNotificationUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val PARAM_SHOP_ID = "shop_id"
     }
 }

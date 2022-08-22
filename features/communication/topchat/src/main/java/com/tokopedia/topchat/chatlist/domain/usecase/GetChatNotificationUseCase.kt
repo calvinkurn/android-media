@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatlist.domain.usecase
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.topchat.chatlist.domain.pojo.param.NotificationParam
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -29,6 +29,7 @@ open class GetChatNotificationUseCase @Inject constructor(
                     val response = gqlUseCase.apply {
                         setTypeClass(NotificationsPojo::class.java)
                         setGraphqlQuery(query)
+                        setRequestParams(param)
                     }.executeOnBackground()
                     withContext(dispatchers.main) {
                         onSuccess(response)
@@ -44,14 +45,9 @@ open class GetChatNotificationUseCase @Inject constructor(
 
     private fun getParams(shopId: String): Map<String, Any?> {
         return mapOf(
-            PARAM_INPUT to Param(shopId)
+            PARAM_INPUT to NotificationParam(shopId)
         )
     }
-
-    data class Param(
-        @SerializedName(PARAM_SHOP_ID)
-        val shopId: String
-    )
 
     private val query = """
         query get_chat_notif($$PARAM_INPUT: NotificationRequest) {
@@ -66,6 +62,5 @@ open class GetChatNotificationUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val PARAM_SHOP_ID = "shop_id"
     }
 }

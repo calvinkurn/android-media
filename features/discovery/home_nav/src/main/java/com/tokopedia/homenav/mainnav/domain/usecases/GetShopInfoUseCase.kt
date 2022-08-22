@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.searchbar.navigation_component.data.notification.Param
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,7 +42,7 @@ class GetShopInfoUseCase @Inject constructor(
 
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(ShopData::class.java)
-        params.parameters[PARAM_SHOP_ID] = userSession.shopId
+        params.parameters[PARAM_INPUT] = Param(userSession.shopId)
     }
 
     override suspend fun executeOnBackground(): Result<ShopData> {
@@ -72,7 +73,6 @@ class GetShopInfoUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val PARAM_SHOP_ID = "shop_id"
         private const val EXPIRY_TIMES_MULTIPLIER = 5
     }
 }

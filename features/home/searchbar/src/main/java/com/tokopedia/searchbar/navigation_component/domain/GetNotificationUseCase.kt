@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.searchbar.navigation_component.data.notification.NotificationResponse
+import com.tokopedia.searchbar.navigation_component.data.notification.Param
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.mapper.NotificationRequestMapper
 import com.tokopedia.usecase.RequestParams
@@ -21,7 +22,7 @@ class GetNotificationUseCase @Inject constructor(
         graphqlUseCase.setGraphqlQuery(QueryNotification.query)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(NotificationResponse::class.java)
-        params.parameters[PARAM_SHOP_ID] = userSession.shopId
+        params.parameters[PARAM_INPUT] = Param(userSession.shopId)
     }
 
     override suspend fun executeOnBackground(): TopNavNotificationModel {
@@ -32,6 +33,6 @@ class GetNotificationUseCase @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_SHOP_ID = "shop_id"
+        private const val PARAM_INPUT = "input"
     }
 }
