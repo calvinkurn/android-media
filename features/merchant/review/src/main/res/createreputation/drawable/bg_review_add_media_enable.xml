@@ -3,9 +3,8 @@
     android:shape="rectangle">
     <corners android:radius="6dp" />
     <stroke
-        android:width="@dimen/dp_1"
+        android:width="1dp"
         android:color="@color/Unify_NN300"
-        android:dashWidth="@dimen/dp_2"
-        android:dashGap="@dimen/dp_2" />
-    <solid android:color="@android:color/transparent" />
+        android:dashWidth="2dp"
+        android:dashGap="2dp" />
 </shape>
