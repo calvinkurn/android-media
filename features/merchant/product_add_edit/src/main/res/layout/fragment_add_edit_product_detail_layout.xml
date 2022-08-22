@@ -85,6 +85,16 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_specification_layout" />
 
+        <include
+            android:id="@+id/add_edit_price_suggestion_layout"
+            layout="@layout/add_edit_price_suggestion_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
+
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/add_edit_product_price_variant_ticker"
             android:layout_width="match_parent"
@@ -98,21 +108,21 @@
             app:tickerType="announcement"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
 
-        <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable
-            android:id="@+id/add_edit_product_product_recommendation_layout"
-            app:textTitle="@string/title_price_recommendation"
-            app:textDescription="@string/label_price_recommendation_description"
-            app:textTitleDescription="@string/label_price_recommendation_price_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_variant_ticker" />
+<!--        <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable-->
+<!--            android:id="@+id/add_edit_product_product_recommendation_layout"-->
+<!--            app:textTitle="@string/title_price_recommendation"-->
+<!--            app:textDescription="@string/label_price_recommendation_description"-->
+<!--            app:textTitleDescription="@string/label_price_recommendation_price_description"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="@dimen/spacing_lvl4"-->
+<!--            android:layout_marginLeft="@dimen/spacing_lvl4"-->
+<!--            android:layout_marginTop="@dimen/spacing_lvl3"-->
+<!--            android:layout_marginEnd="@dimen/spacing_lvl4"-->
+<!--            android:layout_marginRight="@dimen/spacing_lvl4"-->
+<!--            android:visibility="gone"-->
+<!--            tools:visibility="visible"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_variant_ticker" />-->
 
         <include
             android:id="@+id/add_edit_product_wholesale_layout"
@@ -124,7 +134,7 @@
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_product_recommendation_layout" />
+            app:layout_constraintTop_toBottomOf="@id/add_edit_price_suggestion_layout" />
 
         <include
             android:id="@+id/add_edit_product_stock_layout"

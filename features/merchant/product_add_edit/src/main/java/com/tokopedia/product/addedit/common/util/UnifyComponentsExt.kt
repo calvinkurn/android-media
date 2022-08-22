@@ -43,6 +43,8 @@ fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toStrin
 
 fun TextFieldUnify?.getTextBigIntegerOrZero(): BigInteger = this?.textFieldInput?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
 
+fun TextFieldUnify2?.getTextBigIntegerOrZero(): BigInteger = this?.editText?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
+
 fun TextFieldUnify?.setModeToNumberInput(maxLength: Int = MAX_LENGTH_NUMBER_INPUT) {
     val textFieldInput = this?.textFieldInput
     textFieldInput?.filters = arrayOf(InputFilter.LengthFilter(maxLength))
@@ -101,7 +103,7 @@ fun Typography?.displayRequiredAsterisk(visible: Boolean) {
     }
 }
 
-fun TextFieldUnify?.setHtmlMessage(text: String) {
+fun TextFieldUnify2?.setHtmlMessage(text: String) {
     val htmlText = MethodChecker.fromHtml(text)
     this?.setMessage(htmlText)
 }

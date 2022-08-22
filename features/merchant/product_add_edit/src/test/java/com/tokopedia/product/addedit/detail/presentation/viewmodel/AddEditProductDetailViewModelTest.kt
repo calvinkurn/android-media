@@ -88,10 +88,10 @@ class AddEditProductDetailViewModelTest {
     lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
 
     @RelaxedMockK
-    lateinit var productPriceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
+    lateinit var getAddProductPriceSuggestionUseCase: GetAddProductPriceSuggestionUseCase
 
     @RelaxedMockK
-    lateinit var priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase
+    lateinit var getEditProductPriceSuggestionUseCase: PriceSuggestionSuggestedPriceGetUseCase
 
     @RelaxedMockK
     lateinit var getProductTitleValidationUseCase: GetProductTitleValidationUseCase
@@ -160,9 +160,13 @@ class AddEditProductDetailViewModelTest {
     private val viewModel: AddEditProductDetailViewModel by lazy {
         AddEditProductDetailViewModel(provider, CoroutineTestDispatchersProvider,
                 getNameRecommendationUseCase, getCategoryRecommendationUseCase,
-                validateProductUseCase, validateProductNameUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
-                productPriceSuggestionSuggestedPriceGetUseCase,
-                priceSuggestionSuggestedPriceGetByKeywordUseCase, getProductTitleValidationUseCase,
+                validateProductUseCase,
+                validateProductNameUseCase,
+                getShopEtalaseUseCase,
+                annotationCategoryUseCase,
+                getAddProductPriceSuggestionUseCase,
+                getEditProductPriceSuggestionUseCase,
+                getProductTitleValidationUseCase,
                 getMaxStockThresholdUseCase,
                 userSession)
     }
@@ -1523,7 +1527,7 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `getProductPriceRecommendation should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
         coEvery {
-            productPriceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+            getEditProductPriceSuggestionUseCase.executeOnBackground()
                     .priceSuggestionSuggestedPriceGet
         } returns PriceSuggestionSuggestedPriceGet(suggestedPrice = 1000.0)
 
@@ -1531,7 +1535,7 @@ class AddEditProductDetailViewModelTest {
         val result = viewModel.productPriceRecommendation.getOrAwaitValue()
 
         coVerify {
-            productPriceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+            getEditProductPriceSuggestionUseCase.executeOnBackground()
         }
 
         assertEquals(1000.0, result.suggestedPrice)
@@ -1541,7 +1545,7 @@ class AddEditProductDetailViewModelTest {
     fun `getProductPriceRecommendation should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
         val expectedErrorMessage = "error happen"
         coEvery {
-            productPriceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+            getEditProductPriceSuggestionUseCase.executeOnBackground()
                     .priceSuggestionSuggestedPriceGet
         } throws MessageErrorException(expectedErrorMessage)
 
@@ -1549,38 +1553,6 @@ class AddEditProductDetailViewModelTest {
         val resultErrorMessage = viewModel.productPriceRecommendationError.getOrAwaitValue()
 
         assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
-    }
-
-    @Test
-    fun `getProductPriceRecommendationByKeyword should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
-        coEvery {
-            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
-                    .priceSuggestionSuggestedPriceGet
-        } returns PriceSuggestionSuggestedPriceGet(suggestedPrice = 1000.0)
-
-        viewModel.getProductPriceRecommendationByKeyword("Batik")
-        val result = viewModel.productPriceRecommendation.getOrAwaitValue()
-
-        coVerify {
-            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
-        }
-
-        assertEquals(1000.0, result.suggestedPrice)
-    }
-
-    @Test
-    fun `When get all product drafts error, should post error to observer`() = runBlocking {
-        coEvery {
-            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel.getProductPriceRecommendationByKeyword("Batik")
-
-        coVerify {
-            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.productPriceRecommendationError.value is Throwable)
     }
 
     @Test
