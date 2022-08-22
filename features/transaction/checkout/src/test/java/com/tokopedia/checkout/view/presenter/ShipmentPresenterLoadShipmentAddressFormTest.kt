@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
@@ -24,6 +25,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
@@ -47,6 +49,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
@@ -922,5 +925,45 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 appLink = "applink",
                 image = "image"
         ), presenter.shipmentUpsellModel)
+    }
+
+    @Test
+    fun `WHEN load checkout page with new upsell THEN should have corresponding new upsell model`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = true,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                isSelected = true,
+                price = 100,
+                duration = "duration",
+                wording = "wording",
+                buttonText = "button"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+
+        // Then
+        coVerify { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), true) }
+        assertEquals(ShipmentNewUpsellModel(
+                isShow = true,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                isSelected = true,
+                price = 100,
+                duration = "duration",
+                wording = "wording",
+                buttonText = "button"
+        ), presenter.shipmentNewUpsellModel)
     }
 }
