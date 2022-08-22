@@ -11,3 +11,6 @@ internal const val PAGE_SOURCE = "pageSource"
 
 internal const val AUTHOR_USER = "content-user"
 internal const val AUTHOR_SELLER = "content-shop"
+
+internal const val PAGE_SOURCE_FEED = "feed"
+internal const val PAGE_SOURCE_PLAY = "play"

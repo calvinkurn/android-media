@@ -282,19 +282,20 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenAutoCompletePage() {
         viewModelScope.launch {
-            /**
-             * TODO: just mocking feed here for testing
-             */
-            if(pageSource == "feed") {
-//                _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
-                _productTagSourceStack.update {
-                    val newStack = it.toMutableSet()
-                    newStack.add(ProductTagSource.Autocomplete)
-                    newStack
+            when(pageSource) {
+                PAGE_SOURCE_FEED -> {
+                    _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
                 }
-            }
-            else {
-                _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
+                PAGE_SOURCE_PLAY -> {
+                    _productTagSourceStack.update {
+                        val newStack = it.toMutableSet()
+                        newStack.add(ProductTagSource.Autocomplete)
+                        newStack
+                    }
+                }
+                else -> {
+                    _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
+                }
             }
         }
     }

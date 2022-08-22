@@ -18,6 +18,8 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_FEED
+import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_PLAY
 import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
@@ -391,9 +393,6 @@ class ProductTagParentFragment @Inject constructor(
         const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
         const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
         const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
-
-        private const val PAGE_SOURCE_FEED = "feed"
-        private const val PAGE_SOURCE_PLAY = "play"
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
