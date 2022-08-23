@@ -2,7 +2,6 @@ package com.tokopedia.usercomponents.stickylogin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -52,7 +51,6 @@ import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.usercomponents.userconsent.UserConsentDebugActivity
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -178,7 +176,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     private fun initObserver(lifecycleOwner: LifecycleOwner) {
-        viewModel?.stickyContent?.observe(lifecycleOwner, {
+        viewModel?.stickyContent?.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.tickerDataModels.isEmpty()) {
@@ -199,7 +197,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                     hide()
                 }
             }
-        })
+        }
     }
 
     fun setStickyAction(stickyLoginAction: StickyLoginAction) {
