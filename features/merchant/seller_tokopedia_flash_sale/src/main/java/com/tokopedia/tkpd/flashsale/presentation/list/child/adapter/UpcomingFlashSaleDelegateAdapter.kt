@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.dimmed
 import com.tokopedia.campaign.utils.extension.resetDimmedBackground
@@ -22,7 +23,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.Date
 
-class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, UpcomingFlashSaleDelegateAdapter.UpcomingFlashSaleViewHolder>(
+class UpcomingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit) : DelegateAdapter<UpcomingFlashSaleItem, UpcomingFlashSaleDelegateAdapter.UpcomingFlashSaleViewHolder>(
     UpcomingFlashSaleItem::class.java) {
 
     companion object{
@@ -48,6 +49,10 @@ class UpcomingFlashSaleDelegateAdapter : DelegateAdapter<UpcomingFlashSaleItem, 
     }
 
     inner class UpcomingFlashSaleViewHolder(private val binding : StfsItemUpcomingFlashSaleBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener { onFlashSaleClicked(adapterPosition) }
+        }
 
         fun bind(item: UpcomingFlashSaleItem) {
             binding.tpgCampaignName.text = item.name

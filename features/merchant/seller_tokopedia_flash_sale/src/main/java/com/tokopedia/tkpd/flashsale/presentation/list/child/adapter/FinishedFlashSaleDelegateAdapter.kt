@@ -15,7 +15,7 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemFinishedFla
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
 
-class FinishedFlashSaleDelegateAdapter : DelegateAdapter<FinishedFlashSaleItem, FinishedFlashSaleDelegateAdapter.ViewHolder>(
+class FinishedFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit) : DelegateAdapter<FinishedFlashSaleItem, FinishedFlashSaleDelegateAdapter.ViewHolder>(
     FinishedFlashSaleItem::class.java) {
 
 
@@ -33,6 +33,10 @@ class FinishedFlashSaleDelegateAdapter : DelegateAdapter<FinishedFlashSaleItem, 
     }
 
     inner class ViewHolder(private val binding : StfsItemFinishedFlashSaleBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener { onFlashSaleClicked(adapterPosition) }
+        }
 
         fun bind(item: FinishedFlashSaleItem) {
             binding.tpgCampaignName.text = item.name

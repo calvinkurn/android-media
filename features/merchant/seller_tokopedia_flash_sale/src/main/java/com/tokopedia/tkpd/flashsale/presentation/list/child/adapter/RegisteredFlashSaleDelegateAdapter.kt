@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -20,7 +21,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.Date
 
-class RegisteredFlashSaleDelegateAdapter: DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
+class RegisteredFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit): DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
     (RegisteredFlashSaleItem::class.java) {
 
     companion object{
@@ -41,6 +42,10 @@ class RegisteredFlashSaleDelegateAdapter: DelegateAdapter<RegisteredFlashSaleIte
     }
 
     inner class ViewHolder(private val binding : StfsItemRegisteredFlashSaleBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener { onFlashSaleClicked(adapterPosition) }
+        }
 
         fun bind(item: RegisteredFlashSaleItem) {
             binding.tpgCampaignName.text = item.name

@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant.IMAGE_URL_RIBBON_GREEN
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant.IMAGE_URL_RIBBON_RED
@@ -21,7 +22,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 
-class OngoingFlashSaleDelegateAdapter : DelegateAdapter<OngoingFlashSaleItem, OngoingFlashSaleDelegateAdapter.OngoingFlashSaleViewHolder>(
+class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit) : DelegateAdapter<OngoingFlashSaleItem, OngoingFlashSaleDelegateAdapter.OngoingFlashSaleViewHolder>(
     OngoingFlashSaleItem::class.java) {
 
     companion object{
@@ -42,6 +43,10 @@ class OngoingFlashSaleDelegateAdapter : DelegateAdapter<OngoingFlashSaleItem, On
     }
 
     inner class OngoingFlashSaleViewHolder(private val binding : StfsItemOngoingFlashSaleBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener { onFlashSaleClicked(adapterPosition) }
+        }
 
         fun bind(item: OngoingFlashSaleItem) {
             binding.tpgCampaignName.text = item.name

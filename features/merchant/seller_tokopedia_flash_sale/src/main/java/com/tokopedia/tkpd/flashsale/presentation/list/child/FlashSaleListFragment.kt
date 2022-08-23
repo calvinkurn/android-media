@@ -76,10 +76,10 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(OngoingFlashSaleDelegateAdapter())
-            .add(RegisteredFlashSaleDelegateAdapter())
-            .add(UpcomingFlashSaleDelegateAdapter())
-            .add(FinishedFlashSaleDelegateAdapter())
+            .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -439,6 +439,13 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+
+    }
+
+    private val onFlashSaleClicked : (Int) -> Unit = { selectedItemPosition ->
+        //TODO: Redirect to campaign detail page
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = selectedFlashSale.id()
 
     }
 
