@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dip"
-        android:textColor="#808080"
+        android:textColor="@color/dms_default_text_view_color"
         app:typographyWeight="reguler"
         app:typographyType="paragraph_1" />
 
@@ -22,7 +22,7 @@
         android:id="@android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#808080"
+        android:textColor="@color/dms_default_text_view_color"
         app:typographyWeight="reguler"
         app:typographyType="paragraph_3" />
 
