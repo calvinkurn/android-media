@@ -36,5 +36,7 @@ object AddEditProductConstants {
     const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = MAX_PRODUCT_IMAGE_SIZE_IN_MB * 1024
     const val TOP_SCROLL_MARGIN = 16
 
+    const val DELAY_MILLIS = 1000L
+
     const val FIRST_CATEGORY_SELECTED = 0
 }

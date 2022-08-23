@@ -3,6 +3,8 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -141,7 +143,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         NameRecommendationAdapter.ProductNameItemClickListener,
         WholeSaleInputViewHolder.TextChangedListener,
         WholeSaleInputViewHolder.OnAddButtonClickListener,
-        AddEditProductPerformanceMonitoringListener, PriceSuggestionBottomSheet.ClickListener {
+        AddEditProductPerformanceMonitoringListener, PriceSuggestionBottomSheet.Listener {
 
     companion object {
         const val AMOUNT_CATEGORY_RECOM_DEFAULT = 3
@@ -208,10 +210,12 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     // product price suggestion
     private var productPriceSuggestionLayout: ViewGroup? = null
-    private var productPriceSuggestionStatusView: ImageUnify? = null
-    private var productPriceSuggestionLabelView: Typography? = null
-    private var productPriceSuggestionRangeView: Typography? = null
-    private var productPriceSuggestionCtaView: Typography? = null
+    private var priceSuggestionLayout: ViewGroup? = null
+    private var priceSuggestionShimmering: ViewGroup? = null
+    private var priceSuggestionStatusView: ImageUnify? = null
+    private var priceSuggestionLabelView: Typography? = null
+    private var priceSuggestionRangeView: Typography? = null
+    private var priceSuggestionCtaView: Typography? = null
     private var priceSuggestionBottomSheet: PriceSuggestionBottomSheet? = null
     private var priceSuggestionInfoBottomSheet: PriceSuggestionInfoBottomSheet? = null
 
@@ -1024,8 +1028,15 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     private fun subscribeToProductPriceInputStatus() {
         viewModel.isProductPriceInputError.observe(viewLifecycleOwner, {
-            productPriceField?.isInputError = it
-            productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
+            if (priceSuggestionBottomSheet?.isAdded == true) {
+                priceSuggestionBottomSheet?.setPriceValidationResult(
+                        isError = it,
+                        message = viewModel.productPriceMessage
+                )
+            } else {
+                productPriceField?.isInputError = it
+                productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
+            }
         })
     }
 
@@ -1183,10 +1194,14 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private fun subscribeToAddProductPriceSuggestion() {
         viewModel.addProductPriceSuggestion.observe(viewLifecycleOwner) { priceSuggestion ->
             productPriceSuggestionLayout?.isVisible = isPriceSuggestionVisible()
+            if (productPriceSuggestionLayout?.isVisible == true) {
+                val productId = viewModel.productInputModel.productId
+                ProductEditMainTracking.sendImpressionPriceSuggestionEntryPointEvent(viewModel.isEditing, productId.toString())
+            }
             val minLimit = priceSuggestion?.summary?.suggestedPriceMin?.getCurrencyFormatted()
             val maxLimit = priceSuggestion?.summary?.suggestedPriceMax?.getCurrencyFormatted()
             val priceSuggestionText = getString(R.string.price_suggestion_range, minLimit, maxLimit)
-            productPriceSuggestionRangeView?.text = priceSuggestionText
+            priceSuggestionRangeView?.text = priceSuggestionText
         }
         viewModel.addProductPriceSuggestionError.observe(viewLifecycleOwner) {
             productPriceSuggestionLayout?.isVisible = false
@@ -1197,14 +1212,14 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private fun subscribeToEditProductPriceSuggestion() {
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) { priceSuggestion ->
             productPriceSuggestionLayout?.isVisible = isPriceSuggestionVisible()
-            if (productPriceSuggestionLayout?.isVisible == true && viewModel.isEditing) {
+            if (productPriceSuggestionLayout?.isVisible == true) {
                 val productId = viewModel.productInputModel.productId
-                ProductEditMainTracking.sendImpressionPriceSuggestionEntryPointEvent(productId.toString())
+                ProductEditMainTracking.sendImpressionPriceSuggestionEntryPointEvent(viewModel.isEditing, productId.toString())
             }
             val minLimit = priceSuggestion.suggestedPriceMin.getCurrencyFormatted()
             val maxLimit = priceSuggestion.suggestedPriceMax.getCurrencyFormatted()
             val priceSuggestionText = getString(R.string.price_suggestion_range, minLimit, maxLimit)
-            productPriceSuggestionRangeView?.text = priceSuggestionText
+            priceSuggestionRangeView?.text = priceSuggestionText
         }
         viewModel.productPriceRecommendationError.observe(viewLifecycleOwner) {
             productPriceSuggestionLayout?.isVisible = false
@@ -1537,7 +1552,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 // clean any kind of number formatting here
                 val productPriceInput = charSequence?.toString()?.filterDigit()
-
                 productPriceInput?.let {
                     // do the validation first
                     viewModel.validateProductPriceInput(it)
@@ -1549,15 +1563,24 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     viewModel.isWholeSalePriceActivated.value?.run {
                         if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
                     }
-
+                    // shimmering only for direct editing
+                    if (!viewModel.isSavingPriceAdjustment) {
+                        priceSuggestionLayout?.hide()
+                        priceSuggestionShimmering?.show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            priceSuggestionLayout?.show()
+                            priceSuggestionShimmering?.hide()
+                        }, AddEditProductConstants.DELAY_MILLIS)
+                    }
+                    // display price suggestion feedback
                     val priceSuggestionRange = viewModel.getProductPriceSuggestionRange(viewModel.isEditing)
                     val isCompetitive = viewModel.isProductPriceCompetitive(it.toDoubleOrZero(), priceSuggestionRange)
                     if (isCompetitive) {
-                        productPriceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
-                        productPriceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                        priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
+                        priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
                     } else {
-                        productPriceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_light_bulb)
-                        productPriceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
+                        priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_light_bulb)
+                        priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
                     }
                 }
             }
@@ -1577,12 +1600,14 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private fun setupProductSuggestionViews() {
         // store view references
         productPriceSuggestionLayout = binding?.addEditPriceSuggestionLayout?.root
-        productPriceSuggestionStatusView = binding?.addEditPriceSuggestionLayout?.iuPriceSuggestionStatus
-        productPriceSuggestionLabelView = binding?.addEditPriceSuggestionLayout?.tpgPriceSuggestionLabel
-        productPriceSuggestionRangeView = binding?.addEditPriceSuggestionLayout?.tpgPriceSuggestionRange
-        productPriceSuggestionCtaView = binding?.addEditPriceSuggestionLayout?.tpgCtaCheckDetail
+        priceSuggestionLayout = binding?.addEditPriceSuggestionLayout?.priceSuggestionLayout
+        priceSuggestionShimmering = binding?.addEditPriceSuggestionLayout?.priceSuggestionShimmering
+        priceSuggestionStatusView = binding?.addEditPriceSuggestionLayout?.iuPriceSuggestionStatus
+        priceSuggestionLabelView = binding?.addEditPriceSuggestionLayout?.tpgPriceSuggestionLabel
+        priceSuggestionRangeView = binding?.addEditPriceSuggestionLayout?.tpgPriceSuggestionRange
+        priceSuggestionCtaView = binding?.addEditPriceSuggestionLayout?.tpgCtaCheckDetail
         // setup lihat detail cta
-        productPriceSuggestionCtaView?.setOnClickListener {
+        priceSuggestionCtaView?.setOnClickListener {
             val productId = viewModel.productInputModel.productId.toString()
             val priceInput = productPriceField?.editText?.text?.toString().orEmpty()
             val priceSuggestion: PriceSuggestion = if (viewModel.isEditing) {
@@ -1602,14 +1627,12 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 priceSuggestionBottomSheet?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
             }
             priceSuggestionBottomSheet?.setCloseClickListener {
-                if (viewModel.isEditing) ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent()
+                ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
                 priceSuggestionBottomSheet?.dismiss()
             }
             priceSuggestionBottomSheet?.setClickListener(this)
             priceSuggestionBottomSheet?.show(childFragmentManager)
-            if (viewModel.isEditing) {
-                ProductEditMainTracking.sendClickPriceSuggestionEntryPointEvent(productId)
-            }
+            ProductEditMainTracking.sendClickPriceSuggestionEntryPointEvent(viewModel.isEditing, productId)
         }
         // setup pelajari selengkapnya etc bottomsheet
         val productId = viewModel.productInputModel.productId.toString()
@@ -2146,9 +2169,15 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         priceSuggestionInfoBottomSheet?.show(childFragmentManager)
     }
 
+    override fun onPriceTextInputChanged(priceInput: String) {
+        viewModel.validateProductPriceInput(priceInput)
+    }
+
     override fun onSaveButtonClick(priceInput: String) {
+        viewModel.isSavingPriceAdjustment = true
         productPriceField?.setText(priceInput)
         priceSuggestionBottomSheet?.dismiss()
+        viewModel.isSavingPriceAdjustment = false
     }
 
     private fun isPriceSuggestionVisible(): Boolean {

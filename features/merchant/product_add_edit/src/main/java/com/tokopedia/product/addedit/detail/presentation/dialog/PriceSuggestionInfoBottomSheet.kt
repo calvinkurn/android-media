@@ -59,11 +59,11 @@ class PriceSuggestionInfoBottomSheet : BottomSheetUnify() {
 
     private fun setupViews(binding: BottomsheetPriceSuggestionInfoLayoutBinding?) {
         binding?.tpgCtaLearnMore?.setOnClickListener {
-            if (isEditing) ProductEditMainTracking.sendClickPriceSuggestionPopUpLearnMoreEvent(productId)
+            ProductEditMainTracking.sendClickPriceSuggestionPopUpLearnMoreEvent(isEditing, productId)
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, LEARN_MORE_URL))
         }
         binding?.tpgCtaFeedback?.setOnClickListener {
-            if (isEditing) ProductEditMainTracking.sendClickPriceSuggestionPopUpGiveFeedbackEvent(productId)
+            ProductEditMainTracking.sendClickPriceSuggestionPopUpGiveFeedbackEvent(isEditing, productId)
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, FEEDBACK_FORM_URL))
         }
     }

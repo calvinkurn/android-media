@@ -143,22 +143,22 @@ object ProductAddEditTracking {
         ProductVariantTracking.getTracker().sendGeneralEvent(map)
     }
 
-    fun sendEditProductPgIrisViewEvent(action: String, label: String, trackerId: String) {
+    fun sendAepPgIrisViewEvent(action: String, category: String, label: String, trackerId: String) {
         val map = mapOf(
                 KEY_EVENT to EVENT_VIEW_PG_IRIS,
                 KEY_ACTION to action,
-                KEY_CATEGORY to CAT_EDIT_PRODUCT_PAGE,
+                KEY_CATEGORY to category,
                 KEY_LABEL to label,
                 KEY_TRACKER_ID to trackerId
         )
         getTracker().sendGeneralEvent(map)
     }
 
-    fun sendEditProductPgIrisClickEvent(action: String, label: String = "", trackerId: String) {
+    fun sendAepPgIrisClickEvent(action: String, category: String, label: String, trackerId: String) {
         val map = mapOf(
                 KEY_EVENT to EVENT_CLICK_PG,
                 KEY_ACTION to action,
-                KEY_CATEGORY to CAT_EDIT_PRODUCT_PAGE,
+                KEY_CATEGORY to category,
                 KEY_LABEL to label,
                 KEY_TRACKER_ID to trackerId
         )

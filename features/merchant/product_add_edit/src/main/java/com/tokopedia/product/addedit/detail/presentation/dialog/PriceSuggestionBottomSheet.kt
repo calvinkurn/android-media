@@ -18,6 +18,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
 import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.setHtmlMessage
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.databinding.BottomsheetPriceSuggestionLayoutBinding
 import com.tokopedia.product.addedit.detail.presentation.adapter.SimilarProductAdapter
@@ -28,8 +29,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.ClickListener {
 
-    interface ClickListener {
+    interface Listener {
         fun onPriceSuggestionInfoCtaClick()
+        fun onPriceTextInputChanged(priceInput: String)
         fun onSaveButtonClick(priceInput: String)
     }
 
@@ -58,7 +60,7 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
 
     private var adapter: SimilarProductAdapter? = null
 
-    private var clickListener: ClickListener? = null
+    private var listener: Listener? = null
 
     private val isEditing: Boolean by lazy {
         arguments?.getBoolean(BUNDLE_KEY_IS_EDITING) ?: false
@@ -112,8 +114,8 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         }
         // setup click listeners
         binding?.iuCtaInformation?.setOnClickListener {
-            if (isEditing) { ProductEditMainTracking.sendClickPriceSuggestionPopUpAboutPriceSuggestionEvent() }
-            clickListener?.onPriceSuggestionInfoCtaClick()
+            ProductEditMainTracking.sendClickPriceSuggestionPopUpAboutPriceSuggestionEvent(isEditing)
+            listener?.onPriceSuggestionInfoCtaClick()
         }
         binding?.tfuProductPrice?.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
@@ -122,18 +124,19 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
                 // clean any kind of number formatting here
                 val productPriceInput = charSequence?.toString()?.filterDigit()
                 productPriceInput?.let {
+                    // do the validation first
+                    listener?.onPriceTextInputChanged(it)
                     binding.tfuProductPrice.editText.let { editText ->
                         InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
                                 charSequence.length, count, this)
-                        if (isEditing) {
-                            ProductEditMainTracking.sendClickPriceSuggestionPopUpEditPriceEvent(
-                                    productId = productId,
-                                    currentPrice = priceInput,
-                                    suggestedPrice = binding.tpgBestPrice.text.toString(),
-                                    priceRange = binding.tpgPriceSuggestionRange.text.toString(),
-                                    updatedPrice = binding.tfuProductPrice.getText()
-                            )
-                        }
+                        ProductEditMainTracking.sendClickPriceSuggestionPopUpEditPriceEvent(
+                                isEditing = isEditing,
+                                productId = productId,
+                                currentPrice = priceInput,
+                                suggestedPrice = binding.tpgBestPrice.text.toString(),
+                                priceRange = binding.tpgPriceSuggestionRange.text.toString(),
+                                updatedPrice = binding.tfuProductPrice.getText()
+                        )
                     }
                 }
             }
@@ -147,33 +150,31 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         binding?.tpgCtaApply?.setOnClickListener {
             val suggestedPrice = priceSuggestion.suggestedPrice?.getCurrencyFormatted()
             suggestedPrice?.run { binding.tfuProductPrice.setText(this) }
-            if (isEditing) {
-                ProductEditMainTracking.sendClickPriceSuggestionPopUpApplyEvent(
-                        productId = productId,
-                        currentPrice = priceInput,
-                        suggestedPrice = binding.tpgBestPrice.text.toString(),
-                        priceRange = binding.tpgPriceSuggestionRange.text.toString()
-                )
-            }
+            ProductEditMainTracking.sendClickPriceSuggestionPopUpApplyEvent(
+                    isEditing = isEditing,
+                    productId = productId,
+                    currentPrice = priceInput,
+                    suggestedPrice = binding.tpgBestPrice.text.toString(),
+                    priceRange = binding.tpgPriceSuggestionRange.text.toString()
+            )
         }
         binding?.buttonSave?.setOnClickListener {
             val productPriceInput = binding.tfuProductPrice.editText.text.toString()
-            clickListener?.onSaveButtonClick(productPriceInput)
-            if (isEditing) {
-                ProductEditMainTracking.sendClickPriceSuggestionPopUpSaveEvent(
-                        productId = productId,
-                        currentPrice = priceInput,
-                        suggestedPrice = binding.tpgBestPrice.text.toString(),
-                        priceRange = binding.tpgPriceSuggestionRange.text.toString(),
-                        updatedPrice = binding.tfuProductPrice.getText()
-                )
-            }
+            listener?.onSaveButtonClick(productPriceInput)
+            ProductEditMainTracking.sendClickPriceSuggestionPopUpSaveEvent(
+                    isEditing = isEditing,
+                    productId = productId,
+                    currentPrice = priceInput,
+                    suggestedPrice = binding.tpgBestPrice.text.toString(),
+                    priceRange = binding.tpgPriceSuggestionRange.text.toString(),
+                    updatedPrice = binding.tfuProductPrice.getText()
+            )
         }
     }
 
     private fun renderData(priceSuggestion: PriceSuggestion, binding: BottomsheetPriceSuggestionLayoutBinding?) {
         // render price input from the previous page
-        binding?.tfuProductPrice?.setText(priceInput)
+        if (priceInput.isNotBlank()) binding?.tfuProductPrice?.setText(priceInput)
         // render price suggestion e.g. Rp12.478.000
         binding?.tpgBestPrice?.text = priceSuggestion.suggestedPrice?.getCurrencyFormatted()
         // render price suggestion range e.g. Rp11.500.000 - Rp13.500.000
@@ -193,8 +194,15 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
         }
     }
 
-    fun setClickListener(clickListener: ClickListener) {
-        this.clickListener = clickListener
+    fun setClickListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    fun setPriceValidationResult(isError: Boolean, message: String) {
+        binding?.tfuProductPrice?.apply {
+            isInputError = isError
+            setHtmlMessage(message)
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -204,6 +212,9 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
     }
 
     override fun onProductItemClickListener(adapterPosition: Int) {
-        if (isEditing) ProductEditMainTracking.sendClickPriceSuggestionPopUpSimilarProductEvent(adapterPosition.toString())
+        ProductEditMainTracking.sendClickPriceSuggestionPopUpSimilarProductEvent(
+                isEditing = isEditing,
+                row = adapterPosition.toString()
+        )
     }
 }
