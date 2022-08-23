@@ -320,6 +320,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
+    private fun requireTitle(ifTitleSet: () -> Unit) {
+        if(parentViewModel.channelTitle.isNotEmpty()) ifTitleSet()
+        else {
+            val errorMessage = getString(R.string.play_bro_title_empty_error)
+            toaster.showToaster(errorMessage)
+        }
+    }
+
     private fun requireCover(ifCoverSet: () -> Unit) {
         if(viewModel.isCoverAvailable()) ifCoverSet()
         else {
@@ -333,7 +341,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun validateAndStartLive() {
-        requireCover { startCountDown() }
+        requireTitle {
+            requireCover { startCountDown() }
+        }
     }
 
     private fun setupObserver() {
