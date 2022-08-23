@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat.getColor
 import com.tokopedia.content.common.R.color.Unify_Static_White
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationMenuBinding
-import com.tokopedia.content.common.R.color.content_color_white_disable
+import com.tokopedia.content.common.R.color.content_dms_white_disable
 
 /**
  * Created By : Jonathan Darwin on January 25, 2022
@@ -55,7 +55,7 @@ class PreparationMenuView : ConstraintLayout {
             clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
         }
         else {
-            val disableColor = getColor(context, content_color_white_disable)
+            val disableColor = getColor(context, content_dms_white_disable)
             icBroSetCover.setImage(newLightEnable = disableColor, newDarkEnable = disableColor)
             tvBroSetCover.setTextColor(disableColor)
             icBroSetProduct.setImage(newLightEnable = disableColor, newDarkEnable = disableColor)
