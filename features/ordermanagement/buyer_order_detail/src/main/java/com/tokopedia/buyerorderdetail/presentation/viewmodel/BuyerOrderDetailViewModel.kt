@@ -68,7 +68,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 qty = quantity,
                 notes = productNote,
                 shopId = getShopId().toInt(),
-                custId = userSession.get().userId.toInt()
+                custId = userSession.get().userId.toIntOrZero()
         )
     }
 
