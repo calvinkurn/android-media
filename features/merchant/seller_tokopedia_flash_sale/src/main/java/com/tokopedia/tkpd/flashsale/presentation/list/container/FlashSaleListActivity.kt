@@ -17,12 +17,12 @@ class FlashSaleListActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getLayoutRes() = R.layout.stfs_activity_landing
+    override fun getLayoutRes() = R.layout.stfs_activity_flash_sale_list_container
     override fun getNewFragment() = FlashSaleContainerFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.stfs_activity_landing)
+        setContentView(R.layout.stfs_activity_flash_sale_list_container)
     }
 }

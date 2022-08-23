@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
 import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
