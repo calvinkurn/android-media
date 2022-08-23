@@ -323,9 +323,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-//    implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
-//    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
-
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
