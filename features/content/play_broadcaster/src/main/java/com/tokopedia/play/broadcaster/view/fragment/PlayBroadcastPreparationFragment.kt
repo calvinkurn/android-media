@@ -320,30 +320,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun requireTitle(ifTitleSet: () -> Unit) {
-        if(parentViewModel.channelTitle.isNotEmpty()) ifTitleSet()
-        else {
+    private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
+        if (parentViewModel.channelTitle.isNotEmpty()) {
+            if (viewModel.isCoverAvailable()) isTitleAndCoverSet()
+            else {
+                val errorMessage = getString(R.string.play_bro_cover_empty_error)
+                toaster.showError(
+                    err = MessageErrorException(errorMessage),
+                    customErrMessage = errorMessage,
+                )
+                showCoverForm(true)
+            }
+        } else {
             val errorMessage = getString(R.string.play_bro_title_empty_error)
             toaster.showToaster(errorMessage)
         }
     }
 
-    private fun requireCover(ifCoverSet: () -> Unit) {
-        if(viewModel.isCoverAvailable()) ifCoverSet()
-        else {
-            val errorMessage = getString(R.string.play_bro_cover_empty_error)
-            toaster.showError(
-                err = MessageErrorException(errorMessage),
-                customErrMessage = errorMessage,
-            )
-            showCoverForm(true)
-        }
-    }
-
     private fun validateAndStartLive() {
-        requireTitle {
-            requireCover { startCountDown() }
-        }
+        requireTitleAndCover { startCountDown() }
     }
 
     private fun setupObserver() {
@@ -482,7 +477,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        requireCover { showScheduleBottomSheet() }
+                        requireTitleAndCover { showScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(
