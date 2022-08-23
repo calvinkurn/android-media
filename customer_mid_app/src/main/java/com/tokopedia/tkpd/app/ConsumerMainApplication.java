@@ -257,16 +257,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
             }
         }));
-        registerActivityLifecycleCallbacks(new InAppUpdateLifecycleCallback(new Function2<Activity, Function1<? super Boolean, Unit>, Unit>() {
+        registerActivityLifecycleCallbacks(new InAppUpdateLifecycleCallback(new Function3<Activity, CancellableContinuation<? super Unit>, Function1<? super Boolean, Unit>, Unit>() {
             @Override
-            public Unit invoke(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
-                onCheckAppUpdateRemoteConfig(activity, onSuccessCheckAppListener);
+            public Unit invoke(Activity activity, CancellableContinuation<? super Unit> cont, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+                onCheckAppUpdateRemoteConfig(activity, cont, onSuccessCheckAppListener);
                 return null;
             }
         }));
     }
 
-    private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+    private void onCheckAppUpdateRemoteConfig(Activity activity, CancellableContinuation<? super Unit> cont, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
         ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(activity);
         InAppCallback inAppCallback = null;
         if (activity instanceof InAppCallback) {
@@ -302,11 +302,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                         appUpdateDialogBuilder.getAlertDialog().show();
                     }
                 });
+                cont.resume(Unit.INSTANCE, throwable -> null);
             }
 
             @Override
             public void onError(Exception e) {
-
+                cont.resume(Unit.INSTANCE, throwable -> null);
             }
 
             @Override
@@ -315,6 +316,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     finalInAppCallback.onNotNeedUpdateInApp();
                 }
                 onSuccessCheckAppListener.invoke(false);
+                cont.resume(Unit.INSTANCE, throwable -> null);
             }
         });
     }
