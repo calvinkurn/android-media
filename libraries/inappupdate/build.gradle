@@ -14,8 +14,6 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.playServicesDependencies.core
     implementation projectOrAar(rootProject.ext.libraries.logger)
 }
