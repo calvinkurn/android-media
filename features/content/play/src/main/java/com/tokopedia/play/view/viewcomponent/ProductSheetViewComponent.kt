@@ -68,10 +68,6 @@ class ProductSheetViewComponent(
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
-    private val defaultSectionColor by lazy(LazyThreadSafetyMode.NONE) {
-        MethodChecker.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-    }
-
     private val productCardListener = object : ProductLineViewHolder.Listener {
         override fun onProductImpressed(
             viewHolder: ProductLineViewHolder,
@@ -338,7 +334,7 @@ class ProductSheetViewComponent(
             val endIndex = startIndex + section.productList.size
             val background = when {
                 section.productList.isEmpty() -> {
-                    ProductLineItemDecoration.Background.Color.Solid(defaultSectionColor)
+                    ProductLineItemDecoration.Background.Color.Solid(Color.TRANSPARENT)
                 }
                 section.config.background.imageUrl.isNotBlank() -> {
                     ProductLineItemDecoration.Background.Image(
@@ -360,7 +356,7 @@ class ProductSheetViewComponent(
                     )
                 }
                 else -> {
-                    ProductLineItemDecoration.Background.Color.Solid(defaultSectionColor)
+                    ProductLineItemDecoration.Background.Color.Solid(Color.TRANSPARENT)
                 }
             }
 

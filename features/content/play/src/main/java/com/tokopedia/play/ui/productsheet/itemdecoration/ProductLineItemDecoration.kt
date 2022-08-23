@@ -77,7 +77,7 @@ class ProductLineItemDecoration(
                 parent.height
             }
 
-            mPaint.shader = null
+            mPaint.reset()
 
             when (it.background) {
                 is Background.Color -> {
