@@ -248,22 +248,22 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     tippingDescription.setTextColor(textColor)
                 }
             }
-            if (tippingData.tippingLastDriver.name.isEmpty()) {
+            if (tippingData.lastDriver.name.isEmpty()) {
                 driverName.text = getString(R.string.driver_not_found_title)
                 driverPhone.text = getString(R.string.driver_not_found_subtitle)
                 btnInformation.visibility = View.GONE
             } else {
-                if (tippingData.tippingLastDriver.photo.isNotEmpty()) {
-                    imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
+                if (tippingData.lastDriver.photo.isNotEmpty()) {
+                    imgDriver.setImageUrl(tippingData.lastDriver.photo)
                 }
-                driverName.text = tippingData.tippingLastDriver.name
-                driverPhone.text = tippingData.tippingLastDriver.licenseNumber
+                driverName.text = tippingData.lastDriver.name
+                driverPhone.text = tippingData.lastDriver.licenseNumber
             }
 
-            if (tippingData.tippingLastDriver.phone.isNotEmpty()) {
+            if (tippingData.lastDriver.phone.isNotEmpty()) {
                 btnCall.setOnClickListener {
                     val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                        this.data = Uri.parse("tel:${tippingData.tippingLastDriver.phone}")
+                        this.data = Uri.parse("tel:${tippingData.lastDriver.phone}")
                     }
                     startActivity(callIntent)
                 }

@@ -10,14 +10,14 @@ class DriverTipMapper @Inject constructor(){
         val data = response.response
         return LogisticDriverModel().apply {
             status = data.status
-            tippingLastDriver = mapTippingLastDriverData(data.tippingLastDriver)
+            lastDriver = mapTippingLastDriverData(data.tippingLastDriver)
             prepayment = mapPrePaymentData(data.prepayment)
             payment = mapPaymentData(data.payment)
         }
     }
 
-    private fun mapTippingLastDriverData(tippingLastDriver: TippingLastDriver): TippingLastDriverModel {
-        return TippingLastDriverModel().apply {
+    private fun mapTippingLastDriverData(tippingLastDriver: TippingLastDriver): LastDriverModel {
+        return LastDriverModel().apply {
             phone = tippingLastDriver.phone
             name = tippingLastDriver.name
             phone = tippingLastDriver.phone

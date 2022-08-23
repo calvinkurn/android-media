@@ -95,12 +95,12 @@ class TrackingPageMapperNew @Inject constructor() {
             status = tipping.status
             statusTitle = tipping.statusTitle
             statusSubtitle = tipping.statusSubtitle
-            tippingLastDriver = mapTippingLastDriverData(lastDriver)
+            this.lastDriver = mapTippingLastDriverData(lastDriver)
         }
     }
 
-    private fun mapTippingLastDriverData(tippingLastDriver: LastDriver): TippingLastDriverModel {
-        return TippingLastDriverModel().apply {
+    private fun mapTippingLastDriverData(tippingLastDriver: LastDriver): LastDriverModel {
+        return LastDriverModel().apply {
             phone = tippingLastDriver.phone
             name = tippingLastDriver.name
             photo = tippingLastDriver.photo
