@@ -1458,6 +1458,27 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `enqueueDisabledAddMoreMediaToaster should enqueue new toaster`() = runBlockingTest {
+        val expectedToasterQueue = CreateReviewToasterUiModel(
+            message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+            actionText = StringRes(Int.ZERO),
+            duration = Toaster.LENGTH_SHORT,
+            type = Toaster.TYPE_NORMAL
+        )
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        val toasterQueueCollectorJob = launchCatchError(block = {
+            val actualToasterQueue = viewModel.toasterQueue.first()
+            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
+            viewModel.flush()
+        }, onError = {})
+        viewModel.enqueueDisabledAddMoreMediaToaster()
+        toasterQueueCollectorJob.join()
+    }
+
+    @Test
     fun `updateMediaPicker should filter temp downloaded image from old media picker`() = runBlockingTest {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()

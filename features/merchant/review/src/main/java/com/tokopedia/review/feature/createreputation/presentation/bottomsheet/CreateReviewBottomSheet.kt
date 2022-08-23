@@ -1001,8 +1001,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             }
         }
 
-        override fun onAddMediaClicked() {
-            goToMediaPicker()
+        override fun onAddMediaClicked(enabled: Boolean) {
+            if (enabled) {
+                goToMediaPicker()
+            } else {
+                viewModel.enqueueDisabledAddMoreMediaToaster()
+            }
         }
 
         override fun onRemoveMediaClicked(media: CreateReviewMediaUiModel) {
