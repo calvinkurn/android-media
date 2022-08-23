@@ -67,7 +67,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private fun isAffiliateShopAdpEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_SHOP_ADP,
-            AFFILIATE_SHOP_ADP
+            ""
         ) == AFFILIATE_SHOP_ADP
 
     fun getAffiliateValidateUser() {
@@ -186,7 +186,8 @@ class AffiliateHomeViewModel @Inject constructor(
                 AffiliateUserPerformanceModel(
                     getListFromData(
                         performanceList
-                    )
+                    ),
+                    isAffiliateShopAdpEnabled()
                 )
             )
             getItemChips(tempList, itemTypesList)
@@ -200,7 +201,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     }
                 }
             } else if (page == PAGE_ZERO && items.isEmpty()) {
-                tempList.add(AffiliateNoPromoItemFoundModel())
+                tempList.add(AffiliateNoPromoItemFoundModel(lastSelectedChip?.name))
             } else {
                 noMoreDataAvailable.value = true
             }
