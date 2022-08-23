@@ -47,12 +47,7 @@ class PreparationMenuView : ConstraintLayout {
             clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
             getColor(context, Unify_Static_White)
         }
-        else {
-            icBroCoverChecked.showWithCondition(false)
-            icBroProductChecked.showWithCondition(false)
-            icBroScheduleChecked.showWithCondition(false)
-            getColor(context, content_dms_white_disable)
-        }
+        else getColor(context, content_dms_white_disable)
         icBroSetCover.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
         tvBroSetCover.setTextColor(stateColor)
         icBroSetProduct.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
