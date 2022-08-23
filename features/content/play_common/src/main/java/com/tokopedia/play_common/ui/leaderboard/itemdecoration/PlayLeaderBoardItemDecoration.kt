@@ -32,10 +32,11 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        for (index in 0 until parent.childCount) {
+        for (index in 1 until parent.childCount) {
             val child = parent.getChildAt(index)
             when (parent.getChildViewHolder(child)) {
-                is PlayGameViewHolder.Quiz -> outRect.bottom = topOffset
+                is PlayGameViewHolder.Quiz -> outRect.top = topOffset
+                is PlayGameViewHolder.Winner -> outRect.top = topOffset
                 else -> super.getItemOffsets(outRect, view, parent, state)
             }
         }
@@ -44,12 +45,20 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         for (index in 0 until parent.childCount - 1) {
             val child = parent.getChildAt(index)
+            val nextChild = parent.getChildAt(index + 1)
 
             when (parent.getChildViewHolder(child)) {
                 is PlayGameViewHolder.Footer -> c.drawRect(
-                    Rect(child.left , child.bottom - dividerHeight, parent.width, child.bottom), mPaint)
-                is PlayGameViewHolder.Winner -> c.drawRect(
-                    Rect(startOffset , child.bottom - dividerHeight, parent.width, child.bottom), mPaint)
+                    Rect(child.left, child.bottom - dividerHeight, parent.width, child.bottom),
+                    mPaint
+                )
+                is PlayGameViewHolder.Winner -> {
+                    if (parent.getChildViewHolder(nextChild) !is PlayGameViewHolder.Winner) continue
+                    c.drawRect(
+                        Rect(startOffset, child.bottom - dividerHeight, parent.width, child.bottom),
+                        mPaint
+                    )
+                }
             }
         }
     }
