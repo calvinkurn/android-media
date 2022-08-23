@@ -299,13 +299,17 @@ class UserProfileViewModel @AssistedInject constructor(
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
 
         val profileInfo = repo.getProfile(username)
-        val followInfo = repo.getFollowInfo(listOf(profileInfo.userID))
+
         val profileType = if(userSession.isLoggedIn) {
-            if(userSession.userId == followInfo.userID)
+            if(userSession.userId == profileInfo.userID)
                 ProfileType.Self
             else ProfileType.OtherUser
         }
         else ProfileType.NotLoggedIn
+
+        val followInfo = if(userSession.isLoggedIn)
+            repo.getFollowInfo(listOf(profileInfo.userID))
+        else FollowInfoUiModel.Empty
 
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
