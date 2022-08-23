@@ -5,11 +5,11 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
-import com.tokopedia.ordermanagement.snapshot.test.R
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotIdlingResource
 import com.tokopedia.ordermanagement.snapshot.view.activity.SnapshotActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -34,6 +34,9 @@ class SnapshotTrackingTest {
 
     @get:Rule
     var activityRule = ActivityTestRule(SnapshotActivity::class.java, false, false)
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -74,7 +77,7 @@ class SnapshotTrackingTest {
             clickShopArea()
             clickBtnLihatHalamanProduk()
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaRule, query)
         }
     }
 }
