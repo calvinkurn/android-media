@@ -158,7 +158,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupListener()
         setupObserver()
 
-        if(parentViewModel.channelTitle.isEmpty()) showTitleForm(true)
+        binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
 
     override fun onStart() {
@@ -174,20 +174,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onBackPressed(): Boolean {
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
-                return if(parentViewModel.channelTitle.isEmpty()) {
-                    analytic.clickCloseOnSetupPage()
-                    false
-                }
-                else {
-                    showTitleForm(false)
-                    true
-                }
+                showTitleForm(false)
+                true
             }
             binding.formCover.visibility == View.VISIBLE -> {
                 showCoverForm(false)
                 true
             }
-            else -> super.onBackPressed()
+            else -> {
+                analytic.clickCloseOnSetupPage()
+                super.onBackPressed()
+            }
         }
     }
 
@@ -323,20 +320,25 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun requireCover(ifCoverSet: () -> Unit) {
-        if(viewModel.isCoverAvailable()) ifCoverSet()
-        else {
-            val errorMessage = getString(R.string.play_bro_cover_empty_error)
-            toaster.showError(
-                err = MessageErrorException(errorMessage),
-                customErrMessage = errorMessage,
-            )
-            showCoverForm(true)
+    private fun requireTitleAndCover(isTitleAndCoverSet: () -> Unit) {
+        if (parentViewModel.channelTitle.isNotEmpty()) {
+            if (viewModel.isCoverAvailable()) isTitleAndCoverSet()
+            else {
+                val errorMessage = getString(R.string.play_bro_cover_empty_error)
+                toaster.showError(
+                    err = MessageErrorException(errorMessage),
+                    customErrMessage = errorMessage,
+                )
+                showCoverForm(true)
+            }
+        } else {
+            val errorMessage = getString(R.string.play_bro_title_empty_error)
+            toaster.showToaster(errorMessage)
         }
     }
 
     private fun validateAndStartLive() {
-        requireCover { startCountDown() }
+        requireTitleAndCover { startCountDown() }
     }
 
     private fun setupObserver() {
@@ -351,7 +353,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun observeTitle() {
         parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            binding.viewPreparationMenu.isSetTitleChecked(true)
+            binding.viewPreparationMenu.isSetTitleChecked(it.title.isNotEmpty())
         }
 
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
@@ -475,7 +477,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             eventBus.subscribe().collect { event ->
                 when (event) {
                     Event.ClickSetSchedule -> {
-                        requireCover { showScheduleBottomSheet() }
+                        requireTitleAndCover { showScheduleBottomSheet() }
                     }
                     is Event.SaveSchedule -> {
                         parentViewModel.submitAction(
