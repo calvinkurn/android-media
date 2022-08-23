@@ -22,7 +22,8 @@ object DeeplinkMapperDeals {
                 ""
             // tokopedia://deals/{id}
             uri.pathSegments.size == 1->
-                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
+                "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
+                    //UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
 
             //tokopedia://deals/brand/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
@@ -30,7 +31,8 @@ object DeeplinkMapperDeals {
 
             //tokopedia://deals/i/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "i" ->
-                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
+                "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
+                //UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
 
             //tokopedia://deals/allbrands/{isVoucher}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "allbrands"->
