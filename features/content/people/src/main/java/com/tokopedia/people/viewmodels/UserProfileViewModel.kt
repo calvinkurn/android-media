@@ -297,28 +297,15 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
-        val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
-            repo.getProfile(username)
-        }) {
-            _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
-            ProfileUiModel.Empty
-        }
 
-        val deferredFollowInfo = viewModelScope.asyncCatchError(block = {
-            repo.getFollowInfo(listOf(username))
-        }) {
-            FollowInfoUiModel.Empty
-        }
-
-        val profileInfo = deferredProfileInfo.await() ?: ProfileUiModel.Empty
-        val followInfo = deferredFollowInfo.await() ?: FollowInfoUiModel.Empty
+        val profileInfo = repo.getProfile(username)
+        val followInfo = repo.getFollowInfo(listOf(profileInfo.userID))
         val profileType = if(userSession.isLoggedIn) {
             if(userSession.userId == followInfo.userID)
                 ProfileType.Self
             else ProfileType.OtherUser
         }
         else ProfileType.NotLoggedIn
-
 
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
