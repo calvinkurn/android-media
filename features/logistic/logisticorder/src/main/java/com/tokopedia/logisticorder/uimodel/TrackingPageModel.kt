@@ -84,7 +84,6 @@ data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
     var statusSubtitle: String = "",
-    var lastDriver: LastDriverModel = LastDriverModel(),
 ) : Parcelable
 
 @Parcelize
