@@ -67,6 +67,7 @@
                 android:id="@+id/tv_bundle_display_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
                 tools:text="Rp700.000"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rv_multiple_bundle_products"
