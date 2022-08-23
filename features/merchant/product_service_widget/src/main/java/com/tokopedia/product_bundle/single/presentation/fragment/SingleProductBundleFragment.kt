@@ -214,7 +214,7 @@ class SingleProductBundleFragment(
                 sendTrackerBundleAtcClickEvent(
                         atcResult = it,
                         selectedProductIds = parentProductID,
-                        bundleName = "",
+                        bundleName = bundleInfo.,
                         bundlePrice = slashPrice.toLong()
                 )
                 val intent = Intent()

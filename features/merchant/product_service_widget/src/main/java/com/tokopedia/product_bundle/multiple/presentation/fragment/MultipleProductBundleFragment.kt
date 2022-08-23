@@ -113,7 +113,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
     // need to put this as local variable so when user click ATC we can get the updated value
-    private var totalBundlePriceText: String = ""
+    private var totalPriceText: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -216,7 +216,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                             atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
                             bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice = totalBundlePriceText.toLong()
+                            bundlePrice = totalPriceText
                     )
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
@@ -231,7 +231,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                             atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
                             bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice = totalBundlePriceText.toLong()
+                            bundlePrice = totalPriceText
                     )
                     RouteManager.route(context, ApplinkConst.CART)
                 }
@@ -261,7 +261,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             atcResult: AddToCartDataResult,
             selectedProductIds: String,
             bundleName: String,
-            bundlePrice: Long
+            bundlePrice: String
     ) {
         val _userId = viewModel.getUserId()
         MultipleProductBundleTracking.trackMultipleBuyClick(
@@ -271,7 +271,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 atcResult = atcResult,
                 source = viewModel.pageSource,
                 bundleName = bundleName,
-                bundlePrice = bundlePrice
+                bundlePrice = bundlePrice.toLong()
         )
     }
 
@@ -389,12 +389,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
         val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
         val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount)
-        val totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
-        val _totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
+        val _totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
+        val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
         val totalSavingText = Utility.formatToRupiahFormat(totalSaving.roundToInt())
-        totalBundlePriceText = _totalBundlePriceText
-        productBundleOverView?.setTitleText(totalDiscountText, totalPriceText)
-        productBundleOverView?.amountView?.text = _totalBundlePriceText
+        totalPriceText = _totalPriceText
+        productBundleOverView?.setTitleText(totalDiscountText, _totalPriceText)
+        productBundleOverView?.amountView?.text = totalBundlePriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
 
