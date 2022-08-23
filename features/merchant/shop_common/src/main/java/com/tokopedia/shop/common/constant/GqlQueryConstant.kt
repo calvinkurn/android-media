@@ -158,6 +158,7 @@ object GqlQueryConstant {
             "                        shopStatus\n" +
             "                        statusMessage\n" +
             "                        statusTitle\n" +
+            "                        tickerType\n" +
             "                    }\n" +
             "                }"
 

@@ -239,7 +239,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
-    implementation projectOrAar(rootProject.ext.features.resolution)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {

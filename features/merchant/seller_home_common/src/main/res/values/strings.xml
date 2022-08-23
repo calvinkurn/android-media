@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="shc_load_failed">Gagal memuat</string>
+    <string name="shc_load_failed">Muat ulang</string>
     <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
     <string name="shc_failed_to_retry">Muat Ulang</string>
