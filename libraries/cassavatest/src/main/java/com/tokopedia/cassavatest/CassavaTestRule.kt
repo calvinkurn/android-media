@@ -8,7 +8,6 @@ import com.tokopedia.analyticsdebugger.cassava.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import kotlinx.coroutines.runBlocking
 import org.junit.rules.TestRule
@@ -49,7 +48,7 @@ class CassavaTestRule(
         val cassavaQuery = getQuery(context, queryId, isFromNetwork)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
-            val validationResult = engine.computeCo(validators, cassavaQuery.mode.value)
+            val validationResult = engine.compute(validators, cassavaQuery.mode.value)
             if (isFromNetwork && sendValidationResult)
                 sendTestResult(queryId, validationResult)
             validationResult
@@ -59,7 +58,7 @@ class CassavaTestRule(
     fun validate(query: List<Map<String, Any>>, mode: String = MODE_EXACT): List<Validator> {
         val validators = query.map { it.toDefaultValidator() }
         return runBlocking {
-            engine.computeCo(validators, mode)
+            engine.compute(validators, mode)
         }
     }
 
