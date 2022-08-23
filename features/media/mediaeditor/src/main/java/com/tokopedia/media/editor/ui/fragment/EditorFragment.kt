@@ -158,7 +158,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                         onReady = { bitmap ->
                             cropImage(bitmap, editorUiModel)
 
-                            viewBinding?.viewPager?.updateImage(targetUpdateIndex){
+                            viewBinding?.viewPager?.updateImage(targetUpdateIndex, editorUiModel.getImageUrl()){
                                 showAutoCropToaster()
                             }
 
@@ -189,7 +189,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue >= imageEditStateCount) return@let
 
             it.backValue++
-            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex())
+            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex(), targetEditorUiModel.getImageUrl())
 
             renderUndoText(it)
             renderRedoText(it)
@@ -208,7 +208,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue == 0) return@let
 
             it.backValue--
-            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex())
+            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex(), targetEditorUiModel.getImageUrl())
 
             renderUndoText(it)
             renderRedoText(it)
@@ -343,9 +343,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 renderRedoText(editorUiModel)
 
                 renderToolsIconActiveState(editorUiModel)
-            }
 
-            viewBinding?.viewPager?.updateImage(it)
+                viewBinding?.viewPager?.updateImage(it, editorUiModel.getImageUrl())
+            }
         }
     }
 

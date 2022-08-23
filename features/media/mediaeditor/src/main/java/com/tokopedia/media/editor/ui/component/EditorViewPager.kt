@@ -52,9 +52,9 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
         editorAdapter?.stopVideo(index)
     }
 
-    fun updateImage(index: Int, onImageUpdated: () -> Unit = {}){
+    fun updateImage(index: Int, newImageUrl: String, onImageUpdated: () -> Unit = {}){
         val view = getChildAt(index)?.findViewById<ImageView>(R.id.img_main_preview)
-        view?.loadImage(listRef[index].getImageUrl()){
+        view?.loadImage(newImageUrl){
             listener(
                 onSuccess = {_, _ ->
                     view.post {
