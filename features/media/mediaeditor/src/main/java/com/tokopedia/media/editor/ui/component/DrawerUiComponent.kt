@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.ui.component
 
-import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +18,18 @@ class DrawerUiComponent constructor(
 
     private lateinit var drawerAdapter: ThumbnailDrawerAdapter
 
+    fun getCurrentIndex(): Int{
+        return if(::drawerAdapter.isInitialized) drawerAdapter.getCurrentIndex() else -1
+    }
+
     fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>) {
         if (::drawerAdapter.isInitialized) {
             drawerAdapter.updateData(updateIndex, newData)
         }
+    }
+
+    fun clickIndex(index: Int){
+        lstThumbnail.findViewHolderForAdapterPosition(index)?.itemView?.performClick()
     }
 
     override fun onItemClicked(originalUrl: String, resultUrl: String?, clickedIndex: Int) {

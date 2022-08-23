@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -21,7 +22,6 @@ import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.writeBitmapToStorage
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
@@ -69,6 +69,18 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
+        }
+
+        viewBinding?.viewPager?.let {
+            val stateList = viewModel.editStateList.values.toList()
+            it.setAdapter(stateList)
+            it.setOnPageChanged{ position, isVideo ->
+                thumbnailDrawerComponent.clickIndex(position)
+
+                editorToolComponent.container().apply {
+                    if (isVideo) hide() else visible()
+                }
+            }
         }
     }
 
@@ -135,24 +147,36 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     ) {
         activeImageUrl = originalUrl
 
-        viewModel.getEditState(originalUrl)?.let { editorUiModel ->
-            loadImageWithEmptyTarget(requireContext(),
-                editorUiModel.getImageUrl(),
-                properties = {},
-                mediaTarget = MediaBitmapEmptyTarget(
-                    onReady = { bitmap ->
-                        if (isAutoCrop != null && editorUiModel.editList.size == 0) {
-                            cropImage(bitmap, editorUiModel)
-                        } else {
-                            viewBinding?.imgMainPreview?.setImageBitmap(bitmap)
-                        }
+        val targetUpdateIndex = thumbnailDrawerComponent.getCurrentIndex()
 
-                        renderUndoText(editorUiModel)
-                        renderRedoText(editorUiModel)
-                        renderToolsIconActiveState(editorUiModel)
-                    },
-                    onCleared = {}
-                ))
+        viewModel.getEditState(originalUrl)?.let { editorUiModel ->
+            if (isAutoCrop != null && editorUiModel.editList.size == 0 && !editorUiModel.isVideo) {
+                loadImageWithEmptyTarget(requireContext(),
+                    editorUiModel.getImageUrl(),
+                    properties = {},
+                    mediaTarget = MediaBitmapEmptyTarget(
+                        onReady = { bitmap ->
+                            cropImage(bitmap, editorUiModel)
+
+                            viewBinding?.viewPager?.updateImage(targetUpdateIndex){
+                                showAutoCropToaster()
+                            }
+
+                            viewBinding?.viewPager?.currentItem = clickedIndex
+
+                            renderUndoText(editorUiModel)
+                            renderRedoText(editorUiModel)
+                            renderToolsIconActiveState(editorUiModel)
+                        },
+                        onCleared = {}
+                    ))
+            } else {
+                viewBinding?.viewPager?.currentItem = clickedIndex
+
+                renderUndoText(editorUiModel)
+                renderRedoText(editorUiModel)
+                renderToolsIconActiveState(editorUiModel)
+            }
         }
     }
 
@@ -165,7 +189,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue >= imageEditStateCount) return@let
 
             it.backValue++
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl())
+            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex())
 
             renderUndoText(it)
             renderRedoText(it)
@@ -184,7 +208,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue == 0) return@let
 
             it.backValue--
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl())
+            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex())
 
             renderUndoText(it)
             renderRedoText(it)
@@ -298,19 +322,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             }
 
             editorDetailUiModel.editList.add(newEditorDetailUiModel)
-
-            viewBinding?.imgMainPreview?.post {
-                viewBinding?.imgMainPreview?.loadImage(savedFile?.path)
-
-                viewBinding?.mainEditorFragmentLayout?.let { editorFragmentContainer ->
-                    Toaster.build(
-                        editorFragmentContainer,
-                        getString(editorR.string.editor_auto_crop_format, ratioWidth.toInt(), ratioHeight.toInt()),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
-                    ).show()
-                }
-            }
         }
     }
 
@@ -333,6 +344,26 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
                 renderToolsIconActiveState(editorUiModel)
             }
+
+            viewBinding?.viewPager?.updateImage(it)
+        }
+    }
+
+    private fun showAutoCropToaster() {
+        viewBinding?.mainEditorFragmentLayout?.let { editorFragmentContainer ->
+            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
+            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
+
+            Toaster.build(
+                editorFragmentContainer,
+                getString(
+                    editorR.string.editor_auto_crop_format,
+                    ratioWidth.toInt(),
+                    ratioHeight.toInt()
+                ),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 

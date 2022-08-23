@@ -1,5 +1,7 @@
 package com.tokopedia.media.editor.ui.uimodel
 
+import com.tokopedia.picker.common.utils.isVideoFormat
+
 class EditorUiModel(
     private val originalUrl: String
 ) {
@@ -8,6 +10,8 @@ class EditorUiModel(
 
     var backValue = 0
     var removeBackgroundStartState = 0
+
+    val isVideo: Boolean = isVideoFormat(originalUrl)
 
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {

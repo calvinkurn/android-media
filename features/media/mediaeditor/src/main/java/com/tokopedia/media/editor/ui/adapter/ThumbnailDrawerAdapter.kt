@@ -20,6 +20,10 @@ class ThumbnailDrawerAdapter constructor(
 
     private var itemSelectedIndex = 0
 
+    fun getCurrentIndex(): Int{
+        return itemSelectedIndex
+    }
+
     fun updateData(index: Int, newData: List<EditorUiModel>) {
         dataCollection = newData
         notifyItemChanged(index)
