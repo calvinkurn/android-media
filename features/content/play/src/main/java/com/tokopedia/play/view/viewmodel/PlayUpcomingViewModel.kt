@@ -74,7 +74,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
-    private val _isExpanded = MutableStateFlow(DescriptionUiState(isExpand = false))
+    private val _isExpanded = MutableStateFlow(DescriptionUiState())
 
     private val _observableKolId = MutableLiveData<String>()
 
