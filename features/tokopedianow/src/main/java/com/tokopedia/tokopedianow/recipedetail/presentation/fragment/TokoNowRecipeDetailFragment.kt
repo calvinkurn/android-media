@@ -225,14 +225,18 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onClickBookmarkBtn() {
-        val bookmarkedId = com.tokopedia.iconunify.R.drawable.iconunify_bookmark_filled
-        val bookmarked = toolbarHeader?.getRightIcon(BOOKMARK_BTN_POSITION) == bookmarkedId
-        setupToolbarHeaderIcons(!bookmarked)
+        if(userSession.isLoggedIn) {
+            val bookmarkedId = com.tokopedia.iconunify.R.drawable.iconunify_bookmark_filled
+            val bookmarked = toolbarHeader?.getRightIcon(BOOKMARK_BTN_POSITION) == bookmarkedId
+            setupToolbarHeaderIcons(!bookmarked)
 
-        val bookmarkBtn = toolbarHeader?.getRightIcon(BOOKMARK_BTN_POSITION)
-        val addBookmark = bookmarkBtn == bookmarkedId
+            val bookmarkBtn = toolbarHeader?.getRightIcon(BOOKMARK_BTN_POSITION)
+            val addBookmark = bookmarkBtn == bookmarkedId
 
-        viewModel.onClickBookmarkBtn(addBookmark)
+            viewModel.onClickBookmarkBtn(addBookmark)
+        } else {
+            goToLoginPage()
+        }
     }
 
     private fun setNavBtnClickListener() {
