@@ -12,9 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
-import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
-import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment
-import com.tokopedia.buyerorder.detail.view.fragment.OrderListDetailFragment
+import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -32,16 +30,13 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    override fun getNewFragment(): Fragment? {
-        return category?.let {
-            val formattedCategory = it.uppercase()
-
-            if (formattedCategory.contains(OrderCategory.DIGITAL.category)){
-                return@let OrderListDetailFragment.getInstance(orderId, com.tokopedia.buyerorder.detail.data.OrderCategory.DIGITAL)
-            } else {
-                return@let OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream)
-            }
-        }
+    override fun getNewFragment(): Fragment {
+        return OmsDetailFragment.getInstance(
+            orderId ?: "",
+            "",
+            fromPayment,
+            upstream?:""
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,17 +80,9 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
             category?.let {
                 val formattedCategory = it.uppercase()
 
-                if (formattedCategory.contains(OrderCategory.DIGITAL.category)){
+                if (formattedCategory.isNotEmpty()){
                     supportFragmentManager.beginTransaction()
-                        .add(com.tokopedia.abstraction.R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL.category))
-                        .commit()
-
-                    return@let
-                }
-
-                if (formattedCategory.contains("")){
-                    supportFragmentManager.beginTransaction()
-                        .add(com.tokopedia.abstraction.R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream))
+                        .add(com.tokopedia.abstraction.R.id.parent_view, OmsDetailFragment.getInstance(orderId ?: "", "", fromPayment, upstream ?: ""))
                         .commit()
                 }
             }
