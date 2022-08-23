@@ -213,8 +213,7 @@ data class SerializedNotificationData(
 
     @Expose
     @SerializedName(REPLY_TYPE)
-    var replyType: String? = null
-    var notificationSound: String? = null,
+    var replyType: String? = null,
 
     @SerializedName(MAIN_APP_PRIORITY)
     @Expose
