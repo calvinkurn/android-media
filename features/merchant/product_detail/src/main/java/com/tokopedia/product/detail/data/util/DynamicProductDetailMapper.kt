@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
@@ -24,12 +27,6 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateLinkDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateProductDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestHeader
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateShopDetail
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -560,39 +557,6 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateAffiliateCookieRequest(productInfo: DynamicProductInfoP1,
-                                       affiliateUuid: String,
-                                       deviceId: String,
-                                       uuid: String,
-                                       affiliateChannel: String): AffiliateCookieRequest {
-        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
-        return AffiliateCookieRequest(
-                header = AffiliateRequestHeader(
-                        uuid = uuid,
-                        deviceId = deviceId,
-                        irisSessionId = TrackApp.getInstance().gtm.irisSessionId
-                ),
-                affiliateDetail = AffiliateRequestDetail(
-                        affiliateUniqueId = affiliateUuid
-                ),
-                affiliateProductDetail = AffiliateProductDetail(
-                        productId = productInfo.basic.productID,
-                        categoryId = categoryId,
-                        isVariant = productInfo.isProductVariant(),
-                        stockQty = productInfo.getFinalStock().toDoubleOrZero()
-                ),
-                affiliateLinkDetail = AffiliateLinkDetail(
-                        affiliateLink = "",
-                        channel = affiliateChannel,
-                        linkType = PDP_SOURCE_AFFILIATE,
-                        linkIdentifier = "0"
-                ),
-                affiliateShopDetail = AffiliateShopDetail(
-                        shopId = productInfo.basic.shopID
-                )
-        )
-    }
-
     fun removeUnusedComponent(
         productInfo: DynamicProductInfoP1?,
         variantData: ProductVariant?,
@@ -632,5 +596,20 @@ object DynamicProductDetailMapper {
         } else {
             productInfo.finalPrice
         }
+    }
+
+    fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1): AffiliatePageDetail {
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliatePageDetail(
+            pageId = productInfo.basic.productID,
+            source = AffiliateSdkPageSource.PDP(
+                shopId = productInfo.basic.shopID,
+                productInfo = AffiliateSdkProductInfo(
+                    categoryID = categoryId,
+                    isVariant = productInfo.isProductVariant(),
+                    stockQty = productInfo.getFinalStock().toIntOrZero()
+                )
+            )
+        )
     }
 }

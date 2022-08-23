@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,7 +35,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
     val searchCategoryList: LiveData<Result<DigitalHomePageSearchNewModel>>
         get() = mutableSearchCategoryList
 
-    fun searchCategoryList(rawQuery: String, searchQuery: String, isLoadFromCloud: Boolean = false) {
+    fun searchCategoryList(rawQuery: GqlQueryInterface, searchQuery: String, isLoadFromCloud: Boolean = false) {
         job = launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 searchCategoryHomePageUseCase.searchCategoryList(rawQuery, isLoadFromCloud, searchQuery)
