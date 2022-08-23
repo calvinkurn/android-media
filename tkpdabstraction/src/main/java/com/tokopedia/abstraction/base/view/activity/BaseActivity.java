@@ -22,14 +22,9 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
-import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -39,9 +34,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +90,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 Log.d("force_logout_v2", intent.getStringExtra("title"));
             }
         };
-        checkAppUpdateAndInApp();
     }
 
     @Override
@@ -345,73 +336,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         }
         super.onBackPressed();
-    }
-
-    public void checkAppUpdateAndInApp() {
-        WeakReference<BaseActivity> activityReference = new WeakReference<>(this);
-        AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
-            if (!isOnProgress) {
-                checkAppUpdateRemoteConfig(activityReference);
-            }
-            return null;
-        });
-    }
-
-    private void checkAppUpdateRemoteConfig(WeakReference<BaseActivity> activityReference) {
-        BaseActivity context = activityReference.get();
-        if (!isFinishing() && context != null) {
-            ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(context);
-            InAppCallback inAppCallback = getInAppCallback();
-            appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-                @Override
-                public void onNeedUpdate(DetailUpdate detail) {
-                    BaseActivity activity = activityReference.get();
-                    if (!isFinishing() && activity != null) {
-                        AppUpdateDialogBuilder appUpdateDialogBuilder =
-                                new AppUpdateDialogBuilder(
-                                        activity,
-                                        detail,
-                                        new AppUpdateDialogBuilder.Listener() {
-                                            @Override
-                                            public void onPositiveButtonClicked(DetailUpdate detail) {
-                                                if (inAppCallback!= null) {
-                                                    inAppCallback.onPositiveButtonInAppClicked(detail);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onNegativeButtonClicked(DetailUpdate detail) {
-                                                if (inAppCallback!= null) {
-                                                    inAppCallback.onNegativeButtonInAppClicked(detail);
-                                                }
-                                            }
-                                        }
-                                );
-                        appUpdateDialogBuilder.getAlertDialog().show();
-                        if (inAppCallback!= null) {
-                            inAppCallback.onNeedUpdateInApp(detail);
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Timber.d(e);
-                }
-
-                @Override
-                public void onNotNeedUpdate() {
-                    if (inAppCallback!= null) {
-                        inAppCallback.onNotNeedUpdateInApp();
-                    }
-                }
-            });
-        }
-    }
-
-    protected @Nullable
-    InAppCallback getInAppCallback() {
-        return null;
     }
 
 }
