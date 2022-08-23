@@ -16,11 +16,7 @@ import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import io.mockk.clearStaticMockk
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
+import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -800,7 +796,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/login"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/login"
         assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)
     }
 
@@ -951,7 +947,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register appLink then should return empty in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, expectedDeepLink)
     }
 
@@ -979,7 +975,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check profile completion appLink then should return tokopedia internal profile completion in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/profile-completion"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-completion"
         assertEqualsDeepLinkMapper(ApplinkConst.PROFILE_COMPLETION, expectedDeepLink)
     }
 
@@ -1027,7 +1023,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check profile completion then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/profile-completion"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-completion"
         assertEqualsDeepLinkMapper(ApplinkConst.PROFILE_COMPLETION, expectedDeepLink)
     }
 
@@ -1045,7 +1041,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register init then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER_INIT, expectedDeepLink)
     }
 
@@ -1384,27 +1380,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check setting profile appLink then should return tokopedia internal setting profile in customerapp`() {
         val settingProfileApplink = ApplinkConst.SETTING_PROFILE
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
-        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
-        } returns ""
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO, true)
-        } returns true
-        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check setting profile applink then should return tokopedia internal new revamp setting profile in customerapp`() {
-        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-info"
-        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
-        } returns RollenceKey.VARIANT_NEW_PROFILE_REVAMP
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO, true)
-        } returns true
         assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
     }
 
@@ -1591,7 +1566,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `create shop`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/landing-shop-creation"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/landing-shop-creation"
         assertEqualsDeepLinkMapper(ApplinkConst.CREATE_SHOP, expectedDeepLink)
     }
 
@@ -1609,7 +1584,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check has password appLink then should return tokopedia internal has password in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/has-password"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/has-password"
         assertEqualsDeepLinkMapper(ApplinkConst.HAS_PASSWORD, expectedDeepLink)
     }
 
@@ -1725,13 +1700,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check add name profile appLink then should return tokopedia internal add name profile in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/manage-name"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/manage-name"
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_NAME_PROFILE, expectedDeepLink)
     }
 
     @Test
     fun `check reset passwoord appLink then should return tokopedia internal reset password in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/forgot-password"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/forgot-password"
         assertEqualsDeepLinkMapper(ApplinkConst.RESET_PASSWORD, expectedDeepLink)
     }
 
@@ -1801,6 +1776,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         every {
             PowerMerchantDeepLinkMapper.isEnablePMSwitchToWebView(context)
         } returns false
+        every {
+            PowerMerchantDeepLinkMapper.isLoginAndHasShop(context)
+        } returns true
         assertEqualsDeepLinkMapper(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, expectedDeepLink)
     }
 
@@ -2271,13 +2249,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check SETTING_PAYMENT customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/payment-setting"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/payment-setting"
         assertEqualsDeepLinkMapper(ApplinkConst.SETTING_PAYMENT, expectedDeepLink)
     }
 
     @Test
     fun `check SETTING_ACCOUNT customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/account-setting"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/account-setting"
         assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ACCOUNT, expectedDeepLink)
     }
 
@@ -2324,7 +2302,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check LINK_ACCOUNT customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/link-account-webview"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/link-account-webview"
         assertEqualsDeepLinkMapper(ApplinkConst.LINK_ACCOUNT, expectedDeepLink)
     }
 
@@ -2415,7 +2393,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check add phone page applink customerapp`() {
-        val expectedDeepLink = ApplinkConstInternalGlobal.ADD_PHONE
+        val expectedDeepLink = ApplinkConstInternalUserPlatform.ADD_PHONE
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_PHONE, expectedDeepLink)
     }
 

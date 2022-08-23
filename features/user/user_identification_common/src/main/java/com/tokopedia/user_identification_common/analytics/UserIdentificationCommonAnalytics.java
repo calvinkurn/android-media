@@ -130,30 +130,41 @@ public class UserIdentificationCommonAnalytics {
         }
     }
 
-    public void eventViewSelfiePage() {
+    public void eventViewSelfiePage(Boolean isSelfie) {
         if(projectID ==4){
             sendTradeInViewEvent(Action.VIEW_SELFIE_PAGE);
         }
 
-        track(TrackAppUtils.gtmData(
-                Event.VIEW_ACCOUNT_IRIS,
-                Category.KYC_PAGE,
-                Action.VIEW_SELFIE_PAGE,
-                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ), "35141");
+        if (isSelfie) {
+            track(TrackAppUtils.gtmData(
+                    Event.VIEW_ACCOUNT_IRIS,
+                    Category.KYC_PAGE,
+                    Action.VIEW_SELFIE_PAGE,
+                    "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
+            ), "35141");
+        }
     }
 
-    public void eventClickNextSelfiePage() {
+    public void eventClickNextSelfiePage(Boolean isLiveness) {
         if(projectID ==4){
             sendTradeInClickEvent(Action.CLICK_NEXT_SELFIE_PAGE,"");
         }
 
-        track(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_PAGE,
-                Action.CLICK_ON_BUTTON_VERIFIKASI_WAJAH_PAGE,
-                "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ), "2628");
+        if (isLiveness) {
+            track(TrackAppUtils.gtmData(
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_LIVENESS_PAGE,
+                    Action.CLICK_ON_BUTTON_VERIFIKASI_WAJAH_PAGE,
+                    "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
+            ), "2628");
+        } else  {
+            track(TrackAppUtils.gtmData(
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_SELFIE_PAGE,
+                    Action.CLICK_NEXT_SELFIE_PAGE,
+                    "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
+            ), "");
+        }
     }
 
     public void eventViewOpenCameraKtp() {
