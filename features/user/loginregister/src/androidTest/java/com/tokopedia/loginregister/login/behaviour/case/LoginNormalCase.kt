@@ -246,11 +246,11 @@ class LoginNormalCase : LoginBase() {
     @Test
     fun whenForgotPasswordIsClicked_TheApplinkPageIsLaunched() {
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, Intent())
             )
             clickForgotPass()
-            intended(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD))
+            intended(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD))
         }
     }
 

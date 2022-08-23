@@ -367,6 +367,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                     )
                 )
 
+                val productData = response.addToCartBundleDataModel.data.firstOrNull()
                 _productBundleRecomTracker.postValue(
                     ProductBundleRecomTracker(
                         shopId = shopId,
@@ -376,8 +377,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                         bundleType = bundleType,
                         bundlePosition = bundlePosition,
                         priceCut = priceCut,
-                        cartId = response.addToCartBundleDataModel.data.firstOrNull()?.cartId.orEmpty(),
-                        quantity = response.addToCartBundleDataModel.data.firstOrNull()?.productId.orEmpty(),
+                        cartId = productData?.cartId.orEmpty(),
+                        quantity = productData?.quantity.toString(),
                         state = STATE_PRODUCT_BUNDLE_RECOM_ATC
                     )
                 )
@@ -411,7 +412,10 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
-            getProductBundleRecommendation(tmpMiniCartListUiModel)
+            /**
+            * Don't remove this line of code. Need to wait get product bundle recom from BE to production
+            **/
+//            getProductBundleRecommendation(tmpMiniCartListUiModel)
 
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad

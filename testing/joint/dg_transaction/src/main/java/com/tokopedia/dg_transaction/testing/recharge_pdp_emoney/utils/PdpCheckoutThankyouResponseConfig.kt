@@ -38,6 +38,16 @@ class PdpCheckoutThankyouResponseConfig(val isLogin: Boolean) : MockModelConfig(
             InstrumentationMockHelper.getRawString(context, R.raw.response_mock_thanks_page_data),
             FIND_BY_CONTAINS
         )
+        addMockResponse(
+            KEY_QUERY_GET_ADD_TO_CART_V2,
+            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_recharge_add_to_cart_v2),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_QUERY_RECHARGE_CHECKOUT_V3,
+            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_recharge_checkout_v3),
+            FIND_BY_CONTAINS
+        )
 
         return this
     }
@@ -57,6 +67,8 @@ class PdpCheckoutThankyouResponseConfig(val isLogin: Boolean) : MockModelConfig(
         const val KEY_QUERY_PREFIX_SELECT = "rechargeCatalogPrefixSelect"
         const val KEY_QUERY_GET_PRODUCT_INPUT = "rechargeCatalogProductInput"
         const val KEY_QUERY_GET_FAV_NUMBER = "recharge_favorite_number"
+        const val KEY_QUERY_GET_ADD_TO_CART_V2 = "rechargeAddToCartV2"
+        const val KEY_QUERY_RECHARGE_CHECKOUT_V3 = "rechargeCheckoutV3"
 
         /* digital_checkout */
         const val KEY_DG_CHECKOUT_GET_CART = "rechargeGetCart"
