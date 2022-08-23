@@ -70,5 +70,13 @@
     <string name="deals_image_category_empty_content_description">Image Category Empty</string>
 
     <string name="deals_pdp_buy_now">Beli Sekarang</string>
+    <string name="deals_pdp_recommendation">Deals Rekomendasi</string>
+    <string name="deals_pdp_see_how_to_redeem_voucher">Lihat Cara Redeem Voucher</string>
+    <string name="deals_pdp_expand">Selengkapnya</string>
+    <string name="deals_pdp_show_tnc"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="deals_pdp_show_description">What You Will Get</string>
+    <string name="deals_pdp_see_on_map">Lihat Peta</string>
+    <string name="deals_pdp_see_all_locations">Lihat Semua Lokasi</string>
+    <string name="deals_pdp_redeem_locations">Lokasi Redeem\u0020</string>
 
 </resources>
