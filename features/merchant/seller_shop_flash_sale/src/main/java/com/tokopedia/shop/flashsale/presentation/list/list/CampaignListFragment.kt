@@ -61,6 +61,7 @@ import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapt
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.dialog.ShopDecorationDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringActivity
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -285,7 +286,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 is Success -> {
                     displayVpsPackages(result.data)
                 }
-                is Fail -> {}
+                is Fail -> {
+                    binding?.run {
+                        cardQuotaMonitoring.gone()
+                    }
+                }
             }
         }
     }
@@ -493,7 +498,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         packages.forEach { vpsPackage ->
             totalQuota += vpsPackage.originalQuota
-            totalCurrentQuota += vpsPackage.currentQuota
+            totalCurrentQuota += vpsPackage.remainingQuota
         }
 
         binding?.run {
@@ -510,6 +515,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     totalQuotaSource
                 )
             )
+            cardQuotaMonitoring.apply {
+                visible()
+                setOnClickListener {
+                    routeToYourShopFlashSaleQuotaPage()
+                }
+            }
         }
     }
 
@@ -915,4 +926,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(activity ?: return, route)
     }
+
+    private fun routeToYourShopFlashSaleQuotaPage() {
+        QuotaMonitoringActivity.start(activity ?: return)
+    }
 }
+

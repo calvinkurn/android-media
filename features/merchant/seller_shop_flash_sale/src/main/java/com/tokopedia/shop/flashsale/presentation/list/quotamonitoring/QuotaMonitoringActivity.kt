@@ -15,12 +15,12 @@ class QuotaMonitoringActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getLayoutRes() = R.layout.sfs_activity_quota_monitoring
+    override fun getLayoutRes() = R.layout.ssfs_activity_quota_monitoring
     override fun getNewFragment() = QuotaMonitoringFragment.newInstance()
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.sfs_activity_quota_monitoring)
+        setContentView(R.layout.ssfs_activity_quota_monitoring)
     }
 }

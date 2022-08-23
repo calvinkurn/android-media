@@ -374,4 +374,14 @@
     <string name="package_info_label">Dibuat dengan kuota</string>
     <string name="package_info_placeholder">[%s]</string>
 
+    <!--    Kuota Flash Sale Toko-mu-->
+    <string name="ssfs_title_your_shop_flash_sale_quota">Kuota Flash Sale Toko-mu</string>
+    <string name="ssfs_remaining_quota_value_placeholder">Sisa Kuota : %d dari %2d</string>
+    <string name="ssfs_title_quota_resource_label">Kuota Flash Sale Toko-mu bersumber dari:</string>
+    <string name="ssfs_label_resource_and_remaining_quota"><![CDATA[Sumber & Sisa Kuota]]></string>
+    <string name="ssfs_expire_label">Kadaluwarsa</string>
+    <string name="ssfs_quota_monitoring_ticker_description">Agar bisa punya kuota lebih banyak, upgrade tipe keanggotaan tokomu atau cek Paket Promosi, yuk!</string>
+    <string name="ssfs_label_learn_quota">Pelajari Tentang Kuota</string>
+    <string name="ssfs_remaining_and_total_quota_value_placeholder">%d/%2d</string>
+
 </resources>

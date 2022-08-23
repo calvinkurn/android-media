@@ -1,5 +1,9 @@
 package com.tokopedia.shop.flashsale.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class VpsPackage(
     val remainingQuota: Int,
     val currentQuota: Int,
@@ -9,4 +13,4 @@ data class VpsPackage(
     val packageId: String,
     val packageName: String,
     val packageStartTime: Long
-)
+) : Parcelable

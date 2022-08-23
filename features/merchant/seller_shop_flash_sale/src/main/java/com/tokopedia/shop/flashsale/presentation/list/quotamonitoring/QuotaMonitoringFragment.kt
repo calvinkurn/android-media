@@ -1,19 +1,23 @@
 package com.tokopedia.shop.flashsale.presentation.list.quotamonitoring
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.seller_shop_flash_sale.R
-import com.tokopedia.seller_shop_flash_sale.databinding.SfsFragmentQuotaMonitoringBinding
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentQuotaMonitoringBinding
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
-import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerViewModel
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.adapter.QuotaMonitoringAdapter
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -24,12 +28,16 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
         fun newInstance() = QuotaMonitoringFragment()
     }
 
-    private var binding by autoClearedNullable<SfsFragmentQuotaMonitoringBinding>()
+    private var binding by autoClearedNullable<SsfsFragmentQuotaMonitoringBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(QuotaMonitoringViewModel::class.java) }
+
+    private val quotaMonitoringAdapter by lazy {
+        QuotaMonitoringAdapter()
+    }
 
     override fun getScreenName(): String =
         CampaignListContainerFragment::class.java.canonicalName.orEmpty()
@@ -45,11 +53,48 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = SfsFragmentQuotaMonitoringBinding.inflate(inflater, container, false)
+        binding = SsfsFragmentQuotaMonitoringBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeVpsPackages()
+        viewModel.getVpsPackages()
+    }
+
+    private fun observeVpsPackages() {
+        viewModel.vpsPackages.observe(viewLifecycleOwner) { results ->
+            when (results) {
+                is Success -> {
+                    displayPackages(results.data)
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun displayPackages(vpsPackage: List<VpsPackage>) {
+        var remainingQuota = 0
+        var totalQuota = 0
+        vpsPackage.forEach { vpsPackage ->
+            remainingQuota += vpsPackage.remainingQuota
+            totalQuota += vpsPackage.originalQuota
+        }
+        binding?.apply {
+            cardQuotaMonitoring.cardType = CardUnify2.TYPE_BORDER
+            tpRemainingQuota.text = getString(
+                R.string.ssfs_remaining_quota_value_placeholder,
+                remainingQuota,
+                totalQuota
+            )
+            rvQuota.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            quotaMonitoringAdapter.clearAll()
+            quotaMonitoringAdapter.submit(vpsPackage)
+            rvQuota.adapter = quotaMonitoringAdapter
+        }
     }
 }
