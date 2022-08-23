@@ -97,6 +97,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val myShopQuery: String
         get() = _myShopProduct.value.param.query
 
+    val globalSearchQuery: String
+        get() = _globalSearchProduct.value.param.query
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow(setOf(if(isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))

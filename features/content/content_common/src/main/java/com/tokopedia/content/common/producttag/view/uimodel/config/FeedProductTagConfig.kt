@@ -9,5 +9,5 @@ class FeedProductTagConfig : ContentProductTagConfig() {
         get() = false
 
     override val isFullPageAutocomplete: Boolean
-        get() = false
+        get() = true
 }

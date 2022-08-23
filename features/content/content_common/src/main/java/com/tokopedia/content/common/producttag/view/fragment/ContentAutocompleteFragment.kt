@@ -71,14 +71,19 @@ class ContentAutocompleteFragment @Inject constructor(
             viewModel.submitAction(ProductTagAction.BackPressed)
         }
 
-        binding.sbAutocomplete.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val query = binding.sbAutocomplete.searchBarTextField.text.toString()
-                submitQuery(query)
+        binding.sbAutocomplete.searchBarTextField.apply {
+            setText(viewModel.globalSearchQuery)
+            setSelection(viewModel.globalSearchQuery.length)
 
-                true
+            setOnEditorActionListener { _, actionId, _ ->
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    val query = binding.sbAutocomplete.searchBarTextField.text.toString()
+                    submitQuery(query)
+
+                    true
+                }
+                else false
             }
-            else false
         }
 
         binding.sbAutocomplete.clearListener = {
@@ -87,14 +92,14 @@ class ContentAutocompleteFragment @Inject constructor(
     }
 
     private fun submitQuery(query: String) {
-        viewModel.submitAction(
-            ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "0", "")
-        )
-
         binding.sbAutocomplete.searchBarTextField.apply {
             clearFocus()
             hideKeyboard()
         }
+
+        viewModel.submitAction(
+            ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "0", "")
+        )
     }
 
     private fun showSearchKeyboard() {
