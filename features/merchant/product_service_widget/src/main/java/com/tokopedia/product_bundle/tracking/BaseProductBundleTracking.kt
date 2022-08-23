@@ -2,8 +2,6 @@ package com.tokopedia.product_bundle.tracking
 
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_MULTIPLE_BUNDLING
-import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_SINGLE_BUNDLING
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
