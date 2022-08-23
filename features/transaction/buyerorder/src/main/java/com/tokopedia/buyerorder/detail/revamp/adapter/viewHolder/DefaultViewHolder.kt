@@ -40,7 +40,6 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
         private const val ZERO_MARGIN = 0
         private const val STROKE_WIDTH = 1
         private const val KEY_BUTTON = "button"
-        private const val KEY_REFRESH = "refresh"
         private const val KEY_REDIRECT = "redirect"
         private const val KEY_TEXT = "text"
     }
