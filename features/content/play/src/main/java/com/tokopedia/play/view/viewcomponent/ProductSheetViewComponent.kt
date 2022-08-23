@@ -398,7 +398,6 @@ class ProductSheetViewComponent(
             sectionInfo: ProductSectionUiModel.Section,
             position: Int,
         )
-        fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
         fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
         fun onReminderImpressed(view: ProductSheetViewComponent, section: ProductSectionUiModel.Section)

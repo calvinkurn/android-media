@@ -211,44 +211,6 @@ class PlayAnalytic(
         )
     }
 
-    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
-        if (products.isEmpty()) return
-
-        val firstProduct = products.first().first
-
-        val (eventAction, eventLabel) = when(sectionInfo.config.type){
-            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
-            else -> Pair("view product", "$mChannelId - ${firstProduct.id} - ${mChannelType.value} - product in bottom sheet - is pinned product $firstProduct")
-        }
-        trackingQueue.putEETracking(
-                event = EventModel(
-                        "productView",
-                        KEY_TRACK_GROUP_CHAT_ROOM,
-                        eventAction,
-                        eventLabel
-                ),
-                enhanceECommerceMap = hashMapOf(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                                    products.forEach {
-                                        add(convertProductToHashMapWithList(it.first, it.second, "bottom sheet"))
-                                    }
-                                }
-                        )
-                ),
-                customDimension = if(sectionInfo.config.type != ProductSectionType.Other){
-                    hashMapOf(
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                    )
-                } else null
-        )
-    }
-
     fun clickProduct(product: PlayProductUiModel.Product,
                      sectionInfo: ProductSectionUiModel.Section,
                      position: Int) {

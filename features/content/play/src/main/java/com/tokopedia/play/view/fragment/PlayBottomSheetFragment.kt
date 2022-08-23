@@ -203,18 +203,7 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    override fun onProductsImpressed(
-        view: ProductSheetViewComponent,
-        products: List<Pair<PlayProductUiModel.Product, Int>>,
-        sectionInfo: ProductSectionUiModel.Section
-    ) {
-        if(playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.TokoNow) newAnalytic.impressProductBottomSheetNow(products, sectionInfo)
-            else analytic.impressBottomSheetProducts(products, sectionInfo)
-        }
-    }
-
-    fun onProductCountChanged() {
+    private fun onProductCountChanged() {
         if (playViewModel.bottomInsets.isKeyboardShown) return
 
         doShowToaster(
