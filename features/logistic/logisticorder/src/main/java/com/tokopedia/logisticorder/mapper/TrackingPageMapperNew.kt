@@ -99,13 +99,13 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapTippingLastDriverData(tippingLastDriver: LastDriver): LastDriverModel {
+    private fun mapTippingLastDriverData(lastDriver: LastDriver): LastDriverModel {
         return LastDriverModel().apply {
-            phone = tippingLastDriver.phone
-            name = tippingLastDriver.name
-            photo = tippingLastDriver.photo
-            licenseNumber = tippingLastDriver.licenseNumber
-            isChanged = tippingLastDriver.isChanged
+            phone = lastDriver.phone
+            name = lastDriver.name
+            photo = lastDriver.photo
+            licenseNumber = lastDriver.licenseNumber
+            isChanged = lastDriver.isChanged
         }
     }
 

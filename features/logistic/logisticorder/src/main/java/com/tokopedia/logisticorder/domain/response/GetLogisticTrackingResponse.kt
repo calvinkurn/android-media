@@ -221,25 +221,7 @@ data class Tipping(
         @SerializedName("last_driver")
         @Expose
         @Deprecated("Use LastDriver instead")
-        val tippingLastDriver: TippingLastDriver = TippingLastDriver()
-)
-
-data class TippingLastDriver(
-        @SerializedName("photo")
-        @Expose
-        val photo: String = "",
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-        @SerializedName("phone")
-        @Expose
-        val phone: String = "",
-        @SerializedName("license_number")
-        @Expose
-        val licenseNumber: String = "",
-        @SerializedName("is_changed")
-        @Expose
-        val isChanged: Boolean = false
+        val lastDriver: LastDriver = LastDriver()
 )
 
 data class LastDriver(
