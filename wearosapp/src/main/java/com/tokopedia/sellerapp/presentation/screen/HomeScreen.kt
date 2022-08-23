@@ -3,28 +3,38 @@ package com.tokopedia.sellerapp.presentation.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.*
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.theme.Grey
 import com.tokopedia.sellerapp.presentation.theme.LightGrey
 import com.tokopedia.tkpd.R
 import com.tokopedia.iconunify.R.drawable as iconR
 
+const val TITLE_NOTIF = "Notifikasi"
+const val TITLE_CHAT = "Chat"
+const val TITLE_NEW_ORDER = "Pesanan Baru"
+const val TITLE_READY_TO_DELIVER = "Siap Dikirim"
+val ICON_NOTIF = iconR.iconunify_bell
+val ICON_CHAT = iconR.iconunify_chat
+val ICON_NEW_ORDER = iconR.iconunify_product
+val ICON_READY_TO_DELIVER = iconR.iconunify_product_move
+
+private fun generateMenuItem() = listOf(
+    MenuItem(TITLE_NOTIF, 1, ICON_NOTIF),
+    MenuItem(TITLE_CHAT, 1, ICON_CHAT),
+    MenuItem(TITLE_NEW_ORDER, 4, ICON_NEW_ORDER),
+    MenuItem(TITLE_READY_TO_DELIVER, 2, ICON_READY_TO_DELIVER),
+)
+
 @Composable
 fun HomeScreen() {
     val listState = rememberScalingLazyListState()
-    val menuItems = listOf(
-        MenuItem("Notifikasi", 1, iconR.iconunify_bell),
-        MenuItem("Chat", 1, iconR.iconunify_chat),
-        MenuItem("Pesanan Baru", 4, iconR.iconunify_product),
-        MenuItem("Siap Dikirim", 2, iconR.iconunify_product_move),
-    )
+
+    val menuItems = generateMenuItem()
 
     Scaffold(
         timeText = {
@@ -41,8 +51,6 @@ fun HomeScreen() {
             )
         }
     ) {
-        val contentModifier = Modifier
-            .fillMaxWidth()
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = listState
@@ -56,7 +64,7 @@ fun HomeScreen() {
                 }
             }
             items(menuItems.size){
-                MenuChip(contentModifier, menuItems[it])
+                MenuChip(Modifier.fillMaxWidth(), menuItems[it])
             }
         }
     }
