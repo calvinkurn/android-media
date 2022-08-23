@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.common.adapter
+package com.tokopedia.tkpd.flashsale.presentation.common.adapter
 
 import android.graphics.Rect
 import android.view.View

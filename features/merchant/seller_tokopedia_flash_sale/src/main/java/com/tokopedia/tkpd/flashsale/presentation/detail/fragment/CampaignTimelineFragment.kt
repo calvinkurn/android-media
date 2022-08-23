@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignTimelineBinding
-import com.tokopedia.tkpd.flashsale.common.adapter.VerticalSpaceItemDecoration
+import com.tokopedia.tkpd.flashsale.presentation.common.adapter.VerticalSpaceItemDecoration
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail.TimelineProcessAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel

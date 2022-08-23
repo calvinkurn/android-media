@@ -238,12 +238,14 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         when {
             isLoading -> binding?.emptyState?.gone()
             isUsingFilter && totalFlashSaleCount == 0 -> {
+                flashSaleAdapter.removeItem(LoadingItem)
                 binding?.emptyState?.visible()
                 binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
                 binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
                 binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
             }
             !isUsingFilter && totalFlashSaleCount == 0 -> {
+                flashSaleAdapter.removeItem(LoadingItem)
                 binding?.emptyState?.visible()
                 val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
                 binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)

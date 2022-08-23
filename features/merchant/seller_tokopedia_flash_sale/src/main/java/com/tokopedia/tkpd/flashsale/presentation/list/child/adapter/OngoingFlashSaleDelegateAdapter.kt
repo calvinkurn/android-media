@@ -78,7 +78,7 @@ class OngoingFlashSaleDelegateAdapter : DelegateAdapter<OngoingFlashSaleItem, On
             }
 
             if (item.status == FlashSaleStatus.REJECTED) {
-                this.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN400)
+                this.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
             }
         }
 

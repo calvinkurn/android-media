@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         app:layout_constraintGuide_percent="0.5"/>
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfCategoryList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         tool:textvalue_value="A, B, C" />
 
     <!-- =========================================================== -->
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfOriginalPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         app:textvalue_title="Kisaran Harga Awal"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfDiscount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
     <!-- =========================================================== -->
 
     <!-- =========================================================== -->
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfDiscountedPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         app:textvalue_title="Kisaran Harga Akhir"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfCampaignStock"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
     <!-- =========================================================== -->
 
     <!-- =========================================================== -->
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfMinRating"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
         app:textvalue_icon_visibility="true"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfMinScore"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
     <!-- =========================================================== -->
 
     <!-- =========================================================== -->
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfProductSold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
         app:textvalue_title="Produk Terjual"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfMinProductSold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
     <!-- =========================================================== -->
 
     <!-- =========================================================== -->
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfSubmissionLimit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
         app:textvalue_title="Batas Pengajuan Produk"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfMaxShown"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -168,7 +168,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tfSubmissionLimit" />
     <!-- =========================================================== -->
 
-    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfOtherCriteria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

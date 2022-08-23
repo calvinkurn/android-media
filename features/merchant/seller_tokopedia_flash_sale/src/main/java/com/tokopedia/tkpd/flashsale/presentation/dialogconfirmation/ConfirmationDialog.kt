@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.dialogconfirmation
+package com.tokopedia.tkpd.flashsale.presentation.dialogconfirmation
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify

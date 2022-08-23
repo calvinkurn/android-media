@@ -54,6 +54,11 @@
     <string name="stfs_empty_state_done_description">Kamu bisa melihat riwayat campaign yang kamu ikuti di tab ini ya.</string>
     <string name="stfs_empty_search_result_title">Oops, campaign yang kamu cari nggak ditemukan</string>
     <string name="stfs_empty_search_result_description">Coba ulangi pencarianmu menggunakan pilihan filter yang berbeda, ya.</string>
+    <string name="stfs_no_product_sold">Belum ada produkmu yang terjual di campaign ini. Daftarkan produkmu ke campaign lain, yuk!</string>
+    <string name="stfs_all_product_rejected_with_hyperlink">Semua produkmu ditolak. Cek Alasan</string>
+    <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
+    <string name="stfs_check_reason">Cek Alasan</string>
+    <string name="stfs_missed_reason">Terlewat karena kamu tidak mengajukan produk hingga batas waktu yang ditentukan.</string>
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
     <string name="stfs_placeholder_timer_days">%s hari</string>
@@ -61,8 +66,8 @@
     <string name="stfs_placeholder_sold_count"><![CDATA[<b>%d</b>]]> dari %d</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
     <string name="stfs_placeholder_selected_status_count">%d Status</string>
-    <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
-
+    <string name="stfs_placeholder_cancellation_reason">Dibatalkan karena %s</string>
+    <string name="stfs_placeholder_sold_count_on_campaign_finished">Campaign selesai dengan jumlah produk terjual sebanyak %d%% (%d dari %d)</string>
 
     <!--Campaign Detail Bottomsheet-->
     <string name="campaigndetail_bottomsheet_title">Detail Campaign</string>
