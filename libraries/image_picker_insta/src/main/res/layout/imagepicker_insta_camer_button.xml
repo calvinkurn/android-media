@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_80"
     android:layout_height="@dimen/dp_80"
-    tools:background="@color/dms_imagepicker_insta_camera_btn_bg">
+    tools:background="@color/imagepickerinsta_dms_camera_btn_bg">
 
     <ProgressBar
         android:id="@+id/progress_bar_timer"
