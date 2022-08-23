@@ -2,14 +2,15 @@ package com.tokopedia.campaign.components.bottomsheet.selection.single
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.BottomsheetSingleSelectionItemBinding
 import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class SingleSelectionBottomSheet : BottomSheetUnify() {
@@ -22,9 +23,11 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun newInstance(
             selectedItemId: String,
-            items: ArrayList<SingleSelectionItem>
+            items: ArrayList<SingleSelectionItem>,
+            customAppearance: Config.() -> Unit = {}
         ): SingleSelectionBottomSheet {
             return SingleSelectionBottomSheet().apply {
+                this.customAppearance = customAppearance
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SELECTED_ITEM_ID, selectedItemId)
                     putParcelableArrayList(BUNDLE_KEY_SINGLE_SELECTION_ITEMS, items)
@@ -33,6 +36,7 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         }
     }
 
+    data class Config(val recyclerView: RecyclerView, val button: UnifyButton)
 
     private var binding by autoClearedNullable<BottomsheetSingleSelectionItemBinding>()
     private val singleSelectionAdapter = SingleSelectionAdapter()
@@ -44,6 +48,7 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
     private var displayedTitle = ""
     private var buttonTitle = ""
     private val helper = SingleSelectionHelper()
+    private var customAppearance: Config.() -> Unit = {}
 
     init {
         clearContentPadding = true
@@ -55,7 +60,7 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): android.view.View? {
         setupBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -66,7 +71,7 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         setTitle(displayedTitle)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
     }
@@ -74,6 +79,14 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
     private fun setupView() {
         setupClickListeners()
         setupRecyclerView()
+        setupCustomAppearance()
+    }
+
+    private fun setupCustomAppearance() {
+        binding?.run {
+            val property = Config(recyclerView, btnApply)
+            customAppearance.invoke(property)
+        }
     }
 
     private fun setupClickListeners() {
@@ -119,9 +132,6 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         return helper.findSelectedItem(items)
     }
 
-    fun getBottomSheetView() : View? {
-        return binding?.root
-    }
 
     private fun handleSelection(selectedPackage: SingleSelectionItem) {
         binding?.btnApply?.enable()
