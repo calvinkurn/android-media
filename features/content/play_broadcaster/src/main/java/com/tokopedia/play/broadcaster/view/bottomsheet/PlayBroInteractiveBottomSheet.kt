@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.view.partial.game.QuizOptionDetailViewComp
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderBoardViewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -264,25 +265,25 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
 
-    override fun onChoiceItemClicked(item: LeaderboardGameUiModel.Winner) {
-//        when (Type.mapFromString(sheetType)) {
-//            Type.QUIZ_DETAIL -> {
-//                analytic.onCLickQuizOptionLive(
-//                    parentViewModel.channelId,
-//                    parentViewModel.channelTitle,
-//                    item.interactiveId,
-//                    item.interactiveTitle,
-//                )
-//            }
-//            Type.REPORT -> {
-//                analytic.onCLickQuizOptionReport(
-//                    parentViewModel.channelId,
-//                    parentViewModel.channelTitle,
-//                    item.interactiveId,
-//                    item.interactiveTitle,
-//                )
-//            }
-//        }
+    override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
+        when (Type.mapFromString(sheetType)) {
+            Type.QUIZ_DETAIL -> {
+                analytic.onCLickQuizOptionLive(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    item.interactiveId,
+                    item.interactiveTitle,
+                )
+            }
+            Type.REPORT -> {
+                analytic.onCLickQuizOptionReport(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    item.interactiveId,
+                    item.interactiveTitle,
+                )
+            }
+        }
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
 
@@ -292,9 +293,26 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     override fun onLeaderBoardImpressed(
         view: PlayGameLeaderBoardViewComponent,
-        leaderboard: List<LeaderboardGameUiModel>
+        leaderboard: LeaderboardGameUiModel.Header
     ) {
-        //TODO ANALytics
+        when (Type.mapFromString(sheetType)) {
+            Type.LEADERBOARD ->
+                analytic.onImpressOngoingLeaderBoard(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    leaderboard.id,
+                    leaderboard.title,
+                    leaderboard.reward,
+                )
+            Type.REPORT ->
+                analytic.onImpressReportLeaderboard(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle,
+                    leaderboard.id,
+                    leaderboard.title,
+                    leaderboard.leaderBoardType.toString().lowercase(),
+                )
+        }
     }
 
     override fun onBackButtonClicked(view: QuizOptionDetailViewComponent) {

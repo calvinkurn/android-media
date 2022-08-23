@@ -11,11 +11,12 @@ import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
  */
 class PlayGameAdapter internal constructor(
     quizListener: QuizChoiceViewHolder.Listener,
-    winnerListener: PlayGameViewHolder.Winner.Listener
+    winnerListener: PlayGameViewHolder.Winner.Listener,
+    headerListener: PlayGameViewHolder.Header.Listener,
 ) : BaseDiffUtilAdapter<LeaderboardGameUiModel>() {
 
     init {
-        delegatesManager.addDelegate(PlayGameAdapterDelegate.Header())
+        delegatesManager.addDelegate(PlayGameAdapterDelegate.Header(headerListener))
         delegatesManager.addDelegate(PlayGameAdapterDelegate.Quiz(quizListener))
         delegatesManager.addDelegate(PlayGameAdapterDelegate.Winner(winnerListener))
         delegatesManager.addDelegate(PlayGameAdapterDelegate.Footer())

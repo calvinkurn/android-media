@@ -18,7 +18,7 @@ import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
  */
 class PlayGameAdapterDelegate {
 
-    internal class Header :
+    internal class Header (private val listener: PlayGameViewHolder.Header.Listener):
         TypedAdapterDelegate<LeaderboardGameUiModel.Header, LeaderboardGameUiModel, PlayGameViewHolder.Header>(
             R.layout.view_play_empty
         ) {
@@ -36,7 +36,7 @@ class PlayGameAdapterDelegate {
             val view = ItemPlayLeaderboardHeaderBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
-            return PlayGameViewHolder.Header(view)
+            return PlayGameViewHolder.Header(view, listener)
         }
     }
 

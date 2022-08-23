@@ -56,6 +56,7 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderBoardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
@@ -253,9 +254,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onLeaderBoardImpressed(
         view: PlayGameLeaderBoardViewComponent,
-        leaderboard: List<LeaderboardGameUiModel>
+        leaderboard: LeaderboardGameUiModel.Header
     ) {
-        //TODO Analytics impress
+        if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
+        analytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id)
     }
 
     /**

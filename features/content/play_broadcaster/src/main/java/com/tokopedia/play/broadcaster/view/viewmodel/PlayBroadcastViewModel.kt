@@ -1118,14 +1118,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive.value = InteractiveUiModel.Unknown
     }
 
-    //TODO handle This
-    private fun handleChoiceDetail(choice: LeaderboardGameUiModel.Winner) {
-//        getQuizChoiceDetailData(
-//            choiceId = choice.id,
-//            index = choice.index,
-//            interactiveId = choice.interactiveId,
-//            interactiveTitle = choice.interactiveTitle
-//        )
+    private fun handleChoiceDetail(choice: QuizChoicesUiModel) {
+        getQuizChoiceDetailData(
+            choiceId = choice.id,
+            index = choice.index,
+            interactiveId = choice.interactiveId,
+            interactiveTitle = choice.interactiveTitle
+        )
     }
 
     private fun handleLoadMoreParticipant() {

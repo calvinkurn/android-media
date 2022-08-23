@@ -48,7 +48,6 @@ class PlayGameLeaderBoardViewComponent(
         null
     }
 
-
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             if (itemCount > 0) layoutManager.scrollToPositionWithOffset(0, 0)
@@ -61,10 +60,16 @@ class PlayGameLeaderBoardViewComponent(
 
     private val leaderboardAdapter = PlayGameAdapter(object : QuizChoiceViewHolder.Listener {
         override fun onClicked(item: QuizChoicesUiModel) {
+            listener.onChoiceItemClicked(item)
         }
 
     }, object : PlayGameViewHolder.Winner.Listener {
         override fun onChatButtonClicked(item: LeaderboardGameUiModel.Winner, position: Int) {
+            listener.onChatWinnerButtonClicked(this@PlayGameLeaderBoardViewComponent, item, position)
+        }
+    }, object : PlayGameViewHolder.Header.Listener{
+        override fun onLeaderBoarImpressed(item: LeaderboardGameUiModel.Header) {
+            listener.onLeaderBoardImpressed(this@PlayGameLeaderBoardViewComponent, item)
         }
     })
 
@@ -190,13 +195,12 @@ class PlayGameLeaderBoardViewComponent(
             position: Int,
         ) {
         }
-
         fun onRefreshButtonClicked(view: PlayGameLeaderBoardViewComponent)
-        fun onChoiceItemClicked(item: LeaderboardGameUiModel.Winner) {}
+        fun onChoiceItemClicked(item: QuizChoicesUiModel) {}
         fun onRefreshButtonImpressed(view: PlayGameLeaderBoardViewComponent)
         fun onLeaderBoardImpressed(
             view: PlayGameLeaderBoardViewComponent,
-            leaderboard: List<LeaderboardGameUiModel>
+            leaderboard: LeaderboardGameUiModel.Header
         )
     }
 }

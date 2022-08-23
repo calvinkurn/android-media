@@ -3,6 +3,7 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,9 +22,14 @@ import java.util.*
  * @author by astidhiyaa on 16/08/22
  */
 class PlayGameViewHolder {
-    internal class Header(private val binding: ItemPlayLeaderboardHeaderBinding) :
+    internal class Header(private val binding: ItemPlayLeaderboardHeaderBinding, private val listener: Listener) :
         BaseViewHolder(binding.root) {
+
         fun bind(item: LeaderboardGameUiModel.Header) {
+            binding.root.addOnImpressionListener(item.impressHolder){
+                listener.onLeaderBoarImpressed(item)
+            }
+
             binding.tvLeaderboardTitle.text = item.title
             binding.ivLeaderboard.setImage(newIconId = if (item.leaderBoardType == LeadeboardType.Giveaway) IconUnify.GIFT else IconUnify.GAME)
             binding.tvReward.showWithCondition(item.reward.isNotEmpty())
@@ -47,7 +53,7 @@ class PlayGameViewHolder {
         private fun showTimer(duration: Long) {
             binding.tvEndsIn.show()
             binding.timerEndsIn.show()
-            setTimer(duration) {}
+            setTimer(duration)
         }
 
         private fun hideTimer() {
@@ -55,7 +61,7 @@ class PlayGameViewHolder {
             binding.timerEndsIn.hide()
         }
 
-        private fun setTimer(duration: Long, onFinished: () -> Unit) {
+        private fun setTimer(duration: Long, onFinished: () -> Unit = {}) {
             val calendar = Calendar.getInstance()
             calendar.add(Calendar.SECOND, duration.toInt())
             setTargetTime(calendar, onFinished)
@@ -70,6 +76,10 @@ class PlayGameViewHolder {
                 onFinish = onFinished
                 resume()
             }
+        }
+
+        interface Listener {
+            fun onLeaderBoarImpressed(item: LeaderboardGameUiModel.Header)
         }
     }
 
@@ -86,7 +96,8 @@ class PlayGameViewHolder {
                 tvWinnerName.text = winner.name
                 imgWinner.setImageUrl(winner.imageUrl)
 
-                handleFirstWinner(winner)
+                binding.imgCrown.showWithCondition(winner.rank == FIRST_WINNER)
+                binding.flBorderImgWinner.showWithCondition(winner.rank == FIRST_WINNER)
 
                 if (winner.allowChat()) {
                     tvWinnerChat.show()
@@ -100,16 +111,6 @@ class PlayGameViewHolder {
                     tvWinnerChat.hide()
                     tvWinnerChat.setOnClickListener(null)
                 }
-            }
-        }
-
-        private fun handleFirstWinner(winner: LeaderboardGameUiModel.Winner) {
-            if (winner.rank == FIRST_WINNER) {
-                binding.imgCrown.show()
-                binding.flBorderImgWinner.show()
-            } else {
-                binding.imgCrown.hide()
-                binding.flBorderImgWinner.hide()
             }
         }
 

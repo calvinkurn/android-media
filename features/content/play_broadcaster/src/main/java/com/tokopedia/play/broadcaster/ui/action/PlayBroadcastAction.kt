@@ -54,7 +54,7 @@ sealed interface PlayBroadcastAction {
     object ClickBackOnChoiceDetail : PlayBroadcastAction
     object ClickRefreshQuizOption : PlayBroadcastAction
     object DismissQuizDetailBottomSheet : PlayBroadcastAction
-    data class ClickQuizChoiceOption(val choice: LeaderboardGameUiModel.Winner) : PlayBroadcastAction
+    data class ClickQuizChoiceOption(val choice: QuizChoicesUiModel) : PlayBroadcastAction
     object LoadMoreCurrentChoiceParticipant : PlayBroadcastAction
     object ClickGameResultWidget : PlayBroadcastAction
     object Ignore : PlayBroadcastAction
