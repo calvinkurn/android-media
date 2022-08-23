@@ -2,18 +2,24 @@ package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.common.feature.variant.data.model.*
+import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
+import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
+import com.tokopedia.product.manage.common.feature.variant.data.model.Option
+import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
+import com.tokopedia.product.manage.common.feature.variant.data.model.Product
+import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
+import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import java.math.BigDecimal
 
 fun createProductVariantResponse(
     productID: String = "1",
     status: ProductStatus = ProductStatus.ACTIVE,
     combination: List<Int> = emptyList(),
     isPrimary: Boolean = false,
-    price: Double = 100.0,
+    price: BigDecimal = BigDecimal("100"),
     sku: String = "sku",
     stock: Int = 0,
     stockAlertStatus: String = "2",
@@ -62,7 +68,7 @@ fun createProductVariant(
     combination: List<Int> = emptyList(),
     isPrimary: Boolean = false,
     isCampaign: Boolean = false,
-    price: Double = 100.0,
+    price: BigDecimal = BigDecimal("100"),
     sku: String = "sku",
     stock: Int = 0,
     pictures: List<Picture> = emptyList(),

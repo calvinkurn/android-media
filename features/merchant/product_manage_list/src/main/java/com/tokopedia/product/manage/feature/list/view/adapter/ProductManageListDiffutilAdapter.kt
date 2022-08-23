@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -16,6 +15,7 @@ import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import java.math.BigDecimal
 
 /**
  * Adapter using diff util
@@ -134,8 +134,8 @@ class ProductManageListDiffutilAdapter(
 
     override fun updatePrice(editResult: EditVariantResult) {
         submitList(editResult.productId) {
-            val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price.orZero()
-            val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price.orZero()
+            val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price ?: BigDecimal.ZERO
+            val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price ?: BigDecimal.ZERO
 
             val minPrice =
                 PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())

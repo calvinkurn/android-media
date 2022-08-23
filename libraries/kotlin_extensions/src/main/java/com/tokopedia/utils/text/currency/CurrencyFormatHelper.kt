@@ -4,6 +4,7 @@ import android.widget.EditText
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.lang.Integer.parseInt
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
@@ -21,6 +22,12 @@ object CurrencyFormatHelper {
     val RUPIAH = 1
     val OTHER = -1
 
+    private fun String.toRawStringOfNumbers(): String {
+        return replace("Rp", "")
+            .replace(",", "")
+            .replace(".", "")
+            .replace(" ", "")
+    }
 
     fun convertToRupiah(string: String): String {
         return try {
@@ -176,18 +183,14 @@ object CurrencyFormatHelper {
     }
 
     fun convertRupiahToInt(rupiah: String): Int {
-        var result = rupiah.replace("Rp", "")
-        result = result.replace(",", "")
-        result = result.replace(".", "")
-        result = result.replace(" ", "")
-        return result.toIntOrZero()
+        return rupiah.toRawStringOfNumbers().toIntOrZero()
     }
 
     fun convertRupiahToLong(rupiah: String): Long {
-        var result = rupiah.replace("Rp", "")
-        result = result.replace(",", "")
-        result = result.replace(".", "")
-        result = result.replace(" ", "")
-        return result.toLongOrZero()
+        return rupiah.toRawStringOfNumbers().toLongOrZero()
+    }
+
+    fun convertRupiahToBigDecimal(rupiah: String): BigDecimal {
+        return rupiah.toRawStringOfNumbers().toBigDecimalOrNull() ?: BigDecimal.ZERO
     }
 }
