@@ -90,22 +90,12 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapTippingData(tipping: Tipping, lastDriver: LastDriver): TippingModel {
+    private fun mapTippingData(tipping: Tipping, lastDriverResponse: LastDriver): TippingModel {
         return TippingModel().apply {
             status = tipping.status
             statusTitle = tipping.statusTitle
             statusSubtitle = tipping.statusSubtitle
-            this.lastDriver = mapTippingLastDriverData(lastDriver)
-        }
-    }
-
-    private fun mapTippingLastDriverData(lastDriver: LastDriver): LastDriverModel {
-        return LastDriverModel().apply {
-            phone = lastDriver.phone
-            name = lastDriver.name
-            photo = lastDriver.photo
-            licenseNumber = lastDriver.licenseNumber
-            isChanged = lastDriver.isChanged
+            lastDriver = mapLastDriverData(lastDriverResponse)
         }
     }
 
