@@ -96,8 +96,9 @@ class HomeRecommendationViewModel @Inject constructor(
     ) {
         incrementTopadsPage()
         val newList = data.homeRecommendations.toMutableList()
-        if (!headlineAds?.displayAds?.data.isNullOrEmpty()) {
-            val position = headlineAds?.displayAds?.data?.firstOrNull()?.cpm?.position
+        val headlineData = headlineAds?.displayAds?.data
+        if (!headlineData.isNullOrEmpty()) {
+            val position = headlineData.firstOrNull()?.cpm?.position
             if (position != null) {
                 newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
             }
