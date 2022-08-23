@@ -206,7 +206,7 @@ class PlayPinnedProductUiTest {
             }
         )
 
-        val position = sectionPinned * productPerSection + productPinned
+        val position = sectionPinned + 1 + (sectionPinned * productPerSection) + productPinned
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
@@ -234,7 +234,7 @@ class PlayPinnedProductUiTest {
                 sectionIndex == sectionPinned && productIndex == productPinned
             }
         )
-        val position = sectionPinned * productPerSection + productPinned
+        val position = sectionPinned + 1 + (sectionPinned * productPerSection) + productPinned
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
