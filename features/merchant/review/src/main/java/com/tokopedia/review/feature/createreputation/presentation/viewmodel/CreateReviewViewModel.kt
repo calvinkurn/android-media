@@ -1258,6 +1258,17 @@ class CreateReviewViewModel @Inject constructor(
         ) == RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
     }
 
+    fun enqueueDisabledAddMoreMediaToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            )
+        )
+    }
+
     // region MutableStateFlow updater
     fun removeMedia(media: CreateReviewMediaUiModel) {
         mediaUris.update { currentValue -> currentValue.toMutableList().apply { remove(media.uri) } }
