@@ -354,6 +354,11 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        outOfStockCoachMark?.dismissCoachMark()
+    }
+
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
         //countTouchPhoto is used for count how many times images hit
