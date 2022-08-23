@@ -1013,7 +1013,7 @@ class ShipmentMapper @Inject constructor() {
                 true,
                 false,
                 "Yay, <b>PLUS</b> ditambahkan ke keranjang! Nikmati keuntungannya di transaksi ini",
-                upsell.appLink,
+                "https://staging.tokopedia.com/gotoplus?source=pg_checkout_v2",
                 "https://images.tokopedia.net/img/plus/logo/default_logo.png",
                 300000,
                 "6 bulan",

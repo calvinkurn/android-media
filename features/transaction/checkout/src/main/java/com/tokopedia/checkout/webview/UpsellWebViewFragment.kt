@@ -8,6 +8,9 @@ import android.webkit.WebView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.webview.BaseSessionWebViewFragment
+import com.tokopedia.webview.KEY_ALLOW_OVERRIDE
+import com.tokopedia.webview.KEY_NEED_LOGIN
+import com.tokopedia.webview.KEY_PULL_TO_REFRESH
 import com.tokopedia.webview.KEY_URL
 
 class UpsellWebViewFragment: BaseSessionWebViewFragment() {
@@ -17,6 +20,20 @@ class UpsellWebViewFragment: BaseSessionWebViewFragment() {
             val fragment = UpsellWebViewFragment()
             val args = Bundle()
             args.putString(KEY_URL, url)
+            fragment.arguments = args
+            return fragment
+        }
+
+        fun newInstance(url: String,
+                        needLogin: Boolean,
+                        overrideUrl: Boolean,
+                        pullToRefresh: Boolean): UpsellWebViewFragment {
+            val fragment = UpsellWebViewFragment()
+            val args = Bundle()
+            args.putString(KEY_URL, url)
+            args.putBoolean(KEY_NEED_LOGIN, needLogin)
+            args.putBoolean(KEY_ALLOW_OVERRIDE, overrideUrl)
+            args.putBoolean(KEY_PULL_TO_REFRESH, pullToRefresh)
             fragment.arguments = args
             return fragment
         }

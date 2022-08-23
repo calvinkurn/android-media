@@ -93,6 +93,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
+import com.tokopedia.checkout.webview.UpsellWebViewActivity;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
@@ -3477,7 +3478,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-
+        startActivityForResult(UpsellWebViewActivity.Companion.getStartIntent(getContext(), shipmentUpsellModel.getAppLink(), true, true, false, ""), REQUEST_CODE_UPSELL);
     }
 
     @Override
