@@ -33,6 +33,14 @@ val NEST_FONT_SIZE_LVL7 = 24.sp
 val NEST_FONT_SIZE_LVL8 = 28.sp
 val NEST_FONT_SIZE_LVL9 = 34.sp
 
-val LOGO_SPLASH_SCREEN_SIZE = 100.dp
-val START_LOGO_ANIMATION_TARGET = 0.dp
-val STOP_LOGO_ANIMATION_TARGET = 100.dp
+val DP_0 = 0.dp
+val DP_5 = 5.dp
+val DP_6 = 6.dp
+val DP_10 = 10.dp
+val DP_13 = 13.dp
+val DP_18 = 18.dp
+val DP_80 = 80.dp
+val DP_100 = 100.dp
+
+val SP_18 = 18.sp
+val SP_20 = 20.sp
