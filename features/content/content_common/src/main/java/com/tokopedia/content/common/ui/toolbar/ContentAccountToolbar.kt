@@ -35,6 +35,8 @@ class ContentAccountToolbar @JvmOverloads constructor(
 
     init {
         initViews()
+
+        showHideExpandIcon(false)
     }
 
     private fun initViews() {
