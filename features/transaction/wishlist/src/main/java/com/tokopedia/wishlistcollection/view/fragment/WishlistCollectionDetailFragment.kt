@@ -441,6 +441,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             setSwipeRefreshLayout()
 
                         } else {
+                            listSelectedProductIds.clear()
+                            finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
                             var errorMessage =
                                 context?.getString(Rv2.string.wishlist_v2_common_error_msg)
                             if (bulkDeleteWishlistV2.message.isNotEmpty()) errorMessage =
