@@ -3,7 +3,11 @@ package com.tokopedia.inappupdate
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class InAppUpdateLifecycleCallback(
@@ -14,15 +18,24 @@ class InAppUpdateLifecycleCallback(
     }
 
     fun checkAppUpdateAndInApp(activity: Activity) {
-        val activityReference: WeakReference<Activity> = WeakReference(activity)
-        checkUpdateInFlexibleProgressOrCompleted(activity) { isOnProgress: Boolean ->
-            if (!isOnProgress) {
-                checkAppUpdateRemoteConfig(activityReference)
+        if (activity is AppCompatActivity) {
+            activity.lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val activityReference: WeakReference<Activity> = WeakReference(activity)
+                    checkUpdateInFlexibleProgressOrCompleted(activity) { isOnProgress: Boolean ->
+                        if (!isOnProgress) {
+                            checkAppUpdateRemoteConfig(activityReference)
+                        }
+                    }
+                } catch (ignored: Exception) {
+                }
             }
         }
     }
 
-    private fun checkAppUpdateRemoteConfig(activityReference: WeakReference<Activity>) {
+    private fun checkAppUpdateRemoteConfig(
+        activityReference: WeakReference<Activity>
+    ) {
         val activity: Activity? = activityReference.get()
         if (activity != null && !activity.isFinishing) {
             onCheckAppUpdateRemoteConfig.invoke(activity) { onNeedUpdate ->

@@ -102,9 +102,12 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.Unit;
+import kotlin.coroutines.Continuation;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
+import kotlin.jvm.functions.Function3;
+import kotlinx.coroutines.CancellableContinuation;
 import timber.log.Timber;
 
 /**
@@ -290,11 +293,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                         }
                     }
                 });
-                appUpdateDialogBuilder.getAlertDialog().show();
                 if (finalInAppCallback != null) {
                     finalInAppCallback.onNeedUpdateInApp(detail);
                 }
                 onSuccessCheckAppListener.invoke(true);
+                activity.runOnUiThread(() -> {
+                    if (!activity.isFinishing() && !activity.isDestroyed()){
+                        appUpdateDialogBuilder.getAlertDialog().show();
+                    }
+                });
             }
 
             @Override
