@@ -2358,7 +2358,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         showToaster(messageToaster, "", Toaster.TYPE_NORMAL)
                     }
                 } else {
-                    showToaster(messageToaster, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(messageToaster, Toaster.TYPE_ERROR)
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
