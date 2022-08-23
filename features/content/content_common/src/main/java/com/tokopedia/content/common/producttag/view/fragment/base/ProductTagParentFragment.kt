@@ -27,6 +27,7 @@ import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSource
 import com.tokopedia.content.common.producttag.view.fragment.*
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
@@ -328,7 +329,7 @@ class ProductTagParentFragment @Inject constructor(
                 getStringArgument(EXTRA_SHOP_BADGE),
                 getStringArgument(EXTRA_AUTHOR_ID),
                 getStringArgument(EXTRA_AUTHOR_TYPE),
-                getStringArgument(EXTRA_PAGE_SOURCE),
+                ContentProductTagConfig.mapFromString(getStringArgument(EXTRA_PAGE_SOURCE))
             )
         )
     }

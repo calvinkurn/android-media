@@ -9,6 +9,7 @@ import com.tokopedia.content.common.producttag.util.AUTHOR_ID
 import com.tokopedia.content.common.producttag.util.AUTHOR_TYPE
 import com.tokopedia.content.common.producttag.util.PRODUCT_TAG_SOURCE_RAW
 import com.tokopedia.content.common.producttag.util.SHOP_BADGE
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -23,7 +24,7 @@ class ProductTagViewModelFactory @AssistedInject constructor(
     @Assisted(SHOP_BADGE) private val shopBadge: String,
     @Assisted(AUTHOR_ID) private val authorId: String,
     @Assisted(AUTHOR_TYPE) private val authorType: String,
-    @Assisted(PAGE_SOURCE) private val pageSource: String,
+    @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
     private val productTagViewModelFactory: ProductTagViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
@@ -35,7 +36,7 @@ class ProductTagViewModelFactory @AssistedInject constructor(
             @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted(AUTHOR_ID) authorId: String,
             @Assisted(AUTHOR_TYPE) authorType: String,
-            @Assisted(PAGE_SOURCE) pageSource: String,
+            @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
         ): ProductTagViewModelFactory
     }
 
@@ -49,7 +50,7 @@ class ProductTagViewModelFactory @AssistedInject constructor(
             shopBadge,
             authorId,
             authorType,
-            pageSource,
+            productTagConfig,
         ) as T
     }
 }

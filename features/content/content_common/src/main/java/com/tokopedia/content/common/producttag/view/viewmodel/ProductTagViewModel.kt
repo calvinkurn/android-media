@@ -17,6 +17,7 @@ import com.tokopedia.content.common.producttag.util.extension.removeLast
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.*
 import com.tokopedia.filter.common.helper.toMapParam
@@ -37,7 +38,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted(SHOP_BADGE) val shopBadge: String,
     @Assisted(AUTHOR_ID) private val authorId: String,
     @Assisted(AUTHOR_TYPE) private val authorType: String,
-    @Assisted(PAGE_SOURCE) private val pageSource: String,
+    @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
     private val sharedPref: ProductTagPreference,
@@ -50,7 +51,7 @@ class ProductTagViewModel @AssistedInject constructor(
             @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted(AUTHOR_ID) authorId: String,
             @Assisted(AUTHOR_TYPE) authorType: String,
-            @Assisted(PAGE_SOURCE) pageSource: String,
+            @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
         ): ProductTagViewModel
     }
 
@@ -282,19 +283,16 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleOpenAutoCompletePage() {
         viewModelScope.launch {
-            when(pageSource) {
-                PAGE_SOURCE_FEED -> {
+            when(productTagConfig.isFullPageAutocomplete) {
+                true -> {
                     _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
                 }
-                PAGE_SOURCE_PLAY -> {
+                else -> {
                     _productTagSourceStack.update {
                         val newStack = it.toMutableSet()
                         newStack.add(ProductTagSource.Autocomplete)
                         newStack
                     }
-                }
-                else -> {
-                    _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.param.query))
                 }
             }
         }
