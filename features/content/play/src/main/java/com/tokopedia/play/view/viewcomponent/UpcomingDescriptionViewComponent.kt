@@ -62,6 +62,8 @@ class UpcomingDescriptionViewComponent(
             }
 
     fun setupText(description: String) {
+        if(uiModel.originalText == description) return
+
         uiModel.originalText = description
         txt.text = description
 
