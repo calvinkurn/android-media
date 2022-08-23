@@ -119,7 +119,6 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList())
 
         //then
-        print(validateUseRequest.orders[0].codes)
         assert(!validateUseRequest.orders[0].codes.contains(promoBo))
 
     }
