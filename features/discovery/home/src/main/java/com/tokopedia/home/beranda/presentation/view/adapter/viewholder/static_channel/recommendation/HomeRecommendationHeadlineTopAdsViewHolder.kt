@@ -22,7 +22,9 @@ class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private  val topAds
     private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
 
     override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel, listener: SmartListener) {
-        element.headlineAds?.let { binding?.headlineAds?.displayAds(it, Int.ZERO) }
+        if (!element.headlineAds.data.isNullOrEmpty()){
+            binding?.headlineAds?.displayAds(element.headlineAds, Int.ZERO)
+        }
         binding?.headlineAdsShimmer?.hide()
         binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
             override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {

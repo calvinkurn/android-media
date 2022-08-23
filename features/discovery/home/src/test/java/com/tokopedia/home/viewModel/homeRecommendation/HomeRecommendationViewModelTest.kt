@@ -860,7 +860,7 @@ class HomeRecommendationViewModelTest{
     }
 
     @Test
-    fun `Get Success Data Home Recommendation Initial Page and load shopAds on cpm is null`(){
+    fun `Get Success Data Home Recommendation Initial Page  on empty headline response`(){
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
@@ -876,9 +876,7 @@ class HomeRecommendationViewModelTest{
 
 
         val s = CpmModel()
-        val v = CpmData()
-        v.cpm = null
-        s.data = listOf(v)
+        s.data = listOf()
         val n = TopAdsHeadlineResponse(s)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
@@ -901,7 +899,7 @@ class HomeRecommendationViewModelTest{
     }
 
     @Test
-    fun `Get Success Data Home Recommendation Initial Page  on empty headline response`(){
+    fun `Get Success Data Home Recommendation Initial Page  on null headline response `(){
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
@@ -917,7 +915,7 @@ class HomeRecommendationViewModelTest{
 
 
         val s = CpmModel()
-        s.data = listOf()
+        s.data = null
         val n = TopAdsHeadlineResponse(s)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
@@ -1075,6 +1073,59 @@ class HomeRecommendationViewModelTest{
     }
 
     @Test
+    fun `Get Success Data Home Recommendation Initial Page and load shopAds with topads Banner at position 2`(){
+        val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
+        val homeRecommendationDataModel = HomeRecommendationDataModel(
+            homeRecommendations = listOf(
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                ),
+                HomeRecommendationBannerTopAdsDataModel(position = 1),
+                HomeRecommendationItemDataModel(
+                    Product(),
+                    position = 1
+                )
+
+            ),
+            isHasNextPage = false
+        )
+
+        getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
+
+        topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
+
+
+        val s = CpmModel()
+        val v = CpmData()
+        val d = Cpm()
+        d.position = 2
+        v.cpm = d
+        s.data = listOf(v)
+        val n = TopAdsHeadlineResponse(s)
+
+        getTopAdsHeadlineUseCase.givenDataReturn(n)
+
+        homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
+
+        homeRecommendationViewModel.loadInitialPage("", 1, 0)
+
+        verifyOrder {
+            // check on loading
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationLoading
+            })
+
+//             check on first data is home headline ads item and topAds banner at next index
+            observerHomeRecommendation.onChanged(match {
+                it.homeRecommendations.isNotEmpty() &&it.homeRecommendations.first() is HomeRecommendationItemDataModel && it.homeRecommendations[1] is HomeRecommendationBannerTopAdsDataModel
+                        && it.homeRecommendations[3] is HomeRecommendationHeadlineTopAdsDataModel
+            })
+        }
+        confirmVerified(observerHomeRecommendation)
+    }
+
+    @Test
     fun `Get Success Data Home Recommendation Initial Page and load shopAds without topads Banner if postion is higer then main list`(){
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val homeRecommendationDataModel = HomeRecommendationDataModel(
@@ -1122,7 +1173,7 @@ class HomeRecommendationViewModelTest{
     }
 
     @Test
-    fun `Get Success Data Home Recommendation Initial Page and load topads Banner when headlines ads is null`(){
+    fun `Get Success Data Home Recommendation Initial Page and load topads Banner when headlines ads is empty`(){
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
@@ -1167,7 +1218,7 @@ class HomeRecommendationViewModelTest{
     }
 
     @Test
-    fun `Get Success Data Home Recommendation Initial Page and load topads Banner when headlines ads is null and banner postion is higer than list`(){
+    fun `Get Success Data Home Recommendation Initial Page and load topads Banner when headlines ads is empty and banner postion is higer than list`(){
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(

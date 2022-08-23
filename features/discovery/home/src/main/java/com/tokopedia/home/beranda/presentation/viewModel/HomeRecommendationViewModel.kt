@@ -92,23 +92,30 @@ class HomeRecommendationViewModel @Inject constructor(
         data: HomeRecommendationDataModel,
         topAdsBanner: ArrayList<TopAdsImageViewModel>,
         homeBannerTopAds: List<HomeRecommendationBannerTopAdsDataModel>,
-        headlineAds: TopAdsHeadlineResponse?
+        headlineAds: TopAdsHeadlineResponse
     ) {
         incrementTopadsPage()
         val newList = data.homeRecommendations.toMutableList()
-        val headlineData = headlineAds?.displayAds?.data
+        val headlineData = headlineAds.displayAds.data
+        var position:Int? = null
         if (!headlineData.isNullOrEmpty()) {
-            val position = headlineData.firstOrNull()?.cpm?.position
-            if (position != null) {
-                newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
-            }
+            position = headlineData.firstOrNull()?.cpm?.position
         }
-         if (topAdsBanner.isEmpty()) {
+        if (topAdsBanner.isEmpty()) {
             homeBannerTopAds.firstOrNull()?.let { newList.remove(it) }
+            position?.let {
+                if (newList.size >= position) {
+                    newList.add(
+                        it,
+                        HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
+                    )
+                }
+            }
         } else {
             topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
                 val visitableBanner = homeBannerTopAds[index]
-                if (newList.first() is HomeRecommendationHeadlineTopAdsDataModel) {
+                if (position == Int.ZERO) {
+                    newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
                     if (newList.size > visitableBanner.position + Int.ONE) {
                         newList[visitableBanner.position + 1] =
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
@@ -120,13 +127,21 @@ class HomeRecommendationViewModel @Inject constructor(
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
                     }
 
+                    position?.let {
+                        if (newList.size >= position) {
+                            newList.add(
+                                it + Int.ONE,
+                                HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
+                            )
+                        }
+                    }
                 }
             }
         }
         _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = newList))
     }
 
-    private suspend fun fetchHeadlineAds(tabIndex: Int): TopAdsHeadlineResponse? {
+    private suspend fun fetchHeadlineAds(tabIndex: Int): TopAdsHeadlineResponse {
         return if (tabIndex == Int.ZERO) {
             val params = getTopAdsHeadlineUseCase.createParams(
                 userId = userSessionInterface.userId,
@@ -140,7 +155,7 @@ class HomeRecommendationViewModel @Inject constructor(
             getTopAdsHeadlineUseCase.setParams(params, topAdsAddressHelper.getAddressData())
             getTopAdsHeadlineUseCase.executeOnBackground()
         } else {
-            null
+            TopAdsHeadlineResponse()
         }
 
     }

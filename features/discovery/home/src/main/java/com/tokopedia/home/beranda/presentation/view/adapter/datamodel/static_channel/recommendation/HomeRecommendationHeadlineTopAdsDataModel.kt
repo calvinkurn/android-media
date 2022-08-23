@@ -8,7 +8,7 @@ import com.tokopedia.smart_recycler_helper.SmartVisitable
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class HomeRecommendationHeadlineTopAdsDataModel(
-    val headlineAds: CpmModel? = null,
+    val headlineAds: CpmModel = CpmModel(),
     val position: Int = -1
 ) : HomeRecommendationVisitable, ImpressHolder() {
     override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
@@ -16,7 +16,7 @@ data class HomeRecommendationHeadlineTopAdsDataModel(
     }
 
     override fun getUniqueIdentity(): Any {
-        return headlineAds?.data?.firstOrNull()?.id ?: ""
+        return headlineAds.data?.firstOrNull()?.id ?: ""
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
