@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
@@ -126,7 +125,8 @@ class ProductManageListDiffutilAdapter(
 
     override fun updatePrice(productId: String, price: String) {
         submitList(productId) {
-            val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
+            val bigDecimalPrice = price.toBigDecimalOrNull() ?: BigDecimal.ZERO
+            val formattedPrice = bigDecimalPrice.getCurrencyFormatted()
             val editedPrice = PriceUiModel(price, formattedPrice)
             it.copy(minPrice = editedPrice, maxPrice = editedPrice)
         }
