@@ -3,7 +3,7 @@ package com.tokopedia.applink.order
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.*
-import com.tokopedia.applink.FirebaseRemoteConfigInstance
+import com.tokopedia.applink.ApplinkConst.TokoFood.TOKOFOOD_ORDER
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DIGITAL_ORDER_LIST_INTERNAL
@@ -15,7 +15,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OMS_INTERNAL_ORD
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.UNIFY_ORDER_ONGOING
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import java.util.*
 
 /**
@@ -55,7 +54,8 @@ object DeeplinkMapperUohOrder {
                 td == ORDER_HISTORY ||
                 d.startsWith(OMS_ORDER_DETAIL) ||
                 td == TRAVEL_AND_ENTERTAINMENT_ORDER ||
-                td == PURCHASE_ONGOING
+                td == PURCHASE_ONGOING ||
+                td == TOKOFOOD_ORDER
     }
 
     private fun trimDeeplink(deeplink: String): String {
@@ -138,6 +138,9 @@ object DeeplinkMapperUohOrder {
 
         } else if (deeplink.equals(PURCHASE_ONGOING, true)) {
             returnedDeeplink = getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(TOKOFOOD_ORDER, true)) {
+            returnedDeeplink = ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD
         }
 
         return returnedDeeplink

@@ -64,7 +64,7 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                     },
                     onError = {
                         image?.mLoaderView?.hide()
-                        imagePreviewListener.onImageLoadFailed(adapterPosition)
+                        imagePreviewListener.onImageLoadFailed(adapterPosition, it)
                     }
                 )
             }

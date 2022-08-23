@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.usecase
 
-fun getQueryShipmentAddressFormV3(): String {
-    return """
-        query shipment_address_form_v3(${'$'}params: ShipmentAddressFormParams) {
+const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
+        """
+        query shipmentAddressFormV3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
             error_message
@@ -120,6 +120,11 @@ fun getQueryShipmentAddressFormV3(): String {
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -320,6 +325,11 @@ fun getQueryShipmentAddressFormV3(): String {
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       product_ticker {
@@ -531,6 +541,7 @@ fun getQueryShipmentAddressFormV3(): String {
                           sp_id
                         }
                       }
+                      poml_auto_applied
                     }
                     benefit_summary_info {
                       final_benefit_amount_str
@@ -589,8 +600,13 @@ fun getQueryShipmentAddressFormV3(): String {
                 only_greeting_card
                 invoice_not_sent_to_recipient
               }
+              upsell {
+                is_show
+                title
+                description
+                app_link
+                image
+              }
             }
           }
-        }
-    """.trimIndent()
-}
+        }"""

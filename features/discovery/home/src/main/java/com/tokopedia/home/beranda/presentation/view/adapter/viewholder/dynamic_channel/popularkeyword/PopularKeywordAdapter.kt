@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -13,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -23,12 +23,13 @@ import com.tokopedia.unifyprinciples.Typography
 class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
                             val homeCategoryListener: HomeCategoryListener,
                             val channel: DynamicHomeChannel.Channels,
-                            val positionInWidget: Int)
+                            val positionInWidget: Int,
+                            private val cardInteraction: Boolean = false)
     : RecyclerView.Adapter<PopularKeywordAdapter.Holder>() {
 
     private val popularKeywordList: MutableList<PopularKeywordDataModel> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_popular_keyword_item, parent, false))
+        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_popular_keyword_item, parent, false), cardInteraction)
     }
 
     override fun getItemCount(): Int {
@@ -50,8 +51,10 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
         notifyDataSetChanged()
     }
 
-    class Holder(view: View): RecyclerView.ViewHolder(view) {
-        private val cardProduct: CardView = view.findViewById(R.id.card_product)
+    class Holder(view: View, private val cardInteraction: Boolean = false): RecyclerView.ViewHolder(view) {
+        private val cardProduct: CardUnify2 = view.findViewById<CardUnify2>(R.id.card_product).apply {
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+        }
         private val ivImage: ImageUnify = view.findViewById(R.id.iv_product)
         private val tvProduct: Typography = view.findViewById(R.id.tv_product)
         private val tvCount: Typography = view.findViewById(R.id.tv_count)

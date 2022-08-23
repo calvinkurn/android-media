@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
@@ -17,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
@@ -31,6 +33,8 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.HashMap;
@@ -83,6 +87,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 }
             }
         }
+        initializationNewRelic();
         iniBranchIO(this);
         logDeeplink();
         logWebViewApplink();
@@ -176,6 +181,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
         }
         return uriHaveCampaignData;
+    }
+
+    private void initializationNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
+                .start(this.getApplication());
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
     }
 
     private void logDeeplink() {

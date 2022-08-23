@@ -26,11 +26,12 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
 
     constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
+    val recyclerView: RecyclerView
     private val headerRecyclerView: FrameLayout
-    private val recyclerView: RecyclerView
     private var headerItemDecoration: FeedHeaderItemDecoration? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     private var shouldShowStickyHeader = false
+    private var isStickyHeaderEnabled = false
     private var isSLideDownAnimationEnabled = false
     private var handlerView: Handler? = Handler(Looper.getMainLooper())
     private val runnable by lazy { getRunnableForHeaderVisibility() }
@@ -47,6 +48,8 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
 
     fun addHeaderRecyclerView(view: View) {
         shouldShowStickyHeader = true
+        isStickyHeaderEnabled = true
+
         headerRecyclerView.getChildAt(0)?.let {
             if (it !== view) {
                 headerRecyclerView.removeAllViews()
@@ -121,7 +124,13 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     fun addOnScrollListener(listener: RecyclerView.OnScrollListener) {
         recyclerView.addOnScrollListener(listener)
     }
+
+    fun removeOnScrollListener(listener: RecyclerView.OnScrollListener) {
+        recyclerView.removeOnScrollListener(listener)
+    }
+
     fun removeHeaderRecyclerView() {
+        isStickyHeaderEnabled = false
         shouldShowStickyHeader = false
         isSLideDownAnimationEnabled = false
         if (headerRecyclerView.childCount > 0) {
@@ -137,6 +146,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     fun getLayoutManager() = recyclerView.layoutManager
 
     fun getViewHolderAtPosition(position: Int) =  recyclerView.findViewHolderForAdapterPosition(position)
+    fun isStickyRecyclerViewIsEnabled() = isStickyHeaderEnabled
 
     fun smoothScrollToPosition(position: Int = 0) {
         if (position == 0) {

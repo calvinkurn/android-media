@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment.summary
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -58,8 +59,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 ): T {
                     return summaryViewModelFactory.create(
                         parentViewModel.channelId,
+                        parentViewModel.channelTitle,
                         parentViewModel.productSectionList,
-                        parentViewModel.summaryLeaderboardInfo,
                     ) as T
                 }
             }
@@ -104,6 +105,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         if(!isDarkMode()) activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
+    @SuppressLint("ResourceFragmentDetector")
     private fun isDarkMode() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     private fun setupInsets() {

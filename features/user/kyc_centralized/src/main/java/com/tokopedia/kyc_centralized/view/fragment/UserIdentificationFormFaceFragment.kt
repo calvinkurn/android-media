@@ -8,24 +8,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +48,7 @@ class UserIdentificationFormFaceFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        analytics?.eventViewSelfiePage()
+        analytics?.eventViewSelfiePage(isKycSelfie)
         initObserver()
     }
 
@@ -70,7 +70,7 @@ class UserIdentificationFormFaceFragment :
                         )
                         NetworkErrorHelper.showRedSnackbar(
                             activity,
-                            resources.getString(R.string.error_text_image_fail_to_encrypt)
+                            context?.resources?.getString(R.string.error_text_image_fail_to_encrypt).orEmpty()
                         )
                     }
                 }
@@ -104,7 +104,7 @@ class UserIdentificationFormFaceFragment :
         subtitle?.setText(R.string.face_subtitle_kyc)
         button?.setText(R.string.face_button_kyc)
         button?.setOnClickListener { v: View? ->
-            analytics?.eventClickNextSelfiePage()
+            analytics?.eventClickNextSelfiePage(false)
             goToKycSelfie()
         }
         setExampleImages()
@@ -124,7 +124,7 @@ class UserIdentificationFormFaceFragment :
         }?.show()
         button?.setText(R.string.face_button)
         button?.setOnClickListener { v: View? ->
-            analytics?.eventClickNextSelfiePage()
+            analytics?.eventClickNextSelfiePage(true)
             goToKycLiveness()
         }
         layoutSecurity?.show()
@@ -144,17 +144,20 @@ class UserIdentificationFormFaceFragment :
 
     private fun setExampleImages() {
         onboardingImage?.apply {
-            val paddingDp = 16
             val scale = resources.displayMetrics.density
-            setPadding(0, (paddingDp * scale + 0.5f).toInt(), 0, 0)
+            setPadding(
+                PADDING_ZERO,
+                (PADDING_16 * scale + PADDING_0_5F).toInt(),
+                PADDING_ZERO,
+                PADDING_ZERO
+            )
             loadImage(KycUrl.SCAN_SELFIE)
             show()
         }
     }
 
     private fun goToKycSelfie() {
-        val intent = createIntent(context, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+        val intent = context?.let { createIntent(it, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId) }
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
@@ -167,7 +170,7 @@ class UserIdentificationFormFaceFragment :
 
     override fun trackOnBackPressed() {
         FileUtil.deleteFile(stepperModel?.ktpFile)
-        analytics?.eventClickBackSelfiePage()
+        analytics?.eventClickBackSelfiePage(isKycSelfie)
     }
 
     companion object {

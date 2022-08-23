@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cbPmQuestionnaireOption"
@@ -18,7 +18,7 @@
         android:id="@+id/tvPmQuestionnaireItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700"
-        app:typographyType="body_2"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
         tools:text="Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya" />
 </LinearLayout>

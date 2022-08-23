@@ -11,14 +11,22 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
 
 /**
  * @author by nisie on 5/15/17.
  */
 @FeedPlusScope
-@Component(modules = [FeedPlusModule::class, FeedComponentModule::class,
-    ViewModelModule::class, InterestPickCommonModule::class, PlayWidgetModule::class],
-        dependencies = [BaseAppComponent::class])
+@Component(modules = [
+        FeedPlusModule::class,
+        FeedComponentModule::class,
+        ViewModelModule::class,
+        InterestPickCommonModule::class,
+        PlayWidgetModule::class,
+        FeedFloatingButtonManagerModule::class
+     ],
+    dependencies = [BaseAppComponent::class]
+)
 interface FeedPlusComponent {
     @ApplicationContext
     fun context(): Context

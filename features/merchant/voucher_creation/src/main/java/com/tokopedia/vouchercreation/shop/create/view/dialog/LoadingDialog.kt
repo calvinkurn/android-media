@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.shop.create.view.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -8,6 +9,7 @@ import android.view.Window
 import android.widget.LinearLayout
 import com.tokopedia.vouchercreation.R
 
+@SuppressLint("UnifyComponentUsage")
 class LoadingDialog(context: Context) : Dialog(context) {
 
     init {

@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class TopupBillsTrackRecentTransaction constructor(
         val itemRecent: TopupBillsRecommendation,
-        val categoryId: Int,
+        val categoryId: String,
         val position: Int) : Parcelable {
 
     override fun equals(other: Any?): Boolean {

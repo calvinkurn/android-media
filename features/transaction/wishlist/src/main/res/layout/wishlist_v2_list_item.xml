@@ -21,8 +21,6 @@
         android:id="@+id/pc_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         app:layout_constraintTop_toTopOf="parent"

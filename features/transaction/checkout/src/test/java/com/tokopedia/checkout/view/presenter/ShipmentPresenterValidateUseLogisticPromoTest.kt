@@ -3,7 +3,11 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -26,8 +30,13 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.mockkObject
+import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -130,7 +139,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -141,14 +150,56 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     }
 
     @Test
+    fun validateUseNoState_ShouldShowErrorAndResetCourier() {
+        // Given
+        val errorMessage = "error"
+        val cartString = "cart123"
+        val promoCode = "promoCode123"
+        val promoUiModel = PromoUiModel(
+                globalSuccess = true,
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString+"2", code = promoCode, messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "merchant", uniqueId = cartString, code = promoCode+"m", messageUiModel = MessageUiModel(state = "green", text = errorMessage)),
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
+
+        val shipmentCartItemModel = ShipmentCartItemModel().apply {
+            this.cartString = cartString
+        }
+        val shipmentCartItemModel2 = ShipmentCartItemModel().apply {
+            this.cartString = cartString + "2"
+        }
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel2, shipmentCartItemModel)
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.resetCourier(shipmentCartItemModel)
+            view.updateButtonPromoCheckout(promoUiModel, true)
+        }
+    }
+
+    @Test
     fun validateUseRedState_ShouldShowErrorAndResetCourier() {
         // Given
         val errorMessage = "error"
         val cartString = "cart123"
+        val promoCode = "promoCode123"
         val promoUiModel = PromoUiModel(
                 globalSuccess = true,
                 voucherOrderUiModels = listOf(
-                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, code = promoCode, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
                 )
         )
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
@@ -165,7 +216,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, cartString, ValidateUsePromoRequest(), promoCode)
 
         // Then
         verifySequence {
@@ -185,7 +236,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -205,7 +256,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -235,7 +286,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {
@@ -261,7 +312,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
 
         // Then
         verifySequence {

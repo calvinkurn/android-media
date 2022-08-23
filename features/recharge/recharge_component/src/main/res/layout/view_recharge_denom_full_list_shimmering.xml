@@ -9,12 +9,13 @@
     android:layout_marginRight="@dimen/spacing_lvl4"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/widget_denom_full_desc_shimmering_width"
         android:layout_height="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <include
         layout="@layout/view_recharge_denom_full_shimmering"/>

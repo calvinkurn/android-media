@@ -10,8 +10,10 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -27,17 +29,24 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,10 +84,16 @@ class OfficialStoreHomeViewModelTest {
     lateinit var addWishListUseCase: AddWishListUseCase
 
     @RelaxedMockK
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
+    @RelaxedMockK
     lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
 
     @RelaxedMockK
     lateinit var removeWishListUseCase: RemoveWishListUseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
@@ -91,6 +106,9 @@ class OfficialStoreHomeViewModelTest {
 
     @RelaxedMockK
     lateinit var bestSellerMapper: BestSellerMapper
+
+    @RelaxedMockK
+    lateinit var topAdsAddressHelper: TopAdsAddressHelper
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -109,12 +127,15 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCase,
             userSessionInterface,
             addWishListUseCase,
+            addToWishlistV2UseCase,
             topAdsWishlishedUseCase,
             removeWishListUseCase,
+            deleteWishlistV2UseCase,
             getDisplayHeadlineAds,
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             getTopAdsHeadlineUseCase,
+            topAdsAddressHelper,
             CoroutineTestDispatchersProvider
         ))
     }
@@ -137,7 +158,7 @@ class OfficialStoreHomeViewModelTest {
             onGetDynamicChannel_thenReturn(osDynamicChannel)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category, "")
+            viewModel.loadFirstData(category)
 
             val expectedOSBanners = Success(osBanners)
             val expectedOSBenefits = Success(osBenefits)
@@ -164,7 +185,7 @@ class OfficialStoreHomeViewModelTest {
             onGetOfficialStoreData_thenReturn(error)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category, "")
+            viewModel.loadFirstData(category)
             val expectedError = Fail(NullPointerException())
 
             verifyLiveDataValueError(expectedError)
@@ -220,6 +241,36 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
+    fun given_impressed_shop_not_empty__when_get_topads_headline_ads__then__add_to_seen_ads_param() {
+        runBlocking {
+            val page = 1
+            val channelId = "1"
+            val shopId1 = "1"
+            val shopId2 = "2"
+            val shopId3 = "3"
+
+            viewModel.impressedShop[channelId] = mutableSetOf(shopId1, shopId2, shopId3)
+
+            viewModel.getTopAdsHeadlineData(page)
+
+            verify {
+                getTopAdsHeadlineUseCase.createParams(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    seenAds = "3"
+                )
+            }
+        }
+
+    }
+
+    @Test
     fun given_get_data_success__topads_headline_ads() {
         runBlocking {
             val page = 1
@@ -240,7 +291,7 @@ class OfficialStoreHomeViewModelTest {
                 )
             } returns "parmas"
 
-            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just Runs
             coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineAdResponse
 
             val topAdsData = viewModel.getTopAdsHeadlineData(page)
@@ -272,7 +323,7 @@ class OfficialStoreHomeViewModelTest {
                 )
             } returns "parmas"
 
-            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just Runs
             coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } throws Throwable("error")
 
             val topAdsData = viewModel.getTopAdsHeadlineData(page)
@@ -485,23 +536,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_user_session_logged_in__when_call_isLoggedIn__should_return_true() {
-        val isLoggedIn = true
-        onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
-
-        verifyIsLoggedInEquals(true)
-    }
-
-    @Test
-    fun given_user_session_logged_out__when_call_isLoggedIn__should_return_false() {
-        val isLoggedIn = false
-        onGetUserSessionIsLoggedIn_thenReturn(isLoggedIn)
-
-        verifyIsLoggedInEquals(false)
-    }
-
-    @Test
-    fun given_get_headlineAds_success_then_pass_to_view() {
+    fun given_get_headlineAds_success_when_get_osDynamicChannel_featured_shop_then_pass_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -534,14 +569,14 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
         coEvery { getDisplayHeadlineAds.executeOnBackground() } returns headlineAdsResponse
 
-        viewModel.loadFirstData(category, "")
+        viewModel.loadFirstData(category)
 
         Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.id, featureShopResult.channelModel.id)
         Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.channelGrids.size, featureShopResult.channelModel.channelGrids.size)
     }
 
     @Test
-    fun given_get_headlineAds_empty_list_then_pass_error_to_view() {
+    fun given_get_headlineAds_empty_list_when_get_osDynamicChannel_featured_shop_then_pass_error_to_view() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -560,22 +595,45 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
         coEvery { getDisplayHeadlineAds.executeOnBackground() } returns headlineAdsResponse
 
-        viewModel.loadFirstData(category, "")
+        viewModel.loadFirstData(category)
 
         Assert.assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids?.size ?: sizeZero, sizeZero)
     }
 
+    @Test
+    fun given_get_headlineAds_error_when_get_osDynamicChannel_featured_shop_then_pass_error_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
+            )
+        )
+
+        val featuredShopDataModel = FeaturedShopDataModel(
+            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                dynamicChannelResponse.first().channel, 0
+            )
+        )
+
+        val error = MessageErrorException()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } throws error
+
+        viewModel.loadFirstData(category)
+
+        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelHeader, featuredShopDataModel.channelModel.channelHeader)
+        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelBanner, featuredShopDataModel.channelModel.channelBanner)
+        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids, featuredShopDataModel.channelModel.channelGrids)
+    }
+
 
     // ===================================== //
-    private fun verifyIsLoggedInEquals(expectedLoggedInStatus: Boolean) {
-        val actualLoggedInStatus = viewModel.isLoggedIn()
-        assertEquals(expectedLoggedInStatus, actualLoggedInStatus)
-    }
-
-    private fun onGetUserSessionIsLoggedIn_thenReturn(loggedIn: Boolean) {
-        every { userSessionInterface.isLoggedIn } returns loggedIn
-    }
-
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } returns osBanners
     }
@@ -775,5 +833,159 @@ class OfficialStoreHomeViewModelTest {
         val actualError = throwable.captured.toString().trim()
 
         assertEquals(expectedError, actualError)
+    }
+
+    @Test
+    fun given_success__when_add_to_wishlistv2__then_call_onSuccessAddWishlist() {
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommendationItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        verify { mockListener.onSuccessAddWishlist(any(),any()) }
+    }
+
+    @Test
+    fun given_failed__when_add_to_wishlistv2__then_call_onErrorAddWishList() {
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.addWishlistV2(recommendationItem, mockListener)
+
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+        verify { mockListener.onErrorAddWishList(any(),any()) }
+    }
+
+    @Test
+    fun given_success__when_remove_wishlistV2__then_call_onSuccessRemoveWishlist(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+        verify { mockListener.onSuccessRemoveWishlist(any(),any()) }
+    }
+
+    @Test
+    fun given_failed__when_remove_wishlistV2__then_call_onErrorRemoveWishList(){
+        val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        viewModel.removeWishlistV2(recommItem, mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(recommItem.productId.toString(), userSessionInterface.userId) }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+        verify { mockListener.onErrorRemoveWishlist(any(),any()) }
+    }
+
+    @Test
+    fun given_get_recomData_success_when_get_osDynamicChannel_bestSelling_then_pass_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BEST_SELLING, id = channelId)
+            )
+        )
+
+        val recommendationItemList = listOf(
+            RecommendationItem(productId = 123L, isTopAds = false)
+        )
+
+        val recommendationResponse: List<RecommendationWidget> = listOf(
+            RecommendationWidget(recommendationItemList)
+        )
+
+        val bestSellerDataModel = BestSellerDataModel(
+            recommendationItemList = recommendationItemList,
+            channelId = channelId
+        )
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getRecommendationUseCaseCoroutine.getData(any()) } returns recommendationResponse
+        coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
+
+        viewModel.loadFirstData(category)
+
+        assertEquals((viewModel.recomWidget.value as Success).data, bestSellerDataModel)
+    }
+
+    @Test
+    fun given_get_recomData_error_when_get_osDynamicChannel_bestSelling_then_set_error_value() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BEST_SELLING, id = channelId)
+            )
+        )
+
+        val error = MessageErrorException()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getRecommendationUseCaseCoroutine.getData(any()) } throws error
+
+        viewModel.loadFirstData(category)
+
+        assert(viewModel.recomWidget.value is Fail)
+        assertEquals((viewModel.recomWidget.value as Fail).throwable, error)
+    }
+
+    @Test
+    fun given_performance_monitoring_error_when_load_first_data_then_set_error_value() {
+        val error = MessageErrorException()
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners()
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+        viewModel.loadFirstData(category, "",
+            onBannerCacheStartLoad = { throw error },
+            onBannerCacheStopLoad = { throw error },
+            onBannerCloudStartLoad = { throw error },
+            onBannerCloudStopLoad = { throw error }
+        )
+        val expectedError = Fail(error)
+
+        assert(viewModel.officialStoreBannersResult.value?.second == expectedError)
+        assert(viewModel.officialStoreBenefitsResult.value == expectedError)
+        assert(viewModel.officialStoreFeaturedShopResult.value == expectedError)
     }
 }

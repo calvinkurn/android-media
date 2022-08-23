@@ -23,8 +23,19 @@ class MerchantVoucherComponentCallback(val homeCategoryListener: HomeCategoryLis
         homeCategoryListener.onDynamicChannelClicked(element.productAppLink)
     }
 
-    override fun onViewAllClicked(headerName: String, seeMoreAppLink: String, userId: String) {
-        val tracking = MerchantVoucherTracking.getClickViewAll(headerName, userId)
+    override fun onViewAllCardClicked(headerName: String, seeMoreAppLink: String, userId: String, campaignCode: String) {
+        val tracking = MerchantVoucherTracking.getClickViewAllCard(headerName, userId, campaignCode)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
+        homeCategoryListener.onDynamicChannelClicked(seeMoreAppLink)
+    }
+
+    override fun onViewAllClicked(
+        headerName: String,
+        seeMoreAppLink: String,
+        userId: String,
+        campaignCode: String
+    ) {
+        val tracking = MerchantVoucherTracking.getClickViewAll(headerName, userId, campaignCode)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
         homeCategoryListener.onDynamicChannelClicked(seeMoreAppLink)
     }

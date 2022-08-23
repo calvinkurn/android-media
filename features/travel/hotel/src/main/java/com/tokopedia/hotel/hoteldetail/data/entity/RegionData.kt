@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class RegionData(@SerializedName("id")
                  @Expose
-                 val id: Long = 0,
+                 val id: String = "0",
                  @SerializedName("name")
                  @Expose
                  val name: String = "",

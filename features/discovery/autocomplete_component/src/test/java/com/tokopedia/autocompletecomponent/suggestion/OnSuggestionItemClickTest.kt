@@ -336,7 +336,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.trackClickChip(
                 expectedEventLabel,
                 childItem.dimension90,
-                baseSuggestionDataView,
+                childItem,
             )
             suggestionView.dropKeyBoard()
             suggestionView.route(childItem.applink, suggestionPresenter.getSearchParameter())

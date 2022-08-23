@@ -23,8 +23,8 @@ class SendSmileyReputationUseCase @Inject constructor(private val reputationRepo
         private const val PARAM_ROLE: String = "buyer_seller"
         private const val I_AM_SELLER: String = "2"
         private const val I_AM_BUYER: String = "1"
-        private const val REVIEW_IS_FROM_BUYER: Int = 1
-        fun getParam(reputationId: String?, score: String?, role: Int): RequestParams {
+        private const val REVIEW_IS_FROM_BUYER = "1"
+        fun getParam(reputationId: String?, score: String?, role: String): RequestParams {
             val params: RequestParams = RequestParams.create()
             params.putString(PARAM_SCORE, score)
             params.putString(PARAM_REPUTATION_ID, reputationId)
@@ -32,7 +32,7 @@ class SendSmileyReputationUseCase @Inject constructor(private val reputationRepo
             return params
         }
 
-        private fun getRole(role: Int): String {
+        private fun getRole(role: String): String {
             return if (role == REVIEW_IS_FROM_BUYER) I_AM_SELLER else I_AM_BUYER
         }
     }

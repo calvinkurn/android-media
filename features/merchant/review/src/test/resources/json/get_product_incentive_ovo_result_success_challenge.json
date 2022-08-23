@@ -1,0 +1,35 @@
+{
+  "data": {
+    "productrevIncentiveOvo": {
+      "ticker": {
+        "subtitle": "Bisa dapat 200 GoPay Coins, lho! <a href=\"https://www.tokopedia.com\">Pelajari</a>"
+      },
+      "title": "Mau dapat hadiah GoPay Coins?",
+      "subtitle": "Bantu calon pembeli lain dengan kasih ulasan lengkap dan dapatkan <b>hadiah GoPay Coins!</b>",
+      "description": "Baca syarat dan ketentuannya dulu, ya:",
+      "numbered_list": [
+        "Aktifkan GoPay Coins dengan sambungin akun Tokopedia dan Gojek kamu.",
+        "Pastikan pesanan belanjaanmu sudah selesai.",
+        "Hanya berlaku di aplikasi Tokopedia dan barang bertanda khusus di halaman Menunggu Diulas.",
+        "Konten harus memenuhi kriteria ulasan lengkap.",
+        "Hadiah GoPay Coins tidak diberikan jika konten melanggar ketentuan Tokopedia. <a href=\"https://www.tokopedia.com/help/article/mendapatkan-insentif-points-dengan-memberi-ulasan\">Baca Selengkapnya.</a>"
+      ],
+      "cta_text": "Lanjut Kirim Ulasan",
+      "amount": 0,
+      "illustration_list": [
+        {
+          "image_url": "https://ecs7.tokopedia.net/android/others/ic_add_rating_incentive_tnc.png",
+          "text": "Kasih rating buat belanjaanmu"
+        },
+        {
+          "image_url": "https://ecs7.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png",
+          "text": "Lanjut foto barang, min. 1"
+        },
+        {
+          "image_url": "https://ecs7.tokopedia.net/android/others/ic_add_review_incentive_tnc.png",
+          "text": "Tulis ulasan min. 40 karakter"
+        }
+      ]
+    }
+  }
+}

@@ -29,6 +29,7 @@ import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -183,7 +184,7 @@ class VariantSheetViewComponent(
             model.selectedVariants
         )
         btnAction.setOnClickListener {
-            listener.onActionClicked(model.variantDetail, mAction)
+            listener.onActionClicked(model.variantDetail, model.sectionInfo, mAction)
         }
 
         val labelList = model.selectedVariants.entries.mapIndexedNotNull { index, entry ->
@@ -292,6 +293,6 @@ class VariantSheetViewComponent(
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
         fun onVariantOptionClicked(option: VariantOptionWithAttribute)
-        fun onActionClicked(variant: PlayProductUiModel.Product, action: ProductAction)
+        fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction)
     }
 }

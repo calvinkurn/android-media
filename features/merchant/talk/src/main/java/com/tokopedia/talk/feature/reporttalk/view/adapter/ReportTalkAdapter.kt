@@ -1,11 +1,11 @@
 package com.tokopedia.talk.feature.reporttalk.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.reporttalk.view.uimodel.TalkReportOptionUiModel
 
@@ -34,7 +34,9 @@ class ReportTalkAdapter(private val optionClickListener: OnOptionClickListener,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.radioButton.isEnabled = listOption[position].isEnabled
         holder.radioButton.isChecked = listOption[position].isChecked
+        holder.title.isEnabled = listOption[position].isEnabled
         holder.title.text = listOption[position].reportTitle
 
         holder.itemView.setOnClickListener {
@@ -73,6 +75,15 @@ class ReportTalkAdapter(private val optionClickListener: OnOptionClickListener,
         return selectedOption
     }
 
+    fun disableOptions() {
+        listOption.forEach { it.isEnabled = false }
+        notifyDataSetChanged()
+    }
+
+    fun enableOptions() {
+        listOption.forEach { it.isEnabled = true }
+        notifyDataSetChanged()
+    }
 }
 
 private fun ViewGroup.inflate(layoutRes: Int): View {

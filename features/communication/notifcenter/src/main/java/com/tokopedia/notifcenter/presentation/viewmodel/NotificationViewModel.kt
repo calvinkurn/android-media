@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
@@ -33,17 +34,23 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface INotificationViewModel {
     fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
     fun removeWishList(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
+    fun addWishlistV2(model: RecommendationItem, listener: WishlistV2ActionListener)
+    fun removeWishlistV2(model: RecommendationItem, listener: WishlistV2ActionListener)
 }
 
 class NotificationViewModel @Inject constructor(
@@ -56,8 +63,10 @@ class NotificationViewModel @Inject constructor(
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListUseCase: AddWishListUseCase,
-    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
     private val removeWishListUseCase: RemoveWishListUseCase,
+    private val addWishListV2UseCase: AddToWishlistV2UseCase,
+    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
     private val userSessionInterface: UserSessionInterface,
     private var addToCartUseCase: AddToCartUseCase,
     private var notifOrderListUseCase: NotifOrderListUseCase,
@@ -226,7 +235,7 @@ class NotificationViewModel @Inject constructor(
         launchCatchError(dispatcher.io,
             {
                 bumpReminderUseCase.bumpReminder(
-                    product.productId.toString(),
+                    product.productId,
                     notif.notifId
                 ).collect {
                     it.referer = product.productId
@@ -246,7 +255,7 @@ class NotificationViewModel @Inject constructor(
         launchCatchError(dispatcher.io,
             {
                 deleteReminderUseCase.deleteReminder(
-                    product.productId.toString(),
+                    product.productId,
                     notification.notifId
                 ).collect {
                     it.referer = product.productId
@@ -292,10 +301,7 @@ class NotificationViewModel @Inject constructor(
         filter = NotifcenterDetailUseCase.FILTER_NONE
     }
 
-    override fun addWishlist(
-        model: RecommendationItem,
-        callback: ((Boolean, Throwable?) -> Unit)
-    ) {
+    override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit) {
         if (model.isTopAds) {
             addWishListTopAds(model, callback)
         } else {
@@ -304,23 +310,20 @@ class NotificationViewModel @Inject constructor(
                     callback.invoke(false, Throwable(errorMessage))
                 }
 
-                override fun onSuccessAddWishlist(productId: String?) {
+                override fun onSuccessAddWishlist(productId: String) {
                     callback.invoke(true, null)
                 }
 
-                override fun onErrorRemoveWishlist(
-                    errorMessage: String?, productId: String?
-                ) {
-                }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-                override fun onSuccessRemoveWishlist(productId: String?) {}
+                override fun onSuccessRemoveWishlist(productId: String) {}
             })
         }
     }
 
     override fun removeWishList(
         model: RecommendationItem,
-        callback: (((Boolean, Throwable?) -> Unit))
+        callback: (Boolean, Throwable?) -> Unit
     ) {
         removeWishListUseCase.createObservable(
             model.productId.toString(),
@@ -337,6 +340,38 @@ class NotificationViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    override fun addWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener) {
+        doAddToWishlistV2(model.productId.toString(), actionListener)
+    }
+
+    fun doAddToWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
+        launch(dispatcher.main) {
+            addWishListV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { addWishListV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
+    }
+
+    override fun removeWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener) {
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+            }
+        }
     }
 
     fun clearNotifCounter(
@@ -412,21 +447,20 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-        requestParams: RequestParams,
+        requestParams: AddToCartRequestParams,
         onSuccessAddToCart: (data: DataModel) -> Unit,
-        onError: (msg: String) -> Unit
+        onError: (msg: String?) -> Unit
     ) {
         launchCatchError(
             dispatcher.io,
             block = {
-                val atcResponse = addToCartUseCase.createObservable(requestParams)
-                    .toBlocking()
-                    .single().data
+                addToCartUseCase.addToCartRequestParams = requestParams
+                val atcResponse = addToCartUseCase.executeOnBackground()
                 withContext(dispatcher.main) {
-                    if (atcResponse.success == 1) {
-                        onSuccessAddToCart(atcResponse)
+                    if (atcResponse.isDataError()) {
+                        onError(atcResponse.getAtcErrorMessage())
                     } else {
-                        onError(atcResponse.message.getOrNull(0) ?: "")
+                        onSuccessAddToCart(atcResponse.data)
                     }
                 }
             },
@@ -441,7 +475,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     companion object {
-        const val TOP_ADS_SOURCE = "5"
+        const val TOP_ADS_SOURCE = "19"
         const val TOP_ADS_COUNT = 1
         const val TOP_ADS_DIMEN_ID = 3
 

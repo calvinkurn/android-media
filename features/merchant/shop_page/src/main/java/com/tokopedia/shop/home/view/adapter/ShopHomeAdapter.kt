@@ -7,20 +7,20 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -34,9 +34,9 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
-class ShopHomeAdapter(
-        private val shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory),
+open class ShopHomeAdapter(
+        private val shopHomeAdapterTypeFactory: AdapterTypeFactory
+) : BaseListAdapter<Visitable<*>, AdapterTypeFactory>(shopHomeAdapterTypeFactory),
         DataEndlessScrollListener.OnDataEndlessScrollListener,
         StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
@@ -93,10 +93,18 @@ class ShopHomeAdapter(
         refreshSticky()
     }
 
-    fun setProductListData(productList: List<ShopHomeProductUiModel>) {
+    fun setProductListData(productList: List<ShopHomeProductUiModel>, isOwner: Boolean) {
         val newList = getNewVisitableItems()
         productListViewModel.addAll(productList)
+        newList.remove(ShopHomeProductListEmptyUiModel(isOwner))
         newList.addAll(productList)
+        submitList(newList)
+    }
+
+    fun setProductListEmptyState(isOwner: Boolean) {
+        val newList = getNewVisitableItems()
+        if (!newList.contains(ShopHomeProductListEmptyUiModel(isOwner)))
+            newList.add(ShopHomeProductListEmptyUiModel(isOwner))
         submitList(newList)
     }
 
@@ -194,14 +202,13 @@ class ShopHomeAdapter(
     }
 
     fun getAllProductWidgetPosition(): Int {
-        return visitables.filter {
-            (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
-        }.indexOfFirst { it is ShopHomeProductUiModel }
+        return visitables.indexOfFirst { it is ShopHomeProductUiModel }
     }
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         val newList = getNewVisitableItems()
         val position = newList.indexOf(shopHomeCarousellProductUiModel)
+        shopHomeCarousellProductUiModel.copy()
         shopHomeCarousellProductUiModel.isNewData = true
         newList.setElement(position, shopHomeCarousellProductUiModel)
         submitList(newList)
@@ -323,7 +330,7 @@ class ShopHomeAdapter(
     }
 
     private fun setLayoutManagerSpanCount() {
-        (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopHomeAdapterTypeFactory.productCardType) {
+        (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when ((shopHomeAdapterTypeFactory as? ShopHomeAdapterTypeFactory)?.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
                 recyclerView?.context?.resources?.getInteger(R.integer.span_count_big_grid) ?: 1
             }
@@ -332,6 +339,9 @@ class ShopHomeAdapter(
             }
             ShopProductViewGridType.LIST -> {
                 recyclerView?.context?.resources?.getInteger(R.integer.span_count_list) ?: 1
+            }
+            else -> {
+                Int.ONE
             }
         }
     }
@@ -416,7 +426,7 @@ class ShopHomeAdapter(
     }
 
     fun changeProductCardGridType(gridType: ShopProductViewGridType) {
-        shopHomeAdapterTypeFactory.productCardType = gridType
+        (shopHomeAdapterTypeFactory as? ShopHomeAdapterTypeFactory)?.productCardType = gridType
         setLayoutManagerSpanCount()
         recyclerView?.requestLayout()
     }
@@ -511,7 +521,7 @@ class ShopHomeAdapter(
         submitList(newList)
     }
 
-    fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
+    fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageWidgetLayoutUiModel>) {
         listWidgetLayout.onEach { widgetLayout ->
             visitables.filterIsInstance<Visitable<*>>().firstOrNull {
                 when(it) {
@@ -587,7 +597,7 @@ class ShopHomeAdapter(
         return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
     }
 
-    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
+    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetLayoutUiModel>) {
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {
@@ -609,9 +619,9 @@ class ShopHomeAdapter(
         submitList(newList)
     }
 
-    private fun getNewVisitableItems() = visitables.toMutableList()
+    fun getNewVisitableItems() = visitables.toMutableList()
 
-    private fun submitList(newList: List<Visitable<*>>) {
+    fun submitList(newList: List<Visitable<*>>) {
         val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
         val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -636,6 +646,20 @@ class ShopHomeAdapter(
             val dynamicRule = campaignItem?.dynamicRule
             val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
             nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
+        }
+    }
+
+    fun getLastVisibleShopWidgetPosition(lastVisibleItemPosition: Int): Int {
+        return when (visitables.getOrNull(lastVisibleItemPosition)) {
+            is BaseShopHomeWidgetUiModel, is ThematicWidgetUiModel -> {
+                lastVisibleItemPosition
+            }
+            else -> {
+                val lastShopWidgetUiModel = visitables.lastOrNull {
+                    it is BaseShopHomeWidgetUiModel || it is ThematicWidgetUiModel
+                }
+                visitables.lastIndexOf(lastShopWidgetUiModel)
+            }
         }
     }
 }

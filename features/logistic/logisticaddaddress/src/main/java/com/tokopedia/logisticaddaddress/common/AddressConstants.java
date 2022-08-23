@@ -47,6 +47,8 @@ public class AddressConstants {
     public static final String EXTRA_DISTRICT_ID = "EXTRA_DISTRICT_ID";
     public static final String EXTRA_POSTAL_CODE = "EXTRA_POSTAL_CODE";
     public static final String EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL";
+    public static final String EXTRA_IS_EDIT = "EXTRA_IS_EDIT";
+    public static final String EXTRA_ADDRESS_ID = "EXTRA_ADDRESS_ID";
     public static final String EXTRA_IS_CHANGES_REQUESTED = "EXTRA_IS_CHANGES_REQUESTED";
     public static final String EXTRA_IS_UNNAMED_ROAD = "EXTRA_UNNAMED_ROAD";
     public static final String EXTRA_IS_NULL_ZIPCODE = "EXTRA_IS_NULL_ZIPCODE";

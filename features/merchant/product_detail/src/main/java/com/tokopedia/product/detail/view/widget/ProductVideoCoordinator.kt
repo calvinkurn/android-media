@@ -30,6 +30,7 @@ class ProductVideoCoordinator(
     private var lastReceiverProduct: ProductVideoReceiver? = null
     private var productVideoDataModel: MutableList<ProductVideoDataModel> = mutableListOf()
     private var currentVideoId: String = ""
+    private var lastVideoUrl: String = ""
 
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
@@ -50,12 +51,19 @@ class ProductVideoCoordinator(
                 //Set back the exoplayer to playerview
                 currentReceiver!!.setPlayer(videoPlayer)
                 val videoData = getVideoDataById(currentReceiver.getVideoId())
-                videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition
-                        ?: 0L, videoData?.isMute
-                        ?: true, lastReceiverProduct != currentReceiver)
+                val currentVideoUrl = videoData?.videoUrl ?: ""
+
+                videoPlayer?.start(
+                        videoUrl = videoData?.videoUrl ?: "",
+                        lastVideoPosition = videoData?.seekPosition ?: 0L,
+                        isMute = videoData?.isMute ?: true,
+                        shouldPrepare = (lastReceiverProduct != currentReceiver || lastVideoUrl != currentVideoUrl)
+                )
                 currentVideoId = currentReceiver.getVideoId()
 
                 lastReceiverProduct = currentReceiver
+                lastVideoUrl = currentVideoUrl
+
             } else {
                 lastReceiverProduct?.let {
                     //Pause and save previous video player
@@ -70,6 +78,7 @@ class ProductVideoCoordinator(
             videoPlayer = ProductExoPlayer(context)
         }
 
+        productVideoDataModel.clear()
         val listVideoId = productVideoDataModel.map { it.videoId }
         if (videoId !in listVideoId) {
             productVideoDataModel.add(ProductVideoDataModel(videoId, videoUrl))

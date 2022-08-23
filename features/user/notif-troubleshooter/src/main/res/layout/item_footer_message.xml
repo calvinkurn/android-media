@@ -16,19 +16,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_status"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_ts_notif_footer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_4"
         android:id="@+id/txt_title"
         android:layout_width="0dp"
         android:layout_marginEnd="16dp"
@@ -36,34 +36,31 @@
         android:layout_marginStart="8dp"
         android:gravity="center_vertical"
         android:text="@string/notif_footer_title"
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/img_status"
         app:layout_constraintTop_toTopOf="@+id/img_status" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
         android:id="@+id/txt_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_6"
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/notif_footer_status"
         android:textColor="@color/Unify_N700_68"
+        android:text="@string/notif_footer_status"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_title"
         app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
         android:id="@+id/txt_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="4dp"
-        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/notif_footer_message"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,8 +69,8 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_action"
-        android:layout_width="@dimen/dp_184"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="184dp"
+        android:layout_height="32dp"
         android:layout_marginTop="24dp"
         android:text="@string/btn_notif_clear_cache"
         android:textStyle="bold"
@@ -82,16 +79,16 @@
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="ghost" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_2"
         android:id="@+id/txt_help_care"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/notif_footer_care"
         android:textColor="@color/Unify_N700_68"
         android:textAlignment="center"
-        android:layout_marginBottom="@dimen/dp_56"
+        android:layout_marginBottom="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

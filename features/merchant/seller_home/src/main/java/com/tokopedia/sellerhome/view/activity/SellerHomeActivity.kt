@@ -85,6 +85,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val ACTION_GET_ALL_APP_WIDGET_DATA =
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
+        private const val NAVIGATION_HOME_MENU_POSITION = 0
     }
 
     @Inject
@@ -336,7 +337,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun handleAppLink(intent: Intent?) {
-        DeepLinkHandler.handleAppLink( intent) { page ->
+        DeepLinkHandler.handleAppLink(intent) { page ->
             val pageType = page.type
 
             when (pageType) {
@@ -372,8 +373,15 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun setupNavigator() {
-        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
-
+        val navigationHomeMenuView =
+            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_HOME_MENU_POSITION)
+        navigator = SellerHomeNavigator(
+            this,
+            supportFragmentManager,
+            sellerHomeRouter,
+            userSession,
+            navigationHomeMenuView
+        )
         setNavigationOtherMenuView()
     }
 
@@ -567,10 +575,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home_mosque,
-                R.raw.anim_bottom_nav_home_mosque_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_mosque_active,
-                R.drawable.ic_sah_bottom_nav_home_mosque_inactive,
+                R.raw.anim_bottom_nav_home,
+                R.raw.anim_bottom_nav_home_to_enabled,
+                R.drawable.ic_sah_bottom_nav_home_active,
+                R.drawable.ic_sah_bottom_nav_home_inactive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,

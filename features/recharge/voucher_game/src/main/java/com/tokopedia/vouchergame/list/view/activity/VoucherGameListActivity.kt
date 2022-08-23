@@ -47,11 +47,11 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     }
 
     override fun getToolbarResourceID(): Int {
-        return R.id.toolbar
+        return R.id.toolbar_voucher_game
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
+        return R.id.parent_view_voucher_game
     }
 
     override fun shouldShowOptionMenu(): Boolean {

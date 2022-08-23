@@ -7,12 +7,15 @@ import java.util.concurrent.TimeUnit
 
 class PlayLikeBubblesManager(
     private val scope: CoroutineScope,
+    private val maxBubbles: Int,
 ) {
 
     private var mView: PlayLikeBubblesView? = null
     private val bubbles = mutableListOf<Bubble>()
 
     private var timeInterval = getTimeByFps(FULL_FPS)
+
+    private var previouslyHasBubble = false
 
     private var timerJob: Job? = null
 
@@ -44,7 +47,9 @@ class PlayLikeBubblesManager(
                 bubbles.clear()
                 bubbles.addAll(newBubbles)
                 mView?.setBubbles(bubbles)
-                mView?.postInvalidate()
+                if (previouslyHasBubble || bubbles.isNotEmpty()) mView?.postInvalidate()
+
+                previouslyHasBubble = bubbles.isNotEmpty()
             }
         }
     }
@@ -81,7 +86,7 @@ class PlayLikeBubblesManager(
         prioritize: Boolean,
     ) {
         synchronized(bubbles) {
-            if (bubbles.size > MAX_BUBBLES_ON_SCREEN) {
+            if (bubbles.size > maxBubbles) {
                 if (prioritize) bubbles.removeFirst()
                 else return@synchronized
             }
@@ -112,8 +117,6 @@ class PlayLikeBubblesManager(
 
     companion object {
         private const val DEFAULT_DELAY = 300L
-
-        private const val MAX_BUBBLES_ON_SCREEN = 30
 
         private const val FULL_FPS = 60
     }

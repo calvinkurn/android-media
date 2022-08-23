@@ -85,6 +85,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
             productAdapter?.submitList(visitables)
+            binding?.pdpNavigation?.updateItemPosition()
         }
     }
 
@@ -137,7 +138,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
-    protected fun getRecyclerView(): RecyclerView? {
+    fun getRecyclerView(): RecyclerView? {
         return rvPdp
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.common.domain.usecase
 import androidx.annotation.StringDef
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.domain.model.CancelVoucherResponse
@@ -72,7 +73,7 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
             val cancelVoucherData = data.cancelVoucher
             with(cancelVoucherData) {
                 if (updateVoucherSuccessData.getIsSuccess()) {
-                    return updateVoucherSuccessData.voucherId
+                    return updateVoucherSuccessData.voucherId.toIntOrZero()
                 } else {
                     throw VoucherCancellationException(voucherId, message)
                 }

@@ -16,6 +16,7 @@
     {
       "eventCategory": "cart",
       "checkout_step": "0",
+      "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
       "event": "checkout_progress",
       "eventAction": "view cart page",
@@ -26,7 +27,9 @@
           "item_id": "\\d+",
           "item_name": ".*",
           "dimension81": ".*",
+          "shop_type": ".*",
           "dimension80": ".*",
+          "shop_name": ".*",
           "item_brand": "none/other",
           "item_category": ".*",
           "dimension104": ".*",
@@ -40,6 +43,7 @@
           "dimension82": "\\d+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension79": "\\d+",
+          "shop_id": "\\d+",
           "item_variant": "none/other",
           "dimension49": "",
           "dimension48": "\\d+",
@@ -48,11 +52,14 @@
         }
       ],
       "eventLabel": "",
-      "checkout_option": "view cart page"
+      "checkout_option": "view cart page",
+      "userId": ".+",
+      "promoFlag": "true|false"
     },
     {
       "eventCategory": "cart",
       "checkout_step": "1",
+      "businessUnit": "purchase platform",
       "currentSite": "tokopediamarketplace",
       "event": "begin_checkout",
       "eventAction": "click checkout",
@@ -63,7 +70,9 @@
           "item_id": "\\d+",
           "item_name": ".*",
           "dimension81": ".*",
+          "shop_type": ".*",
           "dimension80": ".*",
+          "shop_name": ".*",
           "item_brand": "none/other",
           "item_category": ".*",
           "dimension104": ".*",
@@ -77,6 +86,7 @@
           "dimension82": "\\d+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension79": "\\d+",
+          "shop_id": "\\d+",
           "item_variant": "none/other",
           "dimension49": "",
           "dimension48": "\\d+",
@@ -85,7 +95,9 @@
         }
       ],
       "eventLabel": "success - (.*)",
-      "checkout_option": "cart page loaded"
+      "checkout_option": "cart page loaded",
+      "userId": ".+",
+      "promoFlag": "true|false"
     }
   ],
   "readme": "Cart Page Tracking"

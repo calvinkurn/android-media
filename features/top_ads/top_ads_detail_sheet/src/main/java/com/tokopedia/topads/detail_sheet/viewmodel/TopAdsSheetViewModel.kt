@@ -13,12 +13,12 @@ import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -53,23 +53,16 @@ class TopAdsSheetViewModel @Inject constructor(
     }
 
     fun getGroupProductData(groupId: Int, onSuccess: (List<WithoutGroupDataItem>) -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
-        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+        launchCatchError(block = {
+            val requestParams =
+                topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            val nonGroupResponse =
+                topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                onSuccess(nonGroupResponse.data)
-
-            }
+            onSuccess(nonGroupResponse.data)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -82,23 +75,16 @@ class TopAdsSheetViewModel @Inject constructor(
         })
     }
 
-    fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
-        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<ProductActionResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<ProductActionResponse>
-                val nonGroupResponse = response.data.topadsUpdateSingleAds
-                onSuccess(action)
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+    fun setProductAction(
+        onSuccess: (action: String) -> Unit, action: String, adIds: List<String>,
+        selectedFilter: String?,
+    ) {
+        launchCatchError(block = {
+            val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+            topAdsProductActionUseCase.execute(params)
+            onSuccess(action)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -118,10 +104,8 @@ class TopAdsSheetViewModel @Inject constructor(
 
     public override fun onCleared() {
         super.onCleared()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetGroupIdUseCase.cancelJobs()
-        topAdsProductActionUseCase.unsubscribe()
         topAdsGetAutoAdsStatusUseCase.cancelJobs()
     }
 }

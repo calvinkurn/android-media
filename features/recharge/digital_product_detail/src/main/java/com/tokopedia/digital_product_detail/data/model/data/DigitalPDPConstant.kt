@@ -30,10 +30,13 @@ object DigitalPDPConstant {
     const val RESULT_CODE_QR_SCAN = 101
 
     const val DELAY_PREFIX_TIME = 200L
-    const val VALIDATOR_DELAY_TIME = 3000L
+    const val VALIDATOR_DELAY_TIME = 2000L
     const val DELAY_MULTI_TAB = 1000L
     const val DELAY_CLIENT_NUMBER_TRANSITION = 200L
-    const val DELAY_AUTOCOMPLETE = 500L
 
     const val CHECKOUT_NO_PROMO = "0"
+    const val LOADER_DIALOG_TEXT = ""
+
+    const val RECOMMENDATION_GQL_CHANNEL_NAME_PULSA = "pulsa_pdp_last_transaction"
+    const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
 }

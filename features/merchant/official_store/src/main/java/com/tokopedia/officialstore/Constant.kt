@@ -2,15 +2,6 @@ package com.tokopedia.officialstore
 
 import com.tokopedia.applink.ApplinkConst
 
-object GQLQueryConstant {
-    const val QUERY_OFFICIAL_STORE_CATEGORIES = "gql_query_official_store_categories"
-    const val QUERY_OFFICIAL_STORE_BANNERS = "gql_query_official_store_banners"
-    const val QUERY_OFFICIAL_STORE_BENEFITS = "gql_query_official_store_benefits"
-    const val QUERY_OFFICIAL_STORE_FEATURED_SHOPS = "gql_query_official_store_featured"
-    const val QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL = "query_official_store_dynamic_channel"
-    const val QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION = "gql_query_official_store_product_recommendation"
-}
-
 object DynamicChannelIdentifiers {
 
     val CTA_MODE_MAIN = "main"
@@ -34,9 +25,11 @@ object FirebasePerformanceMonitoringConstant {
 
 object ApplinkConstant {
 
-    const val OFFICIAL_SEARCHBAR = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?official=true&navsource=os"
+    const val OFFICIAL_SEARCHBAR = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?shop_tier=2&navsource=os"
 
     val OFFICIAL_PROMO_NATIVE = "${ApplinkConst.PROMO_LIST}?categoryID=8&menuID=363"
+
+    const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 }
 
 object TopAdsHeadlineConstant{

@@ -41,6 +41,7 @@ import com.tokopedia.officialstore.category.presentation.widget.OfficialCategori
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.databinding.FragmentOfficialHomeBinding
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.isRunningTest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -67,6 +68,7 @@ class OfficialHomeContainerFragment
         const val KEY_CATEGORY = "key_category"
         const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
         const val PARAM_HOME = "home"
+        private const val FORMAT_APPLINK_SEARCHBAR = "%s&hint=%s"
     }
 
     private var binding: FragmentOfficialHomeBinding? by viewBinding()
@@ -362,6 +364,10 @@ class OfficialHomeContainerFragment
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
+        if (!isRunningTest()) {
+            loadingCategoryLayout?.visible()
+            binding?.viewContentLoading?.containerLoadingContent?.visible()
+        }
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
@@ -411,7 +417,10 @@ class OfficialHomeContainerFragment
             setIcon(getToolbarIcons())
             setupSearchbar(
                     hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+                    applink = FORMAT_APPLINK_SEARCHBAR.format(
+                        ApplinkConstant.OFFICIAL_SEARCHBAR,
+                        getString(R.string.os_query_search)
+                    )
             )
             show()
         }
@@ -485,14 +494,18 @@ class OfficialHomeContainerFragment
 
     private fun isAddressDataChanged(): Boolean {
         var isAddressChanged = false
-        chooseAddressData.toLocalCacheModel().let {
-            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
-        }
+        context?.let { context ->
+            chooseAddressData.toLocalCacheModel().let {
+                isAddressChanged =
+                    ChooseAddressUtils.isLocalizingAddressHasUpdated(context, it)
+            }
 
-        if (isAddressChanged) {
-            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-            chooseAddressData = OSChooseAddressData(isActive = true)
+            if (isAddressChanged) {
+                val localChooseAddressData =
+                    ChooseAddressUtils.getLocalizingAddressData(context)
+                chooseAddressData = OSChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
+            }
         }
         return isAddressChanged
     }

@@ -1,13 +1,10 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
@@ -23,8 +20,6 @@ class PlayUserReportSubmissionViewComponent(
     container: ViewGroup,
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_user_report_submission_sheet) {
-
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close)
 
@@ -66,24 +61,6 @@ class PlayUserReportSubmissionViewComponent(
         }
     }
 
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    fun showWithHeight(height: Int) {
-        if (rootView.height != height) {
-            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            rootView.layoutParams = layoutParams
-        }
-        show()
-    }
-
     fun setView(item: PlayUserReportReasoningUiModel.Reasoning){
         minChar = item.submissionData.min
 
@@ -98,22 +75,14 @@ class PlayUserReportSubmissionViewComponent(
 
         etSubmission.setOnClickListener {
             etSubmission.requestFocus()
-            showKeyboard()
         }
 
         btnSubmit.setOnClickListener {
             etSubmission.clearFocus()
-            showKeyboard(false)
 
             val desc = etSubmission.editText.text.toString()
             listener.onShowVerificationDialog(this@PlayUserReportSubmissionViewComponent, reasonId = item.reasoningId, description = desc)
         }
-    }
-
-    private fun showKeyboard(shouldShow: Boolean = true) {
-        val imm = etSubmission.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (shouldShow) imm.showSoftInput(etSubmission, InputMethodManager.SHOW_IMPLICIT)
-        else imm.hideSoftInputFromWindow(etSubmission.windowToken, 0)
     }
 
     private fun getFieldMessage(isError: Boolean) : String{
@@ -122,6 +91,15 @@ class PlayUserReportSubmissionViewComponent(
         }else{
             getString(R.string.play_user_report_text_area_min, "", minChar)
         }
+    }
+
+    fun showView(height: Int){
+        if (rootView.height != height) {
+            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.height = height
+            rootView.layoutParams = layoutParams
+        }
+        show()
     }
 
     interface Listener {

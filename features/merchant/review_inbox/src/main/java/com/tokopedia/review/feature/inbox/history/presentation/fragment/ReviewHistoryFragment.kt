@@ -9,12 +9,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
@@ -24,27 +25,31 @@ import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTracking
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTrackingConstants
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
+import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapter
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
+import com.tokopedia.review.feature.inbox.history.presentation.mapper.ReviewHistoryDataMapper
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWatcher
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewHistoryFragment :
     BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(),
-    HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickListener, SearchListener,
-    ReviewHistoryItemListener {
+    HasComponent<ReviewHistoryComponent>, SearchListener, ReviewHistoryItemListener {
 
     companion object {
         fun createNewInstance(): ReviewHistoryFragment {
@@ -56,6 +61,9 @@ class ReviewHistoryFragment :
     lateinit var viewModel: ReviewHistoryViewModel
 
     private var binding by autoClearedNullable<FragmentReviewHistoryBinding>()
+
+    private val reviewHistoryAdapter: ReviewHistoryAdapter
+        get() = adapter as ReviewHistoryAdapter
 
     override fun getComponent(): ReviewHistoryComponent? {
         return activity?.run {
@@ -85,11 +93,21 @@ class ReviewHistoryFragment :
         super.onViewCreated(view, savedInstanceState)
         initSearchBar()
         observeReviewList()
+        observeReviewHistoryList()
         setupErrorPage()
     }
 
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
-        return ReviewHistoryAdapterTypeFactory(this, this)
+        return ReviewHistoryAdapterTypeFactory(
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
+            reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
+        )
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory> {
+        return ReviewHistoryAdapter(adapterTypeFactory).apply {
+            setOnAdapterInteractionListener(this@ReviewHistoryFragment)
+        }
     }
 
     override fun getScreenName(): String {
@@ -137,12 +155,12 @@ class ReviewHistoryFragment :
         return binding?.reviewHistorySwipeRefresh
     }
 
-    override fun onAttachedImagesClicked(
-        productName: String,
-        attachedImages: List<String>,
-        position: Int
+    fun onAttachedMediaClicked(
+        productID: String,
+        position: Int,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
     ) {
-        goToImagePreview(productName, attachedImages, position)
+        goToImagePreview(productID, position, reviewMediaThumbnailUiModel)
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -206,10 +224,6 @@ class ReviewHistoryFragment :
                         showNoProductEmpty()
                         return@Observer
                     }
-                    renderReviewData(
-                        it.data.list.map { history -> ReviewHistoryUiModel(history) },
-                        it.data.hasNext
-                    )
                 }
                 is LoadingView -> {
                     showPageLoading()
@@ -234,6 +248,16 @@ class ReviewHistoryFragment :
         })
     }
 
+    private fun observeReviewHistoryList() {
+        viewModel.reviewHistoryList.observe(viewLifecycleOwner) {
+            renderReviewData(
+                it, viewModel.reviewList.value?.let {
+                    if (it is Success) it.data.hasNext else false
+                }.orFalse()
+            )
+        }
+    }
+
     private fun goToReviewDetails(feedbackId: String) {
         RouteManager.route(
             context,
@@ -242,16 +266,26 @@ class ReviewHistoryFragment :
         )
     }
 
-    private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
-        startActivity(context?.let {
-            ImagePreviewSliderActivity.getCallingIntent(
-                it,
-                productName,
-                attachedImages,
-                attachedImages,
-                position
-            )
-        })
+    private fun goToImagePreview(
+        productID: String,
+        position: Int,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
+    ) {
+        context?.let { context ->
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = context,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+                productID = productID,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position.inc(),
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = ReviewHistoryDataMapper.mapReviewHistoryDataToReviewMediaPreviewData(
+                    reviewMediaThumbnailUiModel
+                )
+            ).also { startActivity(it) }
+        }
     }
 
     private fun showError() {
@@ -317,6 +351,22 @@ class ReviewHistoryFragment :
     private fun setupErrorPage() {
         binding?.reviewHistoryConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             loadInitialData()
+        }
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            reviewHistoryAdapter.findReviewHistoryContainingThumbnail(item)?.let {
+                trackAttachedImageClicked(
+                    it.productrevFeedbackHistory.product.productId,
+                    it.productrevFeedbackHistory.review.feedbackId
+                )
+                onAttachedMediaClicked(
+                    it.productrevFeedbackHistory.product.productId,
+                    position,
+                    it.attachedMediaThumbnail
+                )
+            }
         }
     }
 }

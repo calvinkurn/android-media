@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/iconContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <FrameLayout
+                android:id="@+id/imgOneContainer"
+                android:layout_width="@dimen/unify_space_64"
+                android:layout_height="@dimen/unify_space_64"
+                android:background="@drawable/tm_bg_shop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imageOne"
+                    android:layout_width="@dimen/tm_dp_63"
+                    android:layout_height="@dimen/tm_dp_63"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
+                    app:unify_image_corner_radius="8"
+                    app:unify_image_type="circle" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/unify_space_64"
+                android:layout_height="@dimen/unify_space_64"
+                android:layout_marginStart="@dimen/tm_dp_20"
+                app:layout_constraintStart_toEndOf="@id/imgOneContainer"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imageTwo"
+                    android:layout_width="@dimen/unify_space_64"
+                    android:layout_height="@dimen/unify_space_64"
+                    app:srcCompat="@drawable/tm_ic_tokomember" />
+
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imageTop"
+            android:layout_width="@dimen/tm_dp_36"
+            android:layout_height="@dimen/tm_dp_36"
+            android:layout_gravity="center"
+            app:layout_constraintStart_toEndOf="@id/imageOne"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tm_ic_star" />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iconContainer"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="Kamu akan dapat undangan member setelah pesananmu tiba" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:textColor="@color/Unify_N700"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:typographyType="body_2"
+        tools:text="Klik “Selesai” di daftar transaksimu untuk dapetin undangan  nikmati bonus cashback-nya!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/tokoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/tm_dp_44"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/tm_button_text"
+        android:textColor="@color/Unify_N0"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

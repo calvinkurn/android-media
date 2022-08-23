@@ -25,9 +25,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    
+
+    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation (rootProject.ext.miscDependencies.viewPager2){
         ['androidx.collection', 'androidx.fragment'].each {
             exclude group: it

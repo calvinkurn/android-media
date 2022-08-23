@@ -7,11 +7,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tncDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -35,3 +35,7 @@ internal fun ProductUiModel?.hasEditStockAccess(): Boolean {
 internal fun ProductUiModel?.hasEditProductAccess(): Boolean {
     return this?.access?.editProduct == true
 }
+
+internal fun ProductUiModel?.suspendAccess(): Boolean {
+    return this?.isSuspend() == true
+}

@@ -14,4 +14,12 @@ class HomeSwitcherListener(
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
         viewModel.switchService(localCacheModel)
     }
+
+    override fun onImpressSwitcher() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
+        viewModel.trackSwitchService(
+            localCacheModel = localCacheModel,
+            isImpressionTracker = true
+        )
+    }
 }

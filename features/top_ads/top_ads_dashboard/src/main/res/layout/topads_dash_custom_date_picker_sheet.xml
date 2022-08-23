@@ -1,38 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/dateStart"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="@dimen/top_ads_common_dp_150"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:clickable="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:text_field_label="Mulai dari"
         app:text_field_label_static="true"
         app:text_field_placeholder="Pilih Tanggal" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/dateEnd"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="@dimen/top_ads_common_dp_150"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:focusable="true"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:clickable="false"
-        android:gravity="end"
+        android:focusable="true"
         android:textSize="@dimen/sp_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:text_field_label="@string/topads_dash_sampai_dengan"
         app:text_field_label_static="true"
         app:text_field_placeholder="Pilih Tanggal" />
@@ -40,8 +36,9 @@
     <com.tokopedia.calendar.UnifyCalendar
         android:id="@+id/calendarUnify"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dateStart"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintTop_toBottomOf="@id/dateStart" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

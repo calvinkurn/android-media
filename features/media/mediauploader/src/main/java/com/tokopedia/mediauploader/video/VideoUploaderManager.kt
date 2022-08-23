@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.video
 
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
-import com.tokopedia.mediauploader.common.data.mapper.PolicyMapper
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.fileExtension
@@ -13,6 +13,7 @@ import java.io.File
 import javax.inject.Inject
 
 class VideoUploaderManager @Inject constructor(
+    private val policyManager: SourcePolicyManager,
     private val policyUseCase: GetVideoPolicyUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,
     private val largeUploaderManager: LargeUploaderManager
@@ -28,30 +29,25 @@ class VideoUploaderManager @Inject constructor(
     ): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        val filePath = file.path
-        val policyData = policyUseCase(sourceId)
+        // hit uploader policy
+        val policy = policyUseCase(sourceId)
+        policyManager.set(policy)
 
-        val sourcePolicy = PolicyMapper.map(policyData.dataPolicy)
-        val videoPolicy = sourcePolicy.videoPolicy
-
-        if (videoPolicy != null) {
+        // return the upload result
+        return policy.videoPolicy?.let { videoPolicy ->
             val maxSizeOfSimpleUpload = videoPolicy.thresholdSizeOfVideo()
             val maxFileSize = videoPolicy.maxFileSize
+            val filePath = file.path
 
-            val extensions = videoPolicy
-                .extension
-                .split(",")
-                .map { it.drop(1) }
-
-            return when {
+            when {
                 !file.exists() -> {
                     UploadResult.Error(FILE_NOT_FOUND)
                 }
-                !extensions.contains(filePath.fileExtension().lowercase()) -> {
-                    UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
-                }
                 file.isMaxFileSize(maxFileSize) -> {
                     UploadResult.Error(maxFileSizeMessage(maxFileSize))
+                }
+                !allowedExt(filePath, videoPolicy.extension) -> {
+                    UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
                 }
                 else -> {
                     isSimpleUpload = file.length() <= maxSizeOfSimpleUpload.mbToBytes()
@@ -59,15 +55,13 @@ class VideoUploaderManager @Inject constructor(
                     setProgressUploader(loader)
 
                     if (!isSimpleUpload) {
-                        largeUploaderManager(file, sourceId, sourcePolicy, withTranscode)
+                        largeUploaderManager(file, sourceId, withTranscode)
                     } else {
-                        simpleUploaderManager(file, sourceId, sourcePolicy, withTranscode)
+                        simpleUploaderManager(file, sourceId, withTranscode)
                     }
                 }
             }
-        } else {
-            return UploadResult.Error(UNKNOWN_ERROR)
-        }
+        } ?: UploadResult.Error(UNKNOWN_ERROR)
     }
 
     suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {

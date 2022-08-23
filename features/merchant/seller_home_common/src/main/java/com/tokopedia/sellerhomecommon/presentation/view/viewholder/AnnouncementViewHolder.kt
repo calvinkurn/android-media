@@ -4,12 +4,13 @@ import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcAnnouncementWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
@@ -66,13 +67,10 @@ class AnnouncementViewHolder(
             shcAnnouncementSuccessState.setBackgroundResource(selectableItemBg.resourceId)
 
             tvShcAnnouncementTitle.text = element.data?.title
-            tvShcAnnouncementSubTitle.text = element.data?.subtitle
+            tvShcAnnouncementSubTitle.text = element.data?.subtitle.orEmpty().parseAsHtml()
             icuShcAnnouncement.setImage(IconUnify.CHEVRON_RIGHT)
 
-            ImageHandler.loadImageWithoutPlaceholderAndError(
-                imgShcAnnouncement,
-                element.data?.imgUrl.orEmpty()
-            )
+            imgShcAnnouncement.loadImage(element.data?.imgUrl.orEmpty())
 
             root.setOnClickListener {
                 setOnCtaClick(element)
@@ -81,6 +79,8 @@ class AnnouncementViewHolder(
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendAnnouncementImpressionEvent(element)
             }
+
+            listener.showAnnouncementWidgetCoachMark(element.dataKey, itemView)
         }
     }
 
@@ -101,5 +101,7 @@ class AnnouncementViewHolder(
         fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {}
 
         fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
+
+        fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {}
     }
 }

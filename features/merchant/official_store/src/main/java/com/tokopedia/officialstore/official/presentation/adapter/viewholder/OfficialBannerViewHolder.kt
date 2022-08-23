@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,10 +12,11 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.databinding.ViewmodelOfficialBannerBinding
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDataModel>(view),
+class OfficialBannerViewHolder(view: View, val dcEventHandler: DynamicChannelEventHandler): AbstractViewHolder<OfficialBannerDataModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
@@ -55,7 +55,9 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
             officialStoreTracking?.eventClickBanner(
                     elementBanner?.categoryName.toEmptyStringIfNull(),
                     position,
-                    it)
+                    it,
+                    dcEventHandler.getUserId()
+            )
         }
 
         elementBanner?.banner?.let {
@@ -81,7 +83,8 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
                 officialStoreTracking?.eventImpressionBanner(
                         elementBanner?.categoryName.toEmptyStringIfNull(),
                         position,
-                        it
+                        it,
+                        dcEventHandler.getUserId()
                 )
             }
         }

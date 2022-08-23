@@ -3,6 +3,7 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics
 import com.tokopedia.settingnotif.usersetting.data.pojo.SmsSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
@@ -18,6 +19,7 @@ class SmsFieldFragment: SettingFieldFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        NotifSettingAnalytics.sendScreenName(SCREEN_NAME)
         isRequestData = false
     }
 
@@ -44,5 +46,9 @@ class SmsFieldFragment: SettingFieldFragment() {
 
     override fun getScreenName() = getString(R.string.settingnotif_sms)
     override fun getNotificationType() = TYPE_SMS
+
+    companion object{
+        private const val SCREEN_NAME = "SMS Notification Settings Page"
+    }
 
 }

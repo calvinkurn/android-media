@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.util
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
@@ -25,7 +26,7 @@ class GenerateImageParamsBuilder @Inject constructor() {
         shopLogo: String,
         shopName: String
     ): GenerateImageProperty {
-
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
         val formattedImageRatio = when (imageRatio) {
             ImageRatio.SQUARE -> "square"
             ImageRatio.VERTICAL -> "vertical"
@@ -89,7 +90,7 @@ class GenerateImageParamsBuilder @Inject constructor() {
             nominalAmount.toString(),
             symbol,
             shopLogo,
-            shopName,
+            formattedShopName,
             couponInformation.code,
             startTime,
             endTime,

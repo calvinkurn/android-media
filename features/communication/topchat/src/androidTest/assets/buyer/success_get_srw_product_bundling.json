@@ -1,0 +1,14 @@
+{
+  "chatSmartReplyQuestion": {
+    "isSuccess": true,
+    "hasQuestion": true,
+    "title": "Tanya ke Chupacup Indonesia",
+    "list": [
+      {
+        "content": "Min, ada Paket Bundling?",
+        "intent": "product_bundling",
+        "label": "Baru"
+      }
+    ]
+  }
+}

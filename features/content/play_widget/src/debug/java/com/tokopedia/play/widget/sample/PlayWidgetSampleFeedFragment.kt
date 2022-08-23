@@ -27,7 +27,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
  */
 class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
 
-    private val rvWidget by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample_feed) }
+    private val rvWidget by lazy { view?.findViewById<RecyclerView>(R.id.rv_play_widget_feed_sample) }
 
     private lateinit var adapter: PlayWidgetSampleFeedAdapter
 
@@ -79,6 +79,9 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
                         PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod)
                     )
                 )
+            ),
+            PlayWidgetSmallUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget()
             ),
             PlayWidgetMediumUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget()

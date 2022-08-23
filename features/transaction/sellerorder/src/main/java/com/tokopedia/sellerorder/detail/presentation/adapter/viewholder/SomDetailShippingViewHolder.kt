@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
 import com.tokopedia.sellerorder.databinding.DetailShippingItemBinding
@@ -45,18 +46,23 @@ class SomDetailShippingViewHolder(
                     shippingPrintedLabel.hide()
                 }
 
-                if (item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
-                    tvShippingName.apply {
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                        setOnClickListener {
-                            actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty().let { isLogisticInfoNotEmpty ->
+                    tvChevron.showWithCondition(isLogisticInfoNotEmpty)
+                    if (isLogisticInfoNotEmpty) {
+                        tvShippingName.apply {
+                            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                            setOnClickListener {
+                                actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                            }
+                            text = item.dataObject.shippingName
                         }
-                        text = StringBuilder("${item.dataObject.shippingName} >")
+                        tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    } else {
+                        tvShippingName.text = item.dataObject.shippingName
+                        tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                     }
-                } else {
-                    tvShippingName.text = item.dataObject.shippingName
-                    tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
+
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                     item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                 } else {
@@ -125,6 +131,12 @@ class SomDetailShippingViewHolder(
                                     receiverProvinceText))
                         }
                     }
+                }
+
+                item.dataObject.shipmentLogo.isNotEmpty().let { isNotEmpty ->
+                    if (isNotEmpty)
+                        ivOrderDetailFreeShippingBadge.loadImage(item.dataObject.shipmentLogo)
+                    ivOrderDetailFreeShippingBadge.showWithCondition(isNotEmpty)
                 }
 
                 if (item.dataObject.awb.isNotEmpty()) {

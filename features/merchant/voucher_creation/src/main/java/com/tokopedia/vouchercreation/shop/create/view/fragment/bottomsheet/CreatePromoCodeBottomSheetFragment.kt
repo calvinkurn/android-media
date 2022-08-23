@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -22,15 +23,16 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.databinding.MvcCreatePromoCodeBottomSheetViewBinding
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.CreatePromoCodeViewModel
-import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
 import javax.inject.Inject
 
 
@@ -53,10 +55,6 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
                            getPromoCodePrefix: () -> String) : CreatePromoCodeBottomSheetFragment {
             return CreatePromoCodeBottomSheetFragment().apply {
                 context?.run {
-                    val view = View.inflate(this, R.layout.mvc_create_promo_code_bottom_sheet_view, null)
-                    setChild(view)
-                    setTitle(context.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                     isKeyboardOverlap = false
                     
                     this@apply.onNextClick = onNextClick
@@ -75,6 +73,8 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var binding by autoClearedNullable<MvcCreatePromoCodeBottomSheetViewBinding>()
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -105,6 +105,15 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
         initInjector()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        iniBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
@@ -115,7 +124,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
     override fun onResume() {
         super.onResume()
-        createPromoCodeTextField?.textFieldInput?.run {
+        binding?.createPromoCodeTextField?.textFieldInput?.run {
             setText(getPromoCode())
             selectAll()
         }
@@ -124,6 +133,13 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
     override fun onPause() {
         context?.hideKeyboard()
         super.onPause()
+    }
+
+    private fun iniBottomSheet() {
+        binding = MvcCreatePromoCodeBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setTitle(context?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     private fun initInjector() {
@@ -135,96 +151,100 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
     private fun observeLiveData() {
         viewModel.promoCodeValidationLiveData.observe(viewLifecycleOwner, Observer { result ->
-            createPromoCodeSaveButton?.isLoading = false
-            when(result) {
-                is Success -> {
-                    val errorMessage = result.data.promoCodeError
-                    errorMessage.run {
-                        if (isBlank() && isWaitingForValidation) {
-                            onNextClick(createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
-                        } else {
-                            createPromoCodeTextField?.setTextFieldError(this)
+            binding?.apply {
+                createPromoCodeSaveButton.isLoading = false
+                when(result) {
+                    is Success -> {
+                        val errorMessage = result.data.promoCodeError
+                        errorMessage.run {
+                            if (isBlank() && isWaitingForValidation) {
+                                onNextClick(createPromoCodeTextField.textFieldInput.text?.toString().toBlankOrString())
+                            } else {
+                                createPromoCodeTextField.setTextFieldError(this)
+                            }
                         }
                     }
+                    is Fail -> {
+                        val error = result.throwable.message.toBlankOrString()
+                        showErrorToaster(error)
+                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                    }
                 }
-                is Fail -> {
-                    val error = result.throwable.message.toBlankOrString()
-                    showErrorToaster(error)
-                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
-                }
+                isWaitingForValidation = false
             }
-            isWaitingForValidation = false
         })
     }
 
     private fun setupView() {
-        createPromoCodeTextField?.run {
-            // Fix blank color when dark mode activated.
-            textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
-            textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
-            (((textFieldWrapper).getChildAt(1) as ViewGroup?)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        binding?.apply {
+            createPromoCodeTextField.run {
+                // Fix blank color when dark mode activated.
+                textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                (((textFieldWrapper).getChildAt(1) as ViewGroup?)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
 
-            getPromoCodePrefix().run {
-                promoCodePrefix = if (isNotBlank()) {
-                    this
-                } else {
-                    context?.getString(R.string.mvc_create_promo_code_prefix).toBlankOrString()
+                getPromoCodePrefix().run {
+                    promoCodePrefix = if (isNotBlank()) {
+                        this
+                    } else {
+                        context?.getString(R.string.mvc_create_promo_code_prefix).toBlankOrString()
+                    }
+                    prependText(promoCodePrefix)
                 }
-                prependText(promoCodePrefix)
-            }
-            textFieldInput.run {
-                filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
-                setOnFocusChangeListener { _, hasFocus ->
-                    activity?.run {
-                        if (hasFocus) {
-                            showKeyboard()
-                        } else {
-                            hideKeyboard()
-                        }
-                    }
-                }
-                addTextChangedListener(object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-                        //No op
-                    }
-
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                        //No op
-                    }
-
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        when {
-                            s.isEmpty() -> {
-                                setError(false)
-                                setMessage(easyRememberMessage)
-                            }
-                            s.length < MIN_TEXTFIELD_LENGTH -> {
-                                setTextFieldError(alertMinimumMessage)
-                            }
-                            else -> {
-                                setError(false)
-                                setMessage("")
+                textFieldInput.run {
+                    filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
+                    setOnFocusChangeListener { _, hasFocus ->
+                        activity?.run {
+                            if (hasFocus) {
+                                showKeyboard()
+                            } else {
+                                hideKeyboard()
                             }
                         }
                     }
-                })
-                requestFocus()
-            }
+                    addTextChangedListener(object : TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                            //No op
+                        }
 
-            createPromoCodeSaveButton?.run {
-                setOnClickListener {
-                    val promoCode = createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString()
-                    val canValidateCode = promoCode.length in MIN_TEXTFIELD_LENGTH..MAX_TEXTFIELD_LENGTH && !isLoading
-                    if (canValidateCode) {
-                        isLoading = true
-                        isWaitingForValidation = true
-                        viewModel.validatePromoCode(promoCode)
-                    }
-                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                            //No op
+                        }
+
+                        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                            when {
+                                s.isEmpty() -> {
+                                    setError(false)
+                                    setMessage(easyRememberMessage)
+                                }
+                                s.length < MIN_TEXTFIELD_LENGTH -> {
+                                    setTextFieldError(alertMinimumMessage)
+                                }
+                                else -> {
+                                    setError(false)
+                                    setMessage("")
+                                }
+                            }
+                        }
+                    })
+                    requestFocus()
+                }
+
+                createPromoCodeSaveButton.run {
+                    setOnClickListener {
+                        val promoCode = createPromoCodeTextField.textFieldInput.text?.toString().toBlankOrString()
+                        val canValidateCode = promoCode.length in MIN_TEXTFIELD_LENGTH..MAX_TEXTFIELD_LENGTH && !isLoading
+                        if (canValidateCode) {
+                            isLoading = true
+                            isWaitingForValidation = true
+                            viewModel.validatePromoCode(promoCode)
+                        }
+                        VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = VoucherCreationStep.TARGET,
                             action = VoucherCreationAnalyticConstant.EventAction.Click.SAVE_PRIVATE,
                             userId = userSession.userId
-                    )
+                        )
+                    }
                 }
             }
         }

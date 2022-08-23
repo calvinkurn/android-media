@@ -17,6 +17,7 @@ object TrackingConstant {
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT = "businessUnit"
+    const val TRACKER_ID = "trackerId"
 
     //event
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
@@ -46,6 +47,7 @@ object TrackingConstant {
     const val CLICK_WIDGET_BANNER = "click widget banner"
     const val IMPRESSION_WIDGET_BANNER = "impression widget banner"
     const val SEE_MORE = "see more"
+    const val HYPERLINK = "hyperlink"
     const val CLICK_NOTIFICATION = "click notification"
     const val CLICK_HOME = "click home"
     const val CLICK_PRODUCT = "click product"
@@ -83,6 +85,12 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_CALENDAR = "impression widget calendar"
     const val CLICK_WIDGET_CALENDAR_EVENT = "click widget calendar - event"
     const val CLICK_WIDGET_CALENDAR_SELECT_DATE_RANGE = "click widget calendar - select date range"
+    const val CLICK_WIDGET_UNIFICATION_TAB = "click widget navigation tab - tab"
+    const val CLICK_WIDGET_UNIFICATION_TAB_ITEM = "click widget navigation tab - item"
+    const val CLICK_WIDGET_UNIFICATION_SEE_MORE = "click widget navigation tab - see more"
+    const val CLICK_WIDGET_UNIFICATION_EMPTY_STATE = "click widget navigation tab - empty state"
+    const val IMPRESSION_WIDGET_UNIFICATION = "impression widget navigation tab"
+    const val IMPRESSION_WIDGET_UNIFICATION_SEE_TAB = "impression widget navigation tab - see tab"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
@@ -96,9 +104,11 @@ object TrackingConstant {
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val PHYSICAL_GOODS = "physical goods"
     const val PHYSICAL_GOODS_CAPITALIZED = "Physical Goods"
-    const val NONE = "none"
+    const val SINGLE = "single"
+    const val MULTIPLE = "multiple"
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
+    const val NO_ACCESS = "No Access"
     const val EMPTY_STATE = "emptystate"
     const val SEPARATOR = " - "
     const val SPACE = " "

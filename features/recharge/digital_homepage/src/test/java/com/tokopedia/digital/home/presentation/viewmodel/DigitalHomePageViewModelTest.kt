@@ -1,18 +1,17 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -27,11 +26,8 @@ class DigitalHomePageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val mapParams = mapOf<String, String>()
+    private val mapParams = mapOf<String, GqlQueryInterface>()
     lateinit var gqlResponseFail: GraphqlResponse
-
-    @MockK
-    lateinit var graphqlRepository: GraphqlRepository
 
     @RelaxedMockK
     lateinit var digitalHomePageUseCase: DigitalHomePageUseCase
@@ -74,7 +70,7 @@ class DigitalHomePageViewModelTest {
 
     @Test
     fun getData_Success_All() {
-        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner(1)))
+        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner("1")))
         val categoryData = DigitalHomePageCategoryModel(
                 listOf(DigitalHomePageCategoryModel.Subtitle("Prabayar & Pascabayar"))
         )
@@ -92,7 +88,7 @@ class DigitalHomePageViewModelTest {
             val actualBannerData = actualData[0] as DigitalHomePageBannerModel
             assertEquals(actualBannerData.isSuccess, true)
             assert(actualBannerData.bannerList.isNotEmpty())
-            assertEquals(actualBannerData.bannerList[0].id, 1)
+            assertEquals(actualBannerData.bannerList[0].id, "1")
 
             assert(actualData[1] is DigitalHomePageCategoryModel)
             val actualCategoryData = actualData[1] as DigitalHomePageCategoryModel
@@ -104,7 +100,7 @@ class DigitalHomePageViewModelTest {
 
     @Test
     fun getData_Success_Partial() {
-        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner(1)))
+        val bannerData = DigitalHomePageBannerModel(listOf(DigitalHomePageBannerModel.Banner("1")))
         val failedCategoryData = DigitalHomePageCategoryModel()
         bannerData.isSuccess = true
         failedCategoryData.isSuccess = false
@@ -120,7 +116,7 @@ class DigitalHomePageViewModelTest {
             val actualBannerData = actualData[0] as DigitalHomePageBannerModel
             assertEquals(actualBannerData.isSuccess, true)
             assert(actualBannerData.bannerList.isNotEmpty())
-            assertEquals(actualBannerData.bannerList[0].id, 1)
+            assertEquals(actualBannerData.bannerList[0].id, "1")
 
             assert(actualData[1] is DigitalHomePageCategoryModel)
             assertEquals(actualData[1].isSuccess, false)

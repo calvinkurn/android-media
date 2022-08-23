@@ -1,0 +1,280 @@
+{
+  "readme": "Digital PDP pulsa",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "impression product cluster",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "view_item_list",
+      "clientId": ".*",
+      "userId": ".*",
+      "currentSite": "tokopediadigitalRecharge",
+      "businessUnit": "recharge",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click product cluster",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "select_content",
+      "clientId": ".*",
+      "userId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "view favorite number chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "viewDigitalIris",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId":".*"
+    },
+    {
+      "eventAction": "view favorite contact chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "viewDigitalIris",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click favorite number chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click favorite contact chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click autocomplete fav contact",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "click autocomplete fav number",
+      "eventLabel": ".*_.*_.*",
+      "eventCategory": "digital - homepage",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "eventAction": "impression last transaction icon",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "view_item_list",
+      "clientId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click last transaction icon",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "select_content",
+      "clientId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "input manual number",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "input from favorite number",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "impression pdp banner",
+      "eventLabel": ".*_.*",
+      "eventCategory": "digital - homepage",
+      "event": "view_item",
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "view promo card",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "view_item_list",
+      "clientId": ".*",
+      "userId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click on contact icon",
+      "eventLabel": ".*",
+      "eventCategory": "digital - homepage",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click x on input number",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click chevron on total bayar",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "input from contact",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click promo card",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "select_content",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "clientId": ".*",
+      "userId": ".*",
+      "item_list": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    }
+  ]
+}

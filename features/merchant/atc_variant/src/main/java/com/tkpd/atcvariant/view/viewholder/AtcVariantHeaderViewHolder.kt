@@ -9,6 +9,7 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
@@ -36,6 +37,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
     private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
     private val labelCashback = view.findViewById<Label>(R.id.lbl_header_cashback_percentage)
+    private val iconEnlarge = view.findViewById<IconUnify>(R.id.ic_enlarge_img_header)
 
     private val labelVar1 = view.findViewById<Label>(R.id.lbl_variant_name_1)
     private val labelVar2 = view.findViewById<Label>(R.id.lbl_variant_name_2)
@@ -106,9 +108,11 @@ class AtcVariantHeaderViewHolder(private val view: View,
     }
 
     private fun loadImage(imgUrl: String) {
-        productImage.loadImage(imgUrl)
+
+        iconEnlarge.setBackgroundResource(com.tokopedia.product.detail.common.R.drawable.bg_circle_grey)
+
         productImage?.run {
-            loadImage(imgUrl)
+            setImageUrl(imgUrl)
             setOnClickListener {
                 listener.onVariantImageClicked(imgUrl)
             }

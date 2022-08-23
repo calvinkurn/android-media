@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@string/merchant_product_detail_shop_notes_label"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
     </LinearLayout>
 

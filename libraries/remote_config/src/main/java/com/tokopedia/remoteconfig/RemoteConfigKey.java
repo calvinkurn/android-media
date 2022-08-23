@@ -181,6 +181,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
+    public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -210,10 +211,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
     public static final String ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK = "app_enable_branch_utm_only_branch_link";
 
-    public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
-    public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
-    public static final String ENABLE_REVAMP_DEALS_EVENT = "android_main_app_enable_deals_revamp_phase_2";
-
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 
@@ -228,6 +225,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
+    public static final String ENABLE_FLASH_SALE_ENTRY_SELLER = "android_sellerapp_enable_flash_sale_entry";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear_v2";
     public static final String CM_CAMPAIGN_ID_EXCLUDE_LIST = "android_cm_push_exclude_list_removal";
@@ -239,6 +237,8 @@ public class RemoteConfigKey {
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
+    public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
+
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
     public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
     public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
@@ -273,6 +273,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
     public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
+    public static final String ENABLE_ADD_REMOVE_WISHLIST_V2 = "android_enable_add_remove_wishlist_v2";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
@@ -282,6 +283,23 @@ public class RemoteConfigKey {
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
+    public static final String ENABLE_SLASH_PRICE = "android_enable_slash_price";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
+
+    public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
+
+    public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
+
+    public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
+
+    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
+
+    public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
+
+    public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
+
+    public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
+
+    public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 }

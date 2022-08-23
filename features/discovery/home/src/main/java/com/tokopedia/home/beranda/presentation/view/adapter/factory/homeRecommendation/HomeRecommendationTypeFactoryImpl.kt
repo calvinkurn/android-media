@@ -37,7 +37,7 @@ class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
 
     override fun createViewHolder(parent: View, viewType: Int): SmartAbstractViewHolder<*> {
         return when (viewType) {
-            HomeRecommendationItemViewHolder.LAYOUT -> HomeRecommendationItemViewHolder(parent)
+            HomeRecommendationItemViewHolder.LAYOUT -> HomeRecommendationItemViewHolder(parent, cardInteraction = true)
             HomeRecommendationLoadingViewHolder.LAYOUT -> HomeRecommendationLoadingViewHolder(parent)
             HomeBannerFeedViewHolder.LAYOUT -> HomeBannerFeedViewHolder(parent)
             HomeRecommendationErrorViewHolder.LAYOUT -> HomeRecommendationErrorViewHolder(parent)

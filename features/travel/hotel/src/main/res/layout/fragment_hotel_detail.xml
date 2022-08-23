@@ -758,21 +758,27 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    <com.tokopedia.unifycomponents.LoaderUnify
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/layout_lvl1" />
+                        android:layout_marginBottom="@dimen/layout_lvl1"
+                        app:loader_type="rect"
+                        app:loader_corner_radius="0dp" />
 
-                    <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    <com.tokopedia.unifycomponents.LoaderUnify
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        app:loader_type="rect"
+                        app:loader_corner_radius="0dp"/>
 
                 </LinearLayout>
 
-                <com.elyeproj.loaderviewlibrary.LoaderImageView
+                <com.tokopedia.unifycomponents.LoaderUnify
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="@dimen/layout_lvl6"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    app:loader_type="rect"
+                    app:loader_corner_radius="0dp"/>
 
             </LinearLayout>
 

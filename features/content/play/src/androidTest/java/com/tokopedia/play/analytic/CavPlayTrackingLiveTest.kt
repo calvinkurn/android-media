@@ -9,6 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.robot.prepare
 import com.tokopedia.play.data.PlayLiveMockModelConfig
@@ -28,6 +29,9 @@ class CavPlayTrackingLiveTest {
     @get:Rule
     val intentsTestRule = IntentsTestRule(PlayActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     @Test
     fun validateTrackingChannelLive() {
         prepare {
@@ -44,7 +48,7 @@ class CavPlayTrackingLiveTest {
             performSendChatQuickReply()
             performClose()
             Thread.sleep(2000)
-            validate()
+            validate(cassavaTestRule)
         }
     }
 
@@ -54,8 +58,8 @@ class CavPlayTrackingLiveTest {
     private fun performShop() {
         register(idlResShopInfo)
         Espresso.onView(ViewMatchers.withId(R.id.tv_partner_name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // follow
-        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // unfollow
+        Espresso.onView(ViewMatchers.withId(R.id.btn_follow)).perform(ViewActions.click()) // follow
+        Espresso.onView(ViewMatchers.withId(R.id.btn_follow)).perform(ViewActions.click()) // unfollow
         unregister(idlResShopInfo)
     }
 

@@ -4,10 +4,8 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperDeals {
 
@@ -28,10 +26,7 @@ object DeeplinkMapperDeals {
 
             //tokopedia://deals/brand/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_REVAMP_DEALS_EVENT, true)){
                     "${ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE}?${uri.pathSegments[1]}"
-                } else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri.pathSegments[1])
-                //old applink
 
             //tokopedia://deals/i/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "i" ->

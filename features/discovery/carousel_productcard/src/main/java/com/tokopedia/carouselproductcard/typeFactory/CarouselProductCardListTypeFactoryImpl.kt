@@ -19,6 +19,10 @@ internal class CarouselProductCardListTypeFactoryImpl(
         return CarouselSeeMoreCardGridViewHolder.LAYOUT
     }
 
+    override fun type(carouselViewAllCardModel: CarouselViewAllCardModel): Int {
+        return CarouselViewAllCardViewHolder.LAYOUT
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         val view = LayoutInflater
                 .from(viewGroup.context)
@@ -26,6 +30,8 @@ internal class CarouselProductCardListTypeFactoryImpl(
         return when(viewType){
             CarouselProductCardListViewHolder.LAYOUT ->
                 CarouselProductCardListViewHolder(view, internalListener)
+            CarouselViewAllCardViewHolder.LAYOUT ->
+                CarouselViewAllCardViewHolder(view)
             else -> CarouselSeeMoreCardGridViewHolder(view)
         } as BaseProductCardViewHolder<BaseCarouselCardModel>
     }

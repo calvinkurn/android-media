@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
@@ -30,6 +31,7 @@ class ReadReviewProductInfo : BaseCustomView {
 
     private var productImage: ImageUnify? = null
     private var productName: Typography? = null
+    private var productVariantName: Typography? = null
     private var threeDotsMenu: IconUnify? = null
 
     private fun init() {
@@ -40,13 +42,17 @@ class ReadReviewProductInfo : BaseCustomView {
     private fun bindViews() {
         productImage = findViewById(R.id.read_review_product_image)
         productName = findViewById(R.id.read_review_product_name)
+        productVariantName = findViewById(R.id.read_review_product_variant_name)
         threeDotsMenu = findViewById(R.id.read_review_product_info_three_dots)
     }
 
-    fun setProductInfo(imageUrl: String, productName: String) {
+    fun setProductInfo(imageUrl: String, productName: String, productVariantName: String) {
         productImage?.clearImage()
         productImage?.loadImage(imageUrl)
         this.productName?.text = productName
+        this.productVariantName?.shouldShowWithAction(productVariantName.isNotBlank()) {
+            this.productVariantName?.text = productVariantName
+        }
     }
 
     fun setListener(

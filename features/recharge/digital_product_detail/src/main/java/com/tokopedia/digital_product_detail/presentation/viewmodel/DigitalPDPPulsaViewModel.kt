@@ -7,27 +7,30 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_AUTOCOMPLETE
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -47,7 +50,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
     var clientNumberThrottleJob: Job? = null
-    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
+    var operatorData: TelcoCatalogPrefixSelect =
+        TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
@@ -65,15 +69,23 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
-        get() = _favoriteNumberData
+    private val _favoriteChipsData =
+        MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
+    val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>>
+        get() = _favoriteChipsData
 
-    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val autoCompleteData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>>
         get() = _autoCompleteData
 
-    private val _catalogPrefixSelect = MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
+    private val _prefillData =
+        MutableLiveData<RechargeNetworkResult<PrefillModel>>()
+    val prefillData: LiveData<RechargeNetworkResult<PrefillModel>>
+        get() = _prefillData
+
+    private val _catalogPrefixSelect =
+        MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
@@ -89,11 +101,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
-    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    private val _recommendationData =
+        MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
 
-    fun setMenuDetailLoading(){
+    fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
@@ -106,53 +119,47 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setRechargeCatalogInputMultiTabLoading(){
+    fun setRechargeCatalogInputMultiTabLoading() {
         _observableDenomMCCMData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String) {
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
             val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
             _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
-        }){
+        }) {
             if (it !is CancellationException)
                 _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
-    fun setFavoriteNumberLoading(){
-        _favoriteNumberData.value = RechargeNetworkResult.Loading
+    fun setFavoriteNumberLoading() {
+        _favoriteChipsData.value = RechargeNetworkResult.Loading
     }
 
-    fun getFavoriteNumber(categoryIds: List<Int>) {
+    fun getFavoriteNumbers(categoryIds: List<Int>, favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val favoriteNumberChips = repo.getFavoriteNumberChips(categoryIds)
-            _favoriteNumberData.value = RechargeNetworkResult.Success(
-                favoriteNumberChips.persoFavoriteNumber.items
-            )
+            val data = repo.getFavoriteNumbers(favoriteNumberTypes, categoryIds)
+            for (type in favoriteNumberTypes) {
+                when (type) {
+                    FavoriteNumberType.PREFILL -> {
+                        _prefillData.value = RechargeNetworkResult.Success(data.prefill)
+                    }
+                    FavoriteNumberType.CHIP -> {
+                        _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
+                    }
+                    FavoriteNumberType.LIST -> {
+                        _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
+                    }
+                }
+            }
         }) {
-            _favoriteNumberData.value = RechargeNetworkResult.Fail(it)
+            // this section is not reachable due to no fail scenario
         }
     }
 
-    fun setAutoCompleteLoading() {
-        _autoCompleteData.value = RechargeNetworkResult.Loading
-    }
-
-    fun getAutoComplete(categoryIds: List<Int>) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
-            delay(DELAY_AUTOCOMPLETE) // temporary solution to fix race condition
-            val favoriteNumberList = repo.getFavoriteNumberList(categoryIds)
-            _autoCompleteData.value = RechargeNetworkResult.Success(
-                favoriteNumberList.persoFavoriteNumber.items
-            )
-        }) {
-            _autoCompleteData.value = RechargeNetworkResult.Fail(it)
-        }
-    }
-
-    fun setPrefixOperatorLoading(){
+    fun setPrefixOperatorLoading() {
         _catalogPrefixSelect.value = RechargeNetworkResult.Loading
     }
 
@@ -178,20 +185,29 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         validatorJob?.cancel()
     }
 
-    fun setAddToCartLoading(){
+    fun setAddToCartLoading() {
         _addToCartResult.value = RechargeNetworkResult.Loading
     }
 
-    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  userId: String
-    ){
+    fun addToCart(
+        digitalIdentifierParam: RequestBodyIdentifier,
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        userId: String,
+        isUseGql: Boolean
+    ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            val categoryIdAtc = repo.addToCart(
+                digitalCheckoutPassData,
+                digitalIdentifierParam,
+                digitalSubscriptionParams,
+                userId,
+                isUseGql
+            )
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+                _addToCartResult.value =
+                    RechargeNetworkResult.Fail(MessageErrorException(it.message))
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
@@ -205,14 +221,25 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
-            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
+            val recommendations = repo.getRecommendations(
+                clientNumbers,
+                dgCategoryIds,
+                emptyList(),
+                DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_PULSA,
+                true,
+            )
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
-    fun updateCheckoutPassData(denomData: DenomData, idemPotencyKeyActive: String, clientNumberWidget: String, operatorActiveId: String){
+    fun updateCheckoutPassData(
+        denomData: DenomData,
+        idemPotencyKeyActive: String,
+        clientNumberWidget: String,
+        operatorActiveId: String
+    ) {
         digitalCheckoutPassData.apply {
             categoryId = denomData.categoryId
             clientNumber = clientNumberWidget
@@ -238,7 +265,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryCheckoutPassData(categoryId: String){
+    fun updateCategoryCheckoutPassData(categoryId: String) {
         digitalCheckoutPassData.categoryId = categoryId
     }
 
@@ -258,9 +285,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String) {
         var denomData: DenomData? = null
-        listDenomData.forEachIndexed{ index, activeDenomData ->
+        listDenomData.forEachIndexed { index, activeDenomData ->
             if (productId.equals(activeDenomData.id)) denomData = activeDenomData
         }
 
@@ -269,21 +296,27 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedPositionId(listDenomData: List<DenomData>): Int?{
-        var selectedProductPositionId : Int? = null
+    fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
+        var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
+                && selectedGridProduct.denomData.id.isNotEmpty()
+            ) selectedProductPositionId = index
         }
         return selectedProductPositionId
     }
 
-    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedGridProduct.denomData.id.isNotEmpty()
-            && selectedGridProduct.position >= 0
-            && selectedGridProduct.denomWidgetEnum == layoutType
-            && isEligibleToBuy)
+    fun updateSelectedPositionId(position: Int?) {
+        position?.let { selectedGridProduct.position = it }
+    }
 
-    fun onResetSelectedProduct(){
+    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
+        (selectedGridProduct.denomData.id.isNotEmpty()
+                && selectedGridProduct.position >= 0
+                && selectedGridProduct.denomWidgetEnum == layoutType
+                && isEligibleToBuy)
+
+    fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()
     }
 

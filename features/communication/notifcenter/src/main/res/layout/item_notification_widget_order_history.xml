@@ -41,6 +41,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="23 Jam" />
 
+    <include
+        android:id="@+id/layout_pin_top"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        layout="@layout/layout_notif_pin_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_notification_title"
         style="@style/BaseNotification_Title"
@@ -233,5 +243,14 @@
             app:layout_constraintStart_toEndOf="@+id/tp_history"
             app:layout_constraintTop_toBottomOf="@+id/rv_history" />
     </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pin_expired"
+        style="@style/BaseNotification_Expired_Pin"
+        app:layout_constraintLeft_toLeftOf="@id/tp_message"
+        app:layout_constraintTop_toBottomOf="@id/toggle_history_btn"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Di-pin sampai 2 Apr 2022" />
 
 </com.tokopedia.notifcenter.widget.NotificationConstraintLayout>

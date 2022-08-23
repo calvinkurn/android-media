@@ -11,26 +11,37 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SPECIFIC_TYPE
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_choose_key_bs.*
-
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ChooseKeyBottomSheet : BottomSheetUnify() {
+
+    private var keySpecific: RadioButtonUnify? = null
+    private var keyBroad: RadioButtonUnify? = null
+    private var desc1: Typography? = null
+    private var desc2: Typography? = null
+    private var goToStaticSheet: Typography? = null
+
     var onSelect: ((type: String) -> Unit)? = null
-    var selected: Int = 0
+    private var selected: Int = 0
 
-
-    private var contentView: View? = null
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_choose_key_bs, null)
+        val contentView = View.inflate(context, R.layout.topads_choose_key_bs, null)
         setChild(contentView)
+        keySpecific = contentView.findViewById(R.id.keySpecific)
+        keyBroad = contentView.findViewById(R.id.keyBroad)
+        desc1 = contentView.findViewById(R.id.desc_1)
+        desc2 = contentView.findViewById(R.id.desc_2)
+        goToStaticSheet = contentView.findViewById(R.id.goToStaticSheet)
         showCloseIcon = true
-        setTitle(getString(R.string.topads_common_keyword_edit_info_sheet_sub_title))
+        setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_keyword_edit_info_sheet_sub_title))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,9 +52,12 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     private fun initView() {
         keySpecific?.setOnCheckedChangeListener(null)
         keyBroad?.setOnCheckedChangeListener(null)
-        desc_1?.text = MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc1))
-        desc_2?.text = MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc2))
-        goToStaticSheet?.text = MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_extra))
+        desc1?.text =
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_desc1))
+        desc2?.text =
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_desc2))
+        goToStaticSheet?.text =
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
         if (selected == BROAD_POSITIVE)
             keyBroad?.isChecked = true
         else
@@ -52,11 +66,11 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleClick() {
-        desc_1?.setOnClickListener {
+        desc1?.setOnClickListener {
             keyBroad?.isChecked = true
         }
 
-        desc_2?.setOnClickListener {
+        desc2?.setOnClickListener {
             keySpecific?.isChecked = true
         }
 
@@ -77,9 +91,8 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
             sheet.show(childFragmentManager)
         }
     }
-    fun show(
-            fragmentManager: FragmentManager,
-            currentSelected: Int) {
+
+    fun show(fragmentManager: FragmentManager, currentSelected: Int) {
         selected = currentSelected
         show(fragmentManager, TOPADS_BOTTOM_SHEET_ACTION_TAG)
     }

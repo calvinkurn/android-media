@@ -28,6 +28,8 @@ data class VariantUiModel(
     val selectedVariants: Map<String, String>,
     val categories: List<VariantCategory>,
     val stockWording: String,
+    val sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
+    val isFeatured: Boolean, //TODO("Temporary workaround, I don't think this is the best place to put it though")
 ) {
     companion object {
         val Empty: VariantUiModel
@@ -37,6 +39,8 @@ data class VariantUiModel(
                 selectedVariants = emptyMap(),
                 categories = emptyList(),
                 stockWording = "",
+                sectionInfo = ProductSectionUiModel.Section.Empty,
+                isFeatured = false,
             )
 
         fun isVariantPartiallySelected(variantsMap: Map<String, String>): Boolean {

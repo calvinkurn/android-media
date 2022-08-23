@@ -1,0 +1,141 @@
+{
+  "status": "OK",
+  "mini_cart": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "available_section": { },
+      "unavailable_section": [
+        {
+          "unavailable_group": [
+            {
+              "shipment_information": {
+                "shop_location": "",
+                "estimation": "",
+                "free_shipping": {
+                  "eligible": false,
+                  "badge_url": ""
+                },
+                "free_shipping_extra": {
+                  "eligible": false,
+                  "badge_url": ""
+                }
+              },
+              "shop": {
+                "maximum_weight_wording": "",
+                "maximum_shipping_weight": 0,
+                "shop_id": 11515028,
+                "shop_name": "11515028tknw",
+                "shop_type_info": {
+                  "badge": "https://images.tokopedia.net/img/now/badge/now-badge.png",
+                  "shop_grade": 0,
+                  "shop_tier": 2,
+                  "title": "Official Store",
+                  "title_fmt": "official_store"
+                }
+              },
+              "cart_string": "11515028-0-11491038",
+              "errors": [],
+              "cart_details": [
+                {
+                  "cart_id": "2842980504",
+                  "selected_unavailable_action_link": "tokopedia://rekomendasi/1868874619/?ref=cart",
+                  "errors": [
+                    "Habis",
+                    "Habis"
+                  ],
+                  "product": {
+                    "product_id": 1868874619,
+                    "product_weight": 100,
+                    "product_quantity": 1,
+                    "product_name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 12",
+                    "product_image": {
+                      "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/5/28/88a23e97-f335-49dd-a0a0-fcbc4b0a04a1.jpg"
+                    },
+                    "variant_description_detail": {
+                      "variant_name": [],
+                      "variant_description": ""
+                    },
+                    "product_warning_message": "Sisa 0",
+                    "slash_price_label": "",
+                    "product_original_price": 0,
+                    "initial_price": 4300,
+                    "product_price": 4300,
+                    "product_information": [],
+                    "product_notes": "",
+                    "product_min_order": 1,
+                    "product_max_order": 30000,
+                    "parent_id": 0,
+                    "wholesale_price": [
+                      {
+                        "qty_min": 10,
+                        "qty_max": 10000,
+                        "prd_prc": 4000
+                      }
+                    ],
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "warehouse_id": 11491038,
+                    "category_id": 4654,
+                    "category": ""
+                  }
+                },
+                {
+                  "cart_id": "2842980504",
+                  "selected_unavailable_action_link": "tokopedia://rekomendasi/1868874619/?ref=cart",
+                  "errors": [
+                    "Habis",
+                    "Habis"
+                  ],
+                  "product": {
+                    "product_id": 1868874611,
+                    "product_weight": 100,
+                    "product_quantity": 1,
+                    "product_name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 121",
+                    "product_image": {
+                      "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/5/28/88a23e97-f335-49dd-a0a0-fcbc4b0a04a1.jpg"
+                    },
+                    "variant_description_detail": {
+                      "variant_name": [],
+                      "variant_description": ""
+                    },
+                    "product_warning_message": "Sisa 0",
+                    "slash_price_label": "",
+                    "product_original_price": 0,
+                    "initial_price": 4300,
+                    "product_price": 4300,
+                    "product_information": [],
+                    "product_notes": "",
+                    "product_min_order": 1,
+                    "product_max_order": 30000,
+                    "parent_id": 0,
+                    "wholesale_price": [
+                      {
+                        "qty_min": 10,
+                        "qty_max": 10000,
+                        "prd_prc": 4000
+                      }
+                    ],
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "warehouse_id": 11491038,
+                    "category_id": 4654,
+                    "category": ""
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "total_product_count": 0,
+      "total_product_price": 0,
+      "total_product_error": 2
+    }
+  }
+}

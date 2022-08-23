@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
-import kotlinx.android.synthetic.main.mvc_max_expense_estimation.view.*
-import kotlinx.android.synthetic.main.view_mvc_voucher_ticker.view.*
+import com.tokopedia.vouchercreation.databinding.MvcMaxExpenseEstimationBinding
 
 class PromotionExpenseEstimationViewHolder(itemView: View): AbstractViewHolder<PromotionExpenseEstimationUiModel>(itemView) {
 
@@ -17,13 +17,15 @@ class PromotionExpenseEstimationViewHolder(itemView: View): AbstractViewHolder<P
         val LAYOUT = R.layout.mvc_max_expense_estimation
     }
 
+    private val binding: MvcMaxExpenseEstimationBinding? by viewBinding()
+
     override fun bind(element: PromotionExpenseEstimationUiModel) {
         itemView.run {
             if (!element.isHaveMargin) {
                 setMargin(0,0,0,0)
             }
-            tickerView?.run {
-                mvcImgInfo?.visibility =
+            binding?.tickerView?.run {
+                binding.mvcImgInfo.visibility =
                         if (element.isHaveToolTip) {
                             View.VISIBLE
                         } else {

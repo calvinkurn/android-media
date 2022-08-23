@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.unifycomponents.CardUnify2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,7 @@ public class CollapsingTabLayout extends TabLayout {
     private static final int NONE = -1;
     private static final int MAX_TAB_COLLAPSE_SCROLL_RANGE = 200;
     private static final int SCROLL_UP_THRESHOLD_BEFORE_EXPAND = 500;
+    private static final float TAB_CORNER_RADIUS = 10f;
 
     private List<TabItemData> tabItemDataList = new ArrayList<>();
 
@@ -57,7 +61,7 @@ public class CollapsingTabLayout extends TabLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setup(ViewPager viewPager, List<TabItemData> tabItemDataList) {
+    public void setup(ViewPager viewPager, List<TabItemData> tabItemDataList, boolean cardInteraction) {
         this.tabItemDataList.clear();
         this.tabItemDataList.addAll(tabItemDataList);
         resetAllState();
@@ -87,7 +91,7 @@ public class CollapsingTabLayout extends TabLayout {
 
         for (int i = 0; i < getTabCount(); i++) {
             TabLayout.Tab tab = getTabAt(i);
-            tab.setCustomView(getTabView(getContext(), i));
+            tab.setCustomView(getTabView(getContext(), i, tab, cardInteraction));
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -142,6 +146,7 @@ public class CollapsingTabLayout extends TabLayout {
         totalScrollUp = 0;
     }
 
+    @SuppressLint("ResourcePackage")
     private void initResources() {
         tabMaxHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height);
         tabMinHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_min_height);
@@ -210,6 +215,7 @@ public class CollapsingTabLayout extends TabLayout {
         }, TAB_AUTO_SCROLL_DELAY_DURATION);
     }
 
+    @SuppressLint("Recycle")
     public void scrollActiveTabToLeftScreen() {
         if (getSelectedTabPosition() < 0) {
             return;
@@ -332,8 +338,21 @@ public class CollapsingTabLayout extends TabLayout {
         lastTabCollapseFraction = tabCollapseFraction;
     }
 
-    private View getTabView(Context context, int position) {
+    private View getTabView(Context context, int position, TabLayout.Tab tab, boolean cardInteraction) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
+        CardUnify2 card = rootView.findViewById(R.id.card_tab);
+        if(cardInteraction){
+            card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY_BOUNCE());
+        } else {
+            card.setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY());
+        }
+        card.setRadius((int)(TAB_CORNER_RADIUS * Resources.getSystem().getDisplayMetrics().density));
+        card.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectTab(tab);
+            }
+        });
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
         textView.setText(tabItemDataList.get(position).getTitle());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);

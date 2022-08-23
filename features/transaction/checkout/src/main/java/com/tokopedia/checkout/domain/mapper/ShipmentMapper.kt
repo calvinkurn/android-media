@@ -1,37 +1,79 @@
 package com.tokopedia.checkout.domain.mapper
 
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
+import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
-import com.tokopedia.checkout.domain.model.cartshipmentform.*
-import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
-import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.*
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDetail
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MessageInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
@@ -40,7 +82,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import java.util.*
 import javax.inject.Inject
 
 class ShipmentMapper @Inject constructor() {
@@ -97,6 +138,7 @@ class ShipmentMapper @Inject constructor() {
             }
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
             addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
+            upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
         }
     }
 
@@ -246,6 +288,7 @@ class ShipmentMapper @Inject constructor() {
                     if (product.freeShipping.eligible) {
                         isFreeShipping = true
                     }
+                    freeShippingName = product.freeShippingGeneral.boName
                     if (product.tradeInInfo.isValidTradeIn) {
                         tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
                     }
@@ -490,6 +533,7 @@ class ShipmentMapper @Inject constructor() {
             shopLocation = shipmentInformation.shopLocation
             freeShipping = mapFreeShippingData(shipmentInformation.freeShipping)
             freeShippingExtra = mapFreeShippingData(shipmentInformation.freeShippingExtra)
+            freeShippingGeneral = mapFreeShippingGeneral(shipmentInformation.freeShippingGeneral)
         }
     }
 
@@ -498,6 +542,14 @@ class ShipmentMapper @Inject constructor() {
             badgeUrl = freeShipping.badgeUrl
             eligible = freeShipping.eligible
         }
+    }
+
+    private fun mapFreeShippingGeneral(freeShippingGeneral: FreeShippingGeneral): FreeShippingGeneralData {
+        return FreeShippingGeneralData(
+                badgeUrl = freeShippingGeneral.badgeUrl,
+                boType = freeShippingGeneral.boType,
+                boName = freeShippingGeneral.boName
+        )
     }
 
     private fun mapPreorderData(shipmentInformation: ShipmentInformation): PreorderData {
@@ -612,6 +664,7 @@ class ShipmentMapper @Inject constructor() {
             messageInfo = mapLastApplyMessageInfoUiModel(additionalInfo.messageInfo)
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
+            pomlAutoApplied = additionalInfo.pomlAutoApplied
         }
     }
 
@@ -938,6 +991,16 @@ class ShipmentMapper @Inject constructor() {
             }
         }
         return hasError
+    }
+
+    private fun mapUpsell(upsell: Upsell): UpsellData {
+        return UpsellData(
+                upsell.isShow,
+                upsell.title,
+                upsell.description,
+                upsell.appLink,
+                upsell.image
+        )
     }
 
     companion object {

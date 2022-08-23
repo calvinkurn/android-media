@@ -6,6 +6,8 @@ interface RechargeRecommendationRepository {
     suspend fun getRecommendations(
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>,
-        isBigRecommendation: Boolean = false
+        dgOperatorIds: List<Int> = emptyList(),
+        channelName: String,
+        isBigRecommendation: Boolean = false,
     ): RecommendationWidgetModel
 }

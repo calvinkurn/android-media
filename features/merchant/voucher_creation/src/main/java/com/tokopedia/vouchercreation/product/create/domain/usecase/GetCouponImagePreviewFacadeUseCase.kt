@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
@@ -12,9 +13,8 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
@@ -37,39 +37,39 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
 
     suspend fun execute(
         isCreateMode: Boolean,
-        scope: CoroutineScope,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         parentProductId : List<Long>,
         imageRatio: ImageRatio
     ): ByteArray {
-        val initiateCoupon = scope.async { initiateCoupon() }
-        val topProductsDeferred = scope.async { getMostSoldProducts(parentProductId) }
-        val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
+        return coroutineScope {
+            val initiateCoupon = async{ initiateCoupon() }
+            val topProductsDeferred = async{ getMostSoldProducts(parentProductId) }
+            val shopDeferred = async{ getShopBasicDataUseCase.executeOnBackground() }
 
-        val shop = shopDeferred.await()
-        val coupon = initiateCoupon.await()
-        val topProducts = topProductsDeferred.await()
+            val shop = shopDeferred.await()
+            val coupon = initiateCoupon.await()
+            val topProducts = topProductsDeferred.await()
 
-        val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+            val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
 
-        val generateImageDeferred = scope.async {
-            generateImage(
-                isCreateMode,
-                coupon.voucherCodePrefix,
-                couponInformation,
-                couponSettings,
-                topProductImageUrls,
-                imageRatio,
-                shop
-            )
+            val generateImageDeferred = async{
+                generateImage(
+                    isCreateMode,
+                    coupon.voucherCodePrefix,
+                    couponInformation,
+                    couponSettings,
+                    topProductImageUrls,
+                    imageRatio,
+                    shop
+                )
+            }
+
+            val image = generateImageDeferred.await()
+
+            return@coroutineScope image.bytes()
         }
 
-        val image = generateImageDeferred.await()
-
-        val imageByteArray = withContext(scope.coroutineContext) { image.bytes() }
-
-        return imageByteArray
     }
 
     private suspend fun generateImage(
@@ -148,6 +148,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         val thirdProduct = if (thirdProductImageUrl.isNotEmpty()) thirdProductImageUrl else null
 
         val productCount = topProductImageUrls.filter { it.isNotBlank() }.size
+        val formattedShopName = MethodChecker.fromHtml(shop.shopName).toString()
 
         return remoteDataSource.previewImage(
             ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
@@ -159,7 +160,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             nominalAmount,
             symbol,
             shop.logo,
-            shop.shopName,
+            formattedShopName,
             couponCode,
             startTime,
             endTime,

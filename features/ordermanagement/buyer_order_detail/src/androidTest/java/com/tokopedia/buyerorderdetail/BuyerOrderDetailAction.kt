@@ -318,6 +318,10 @@ class BuyerOrderDetailAction {
         clickPrimaryActionButton()
     }
 
+    fun testClickSecondaryActionButtonSeePoD(activity: AppCompatActivity) {
+        clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_SEE_POD)
+    }
+
     fun testClickSecondaryActionButtonHelp(activity: AppCompatActivity) {
         clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_HELP_TEXT)
     }

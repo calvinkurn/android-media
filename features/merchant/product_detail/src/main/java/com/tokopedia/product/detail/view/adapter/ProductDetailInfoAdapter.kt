@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -41,18 +43,31 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
 
     inner class ItemProductDetailInfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val detailTitle: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.info_detail_title)
-        private val detailDesc: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.info_detail_value)
+        private val detailTitle: Typography? = itemView.findViewById(R.id.info_detail_title)
+        private val detailDesc: Typography? = itemView.findViewById(R.id.info_detail_value)
+        private val detailIcon: IconUnify? = itemView.findViewById(R.id.info_detail_icon)
+        private val detailClickArea: View? = itemView.findViewById(R.id.info_detail_click_area)
 
         fun bind(data: ProductDetailInfoContent) = with(itemView) {
             detailTitle?.text = data.title
             detailDesc?.text = data.subtitle
 
+            if (data.infoLink.isNotEmpty()) {
+                detailIcon?.show()
+                detailClickArea?.setOnClickListener {
+                    listener.goToEducational(data.applink)
+                }
+
+                data.icon.toIntOrNull()?.let { icon ->
+                    detailIcon?.setImage(icon)
+                }
+            }
+
             if (data.applink.isNotEmpty()) {
-                detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 detailDesc?.setWeight(Typography.BOLD)
                 detailDesc?.setOnClickListener {
-                    when (data.title.toLowerCase(Locale.getDefault())) {
+                    when (data.title.lowercase(Locale.getDefault())) {
                         ProductDetailCommonConstant.KEY_CATEGORY -> {
                             listener.onCategoryClicked(data.applink, componentTrackDataModel
                                     ?: ComponentTrackDataModel())
@@ -66,10 +81,6 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
                         }
                     }
                 }
-            } else {
-                detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                detailDesc?.setWeight(Typography.REGULAR)
-                detailDesc?.setOnClickListener(null)
             }
         }
     }

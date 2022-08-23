@@ -3,8 +3,14 @@ package com.tokopedia.cart.view.viewholder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
-import android.text.*
-import android.view.*
+import android.text.Editable
+import android.text.InputType
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
@@ -19,15 +25,25 @@ import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.util.*
 
 @SuppressLint("ClickableViewAccessibility")
@@ -214,7 +230,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
                 delayChangeCheckboxState?.cancel()
                 delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
+                    delay(DEBOUNCE_TIME)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.isError) {
                             if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -345,7 +361,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Html.fromHtml(data.productName)
+        binding.textProductName.text = Utils.getHtmlFormat(data.productName)
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
@@ -555,6 +571,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            textFieldNotes.setPlaceholder(Utils.getHtmlFormat(element.placeholderNote))
             textFieldNotes.context?.let {
                 textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -682,9 +699,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                         delay(RESET_QTY_DEBOUNCE_TIME)
                     }
                     val previousQuantity = if (data.isBundlingItem) data.bundleQuantity else data.quantity
-                    if (previousQuantity != newValue) {
+                    if (isActive && previousQuantity != newValue) {
                         validateQty(newValue, data)
-                        if (newValue != 0) {
+                        if (isActive && newValue != 0) {
                             actionListener?.onCartItemQuantityChanged(data, newValue)
                             handleRefreshType(data, viewHolderListener)
                         }
@@ -731,11 +748,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             qtyEditorCart.addButton.isEnabled = false
             qtyEditorCart.subtractButton.isEnabled = false
         } else if (newValue >= element.maxOrder) {
-            qtyEditorCart.setValue(element.maxOrder)
+            if (newValue > element.maxOrder) {
+                qtyEditorCart.setValue(element.maxOrder)
+            }
             qtyEditorCart.addButton.isEnabled = false
             qtyEditorCart.subtractButton.isEnabled = true
         } else if (newValue <= element.minOrder) {
-            qtyEditorCart.setValue(element.minOrder)
+            if (newValue < element.minOrder) {
+                qtyEditorCart.setValue(element.minOrder)
+            }
             qtyEditorCart.addButton.isEnabled = true
             qtyEditorCart.subtractButton.isEnabled = false
         } else {
@@ -771,7 +792,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         } else if (!data.isWishlisted && action.id == Action.ACTION_WISHLIST) {
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
-                actionListener?.onWishlistCheckChanged(data.productId, data.cartId, binding.iuImageProduct)
+                actionListener?.onWishlistCheckChanged(data.productId, data.cartId, binding.iuImageProduct, data.isError, data.errorType)
             }
         }
         textMoveToWishlist.show()
@@ -882,7 +903,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         const val ALPHA_FULL = 1.0f
 
         private const val IMAGE_PRODUCT_MARGIN_START = 12
-        private const val TEXT_NOTES_CHANGE_WIDTH = 32
+        private const val TEXT_NOTES_CHANGE_WIDTH = 40
         private const val BUNDLING_SEPARATOR_MARGIN_START = 32
         private const val BUNDLING_SEPARATOR_WIDTH = 48
     }

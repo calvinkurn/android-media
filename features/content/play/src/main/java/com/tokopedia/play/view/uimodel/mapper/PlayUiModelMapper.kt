@@ -14,11 +14,14 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -28,14 +31,15 @@ import javax.inject.Inject
  * Created by jegul on 01/02/21
  */
 class PlayUiModelMapper @Inject constructor(
-        private val productTagMapper: PlayProductTagUiMapper,
-        private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
-        private val chatMapper: PlayChatUiMapper,
-        private val channelStatusMapper: PlayChannelStatusMapper,
-        private val channelInteractiveMapper: PlayChannelInteractiveMapper,
-        private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
-        private val playUserReportMapper: PlayUserReportReasoningMapper,
-        private val cartMapper: PlayCartMapper,
+    private val productTagMapper: PlayProductTagUiMapper,
+    private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
+    private val chatMapper: PlayChatUiMapper,
+    private val channelStatusMapper: PlayChannelStatusMapper,
+    private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+    private val interactiveMapper: PlayInteractiveMapper,
+    private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
+    private val playUserReportMapper: PlayUserReportReasoningMapper,
+    private val cartMapper: PlayCartMapper,
 ) {
 
     fun mapProductSection(input: List<Section>): List<ProductSectionUiModel> {
@@ -62,12 +66,16 @@ class PlayUiModelMapper @Inject constructor(
         return input.favoriteData.alreadyFavorited == 1
     }
 
-    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
+    fun mapInteractive(input: GiveawayResponse): PlayCurrentInteractiveModel {
         return channelInteractiveMapper.mapInteractive(input)
     }
 
-    fun mapInteractiveLeaderboard(input: GetInteractiveLeaderboardResponse): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapLeaderboard(input) { false }
+    fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+        return interactiveMapper.mapInteractive(input)
+    }
+
+    fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): PlayLeaderboardInfoUiModel {
+        return interactiveLeaderboardMapper.mapNewLeaderboard(input) { false }
     }
 
     fun mapAddToCartFeedback(input: AddToCartDataModel): CartFeedbackResponseModel {
@@ -78,8 +86,14 @@ class PlayUiModelMapper @Inject constructor(
         return input.map(playUserReportMapper::mapUserReportReasoning)
     }
 
-    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
+    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean {
         return input.status == "success"
+    }
+
+    fun mapFollowingKol(input: List<FollowKOL.FollowedKOL>): Pair<Boolean, String> = Pair(input.firstOrNull()?.status ?: false, input.firstOrNull()?.encryptedUserId ?: "")
+
+    fun mapUnfollowKol(input: KOLUnFollowStatus): Boolean {
+        return input.unFollowedKOLInfo.data.isSuccess == 1
     }
 
     fun mapVariantChildToProduct(
@@ -100,7 +114,7 @@ class PlayUiModelMapper @Inject constructor(
                 DiscountedPrice(
                     originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                     discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
-                    discountPercent = child.campaign?.discountedPercentage?.toInt()?:0,
+                    discountPercent = child.campaign?.discountedPercentage?.toInt() ?: 0,
                     discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                 )
             } else {
@@ -108,7 +122,10 @@ class PlayUiModelMapper @Inject constructor(
             },
             minQty = prevDetail.minQty.orZero(),
             isFreeShipping = prevDetail.isFreeShipping,
-            applink = prevDetail.applink
+            applink = prevDetail.applink,
+            isTokoNow = prevDetail.isTokoNow,
+            isPinned = prevDetail.isPinned,
+            isRilisanSpesial = prevDetail.isRilisanSpesial,
         )
     }
 }

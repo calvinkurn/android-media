@@ -154,7 +154,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestP
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(context, com.tokopedia.abstraction.R.color.tkpd_main_green)
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
         val subtitle = getString(R.string.interest_change)

@@ -30,6 +30,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -42,6 +43,7 @@ import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterfac
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
+import com.tokopedia.vouchercreation.databinding.ActivityCreateMerchantVoucherStepsBinding
 import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.shop.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.shop.create.view.dialog.CreateVoucherCancelDialog
@@ -61,7 +63,6 @@ import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.Banne
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
-import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -92,6 +93,8 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var binding: ActivityCreateMerchantVoucherStepsBinding? = null
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -172,8 +175,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     }
 
     private val bottomSheet by lazy {
-        TipsAndTrickBottomSheetFragment.createInstance(this).apply {
-            this.setTitle(bottomSheetViewTitle.toBlankOrString())
+        TipsAndTrickBottomSheetFragment.createInstance().apply {
             setCloseClickListener {
                 this.dismiss()
             }
@@ -181,7 +183,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     }
 
     private val backPromptBottomSheet by lazy {
-        ChangeDetailPromptBottomSheetFragment.createInstance(this, ::onCancelVoucher).apply {
+        ChangeDetailPromptBottomSheetFragment.createInstance(::onCancelVoucher).apply {
             setCloseClickListener {
                 VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.REVIEW,
@@ -275,7 +277,8 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 //        if (savedInstanceState != null) {
 //            finish()
 //        }
-        setContentView(R.layout.activity_create_merchant_voucher_steps)
+        binding = ActivityCreateMerchantVoucherStepsBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         initInjector()
         setupView()
         observeLiveData()
@@ -337,7 +340,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     }
 
     private fun setupToolbar() {
-        createMerchantVoucherHeader?.run {
+        binding?.createMerchantVoucherHeader?.run {
             setBackgroundColor(Color.TRANSPARENT)
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
@@ -374,7 +377,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private fun setupViewPager() {
         viewModel.setMaxPosition(fragmentStepsHashMap.size - 1)
-        createMerchantVoucherViewPager.run {
+        binding?.createMerchantVoucherViewPager?.run {
             isUserInputEnabled = false
             adapter = viewPagerAdapter
             registerOnPageChangeCallback(viewPagerOnPageChangeCallback)
@@ -388,13 +391,13 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
             stepInfo?.run {
                 runOnUiThread {
                     changeStepsInformation(this)
-                    createMerchantVoucherViewPager?.currentItem = stepPosition
+                    binding?.createMerchantVoucherViewPager?.currentItem = stepPosition
                 }
             }
         })
         viewModel.initiateVoucherLiveData.observe(this, Observer { result ->
             performanceMonitoring.startRenderMvcPerformanceMonitoring()
-            createMerchantVoucherLoader?.gone()
+            binding?.createMerchantVoucherLoader?.gone()
             when(result) {
                 is Success -> {
                     result.data.run {
@@ -433,7 +436,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                             viewModel.setStepPosition(step)
                         }
                     }
-                    createMerchantVoucherViewPager?.setOnLayoutListenerReady()
+                    binding?.createMerchantVoucherViewPager?.setOnLayoutListenerReady()
                 }
                 is Fail -> {
                     // send crash report to firebase crashlytics
@@ -462,7 +465,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
             viewModel.initiateEditDuplicateVoucher()
             setDuplicateEditVoucherData(voucherUiModel, false)
             isDuplicateVoucher = true
-            createMerchantVoucherHeader?.setTitle(R.string.mvc_duplicate_voucher)
+            binding?.createMerchantVoucherHeader?.setTitle(R.string.mvc_duplicate_voucher)
             return true
         }
         return false
@@ -477,7 +480,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                         setDuplicateEditVoucherData(voucherUiModel, true)
                         this@CreateMerchantVoucherStepsActivity.isEditVoucher = true
                         voucherId = id
-                        createMerchantVoucherHeader?.setTitle(R.string.mvc_edit_voucher)
+                        binding?.createMerchantVoucherHeader?.setTitle(R.string.mvc_edit_voucher)
                         true
                     } else {
                         false
@@ -521,15 +524,17 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private fun changeStepsInformation(stepInfo: VoucherCreationStepInfo) {
         stepInfo.run {
-            currentStepPosition = stepPosition
-            createMerchantVoucherHeader?.headerSubTitle = resources?.getString(stepDescriptionRes).toBlankOrString()
-            createMerchantVoucherProgressBar?.run {
-                ObjectAnimator.ofInt(createMerchantVoucherProgressBar, PROGRESS_ATTR_TAG, currentProgress, progressPercentage).run {
-                    duration = PROGRESS_DURATION
-                    interpolator = progressBarInterpolator
-                    start()
+            binding?.apply {
+                currentStepPosition = stepPosition
+                createMerchantVoucherHeader.headerSubTitle = resources?.getString(stepDescriptionRes).toBlankOrString()
+                createMerchantVoucherProgressBar.run {
+                    ObjectAnimator.ofInt(createMerchantVoucherProgressBar, PROGRESS_ATTR_TAG, currentProgress, progressPercentage).run {
+                        duration = PROGRESS_DURATION
+                        interpolator = progressBarInterpolator
+                        start()
+                    }
+                    currentProgress = progressPercentage
                 }
-                currentProgress = progressPercentage
             }
         }
     }

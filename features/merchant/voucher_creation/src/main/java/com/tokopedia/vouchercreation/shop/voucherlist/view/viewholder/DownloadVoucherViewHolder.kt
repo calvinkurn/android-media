@@ -7,10 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherType
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
-import kotlinx.android.synthetic.main.item_mvc_download_voucher.view.*
+import com.tokopedia.vouchercreation.databinding.ItemMvcDownloadVoucherBinding
 
 /**
  * Created By @ilhamsuaib on 28/04/20
@@ -24,8 +25,10 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
         private const val STRAIGHT_ANGLE = 180
     }
 
+    private var binding: ItemMvcDownloadVoucherBinding? by viewBinding()
+
     override fun bind(element: DownloadVoucherUiModel) {
-        with(itemView) {
+        binding?.apply {
             tvMvcRatio.text = element.ratioStr
             tvMvcRatioDescription.text = element.description
             cbxMvcDownloadVoucher.setOnCheckedChangeListener(null)
@@ -35,7 +38,7 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
                 element.isSelected = isChecked
             }
             setViewExpansion(element.isExpanded)
-            setOnClickListener {
+            root.setOnClickListener {
                 val isExpanded = imgMvcVoucher.isVisible
                 if (!isExpanded) {
                     element.onImageOpened(adapterPosition)
@@ -43,35 +46,37 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
                 toggleViewExpansion(isExpanded)
                 element.isExpanded = imgMvcVoucher.isVisible
             }
-            icMvcChevron?.setOnClickListener {
+            icMvcChevron.setOnClickListener {
                 element.onChevronIconClicked(element.downloadVoucherType)
             }
-            setupDownloadImage(element.downloadVoucherType)
+            root.setupDownloadImage(element.downloadVoucherType)
         }
     }
 
     private fun View.setupDownloadImage(downloadVoucherType: DownloadVoucherType) {
         val imageWidth = resources?.getDimensionPixelSize(downloadVoucherType.widthRes)
-        imgMvcVoucher?.layoutParams?.width = imageWidth.toZeroIfNull()
-        imgMvcVoucher?.requestLayout()
-        Glide.with(this)
+        binding?.let { binding ->
+            binding.imgMvcVoucher.layoutParams?.width = imageWidth.toZeroIfNull()
+            binding.imgMvcVoucher.requestLayout()
+            Glide.with(this)
                 .load(downloadVoucherType.imageUrl)
-                .into(imgMvcVoucher)
+                .into(binding.imgMvcVoucher)
+        }
     }
 
     private fun setViewExpansion(isExpanded: Boolean) = with(itemView) {
-        imgMvcVoucher.isVisible = isExpanded
+        binding?.imgMvcVoucher?.isVisible = isExpanded
         rotateChevronIcon(!isExpanded)
     }
 
     private fun toggleViewExpansion(voucherIsVisible: Boolean) = with(itemView) {
-        imgMvcVoucher.isVisible = !voucherIsVisible
+        binding?.imgMvcVoucher?.isVisible = !voucherIsVisible
         rotateChevronIcon(voucherIsVisible)
     }
 
     private fun rotateChevronIcon(isExpanded: Boolean) = with(itemView) {
         val angle = if (isExpanded) Int.ZERO else STRAIGHT_ANGLE
-        icMvcChevron.rotation = angle.toFloat()
+        binding?.icMvcChevron?.rotation = angle.toFloat()
     }
 
 }

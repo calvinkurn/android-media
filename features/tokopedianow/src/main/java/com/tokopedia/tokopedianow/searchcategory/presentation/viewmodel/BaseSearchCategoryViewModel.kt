@@ -33,12 +33,12 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -56,6 +56,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -74,6 +75,8 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
@@ -191,6 +194,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
+    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
+
     protected val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
     val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
@@ -235,6 +240,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val setUserPreferenceMutableLiveData = SingleLiveEvent<Result<SetUserPreference.SetUserPreferenceData>>()
     val setUserPreferenceLiveData: LiveData<Result<SetUserPreference.SetUserPreferenceData>> = setUserPreferenceMutableLiveData
 
+    protected val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
+    val querySafeLiveData: LiveData<QuerySafeModel> = querySafeMutableLiveData
+
     init {
         updateQueryParams()
 
@@ -257,9 +265,16 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun isABTestNavigationRevamp() = true
 
-    open fun onViewCreated() {
+    open fun onViewCreated(source: MiniCartSource? = null) {
+        processLoadDataPage(source)
+    }
+
+    private fun processLoadDataPage(source: MiniCartSource? = null) {
         val shopId = chooseAddressData?.shop_id ?: ""
         val warehouseId = chooseAddressData?.warehouse_id ?: ""
+        if (source != null) {
+            miniCartSource = source
+        }
 
         if (shopId.isValidId())
             processLoadDataWithShopId(shopId, warehouseId)
@@ -321,7 +336,7 @@ abstract class BaseSearchCategoryViewModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
             serviceType = chooseAddressData?.service_type.orEmpty()
         ))
-        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW))
+        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -410,6 +425,10 @@ abstract class BaseSearchCategoryViewModel(
             sendGeneralSearchTracking(searchProduct)
         }
         updateViewForFirstPage(isEmptyProductList)
+
+        querySafeMutableLiveData.value = chooseAddressData.mapChooseAddressToQuerySafeModel(
+            isQuerySafe = searchProduct.data.isQuerySafe
+        )
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
@@ -441,7 +460,9 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(
             TokoNowRecommendationCarouselUiModel(
                 pageName = TOKONOW_NO_RESULT,
-                keywords = getKeywordForGeneralSearchTracking()
+                keywords = getKeywordForGeneralSearchTracking(),
+                isBindWithPageName = true,
+                miniCartSource = miniCartSource
             )
         )
     }
@@ -573,7 +594,7 @@ abstract class BaseSearchCategoryViewModel(
         dynamicFilterModelMutableLiveData.value = null
 
         showLoading()
-        onViewCreated()
+        processLoadDataPage()
     }
 
     private fun applyFilter() {
@@ -585,7 +606,7 @@ abstract class BaseSearchCategoryViewModel(
         dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
-        onViewCreated()
+        processLoadDataPage()
     }
 
     private fun showProgressBar() {
@@ -714,7 +735,7 @@ abstract class BaseSearchCategoryViewModel(
                 id = "",
                 title = "",
                 productList = listOf(),
-                state = -1,
+                state = TokoNowLayoutState.IDLE,
             ),
             repurchaseWidget,
         ).also {
@@ -1000,7 +1021,7 @@ abstract class BaseSearchCategoryViewModel(
         if (!shopId.isValidId()) return
 
         getMiniCartListSimplifiedUseCase.cancelJobs()
-        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
+        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId), miniCartSource)
         getMiniCartListSimplifiedUseCase.execute(
             ::onViewUpdateCartItems,
             ::onGetMiniCartDataFailed,
@@ -1022,8 +1043,9 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData?.let {
             val outOfCoverage = it.isOutOfCoverage()
             val showMiniCart = miniCartSimplifiedData.isShowMiniCartWidget
-            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-            isShowMiniCartMutableLiveData.value = showMiniCart && !outOfCoverage
+            val isShowMiniCartWidget = showMiniCart && !outOfCoverage
+            miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.copy(isShowMiniCartWidget = isShowMiniCartWidget)
+            isShowMiniCartMutableLiveData.value = isShowMiniCartWidget
         }
     }
 
@@ -1184,6 +1206,14 @@ abstract class BaseSearchCategoryViewModel(
     fun onViewRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
         filter(option, false)
+    }
+
+    fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
+        chooseAddressData?.apply {
+            val is20mServiceType = service_type == ServiceType.NOW_15M
+            return is20mServiceType && !has20mBottomSheetBeenShown && warehouse_id.isValidId()
+        }
+        return false
     }
 
     open fun setUserPreference(serviceType: String) {

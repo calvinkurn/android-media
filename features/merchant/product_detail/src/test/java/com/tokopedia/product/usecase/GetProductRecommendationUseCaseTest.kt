@@ -176,11 +176,12 @@ class GetProductRecommendationUseCaseTest {
                 getRecommendationUseCase.getData(any())
             } returns listOf(mockResponse)
 
-            val mockMiniCart = mutableMapOf("1" to MiniCartItem(
-                    productId = "1",
-                    productParentId = "11",
-                    quantity = 10
-            ))
+            val mockMiniCart = mutableMapOf(
+                    "1" to MiniCartItem.MiniCartItemProduct(
+                            productId = "1",
+                            productParentId = "11",
+                            quantity = 10)
+            )
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
                     productId = "1",

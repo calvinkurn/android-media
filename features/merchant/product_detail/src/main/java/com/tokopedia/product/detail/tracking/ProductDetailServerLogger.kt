@@ -14,6 +14,7 @@ object ProductDetailServerLogger {
     private const val PDP_SUCCESS_GET_P2_STATE = "success get p2"
     private const val PDP_SUCCESS_GET_TOPADS_IS_ADS_STATE = "success get topads is ads"
     private const val PDP_SUCCESS_ATC_STATE = "success atc"
+    private const val PDP_AFFILIATE_COOKIE_HIT = "hit affiliate cookie"
     private const val PDP_ADDRESS_CHANGED_STATE = "address changed refresh pdp"
 
     private const val PRODUCT_ID_KEY = "productId"
@@ -84,6 +85,15 @@ object ProductDetailServerLogger {
             put(ATC_TYPE_KEY, atcType)
         }
         logBreadCrumb(PDP_SUCCESS_ATC_STATE, jsonObject)
+    }
+
+    fun logBreadCrumbAffiliateCookie(isSuccess: Boolean,
+                                     errorMessage: String = "") {
+        val jsonObject = JSONObject().apply {
+            put(IS_SUCCESS_KEY, isSuccess)
+            put(ERROR_MESSAGE_KEY, errorMessage)
+        }
+        logBreadCrumb(PDP_AFFILIATE_COOKIE_HIT, jsonObject)
     }
 
     fun logBreadCrumbAddressChanged(context: Context?) {

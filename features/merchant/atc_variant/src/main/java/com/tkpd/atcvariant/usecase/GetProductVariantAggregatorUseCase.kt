@@ -40,6 +40,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                     basicInfo {
                           shopID
                           shopName
+                          defaultMediaURL
                           category {
                             id
                             name
@@ -64,6 +65,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                           products{
                             productID
                             boType
+                            boCampaignIDs
                           }
                           images{
                             boType

@@ -11,6 +11,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -1240,46 +1241,34 @@ class ModelBuilder {
             bufferForPlaybackAfterRebufferMs = bufferForPlaybackAfterRebufferMs
     )
 
-    fun buildVariantSheetUiModel(
-            product: PlayProductUiModel.Product = buildProductLineUiModel(),
-            action: ProductAction = ProductAction.Buy,
-            parentVariant: ProductVariant? = null,
-            stockWording: String? = "Stok tersedia",
-            listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf(),
-            sectionUiModel: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
-    ) = VariantSheetUiModel(
-            product = product,
-            action = action,
-            parentVariant = parentVariant,
-            stockWording = stockWording,
-            listOfVariantCategory = listOfVariantCategory,
-            mapOfSelectedVariants = mapOfSelectedVariants,
-            section = sectionUiModel
-    )
-
     fun buildProductLineUiModel(
-            id: String = "123",
-            shopId: String = "567",
-            imageUrl: String = "https://tkp.me",
-            title: String = "Product laku",
-            stock: ProductStock = buildProductStockAvailable(),
-            isVariantAvailable: Boolean = true,
-            price: ProductPrice = buildOriginalPrice(),
-            minQty: Int = 2,
-            isFreeShipping: Boolean = true,
-            applink: String? = "https://tkp.me"
+        id: String = "123",
+        shopId: String = "567",
+        imageUrl: String = "https://tkp.me",
+        title: String = "Product laku",
+        stock: ProductStock = buildProductStockAvailable(),
+        isVariantAvailable: Boolean = true,
+        price: ProductPrice = buildOriginalPrice(),
+        minQty: Int = 2,
+        isFreeShipping: Boolean = true,
+        applink: String? = "https://tkp.me",
+        isTokoNow: Boolean = false,
+        isPinned: Boolean = false,
+        isRilisanSpesial: Boolean = false,
     ) = PlayProductUiModel.Product(
-            id = id,
-            shopId = shopId,
-            imageUrl = imageUrl,
-            title = title,
-            stock = stock,
-            isVariantAvailable = isVariantAvailable,
-            price = price,
-            minQty = minQty,
-            isFreeShipping = isFreeShipping,
-            applink = applink
+        id = id,
+        shopId = shopId,
+        imageUrl = imageUrl,
+        title = title,
+        stock = stock,
+        isVariantAvailable = isVariantAvailable,
+        price = price,
+        minQty = minQty,
+        isFreeShipping = isFreeShipping,
+        applink = applink,
+        isTokoNow = isTokoNow,
+        isPinned = isPinned,
+        isRilisanSpesial = isRilisanSpesial,
     )
 
     fun buildProductStockAvailable(
@@ -1388,7 +1377,7 @@ class ModelBuilder {
         val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
             title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
         )
-        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt), ResultState.Success)
     }
 
     fun generateResponseSectionGql(

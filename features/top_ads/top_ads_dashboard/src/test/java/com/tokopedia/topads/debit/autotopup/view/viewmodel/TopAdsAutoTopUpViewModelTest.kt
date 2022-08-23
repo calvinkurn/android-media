@@ -1,17 +1,28 @@
 package com.tokopedia.topads.debit.autotopup.view.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topads.common.data.response.Error
+import com.tokopedia.topads.dashboard.data.model.CreditResponse
+import com.tokopedia.topads.dashboard.data.model.TKPDProduct
 import com.tokopedia.topads.dashboard.data.model.TkpdProducts
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveSelectionUseCase
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,6 +34,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class TopAdsAutoTopUpViewModelTest {
 
+    @get:Rule
+    val taskrule = InstantTaskExecutorRule()
     @get:Rule
     val rule = CoroutineTestRule()
     private lateinit var viewModel: TopAdsAutoTopUpViewModel
@@ -54,24 +67,6 @@ class TopAdsAutoTopUpViewModelTest {
         verify {
             autoTopUpUSeCase.execute(any(), any())
         }
-        //      Assert.assertEquals(Fail(exception), viewModel.getAutoTopUpStatus.value)
-    }
-
-    @Test
-    fun `save selection pass`() {
-//        val observer1 = mockk<Observer<SavingAutoTopUpState>> {
-//            every { onChanged(any()) } just runs
-//        }
-//      //  viewModel.statusSaveSelection.value = Loading
-//
-//        val selectedItem: AutoTopUpItem = mockk(relaxed = true)
-//        viewModel.statusSaveSelection.observeForever(observer1)
-//        viewModel.saveSelection(true,selectedItem)
-//        Assert.assertEquals(Loading, viewModel.statusSaveSelection.value)
-//        Assert.assertTrue(viewModel.statusSaveSelection.value == null)
-//        verify {
-//            saveSelectionUseCase.execute(any(),any())
-//        }
     }
 
     @Test
@@ -80,5 +75,111 @@ class TopAdsAutoTopUpViewModelTest {
         verify {
             useCase.execute(any(), any())
         }
+    }
+
+    @Test
+    fun `getAutoTopUpStatus response null test, livedata should be fail`() {
+        val mockObject = mockk<AutoTopUpData.Response>(relaxed = true)
+
+        every { mockObject.response } returns null
+        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
+        }
+
+        viewModel.getAutoTopUpStatusFull()
+        Assert.assertTrue(viewModel.getAutoTopUpStatus.value is Fail)
+    }
+
+    @Test
+    fun `getAutoTopUpStatus success - response not null and error is empty test, livedata should contain data`() {
+        val mockObject = spyk(AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus())))
+
+        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
+        }
+
+        viewModel.getAutoTopUpStatusFull()
+        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Success).data, mockObject.response?.data)
+    }
+
+    @Test
+    fun `getAutoTopUpStatus response not null and error not empty test, livedata should be fail`() {
+
+        val actual = spyk(AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error()))))
+
+        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(actual)
+        }
+
+        viewModel.getAutoTopUpStatusFull()
+        Assert.assertTrue(viewModel.getAutoTopUpStatus.value is Fail)
+    }
+
+    @Test
+    fun `getAutoTopUpStatus on exception occured test`() {
+        val actual = Exception("it")
+
+        every { autoTopUpUSeCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+
+        viewModel.getAutoTopUpStatusFull()
+        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Fail).throwable , actual)
+    }
+
+    @Test
+    fun `saveSelection on success - response not null and error is empty test, livedata should have isSuccess as true`(){
+        val mockObject = spyk(AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus())))
+
+        every { saveSelectionUseCase.execute(captureLambda(), any()) } answers {
+            firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
+        }
+
+        viewModel.saveSelection(true, mockk())
+        val data = viewModel.statusSaveSelection.value as ResponseSaving
+        Assert.assertTrue(data.isSuccess && data.throwable == null)
+    }
+
+    @Test
+    fun `saveSelection on exception occurred test, livedata should have isSuccess as true`(){
+        val actual = spyk(Throwable("ii"))
+
+        every { saveSelectionUseCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+
+        viewModel.saveSelection(true, mockk())
+        val data = viewModel.statusSaveSelection.value as ResponseSaving
+        Assert.assertTrue(!data.isSuccess && data.throwable == actual)
+    }
+
+    @Test
+    fun `populateCreditList on success`() {
+        val actual = TkpdProducts()
+
+        every { useCase.execute(captureLambda(), any()) } answers {
+            firstArg<(TkpdProducts) -> Unit>().invoke(actual)
+        }
+
+        var success = false
+        viewModel.populateCreditList("") {
+            success = it == actual.tkpdProduct.creditResponse
+        }
+
+        Assert.assertTrue(success)
+    }
+
+    @Test
+    fun `populateCreditList on exception occurred`() {
+
+        val actual = spyk(Throwable())
+
+        every { useCase.execute(any(), captureLambda()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(actual)
+        }
+
+        viewModel.populateCreditList("") {}
+
+        verify(exactly = 1) { actual.printStackTrace() }
     }
 }

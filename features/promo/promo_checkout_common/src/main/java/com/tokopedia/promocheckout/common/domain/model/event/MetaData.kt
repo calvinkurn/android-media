@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.model.event
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -15,7 +16,7 @@ data class MetaData(
         val entityAddress: EntityAddress = EntityAddress(),
         @SerializedName("entity_category_id")
         @Expose
-        val entityCategoryId: Int = 0,
+        val entityCategoryId: String = "0",
         @SerializedName("entity_category_name")
         @Expose
         val entityCategoryName: String = "",
@@ -24,7 +25,7 @@ data class MetaData(
         val entityEndTime: String = "",
         @SerializedName("entity_group_id")
         @Expose
-        val entityGroupId: Int = 0,
+        val entityGroupId: String = "0",
         @SerializedName("entity_image")
         @Expose
         val entityImage: String = "",
@@ -36,16 +37,16 @@ data class MetaData(
         val entityPassengers: List<EntityPassenger> = emptyList(),
         @SerializedName("entity_product_id")
         @Expose
-        val entityProductId: Int = 0,
+        val entityProductId: String = "0",
         @SerializedName("entity_product_name")
         @Expose
         val entityProductName: String = "",
         @SerializedName("entity_provider_id")
         @Expose
-        val entityProviderId: Int = 0,
+        val entityProviderId: String = "0",
         @SerializedName("entity_schedule_id")
         @Expose
-        val entityScheduleId: Int = 0,
+        val entityScheduleId: String = "0",
         @SerializedName("entity_start_time")
         @Expose
         val entityStartTime: String = "",
@@ -54,7 +55,7 @@ data class MetaData(
         val integratorSp: Int = 0,
         @SerializedName("integrator_txn_id")
         @Expose
-        val integratorTxnId: Int = 0,
+        val integratorTxnId: String = "0",
         @SerializedName("min_start_date")
         @Expose
         val minStartDate: String = "",
@@ -85,10 +86,11 @@ data class MetaData(
         @SerializedName("total_ticket_count")
         @Expose
         val totalTicketCount: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose
         val totalTicketPrice: Int = 0,
         @SerializedName("vertical_id")
         @Expose
-        val verticalId: Int = 0
+        val verticalId: String = "0"
 )

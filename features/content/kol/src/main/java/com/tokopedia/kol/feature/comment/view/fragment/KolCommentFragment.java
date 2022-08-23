@@ -301,7 +301,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHashTagClicked(String hashTag, String id) {
+    public void onHashTagClicked(String hashTag) {
 
     }
 
@@ -352,7 +352,7 @@ public class KolCommentFragment extends BaseDaggerFragment
         ));
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
-                String.valueOf(sendKolCommentDomain.getDomainUser().getId()),
+                sendKolCommentDomain.getDomainUser().getId(),
                 null,
                 sendKolCommentDomain.getDomainUser().getPhoto(),
                 sendKolCommentDomain.getDomainUser().getName(),

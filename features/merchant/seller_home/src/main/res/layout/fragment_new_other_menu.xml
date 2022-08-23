@@ -23,35 +23,36 @@
                 app:layoutDescription="@xml/fragment_new_other_menu_content_scene">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_sah_new_other_curved_header"
+                    android:id="@+id/layout_sah_header_anniv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_height="@dimen/sah_new_other_header_background_height">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_sah_new_other_curved_header"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/sah_new_other_header_background_height"
+                        android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_sah_new_other_ramadhan_pattern"
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/iv_sah_other_pattern_anniv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/ic_sah_ramadhan_pattern"
-                        app:layout_constraintTop_toTopOf="@id/iv_sah_new_other_curved_header"/>
+                        android:adjustViewBounds="true"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintVertical_bias="0"
+                        app:unify_image_corner_radius="0"/>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_sah_new_other_ramadhan_ketupat"
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/iv_sah_other_ornament_anniv"
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/ic_sah_ketupat_ornament"
-                        app:layout_constraintTop_toTopOf="@id/iv_sah_new_other_curved_header"
-                        app:layout_constraintEnd_toEndOf="@id/iv_sah_new_other_curved_header"/>
+                        android:scaleType="fitXY"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

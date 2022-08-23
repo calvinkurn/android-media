@@ -53,7 +53,7 @@ data class OrderDetails(
 
     @SerializedName("contactUs")
     @Expose
-    val contactUs: ContactUs? = null,
+    val contactUs: ContactUs = ContactUs(),
 
     @SerializedName("actionButtons")
     @Expose

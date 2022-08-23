@@ -21,9 +21,10 @@ fun createProduct(
     pictures: List<Picture>? = emptyList(),
     topAds: ProductTopAds? = null,
     isCampaign: Boolean = false,
-    campaignTypeList: List<ProductCampaignType>? = emptyList()
+    campaignTypeList: List<ProductCampaignType>? = emptyList(),
+    suspendLevel:Int = 0
 ): Product {
-    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList)
+    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList,suspendLevel)
 }
 
 fun createProductUiModel(
@@ -46,6 +47,11 @@ fun createProductUiModel(
     isCampaign: Boolean = false,
     campaignTypeList: List<ProductCampaignType>? = emptyList(),
     isProductBundling: Boolean = false,
+    suspendLevel:Int = 0,
+    hasStockAlert:Boolean = false,
+    stockAlertActive: Boolean = false,
+    stockAlertCount:Int = 0,
+    maxStock: Int? = null
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -66,6 +72,11 @@ fun createProductUiModel(
         access,
         isCampaign,
         campaignTypeList,
-        isProductBundling
+        isProductBundling,
+        suspendLevel,
+        hasStockAlert,
+        stockAlertActive,
+        stockAlertCount,
+        maxStock
     )
 }

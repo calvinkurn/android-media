@@ -60,7 +60,7 @@ class ShopHomeProductBundleMultipleViewHolder(
         }
     }
 
-    fun bind(bundle: ShopHomeProductBundleItemUiModel) {
+    fun bind(bundle: ShopHomeProductBundleItemUiModel, widgetTitle: String, widgetName: String) {
         val multipleBundleItem = bundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
 
         // bundle card item details
@@ -83,7 +83,7 @@ class ShopHomeProductBundleMultipleViewHolder(
         }
 
         // bundle products list
-        initBundleProductsRecyclerView(spanSize = bundle.bundleProducts.size)
+        initBundleProductsRecyclerView(spanSize = bundle.bundleProducts.size, widgetTitle, widgetName)
         (rvBundleProducts?.adapter as ShopHomeProductBundleMultipleAdapter).updateDataSet(
                 newList = bundle.bundleProducts,
                 bundleDetail = multipleBundleItem,
@@ -93,8 +93,11 @@ class ShopHomeProductBundleMultipleViewHolder(
         // bind listeners
         itemView.addOnImpressionListener(bundle) {
             multipleProductBundleListener.impressionProductBundleMultiple(
+                    shopId = bundle.shopId,
+                    warehouseId = bundle.warehouseId,
                     selectedMultipleBundle = multipleBundleItem,
                     bundleName = bundle.bundleName,
+                    bundleType = bundle.bundleType,
                     bundlePosition = adapterPosition
             )
         }
@@ -102,20 +105,25 @@ class ShopHomeProductBundleMultipleViewHolder(
         buttonAtc?.setOnClickListener {
             // add to cart bundle
             multipleProductBundleListener.addMultipleBundleToCart(
+                    bundle.shopId,
+                    bundle.warehouseId,
                     multipleBundleItem,
                     bundleListSize,
                     bundle.bundleProducts,
                     bundle.bundleName,
-                    widgetLayout
+                    bundle.bundleType,
+                    adapterPosition,
+                    widgetLayout,
+                    bundle.bundleGroupId
             )
         }
     }
 
-    private fun initBundleProductsRecyclerView(spanSize: Int) {
+    private fun initBundleProductsRecyclerView(spanSize: Int, widgetTitle: String, widgetName: String) {
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
-            adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleListener)
+            adapter = ShopHomeProductBundleMultipleAdapter(multipleProductBundleListener, widgetTitle, widgetName)
         }
 
         val constraintSet = ConstraintSet()

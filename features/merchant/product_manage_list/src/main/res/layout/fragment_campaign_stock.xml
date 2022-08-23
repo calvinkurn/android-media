@@ -15,12 +15,22 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <include
+        android:id="@+id/layout_ticker"
+        layout="@layout/layout_stock_location_closable_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/header_campaign_stock"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <include
         android:id="@+id/layout_campaign_stock_product_info"
         layout="@layout/layout_campaign_stock_product_info"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/header_campaign_stock"
+        app:layout_constraintTop_toBottomOf="@id/layout_ticker"
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible"/>
 

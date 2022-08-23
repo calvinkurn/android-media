@@ -201,16 +201,16 @@ class EmoneyPdpViewModelTest {
         val catalogId = "12344"
         val productId = "1222"
         val clientNumber = "1234566789"
-        val topUpBillsRecommendation = TopupBillsRecommendation(categoryId = catalogId.toIntOrZero(),
-                productId = productId.toIntOrZero(), clientNumber = clientNumber)
+        val topUpBillsRecommendation = TopupBillsRecommendation(categoryId = catalogId,
+                productId = productId, clientNumber = clientNumber)
 
         //when
         emoneyPdpViewModel.setSelectedRecentNumber(topUpBillsRecommendation)
 
         //then
         assert(emoneyPdpViewModel.selectedRecentNumber.value != null)
-        assert(emoneyPdpViewModel.selectedRecentNumber.value?.categoryId == catalogId.toIntOrNull())
-        assert(emoneyPdpViewModel.selectedRecentNumber.value?.productId == productId.toIntOrNull())
+        assert(emoneyPdpViewModel.selectedRecentNumber.value?.categoryId == catalogId)
+        assert(emoneyPdpViewModel.selectedRecentNumber.value?.productId == productId)
         assert(emoneyPdpViewModel.selectedRecentNumber.value?.clientNumber?.equals(clientNumber)
                 ?: false)
     }
@@ -223,10 +223,11 @@ class EmoneyPdpViewModelTest {
         val productId = "1222"
         val operatorId = "14141414"
         val userId = "12345"
+        val categoryId = "34"
         coEvery { userSession.userId } coAnswers { userId }
 
         //when
-        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, productId, operatorId)
+        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, productId, operatorId, categoryId)
 
         //then
         assert(emoneyPdpViewModel.digitalCheckoutPassData.idemPotencyKey?.isNotEmpty() ?: false)
@@ -243,12 +244,13 @@ class EmoneyPdpViewModelTest {
         val copiedPromo = "QATOPED"
         val clientNumber = "1234566789"
         val userId = "12345"
+        val categoryId = "34"
         coEvery { userSession.userId } coAnswers { userId }
         getSelectedOperator_onInputNumberValid_shouldUpdateSelectedOperator()
         setSelectedProduct_shouldUpdateSelectedProduct()
 
         //when
-        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber)
+        emoneyPdpViewModel.generateCheckoutPassData(copiedPromo, clientNumber, categoryIdFromPDP = categoryId)
 
         //then
         assert(emoneyPdpViewModel.digitalCheckoutPassData.idemPotencyKey?.isNotEmpty() ?: false)

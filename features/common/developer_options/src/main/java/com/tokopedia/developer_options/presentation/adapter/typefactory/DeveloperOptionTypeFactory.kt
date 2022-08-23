@@ -14,6 +14,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
     fun type(uiModel: ResetOnBoardingUiModel): Int
     fun type(uiModel: ForceCrashUiModel): Int
+    fun type(uiModel: ForceLogoutUiModel): Int
     fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int
     fun type(uiModel: OpenScreenRecorderUiModel): Int
     fun type(uiModel: NetworkLogOnNotificationUiModel): Int
@@ -49,4 +50,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: SellerAppReviewDebuggingUiModel): Int
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
+    fun type(uiModel: TypographySwitchUiModel): Int
+    fun type(uiModel: ConvertResourceIdUiModel): Int
 }

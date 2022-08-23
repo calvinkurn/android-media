@@ -1,14 +1,12 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -20,29 +18,35 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
-import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTagihanViewModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
@@ -50,6 +54,7 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
@@ -57,10 +62,13 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.listener.RechargeSimplifyWidgetListener
-import com.tokopedia.recharge_component.model.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.recharge_component.model.client_number.InputFieldType
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -79,8 +87,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    ClientNumberSortFilterListener
-{
+    ClientNumberSortFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -104,6 +111,11 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
+    private var loader: LoaderDialog? = null
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -143,7 +155,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -158,10 +170,9 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
+        viewModel.favoriteChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpTagihanListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
@@ -171,6 +182,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+            }
+        })
+
+        viewModel.prefillData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
             }
         })
 
@@ -192,7 +209,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -201,16 +218,17 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         it.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.operatorData.attributes.name,
-                        it.data.priceProduct
+                        it.data.priceProduct,
+                        it.data.channelId,
                     )
                     navigateToCart(it.data.categoryId)
                 }
                 is RechargeNetworkResult.Fail -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     showErrorToaster(it.error)
                 }
                 is RechargeNetworkResult.Loading -> {
-                    onLoadingBuyWidget(true)
+                    showLoadingDialog()
                 }
             }
         })
@@ -219,15 +237,14 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.first.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
                     setErrorInputField(msg.first)
                     if (msg.second) {
                         showErrorToaster(MessageErrorException(msg.first))
-                        onLoadingBuyWidget(false)
+                        hideLoadingDialog()
                     }
                 }
             }
@@ -256,19 +273,19 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productId = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
             operatorId = digitalTelcoExtraParam.operatorId
         }
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 inputNumberActionType = InputNumberActionType.NOTHING
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             }
         }
 
@@ -293,8 +310,13 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 getString(R.string.selection_null_product_error)
             )
         }
-        getAutoComplete()
-        getFavoriteNumber()
+        getFavoriteNumbers(
+            listOf(
+                FavoriteNumberType.PREFILL,
+                FavoriteNumberType.CHIP,
+                FavoriteNumberType.LIST
+            )
+        )
         renderProduct()
         renderOperatorChipsAndTitle(operatorGroup)
     }
@@ -335,17 +357,18 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
         initEmptyState(data.banners)
-        renderPrefill(data.userPerso)
         renderTicker(data.tickers)
+        getOperatorSelectGroup()
         onShowBuyWidget()
     }
 
-    private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetFavoriteNumber(favoriteChips: List<FavoriteChipModel>) {
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-            setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            if (favoriteNumber.isNotEmpty()) {
-                setFilterChipShimmer(false, favoriteNumber.isEmpty())
-                setFavoriteNumber(favoriteNumber)
+            setFilterChipShimmer(false, favoriteChips.isEmpty())
+            if (favoriteChips.isNotEmpty()) {
+                setFavoriteNumber(
+                    DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips)
+                )
 
                 val extendedPadding = getDimens(unifyDimens.layout_lvl8)
                 binding?.rechargePdpTagihanListrikSvContainer?.setPadding(0, extendedPadding, 0, 0)
@@ -353,10 +376,26 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
-                setAutoCompleteList(autoComplete)
+                setAutoCompleteList(
+                    DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
+                )
+            }
+        }
+    }
+
+    private fun onSuccessGetPrefill(prefill: PrefillModel) {
+        inputNumberActionType = InputNumberActionType.NOTHING
+        binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
+            if (clientNumber.isNotEmpty()) {
+                setInputNumber(clientNumber)
+            } else {
+                if (isInputFieldEmpty()) {
+                    setContactName(prefill.clientName)
+                    setInputNumber(prefill.clientNumber)
+                }
             }
         }
     }
@@ -371,12 +410,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 viewModel.digitalCheckoutPassData
             )
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL)
-        }
-    }
-
-    private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpTagihanListrikClientNumberWidget.setFilterChipShimmer(false, true)
         }
     }
 
@@ -417,21 +450,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun renderPrefill(data: TopupBillsUserPerso) {
-        if (operatorId.isEmpty()) {
-            operatorId = data.prefillOperatorId
-        }
-        inputNumberActionType = InputNumberActionType.NOTHING
-        binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
-            } else {
-                setContactName(data.clientName)
-                setInputNumber(data.prefill, true)
-            }
-        }
-    }
-
     private fun getOperatorSelectGroup() {
         viewModel.run {
             setOperatorSelectGroupLoading()
@@ -439,22 +457,13 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getFavoriteNumber() {
+    private fun getFavoriteNumbers(favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(
+            getFavoriteNumbers(
                 listOf(categoryId),
-                viewModel.operatorList.map { it.id.toInt() }
-            )
-        }
-    }
-
-    private fun getAutoComplete() {
-        viewModel.run {
-            setAutoCompleteLoading()
-            getAutoComplete(
-                listOf(categoryId),
-                viewModel.operatorList.map { it.id.toInt() }
+                viewModel.operatorList.map { it.id.toIntOrZero() },
+                favoriteNumberTypes
             )
         }
     }
@@ -496,14 +505,20 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget() {
         binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.showSimplifyBuyWidget(this)
+            it.rechargePdpTagihanListrikBuyWidget.show()
+            it.rechargePdpTagihanListrikBuyWidget.renderSimplifyBuyWidget(this)
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean) {
-        binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.isLoadingButton(isLoading)
+    private fun showLoadingDialog() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText(LOADER_DIALOG_TEXT)
         }
+        loader?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loader?.dialog?.dismiss()
     }
 
     private fun renderOperatorChipsAndTitle(catalogOperators: DigitalCatalogOperatorSelectGroup) {
@@ -527,6 +542,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 position
             )
             viewModel.setOperatorDataById(operatorId)
+            getTagihanProduct()
         }
     }
 
@@ -651,7 +667,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -689,13 +705,26 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun getTagihanProduct() {
+        viewModel.run {
+            setTagihanProductLoading()
+            getTagihanProduct(
+                menuId,
+                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber()
+                    ?: "",
+                getString(R.string.selection_null_product_error)
+            )
+        }
+    }
+
     private fun addToCart() {
         viewModel.run {
             setAddToCartLoading()
             addToCart(
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams(),
-                userSession.userId
+                userSession.userId,
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
             )
         }
     }
@@ -745,21 +774,16 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     }
 
     override fun isKeyboardShown(): Boolean {
-        context?.let {
-            val inputMethodManager =
-                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            return inputMethodManager.isAcceptingText
-        }
-        return false
+        return keyboardWatcher.isKeyboardOpened
     }
 
     //endregion
 
     //region AutoCompleteListener
 
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (isFavoriteContact) {
+        if (favorite.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 viewModel.operatorData.attributes.name,
@@ -774,6 +798,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 userSession.userId
             )
         }
+        renderOperatorChipsByAutoSelect(operatorId)
     }
     //endregion
 
@@ -794,7 +819,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             digitalPDPAnalytics.clickFavoriteContactChips(
@@ -838,13 +863,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     override fun getSelectedChipOperator(operator: CatalogOperator) {
         viewModel.run {
             operatorData = operator
-            setTagihanProductLoading()
-            getTagihanProduct(
-                menuId,
-                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber()
-                    ?: "",
-                getString(R.string.selection_null_product_error)
-            )
+            getTagihanProduct()
         }
     }
     //endregion
@@ -876,8 +895,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
-                getAutoComplete()
-                getFavoriteNumber()
+                getFavoriteNumbers(
+                    listOf(
+                        FavoriteNumberType.CHIP,
+                        FavoriteNumberType.LIST
+                    )
+                )
             } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == DigitalPDPConstant.RESULT_CODE_QR_SCAN) {
@@ -885,7 +908,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                     val scanResult = data.getStringExtra(DigitalPDPConstant.EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
                         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-                            setInputNumber(scanResult, true)
+                            setInputNumber(scanResult)
                         }
                     }
                 }
@@ -894,7 +917,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedButton() {
-        onLoadingBuyWidget(true)
         if (viewModel.isEligibleToBuy) {
             viewModel.updateCheckoutPassData(
                 userSession.userId.generateRechargeCheckoutToken(),
@@ -906,13 +928,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 navigateToLoginPage()
             }
         } else {
-            viewModel.run {
-                cancelValidatorJob()
-                validateClientNumber(
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
-                    true
-                )
-            }
+            binding?.rechargePdpTagihanListrikClientNumberWidget?.startShakeAnimation()
         }
     }
 

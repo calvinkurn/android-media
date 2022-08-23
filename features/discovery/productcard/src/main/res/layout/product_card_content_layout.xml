@@ -76,7 +76,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageViewPdpView"
         app:layout_goneMarginTop="@dimen/product_card_text_view_product_name_gone_margin_top"
-        app:typographyType="body_3"
+        app:typographyType="paragraph_3"
         tools:text="Product Name"
         tools:visibility="visible" />
 
@@ -94,6 +94,64 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/labelSizeVariantReposition"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_label_variant_height"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        android:layout_marginRight="@dimen/product_card_label_variant_reposition_margin_right"
+        android:paddingLeft="@dimen/product_card_label_variant_reposition_side_padding"
+        android:paddingRight="@dimen/product_card_label_variant_reposition_side_padding"
+        android:background="@drawable/product_card_label_group_variant_border"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/labelColorVariantReposition"
+        app:typographyType="small"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/labelColorVariantReposition"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_label_variant_height"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        android:paddingLeft="@dimen/product_card_label_variant_reposition_side_padding"
+        android:paddingRight="@dimen/product_card_label_variant_reposition_side_padding"
+        android:background="@drawable/product_card_label_group_variant_border"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintStart_toEndOf="@id/labelSizeVariantReposition"
+        app:layout_constraintEnd_toStartOf="@id/labelPriceReposition"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelPriceReposition"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_label_price_height"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        android:layout_marginLeft="@dimen/product_card_label_price_reposition_margin_left"
+        app:layout_goneMarginLeft="0dp"
+        app:labelType="general_light_green"
+        app:layout_constraintStart_toEndOf="@id/labelColorVariantReposition"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        tools:visibility="visible"
+        tools:text="Cashback" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierVariantContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="
+            labelVariantContainer,
+            labelColorVariantReposition,
+            labelPriceReposition,
+            labelSizeVariantReposition" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewCategory"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_text_category_height"
@@ -102,7 +160,7 @@
         app:typographyType="small"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelVariantContainer"
+        app:layout_constraintTop_toBottomOf="@id/barrierVariantContainer"
         tools:visibility="visible"
         tools:text="Halal"
         tools:textColor="@color/Unify_G500"/>
@@ -131,7 +189,7 @@
         android:ellipsize="end"
         app:typographyType="small"
         app:layout_constraintStart_toEndOf="@id/dividerCategory"
-        app:layout_constraintTop_toBottomOf="@id/labelVariantContainer"
+        app:layout_constraintTop_toBottomOf="@id/barrierVariantContainer"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible"
         tools:text="Rp6.500/100 g"
@@ -171,7 +229,6 @@
         android:id="@+id/textViewSlashedPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_label_discount_height"
-        android:layout_marginTop="@dimen/product_card_label_discount_margin_top"
         android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:gravity="center_vertical"
@@ -180,7 +237,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/labelDiscount"
-        app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+        app:layout_constraintTop_toTopOf="@id/labelDiscount"
         app:layout_goneMarginLeft="0dp"
         app:typographyType="small"
         tools:text="Rp8.499.000"
@@ -198,6 +255,14 @@
         tools:visibility="visible"
         tools:text="Cashback" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/labelPriceBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="textViewPrice, labelDiscount, textViewSlashedPrice, labelPrice"
+        />
+
     <ImageView
         android:id="@+id/imageShopBadge"
         android:contentDescription="@string/content_desc_imageShopBadge" 
@@ -206,7 +271,7 @@
         android:layout_marginTop="@dimen/product_card_shop_badge_margin_top"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice"
+        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -222,7 +287,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageShopBadge"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice"
+        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginLeft="0dp"
         app:typographyType="body_3"
@@ -251,7 +316,7 @@
         android:layout_marginStart="2dp"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/dividerFulfillment"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice"
+        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -367,19 +432,21 @@
         tools:text="Terjual 122"
         tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/imageSalesRatingFloat"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/productCardImageSalesRatingFloat"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginTop="@dimen/product_card_sales_rating_margin_top"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        android:contentDescription="@string/content_desc_imageRating"
+        android:contentDescription="@string/product_card_content_desc_imageRating"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewIntegrity"
-        app:srcCompat="@drawable/ic_rating_apps_active"
+        app:icon_color_light_enable="@color/Unify_YN300"
+        app:icon_color_night_enable="@color/Unify_YN600"
+        app:icon_name="STAR_FILLED"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -390,7 +457,7 @@
         android:layout_marginStart="2dp"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintStart_toEndOf="@id/imageSalesRatingFloat"
+        app:layout_constraintStart_toEndOf="@id/productCardImageSalesRatingFloat"
         app:layout_constraintTop_toBottomOf="@id/textViewIntegrity"
         app:typographyType="body_3"
         tools:text="4.8"

@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.R
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
+import com.tokopedia.telemetry.ITelemetryActivity
 
-class CartActivity : BaseCheckoutActivity() {
+class CartActivity : BaseCheckoutActivity(),
+    ITelemetryActivity{
 
     private var fragment: CartFragment? = null
     private var cartId: String? = null
@@ -59,5 +61,7 @@ class CartActivity : BaseCheckoutActivity() {
         const val APPLINK_PARAM_PRODUCT_ID = "product_id"
         const val EXTRA_IS_FROM_CART_ACTIVITY = "EXTRA_IS_FROM_CART_ACTIVITY"
     }
+
+    override fun getTelemetrySectionName() = "atc"
 
 }

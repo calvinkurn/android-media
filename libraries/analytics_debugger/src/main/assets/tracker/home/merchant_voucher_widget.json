@@ -38,6 +38,7 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
+      "campaignCode": ".*",
       "clientId": ".*"
     },
     {
@@ -62,6 +63,7 @@
       ],
       "userId": ".*",
       "sessionIris": ".*",
+      "campaignCode": ".*",
       "clientId": ".*"
     },
     {
@@ -73,7 +75,20 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "clientId": ".*",
+      "campaignCode": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "merchant voucher multiple - click view all",
+      "eventCategory": "homepage",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "campaignCode": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
     }
   ]
 }

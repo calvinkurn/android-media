@@ -159,10 +159,36 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "payloadExtra")
         var payloadExtra: PayloadExtra? = null,
 
+        @ColumnInfo(name = "push_payload_extra")
+        var pushPayloadExtra: PushPayloadExtra? = null,
+
+        @ColumnInfo(name = "groupId")
+        var groupId : Int = 0,
+
+        @ColumnInfo(name = "groupName")
+        var groupName : String? = null
+
 ) : Parcelable {
 
-    fun webHookParamData(): String? {
-        return webHookToJson(this.webHookParam)
-    }
+        fun webHookParamData(): String? {
+                return webHookToJson(this.webHookParam)
+        }
 
+        fun isReviewOn(): Boolean {
+                pushPayloadExtra?.let {
+                        return it.isReviewNotif == true
+                }?: run {
+                      return false
+                }
+        }
+
+        fun isReplyChat(): Boolean {
+                return pushPayloadExtra?.let {
+                         it.replyType == REPLY_TYPE_CHAT
+                }?: false
+        }
+
+        companion object {
+                private const val REPLY_TYPE_CHAT = "Chat"
+        }
 }

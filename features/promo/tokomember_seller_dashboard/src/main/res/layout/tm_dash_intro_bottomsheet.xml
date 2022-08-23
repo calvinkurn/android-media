@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="@dimen/tm_dash_dp_280"
+        android:layout_height="@dimen/tm_dash_dp_210"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:id="@+id/img_bottom_sheet" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_heading"
+        android:gravity="center_horizontal"
+        app:typographyType="heading_2"
+        android:text="@string/tm_bs_initial_title"
+        android:layout_marginTop="@dimen/unify_space_16" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_desc"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:gravity="center_horizontal"
+        android:text="@string/tm_bs_initial_desc"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_proceed"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:unifyButtonSize="large"
+        android:text="@string/tm_bs_initial_btn_text" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

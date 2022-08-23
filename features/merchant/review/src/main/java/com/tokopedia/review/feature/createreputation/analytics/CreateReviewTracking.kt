@@ -4,11 +4,19 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
+import com.tokopedia.reviewcommon.constant.AnalyticConstant
+import com.tokopedia.reviewcommon.extension.appendBusinessUnit
+import com.tokopedia.reviewcommon.extension.appendCurrentSite
+import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductId
+import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.sendEnhancedEcommerce
+import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object CreateReviewTracking {
@@ -777,80 +785,70 @@ object CreateReviewTracking {
             .toString()
     }
 
-    private fun MutableMap<String, Any>.appendGeneralEventData(
-        eventName: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String
-    ): MutableMap<String, Any> {
-        put(TrackAppUtils.EVENT, eventName)
-        put(TrackAppUtils.EVENT_CATEGORY, eventCategory)
-        put(TrackAppUtils.EVENT_ACTION, eventAction)
-        put(TrackAppUtils.EVENT_LABEL, eventLabel)
-        return this
-    }
-
-    private fun Bundle.appendGeneralEventData(
-        eventName: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String
-    ): Bundle {
-        putString(TrackAppUtils.EVENT, eventName)
-        putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
-        putString(TrackAppUtils.EVENT_ACTION, eventAction)
-        putString(TrackAppUtils.EVENT_LABEL, eventLabel)
-        return this
-    }
-
-    private fun MutableMap<String, Any>.appendBusinessUnit(businessUnit: String): MutableMap<String, Any> {
-        put(CreateReviewTrackingConstants.KEY_BUSINESS_UNIT, businessUnit)
-        return this
-    }
-
-    private fun Bundle.appendBusinessUnit(businessUnit: String): Bundle {
-        putString(CreateReviewTrackingConstants.KEY_BUSINESS_UNIT, businessUnit)
-        return this
-    }
-
-    private fun MutableMap<String, Any>.appendCurrentSite(currentSite: String): MutableMap<String, Any> {
-        put(CreateReviewTrackingConstants.KEY_CURRENT_SITE, currentSite)
-        return this
-    }
-
-    private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
-        putString(CreateReviewTrackingConstants.KEY_CURRENT_SITE, currentSite)
-        return this
-    }
-
-    private fun MutableMap<String, Any>.appendUserId(userId: String): MutableMap<String, Any> {
-        put(ReviewTrackingConstant.KEY_USER_ID, userId)
-        return this
-    }
-
-    private fun Bundle.appendUserId(userId: String): Bundle {
-        putString(ReviewTrackingConstant.KEY_USER_ID, userId)
-        return this
-    }
-
     private fun Bundle.appendPromotionsEE(title: String): Bundle {
         val promotions = listOf(
             Bundle().apply {
-                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_CREATIVE_NAME, null)
-                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_CREATIVE_SLOT, null)
-                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_ITEM_ID, title)
-                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_ITEM_NAME, null)
+                putString(AnalyticConstant.KEY_EE_CREATIVE_NAME, null)
+                putString(AnalyticConstant.KEY_EE_CREATIVE_SLOT, null)
+                putString(AnalyticConstant.KEY_EE_ITEM_ID, title)
+                putString(AnalyticConstant.KEY_EE_ITEM_NAME, null)
             }
         )
-        putParcelableArrayList(CreateReviewTrackingConstants.EVENT_KEY_EE_PROMOTIONS, ArrayList(promotions))
+        putParcelableArrayList(AnalyticConstant.KEY_EE_PROMOTIONS, ArrayList(promotions))
         return this
     }
 
-    private fun Map<String, Any>.sendGeneralEvent() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(this)
+    fun trackOpenUniversalMediaPicker(userId: String, shopId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            CreateReviewTrackingConstants.EVENT_NAME_CLICK_COMMUNICATION,
+            CreateReviewTrackingConstants.EVENT_CATEGORY_MEDIA_CAMERA,
+            CreateReviewTrackingConstants.EVENT_ACTION_VISIT_CAMERA,
+            String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_OPEN_MEDIA_PICKER,
+                PageSource.Review, userId, shopId
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT_MEDIA)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendUserId(userId)
+            .sendGeneralEvent()
     }
 
-    private fun Bundle.sendEnhancedEcommerce(eventName: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, this)
+    fun trackErrorSubmitReview(
+        userId: String,
+        errorMessage: String,
+        orderId: String,
+        productId: String,
+        rating: Int,
+        hasReviewText: Boolean,
+        reviewTextLength: Int,
+        mediaCount: Int,
+        anonymous: Boolean,
+        hasIncentive: Boolean,
+        hasTemplate: Boolean,
+        templateUsedCount: Int
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            CreateReviewTrackingConstants.EVENT_NAME_CLICK_PG,
+            CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+            CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SUBMIT_ERROR,
+            String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT_ERROR,
+                errorMessage,
+                orderId,
+                productId,
+                rating,
+                if (hasReviewText) "filled" else "blank",
+                reviewTextLength,
+                mediaCount,
+                anonymous,
+                hasIncentive,
+                hasTemplate,
+                templateUsedCount
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendUserId(userId)
+            .appendProductId(productId)
+            .sendGeneralEvent()
     }
 }

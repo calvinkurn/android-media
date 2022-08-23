@@ -22,7 +22,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:viewBindingIgnore="true" >
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/reviewDetailTicker"
@@ -44,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="reviewDetailTicker,reviewDetailTips" />
+                app:constraint_referenced_ids="reviewDetailTicker,reviewDetailTips"
+                tools:viewBindingIgnore="true" />
 
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/reviewDetailProductCard"
@@ -57,7 +59,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    tools:viewBindingIgnore="true" >
 
                     <ImageView
                         android:id="@+id/reviewDetailProductImage"
@@ -79,7 +82,8 @@
                         app:layout_constraintBottom_toBottomOf="@id/reviewDetailProductImage"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/reviewDetailProductImage"
-                        app:layout_constraintTop_toTopOf="@id/reviewDetailProductImage">
+                        app:layout_constraintTop_toTopOf="@id/reviewDetailProductImage"
+                        tools:viewBindingIgnore="true" >
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/reviewDetailProductName"
@@ -155,12 +159,15 @@
                 app:typographyType="body_2"
                 tools:text="Mantap-mantap" />
 
-            <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages
-                android:id="@+id/reviewDetailAttachedImages"
+            <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+                android:id="@+id/reviewDetailAttachedMedia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="8dp"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailContent" />
 
             <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
@@ -168,7 +175,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedImages" />
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedMedia" />
 
             <com.tokopedia.review.common.presentation.widget.ReviewBadRatingDisclaimerWidget
                 android:id="@+id/review_detail_bad_rating_disclaimer_widget"
@@ -196,13 +203,15 @@
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
                 app:barrierMargin="@dimen/layout_lvl2"
-                app:constraint_referenced_ids="reviewDetailAttachedImages, reviewDetailResponse, reviewDetailContent, review_detail_bad_rating_reason" />
+                app:constraint_referenced_ids="reviewDetailAttachedMedia, reviewDetailResponse, reviewDetailContent, review_detail_bad_rating_reason"
+                tools:viewBindingIgnore="true" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/review_history_detail_divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                app:layout_constraintTop_toBottomOf="@id/review_history_detail_barrier" />
+                app:layout_constraintTop_toBottomOf="@id/review_history_detail_barrier"
+                tools:viewBindingIgnore="true"  />
 
             <com.tokopedia.review.common.presentation.widget.ReviewScoreWidget
                 android:id="@+id/reviewHistoryDetailReputation"

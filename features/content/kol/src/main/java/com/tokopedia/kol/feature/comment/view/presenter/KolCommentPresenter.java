@@ -16,6 +16,7 @@ import com.tokopedia.kol.feature.comment.view.subscriber.ReportKolSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.SendKolCommentSubscriber;
 import com.tokopedia.kol.feature.report.domain.usecase.SendReportUseCase;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,7 +57,6 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         super.detachView();
         getKolCommentsUseCase.unsubscribe();
         sendKolCommentUseCase.unsubscribe();
-        deleteKolCommentUseCase.unsubscribe();
         getMentionableUserUseCase.unsubscribe();
         sendReportUseCase.unsubscribe();
     }
@@ -86,7 +86,8 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         getView().showProgressDialog();
         deleteKolCommentUseCase.execute(
                 DeleteKolCommentUseCase.getParam(Integer.parseInt(id)),
-                new DeleteKolCommentSubscriber(getView(), adapterPosition));
+                new DeleteKolCommentSubscriber(getView(), adapterPosition)
+        );
     }
 
     @Override

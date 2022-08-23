@@ -26,15 +26,19 @@ import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
-import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
+import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment.Companion.SOURCE_ADD_PIN
+import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment.Companion.SOURCE_DEFAULT
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
+import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel.Companion.toBoolean
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
@@ -98,17 +102,18 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
-        changePinInput = view.findViewById(R.id.pin)
-        methodIcon = view.findViewById(R.id.method_icon)
-        mainView = view.findViewById(R.id.container)
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_change_pin, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        changePinInput = view.findViewById(R.id.pin)
+        methodIcon = view.findViewById(R.id.method_icon)
+        mainView = view.findViewById(R.id.container)
         initViews()
         initObserver()
         ColorUtils.setBackgroundColor(context, activity)
@@ -150,7 +155,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
                 inputNewPin -> handleInputNewPinState(text)
                 isValidated -> handleValidatedAndForgotState(text)
                 else -> {
-                    changePinViewModel.validatePin(text)
+                    changePinViewModel.validatePinMediator(text)
                 }
             }
         } else {
@@ -166,26 +171,60 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     open fun handleConfirmState(input: String) {
         if (pin == input) {
             showLoading()
-            changePinViewModel.changePin(pin, input, oldPin)
+            changePinMediator(pin = pin, pinConfirm = input, pinOld = oldPin)
         } else {
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
     }
 
     open fun handleInputNewPinState(input: String) {
-        changePinViewModel.checkPin(input)
+        checkPinMediator(input)
+    }
+
+    private fun checkPinMediator(pin: String) {
+        if(isResetPinV2()) {
+            changePinViewModel.checkPinV2(pin)
+        } else {
+            changePinViewModel.checkPin(pin)
+        }
+    }
+
+    private fun changePinMediator(pin: String, pinConfirm: String, pinOld: String) {
+        if(isUpdatePinV2()) {
+            changePinViewModel.changePinV2(pin = pin, pinOld = pinOld)
+        } else {
+            changePinViewModel.changePin(pin = pin, pinConfirm = pinConfirm, pinOld = pinOld)
+        }
+    }
+
+    private fun isUpdatePinV2(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(UPDATE_PIN_ROLLENCE, "")
+            .isNotEmpty()
+    }
+
+    private fun isResetPinV2(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(RESET_PIN_ROLLENCE, "")
+            .isNotEmpty()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION) {
             val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
             showLoading()
+            resetPinMediator(validateToken)
+        }
+    }
+
+    private fun resetPinMediator(validateToken: String?) {
+        if(isResetPinV2()) {
+            changePinViewModel.resetPinV2(validateToken.orEmpty())
+        } else {
             changePinViewModel.resetPin(validateToken)
         }
     }
 
     open fun goToVerificationActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle().apply {
             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
@@ -211,7 +250,8 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinInput?.pinTextField?.let { view ->
             view.post {
                 if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                    val inputMethodManager =
+                        context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                     inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                 }
             }
@@ -255,7 +295,12 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         } else {
             changePinInput?.pinSecondaryActionView?.apply {
                 text = getString(R.string.change_pin_forgot_btn)
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setTextColor(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                )
                 setOnClickListener(onForgotPinClick)
                 isEnabled = true
             }
@@ -271,6 +316,18 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             } else inputNewPinState()
         } else {
             displayErrorPin(checkPinData.errorMessage)
+        }
+    }
+
+    private fun onSuccessCheckPinV2(checkPinV2Data: CheckPinV2Data) {
+        if (checkPinV2Data.valid) {
+            if (inputNewPin) {
+                pin = changePinInput?.pinTextField?.text.toString()
+                inputNewPin = false
+                konfirmasiState()
+            } else inputNewPinState()
+        } else {
+            displayErrorPin(checkPinV2Data.errorMessage)
         }
     }
 
@@ -293,13 +350,13 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
-    private fun onSuccessValidatePin(data: ValidatePinData) {
-        isValidated = data.valid
+    private fun onSuccessValidatePin(isValid: Boolean, errorMessage: String) {
+        isValidated = isValid
         oldPin = changePinInput?.pinTextField?.text.toString()
-        if (data.valid) {
+        if (isValid) {
             inputNewPinState()
         } else {
-            displayErrorPin(data.errorMessage)
+            displayErrorPin(errorMessage)
         }
     }
 
@@ -311,14 +368,16 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     open fun goToSuccessPage() {
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE).apply {
-            flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            if(source < 1) {
-                source = PinCompleteFragment.SOURCE_CHANGE_PIN
-            }
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-            source = 0
-        }
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
+                .apply {
+                    flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                    if (source < SOURCE_ADD_PIN) {
+                        source = PinCompleteFragment.SOURCE_CHANGE_PIN
+                    }
+                    putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+                    source = SOURCE_DEFAULT
+                }
 
         startActivity(intent)
         activity?.finish()
@@ -348,7 +407,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             when (it) {
                 is Success -> {
                     dismissLoading()
-                    if (it.data.is_success == 1) goToSuccessPage()
+                    if (it.data.is_success.toBoolean()) goToSuccessPage()
                     else onError(Throwable())
                 }
                 is Fail -> onError(it.throwable)
@@ -357,7 +416,14 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
         changePinViewModel.validatePinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessValidatePin(it.data)
+                is Success -> onSuccessValidatePin(it.data.valid, it.data.errorMessage)
+                is Fail -> onErrorValidatePin(it.throwable)
+            }
+        })
+
+        changePinViewModel.validatePinV2Response.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessValidatePin(it.data.valid, it.data.errorMessage)
                 is Fail -> onErrorValidatePin(it.throwable)
             }
         })
@@ -365,6 +431,13 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinViewModel.checkPinResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessCheckPin(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
+
+        changePinViewModel.checkPinV2Response.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessCheckPinV2(it.data)
                 is Fail -> onError(it.throwable)
             }
         })
@@ -378,10 +451,13 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
 
     }
 
+
     companion object {
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val OTP_TYPE_PHONE_VERIFICATION = 125
         const val PIN_LENGTH = 6
+        const val RESET_PIN_ROLLENCE = "pdh_rp_and"
+        const val UPDATE_PIN_ROLLENCE = "pdh_up_and"
 
         fun createInstance(bundle: Bundle): ChangePinFragment {
             val fragment = ChangePinFragment()

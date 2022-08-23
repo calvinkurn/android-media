@@ -1,8 +1,8 @@
 package com.tokopedia.cart.domain.usecase
 
-fun getQueryCartRevampV3(): String {
-    return """
-        query cart_revamp_v3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+const val CART_REVAMP_V3_QUERY =
+        """
+        query cartRevampV3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
           cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
@@ -11,6 +11,7 @@ fun getQueryCartRevampV3(): String {
               errors
               popup_error_message
               pop_up_message
+              placeholder_note
               localization_choose_address {
                 address_id
                 address_name
@@ -133,6 +134,11 @@ fun getQueryCartRevampV3(): String {
                       eligible
                       badge_url
                     }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
@@ -220,6 +226,7 @@ fun getQueryCartRevampV3(): String {
                       edit_app_link
                       slash_price_label
                       bundle_icon_url
+                      bundle_grayscale_icon_url
                     }
                     products {
                       checkbox_state
@@ -343,6 +350,11 @@ fun getQueryCartRevampV3(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -414,6 +426,11 @@ fun getQueryCartRevampV3(): String {
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -593,6 +610,11 @@ fun getQueryCartRevampV3(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -638,20 +660,20 @@ fun getQueryCartRevampV3(): String {
                   checkbox_state
                 }
               }
-              total_product_price,
-              total_product_count,
-              total_product_error,
+              total_product_price
+              total_product_count
+              total_product_error
               global_coupon_attr {
-                description, 
+                description 
                 quantity_label
-              },
-              global_checkbox_state,
+              }
+              global_checkbox_state
               tickers {
                 id
                 message
                 page
-              },
-              hashed_email,
+              }
+              hashed_email
               promo {
                 last_apply {
                   data {
@@ -766,6 +788,7 @@ fun getQueryCartRevampV3(): String {
                         currency_details_str
                       }
                       sp_ids
+                      poml_auto_applied
                     }
                   }
                   code
@@ -778,5 +801,4 @@ fun getQueryCartRevampV3(): String {
             }
           }
         }
-    """.trimIndent()
-}
+        """

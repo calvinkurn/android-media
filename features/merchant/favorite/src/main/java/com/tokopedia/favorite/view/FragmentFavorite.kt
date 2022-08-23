@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
@@ -33,9 +32,15 @@ import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -189,6 +194,9 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
                     validateMessageError()
                 }
         )
+        viewModel?.topAdsData?.observe(viewLifecycleOwner,{ topAdsData: TopAdsShopUiModel ->
+            favoriteAdapter?.setElement(Int.ZERO, topAdsData)
+        })
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -226,7 +234,10 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
             val viewSelected = favoriteShopViewSelected
             if (viewSelected != null && shopItemSelected != null) {
                 viewSelected.isEnabled = false
-                viewModel!!.addFavoriteShop(viewSelected, shopItemSelected!!)
+                viewModel?.addFavoriteShop(
+                    viewSelected,
+                    shopItemSelected
+                )
             }
         }.showRetrySnackbar()
     }
@@ -319,8 +330,25 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     }
 
     private fun addFavoriteShop(shopUiModel: FavoriteShopUiModel) {
-        val favoriteShopPosition = 2
-        favoriteAdapter?.addElement(favoriteShopPosition, shopUiModel)
+        val favoriteShopPosition = Int.ONE
+        if (favoriteAdapter?.itemCount ?: Int.ZERO > Int.ZERO) {
+            favoriteAdapter?.addElement(
+                favoriteShopPosition,
+                shopUiModel
+            )
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    activity?.getString(R.string.favorite_on_success_favorite_text)
+                        ?: "",
+                    LENGTH_SHORT,
+                    TYPE_NORMAL,
+                    activity?.getString(R.string.favorite_on_success_favorite_action_text)
+                        ?: ""
+                ) { }.show()
+            }
+
+        }
     }
 
     private fun sendFavoriteShopImpression(clickUrl: String) {
@@ -331,11 +359,14 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
         viewModel!!.refreshAllDataFavoritePage()
     }
 
-    override fun onFavoriteShopClicked(view: View?, shopItemSelected: TopAdsShopItem?) {
+    override fun onFavoriteShopClicked(
+        view: View?,
+        shopItemSelected: TopAdsShopItem?
+    ) {
         favoriteShopViewSelected = view
         this.shopItemSelected = shopItemSelected
         favoriteShopViewSelected?.isEnabled = false
-        viewModel!!.addFavoriteShop(favoriteShopViewSelected!!, this.shopItemSelected!!)
+        viewModel?.addFavoriteShop(favoriteShopViewSelected, this.shopItemSelected)
     }
 
     private fun prepareView() {

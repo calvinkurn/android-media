@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -35,19 +34,17 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?, tokonow: TokoNowParam): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, tokonow: TokoNowParam): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                     putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
-                    if(affiliateUUIDRequest!=null)
-                        putObject(ProductDetailCommonConstant.PARAM_AFFILIATE_UUID, affiliateUUIDRequest)
                     putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
                 }
 
-        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: pdpAffiliate, ${'$'}tokonow: pdpTokoNow) {
-          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, affiliate: ${'$'}affiliate, tokonow: ${'$'}tokonow) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}tokonow: pdpTokoNow) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, tokonow: ${'$'}tokonow) {
             error {
               Code
               Message
@@ -70,7 +67,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             productView
             wishlistCount
             shopCommitment {
-              result {
+              result {  
                 isNowActive
                 staticMessages {
                   pdpMessage
@@ -87,6 +84,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               scoreMap
             }
             shopInfo {
+              shopMultilocation {
+                warehouseCount
+                eduLink {
+                    appLink
+                }
+              }
               closedInfo {
                 closedNote
                 reason
@@ -132,6 +135,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 name
                 tagLine
                 url
+                ownerID
               }
               shopLastActive
               location
@@ -263,11 +267,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             }
             validateTradeIn {
               isEligible
-              isDiagnosed
-              useKyc
               usedPrice
-              remainingPrice
-              message
               widgetString
             }
             cartRedirection {
@@ -341,6 +341,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   products{
                     productID
                     boType
+                    boCampaignIDs
                   }
                   images{
                     boType
@@ -393,6 +394,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             reviewImage{
               list{
                 imageID
+                videoID
                 reviewID
                 imageSibling
               }
@@ -423,8 +425,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                    uriLarge
                    reviewID
                  }
-                 imageCountFmt
-                 imageCount
+                 videos {
+                   attachmentID
+                   url
+                   feedbackID
+                 }
+                 mediaCountFmt
+                 mediaCount
+                 mediaCountTitle
                }
               hasNext
               hasPrev
@@ -452,6 +460,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 variant{
                   name
+                }
+                userLabel
+                userStat {
+                  formatted
                 }
               }
             }
@@ -504,6 +516,16 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   }
                 }
               }
+            }
+            navBar {
+              name
+              items {
+                title
+                componentName
+              }
+            }
+            shopFinishRate {
+              finishRate
             }
           }
     }""".trimIndent()
@@ -572,11 +594,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating
             p2UiData.ticker = ticker
+            p2UiData.navBar = navBar
+            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
         }
         return p2UiData
     }

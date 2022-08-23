@@ -29,6 +29,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
 
@@ -103,24 +105,25 @@
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         android:background="@drawable/feed_bg_lihat_produk_large"
         android:drawablePadding="@dimen/unify_space_8"
-        android:drawableTint="@color/Unify_N0"
-        android:ellipsize="end"
+        android:drawableTint="@color/feed_dms_produk_tag_heading_color"
         android:gravity="center_vertical|start"
-        android:minWidth="@dimen/unify_space_24"
+        android:minWidth="@dimen/unify_space_32"
         android:paddingStart="@dimen/feed_component_dp_7"
         android:paddingEnd="@dimen/unify_space_2"
         android:paddingTop="@dimen/unify_space_2"
         android:paddingBottom="@dimen/unify_space_2"
-        android:singleLine="true"
         android:text="@string/feed_post_tag_text"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/feed_dms_produk_tag_heading_color"
         app:drawableLeftCompat="@drawable/feed_ic_product_large"
         app:layout_constraintBottom_toBottomOf="@id/vod_layout_main"
         app:layout_constraintStart_toStartOf="@id/vod_layout_main"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        />
 
     <ImageView
         android:id="@+id/vod_volumeIcon"
@@ -142,7 +145,8 @@
         app:srcCompat="@drawable/ic_fullscreen_vod"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/feed_post_content_desc_full_screen" />
 
     <ImageView
         android:id="@+id/ic_vod_play"

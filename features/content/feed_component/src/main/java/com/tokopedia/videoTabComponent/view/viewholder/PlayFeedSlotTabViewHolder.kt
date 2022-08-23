@@ -25,13 +25,12 @@ class PlayFeedSlotTabViewHolder private constructor() {
         private val activity: Activity
     ) : RecyclerView.ViewHolder(itemView), PlaySlotTabCallback {
 
-        private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_labels)
+        private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_feed_play_slot)
         private val adapter = SlotTabViewAdapter(this, activity)
 
         fun bind(item: PlaySlotTabMenuUiModel) {
             rvSlotTab.adapter = adapter
             adapter.setItems(item.items)
-
             rvSlotTab.scrollLayout(activity.getTabMenuPosition())
         }
 
@@ -60,7 +59,7 @@ class PlayFeedSlotTabViewHolder private constructor() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotTabViewHolder {
                 return SlotTabViewHolder(
                     LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_play_slot_tab_card, parent, false)
+                        .inflate(R.layout.item_feed_play_slot_tab_card, parent, false)
                 )
             }
 
@@ -87,7 +86,7 @@ class PlayFeedSlotTabViewHolder private constructor() {
             itemView: View
         ) : RecyclerView.ViewHolder(itemView) {
 
-            private val chip = itemView.findViewById<ChipsUnify>(R.id.cu_label)
+            private val chip = itemView.findViewById<ChipsUnify>(R.id.cu_feed_play_label)
 
             fun bind(slot: PlaySlotTabMenuUiModel.Item, chipSelected: () -> Unit) {
                 updateChipView(chip, slot.isSelected)

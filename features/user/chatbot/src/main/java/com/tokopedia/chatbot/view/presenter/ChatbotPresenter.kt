@@ -12,7 +12,10 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
@@ -20,11 +23,8 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -46,6 +46,7 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
@@ -67,8 +68,29 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
-import com.tokopedia.chatbot.domain.subscriber.*
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
+import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
+import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
@@ -94,9 +116,11 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import okhttp3.*
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -104,8 +128,6 @@ import java.io.File
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 
@@ -330,7 +352,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendReadEvent(messageId: String) {
-        RxWebSocket.send(SendWebsocketParam.getReadMessage(messageId),
+        RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(messageId),
                 listInterceptor)
     }
 
@@ -343,7 +365,7 @@ class ChatbotPresenter @Inject constructor(
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
-        data.addProperty("msg_id", Integer.valueOf(messageId))
+        data.addProperty("msg_id", messageId.convertMessageIdToLong())
         json.add("data", data)
         return json
     }
@@ -417,7 +439,7 @@ class ChatbotPresenter @Inject constructor(
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
                                        startTime: String,
-                                       opponentId: String,isArticleEntry: Boolean,usedBy: String) {
+                                       opponentId: String, isArticleEntry: Boolean, usedBy: String) {
 
         if (!isArticleEntry) {
             RxWebSocket.send(
@@ -460,15 +482,15 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String,
                                           startTime: String, opponentId: String) {
-        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendMessage(messageId, sendMessage,
                 startTime, opponentId),
                 listInterceptor)
     }
 
     override fun generateInvoice(
         invoiceLinkPojo: InvoiceLinkPojo, senderId: String
-    ) : AttachInvoiceSentUiModel {
-        return AttachInvoiceSentUiModel.Builder()
+    ) : com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel {
+        return com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel.Builder()
             .withInvoiceAttributesResponse(invoiceLinkPojo)
             .withFromUid(senderId)
             .withFrom(userSession.name)
@@ -639,7 +661,11 @@ class ChatbotPresenter @Inject constructor(
         val imageHeight = options.outHeight
         val imageWidth = options.outWidth
 
-        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+        val fileSize = try {
+            Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+        } catch (e: NumberFormatException) {
+            0
+        }
 
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
             view.onUploadUndersizedImage()

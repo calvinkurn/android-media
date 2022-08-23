@@ -13,7 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.di.ARComponent
 import com.tokopedia.age_restriction.di.DaggerARComponent
 import com.tokopedia.age_restriction.viewmodel.BaseARViewModel
@@ -32,6 +31,12 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
         const val RESULT_IS_ADULT = 980
         const val RESULT_IS_NOT_ADULT = 180
         const val PARAM_EXTRA_DOB = "VERIFY DOB"
+        private const val AR_ORIGIN_CATEGORY = 1
+        private const val AR_ORIGIN_PDP = 2
+        private const val AR_ORIGIN_SEARCH = 3
+        private const val AR_ORIGIN_FIND = 4
+        private const val AR_ORIGIN_TOKONOW_CATEGORY = 5
+        private const val AR_ORIGIN_TOKONOW_SEARCH_RESULT = 6
         private const val CATEGORYPAGE = "category page"
         private const val PDP = "product detail page"
         private const val SEARCHPAGE = "search result page"
@@ -44,13 +49,17 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
         private const val VIEWCATEGORY = "viewCategory"
         private const val VIEWSEARCH = "viewSearchResult"
         private const val VIEW_FIND = "viewFindResult"
+        private const val EVENT_NAME_CLICK_PG = "clickPG"
+        private const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
+        private const val EVENT_CATEGORY_NOW_CATEGORY_PAGE = "tokonow - category page"
+        private const val EVENT_CATEGORY_NOW_SEARCH_RESULT_PAGE = "tokonow - search result page"
+        // event is the name of category event
         var event = CATEGORYPAGE
+        // eventView and eventClick are the names of the event
         var eventView = VIEWPDP
         var eventClick = CLICKPDP
         var origin = 1
         var destinationUrlGtm = ""
-
-
     }
 
     protected abstract fun getMenuRes(): Int
@@ -68,31 +77,38 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
         origin = intent.getIntExtra("ORIGIN", 1)
         destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM") ?: ""
         when (origin) {
-            1 -> {
+            AR_ORIGIN_CATEGORY -> {
                 event = CATEGORYPAGE
                 eventView = VIEWCATEGORY
                 eventClick = CLICKCATEGORY
 
             }
-            2 -> {
+            AR_ORIGIN_PDP -> {
                 event = PDP
                 eventView = VIEWPDP
                 eventClick = CLICKPDP
             }
-            3 -> {
+            AR_ORIGIN_SEARCH -> {
                 event = SEARCHPAGE
                 eventView = VIEWSEARCH
                 eventClick = CLICKSEARCH
             }
-            4 -> {
+            AR_ORIGIN_FIND -> {
                 event = FIND_PAGE
                 eventView = VIEW_FIND
                 eventClick = CLICK_FIND
             }
+            AR_ORIGIN_TOKONOW_CATEGORY -> {
+                event = EVENT_CATEGORY_NOW_CATEGORY_PAGE
+                eventView = EVENT_NAME_VIEW_PG_IRIS
+                eventClick = EVENT_NAME_CLICK_PG
+            }
+            AR_ORIGIN_TOKONOW_SEARCH_RESULT -> {
+                event = EVENT_CATEGORY_NOW_SEARCH_RESULT_PAGE
+                eventView = EVENT_NAME_VIEW_PG_IRIS
+                eventClick =  EVENT_NAME_CLICK_PG
+            }
         }
-
-
-
 
         supportActionBar?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
         arVM.getProgBarVisibility().observe(this, Observer { visibility ->
@@ -134,7 +150,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
     }
 
     private fun getButtonStringOnError(): String {
-        return getString(R.string.close)
+        return getString(com.tokopedia.abstraction.R.string.close)
     }
 
     override fun setupStatusBar() {

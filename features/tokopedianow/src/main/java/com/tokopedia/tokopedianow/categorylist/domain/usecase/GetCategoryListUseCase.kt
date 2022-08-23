@@ -28,6 +28,7 @@ class GetCategoryListUseCase @Inject constructor(
                       id
                       name
                       url
+                      isAdult
                       applinks
                       imageUrl
                       child {

@@ -1,8 +1,11 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class Wholesale(
+
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: WholesalePrice = WholesalePrice(),
 

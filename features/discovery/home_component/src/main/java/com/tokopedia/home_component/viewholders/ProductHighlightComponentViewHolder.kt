@@ -29,7 +29,8 @@ import java.util.*
 class ProductHighlightComponentViewHolder(
         val view: View,
         val listener: HomeComponentListener?,
-        private val productHighlightListener: ProductHighlightListener?
+        private val productHighlightListener: ProductHighlightListener?,
+        private val cardInteraction: Boolean = false
 ): AbstractViewHolder<ProductHighlightDataModel>(view) {
     private var binding: LayoutProductHighlightBinding? by viewBinding()
     private var isCacheData = false
@@ -56,7 +57,7 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun initView() {
-        masterProductCardListView = itemView.findViewById(R.id.master_product_card_deals)
+        masterProductCardListView = itemView.findViewById<ProductCardListView?>(R.id.master_product_card_deals)
     }
 
     private fun setDealsChannelInfo(productHighlightDataModel: ProductHighlightDataModel) {
@@ -135,7 +136,7 @@ class ProductHighlightComponentViewHolder(
 
     private fun setDealsProductGrid(channel: ChannelModel) {
         val grid = channel.channelGrids.firstOrNull()
-        val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it) }
+        val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it, cardInteraction) }
         channelDataModel?.let {
             masterProductCardListView?.setProductModel(it)
         }

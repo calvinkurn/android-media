@@ -36,9 +36,8 @@ open class RightChatMessageViewHolder(
         customChatLayout?.background = bg
     }
 
-    override fun getChatStatusId(): Int {
-        return R.id.ivCheckMark
-    }
+    override val chatStatusId: Int
+        get() = R.id.ivCheckMark
 
     override fun alwaysShowTime(): Boolean {
         return true

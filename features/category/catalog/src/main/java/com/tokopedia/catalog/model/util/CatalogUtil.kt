@@ -10,7 +10,10 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.usecase.RequestParams
 
 object CatalogUtil {
 
@@ -55,9 +58,9 @@ object CatalogUtil {
         if(rating.isNullOrBlank()){
             return ""
         }
-        return if(rating.length >= 3){
-            rating.replace(".",",").substring(0,3)
-        }else if(rating.length <= 2 && rating.isNotBlank()) {
+        return if(rating.length >= CatalogConstant.DIGITS_RATING_DECIMAL){
+            rating.replace(".",",").substring(0,CatalogConstant.DIGITS_RATING_DECIMAL)
+        }else if(rating.length <= (CatalogConstant.DIGITS_RATING_DECIMAL - 1) && rating.isNotBlank()) {
             rating.substring(0,1)
         }else {
             ""
@@ -99,5 +102,21 @@ object CatalogUtil {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (inputMethodManager?.isAcceptingText == true)
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    fun getProductsParams(catalogId: String): RequestParams {
+        val param = RequestParams.create()
+        val searchProductRequestParams = RequestParams.create()
+        searchProductRequestParams.apply {
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
+            putString(CategoryNavConstants.CTG_ID, catalogId)
+        }
+        param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
+        return param
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): String {
+        return ParamMapToUrl.generateUrlParamString(parameters)
     }
 }

@@ -669,4 +669,15 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             notifyRemovedItem(position)
         }
     }
+
+    fun updateProductTabWidget(productTabWidget: MutableList<Visitable<*>>?) {
+        visitables = productTabWidget
+        visitables.forEachIndexed { index, visitable ->
+            if(visitable is ShopProductUiModel){
+                if(visitable.isNewData){
+                    notifyChangedItem(index)
+                }
+            }
+        }
+    }
 }

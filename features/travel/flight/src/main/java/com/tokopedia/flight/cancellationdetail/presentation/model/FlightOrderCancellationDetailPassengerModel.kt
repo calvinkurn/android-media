@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FlightOrderCancellationDetailPassengerModel(
-        val id: Int,
+        val id: String,
         val type: Int,
         val typeString: String,
         val title: Int,
@@ -20,7 +20,7 @@ data class FlightOrderCancellationDetailPassengerModel(
         val lastName: String,
         val departureAirportId: String,
         val arrivalAirportId: String,
-        val journeyId: Int,
+        val journeyId: String,
         val amenities: List<FlightOrderDetailAmenityModel>
 ) : Parcelable, Visitable<FlightOrderCancellationDetailPassengerTypeFactory> {
     override fun type(typeFactory: FlightOrderCancellationDetailPassengerTypeFactory): Int =

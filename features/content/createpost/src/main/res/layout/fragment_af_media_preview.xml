@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +33,8 @@
                 android:layout_margin="16dp"
                 android:visibility="gone"
                 tools:visibility="visible"
-                app:srcCompat="@drawable/ic_video_play_button" />
+                app:srcCompat="@drawable/ic_video_play_button"
+                android:contentDescription="@string/cp_play_btn_content_desc" />
 
         </RelativeLayout>
 
@@ -58,7 +59,8 @@
             android:layout_marginRight="8dp"
             app:srcCompat="@drawable/ic_system_action_delete_grayscale_32"
             app:layout_constraintEnd_toEndOf="@+id/mediaContainer"
-            app:layout_constraintTop_toTopOf="@+id/mediaContainer" />
+            app:layout_constraintTop_toTopOf="@+id/mediaContainer"
+            android:contentDescription="@string/cp_del_btn_content_desc" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/viewFirstPage"
@@ -67,7 +69,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mediaContainer">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mainImageText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,12 +81,13 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="@string/cp_set_main_image"
-                android:textColor="@color/medium_green"
-                android:textSize="14sp"
+                android:textColor="@color/Unify_G400"
+                app:typographyType="display_2"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/mainImageIcon"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:textColor="@color/black_38" />
+                tools:textColor="@color/Unify_N700_32" />
 
             <ImageView
                 android:id="@+id/mainImageIcon"
@@ -96,7 +99,8 @@
                 app:layout_constraintStart_toEndOf="@+id/mainImageText"
                 app:layout_constraintTop_toTopOf="@+id/mainImageText"
                 app:srcCompat="@drawable/ic_af_check_gray"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="@string/cp_img_checkl_content_desc" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -104,7 +108,7 @@
             android:id="@+id/mediaSeparator"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/bg_button_border_outline"
+            android:background="@color/Unify_N100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/viewFirstPage" />
 

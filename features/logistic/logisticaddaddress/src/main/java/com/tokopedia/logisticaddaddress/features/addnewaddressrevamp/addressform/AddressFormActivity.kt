@@ -1,8 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -11,13 +8,14 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIV
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
 class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
 
     private var isPositiveFlow: Boolean? = true
+    private var isEdit: Boolean = false
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
@@ -29,19 +27,43 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
     }
 
     override fun getNewFragment(): Fragment? {
+        val bundle = intent.extras
         var fragment: AddressFormFragment? = null
-        if (intent.extras != null) {
-            val bundle = intent.extras
-            isPositiveFlow = bundle?.getBoolean(EXTRA_IS_POSITIVE_FLOW)
-            fragment = AddressFormFragment.newInstance(bundle?: Bundle())
+        if (intent.data?.lastPathSegment != null) {
+            val addressId = intent.data?.lastPathSegment
+            isEdit = true
+            fragment = AddressFormFragment.newInstance(addressId = addressId, bundle)
+        } else if (bundle != null) {
+            isPositiveFlow = bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            isEdit = false
+            fragment = AddressFormFragment.newInstance(bundle)
         }
         return fragment
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
-        else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+        if (!isEdit) {
+            super.onBackPressed()
+            if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+            else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+        } else {
+            EditAddressRevampAnalytics.onClickBackArrowEditAddress(userSession.userId)
+            if(supportFragmentManager.fragments.firstOrNull() is AddressFormFragment){
+                supportFragmentManager.fragments.firstOrNull()?.let {
+                    if (it is AddressFormFragment) {
+                        if (it.isBackDialogClicked) {
+                            finish()
+                        } else {
+                            it.showDialogBackButton()
+                        }
+                    }else {
+                        super.onBackPressed()
+                    }
+                }
+            } else {
+                super.onBackPressed()
+            }
+        }
     }
 
 }

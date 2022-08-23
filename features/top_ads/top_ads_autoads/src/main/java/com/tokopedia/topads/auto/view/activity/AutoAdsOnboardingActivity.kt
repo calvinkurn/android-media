@@ -5,17 +5,18 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
-import com.tokopedia.topads.auto.di.module.AutoAdsModule
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.view.OnBoardingSliderAdapter
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen1
@@ -23,51 +24,70 @@ import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen2
 import com.tokopedia.topads.auto.view.fragment.AutoAdsOnboardingFragScreen3
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.topads_auto_onboarding_activity_layout.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 27/5/20.
  */
 
 private const val CLICK_AKTIFKAN = "click - aktifkan"
+
 class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent> {
+
+    private var backArrow: IconUnify? = null
+    private var toolbar: Toolbar? = null
+    private var skipButton: Typography? = null
+    private var viewPager: TouchViewPager? = null
+    private var btnSubmit: UnifyButton? = null
 
     private lateinit var adapter: OnBoardingSliderAdapter
 
     override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(this)).build()
+        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+        .autoAdsQueryModule(AutoAdsQueryModule(this)).build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_auto_onboarding_activity_layout)
+
+        initView()
+
         renderTabAndViewPager()
         setupToolBar()
-        backArrow.setOnClickListener {
+        backArrow?.setOnClickListener {
             onBackPressed()
         }
 
-        skip_button.setOnClickListener {
+        skipButton?.setOnClickListener {
             startActivity(Intent(this, CreateAutoAdsActivity::class.java))
             finish()
         }
-        btn_submit.setOnClickListener {
-            if (view_pager.currentItem == 2) {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_AKTIFKAN, "")
+        btnSubmit?.setOnClickListener {
+            if (viewPager?.currentItem == 2) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_AKTIFKAN,
+                    "")
                 startActivity(Intent(this, CreateAutoAdsActivity::class.java))
                 finish()
-            } else
-                view_pager.currentItem = view_pager.currentItem + 1
+            } else {
+                viewPager?.let {
+                    it.currentItem = it.currentItem + 1
+                }
+            }
         }
 
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int,
+            ) {
+            }
 
             override fun onPageSelected(position: Int) {
                 setToolBarStatusBar(position)
             }
-
         })
     }
 
@@ -75,21 +95,24 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         setStatusBar(position)
         setButton(position)
         when (position) {
-            0 -> toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1))
-            2 -> toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1))
-            1 -> toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color2))
+            0 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
+                R.color.topads_autoads_onboarding_color1))
+            2 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
+                R.color.topads_autoads_onboarding_color1))
+            1 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
+                R.color.topads_autoads_onboarding_color2))
         }
     }
 
     private fun setButton(position: Int) {
         if (position == 2) {
-            btn_submit.buttonVariant = UnifyButton.Variant.FILLED
-            btn_submit.text = resources.getString(R.string.autoads_coba_iklan)
-            skip_button.visibility = View.GONE
+            btnSubmit?.buttonVariant = UnifyButton.Variant.FILLED
+            btnSubmit?.text = resources.getString(R.string.autoads_coba_iklan)
+            skipButton?.visibility = View.GONE
         } else {
-            btn_submit.buttonVariant = UnifyButton.Variant.GHOST
-            btn_submit.text = resources.getString(R.string.autoads_selanjutnya)
-            skip_button.visibility = View.VISIBLE
+            btnSubmit?.buttonVariant = UnifyButton.Variant.GHOST
+            btnSubmit?.text = resources.getString(R.string.autoads_selanjutnya)
+            skipButton?.visibility = View.VISIBLE
 
         }
     }
@@ -101,9 +124,11 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             if (position == 0 || position == 2)
-                window.statusBarColor = ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1)
+                window.statusBarColor =
+                    ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color1)
             else
-                window.statusBarColor = ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color2)
+                window.statusBarColor =
+                    ContextCompat.getColor(this, R.color.topads_autoads_onboarding_color2)
         }
     }
 
@@ -113,8 +138,8 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
     }
 
     private fun renderTabAndViewPager() {
-        view_pager.adapter = getViewPagerAdapter()
-        view_pager.currentItem = 0
+        viewPager?.adapter = getViewPagerAdapter()
+        viewPager?.currentItem = 0
     }
 
     private fun getViewPagerAdapter(): OnBoardingSliderAdapter {
@@ -127,11 +152,21 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         return adapter
     }
 
+    private fun initView() {
+        backArrow = findViewById(R.id.backArrow)
+        toolbar = findViewById(R.id.toolbar)
+        skipButton = findViewById(R.id.skip_button)
+        viewPager = findViewById(R.id.view_pager)
+        btnSubmit = findViewById(R.id.btn_submit)
+    }
+
     override fun onBackPressed() {
-        if (view_pager.currentItem == 0) {
+        if (viewPager?.currentItem == 0) {
             super.onBackPressed()
         } else {
-            view_pager.currentItem = view_pager.currentItem - 1
+            viewPager?.let {
+                it.currentItem = it.currentItem - 1
+            }
         }
     }
 }

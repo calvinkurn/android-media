@@ -18,6 +18,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_ERROR_COUN
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
@@ -53,6 +54,7 @@ class HomeFragmentDynamicChannelErrorUiTest {
             setupGraphqlMockResponse(HomeDynamicChannelErrorResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupRemoteConfig()
             super.beforeActivityLaunched()
         }
     }

@@ -573,7 +573,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
 
         // when
         viewModel.trackOnCheckInDeparture(FlightOrderDetailJourneyModel(
-                1,
+                "1",
                 1,
                 "123",
                 "0001-01-01T00:00:00Z",

@@ -10,12 +10,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_ONE
@@ -30,8 +30,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
-import org.junit.After
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -41,19 +39,19 @@ import org.junit.Test
 class DealsCategoryActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
-    private lateinit var localCacheHandler: LocalCacheHandler
+
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     @get:Rule
     var activityRule: IntentsTestRule<DealsCategoryActivity> = object : IntentsTestRule<DealsCategoryActivity>(DealsCategoryActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-            localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
-            localCacheHandler.apply {
+
+            LocalCacheHandler(context, PREFERENCES_NAME).apply {
                 putBoolean(SHOW_COACH_MARK_KEY, false)
-                applyEditor()
-            }
+            }.also { it.applyEditor() }
+
             setupGraphqlMockResponse(DealsCategoryMockResponse())
         }
 
@@ -74,8 +72,7 @@ class DealsCategoryActivityTest {
         actionOnBrandViewHolder()
         filterProducts()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_CATEGORY_PAGE),
-                hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_CATEGORY_PAGE), hasAllSuccess())
     }
 
     private fun actionOnBrandViewHolder() {
@@ -91,23 +88,6 @@ class DealsCategoryActivityTest {
         val childRv = onView(AllOf.allOf(withId(R.id.rv_brands), withTagStringValue("24")))
         childRv.perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                 CommonActions.clickChildViewWithId(R.id.brand_view_holder_layout)))
-    }
-
-    private fun filterProducts() {
-        Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
-
-        Thread.sleep(3000)
-        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_ONE))).perform(click())
-
-        Thread.sleep(2000)
-        onView(CommonMatcher.firstView(withText(FILTERS_CHIP_TITLE))).perform(click())
-        Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_TWO))).perform(click())
-        Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText(context.getString(R.string.deals_filter_submit)))).perform(click())
-
-        Thread.sleep(1000)
     }
 
     private fun onChangeLocation() {
@@ -139,9 +119,21 @@ class DealsCategoryActivityTest {
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
     }
 
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
+    private fun filterProducts() {
+        Thread.sleep(5000)
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
+
+        Thread.sleep(3000)
+        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_ONE))).perform(click())
+
+        Thread.sleep(2000)
+        onView(CommonMatcher.firstView(withText(FILTERS_CHIP_TITLE))).perform(click())
+        Thread.sleep(1000)
+        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_TWO))).perform(click())
+        Thread.sleep(1000)
+        onView(CommonMatcher.firstView(withText(context.getString(R.string.deals_filter_submit)))).perform(click())
+
+        Thread.sleep(1000)
     }
 
     companion object {

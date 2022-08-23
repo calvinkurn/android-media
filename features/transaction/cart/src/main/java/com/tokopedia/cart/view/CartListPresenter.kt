@@ -22,7 +22,20 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
-import com.tokopedia.cart.view.subscriber.*
+import com.tokopedia.cart.view.subscriber.AddCartToWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartSubscriber
+import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cart.view.subscriber.ClearRedPromosBeforeGoToCheckoutSubscriber
+import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecentViewSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
+import com.tokopedia.cart.view.subscriber.GetWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
+import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -66,12 +79,19 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -90,13 +110,16 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val updateCartUseCase: UpdateCartUseCase,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase,
+                                            private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
                                             private val addCartToWishlistUseCase: AddCartToWishlistUseCase,
                                             private val removeWishListUseCase: RemoveWishListUseCase,
+                                            private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                             private val getRecentViewUseCase: GetRecommendationUseCase,
                                             private val getWishlistUseCase: GetWishlistUseCase,
+                                            private val getWishlistV2UseCase: GetWishlistV2UseCase,
                                             private val getRecommendationUseCase: GetRecommendationUseCase,
                                             private val addToCartUseCase: AddToCartUseCase,
                                             private val addToCartExternalUseCase: AddToCartExternalUseCase,
@@ -155,6 +178,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
+        private val SOURCE_CART = "cart"
     }
 
     override fun attachView(view: ICartListView) {
@@ -748,8 +772,34 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
+    override fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
+        launch(dispatchers.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessAddWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorAddWishList(error, productId)
+            }
+        }
+    }
+
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         addWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    override fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
+        launch(dispatchers.main) {
+            deleteWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else {
+                val error = (result as Fail).throwable
+                wishListActionListener.onErrorRemoveWishlist(error, productId)
+            }
+        }
     }
 
     override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
@@ -1113,7 +1163,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setDimension80(
+            setDimension38(
                     if (cartItemHolderData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
@@ -1145,13 +1195,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setCartId(cartItemHolderData.cartId)
             setPromoCode(cartItemHolderData.promoCodes)
             setPromoDetails(cartItemHolderData.promoDetails)
-            setDimension83(
-                    when {
-                        cartItemHolderData.isFreeShippingExtra -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
-                        cartItemHolderData.isFreeShipping -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
-                        else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    }
-            )
+            setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
@@ -1322,9 +1366,44 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         requestParams.putAll(variables)
 
         compositeSubscription.add(
-                getWishlistUseCase.createObservable(requestParams)
-                        .subscribe(GetWishlistSubscriber(view))
+            getWishlistUseCase.createObservable(requestParams)
+                .subscribe(GetWishlistSubscriber(view))
         )
+    }
+
+    override fun processGetWishlistV2Data() {
+        val requestParams = WishlistV2Params().apply {
+            source = SOURCE_CART
+            lca?.let { address ->
+                wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                    districtId = address.district_id,
+                    cityId = address.city_id,
+                    latitude = address.lat,
+                    longitude = address.long,
+                    postalCode = address.postal_code,
+                    addressId = address.address_id
+                )
+            }
+        }
+
+        launch(dispatchers.main) {
+            getWishlistV2UseCase.setParams(requestParams)
+            val result = withContext(dispatchers.io) { getWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                view?.let {
+                    if (result.data.items.isNotEmpty()) {
+                        it.renderWishlistV2(result.data.items, true)
+                    }
+                    it.setHasTriedToLoadWishList()
+                    it.stopAllCartPerformanceTrace()
+                }
+            } else {
+                val error = (result as Fail).throwable
+                Timber.d(error)
+                view?.setHasTriedToLoadWishList()
+                view?.stopAllCartPerformanceTrace()
+            }
+        }
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {
@@ -1664,6 +1743,18 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     view?.updateCartBoAffordability(cartShopHolderData)
                 }
             }
+        }
+    }
+
+    override fun getPromoFlag(): Boolean {
+        val cartListData = cartListData
+        val lastValidateUseResponse = lastValidateUseResponse
+        return if (isLastApplyResponseStillValid && cartListData != null) {
+            cartListData.promo.lastApplyPromo.lastApplyPromoData.additionalInfo.pomlAutoApplied
+        } else if (!isLastApplyResponseStillValid && lastValidateUseResponse != null) {
+            lastValidateUseResponse.promoUiModel.additionalInfoUiModel.pomlAutoApplied
+        } else {
+            false
         }
     }
 }

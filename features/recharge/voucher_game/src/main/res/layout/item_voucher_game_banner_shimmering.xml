@@ -15,20 +15,20 @@
         app:cardCornerRadius="@dimen/voucher_game_dp_5"
         app:cardElevation="@dimen/unify_space_2">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="match_parent"
             android:layout_height="@dimen/unify_space_96"
-            app:use_gradient="true"/>
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
     </androidx.cardview.widget.CardView>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/voucher_game_dp_75"
         android:layout_height="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/voucher_game_dp_14"
         android:layout_gravity="right"
-        app:use_gradient="true"
-        app:corners="8"
-        app:width_weight="0.5" />
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect" />
 
 </LinearLayout>

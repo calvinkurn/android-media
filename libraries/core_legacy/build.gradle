@@ -72,7 +72,6 @@ dependencies {
 
     testImplementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

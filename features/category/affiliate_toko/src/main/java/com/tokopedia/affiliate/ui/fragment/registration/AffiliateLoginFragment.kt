@@ -6,37 +6,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
-import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import javax.inject.Inject
 
-class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() {
+class AffiliateLoginFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -44,11 +48,12 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
 
-    private lateinit var affiliateLoginViewModel: AffiliateLoginViewModel
+    private lateinit var affiliateLoginSharedViewModel: AffiliateRegistrationSharedViewModel
 
-    private var affiliateNavigationInterface: AffiliateActivityInterface? = null
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
 
     companion object {
+        const val TAG = "AffiliateLoginFrament"
         fun getFragmentInstance(): Fragment {
             return AffiliateLoginFragment()
         }
@@ -56,6 +61,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateLoginSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,14 +70,20 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? AffiliateActivityInterface)?.let {
-            affiliateNavigationInterface = it
-        }
         afterViewCreated()
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        getComponent().injectLoginFragment(this)
     }
 
     private fun setupViewPager () {
         val viewPager = view?.findViewById<TouchViewPager>(R.id.affiliate_login_view_pager)
+        val pageControl =  view?.findViewById<PageControl>(R.id.affiliate_login_page_control)
         val tutorialArray = arrayListOf<AffiliateTutorialPagerAdapter.LoginTutorialData>().apply {
             context?.apply {
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
@@ -97,19 +109,21 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
             override fun onPageSelected(position: Int) {
-                affiliate_login_page_control.setCurrentIndicator(position)
+                pageControl?.setCurrentIndicator(position)
             }
         })
 
-        affiliate_login_page_control.apply {
+        pageControl?.apply {
             inactiveColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
             setIndicator(tutorialArray.size)
         }
     }
 
     private fun afterViewCreated() {
+        hideAllView()
         setupViewPager()
         setUpNavBar()
+        initObserver()
         checkLoggedIn()
         sendTracking()
     }
@@ -129,7 +143,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_login_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface?.handleBackButton(false)
+                activity?.onBackPressed()
             }
             actionTextView?.setOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_PELJARI,if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN)
@@ -138,53 +152,117 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         }
     }
 
+
     private fun checkLoggedIn() {
-        affiliate_login_ticker.hide()
-        if (!affiliateLoginViewModel.isUserLoggedIn()) {
-            affiliate_login_text.isVisible = true
-            affiliate_login_text.text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
-            affiliate_daftar_text.text = getString(R.string.affiliate_belum_punya_akun_tokopedia)
-            affiliate_keluar_btn.text = getString(R.string.affiliate_daftar)
-            affiliate_sign_up_btn.text = getString(R.string.affiliate_masuk)
-            affiliate_sign_up_btn.isVisible = true
-            affiliate_sign_up_btn.setOnClickListener {
-                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_MASUK)
-                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                    AFFILIATE_LOGIN_REQUEST_CODE)
+        val loginText = view?.findViewById<Typography>(R.id.affiliate_login_text)
+        val daftarText = view?.findViewById<Typography>(R.id.affiliate_daftar_text)
+        val keluarButton = view?.findViewById<Typography>(R.id.affiliate_keluar_btn)
+        val signUpButton = view?.findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)
+        view?.findViewById<Ticker>(R.id.affiliate_login_ticker)?.hide()
+        if (!affiliateLoginSharedViewModel.isUserLoggedIn()) {
+            showAllView()
+            loginText?.apply {
+                isVisible = true
+                text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
             }
-
-            affiliate_keluar_btn.setOnClickListener {
-                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
-                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.REGISTER),
+            daftarText?.text = getString(R.string.affiliate_belum_punya_akun_tokopedia)
+            keluarButton?.apply {
+                text = getString(R.string.affiliate_daftar)
+                setOnClickListener {
+                    sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
+                    startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.REGISTER),
                         AFFILIATE_REGISTER_REQUEST_CODE)
+                }
             }
-
-            affiliate_login_card.hide()
+            signUpButton?.apply {
+                text = getString(R.string.affiliate_masuk)
+                isVisible = true
+                setOnClickListener {
+                    sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_MASUK)
+                    startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                        AFFILIATE_LOGIN_REQUEST_CODE)
+                }
+            }
+            view?.findViewById<CardUnify>(R.id.affiliate_login_card)?.hide()
 
         } else {
-            affiliateNavigationInterface?.validateUserStatus()
+            affiliateLoginSharedViewModel.getAffiliateValidateUser()
+        }
+    }
 
-            affiliate_login_text.isVisible = true
-            affiliate_login_text.text = getString(R.string.affiliate_daftarkan_akun_ini)
-            affiliate_daftar_text.text = getString(R.string.affiliate_daftar_affiliate_dengan_akun_lain)
-            affiliate_keluar_btn.text = getString(R.string.affiliate_keluar)
-            affiliate_sign_up_btn.text = getString(R.string.affiliate_daftar_sekarang)
-            affiliate_sign_up_btn.isVisible = true
-            affiliate_sign_up_btn.setOnClickListener {
-                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
-                affiliateNavigationInterface?.navigateToPortfolioFragment()
+    private fun setUserInformation() {
+        view?.findViewById<CardUnify>(R.id.affiliate_login_card)?.show()
+        view?.findViewById<Typography>(R.id.affiliate_user_name)?.text = affiliateLoginSharedViewModel.getUserName()
+        view?.findViewById<Typography>(R.id.affiliate_user_email)?.text = affiliateLoginSharedViewModel.getUserEmail()
+        view?.findViewById<ImageUnify>(R.id.affiliate_user_image)?.loadImageCircle(affiliateLoginSharedViewModel.getUserProfilePicture())
+    }
+
+    private fun initObserver() {
+        affiliateLoginSharedViewModel.getLoginScreenAction().observe(viewLifecycleOwner,
+             {
+            when(it){
+                AffiliateRegistrationSharedViewModel.UserAction.RegisteredAction -> {
+                    onUserRegistered()
+                }
+                AffiliateRegistrationSharedViewModel.UserAction.FraudAction -> {
+                    showFraudTicker()
+                }
+                AffiliateRegistrationSharedViewModel.UserAction.SignUpAction -> {
+                    setSignupData()
+                }
+                AffiliateRegistrationSharedViewModel.UserAction.SystemDown -> {
+                    hideAllView()
+                    view?.findViewById<TouchViewPager>(R.id.affiliate_login_view_pager)?.hide()
+                    view?.findViewById<PageControl>(R.id.affiliate_login_page_control)?.hide()
+                    view?.findViewById<GlobalError>(R.id.login_error)?.run {
+                        show()
+                        setButtonFull(true)
+                        errorAction.show()
+                        errorAction.text = "Ke Home"
+                    }
+
+                }
+                else -> {}
             }
+        })
+        affiliateLoginSharedViewModel.getProgressBar().observe(viewLifecycleOwner,{
+            it?.let {
+                view?.findViewById<LoaderUnify>(R.id.login_progress)?.isVisible = it
+            }
+        })
+        affiliateLoginSharedViewModel.getAffiliateAnnouncement().observe(viewLifecycleOwner,{ announcementData ->
+            view?.findViewById<Ticker>(R.id.affiliate_login_ticker)?.setAnnouncementData(announcementData,activity)
+        })
+    }
 
-            affiliate_keluar_btn.setOnClickListener {
+    private fun setSignupData() {
+        showAllView()
+        view?.findViewById<Typography>(R.id.affiliate_login_text)?.apply {
+            isVisible = true
+            text = getString(R.string.affiliate_daftarkan_akun_ini)
+        }
+        view?.findViewById<Typography>(R.id.affiliate_daftar_text)?.text = getString(R.string.affiliate_daftar_affiliate_dengan_akun_lain)
+        view?.findViewById<Typography>(R.id.affiliate_keluar_btn)?.apply {
+            text = getString(R.string.affiliate_keluar)
+            setOnClickListener {
                 sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_KELUAR)
                 showDialogLogout()
             }
 
-            affiliate_login_card.show()
-            affiliate_user_name.text = affiliateLoginViewModel.getUserName()
-            affiliate_user_email.text = affiliateLoginViewModel.getUserEmail()
-            ImageHandler.loadImageCircle2(context, affiliate_user_image, affiliateLoginViewModel.getUserProfilePicture())
         }
+        view?.findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.apply {
+            text = getString(R.string.affiliate_daftar_sekarang)
+            setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
+                affiliateLoginSharedViewModel.navigateToPortFolio()
+            }
+        }
+        setUserInformation()
+    }
+
+    private fun onUserRegistered() {
+        RouteManager.route(context,"tokopedia://affiliate")
+        activity?.finish()
     }
 
     private fun sendButtonClick(eventAction: String,label: String= "") {
@@ -237,42 +315,33 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
-
-    override fun initInject() {
-        getComponent().injectLoginFragment(this)
-    }
-
     private fun getComponent(): AffiliateComponent =
             DaggerAffiliateComponent
                     .builder()
                     .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                     .build()
 
-    override fun getViewModelType(): Class<AffiliateLoginViewModel> {
-        return AffiliateLoginViewModel::class.java
-    }
 
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateLoginViewModel = viewModel as AffiliateLoginViewModel
+    private fun showFraudTicker() {
+        hideAllView()
+        affiliateLoginSharedViewModel.getAnnouncementInformation()
     }
-
-    fun showFraudTicker() {
-        affiliate_sign_up_btn.isVisible = false
-        affiliate_login_text.isVisible = false
-        affiliate_login_ticker.run {
-            show()
-            affiliate_login_ticker_cv.show()
-            setHtmlDescription(getString(R.string.affiliate_login_ticker_text))
-            tickerType = Ticker.TYPE_ERROR
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_FRAUD_URL).show(childFragmentManager,"")
-                }
-                override fun onDismiss() {}
-            })
+    private fun hideAllView() {
+        view?.apply {
+            findViewById<CardUnify>(R.id.affiliate_login_card)?.hide()
+            findViewById<Typography>(R.id.affiliate_daftar_text)?.hide()
+            findViewById<Typography>(R.id.affiliate_keluar_btn)?.hide()
+            findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.hide()
+            findViewById<Typography>(R.id.affiliate_login_text)?.hide()
+        }
+    }
+    private fun showAllView() {
+        view?.apply {
+            findViewById<CardUnify>(R.id.affiliate_login_card)?.show()
+            findViewById<Typography>(R.id.affiliate_daftar_text)?.show()
+            findViewById<Typography>(R.id.affiliate_keluar_btn)?.show()
+            findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.show()
+            findViewById<Typography>(R.id.affiliate_login_text)?.show()
         }
     }
 }

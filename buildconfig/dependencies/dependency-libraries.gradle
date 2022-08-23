@@ -19,8 +19,8 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.24",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.24",
-            lint                    : "com.tokopedia.library:lint:0.0.38",
-            dataVisor               : "com.tokopedia.sec:vangogh:0.0.1@aar",
+            lint                    : "com.tokopedia.library:lint:0.0.44",
+            dataVisor               : "com.tokopedia.sec:vangogh:0.0.2@aar",
             secUtil                 : "com.tokopedia.sec:java_util:0.0.1",
             secUtilObs              : "com.tokopedia.sec:tkpd_util_obs:0.0.2",
             brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
@@ -114,6 +114,7 @@ ext {
             tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
-            unitTest                : ":libraries:unit_test"
+            unitTest                : ":libraries:unit_test",
+            telemetry               : ":libraries:telemetry",
     ]
 }

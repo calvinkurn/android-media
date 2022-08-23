@@ -1,20 +1,20 @@
 package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.ui.model.SummaryLeaderboardInfo
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.assisted.Assisted
 import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -26,22 +26,25 @@ import java.io.Closeable
  */
 class PlayBroadcastSummaryViewModelRobot(
     channelId: String = "123",
+    channelTitle: String = "Test 123",
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
-    summaryLeaderboardInfo: SummaryLeaderboardInfo = SummaryLeaderboardInfo(false, "0"),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
     getLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true),
+    getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true),
     updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
     getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true),
     setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
+    getInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase = mockk(relaxed = true)
 ) : Closeable {
 
     private val viewModel = PlayBroadcastSummaryViewModel(
         channelId = channelId,
+        channelTitle = channelTitle,
         productSectionList = productSectionList,
-        summaryLeaderboardInfo = summaryLeaderboardInfo,
+        getSellerLeaderboardUseCase = getSellerLeaderboardUseCase,
         dispatcher = dispatcher,
         getLiveStatisticsUseCase = getLiveStatisticsUseCase,
         updateChannelUseCase = updateChannelUseCase,
@@ -50,6 +53,7 @@ class PlayBroadcastSummaryViewModelRobot(
         getRecommendedChannelTagsUseCase = getRecommendedChannelTagsUseCase,
         setChannelTagsUseCase = setChannelTagsUseCase,
         getChannelUseCase = getChannelUseCase,
+        getInteractiveSummaryLivestreamUseCase = getInteractiveSummaryLivestreamUseCase,
     )
 
     fun recordState(fn: suspend PlayBroadcastSummaryViewModelRobot.() -> Unit): PlayBroadcastSummaryUiState {

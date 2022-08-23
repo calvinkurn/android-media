@@ -79,7 +79,7 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, cartItemHolderData: CartItemHolderData)
         fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData)
-        fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView)
+        fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String)
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
         fun onNeedToRefreshMultipleShop()

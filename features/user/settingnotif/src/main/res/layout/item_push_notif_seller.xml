@@ -32,9 +32,10 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/ic_notifsetting_seller" />
+            app:srcCompat="@drawable/ic_notifsetting_seller"
+            android:contentDescription="img_icon" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,7 +50,8 @@
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/spacing_lvl2"
-            app:srcCompat="@drawable/ic_notifsetting_arrow_right_grey" />
+            app:srcCompat="@drawable/ic_notifsetting_arrow_right_grey"
+            android:contentDescription="Notifikasi Penjual" />
 
     </LinearLayout>
 

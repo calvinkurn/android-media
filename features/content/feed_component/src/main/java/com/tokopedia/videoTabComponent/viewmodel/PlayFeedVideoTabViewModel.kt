@@ -22,6 +22,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCase
+import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -68,6 +69,13 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         get() = lazyReminderUseCase.get()
     val reminderObservable: LiveData<Result<PlayWidgetFeedReminderInfoData>>
         get() = _reminderObservable
+
+    private val _selectedPlayWidgetCard = MutableLiveData<SelectedPlayWidgetCard>()
+    var selectedPlayWidgetCard: SelectedPlayWidgetCard
+        get() = _selectedPlayWidgetCard.value ?: SelectedPlayWidgetCard.Empty
+        set(value) {
+            _selectedPlayWidgetCard.value = value
+        }
 
 
     fun setDefaultValuesOnRefresh(){
@@ -220,6 +228,4 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             throw e
         }
     }
-
-
 }

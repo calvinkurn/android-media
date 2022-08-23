@@ -1,0 +1,30 @@
+{
+  "data": {
+    "productrevGetPostSubmitBottomSheet": {
+      "type": "standard",
+      "title": "Terima kasih untuk ulasanmu!",
+      "description": "Ulasan lengkap akan mendapatkan 200 GoPay Coins yang masuk ke akunmu maks. 24 jam.",
+      "imageURL": "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png",
+      "buttonList": [
+        {
+          "type": "standard",
+          "text": "Kasih Ulasan Lagi",
+          "unifyType": "MAIN",
+          "unifyVariant": "FILLED",
+          "unifySize": "MEDIUM",
+          "webLink": "/inbox-reputation",
+          "appLink": "tokopedia://review"
+        },
+        {
+          "type": "close",
+          "text": "Selesai",
+          "unifyType": "ALTERNATE",
+          "unifyVariant": "TEXT_ONLY",
+          "unifySize": "MEDIUM",
+          "webLink": "",
+          "appLink": ""
+        }
+      ]
+    }
+  }
+}

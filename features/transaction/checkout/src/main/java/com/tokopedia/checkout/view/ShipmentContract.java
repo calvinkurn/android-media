@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -178,6 +179,8 @@ public interface ShipmentContract {
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                     Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
+                                                    String userId,
+                                                    boolean promoFlag,
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
@@ -248,7 +251,7 @@ public interface ShipmentContract {
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
-        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
+        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -369,6 +372,8 @@ public interface ShipmentContract {
         void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
+
+        ShipmentUpsellModel getShipmentUpsellModel();
     }
 
 }

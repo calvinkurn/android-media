@@ -1,11 +1,12 @@
 package com.tokopedia.topads.common.domain.interactor
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.CacheType
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
@@ -23,7 +24,7 @@ import javax.inject.Inject
  * Created by Pika on 5/6/20.
  */
 
-const val UPDATE_SINGLE_ADS = """
+private const val UPDATE_SINGLE_ADS = """
     mutation topadsUpdateSingleAds(${'$'}action: String!, ${'$'}ads: [topadsUpdateSingleAdsReqData]!, ${'$'}shopID: String!) {
   topadsUpdateSingleAds(action: ${'$'}action, ads: ${'$'}ads, shopID: ${'$'}shopID) {
         data {
@@ -38,17 +39,41 @@ const val UPDATE_SINGLE_ADS = """
     }
 }
 """
+
 @GqlQuery("GetTopadsUpdateSingleAds", UPDATE_SINGLE_ADS)
-class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessionInterface) {
+
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+
+    private val cacheStrategy: RestCacheStrategy by lazy {
+        RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+    }
+
+    suspend fun execute(requestParams: RequestParams?): ProductActionResponse {
+        val token = object : TypeToken<DataResponse<ProductActionResponse>>() {}.type
+        val query = GetTopadsUpdateSingleAds.GQL_QUERY
+        val request =
+            GraphqlRequest(query, ProductActionResponse::class.java, requestParams?.parameters)
+        val headers = java.util.HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restRequest =
+            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+                .setBody(request)
+                .setHeaders(headers)
+                .setCacheStrategy(cacheStrategy)
+                .setRequestType(RequestType.POST)
+                .build()
+        return restRepository.getResponse(restRequest)
+            .getData<DataResponse<ProductActionResponse>>().data
+    }
 
     fun setParams(action: String, adIds: List<String>, selectedFilter: String?): RequestParams {
-
         val params = RequestParams.create()
         val product: ArrayList<Map<String, String?>> = arrayListOf()
 
         adIds.forEach {
             val map = mapOf(ParamObject.AD_ID to it, ParamObject.GROUPID to (selectedFilter
-                    ?: ""), PRICE_BID to null)
+                ?: ""), PRICE_BID to null)
             product.add(map)
         }
         val queryMap = HashMap<String, Any?>()
@@ -57,26 +82,5 @@ class TopAdsProductActionUseCase @Inject constructor(val userSession: UserSessio
         queryMap[ADS] = product
         params.putAll(queryMap)
         return params
-    }
-
-    private val cacheStrategy: RestCacheStrategy = RestCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build()
-
-
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = java.util.ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<ProductActionResponse>>() {}.type
-        val query = GetTopadsUpdateSingleAds.GQL_QUERY
-        val request = GraphqlRequest(query, ProductActionResponse::class.java, requestParams?.parameters)
-        val headers = java.util.HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setHeaders(headers)
-                .setCacheStrategy(cacheStrategy)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
     }
 }

@@ -19,7 +19,7 @@ data class Data(
     val status: String = "",
     @SerializedName("voucher_id")
     @Expose
-    val voucherId: Int = 0
+    val voucherId: String = ""
 )
 data class MerchantPromotionCreateMV(
     @SerializedName("data")

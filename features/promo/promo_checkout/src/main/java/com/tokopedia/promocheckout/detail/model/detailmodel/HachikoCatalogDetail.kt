@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.model.detailmodel
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 
@@ -62,6 +63,7 @@ data class HachikoCatalogDetail(
 	@SerializedName("thumbnail_v2_url")
 	val thumbnailV2Url: String? = null,
 
+	@SuppressLint("Invalid Data Type")
 	@SerializedName("id")
 	val id: Int? = null,
 

@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -30,7 +31,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.databinding.*
+import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
@@ -38,11 +39,11 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SH
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
-import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
-import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
-import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
-import com.tokopedia.shop.note.view.model.ShopNoteUiModel
+import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
+import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
+import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -62,6 +63,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
                 arguments = bundle
             }
         }
+
+        private const val EMPTY_DESCRIPTION = "-"
     }
 
     @Inject
@@ -293,16 +296,30 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun displayShopDescription(shopInfo: ShopInfoData) {
-        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoDescription?.apply {
-            if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
-                hide()
-            } else {
-                show()
-                text = MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.apply {
+            // shop description info
+            shopInfoDescription.apply {
+                if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
+                    hide()
+                } else {
+                    show()
+                    text = MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+                }
             }
+
+            // go apotik info
+            goApotikInfoContainer.shouldShowWithAction(shopInfo.isGoApotik) {
+                tvSiaDescription.text = shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                tvSipaDescription.text = shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+            }
+
+            // shop location info
+            shopInfoLocation.text = shopInfo.location
+
+            // shop establishment info
+            shopInfoOpenSince?.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
-        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoLocation?.text = shopInfo.location
-        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoOpenSince?.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
     }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {

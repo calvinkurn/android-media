@@ -25,7 +25,7 @@
             android:name=".feature.comment.view.activity.KolCommentNewActivity"
             android:label="@string/kol_activity_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter android:autoVerify="true">
@@ -41,11 +41,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
-            android:label="@string/kol_title_post_detail"
+            android:name=".feature.postdetail.view.activity.ContentDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -79,7 +77,7 @@
             android:name=".feature.report.view.activity.ContentReportActivity"
             android:label="@string/kol_title_report"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:exported="false">
             <intent-filter>
@@ -97,6 +95,7 @@
         <activity
             android:name=".feature.video.view.activity.VideoDetailActivity"
             android:label="@string/kol_title_video_detail"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
@@ -114,6 +113,7 @@
         <activity
             android:name=".feature.video.view.activity.MediaPreviewActivity"
             android:label="@string/kol_title_media_preview"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>

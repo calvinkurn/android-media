@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -32,9 +33,12 @@ class OtherMenuAdapter(
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
         private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
         private const val TOKOPEDIA_PLAY_END_DATE = 1652806800000 // Wed May 18 2022 00:00:00
+        private const val SLASH_PRICE_END_DATE = 1657990800000 // Sun Jul 17 2022 00:00:00
     }
 
-    private val settingList = listOf(
+    private var isShowCentralizedPromoTag: Boolean = false
+
+    private fun generateSettingList() = listOf(
         SettingTitleUiModel(context?.getString(R.string.setting_menu_improve_sales).orEmpty()),
         StatisticMenuItemUiModel(
             title = context?.getString(R.string.setting_menu_statistic).orEmpty(),
@@ -42,6 +46,7 @@ class OtherMenuAdapter(
             iconUnify = IconUnify.GRAPH,
             tag = getStatisticNewTag()
         ),
+
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
             clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
@@ -120,7 +125,7 @@ class OtherMenuAdapter(
         MenuItemUiModel(
             title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_tokopedia_care)
                 .orEmpty(),
-            clickApplink = ApplinkConst.CONTACT_US_NATIVE,
+            clickApplink = ApplinkConst.TOKOPEDIA_CARE_HELP,
             eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
             iconUnify = IconUnify.CALL_CENTER
         ),
@@ -158,7 +163,7 @@ class OtherMenuAdapter(
     }
 
     private fun getCentralizedPromoTag(): String {
-        val shouldShow = !areDatesExpired()
+        val shouldShow = isShowCentralizedPromoTag
         return if (shouldShow) {
             context?.getString(R.string.setting_new_tag).orEmpty()
         } else {
@@ -170,7 +175,8 @@ class OtherMenuAdapter(
         val todayMillis = Date().time
         val expirationDateList = listOf(
             getProductCouponEndDate(),
-            getTokopediaPlayEndDate()
+            getTokopediaPlayEndDate(),
+            getSlashPriceEndDate()
         )
         return expirationDateList.all { expiredDate ->
             todayMillis >= expiredDate
@@ -181,10 +187,19 @@ class OtherMenuAdapter(
 
     private fun getTokopediaPlayEndDate(): Long = TOKOPEDIA_PLAY_END_DATE
 
+    private fun getSlashPriceEndDate(): Long = SLASH_PRICE_END_DATE
+
     fun populateAdapterData() {
         clearAllElements()
-        addElement(settingList)
+        addElement(generateSettingList())
     }
+
+
+    fun setCentralizedPromoTag(isShow: Boolean = false) {
+        this.isShowCentralizedPromoTag = isShow
+        populateAdapterData()
+    }
+
 
     interface Listener {
         fun goToPrintingPage()

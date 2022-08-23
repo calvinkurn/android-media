@@ -1,5 +1,6 @@
 package com.tokopedia.travel.passenger.domain
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -16,7 +17,7 @@ import javax.inject.Inject
  */
 class UpsertContactListUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(query: String, travelUpsertContactModel: TravelUpsertContactModel): Result<TravelUpsertContactModel.Response> {
+    suspend fun execute(query: GqlQueryInterface, travelUpsertContactModel: TravelUpsertContactModel): Result<TravelUpsertContactModel.Response> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         useCase.clearRequest()
         return try {

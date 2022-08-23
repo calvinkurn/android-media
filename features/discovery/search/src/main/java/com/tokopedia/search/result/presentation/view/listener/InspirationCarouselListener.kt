@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.view.listener
 
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 
 interface InspirationCarouselListener {
 
@@ -31,8 +31,8 @@ interface InspirationCarouselListener {
     fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
 
     fun onInspirationCarouselChipsClicked(
-            inspirationCarouselAdapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            inspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselAdapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        inspirationCarouselOption: InspirationCarouselDataView.Option,
     )
 }

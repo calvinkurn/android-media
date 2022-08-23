@@ -59,7 +59,7 @@ class TopAdsDashboardViewModel @Inject constructor(
                     Fail(Throwable())
                 }
         }, onError = {
-            _recommendationStatsLiveData.value = Fail(Throwable())
+            _recommendationStatsLiveData.value = Fail(it)
         })
     }
 

@@ -17,6 +17,7 @@ object TopAdsDashboardConstant {
     const val PARAM_AD_TYPES = "adTypes"
     const val PARAM_SOURCE = "source"
     const val PARAM_LEVEL = "level"
+    const val HEADLINE = "headline"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3

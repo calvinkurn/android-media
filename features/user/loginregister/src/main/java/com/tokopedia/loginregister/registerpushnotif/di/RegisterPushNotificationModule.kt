@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.registerpushnotif.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -24,6 +25,7 @@ class RegisterPushNotificationModule(
     fun provideUserSession(): UserSessionInterface = UserSession(context)
 
     @LoginRegisterScope
+    @ApplicationContext
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 

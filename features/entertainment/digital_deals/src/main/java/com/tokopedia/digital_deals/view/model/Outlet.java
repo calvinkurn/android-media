@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,16 +9,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class Outlet implements Parcelable {
 
-
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private String productId;
     @SerializedName("location_id")
     @Expose
-    private int locationId;
+    private String locationId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -74,9 +74,9 @@ public class Outlet implements Parcelable {
     };
 
     protected Outlet(Parcel in) {
-        this.id = in.readInt();
-        this.productId = in.readInt();
-        this.locationId = in.readInt();
+        this.id = in.readString();
+        this.productId = in.readString();
+        this.locationId = in.readString();
         this.isSearchable = in.readInt();
         this.locationStatus = in.readInt();
         this.name = in.readString();
@@ -95,27 +95,27 @@ public class Outlet implements Parcelable {
     public Outlet() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
-    public int getLocationId() {
+    public String getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(int locationId) {
+    public void setLocationId(String locationId) {
         this.locationId = locationId;
     }
 
@@ -224,9 +224,9 @@ public class Outlet implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeInt(productId);
-        dest.writeInt(locationId);
+        dest.writeString(id);
+        dest.writeString(productId);
+        dest.writeString(locationId);
         dest.writeInt(isSearchable);
         dest.writeInt(locationStatus);
         dest.writeString(name);

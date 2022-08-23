@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -19,7 +20,12 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
@@ -28,6 +34,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -35,6 +42,7 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.common.util.Utility
+import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
@@ -49,6 +57,7 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),
@@ -61,13 +70,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         private const val SELECTED_BUNDLE_ID = "SELECTED_BUNDLE_ID"
         private const val SELECTED_PRODUCT_IDS = "SELECTED_PRODUCT_IDS"
         private const val PAGE_SOURCE = "PAGE_SOURCE"
+        private const val PARENT_PRODUCT_ID = "PARENT_PRODUCT_ID"
         private const val LOGIN_REQUEST_CODE = 1122
         @JvmStatic
         fun newInstance(productBundleInfo: List<BundleInfo>,
                         emptyVariantProductIds: List<String>,
                         selectedBundleId: String,
                         selectedProductIds: List<String>,
-                        pageSource: String) =
+                        pageSource: String,
+                        parentProductId: Long) =
             MultipleProductBundleFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(PRODUCT_BUNDLE_INFO, ArrayList(productBundleInfo))
@@ -75,12 +86,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     putString(SELECTED_BUNDLE_ID, selectedBundleId)
                     putStringArrayList(SELECTED_PRODUCT_IDS, ArrayList(selectedProductIds))
                     putString(PAGE_SOURCE, pageSource)
+                    putLong(PARENT_PRODUCT_ID, parentProductId)
                 }
             }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel by lazy {
-        ViewModelProvider(this.requireActivity()).get(ProductBundleViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(ProductBundleViewModel::class.java)
     }
 
     private var processDayView: Typography? = null
@@ -108,15 +123,14 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
         // get data from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
-        var selectedBundleId: Long? = null
-        var selectedVariantIds: List<String> = emptyList()
         var emptyVariantProductIds: List<String> = emptyList()
         if (arguments != null) {
             productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
-            selectedBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
+            viewModel.selectedBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull().orZero()
             emptyVariantProductIds = arguments?.getStringArrayList(EMPTY_VARIANT_PRODUCT_IDS).orEmpty()
-            selectedVariantIds = arguments?.getStringArrayList(SELECTED_PRODUCT_IDS).orEmpty()
+            viewModel.selectedProductIds = arguments?.getStringArrayList(SELECTED_PRODUCT_IDS).orEmpty()
             viewModel.pageSource = arguments?.getString(PAGE_SOURCE) ?: ""
+            viewModel.parentProductID = arguments?.getLong(PARENT_PRODUCT_ID).orZero()
         }
 
         // setup multiple product bundle views
@@ -143,18 +157,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 // get product bundle master from the map - single source of truth
                 val productBundleMasters = viewModel.getProductBundleMasters()
                 // get selected product bundle master - return the first bundle master if no selection exist
-                val selectedProductBundleMaster = viewModel.getSelectedBundle(selectedBundleId, productBundleMasters)
+                val selectedProductBundleMaster = viewModel.getSelectedBundle(viewModel.selectedBundleId, productBundleMasters)
                 selectedProductBundleMaster?.run {
                     // render product bundle master chips
                     productBundleMasterAdapter?.setProductBundleMasters(productBundleMasters, this.bundleId)
                     // set selected product variants to bundle details
-                    viewModel.setSelectedVariants(selectedVariantIds,this)
+                    viewModel.setSelectedVariants(viewModel.selectedProductIds,this)
                     // set selected bundle master to live data to render details
                     viewModel.setSelectedProductBundleMaster(this)
                     // update the process day
                     renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
                     // update totalView atc button text
-                    updateProductBundleOverViewButtonText(preOrderStatus)
+                    updateProductBundleOverViewButtonText(preOrderStatus, true)
                 }
                 //show error if bundle is empty
                 showGlobalError(productBundleMasters.isEmpty())
@@ -189,7 +203,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe add to cart result
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
-                if (viewModel.pageSource == PAGE_SOURCE_CART) {
+                if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
@@ -215,8 +229,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
             errorMessage?.run {
                 // show error message
-                Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.action_oke)).setAnchorView(productBundleOverView?.bottomContentView).show()
+                productBundleOverView?.bottomContentView?.apply {
+                    Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.action_oke)).setAnchorView(this).show()
+                }
             }
         })
     }
@@ -246,8 +262,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             TotalAmount.Order.AMOUNT,
             TotalAmount.Order.SUBTITLE
         )
-        productBundleOverView?.amountCtaView?.width = resources
-            .getDimension(R.dimen.atc_button_width).toInt()
+        productBundleOverView?.amountCtaView?.width = context?.resources
+            ?.getDimension(R.dimen.atc_button_width)?.orZero().toIntSafely()
         productBundleOverView?.amountCtaView?.setOnClickListener {
             val isUserLoggedIn = viewModel.isUserLoggedIn()
             if (isUserLoggedIn) {
@@ -341,12 +357,57 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
 
-    private fun updateProductBundleOverViewButtonText(preOrderStatus: String) {
+    private fun updateProductBundleOverViewButtonText(preOrderStatus: String, isFirstSetup: Boolean = false) {
         productBundleOverView?.amountCtaView?.text = if (viewModel.isPreOrderActive(preOrderStatus)) {
-            getString(R.string.action_preorder)
+            getCtaText(
+                stringRes = R.string.action_preorder,
+                isEnabled = true
+            )
         } else {
-            getString(R.string.action_buy_bundle)
+            getAddUpdateModeCtaText(isFirstSetup)
         }
+    }
+
+    private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
+        return if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
+            /*
+             * UPDATE MODE (CART & MINI CART)
+             *
+             * isProductBundleDifferent : Will be true if user chooses the other product bundle.
+             * isProductVariantChanged  : Will be true if user changes the product variant of product bundle.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it will make atc button disabled if the value is true.
+             *
+             * Will disable the button if there is no changes and vice versa
+             */
+            val isProductBundleDifferent = viewModel.selectedBundleId != viewModel.getSelectedProductBundleMaster().bundleId
+            val isProductVariantChanged = !viewModel.variantProductNotChanged(viewModel.getSelectedProductBundleDetails())
+            if ((isProductBundleDifferent || isProductVariantChanged) && !isFirstSetup) {
+                getCtaText(
+                    stringRes = R.string.action_choose_package,
+                    isEnabled = true
+                )
+            } else {
+                getCtaText(
+                    stringRes = R.string.action_package_chosen,
+                    isEnabled = false
+                )
+            }
+        } else {
+            /*
+             * ADD MODE (PDP)
+             *
+             * Always enable atc button
+             */
+            getCtaText(
+                stringRes = R.string.action_choose_package,
+                isEnabled = true
+            )
+        }
+    }
+
+    private fun getCtaText(stringRes: Int, isEnabled: Boolean): String {
+        productBundleOverView?.amountCtaView?.isEnabled = isEnabled
+        return context?.getString(stringRes).orEmpty()
     }
 
     private fun showGlobalError(isVisible: Boolean) {
@@ -370,8 +431,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun refreshPage() {
-        val productBundleActivity = requireActivity() as ProductBundleActivity
-        productBundleActivity.refreshPage()
+        val parentActivity = activity as? ProductBundleActivity
+        parentActivity?.entrypointFragment?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, it, tagFragment)
+                .commit()
+        }
     }
 
     private fun goToLoginPage() {
@@ -456,15 +521,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     // update total amount view
                     val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
                     updateProductBundleOverView(productBundleOverView, selectedBundleDetails)
+                    getAddUpdateModeCtaText(false)
                 }
             }
-            Toaster.build(
-                requireView(),
-                getString(R.string.single_bundle_success_variant_added),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.action_oke)
-            ).setAnchorView(productBundleOverView?.bottomContentView).show()
+            productBundleOverView?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    getString(R.string.single_bundle_success_variant_added),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
+            }
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             productBundleOverView?.amountCtaView?.performClick()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -121,7 +122,15 @@
         app:backgroundTint="@color/Unify_GN500"
         app:fbType="circle"
         app:srcCompat="@drawable/ic_feed_post_plus"
-        tools:visibility="visible"
+        />
+
+    <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+        android:id="@+id/feed_floating_button"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/unify_space_16"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

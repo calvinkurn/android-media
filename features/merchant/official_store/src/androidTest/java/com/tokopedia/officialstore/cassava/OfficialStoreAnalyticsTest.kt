@@ -16,20 +16,22 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
-import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
-import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
+import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
 import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialBannerViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialBenefitViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialFeaturedShopViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelSprintSaleViewHolder
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelThematicViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
@@ -56,6 +58,9 @@ class OfficialStoreAnalyticsTest {
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER =
             "tracker/official_store/merchant_voucher_os.json"
+
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE =
+            "tracker/official_store/special_release.json"
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"
         private const val ADDRESS_1_DISTRICT_ID = "3171"
@@ -279,6 +284,20 @@ class OfficialStoreAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER)
+        }
+    }
+
+    @Test
+    fun testSpecialReleaseWidget() {
+        OSCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = SpecialReleaseDataModel::class) {viewHolder, itemClickLimit ->
+                onView(firstView(withId(R.id.see_all_button))).perform(ViewActions.click())
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_special_release_rv,0)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE)
         }
     }
 }

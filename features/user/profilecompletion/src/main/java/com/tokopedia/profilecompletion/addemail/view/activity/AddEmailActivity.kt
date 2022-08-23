@@ -13,23 +13,23 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * @author by nisie on 22/04/19.
- * For navigate: use {@link ApplinkConstInternalGlobal.ADD_EMAIL}
+ * For navigate: use {@link ApplinkConstInternalUserPlatform.ADD_EMAIL}
  */
 class AddEmailActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        intent.extras?.let {
-            bundle.putAll(it)
-        }
-        return AddEmailFragment.createInstance(bundle)
+	val bundle = Bundle()
+	intent.extras?.let {
+	    bundle.putAll(it)
+	}
+	return AddEmailFragment.createInstance(bundle)
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-                    .build()
+	return DaggerProfileCompletionSettingComponent.builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+	    .build()
     }
 
 }

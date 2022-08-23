@@ -5,6 +5,8 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.repository.PlayViewerCartRepositoryImpl
 import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.domain.repository.PlayViewerCartRepository
+import com.tokopedia.play.helper.ClassBuilder
+import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.util.isEqualTo
@@ -32,30 +34,18 @@ class PlayViewerCartRepositoryTest {
     private val mockPostAddToCartUseCase: PostAddToCartUseCase = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val testDispatcher = CoroutineTestDispatchers
-    lateinit var mockMapper: PlayUiModelMapper
-    private val cartMapper = PlayCartMapper()
-
+    private val classBuilder = ClassBuilder()
+    private val mapper = classBuilder.getPlayUiModelMapper()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
 
-        mockMapper = PlayUiModelMapper(
-            productTagMapper = mockk(relaxed = true),
-            merchantVoucherMapper = mockk(relaxed = true),
-            chatMapper = mockk(relaxed = true),
-            channelStatusMapper = mockk(relaxed = true),
-            channelInteractiveMapper = mockk(relaxed = true),
-            interactiveLeaderboardMapper = mockk(relaxed = true),
-            cartMapper = cartMapper,
-            playUserReportMapper = mockk(relaxed = true)
-        )
-
         cartRepository = PlayViewerCartRepositoryImpl(
             mockPostAddToCartUseCase,
             mockUserSession,
             testDispatcher,
-            mockMapper
+            mapper,
         )
     }
 

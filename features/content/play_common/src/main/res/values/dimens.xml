@@ -1,7 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="play_dp_6">6dp</dimen>
+    <dimen name="play_dp_10">10dp</dimen>
+    <dimen name="play_dp_12">12dp</dimen>
     <dimen name="play_dp_14">14dp</dimen>
+
+    <dimen name="play_spacing_size">1dp</dimen>
 
     <dimen name="play_placeholder_radius">8dp</dimen>
     <dimen name="play_placeholder_shadow_padding">1dp</dimen>
@@ -25,8 +31,8 @@
 
     <!--Engagement Tools-->
     <dimen name="play_interactive_common_radius">12dp</dimen>
-    <dimen name="play_interactive_illustration_width">240dp</dimen>
-    <dimen name="play_interactive_illustration_height">180dp</dimen>
+    <dimen name="play_interactive_illustration_width">160dp</dimen>
+    <dimen name="play_interactive_illustration_height">160dp</dimen>
 
     <dimen name="play_leaderboard_winner_separator_height">1dp</dimen>
 
@@ -34,10 +40,34 @@
     <dimen name="play_circle_separator_height">4dp</dimen>
 
     <!-- Product Tag -->
-    <dimen name="play_product_tag_width">120dp</dimen>
+    <dimen name="play_product_tag_width">80dp</dimen>
+    <dimen name="play_product_pinned_width">280dp</dimen>
+    <dimen name="play_product_tag_height">118dp</dimen>
     <dimen name="play_product_tag_image_height">120dp</dimen>
     <dimen name="play_product_tag_radius">12dp</dimen>
     <dimen name="play_product_tag_stock_radius">4dp</dimen>
     <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_tag_text_height_placeholder">16dp</dimen>
+
+    <!-- Engagement tools-->
+    <dimen name="engagement_icon_size">40dp</dimen>
+    <dimen name="engagement_rounded_header_top">-20dp</dimen>
+    <dimen name="engagement_title_header_top">28dp</dimen>
+    <dimen name="engagement_tools_small_widget_width">104dp</dimen>
+
+    <!-- Interactive -->
+    <dimen name="interactive_icon_radius">80dp</dimen>
+    <dimen name="interactive_widget_radius">8dp</dimen>
+    <dimen name="interactive_finish_width">82dp</dimen>
+    <dimen name="interactive_finish_min_height">64dp</dimen>
+    <dimen name="play_common_anchor_size">0.1dp</dimen>
+
+    <!-- Giveaway -->
+    <dimen name="play_giveaway_tap_bg_size">72dp</dimen>
+    <dimen name="play_giveaway_tap_inside_stroke_width">1dp</dimen>
+    <dimen name="play_giveaway_tap_icon_size">26dp</dimen>
+    <dimen name="play_quiz_option_loader_size">21dp</dimen>
+
+    <!-- Chat -->
+    <dimen name="play_bro_chat_spacing">6dp</dimen>
 </resources>

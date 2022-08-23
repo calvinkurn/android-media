@@ -9,6 +9,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioUrlInputData
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePortfolioSocialMediaBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel
@@ -23,14 +24,15 @@ class AffiliatePortfolioViewModel@Inject constructor(
     :BaseViewModel() {
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var updateListItem = MutableLiveData<Int>()
-    private var isError = MutableLiveData<Boolean>()
+    var isError = MutableLiveData<Boolean>()
 
     fun createDefaultListForSm() {
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram", INSTAGRAM_DEFAULT,"Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok", TIKTOK_DEFAULT,"Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube", YOUTUBE_DEFAULT,"Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_YT_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(
+            AffiliatePortfolioSocialMediaBottomSheet.INSTA,"instagram","Link Instagram", INSTAGRAM_DEFAULT,"Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(AffiliatePortfolioSocialMediaBottomSheet.TIKTOK,"tiktok","Link Tiktok", TIKTOK_DEFAULT,"Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(AffiliatePortfolioSocialMediaBottomSheet.YOUTUBE,"youtube","Link Youtube", YOUTUBE_DEFAULT,"Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_YT_REGEX)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE,UnifyButton.Variant.GHOST)))
         affiliatePortfolioData.value = itemList
     }

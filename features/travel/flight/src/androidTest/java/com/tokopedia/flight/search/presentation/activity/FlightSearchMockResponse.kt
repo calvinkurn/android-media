@@ -12,14 +12,14 @@ class FlightSearchMockResponse : MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
-                KEY_CONTAINS_SEARCH_LIST,
-                getRawString(context, R.raw.response_mock_data_flight_search_list),
-                FIND_BY_CONTAINS
+            KEY_CONTAINS_SEARCH_LIST,
+            getRawString(context, R.raw.response_mock_data_flight_search_list),
+            FIND_BY_CONTAINS
         )
         addMockResponse(
-                KEY_CONTAINS_PROMO_CHIPS,
-                getRawString(context, R.raw.response_mock_data_flight_promo_chips),
-                FIND_BY_QUERY_NAME
+            KEY_CONTAINS_PROMO_CHIPS,
+            getRawString(context, R.raw.response_mock_data_flight_promo_chips),
+            FIND_BY_CONTAINS
         )
 
         return this

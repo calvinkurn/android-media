@@ -5,7 +5,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home2hSwitcher
 
 object SwitcherMapper {
@@ -30,17 +30,17 @@ object SwitcherMapper {
         val isEligibleForNow2h = now2hWarehouseId != DEFAULT_WAREHOUSE_ID
 
         return when {
-            isServiceTypeNow2h && isEligibleForNow15m -> create15mSwitcherUiModel()
+            isServiceTypeNow2h && isEligibleForNow15m -> create20mSwitcherUiModel()
             isServiceTypeNow15m && isEligibleForNow2h -> create2HSwitcherUiModel()
             else -> null
         }
     }
 
-    private fun create15mSwitcherUiModel(): HomeLayoutItemUiModel {
-        return HomeLayoutItemUiModel(Home15mSwitcher, HomeLayoutItemState.LOADED)
+    private fun create20mSwitcherUiModel(): HomeLayoutItemUiModel {
+        return HomeLayoutItemUiModel(Home20mSwitcher(), HomeLayoutItemState.LOADED)
     }
 
     private fun create2HSwitcherUiModel(): HomeLayoutItemUiModel {
-        return HomeLayoutItemUiModel(Home2hSwitcher, HomeLayoutItemState.LOADED)
+        return HomeLayoutItemUiModel(Home2hSwitcher(), HomeLayoutItemState.LOADED)
     }
 }

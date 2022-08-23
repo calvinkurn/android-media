@@ -17,9 +17,21 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -43,6 +55,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.pin
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.loader_dialog
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -52,7 +66,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lottie
     implementation (rootProject.ext.firebase.crashlytics) {
@@ -66,6 +79,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.playServicesDependencies.core
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

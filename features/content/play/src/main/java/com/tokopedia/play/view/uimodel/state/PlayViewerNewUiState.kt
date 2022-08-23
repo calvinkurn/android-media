@@ -1,23 +1,25 @@
 package com.tokopedia.play.view.uimodel.state
 
-import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 28/06/21
  */
 data class PlayViewerNewUiState(
     val channel: PlayChannelDetailUiModel,
-    val interactiveView: PlayInteractiveViewUiState,
+    val interactive: InteractiveStateUiModel,
     val partner: PlayPartnerInfo,
     val winnerBadge: PlayWinnerBadgeUiState,
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
@@ -28,40 +30,46 @@ data class PlayViewerNewUiState(
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
-    val kebabMenu: PlayKebabMenuUiState,
     val selectedVariant: NetworkResult<VariantUiModel>,
     val isLoadingBuy: Boolean,
-)
+    val address: AddressWidgetUiState,
+    val featuredProducts: List<PlayProductUiModel.Product>,
+) {
 
-data class PlayInteractiveViewUiState(
-    val interactive: PlayInteractiveUiState,
-    val visibility: ViewVisibility,
-)
-
-sealed class PlayInteractiveUiState {
-
-    object NoInteractive : PlayInteractiveUiState()
-
-    object Loading : PlayInteractiveUiState()
-
-    object Error : PlayInteractiveUiState()
-
-    data class PreStart(
-        val timeToStartInMs: Long,
-        val title: String,
-    ) : PlayInteractiveUiState()
-
-    data class Ongoing(
-        val timeRemainingInMs: Long,
-    ) : PlayInteractiveUiState()
-
-    data class Finished(
-        @StringRes val info: Int,
-    ) : PlayInteractiveUiState()
+    companion object {
+        val Empty: PlayViewerNewUiState
+            get() = PlayViewerNewUiState(
+                channel = PlayChannelDetailUiModel(),
+                interactive = InteractiveStateUiModel.Empty,
+                partner = PlayPartnerInfo(),
+                winnerBadge = PlayWinnerBadgeUiState(
+                    leaderboards = LeaderboardUiModel.Empty,
+                    shouldShow = false,
+                ),
+                bottomInsets = emptyMap(),
+                like = PlayLikeUiState.Empty,
+                totalView = PlayTotalViewUiState("0"),
+                rtn = PlayRtnUiState(
+                    shouldShow = false,
+                    lifespanInMs = 0L,
+                ),
+                title = PlayTitleUiState(""),
+                tagItems = TagItemUiModel.Empty,
+                status = PlayStatusUiModel.Empty,
+                quickReply = PlayQuickReplyInfoUiModel.Empty,
+                selectedVariant = NetworkResult.Loading,
+                isLoadingBuy = false,
+                address = AddressWidgetUiState(
+                    shouldShow = false,
+                    warehouseInfo = WarehouseInfoUiModel.Empty,
+                ),
+                featuredProducts = emptyList(),
+            )
+    }
 }
 
 data class PlayWinnerBadgeUiState(
-    val leaderboards: PlayLeaderboardWrapperUiModel,
+    val leaderboards: LeaderboardUiModel,
     val shouldShow: Boolean
 )
 
@@ -72,13 +80,25 @@ enum class PlayLikeMode {
 }
 
 data class PlayLikeUiState(
-        val shouldShow: Boolean,
-        val canLike: Boolean,
-        val totalLike: String,
-        val likeMode: PlayLikeMode,
-        val isLiked: Boolean,
-        val canShowBubble: Boolean,
-)
+    val shouldShow: Boolean,
+    val canLike: Boolean,
+    val totalLike: String,
+    val likeMode: PlayLikeMode,
+    val isLiked: Boolean,
+    val canShowBubble: Boolean,
+) {
+    companion object {
+        val Empty: PlayLikeUiState
+            get() = PlayLikeUiState(
+                shouldShow = false,
+                canLike = false,
+                totalLike = "0",
+                likeMode = PlayLikeMode.Unknown,
+                isLiked = false,
+                canShowBubble = false,
+            )
+    }
+}
 
 data class PlayRtnUiState(
     val shouldShow: Boolean,
@@ -93,13 +113,13 @@ data class PlayTitleUiState(
     val title: String
 )
 
-data class PlayKebabMenuUiState(
-    val shouldShow: Boolean
-)
-
-enum class ViewVisibility {
-
-    Visible,
-    Invisible,
-    Gone
+enum class KebabMenuType{
+    ThreeDots,
+    UserReportList,
+    UserReportSubmission
 }
+
+data class AddressWidgetUiState(
+    val shouldShow: Boolean,
+    val warehouseInfo: WarehouseInfoUiModel
+)

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import androidx.core.app.TaskStackBuilder;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -33,7 +34,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -65,7 +66,6 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.notifications.worker.PushWorker;
-import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
@@ -102,7 +102,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
-
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -114,7 +115,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         GamificationRouter,
         NetworkRouter,
-        OmsModuleRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
 
@@ -130,6 +130,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
+
+    private static final int REDIRECTION_HOME = 1;
+    private static final int REDIRECTION_WEBVIEW = 2;
+    private static final int REDIRECTION_DEFAULT= 0;
 
     @Override
     public void onCreate() {
@@ -188,7 +192,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMPushNotification();
         initTetraDebugger();
         initCMDependencies();
+        initDataStoreMigration();
+        initSeamlessLoginWorker();
         return true;
+    }
+
+    // To Refresh the seamless login token every week
+    private void initSeamlessLoginWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
+    }
+
+    private void initDataStoreMigration() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
     }
 
     private void initCMDependencies(){
@@ -276,12 +297,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NFCSubscriber.onNewIntent(context, intent);
     }
 
-
-    @Override
-    public Interceptor getChuckerInterceptor() {
-        return getAppComponent().ChuckerInterceptor();
-    }
-
     private Intent getInboxReputationIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
@@ -298,6 +313,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, ConsumerSplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
+        forceLogout();
+        if(redirectionType == REDIRECTION_HOME) {
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else if(redirectionType == REDIRECTION_WEBVIEW) {
+            Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+            TaskStackBuilder task = TaskStackBuilder.create(this);
+            task.addNextIntent(homeIntent);
+            task.addNextIntent(webViewIntent);
+            task.startActivities();
+        } else {
+            Intent intent = new Intent(context, ConsumerSplashScreen.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     @Override

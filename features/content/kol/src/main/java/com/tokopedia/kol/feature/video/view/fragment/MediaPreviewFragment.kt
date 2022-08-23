@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -35,7 +36,7 @@ import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kolcommon.util.TimeConverter
@@ -45,6 +46,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_media_preview.*
 import javax.inject.Inject
 
@@ -95,19 +102,19 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mediaPreviewViewModel.postDetailLive.observe(this, Observer {
+        mediaPreviewViewModel.postDetailLive.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessGetDetail(it.data)
                 is Fail -> onErrorGetDetail(it.throwable)
             }
         })
 
-        mediaPreviewViewModel.postFooterLive.observe(this, Observer {
+        mediaPreviewViewModel.postFooterLive.observe(viewLifecycleOwner, Observer {
             val (footer, footerTemplate) = it ?: return@Observer
             bindFooter(footer, footerTemplate)
         })
 
-        mediaPreviewViewModel.postTagLive.observe(this, Observer { postTag ->
+        mediaPreviewViewModel.postTagLive.observe(viewLifecycleOwner, Observer { postTag ->
             postTag?.let { bindTags(it) }
         })
     }
@@ -143,7 +150,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         super.onDestroy()
     }
 
-    private fun onSuccessGetDetail(data: PostDetailViewModel) {
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
+
+    private fun onSuccessGetDetail(data: PostDetailUiModel) {
         val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
         dynamicPost?.let {
             bindToolbar(it)
@@ -272,7 +284,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
+                context?.let {
+                    tag_picture.loadImageRounded(
+                        tags.items[0].thumbnail,
+                        it.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    )
+                }
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }
@@ -302,7 +319,50 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
         if (mediaPreviewViewModel.isSessionActive){
-            mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist)
+            context?.let {
+                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                    mediaPreviewViewModel.toggleWishlistV2(isWishListAction, productId, pos, object: WishlistV2ActionListener {
+                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+
+                        override fun onSuccessAddWishlist(
+                            result: AddToWishlistV2Response.Data.WishlistAddV2,
+                            productId: String
+                        ) {
+                            context?.let { context ->
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                }
+                            }
+                        }
+
+                        override fun onErrorRemoveWishlist(
+                            throwable: Throwable,
+                            productId: String
+                        ) {
+                            val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                            }
+                        }
+
+                        override fun onSuccessRemoveWishlist(
+                            result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                            productId: String
+                        ) {
+                            context?.let { context ->
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                }
+                            }
+                        }
+                    }, it)
+                } else {
+                    mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
+                }
+
         } else {
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
@@ -310,6 +370,18 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun onErrorToggleWishlist(message: String) {
         showToastError(message)
+    }
+
+    private fun onErrorToggleWishlistV2(message: String, ctaText: String, ctaAction: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
+                if (ctaAction == OPEN_WISHLIST) goToWishList()
+            }.show()
+        }
+    }
+
+    private fun goToWishList() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
@@ -343,7 +415,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
                 else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
             val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) R.color.kol_green_g500 else com.tokopedia.unifyprinciples.R.color.Unify_N0 ) }
+                    if (footer.isLiked) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N0 ) }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)
@@ -382,6 +454,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("Method Call Prohibited")
     private fun doComment() {
         activity?.let {
             val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)

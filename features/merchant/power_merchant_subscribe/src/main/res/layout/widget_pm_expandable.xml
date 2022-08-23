@@ -19,36 +19,14 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/layout_lvl2" />
 
-    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PmProCurrentBenefitSectionView
-        android:id="@+id/viewPmProBenefitSection"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginEnd="12dp"
-        android:layout_marginStart="12dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible"/>
-
     <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PmCurrentBenefitSectionView
         android:id="@+id/viewPmBenefitSection"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/guidelineExpandableEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineExpandableStart"
-        app:layout_constraintTop_toBottomOf="@id/viewPmProBenefitSection"
-        tools:visibility="visible"/>
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrierPmExpandable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="viewPmBenefitSection, viewPmProBenefitSection" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPmExpandableItem"
@@ -63,4 +41,67 @@
         tools:itemCount="5"
         tools:listitem="@layout/item_pm_expandable_widget_item" />
 
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardInfoBenefit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPmExpandableItem">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/imageBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_intersect"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:layout_marginTop="@dimen/unify_space_4"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_name="LIGHT_BULB"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageBackground" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/pm_info_benefit_increase_title"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imageBackground"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imageBackground"
+                app:layout_constraintTop_toBottomOf="@id/text_title"
+                app:typographyType="body_3"
+                tools:text="Klik ikon > di bagian atas halaman ini untuk lihat caranya. Yuk, cek targetmu selanjutnya!" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
 </androidx.constraintlayout.widget.ConstraintLayout>

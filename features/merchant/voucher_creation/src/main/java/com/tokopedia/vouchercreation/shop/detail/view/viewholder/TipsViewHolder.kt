@@ -11,9 +11,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcDetailTipsBinding
 import com.tokopedia.vouchercreation.shop.detail.model.TipsUiModel
-import kotlinx.android.synthetic.main.item_mvc_detail_tips.view.*
 
 /**
  * Created By @ilhamsuaib on 04/05/20
@@ -29,10 +30,12 @@ class TipsViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_detail_tips
     }
 
+    private var binding: ItemMvcDetailTipsBinding? by viewBinding()
+
     override fun bind(element: TipsUiModel) {
-        with(itemView) {
+        binding?.apply {
             val text = element.tips.parseAsHtml()
-            val greenColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G500)
+            val greenColor = tvMvcTips.context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G500)
             val spannableStringColor = ForegroundColorSpan(greenColor)
             val spannableString = SpannableString(text)
             val clickableSpan = object : ClickableSpan() {

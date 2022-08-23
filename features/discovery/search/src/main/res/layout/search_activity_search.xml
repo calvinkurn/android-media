@@ -50,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             app:tabMode="fixed"
+            app:tabMaxWidth="0dp"
             app:tabGravity="fill"
             app:tabSelectedTextColor="@color/Unify_G500"
             app:tabTextColor="@color/Unify_N700_32"

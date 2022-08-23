@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.widget.jumbo
 
 import android.content.Context
+import android.graphics.Matrix
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,10 @@ import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
@@ -24,6 +28,7 @@ import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play_common.R as playCommonR
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -52,6 +57,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     private val tvAuthor: TextView
     private val tvTotalView: TextView
     private val ivGiveaway: ImageView
+    private val ivPromoLabel: IconUnify
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -59,7 +65,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
     private val ratio: Double
-        get() = 4.0/5.0
+        get() = WIDTH_RATIO/ HEIGHT_RATIO
 
     private lateinit var mModel: PlayWidgetChannelUiModel
 
@@ -77,11 +83,29 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
+        ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
+
+        thumbnail.onUrlLoaded = { isSuccess ->
+            if (isSuccess) {
+                thumbnail.post {
+                    //need to delay (e.g. with post) because ImageUnify does not give listener that can get the resource directly
+                    //without post, the drawable will be null most of the time
+                    val drawable = thumbnail.drawable ?: return@post
+                    val wScale = (thumbnail.width / drawable.intrinsicWidth).toFloat()
+                    val hScale = (thumbnail.height / drawable.intrinsicHeight).toFloat()
+
+                    val scale = wScale.coerceAtLeast(hScale)
+                    thumbnail.imageMatrix = Matrix().apply {
+                        postScale(scale,scale)
+                    }
+                }
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -125,7 +149,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.showWithCondition(model.hasGiveaway)
+        ivGiveaway.showWithCondition(model.hasGame)
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
@@ -164,18 +188,25 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
                 tvOnlyLive.gone()
             }
             is PlayWidgetPromoType.Default -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.gone()
                 llPromoDetail.visible()
 
                 tvPromoDetail.text = promoType.promoText
             }
             is PlayWidgetPromoType.LiveOnly -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visible()
                 llPromoDetail.visible()
 
                 tvPromoDetail.text = promoType.promoText
             }
         }.exhaustive
+    }
+
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
+        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -218,5 +249,10 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
         )
+    }
+
+    companion object {
+        private const val WIDTH_RATIO = 4.0
+        private const val HEIGHT_RATIO = 5.0
     }
 }

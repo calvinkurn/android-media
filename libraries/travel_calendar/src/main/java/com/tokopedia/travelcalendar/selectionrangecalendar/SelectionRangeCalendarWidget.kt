@@ -18,6 +18,7 @@ import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.*
@@ -136,6 +137,11 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
             }
         })
 
+        context?.let {
+            date_in.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
+            date_out.typeface = Typography.getFontType(it, true, Typography.DISPLAY_1)
+        }
+
         date_in.keyListener = null
         date_out.keyListener = null
 
@@ -147,9 +153,11 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     fun setLayoutMargin() {
-        var padding = resources.getDimension(RUnify.dimen.layout_lvl2).toInt()
-        bottomSheetWrapper.setPadding(0, padding, 0, 0)
-        bottomSheetHeader.setPadding(padding, 0, padding, 0)
+        context?.let {
+            var padding = it.resources.getDimension(RUnify.dimen.layout_lvl2).toInt()
+            bottomSheetWrapper.setPadding(0, padding, 0, 0)
+            bottomSheetHeader.setPadding(padding, 0, padding, 0)
+        }
     }
 
 
@@ -245,7 +253,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                                         ?: date
                                 )
                                 GlobalScope.launch {
-                                    delay(300)
+                                    delay(DISMISS_DELAY)
                                     dismissAllowingStateLoss()
                                 }
                             }
@@ -304,6 +312,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         const val DEFAULT_RANGE_CALENDAR_YEAR = 1
 
         const val CALENDAR_TITLE = "Pilih Tanggal"
+
+        private const val DISMISS_DELAY: Long = 300
 
         fun getInstance(
             minDate: String?, maxDate: String?, rangeYear: Int,

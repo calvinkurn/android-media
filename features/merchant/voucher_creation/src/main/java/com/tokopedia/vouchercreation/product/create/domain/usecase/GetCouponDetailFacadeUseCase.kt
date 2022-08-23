@@ -4,8 +4,8 @@ import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetCouponDetailFacadeUseCase @Inject constructor(
@@ -13,18 +13,16 @@ class GetCouponDetailFacadeUseCase @Inject constructor(
     private val getCouponDetailUseCase: GetCouponDetailUseCase
 ) {
 
-    companion object {
-        private const val IS_UPDATE_MODE = false
-    }
+    suspend fun execute(couponId: Long): CouponDetailWithMetadata {
+        return coroutineScope {
+            val couponDetailDeferred = async { getCouponDetail(couponId) }
+            val initiateCouponDeferred = async { initiateCoupon(isUpdateMode = false) }
 
-    suspend fun execute(scope: CoroutineScope, couponId : Long): CouponDetailWithMetadata {
-        val detailDeferred = scope.async { getCouponDetail(couponId) }
-        val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
+            val couponDetail = couponDetailDeferred.await()
+            val metadata = initiateCouponDeferred.await()
 
-        val detail = detailDeferred.await()
-        val metadata = initiateVoucherDeferred.await()
-
-        return CouponDetailWithMetadata(detail, metadata.maxProducts)
+            return@coroutineScope CouponDetailWithMetadata(couponDetail, metadata.maxProducts)
+        }
     }
 
 
@@ -33,7 +31,7 @@ class GetCouponDetailFacadeUseCase @Inject constructor(
         return getCouponDetailUseCase.executeOnBackground()
     }
 
-    private suspend fun initiateVoucher(isUpdateMode: Boolean): InitiateVoucherUiModel {
+    private suspend fun initiateCoupon(isUpdateMode: Boolean): InitiateVoucherUiModel {
         initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
         initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdateMode, false)
         return initiateCouponUseCase.executeOnBackground()

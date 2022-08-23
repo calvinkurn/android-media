@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingBottom="24dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSignalStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

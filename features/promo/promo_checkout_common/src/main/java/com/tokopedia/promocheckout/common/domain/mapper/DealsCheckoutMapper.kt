@@ -1,8 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.promocheckout.common.domain.model.deals.DataDeals
-import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.Details
 import com.tokopedia.promocheckout.common.domain.model.deals.Summaries
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
@@ -16,23 +14,13 @@ object DealsCheckoutMapper {
     const val CASHBACK = "cashback"
     const val CASHBACK_VALUE = 0
 
-    fun mapData(data: DealsVerifyResponse): DataUiModel {
-        return DataUiModel(
-                success = true,
-                message = mapMessageDeals(data.data.cart.promocodeSuccessMessage),
-                codes = listOf(data.data.cart.promocode),
-                discountAmount = data.data.cart.promocodeDiscount,
-                cashbackWalletAmount = data.data.cart.promocodeCashback,
-                titleDescription = data.data.cart.promocodeSuccessMessage
-        )
-    }
 
     fun mapDataNew(data: DataDeals): DataUiModel {
         return DataUiModel(
                 success = data.global_success,
                 message = mapMessageDeals(data.usage_details.firstOrNull()?.message?.text ?: ""),
                 codes = listOf(data.usage_details.firstOrNull()?.code ?: ""),
-                promoCodeId = data.promo_code_id.toIntOrZero(),
+                promoCodeId = data.promo_code_id,
                 titleDescription = data.benefit_summary_info.final_benefit_text,
                 discountAmount = if (data.usage_details.firstOrNull()?.benefit_summary?.firstOrNull()?.
                         benefit_details?.firstOrNull()?.benefit_type?.equals(CASHBACK, true) ?: false)

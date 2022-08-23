@@ -16,15 +16,15 @@
         app:srcCompat="@drawable/ic_radiobutton_normal"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:fontFamily="sans-serif"
-        android:textColor="@color/black_54"
-        android:textSize="14sp"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="display_2"
         android:textStyle="normal"
         tools:text="Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial" />
 </LinearLayout>

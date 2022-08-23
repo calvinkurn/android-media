@@ -5,10 +5,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl.NO_VOUCHER_RESULT_URL
+import com.tokopedia.vouchercreation.databinding.ItemMvcBottomsheetMenuBinding
+import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherListNoResultStateBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.NoResultStateUiModel
-import kotlinx.android.synthetic.main.item_mvc_voucher_list_no_result_state.view.*
 import timber.log.Timber
 
 /**
@@ -23,16 +25,16 @@ class NoResultStateViewHolder(itemView: View?,
         val RES_LAYOUT = R.layout.item_mvc_voucher_list_no_result_state
     }
 
+    private var binding: ItemMvcVoucherListNoResultStateBinding? by viewBinding()
+
     override fun bind(element: NoResultStateUiModel) {
-        with(itemView) {
-            try {
-                imgMvcNoResultState.loadImage(NO_VOUCHER_RESULT_URL)
-                addOnImpressionListener(element.impressHolder) {
-                    listener.onImpressionListener(NoResultStateUiModel.DATA_KEY)
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
+        try {
+            binding?.imgMvcNoResultState?.loadImage(NO_VOUCHER_RESULT_URL)
+            binding?.root?.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressionListener(NoResultStateUiModel.DATA_KEY)
             }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 }

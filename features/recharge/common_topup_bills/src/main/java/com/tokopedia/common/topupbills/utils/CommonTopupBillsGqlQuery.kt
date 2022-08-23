@@ -91,6 +91,7 @@ object CommonTopupBillsGqlQuery {
                     detail_compact
                     detail_url
                     detail_url_text
+                    status
                   }
                 }
               }
@@ -157,6 +158,7 @@ object CommonTopupBillsGqlQuery {
               app_link
             }
             express_checkout
+            menu_label
           }
         }
     """.trimIndent()
@@ -280,6 +282,7 @@ object CommonTopupBillsGqlQuery {
               title
               subtitle
               mediaURL
+              token
               trackingData {
                 clientNumber
                 lastOrderDate

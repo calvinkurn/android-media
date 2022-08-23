@@ -19,13 +19,18 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -51,18 +56,19 @@ import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateTokoNowRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
@@ -105,6 +111,9 @@ import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -133,6 +142,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
                                                              private val removeWishlistUseCase: Lazy<RemoveWishListUseCase>,
                                                              private val addWishListUseCase: Lazy<AddWishListUseCase>,
+                                                             private val deleteWishlistV2UseCase: Lazy<DeleteWishlistV2UseCase>,
+                                                             private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
                                                              private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
                                                              private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
@@ -149,14 +160,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              private val playWidgetTools: PlayWidgetTools,
                                                              private val remoteConfig: RemoteConfig,
-                                                             val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
+                                                             val userSessionInterface: UserSessionInterface,
+                                                             private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
-        private const val WISHLIST_ERROR_TYPE = "error_wishlist"
-        private const val WISHLIST_STATUS_KEY = "wishlist_status"
-        private const val ADD_WISHLIST = "true"
         private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
@@ -191,7 +200,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val miniCartData: LiveData<Boolean>
         get() = _miniCartData
 
-    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem>>()
+    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem.MiniCartItemProduct>>()
 
     private val _updateCartLiveData = MutableLiveData<Result<String>>()
     val updateCartLiveData: LiveData<Result<String>>
@@ -213,8 +222,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, List<Media>>>()
-    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, List<Media>>>
+    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, String>>()
+    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, String>>
         get() = _updatedImageVariant
 
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
@@ -270,7 +279,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var videoTrackerData: Pair<Long, Long>? = null
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var tradeInParams: TradeInParams = TradeInParams()
     var variantData: ProductVariant? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
@@ -303,7 +311,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         iniQuantityFlow()
     }
 
-    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem) {
+    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct) {
         _quantityUpdated.value = quantity to miniCartItem
     }
 
@@ -344,7 +352,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
         val miniCartData = _p2Data.value?.miniCart?.get(productId)
         if (miniCartData == null) {
-            _p2Data.value?.miniCart?.set(productId, MiniCartItem(
+            _p2Data.value?.miniCart?.set(productId, MiniCartItem.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
@@ -355,7 +363,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun hitUpdateCart(quantity: Int, request: MiniCartItem): Flow<Result<String>> {
+    private fun hitUpdateCart(quantity: Int, request: MiniCartItem.MiniCartItemProduct): Flow<Result<String>> {
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
             val updateCartRequest = UpdateCartRequest(
@@ -402,7 +410,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         this.talkLastAction = talkLastAction
     }
 
-    fun getMiniCartItem(): MiniCartItem? {
+    fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
         return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
@@ -462,18 +470,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun onVariantClicked(data: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>?,
-                         isPartialySelected: Boolean, variantLevel: Int, imageVariant: String) {
+                         isPartialySelected: Boolean, variantLevel: Int, variantId: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val processedVariant = VariantCommonMapper.processVariant(data, mapOfSelectedVariant, variantLevel, isPartialySelected)
 
                 if (isPartialySelected) {
-                    //It means user only select one of two variant available
-                    if (imageVariant.isNotBlank()) {
-                        _updatedImageVariant.postValue(processedVariant to addPartialImage(imageVariant))
-                    } else {
-                        _updatedImageVariant.postValue(processedVariant to listOf())
-                    }
+                    _updatedImageVariant.postValue(processedVariant to variantId)
                     return@withContext
                 } else {
                     _onVariantClickedData.postValue(processedVariant)
@@ -482,19 +485,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {}
     }
 
-    private fun addPartialImage(imageUrl: String): List<Media> {
-        listOfParentMedia?.let {
-            if (imageUrl.isEmpty() && imageUrl == it.firstOrNull()?.uRLOriginal) return@let
-
-            val listOfUpdateImage = it.toMutableList()
-            listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
-            return listOfUpdateImage
-        }
-        return listOf()
-    }
-
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, layoutId: String = "",
-                     userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "", extParam: String = "") {
+                     userLocationLocal: LocalCacheModel, urlQuery: String = "", extParam: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -511,9 +503,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
                 parentProductId = it.layoutData.parentProductId
 
-                //Create tradein params
-                assignTradeinParams()
-
                 //Remove all component that can be remove by using p1 data
                 //So we don't have to inflate to UI
                 val processedList = DynamicProductDetailMapper.removeUnusedComponent(
@@ -527,7 +516,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(processedList.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2(affiliateUniqueString, uuid, urlQuery)
+            getProductP2(urlQuery)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -610,19 +599,23 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String, urlQuery: String = "") {
+    private suspend fun getProductP2(urlQuery: String = "") {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.productID)
             } else null
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, affiliateUniqueString, uuid, it.basic.shopID, it.basic.isTokoNow)
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(
+                    productId = it.basic.productID,
+                    pdpSession = it.pdpSession,
+                    shopId = it.basic.shopID,
+                    isTokoNow = it.basic.isTokoNow)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await().let {
                 _p2Data.postValue(it)
-                updateTradeinParams(it.validateTradeIn)
             }
+
             p2LoginDeferred?.let {
                 _p2Login.postValue(it.await())
             }
@@ -669,60 +662,85 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                        onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
                        onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
         removeWishlistUseCase.get().createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                // no op
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
-                    val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-                    ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+            userSessionInterface.userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    // no op
                 }
-                onErrorRemoveWishList?.invoke(errorMessage)
-            }
 
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                onSuccessRemoveWishlist?.invoke(productId)
-            }
+                override fun onSuccessAddWishlist(productId: String?) {
+                    // no op
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
+                        val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                        ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+                    }
+                    onErrorRemoveWishList?.invoke(errorMessage)
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    onSuccessRemoveWishlist?.invoke(productId)
+                }
         })
+    }
+
+    fun removeWishListV2(productId: String, listener: WishlistV2ActionListener) {
+        launch(dispatcher.main) {
+            deleteWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.get().executeOnBackground() }
+            if (result is Success) {
+                listener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                listener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 
     fun addWishList(productId: String,
                     onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
                     onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
         addWishListUseCase.get().createObservable(productId,
-                userSessionInterface.userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
-                    val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-                    ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+            userSessionInterface.userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
+                        val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
+                        ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+                    }
+                    onErrorAddWishList?.invoke(errorMessage)
                 }
-                onErrorAddWishList?.invoke(errorMessage)
-            }
 
-            override fun onSuccessAddWishlist(productId: String?) {
-                onSuccessAddWishlist?.invoke(productId)
-            }
+                override fun onSuccessAddWishlist(productId: String?) {
+                    onSuccessAddWishlist?.invoke(productId)
+                }
 
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    // no op
+                }
 
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    // no op
+                }
         })
+    }
+
+    fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
+        launch(dispatcher.main) {
+            addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
+            val result =
+                withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
+            if (result is Success) {
+                listener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                listener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
     }
 
     fun loadRecommendation(pageName: String,
                            productId: String,
                            isTokoNow: Boolean,
-                           miniCart: MutableMap<String, MiniCartItem>?) {
+                           miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?) {
         if (GlobalConfig.isSellerApp()) {
             return
         }
@@ -856,9 +874,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getMiniCart(shopId: String) {
         launchCatchError(dispatcher.io, block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            val data = result.miniCartItems.associateBy({ it.productId }) {
+            val data = result.miniCartItems.mapProductsWithProductId().values.associateBy({ it.productId }) {
                 it
             }
             _p2Data.value?.miniCart = data.toMutableMap()
@@ -952,7 +970,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem?) {
+    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
@@ -994,7 +1012,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem?) {
+    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem.MiniCartItemProduct?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)
@@ -1016,6 +1034,27 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     }
 
+    fun hitAffiliateCookie(
+        productInfo: DynamicProductInfoP1,
+        affiliateUuid: String,
+        uuid: String,
+        affiliateChannel: String
+    ) {
+        launchCatchError(block = {
+
+            val affiliatePageDetail = DynamicProductDetailMapper.getAffiliatePageDetail(productInfo)
+
+            affiliateCookieHelper.get().initCookie(
+                affiliateUUID = affiliateUuid,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = affiliatePageDetail,
+                uuid = uuid
+            )
+        }, onError = {
+            // no op, expect to be handled by Affiliate SDK
+        })
+    }
+
     private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
         _atcRecomTokonow.value = message.asSuccess()
         if (isAtc) {
@@ -1028,34 +1067,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         recomItem.onFailedUpdateCart()
         _atcRecomTokonow.value = throwable.asFail()
         _atcRecomTokonowResetCard.value = recomItem
-    }
-
-    private fun assignTradeinParams() {
-        getDynamicProductInfoP1?.let {
-            tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
-            tradeInParams.deviceId = deviceId
-            tradeInParams.userId = userId.toIntOrZero()
-            tradeInParams.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeInParams.productId = it.basic.productID
-            tradeInParams.shopId = it.basic.getShopId()
-            tradeInParams.productName = it.getProductName
-            tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
-            tradeInParams.isOnCampaign = it.data.campaign.isActive
-            tradeInParams.weight = it.basic.weight
-            if (it.data.getImagePath().isNotEmpty()) {
-                tradeInParams.productImage = it.data.getImagePath()[0]
-            } else {
-                tradeInParams.productImage = it.data.getFirstProductImage()
-            }
-        }
-    }
-
-    private fun updateTradeinParams(validateTradeIn: ValidateTradeIn) {
-        tradeInParams.isEligible = if (validateTradeIn.isEligible) 1 else 0
-        tradeInParams.usedPrice = validateTradeIn.usedPrice.toIntOrZero()
-        tradeInParams.remainingPrice = validateTradeIn.remainingPrice.toIntOrZero()
-        tradeInParams.isUseKyc = if (validateTradeIn.useKyc) 1 else 0
-        tradeInParams.widgetString = validateTradeIn.widgetString
     }
 
     private fun getProductInfoP2OtherAsync(productId: String, shopId: Int): Deferred<ProductInfoP2Other> {
@@ -1073,7 +1084,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, affiliateUniqueString: String, uuid: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
+    private fun getProductInfoP2DataAsync(productId: String,
+                                          pdpSession: String,
+                                          shopId: String,
+                                          isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
                     requestParams = GetProductInfoP2DataUseCase.createParams(
@@ -1081,7 +1095,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
                             generateUserLocationRequest(userLocationCache),
-                            getAffiliateUIID(affiliateUniqueString, uuid),
                             generateTokoNowRequest(userLocationCache)),
                     isTokoNow = isTokoNow,
                     shopId = shopId,

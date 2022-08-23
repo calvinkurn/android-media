@@ -9,27 +9,31 @@
     android:paddingBottom="@dimen/spacing_lvl4"
     android:orientation="horizontal">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/recharge_custom_image_carousel_width"
         android:layout_height="@dimen/recharge_custom_image_carousel_height"
-        app:corners="@integer/section_shimmering_corner" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_width="@dimen/recharge_custom_image_carousel_width"
         android:layout_height="@dimen/recharge_custom_image_carousel_height"
-        app:corners="@integer/section_shimmering_corner" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_width="@dimen/recharge_custom_image_carousel_width"
         android:layout_height="@dimen/recharge_custom_image_carousel_height"
-        app:corners="@integer/section_shimmering_corner" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_width="@dimen/recharge_custom_image_carousel_width"
         android:layout_height="@dimen/recharge_custom_image_carousel_height"
-        app:corners="@integer/section_shimmering_corner" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
 </LinearLayout>

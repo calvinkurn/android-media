@@ -15,6 +15,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderStats
 import com.tokopedia.review.feature.reviewreminder.di.component.DaggerReviewReminderComponent
 import com.tokopedia.review.feature.reviewreminder.view.viewmodel.ReminderPerformanceViewModel
@@ -139,7 +140,10 @@ class ReminderPerformanceFragment : BaseDaggerFragment() {
             view?.let {
                 Toaster.build(
                         it,
-                        getString(R.string.review_reminder_snackbar_error),
+                        result.throwable.getErrorMessage(
+                            context,
+                            getString(R.string.review_reminder_snackbar_error)
+                        ),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR,
                         "Refresh",

@@ -6,12 +6,15 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetPurchaseProtectionInfoWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.ext.encodeOnce
 
-class PurchaseProtectionInfoBottomsheet(private val url: String) {
+class PurchaseProtectionInfoBottomsheet(private val url: String, val userSession: UserSessionInterface) {
 
     private var binding: BottomSheetPurchaseProtectionInfoWebViewBinding? = null
 
@@ -52,7 +55,13 @@ class PurchaseProtectionInfoBottomsheet(private val url: String) {
         binding?.webView?.webViewClient = PurchaseProtectionInfoWebViewClient()
         webSettings?.mediaPlaybackRequiresUserGesture = false
 
-        binding?.webView?.loadUrl(url)
+        binding?.webView?.loadAuthUrl(
+            URLGenerator.generateURLSessionLogin(
+                url.encodeOnce(),
+                userSession.deviceId,
+                userSession.userId
+            ),userSession,false
+        )
     }
 
     inner class PurchaseProtectionInfoWebViewClient : WebViewClient() {

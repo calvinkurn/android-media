@@ -1,9 +1,10 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
@@ -20,16 +21,15 @@ import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 /**
  * Created by Pika on 29/5/20.
  */
 
-const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String = """query GetTopadsDashboardGroupStatisticsV2(${'$'}queryInput: GetTopadsDashboardGroupStatisticsInputTypeV2!) {
+private const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String =
+    """query GetTopadsDashboardGroupStatisticsV2(${'$'}queryInput: GetTopadsDashboardGroupStatisticsInputTypeV2!) {
   GetTopadsDashboardGroupStatisticsV2(queryInput: ${'$'}queryInput) {
     separate_statistic
     meta {
@@ -48,28 +48,43 @@ const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String = """query GetTopadsDashboa
       stat_total_conversion
       stat_total_sold
       stat_total_income
+      group_price_daily_spent_fmt
+      group_price_daily
     }
   }
 }
 """
 
 @GqlQuery("GetTopadsDashboardGroupStatisticsQuery", TOP_ADS_GET_GROUP_STATISTICS_QUERY)
-class TopAdsGetGroupStatisticsUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
+class TopAdsGetGroupStatisticsUseCase @Inject constructor(
+    private val userSession: UserSessionInterface,
+) {
 
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<GroupStatisticsResponse>>() {}.type
-        val query = GetTopadsDashboardGroupStatisticsQuery.GQL_QUERY
-        var request: GraphqlRequest = GraphqlRequest(query, GroupStatisticsResponse::class.java, requestParams?.parameters)
-        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+
+    suspend fun execute(requestParams: RequestParams?): GroupStatisticsResponse {
+        try {
+            val token = object : TypeToken<DataResponse<GroupStatisticsResponse>>() {}.type
+            val query = GetTopadsDashboardGroupStatisticsQuery.GQL_QUERY
+            val request = GraphqlRequest(
+                query, GroupStatisticsResponse::class.java, requestParams?.parameters
+            )
+            val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
                 .setRequestType(RequestType.POST)
                 .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
+
+            return restRepository.getResponse(restRequest)
+                .getData<DataResponse<GroupStatisticsResponse>>().data
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
-    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupids: List<String>, goalId: Int = 0): RequestParams{
+    fun setParams(
+        search: String, page: Int, sort: String, status: Int?,
+        startDate: String, endDate: String, groupids: List<String>, goalId: Int = 0,
+    ): RequestParams {
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = userSession.shopId

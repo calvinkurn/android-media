@@ -109,4 +109,6 @@
     <string name="saldo_income_info_description_1"><![CDATA[Saldo yang <b>menampung penghasilanmu</b> di Tokopedia, dan <b>tidak bisa dipakai untuk bertransaksi.</b>]]></string>
     <string name="saldo_income_info_description_2"><![CDATA[<b>Khusus Seller</b>, Saldo Penghasilan bisa digunakan untuk top-up TopAds &amp; untuk pemotongan biaya kurir, komisi Affiliate, dll. ]]></string>
 
+    <string name="download_trx_fee_report_ticker_title">Download laporan biaya transaksi &lt;a href="#"&gt;%1$s&lt;/a&gt;</string>
+    <string name="download_trx_fee_report_ticker_title_link">di sini</string>
 </resources>

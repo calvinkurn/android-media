@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -66,6 +67,7 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -102,6 +104,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.telemetry.ITelemetryActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -133,7 +136,8 @@ public class MainParentActivity extends BaseActivity implements
         HomePerformanceMonitoringListener,
         OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
-        MainParentStateListener
+        MainParentStateListener,
+        ITelemetryActivity
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -150,6 +154,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String FEED_IS_VISIBLE = "FEED_IS_VISIBLE";
     public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -225,6 +230,7 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+    private boolean isFeedClickedFortheFirstTime = true;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -295,7 +301,6 @@ public class MainParentActivity extends BaseActivity implements
     private void runRiskWorker() {
         // Most of workers do nothing if it has already succeed previously.
         SubmitDeviceWorker.Companion.scheduleWorker(getApplicationContext(), false);
-        DataVisorWorker.Companion.scheduleWorker(getApplicationContext(), false);
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
     }
 
@@ -311,9 +316,11 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
+        moduleNameList.add(DeeplinkDFMapper.DF_DIGITAL);
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
+        moduleNameList.add(DeeplinkDFMapper.DF_TOKOFOOD);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
         if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
@@ -557,7 +564,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAgeVerificationExtra(Intent intent) {
-        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS) && !isFinishing()) {
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
@@ -616,7 +623,9 @@ public class MainParentActivity extends BaseActivity implements
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
                 FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
-                frag.setUserVisibleHint(true);
+                if(!(frag instanceof HomeRevampFragment)){
+                    frag.setUserVisibleHint(true);
+                }
             } else {
                 ft.hide(frag); // hide all fragment
                 FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);
@@ -860,7 +869,9 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             doubleTapExit = true;
             try {
-                Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                if(!isFinishing()) {
+                    Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                }
                 new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1041,7 +1052,9 @@ public class MainParentActivity extends BaseActivity implements
                     clipboard.setPrimaryClip(clip);
                 }
                 try {
-                    Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                    if(!isFinishing()) {
+                        Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1324,7 +1337,10 @@ public class MainParentActivity extends BaseActivity implements
         } else if (pageTitle.equals(getResources().getString(R.string.official))) {
             pageName = PAGE_OS_HOMEPAGE;
         } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
-            globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            if (isFeedClickedFortheFirstTime) {
+                isFeedClickedFortheFirstTime = false;
+                globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            }
             pageName = PAGE_FEED;
         } else if (pageTitle.equals(getResources().getString(R.string.uoh))) {
             pageName = PAGE_DAFTAR_TRANSAKSI;
@@ -1338,12 +1354,14 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = false;
 
         if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed)) ) {
+            isFeedClickedFortheFirstTime = true;
             Intent intent = new Intent(BROADCAST_VISIBLITY);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
         else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(FEED_IS_VISIBLE, true);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
@@ -1418,5 +1436,11 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    @NonNull
+    @Override
+    public String getTelemetrySectionName() {
+        return "home";
     }
 }

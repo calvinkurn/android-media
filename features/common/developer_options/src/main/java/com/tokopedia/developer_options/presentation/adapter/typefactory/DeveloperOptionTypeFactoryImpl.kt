@@ -59,6 +59,9 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
+    override fun type(uiModel: TypographySwitchUiModel): Int = TypographySwitcherViewHolder.LAYOUT
+    override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
+    override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -67,6 +70,7 @@ class DeveloperOptionTypeFactoryImpl(
             SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view)
             ResetOnBoardingViewHolder.LAYOUT -> ResetOnBoardingViewHolder(view, resetOnBoardingListener)
             ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view)
+            ForceLogoutViewHolder.LAYOUT -> ForceLogoutViewHolder(view)
             SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view)
             OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view)
             NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view)
@@ -102,6 +106,8 @@ class DeveloperOptionTypeFactoryImpl(
             SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
+            TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
+            ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

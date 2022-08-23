@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/client_number_widget_input_field"
@@ -27,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/client_number_widget_input_field" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/client_number_widget_sort_filter_shimmer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl3"
@@ -35,7 +36,9 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:corners="@integer/corner_radius_shimmering"
+        tools:visibility="visible"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/client_number_widget_sort_filter" />

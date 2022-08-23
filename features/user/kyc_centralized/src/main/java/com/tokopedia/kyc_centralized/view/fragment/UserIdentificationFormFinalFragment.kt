@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
 import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL
@@ -89,6 +90,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var listRetake: ArrayList<Int> = arrayListOf()
     private var isSocketTimeoutException: Boolean = false
     private var kycType = ""
+    private var projectId = 0
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -105,12 +107,15 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         if (context is StepperListener) {
             stepperListener = context as StepperListener?
         }
+
         if (arguments != null && savedInstanceState == null) {
             stepperModel = arguments?.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
             kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
         } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment.EXTRA_KYC_STEPPER_MODEL)
         }
+
         if (activity != null) {
             allowedSelfie = activity?.intent?.getBooleanExtra(UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA, false)?: false
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
@@ -194,7 +199,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                                 className = UserIdentificationFormFinalFragment::class.java.name
                             }.build()
                     )
-                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
+                    NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_fail_to_encrypt))
                     Timber.w(it.throwable, "$LIVENESS_TAG: ENCRYPT ERROR")
                 }
             }
@@ -239,9 +244,21 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun openCameraView(viewMode: Int, requestCode: Int) {
-        val intent = createIntent(context, viewMode)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
-        startActivityForResult(intent, requestCode)
+        context?.let {
+            val intent = if (viewMode == UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP) {
+                createIntent(
+                    it,
+                    viewMode,
+                    projectId,
+                    useCropping = true,
+                    useCompression = true
+                )
+            } else {
+                createIntent(it, viewMode, projectId)
+            }
+
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     private fun openLivenessView() {
@@ -293,25 +310,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    private fun setKycSelfieView() {
-        if (activity is UserIdentificationFormActivity) {
-            (activity as UserIdentificationFormActivity)
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
-        }
-        setResultViews(KycUrl.KTP_VERIF_OK, KycUrl.FACE_VERIF_OK, "", getString(R.string.form_final_info),
-                ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null),
-                ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null),
-                getString(R.string.upload_button), null)
-        generateLink()
-        uploadButton?.setOnClickListener { v: View? ->
-            analytics?.eventClickUploadPhotos()
-            uploadKycFiles(
-                    isKtpFileUsingEncryption = false,
-                    isFaceFileUsingEncryption = false
-            )
-        }
-    }
-
     private fun setKycUploadResultView(data: KycData) {
         if (data.isSuccessRegister) {
             deleteTmpFile(deleteKtp = true, deleteFace = true)
@@ -321,8 +319,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             hideLoading()
             var imageKtp = KycUrl.KTP_VERIF_OK
             var imageFace = KycUrl.FACE_VERIF_OK
-            var colorKtp: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
-            var colorFace: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
+            var colorKtp: Int? = context?.resources?.let {
+                ResourcesCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
+            }
+            var colorFace: Int? = context?.resources?.let {
+                ResourcesCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
+            }
+
             listRetake = data.listRetake
             if (!listRetake.isNullOrEmpty()) {
                 for (i in data.listRetake.indices) {
@@ -500,11 +503,13 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                context?.resources?.let {
+                    ds.color = ResourcesCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400, null)
+                }
             }
         }
         val infoText = SpannableString(info?.text)
-        val linked = resources.getString(R.string.terms_and_condition)
+        val linked = context?.resources?.getString(R.string.terms_and_condition).orEmpty()
         val startIndex = info?.text.toString().indexOf(linked)
         infoText.setSpan(clickableSpan, startIndex, startIndex + linked.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         info?.highlightColor = Color.TRANSPARENT
@@ -635,7 +640,6 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     companion object {
-        private var projectId = 0
         private const val TRADE_IN_PROJECT_ID = 4
         private const val NOT_RETAKE = 0
         private const val RETAKE_KTP = 1
@@ -645,7 +649,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         fun createInstance(projectid: Int, kycType: String): Fragment {
             return UserIdentificationFormFinalFragment().apply {
                 arguments = Bundle().apply {
-                    projectId = projectid
+                    putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
                     putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
                 }
             }

@@ -15,6 +15,7 @@ import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
+import com.tokopedia.vouchercreation.databinding.ActivityMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import timber.log.Timber
 
@@ -52,11 +53,14 @@ class VoucherListActivity : BaseActivity(),
 
     private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
 
+    private var binding: ActivityMvcVoucherListBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mvc_voucher_list)
+        binding = ActivityMvcVoucherListBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         window.decorView.setBackgroundColor(Color.WHITE)
         setWhiteStatusBar()

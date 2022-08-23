@@ -40,7 +40,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
 
 project.ext {

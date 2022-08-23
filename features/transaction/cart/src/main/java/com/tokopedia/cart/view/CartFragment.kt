@@ -44,7 +44,9 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -127,7 +129,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_F
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -156,6 +157,12 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -225,6 +232,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var lastSeenWishlistActionListener: WishListActionListener? = null
     private var wishlistsWishlistActionListener: WishListActionListener? = null
 
+    private var recommendationWishlistV2ActionListener: WishlistV2ActionListener? = null
+    private var cartUnavailableWishlistV2ActionListener: WishlistV2ActionListener? = null
+    private var lastSeenWishlistV2ActionListener: WishlistV2ActionListener? = null
+    private var wishlistsWishlistV2ActionListener: WishlistV2ActionListener? = null
+
     private var hasTriedToLoadWishList: Boolean = false
     private var hasTriedToLoadRecentViewList: Boolean = false
     private var shouldReloadRecentViewList: Boolean = false
@@ -239,6 +251,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
+
+    // temporary variable to handle case edit bundle
+    // this is useful if there are multiple same bundleId in cart
+    private var toBeDeletedBundleGroupId = ""
 
     companion object {
 
@@ -415,6 +431,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
+        Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroy()
     }
 
@@ -499,8 +516,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
             val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
             val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
-            if ((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) {
-                val cartItems = cartAdapter.getCartItemByBundleId(oldBundleId)
+            if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
+                val cartItems = cartAdapter.getCartItemByBundleGroupId(oldBundleId, toBeDeletedBundleGroupId)
+                toBeDeletedBundleGroupId = ""
                 if (cartItems.isNotEmpty()) {
                     val allCartItemDataList = cartAdapter.allCartItemData
                     dPresenter.processDeleteCartItem(
@@ -1273,6 +1291,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
+    override fun onViewFreeShippingPlusBadge() {
+        cartPageAnalytics.eventViewGotoplusTicker()
+    }
+
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
         showToastMessageRed(errorMessage)
         cartAdapter.notifyByProductId(productId, false)
@@ -1282,6 +1304,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onSuccessAddWishlist(productId: String) {
         showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success))
+        cartAdapter.notifyByProductId(productId, true)
+        cartAdapter.notifyWishlist(productId, true)
+        cartAdapter.notifyRecentView(productId, true)
+    }
+
+    private fun onSuccessAddWishlistV2(
+        result: AddToWishlistV2Response.Data.WishlistAddV2,
+        productId: String
+    ) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
+        }
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
         cartAdapter.notifyRecentView(productId, true)
@@ -1301,11 +1337,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyRecentView(productId, false)
     }
 
+    private fun onSuccessRemoveWishlistV2(
+        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+        productId: String
+    ) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+        cartAdapter.notifyByProductId(productId, false)
+        cartAdapter.removeWishlist(productId)
+        cartAdapter.notifyRecentView(productId, false)
+    }
+
     private fun getRecommendationWishlistActionListener(): WishListActionListener {
         if (recommendationWishlistActionListener == null) {
             recommendationWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { id ->
+                        this@CartFragment.onErrorAddWishList(it, id) } }
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1317,8 +1368,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { id ->
+                        this@CartFragment.onErrorRemoveWishlist(it, id) } }
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1334,11 +1386,51 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return recommendationWishlistActionListener as WishListActionListener
     }
 
+    private fun getRecommendationWishlistV2ActionListener(): WishlistV2ActionListener {
+        if (recommendationWishlistV2ActionListener == null) {
+            recommendationWishlistV2ActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
+                    if (FLAG_IS_CART_EMPTY) {
+                        cartPageAnalytics.eventClickAddWishlistOnProductRecommendationEmptyCart()
+                    } else {
+                        cartPageAnalytics.eventClickAddWishlistOnProductRecommendation()
+                    }
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
+                    if (FLAG_IS_CART_EMPTY) {
+                        cartPageAnalytics.eventClickRemoveWishlistOnProductRecommendationEmptyCart()
+                    } else {
+                        cartPageAnalytics.eventClickRemoveWishlistOnProductRecommendation()
+                    }
+                }
+            }
+        }
+        return recommendationWishlistV2ActionListener as WishlistV2ActionListener
+    }
+
     private fun getCartUnavailableWishlistActionListener(): WishListActionListener {
         if (cartUnavailableWishlistActionListener == null) {
             cartUnavailableWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { id ->
+                        this@CartFragment.onErrorAddWishList(it, id) } }
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1346,8 +1438,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { id ->
+                        this@CartFragment.onErrorRemoveWishlist(it, id) } }
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1359,20 +1452,53 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return cartUnavailableWishlistActionListener as WishListActionListener
     }
 
+    private fun getCartUnavailableWishlistV2ActionListener(): WishlistV2ActionListener {
+        if (cartUnavailableWishlistV2ActionListener == null) {
+            cartUnavailableWishlistV2ActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
+                    cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
+                    cartPageAnalytics.eventRemoveWishlistUnvailableSection(FLAG_IS_CART_EMPTY, productId)
+                }
+            }
+        }
+        return cartUnavailableWishlistV2ActionListener as WishlistV2ActionListener
+    }
+
     private fun getLastSeenWishlistActionListener(): WishListActionListener {
         if (lastSeenWishlistActionListener == null) {
             lastSeenWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { productId ->
+                        this@CartFragment.onErrorAddWishList(it, productId) } }
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { productId ->
+                        this@CartFragment.onErrorAddWishList(it, productId) } }
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
                     this@CartFragment.onSuccessAddWishlist(productId)
                     cartPageAnalytics.eventAddWishlistLastSeenSection(FLAG_IS_CART_EMPTY, productId)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1384,11 +1510,43 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return lastSeenWishlistActionListener as WishListActionListener
     }
 
+    private fun getLastSeenWishlistV2ActionListener(): WishlistV2ActionListener {
+        if (lastSeenWishlistV2ActionListener == null) {
+            lastSeenWishlistV2ActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
+                    cartPageAnalytics.eventAddWishlistLastSeenSection(FLAG_IS_CART_EMPTY, productId)
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
+                    cartPageAnalytics.eventRemoveWishlistLastSeenSection(FLAG_IS_CART_EMPTY, productId)
+                }
+            }
+        }
+        return lastSeenWishlistV2ActionListener as WishlistV2ActionListener
+    }
+
     private fun getWishlistsWishlistActionListener(): WishListActionListener {
         if (wishlistsWishlistActionListener == null) {
             wishlistsWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { id ->
+                        this@CartFragment.onErrorAddWishList(it, id) } }
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1396,8 +1554,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartPageAnalytics.eventAddWishlistWishlistsSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    errorMessage?.let { productId?.let { id ->
+                        this@CartFragment.onErrorRemoveWishlist(it, id) } }
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1409,33 +1568,80 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return wishlistsWishlistActionListener as WishListActionListener
     }
 
+    private fun getWishlistsWishlistV2ActionListener(): WishlistV2ActionListener {
+        if (wishlistsWishlistV2ActionListener == null) {
+            wishlistsWishlistV2ActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
+                    cartPageAnalytics.eventAddWishlistWishlistsSection(FLAG_IS_CART_EMPTY, productId)
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
+                }
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
+                    cartPageAnalytics.eventRemoveWishlistWishlistsSection(FLAG_IS_CART_EMPTY, productId)
+                }
+            }
+        }
+        return wishlistsWishlistV2ActionListener as WishlistV2ActionListener
+    }
+
     override fun onAddLastSeenToWishlist(productId: String) {
-        dPresenter.processAddToWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
+        if (isUsingWishlistV2()) dPresenter.processAddToWishlistV2(productId, userSession.userId, getLastSeenWishlistV2ActionListener())
+        else dPresenter.processAddToWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
     }
 
     override fun onAddWishlistToWishlist(productId: String) {
-        dPresenter.processAddToWishlist(productId, userSession.userId, getWishlistsWishlistActionListener())
+        if (isUsingWishlistV2()) dPresenter.processAddToWishlistV2(productId, userSession.userId, getWishlistsWishlistV2ActionListener())
+        else dPresenter.processAddToWishlist(productId, userSession.userId, getWishlistsWishlistActionListener())
     }
 
     override fun onAddRecommendationToWishlist(productId: String) {
-        dPresenter.processAddToWishlist(productId, userSession.userId, getRecommendationWishlistActionListener())
+        if (isUsingWishlistV2()) dPresenter.processAddToWishlistV2(productId, userSession.userId, getRecommendationWishlistV2ActionListener())
+        else dPresenter.processAddToWishlist(productId, userSession.userId, getRecommendationWishlistActionListener())
     }
 
     override fun onRemoveDisabledItemFromWishlist(productId: String) {
-        dPresenter.processRemoveFromWishlist(productId, userSession.userId, getCartUnavailableWishlistActionListener())
+        if (isUsingWishlistV2()) dPresenter.processRemoveFromWishlistV2(productId, userSession.userId, getCartUnavailableWishlistV2ActionListener())
+        else dPresenter.processRemoveFromWishlist(productId, userSession.userId, getCartUnavailableWishlistActionListener())
     }
 
     override fun onRemoveLastSeenFromWishlist(productId: String) {
-        dPresenter.processRemoveFromWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
+        if (isUsingWishlistV2()) dPresenter.processRemoveFromWishlistV2(productId, userSession.userId, getLastSeenWishlistV2ActionListener())
+        else dPresenter.processRemoveFromWishlist(productId, userSession.userId, getLastSeenWishlistActionListener())
     }
 
     override fun onRemoveWishlistFromWishlist(productId: String) {
         cartPageAnalytics.eventClickRemoveWishlist(userSession.userId, productId)
-        dPresenter.processRemoveFromWishlist(productId, userSession.userId, getWishlistsWishlistActionListener())
+
+        if (isUsingWishlistV2()) dPresenter.processRemoveFromWishlistV2(productId, userSession.userId, getWishlistsWishlistV2ActionListener())
+        else dPresenter.processRemoveFromWishlist(productId, userSession.userId, getWishlistsWishlistActionListener())
     }
 
     override fun onRemoveRecommendationFromWishlist(productId: String) {
-        dPresenter.processRemoveFromWishlist(productId, userSession.userId, getRecommendationWishlistActionListener())
+        if (isUsingWishlistV2()) dPresenter.processRemoveFromWishlistV2(productId, userSession.userId, getRecommendationWishlistV2ActionListener())
+        else dPresenter.processRemoveFromWishlist(productId, userSession.userId, getRecommendationWishlistActionListener())
+    }
+
+    private fun isUsingWishlistV2(): Boolean {
+        var isUsingV2 = false
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
+        }
+        return isUsingV2
     }
 
     private fun onProductClicked(productId: String) {
@@ -1827,11 +2033,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String) {
+        if (isError) {
+            cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, productId, errorType)
+        } else {
+            cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+        }
         setProductImageAnimationData(imageView, false)
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        var forceExpand = false
+        if (isError) {
+            // If unavailable item > 1 and state is collapsed, then expand first
+            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+        }
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -1937,6 +2155,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         scrollToLastAddedProductShop()
 
         renderAdditionalWidget()
+        resetArguments()
     }
 
     private fun scrollToLastAddedProductShop() {
@@ -1992,9 +2211,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun validateRenderWishlist() {
         if (wishLists == null) {
-            dPresenter.processGetWishlistData()
+            if (isUsingWishlistV2()) dPresenter.processGetWishlistV2Data()
+            else dPresenter.processGetWishlistData()
         } else {
-            renderWishlist(null, false)
+            if (isUsingWishlistV2()) renderWishlistV2(null, false)
+            else renderWishlist(null, false)
         }
     }
 
@@ -2162,7 +2383,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
-                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
+                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0),
+                userSession.userId,
+                dPresenter.getPromoFlag()
         )
         cartData.unavailableSections.forEach { unavailableSection ->
             unavailableSection.unavailableGroups.forEach { unavailableGroup ->
@@ -2537,11 +2760,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                              checkoutProductEligibleForCashOnDelivery: Boolean,
                                              condition: Int) {
         when (condition) {
-            CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
+            CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
         }
         navigateToShipmentPage()
     }
@@ -2849,7 +3072,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 
-    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
+    override fun onAddCartToWishlistSuccess(
+        message: String,
+        productId: String,
+        cartId: String,
+        isLastItem: Boolean,
+        source: String,
+        forceExpandCollapsedUnavailableItems: Boolean
+    ) {
         animateProductImage(message)
 
         when (source) {
@@ -2870,6 +3100,38 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             refreshCartWithSwipeToRefresh()
         } else {
             setLastItemAlwaysSelected()
+        }
+    }
+
+    override fun onAddCartToWishlistV2Success(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
+        if (result.success) {
+            animateProductImageV2(result)
+
+            when (source) {
+                WISHLIST_SOURCE_AVAILABLE_ITEM -> {
+                    cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
+                }
+                WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
+                    cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
+                }
+            }
+
+            val updateListResult = cartAdapter.removeProductByCartId(listOf(cartId), isLastItem, false)
+            removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+
+            setTopLayoutVisibility()
+
+            if (isLastItem) {
+                refreshCartWithSwipeToRefresh()
+            } else {
+                setLastItemAlwaysSelected()
+            }
+        } else {
+            context?.let { context ->
+                view?.let { v ->
+                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                }
+            }
         }
     }
 
@@ -2932,16 +3194,79 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    @SuppressLint("Recycle")
+    private fun animateProductImageV2(result: AddToWishlistV2Response.Data.WishlistAddV2) {
+        val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
+        var target: Pair<Int, Int>? = null
+
+        if (isNavToolbar) {
+            val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
+            target = Pair(targetX, 0)
+        } else {
+            target = toolbar.getWishlistIconPosition()
+        }
+
+        tmpAnimatedImage.show()
+
+        val targetX = target.first
+        val targetY = target.second
+
+        val deltaX = targetX - (tmpAnimatedImage.width / 2)
+        val deltaY = targetY - (tmpAnimatedImage.height / 2)
+
+        val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
+        val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
+        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", ANIMATED_IMAGE_FILLED, ANIMATED_IMAGE_ALPHA)
+        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+
+        AnimatorSet().let {
+            it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
+            it.interpolator = DecelerateInterpolator()
+            it.duration = IMAGE_ANIMATION_DURATION
+            it.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    binding?.tmpAnimatedImage?.gone()
+
+                    if (isNavToolbar) {
+                        binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
+                    } else {
+                        toolbar.animateWishlistIcon()
+                    }
+
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                        }
+                    }
+                    dPresenter.processGetWishlistV2Data()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+            it.start()
+        }
+    }
+
     private fun refreshWishlistAfterItemRemoveAndMoveToWishlist() {
         dPresenter.processGetWishlistData()
     }
 
     private fun removeLocalCartItem(updateListResult: Pair<List<Int>, List<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
-        updateListResult.first.forEach {
-            onNeedToRemoveViewItem(it)
-        }
-        updateListResult.second.forEach {
-            onNeedToUpdateViewItem(it)
+        val updateIndices = updateListResult.second
+        val removeIndices = updateListResult.first
+        if (removeIndices.size > 1) {
+            // on multiple deletion, notify data set changed to prevent indices race condition
+            cartAdapter.notifyDataSetChanged()
+        } else {
+            updateIndices.forEach {
+                onNeedToUpdateViewItem(it)
+            }
+            removeIndices.forEach {
+                onNeedToRemoveViewItem(it)
+            }
         }
 
         // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
@@ -3066,9 +3391,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     // get newly added cart id if open cart after ATC on PDP
     override fun getCartId(): String {
-        return if (!TextUtils.isEmpty(arguments?.getString(CartActivity.EXTRA_CART_ID))) {
-            arguments?.getString(CartActivity.EXTRA_CART_ID) ?: "0"
-        } else "0"
+        val cartId = arguments?.getString(CartActivity.EXTRA_CART_ID).orEmpty()
+        return cartId.ifEmpty { "0" }
     }
 
     private fun getAtcProductId(): Long {
@@ -3077,6 +3401,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isAtcExternalFlow(): Boolean {
         return getAtcProductId() != 0L
+    }
+
+    private fun resetArguments() {
+        arguments?.putString(CartActivity.EXTRA_CART_ID, null)
+        arguments?.putLong(CartActivity.EXTRA_PRODUCT_ID, 0)
     }
 
     override fun renderRecentView(recommendationWidget: RecommendationWidget?) {
@@ -3108,6 +3437,34 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         } else if (wishlists != null) {
             cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists)
+        }
+
+        val cartWishlistHolderData = cartAdapter.getCartWishlistHolderData()
+        cartWishlistHolderData.wishList = cartWishlistItemHolderDataList
+
+        if (this.wishLists == null || !forceReload) {
+            val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+            cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
+            cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.NEW_WISHLIST
+            cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
+        } else {
+            val wishlistIndex = cartAdapter.updateCartWishlistData(cartWishlistHolderData)
+            onNeedToUpdateViewItem(wishlistIndex)
+        }
+
+        this.wishLists = cartWishlistItemHolderDataList
+    }
+
+    override fun renderWishlistV2(wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>?, forceReload: Boolean) {
+        var cartWishlistItemHolderDataList: MutableList<CartWishlistItemHolderData> = ArrayList()
+        if (this.wishLists != null) {
+            if (forceReload && wishlists != null) {
+                cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelListV2(wishlists)
+            } else {
+                cartWishlistItemHolderDataList.addAll(this.wishLists!!)
+            }
+        } else if (wishlists != null) {
+            cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelListV2(wishlists)
         }
 
         val cartWishlistHolderData = cartAdapter.getCartWishlistHolderData()
@@ -3224,7 +3581,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (allDisabledCartItemDataList.isNotEmpty()) {
             val dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
-                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
+                var forceExpand = false
+                if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
+                    collapseOrExpandDisabledItem()
+                    forceExpand = true
+                }
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, forceExpand)
                 cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(
                         dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
@@ -3495,6 +3857,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(cartItemHolderData.bundleId, cartItemHolderData.bundleType)
             val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
+            toBeDeletedBundleGroupId = cartItemHolderData.bundleGroupId
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
         }
     }

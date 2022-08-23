@@ -10,7 +10,7 @@ public class PostKol {
 
     @SerializedName("id")
     @Expose
-    private int id = 0;
+    private String id = "";
     @SerializedName("headerTitle")
     @Expose
     private Object headerTitle;
@@ -37,7 +37,7 @@ public class PostKol {
     private String userPhoto;
     @SerializedName("userId")
     @Expose
-    private int userId;
+    private String userId;
     @SerializedName("userInfo")
     @Expose
     private String userInfo;
@@ -63,9 +63,9 @@ public class PostKol {
     public PostKol() {
     }
 
-    public PostKol(int id, Object headerTitle, String description, int commentCount,
+    public PostKol(String id, Object headerTitle, String description, int commentCount,
                    int likeCount, boolean isLiked, boolean isFollowed, String userName,
-                   String userPhoto, int userId, String userInfo, String userUrl, String createTime,
+                   String userPhoto, String userId, String userInfo, String userUrl, String createTime,
                    boolean showComment, List<Content> content, List<String> userBadges, Source source) {
         this.id = id;
         this.headerTitle = headerTitle;
@@ -86,7 +86,7 @@ public class PostKol {
         this.source = source;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -122,7 +122,7 @@ public class PostKol {
         return userPhoto;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 

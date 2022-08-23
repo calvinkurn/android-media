@@ -53,6 +53,7 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         store_type
         logistic_type
         store_name
+        add_ons_section_description
         addon_item {
             name
             quantity
@@ -133,16 +134,9 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
     push_gtm
     new_user
     is_mub
-    custom_data{
-       tracking_data
-       custom_order_url_app
-       custom_home_url_app
-       custom_title
-       custom_subtitle
-       custom_title_order_button
-       custom_wtv_text
-       custom_title_home_button
-    }
+    custom_data_applink
+    custom_data_message
+    custom_data_other
     config_flag
     config_list
     gateway_additional_data{

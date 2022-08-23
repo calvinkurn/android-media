@@ -19,9 +19,11 @@
 
     <string name="pdp_layout_id">Change Layout ID PDP</string>
     <string name="pdp_vbs">Go To Variant Bottom Sheet</string>
+    <string name="pdp_educational">Go To Educational Bottom Sheet</string>
     <string name="pdp_route">Route to PDP</string>
     <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
     <string name="pdp_product_id_edittext_placeholder">Product Id</string>
+    <string name="pdp_type_edittext_placeholder">Type</string>
     <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
     <string name="pdp_page_source_edittext_placeholder">Page Source</string>
     <string name="pdp_true_false_atc_edittext_placeholder">true/false</string>
@@ -37,6 +39,7 @@
     <string name="reset_onboarding">Reset OnBoarding</string>
     <string name="test_onboarding">Test OnBoarding</string>
     <string name="force_crash">Force Crash</string>
+    <string name="force_logout">Force Logout</string>
     <string name="crash_message">crash message</string>
     <string name="send_firebase_exception">Send Firebase Exception</string>
     <string name="open_screen_recorder">Open Screen Recorder</string>
@@ -108,5 +111,11 @@
     <string name="route_to_applink">Route to Applink</string>
     <string name="message_applink_failed">Applink is not supported, please check the value from searchbar</string>
     <string name="view_applink_list">View Applink List</string>
+
+    <string name="enable_new_typography_guideline">Enable New Typography Guideline</string>
+    <string name="convert_resource_id_to_resource_name">Convert Resource ID to Resource Name</string>
+    <string name="input_resource_id">Please input Resource ID after #0x prefix</string>
+    <string name="prefix_resource_id">#0x</string>
+    <string name="prefix_resource_name">Resource name: </string>
 
 </resources>

@@ -9,7 +9,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_Background"
         android:fillViewport="true"
         android:focusableInTouchMode="true"
         android:overScrollMode="always"
@@ -61,7 +61,7 @@
                 android:singleLine="false"
                 android:inputType="textCapSentences|textMultiLine"
                 android:textColor="@color/Unify_NN950"
-                android:textCursorDrawable="@color/black"
+                android:textCursorDrawable="@color/Unify_N700"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

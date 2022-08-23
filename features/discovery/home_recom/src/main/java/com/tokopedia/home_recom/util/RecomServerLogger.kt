@@ -17,7 +17,7 @@ object RecomServerLogger {
 
     private const val TOPADS_RECOM_PAGE = "TOPADS_RECOM_PAGE"
 
-    const val MAX_LIMIT = 1000
+    private const val MAX_LIMIT = 200
     const val TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED = "topads_recom_page_timeout"
     const val TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING = "topads_recom_page_hit_dynamic_slotting"
     const val TOPADS_RECOM_PAGE_HIT_ADS_TRACKER = "topads_recom_page_hit_ads_tracker"
@@ -59,7 +59,7 @@ object RecomServerLogger {
             mapOf(
                 "action" to tag,
                 "productId" to productId,
-                "queryParam" to queryParam,
+                "queryParam" to queryParam.take(MAX_LIMIT),
                 "reason" to reasonValue,
                 "data" to dataValue
             )

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.statistic.analytics.StatisticTracker
@@ -35,11 +36,16 @@ class ExclusiveIdentifierView : LinearLayout {
         init(context)
     }
 
+    private var pageSource: String = String.EMPTY
     private var onCtaClick: (() -> Unit)? = null
     private var binding: ViewStcExclusiveIdentifierBinding? = null
 
     fun setDescription(text: String) {
         binding?.tvStcExclusiveIdentifierDesc?.text = text.parseAsHtml()
+    }
+
+    fun setPageSource(pageSource: String) {
+        this.pageSource = pageSource
     }
 
     private fun init(context: Context) {
@@ -59,7 +65,7 @@ class ExclusiveIdentifierView : LinearLayout {
 
     private fun openPowerMerchantPage() {
         RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
-        StatisticTracker.sendClickEventOnCtaExclusiveIdentifier()
+        StatisticTracker.sendClickEventOnCtaExclusiveIdentifier(pageSource)
     }
 
     fun setOnCtaClickListener(function: () -> Unit) {

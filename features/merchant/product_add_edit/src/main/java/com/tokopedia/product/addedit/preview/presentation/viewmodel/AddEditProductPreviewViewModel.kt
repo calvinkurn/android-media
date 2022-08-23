@@ -7,14 +7,15 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS_OS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -69,14 +70,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
-    private val detailInputModel = MutableLiveData<DetailInputModel>()
     private var draftId = ""
     var productDomain: Product = Product()
 
     // observing the product id, and will become true if product id exist
-    val isEditing = Transformations.map(productId) { id ->
-        (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
-    }
+    val isEditing = Transformations.map(productId) { id -> !id.isNullOrBlank() && !isDuplicate }
     val isAdding: Boolean get() = getProductId().isBlank()
     var isDuplicate: Boolean = false
 
@@ -88,7 +86,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // also, observing whether user role is authorized and will execute use case if true
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank())  {
+            if (productId.getValueOrDefault("").isNotBlank()) {
                 getProductData(it)
             } else {
                 // Authorize access if adding product
@@ -97,12 +95,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
         addSource(mIsProductManageAuthorized) { result ->
             mIsLoading.value = false
-            ((result as? Success)?.data)?.let { shouldLoadProductData ->
-                productId.value?.let {
-                    if (shouldLoadProductData && it.isNotBlank()) {
-                        getProductData(it)
-                    }
-                }
+            val productId: String = productId.getValueOrDefault("")
+            if (shouldLoadProductData(result) && productId.isNotBlank()) {
+                getProductData(productId)
             }
         }
     }
@@ -112,15 +107,32 @@ class AddEditProductPreviewViewModel @Inject constructor(
     var productInputModel = MediatorLiveData<ProductInputModel>()
 
     // observing the use case result, and will become true if no variant
-    val isVariantEmpty = Transformations.map(mGetProductResult) {
-        when (it) {
-            is Success -> {
-                it.data.variant.products.isEmpty()
-            }
-            is Fail -> {
-                true
-            }
+    val isVariantEmpty = Transformations.map(productInputModel) {
+        !it.variantInputModel.hasVariant()
+    }
+
+    val priceRangeFormatted = Transformations.map(productInputModel) {
+        val highestPrice = it.variantInputModel.getHighestPrice().orZero()
+        val lowestPrice = it.variantInputModel.getLowestPrice().orZero()
+        if (!it.variantInputModel.hasVariant()) {
+            it.detailInputModel.price.getCurrencyFormatted()
+        } else if (lowestPrice == highestPrice) {
+            lowestPrice.getCurrencyFormatted()
+        } else {
+            "${lowestPrice.getCurrencyFormatted()} - ${highestPrice.getCurrencyFormatted()}"
         }
+    }
+
+    val stockFormatted = Transformations.map(productInputModel) {
+        if (it.variantInputModel.hasVariant()) {
+            it.variantInputModel.getTotalStock().orZero()
+        } else {
+            it.detailInputModel.stock
+        }
+    }
+
+    val mustFillParentWeight = Transformations.map(productInputModel) {
+        !it.shipmentInputModel.isUsingParentWeight && !it.variantInputModel.hasVariant()
     }
 
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
@@ -195,12 +207,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     }
                 }
             }
-            addSource(detailInputModel) {
-                productInputModel.value?.let { productInputModel ->
-                    productInputModel.detailInputModel = it
-                    this@AddEditProductPreviewViewModel.productInputModel.value = productInputModel
-                }
-            }
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
                     is Success -> {
@@ -262,11 +268,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 urlOrPath
             }
 
-            this.detailInputModel.value = it.detailInputModel.apply {
-                this.pictureList = pictureList
-                this.imageUrlOrPathList = imageUrlOrPathList
-            }
-
             this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
         }
     }
@@ -292,7 +293,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
             it.detailInputModel.status = newStatus
             it.variantInputModel.products.forEach { variant ->
-                variant.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
+                variant.status = if (isActive && variant.stock != Int.ZERO) {
+                    ProductStatus.STATUS_ACTIVE_STRING
+                } else {
+                    ProductStatus.STATUS_INACTIVE_STRING
+                }
             }
         }
     }
@@ -448,7 +453,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         mIsLoading.value = true
         launchCatchError(block = {
             getShopInfoLocationUseCase.params = GetShopInfoLocationUseCase.createRequestParams(shopId)
-            val shopLocation = withContext(Dispatchers.IO) {
+            val shopLocation = withContext(dispatcher.io) {
                 getShopInfoLocationUseCase.executeOnBackground()
             }
             mLocationValidation.value = Success(shopLocation)
@@ -511,6 +516,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.apply {
             detailInputModel.specifications = result
         }
+    }
+
+    private fun shouldLoadProductData(param: Result<Boolean>): Boolean {
+        return (param as? Success<Boolean>)?.data.orFalse()
     }
 
     private fun authorizeAccess() {

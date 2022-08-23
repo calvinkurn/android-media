@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -30,7 +31,7 @@ class DenomGridViewHolder (
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(denomGrid: DenomData, denomType: DenomWidgetEnum,
-             isSelectedItem: Boolean, position: Int){
+             isSelectedItem: Boolean, position: Int, isPlacebo: Boolean = false){
 
         with(binding){
             tgDenomGridTitle.run {
@@ -45,6 +46,13 @@ class DenomGridViewHolder (
                 if (!denomGrid.specialLabel.isNullOrEmpty() && denomGrid.status != DENOM_STATUS_OUT_OF_STOCK){
                     show()
                     text = denomGrid.specialLabel
+                } else hide()
+            }
+
+            labelDenomGridActivePeriod.run {
+                if (!denomGrid.activePeriod.isNullOrEmpty()) {
+                    show()
+                    text = denomGrid.activePeriod
                 } else hide()
             }
 
@@ -175,13 +183,15 @@ class DenomGridViewHolder (
             }
 
             cardDenomGrid.run {
-                layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                } else getDimens(R.dimen.widget_denom_grid_width)
+                if (!isPlacebo) {
+                    layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else getDimens(R.dimen.widget_denom_grid_width)
 
-                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
-                    getDimens (R.dimen.widget_denom_grid_height)
-                } else ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else ViewGroup.LayoutParams.WRAP_CONTENT
+                }
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 

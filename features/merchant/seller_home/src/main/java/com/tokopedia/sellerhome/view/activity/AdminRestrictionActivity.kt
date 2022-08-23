@@ -6,15 +6,11 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.view.bottomsheet.AdminRestrictionBottomSheet
-import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class AdminRestrictionActivity: BaseSimpleActivity() {
-
-    private val bottomSheet by lazy {
-        AdminRestrictionBottomSheet.createInstance(this)
-    }
 
     override fun getNewFragment(): Fragment? = null
 
@@ -30,10 +26,19 @@ class AdminRestrictionActivity: BaseSimpleActivity() {
     }
 
     private fun showBottomSheet() {
-        (bottomSheet as? BottomSheetUnify)?.setOnDismissListener {
-            finish()
+        getBottomSheet().run {
+            setOnDismissListener {
+                finish()
+            }
+            show(supportFragmentManager)
         }
-        bottomSheet.show(supportFragmentManager)
+    }
+
+    private fun getBottomSheet(): AdminRestrictionBottomSheet {
+        val articleUrl =
+            intent.data?.getQueryParameter(ApplinkConstInternalSellerapp.PARAM_ARTICLE_URL)
+                .orEmpty()
+        return AdminRestrictionBottomSheet.createInstance(this, articleUrl)
     }
 
     @SuppressLint("SourceLockedOrientationActivity")

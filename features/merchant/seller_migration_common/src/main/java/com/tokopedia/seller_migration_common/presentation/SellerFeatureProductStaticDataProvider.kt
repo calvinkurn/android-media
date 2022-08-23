@@ -8,8 +8,7 @@ object SellerFeatureProductStaticDataProvider : StaticDataProvider {
                 SellerFeatureUiModel.SetVariantFeatureUiModel(),
                 SellerFeatureUiModel.MultiEditFeatureUiModel(),
                 SellerFeatureUiModel.StockReminderFeatureUiModel(),
-                SellerFeatureUiModel.FeaturedProductFeatureUiModel(),
-                SellerFeatureUiModel.SetCashbackFeatureUiModel()
+                SellerFeatureUiModel.FeaturedProductFeatureUiModel()
         )
     }
 }

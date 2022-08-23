@@ -19,10 +19,12 @@ import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.Matchers.not
 import org.junit.Test
 
+@UiTest
 class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
 
     @Test
@@ -253,6 +255,28 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
             ApplinkConstInternalMarketplace.ATC_VARIANT,
             "1988298491", "10973651", "notifcenter", "true", "") //Product from JSON
         intended(IntentMatchers.hasData(intent.data))
+    }
+
+    @Test
+    fun should_open_product_detail_page_with_applink_when_users_clicks_on_product() {
+        //Given
+        inboxNotifcenterDep.apply {
+            val dataResponse = notifcenterDetailUseCase.productOnly
+            notifcenterDetailUseCase.response = dataResponse
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //When
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(0, R.id.cl_product)
+        ).perform(ViewActions.click())
+
+        //Then
+        intended(IntentMatchers.hasData(
+            "tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter"))
     }
 
     private fun scrollToProductPosition(position: Int) {

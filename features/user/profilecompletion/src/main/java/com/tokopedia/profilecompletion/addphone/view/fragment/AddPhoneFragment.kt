@@ -16,6 +16,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.profilecompletion.R
@@ -26,6 +27,7 @@ import com.tokopedia.profilecompletion.addphone.view.activity.AddPhoneActivity
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +37,9 @@ import javax.inject.Inject
 
 
 open class AddPhoneFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -63,18 +68,27 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         splitCompatInstall()
         return try {
             inflater.inflate(R.layout.fragment_add_phone, container, false)
-        } catch (e : Throwable) {
+        } catch (e: Throwable) {
             e.printStackTrace()
             null
         }
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        tracker.trackClickOnBtnBackAddPhone()
+        return super.onFragmentBackPressed()
+    }
+
     private fun splitCompatInstall() {
-        activity?.let{
+        activity?.let {
             SplitCompat.installActivity(it)
         }
     }
@@ -88,13 +102,13 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun presetView() {
-        arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let {
-            phone -> etPhone.textFieldInput.setText(phone)
+        arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let { phone ->
+            etPhone.editText.setText(phone)
         }
     }
 
     private fun setListener() {
-        etPhone?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        etPhone?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -102,7 +116,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
                     setErrorText("")
-                }else {
+                } else {
+                    setErrorText(getString(R.string.error_cant_empty))
                     buttonSubmit.isEnabled = false
                 }
             }
@@ -113,7 +128,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         })
 
         etPhone?.setOnFocusChangeListener { view, hasFocus ->
-            if(hasFocus && !isOnclickEventTriggered) {
+            if (hasFocus && !isOnclickEventTriggered) {
                 isOnclickEventTriggered = true
 
                 phoneNumberTracker.clickOnInputPhoneNumber()
@@ -121,7 +136,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         }
 
         buttonSubmit?.setOnClickListener {
-            val phone = etPhone?.textFieldInput?.text.toString()
+            val phone = etPhone?.editText?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
                 phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
@@ -136,8 +151,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity() {
-        val phone = etPhone?.textFieldInput?.text.toString().trim()
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val phone = etPhone?.editText?.text.toString().trim()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
@@ -151,11 +166,11 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun setErrorText(s: String) {
         if (TextUtils.isEmpty(s)) {
-            etPhone.setError(false)
+            etPhone.isInputError = false
             etPhone.setMessage(getString(R.string.sample_phone))
             buttonSubmit?.isEnabled = true
         } else {
-            etPhone.setError(true)
+            etPhone.isInputError = true
             etPhone.setMessage(s)
             buttonSubmit?.isEnabled = false
         }
@@ -166,31 +181,27 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun setObserver() {
-        viewModel.addPhoneResponse.observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessAddPhone(it.data)
-                        is Fail -> onErrorAddPhone(it.throwable)
-                    }
-                }
-        )
+		viewModel.addPhoneResponse.observe(viewLifecycleOwner) {
+			when (it) {
+				is Success -> onSuccessAddPhone(it.data)
+				is Fail -> onErrorAddPhone(it.throwable)
+			}
+		}
 
-        viewModel.userValidateResponse.observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessUserValidate(it.data)
-                        is Fail -> onErrorUserValidate(it.throwable)
-                    }
-                }
-        )
-
-    }
+		viewModel.userValidateResponse.observe(viewLifecycleOwner) {
+			when (it) {
+				is Success -> onSuccessUserValidate(it.data)
+				is Fail -> onErrorUserValidate(it.throwable)
+			}
+		}
+	}
 
     private fun onErrorUserValidate(throwable: Throwable) {
         dismissLoading()
-        phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable).removeErrorCode())
+        phoneNumberTracker.clickOnButtonNext(
+            false,
+            ErrorHandler.getErrorMessage(context, throwable).removeErrorCode()
+        )
         setErrorText(ErrorHandler.getErrorMessage(context, throwable))
     }
 
@@ -204,8 +215,16 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
         view?.let {
-            phoneNumberTracker.clickOnButtonNext(false, ErrorHandler.getErrorMessage(context, throwable).removeErrorCode())
-            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            phoneNumberTracker.clickOnButtonNext(
+                false,
+                ErrorHandler.getErrorMessage(context, throwable).removeErrorCode()
+            )
+            Toaster.make(
+                it,
+                ErrorHandler.getErrorMessage(context, throwable),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
         }
     }
 
@@ -240,8 +259,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        val phone = etPhone.textFieldInput.text.toString()
-        viewModel.mutateAddPhone(phone.trim())
+		val phone = etPhone.editText.text.toString()
+		viewModel.mutateAddPhone(phone.trim(), validateToken)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -254,29 +273,28 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    companion object {
-        const val EXTRA_PROFILE_SCORE = "profile_score"
-        const val EXTRA_PHONE = "phone"
-
-        const val REQUEST_COTP_PHONE_VERIFICATION = 101
-        const val OTP_TYPE_PHONE_VERIFICATION = 11
-
-        fun createInstance(bundle: Bundle): AddPhoneFragment {
-            val fragment = AddPhoneFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
-
     override fun onDestroy() {
-        super.onDestroy()
-        try {
-            viewModel.addPhoneResponse.removeObservers(this)
-            viewModel.userValidateResponse.removeObservers(this)
-            viewModel.flush()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
+		super.onDestroy()
+		try {
+			viewModel.addPhoneResponse.removeObservers(this)
+			viewModel.userValidateResponse.removeObservers(this)
+			viewModel.flush()
+		} catch (e: Throwable) {
+			e.printStackTrace()
+		}
     }
 
+	companion object {
+		const val EXTRA_PROFILE_SCORE = "profile_score"
+		const val EXTRA_PHONE = "phone"
+
+		const val REQUEST_COTP_PHONE_VERIFICATION = 101
+		const val OTP_TYPE_PHONE_VERIFICATION = 11
+
+		fun createInstance(bundle: Bundle): AddPhoneFragment {
+			val fragment = AddPhoneFragment()
+			fragment.arguments = bundle
+			return fragment
+		}
+	}
 }

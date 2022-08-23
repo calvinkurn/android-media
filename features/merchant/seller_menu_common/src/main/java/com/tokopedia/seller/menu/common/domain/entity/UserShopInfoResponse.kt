@@ -58,7 +58,10 @@ data class UserShopInfoResponse(
                 val shopCore: ShopCore = ShopCore(),
                 @Expose
                 @SerializedName("statsByDate")
-                val statsByDate: List<StatsByDate> = listOf()
+                val statsByDate: List<StatsByDate> = listOf(),
+                @Expose
+                @SerializedName("statusInfo")
+                val statusInfo: StatusInfo = StatusInfo()
         ) {
             data class GoldOS(
                     @Expose
@@ -90,6 +93,21 @@ data class UserShopInfoResponse(
                     @Expose
                     @SerializedName("value")
                     val value: Long = 0
+            )
+
+            data class StatusInfo(
+                @Expose
+                @SerializedName("statusTitle")
+                val statusTitle: String = "",
+                @Expose
+                @SerializedName("statusMessage")
+                val statusMessage: String = "",
+                @Expose
+                @SerializedName("tickerType")
+                val tickerType: String = "",
+                @Expose
+                @SerializedName("shopStatus")
+                val shopStatus: Int = 0
             )
         }
     }

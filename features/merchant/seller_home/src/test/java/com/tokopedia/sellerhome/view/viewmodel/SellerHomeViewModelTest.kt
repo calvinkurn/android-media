@@ -12,10 +12,61 @@ import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
@@ -25,11 +76,14 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -58,13 +112,14 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
         private const val DATA_KEY_MILESTONE = "MILESTONE"
+        private const val DATA_KEY_UNIFICATION = "UNIFICATION"
     }
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getTickerUseCase: GetTickerUseCase
+    lateinit var getTickerUseCase: GetSellerHomeTickerUseCase
 
     @RelaxedMockK
     lateinit var getLayoutUseCase: GetLayoutUseCase
@@ -112,6 +167,9 @@ class SellerHomeViewModelTest {
     lateinit var getCalendarDataUseCase: GetCalendarDataUseCase
 
     @RelaxedMockK
+    lateinit var getUnificationDataUseCase: GetUnificationDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -148,6 +206,8 @@ class SellerHomeViewModelTest {
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
+            { getUnificationDataUseCase },
+            { userSession },
             { remoteConfig },
             coroutineTestRule.dispatchers
         )
@@ -170,6 +230,7 @@ class SellerHomeViewModelTest {
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
+            { getUnificationDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { sellerHomeLayoutHelper },
@@ -191,12 +252,8 @@ class SellerHomeViewModelTest {
     @Test
     fun `get ticker should success`() = runBlocking {
         val tickerList = listOf(TickerItemUiModel())
-        val pageName = "seller"
-
-        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
-
         coEvery {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         } returns tickerList
 
         viewModel.getTicker()
@@ -204,21 +261,100 @@ class SellerHomeViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         }
 
         Assertions.assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
+    fun `get ticker when cache enabled then fetch from cache should success result`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheResult = listOf(TickerItemUiModel())
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    cacheResult
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Success(cacheResult)
+            viewModel.homeTicker.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get ticker when cache enabled then throw exception should return remote exception`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheException = Exception("from cache")
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    throw cacheException
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Fail(networkException)
+            viewModel.homeTicker.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
     fun `should failed when get tickers then throws exception`() = runBlocking {
         val throwable = RuntimeException("")
-        val pageName = "seller"
-
-        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
 
         coEvery {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         } throws throwable
 
         viewModel.getTicker()
@@ -226,7 +362,7 @@ class SellerHomeViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         }
 
         assert(viewModel.homeTicker.value is Fail)
@@ -288,6 +424,8 @@ class SellerHomeViewModelTest {
             RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
         val milestoneDataUiModel =
             MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+        val unificationDataUiModel =
+            UnificationDataUiModel(DATA_KEY_UNIFICATION, showWidget = true)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -319,7 +457,8 @@ class SellerHomeViewModelTest {
             multiLineGraphDataUiModel,
             announcementDataUiModel,
             recommendationDataUiModel,
-            milestoneDataUiModel
+            milestoneDataUiModel,
+            unificationDataUiModel
         )
 
         viewModel.getWidgetLayout(widgetHeightInDp)
@@ -347,6 +486,7 @@ class SellerHomeViewModelTest {
                 is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                 is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
                 is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                is UnificationWidgetUiModel -> it.apply { data = unificationDataUiModel }
                 else -> it
             }
         }.map {
@@ -384,6 +524,8 @@ class SellerHomeViewModelTest {
                 RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
             val milestoneDataUiModel =
                 MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+            val unificationDataUiModel =
+                UnificationDataUiModel(DATA_KEY_UNIFICATION, showWidget = true)
 
             getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -412,7 +554,8 @@ class SellerHomeViewModelTest {
                 multiLineGraphDataUiModel,
                 announcementDataUiModel,
                 recommendationDataUiModel,
-                milestoneDataUiModel
+                milestoneDataUiModel,
+                unificationDataUiModel
             )
 
             viewModel.getWidgetLayout(5000f)
@@ -438,6 +581,7 @@ class SellerHomeViewModelTest {
                     is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                     is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
                     is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    is UnificationWidgetUiModel -> it.apply { data = unificationDataUiModel }
                     else -> it
                 }
             }.map {
@@ -1006,6 +1150,106 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Fail(networkException)
         viewModel.calendarWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `get unification widget data then returns success result`() = runBlocking {
+        val widgets = getUnificationMockData()
+        val shopId = "123"
+
+        val result = listOf(UnificationDataUiModel())
+
+        getUnificationDataUseCase.setParam(
+            shopId = shopId,
+            widgets = widgets,
+            dynamicParameter = dynamicParameter
+        )
+
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getUnificationWidgetData(widgets)
+
+        coVerify {
+            getUnificationDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(widgets.size == expectedResult.data.size)
+        viewModel.unificationWidgetData.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `get unification widget data then returns failed result`() = runBlocking {
+        val widgets = getUnificationMockData()
+        val shopId = "123"
+        val throwable = MessageErrorException("error message")
+
+        getUnificationDataUseCase.setParam(
+            shopId = shopId,
+            widgets = widgets,
+            dynamicParameter = dynamicParameter
+        )
+
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getUnificationWidgetData(widgets)
+
+        coVerify {
+            getUnificationDataUseCase.executeOnBackground()
+        }
+
+        viewModel.unificationWidgetData.verifyErrorEquals(Fail(throwable))
+    }
+
+    @Test
+    fun `when get unification from network and cache are failed, will return throwable from network`() {
+        val widgets = getUnificationMockData()
+        val shopId = "123"
+
+        getUnificationDataUseCase.setParam(
+            shopId = shopId,
+            widgets = widgets,
+            dynamicParameter = dynamicParameter
+        )
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getUnificationWidgetData(widgets)
+
+        verify(exactly = 1) {
+            getUnificationDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getUnificationDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getUnificationDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.unificationWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -2720,12 +2964,6 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
-    private fun verifyGetTickerResultFlowCalled() {
-        coVerify {
-            getTickerUseCase.getResultFlow()
-        }
-    }
-
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {
         return listOf(
             CardWidgetUiModel(
@@ -2988,7 +3226,8 @@ class SellerHomeViewModelTest {
         multiLineGraphDataUiModel: MultiLineGraphDataUiModel,
         announcementDataUiModel: AnnouncementDataUiModel,
         recommendationDataUiModel: RecommendationDataUiModel,
-        milestoneDataUiModel: MilestoneDataUiModel
+        milestoneDataUiModel: MilestoneDataUiModel,
+        unificationDataUiModel: UnificationDataUiModel
     ) {
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -3026,5 +3265,31 @@ class SellerHomeViewModelTest {
         coEvery {
             getMilestoneDataUseCase.executeOnBackground()
         } returns listOf(milestoneDataUiModel)
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } returns listOf(unificationDataUiModel)
+    }
+
+    private fun getUnificationMockData(): List<UnificationWidgetUiModel> {
+        return listOf(
+            UnificationWidgetUiModel(
+                id = "123",
+                widgetType = WidgetType.UNIFICATION,
+                title = "unification",
+                subtitle = "",
+                tooltip = null,
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_UNIFICATION,
+                ctaText = "",
+                gridSize = WidgetGridSize.GRID_SIZE_1,
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                emptyState = WidgetEmptyStateUiModel()
+            )
+        )
     }
 }

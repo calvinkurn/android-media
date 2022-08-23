@@ -83,7 +83,7 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
     private var isAppLinkProccessed = false
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null
     private var tickerTitle: String? = null
-    private var fragmentList: List<Fragment> = listOf()
+    private var fragmentList: List<Fragment> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

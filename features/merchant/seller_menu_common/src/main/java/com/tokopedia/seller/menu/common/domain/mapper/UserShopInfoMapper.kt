@@ -48,7 +48,13 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
                 periodTypePmPro = periodTypePmPro,
                 isNewSeller = GoldMerchantUtil.isNewSeller(dateShopCreated),
                 isEligiblePm = goldGetPMShopInfo.isEligiblePm.orFalse(),
-                isEligiblePmPro = goldGetPMShopInfo.isEligiblePmPro.orFalse()
+                isEligiblePmPro = goldGetPMShopInfo.isEligiblePmPro.orFalse(),
+                statusInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel.StatusInfoUiModel(
+                    statusTitle = shopInfoByIDResult?.statusInfo?.statusTitle.orEmpty(),
+                    statusMessage = shopInfoByIDResult?.statusInfo?.statusMessage.orEmpty(),
+                    tickerType = shopInfoByIDResult?.statusInfo?.tickerType.orEmpty(),
+                    shopStatus = shopInfoByIDResult?.statusInfo?.shopStatus.orZero()
+                )
             )
         )
     }
@@ -63,7 +69,7 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
             }
             goldPMStatus.powerMerchant.pmTier == PMTier.PRO -> {
                 if (getPowerMerchantNotActive(statusPM)) {
-                    PowerMerchantProStatus.InActive
+                    PowerMerchantStatus.NotActive
                 } else {
                     when (shopGrade) {
                         PMProTier.ADVANCE -> {

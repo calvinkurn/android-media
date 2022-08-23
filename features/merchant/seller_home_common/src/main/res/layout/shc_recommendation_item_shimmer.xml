@@ -4,29 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerItem1"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl5"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerItem2"
         android:layout_width="@dimen/shc_dimen_156dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/unify_space_12"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toEndOf="@+id/shimmerItem1"
         app:layout_constraintTop_toTopOf="@+id/shimmerItem1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerItem3"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/unify_space_12"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/shimmerItem1"
         app:layout_constraintStart_toEndOf="@+id/shimmerItem1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

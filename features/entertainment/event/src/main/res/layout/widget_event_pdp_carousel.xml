@@ -30,11 +30,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/viewpager_event_pdp"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_dp_320"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,12 +8,14 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.model.RecommendationSeeMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.viewholder.RecommendationCarouselItemViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.viewholder.RecommendationCarouselSeeMoreViewHolder
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by Lukas on 05/11/20.
  */
 class RecommendationCarouselTypeFactoryImpl(
-        private val listener: RecommendationCarouselListener
+        private val listener: RecommendationCarouselListener,
+        private val cardInteraction: Boolean = false
 ) : RecommendationCarouselTypeFactory{
     override fun type(dataModel: RecommendationSeeMoreDataModel): Int {
         return RecommendationCarouselSeeMoreViewHolder.LAYOUT
@@ -25,7 +27,7 @@ class RecommendationCarouselTypeFactoryImpl(
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<Visitable<RecommendationCarouselTypeFactory>> {
         return when(viewType){
-            RecommendationCarouselSeeMoreViewHolder.LAYOUT -> RecommendationCarouselSeeMoreViewHolder(view, listener)
+            RecommendationCarouselSeeMoreViewHolder.LAYOUT -> RecommendationCarouselSeeMoreViewHolder(view, listener, cardInteraction)
             RecommendationCarouselItemViewHolder.LAYOUT -> RecommendationCarouselItemViewHolder(view, listener)
             else -> throw Exception("The type layout not supported")
         } as AbstractViewHolder<Visitable<RecommendationCarouselTypeFactory>>

@@ -167,10 +167,6 @@ class ShopStatusViewHolder(itemView: View?,
         setTitle(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                setDescription(
-                    R.string.sah_new_other_status_upgrade,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                )
                 warningIcon?.gone()
                 shopStatusDescTextView?.run {
                     isClickable = true
@@ -216,11 +212,6 @@ class ShopStatusViewHolder(itemView: View?,
                 statusStringRes = R.string.sah_new_other_status_pm_pro_ultimate
                 statusColorRes = com.tokopedia.unifyprinciples.R.color.Unify_YN500
                 isStatusActive = true
-            }
-            is PowerMerchantProStatus.InActive -> {
-                statusStringRes = R.string.setting_not_active
-                statusColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                isStatusActive = false
             }
         }
         setDescription(statusStringRes, statusColorRes)

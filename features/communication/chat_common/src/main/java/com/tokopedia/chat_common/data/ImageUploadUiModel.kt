@@ -13,6 +13,7 @@ class ImageUploadUiModel(
 
     var imageUrl: String? = builder.imageUrl
     var imageUrlThumbnail: String? = builder.imageUrlThumbnail
+    var imageSecureUrl: String? = builder.imageSecureUrl
     var isRetry: Boolean = builder.isRetry
 
     init {
@@ -29,6 +30,7 @@ class ImageUploadUiModel(
 
         internal var imageUrl: String? = null
         internal var imageUrlThumbnail: String? = null
+        internal var imageSecureUrl: String? = null
         internal var isRetry: Boolean = false
 
         fun withImageUrl(imageUrl: String): Builder {
@@ -43,6 +45,11 @@ class ImageUploadUiModel(
 
         fun withIsRetry(isRetry: Boolean): Builder {
             this.isRetry = isRetry
+            return self()
+        }
+
+        fun withImageSecureUrl(imageSecureUrl: String): Builder {
+            this.imageSecureUrl = imageSecureUrl
             return self()
         }
 

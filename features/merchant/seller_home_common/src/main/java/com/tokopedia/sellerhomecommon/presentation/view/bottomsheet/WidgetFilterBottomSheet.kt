@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -42,6 +43,7 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onItemClick(item: WidgetFilterUiModel) {
         widgetFilterAdapter?.getItems()?.forEach {
             it.isSelected = it == item

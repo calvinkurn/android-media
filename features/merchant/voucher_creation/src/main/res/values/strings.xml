@@ -523,4 +523,9 @@
     <item name="product_variant" type="id"/>
     <item name="dataset_position" type="id"/>
     <item name="variant_index" type="id"/>
+
+    <string name="mvc_dropdown">Dropdown</string>
+    <string name="mvc_voucher_image">Voucher Image</string>
+    <string name="mvc_tips">Tips</string>
+    <string name="mvc_voucher_usage_preview">Voucher usage preview</string>
 </resources>

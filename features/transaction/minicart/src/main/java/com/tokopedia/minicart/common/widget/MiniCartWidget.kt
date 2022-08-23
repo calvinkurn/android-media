@@ -1,8 +1,10 @@
 package com.tokopedia.minicart.common.widget
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
@@ -31,10 +33,14 @@ import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomShee
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.config.MiniCartRemoteConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
+import com.tokopedia.oldminicart.common.widget.MiniCartWidget
+import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToOldMiniCartData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.totalamount.TotalAmount
@@ -65,6 +71,9 @@ class MiniCartWidget @JvmOverloads constructor(
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
 
     @Inject
+    lateinit var remoteConfig: MiniCartRemoteConfig
+
+    @Inject
     lateinit var analytics: MiniCartAnalytics
 
     private var view: View? = null
@@ -79,34 +88,46 @@ class MiniCartWidget @JvmOverloads constructor(
     private var coachMark: CoachMark2? = null
 
     private var viewModel: MiniCartViewModel? = null
+    private var oldMiniCart: MiniCartWidget? = null
 
     init {
-        view = inflate(context, R.layout.widget_mini_cart, this)
+        view = LayoutInflater.from(context).inflate(R.layout.widget_mini_cart, this, false)
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         chatIcon = view?.findViewById(R.id.chat_icon)
         textCannotProcess = view?.findViewById(R.id.text_cannot_process)
         textCannotProcessQuantity = view?.findViewById(R.id.text_cannot_process_quantity)
         imageChevronUnavailable = view?.findViewById(R.id.image_chevron_unavailable)
+        val application = (context as? Activity)?.application
+        initializeInjector(application)
     }
 
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
-        if (viewModel == null) {
-            val application = fragment.activity?.application
-            initializeInjector(application)
-            initializeView(fragment)
-            initializeListener(listener)
-            initializeViewModel(fragment)
-            viewModel?.initializeCurrentPage(pageName)
-            if (autoInitializeData) {
-                updateData(shopIds)
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
+                   autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page, source: MiniCartSource) {
+        removeAllViews()
+
+        if (remoteConfig.isNewMiniCartEnabled()) {
+            if (viewModel == null) {
+                initializeView(fragment)
+                initializeListener(listener)
+                initializeViewModel(fragment)
+                viewModel?.initializeCurrentPage(pageName)
+                viewModel?.currentSource = source
+                if (autoInitializeData) {
+                    updateData(shopIds)
+                } else {
+                    viewModel?.initializeShopIds(shopIds)
+                }
             } else {
-                viewModel?.initializeShopIds(shopIds)
+                updateData(shopIds)
             }
+            addView(view)
         } else {
-            updateData(shopIds)
+            oldMiniCart = MiniCartWidget(context)
+            oldMiniCart?.initialize(shopIds, fragment, listener, autoInitializeData, pageName)
+            addView(oldMiniCart)
         }
     }
 
@@ -122,7 +143,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun observeGlobalEvent(fragment: Fragment) {
-        viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner, {
+        viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner) {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
                     onSuccessDeleteCartItem(it)
@@ -144,7 +165,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     }
                 }
             }
-        })
+        }
     }
 
     private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent) {
@@ -218,7 +239,7 @@ class MiniCartWidget @JvmOverloads constructor(
             if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                 ctaText = miniCartCheckoutData.toasterAction.text
             }
-            val errorMessage = miniCartCheckoutData.errorMessage ?: ""
+            val errorMessage = miniCartCheckoutData.errorMessage
             if (miniCartCheckoutData.toasterAction.showCta) {
                 showToaster(view, errorMessage, Toaster.TYPE_ERROR, ctaText) {
                     if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
@@ -361,7 +382,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun sendEventClickBuy() {
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
-        val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
+        val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems?.values?.toList() ?: emptyList()
         val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
         analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
@@ -379,8 +400,12 @@ class MiniCartWidget @JvmOverloads constructor(
     * Function to show mini cart bottom sheet
     * */
     fun showMiniCartListBottomSheet(fragment: Fragment) {
-        viewModel?.let {
-            miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, it, this)
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            viewModel?.let {
+                miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, it, this)
+            }
+        } else {
+            oldMiniCart?.showMiniCartListBottomSheet(fragment)
         }
     }
 
@@ -394,34 +419,46 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     override fun showToaster(view: View?, message: String, type: Int, ctaText: String, isShowCta: Boolean, onClickListener: OnClickListener?) {
-        if (message.isBlank()) return
-
-        var toasterViewRoot = view
-        if (toasterViewRoot == null) toasterViewRoot = this.view
-        toasterViewRoot?.let {
-            Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(R.dimen.dp_72)
-                    ?: 0
-            if (isShowCta && ctaText.isNotBlank()) {
-                var tmpCtaClickListener = OnClickListener { }
-                if (onClickListener != null) {
-                    tmpCtaClickListener = onClickListener
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            if (message.isBlank()) return
+            var toasterViewRoot = view
+            if (toasterViewRoot == null) toasterViewRoot = this.view
+            toasterViewRoot?.let {
+                Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(
+                    com.tokopedia.abstraction.R.dimen.dp_72
+                ) ?: 0
+                if (isShowCta && ctaText.isNotBlank()) {
+                    var tmpCtaClickListener = OnClickListener { }
+                    if (onClickListener != null) {
+                        tmpCtaClickListener = onClickListener
+                    }
+                    Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
+                } else {
+                    Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
                 }
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
-            } else {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
             }
+        } else {
+            oldMiniCart?.showToaster(view, message, type, ctaText, isShowCta, onClickListener)
         }
     }
 
     override fun showProgressLoading() {
-        if (progressDialog?.isShowing == false) {
-            progressDialog?.show()
+        if (remoteConfig.isNewMiniCartEnabled()) {
+            if (progressDialog?.isShowing == false) {
+                progressDialog?.show()
+            }
+        } else {
+            oldMiniCart?.showProgressLoading()
         }
     }
 
     override fun hideProgressLoading() {
-        if (progressDialog?.isShowing == true) {
-            progressDialog?.dismiss()
+        if (remoteConfig.isNewMiniCartEnabled()) {
+            if (progressDialog?.isShowing == true) {
+                progressDialog?.dismiss()
+            }
+        } else {
+            oldMiniCart?.hideProgressLoading()
         }
     }
 
@@ -430,8 +467,12 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
     fun updateData(shopIds: List<String>) {
-        setTotalAmountLoading(true)
-        viewModel?.getLatestWidgetState(shopIds)
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            setTotalAmountLoading(true)
+            viewModel?.getLatestWidgetState(shopIds)
+        } else {
+            oldMiniCart?.updateData(shopIds)
+        }
     }
 
     /*
@@ -439,9 +480,14 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger widget to update the UI with provided data
     * */
     fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        setTotalAmountLoading(true)
-        viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
-        viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            setTotalAmountLoading(true)
+            viewModel?.setMiniCartABTestData(miniCartSimplifiedData.miniCartWidgetData.isOCCFlow, miniCartSimplifiedData.miniCartWidgetData.buttonBuyWording)
+            viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
+        } else {
+            val data = mapToOldMiniCartData(miniCartSimplifiedData)
+            oldMiniCart?.updateData(data)
+        }
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -458,7 +504,7 @@ class MiniCartWidget @JvmOverloads constructor(
             renderUnavailableWidget(miniCartSimplifiedData)
         } else {
             renderAvailableWidget(miniCartSimplifiedData)
-            showOnBoarding()
+            showOnBoarding(miniCartSimplifiedData.isShowMiniCartWidget)
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
@@ -558,28 +604,40 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     override fun onMiniCartListBottomSheetDismissed() {
-        viewModel?.getLatestMiniCartData()?.let {
-            updateData(it)
-            miniCartWidgetListener?.onCartItemsUpdated(it)
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            viewModel?.getLatestMiniCartData()?.let {
+                updateData(it)
+                miniCartWidgetListener?.onCartItemsUpdated(it)
+            }
+            viewModel?.resetTemporaryHiddenUnavailableItems()
+        } else {
+            oldMiniCart?.onMiniCartListBottomSheetDismissed()
         }
-        viewModel?.resetTemporaryHiddenUnavailableItems()
     }
 
     override fun onBottomSheetSuccessGoToCheckout() {
-        context?.let {
-            onSuccessGoToCheckout(it)
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            context?.let {
+                onSuccessGoToCheckout(it)
+            }
+        } else {
+            oldMiniCart?.onBottomSheetSuccessGoToCheckout()
         }
     }
 
     override fun onBottomSheetFailedGoToCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
-        context?.let {
-            handleFailedGoToCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            context?.let {
+                handleFailedGoToCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
+            }
+        } else {
+            oldMiniCart?.onBottomSheetFailedGoToCheckout(toasterAnchorView, fragmentManager, globalEvent)
         }
     }
 
-    private fun showOnBoarding() {
+    private fun showOnBoarding(isShowMiniCartWidget: Boolean) {
         context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG) && isShowMiniCartWidget) {
                 coachMark = CoachMark2(context)
                 this.totalAmount?.labelTitleView?.let { anchor ->
                     coachMark?.let { coachMark2 ->
@@ -603,7 +661,11 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     fun hideCoachMark() {
-        coachMark?.dismissCoachMark()
+        if(remoteConfig.isNewMiniCartEnabled()) {
+            coachMark?.dismissCoachMark()
+        } else {
+            oldMiniCart?.hideCoachMark()
+        }
     }
 
     companion object {

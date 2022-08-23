@@ -2,12 +2,6 @@
 <resources>
     <declare-styleable name="ProductCardView">
         <attr name="fixedHeight" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="ProductVideoView">
-        <attr name="scaleType" format="enum">
-            <enum name="centerCrop" value="0" />
-            <enum name="fitCenter" value="1" />
-        </attr>
+        <attr name="useViewStub" format="boolean" />
     </declare-styleable>
 </resources>

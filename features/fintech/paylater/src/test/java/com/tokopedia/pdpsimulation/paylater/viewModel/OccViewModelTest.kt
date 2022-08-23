@@ -81,7 +81,10 @@ class OccViewModelTest {
 
     @Test
     fun successPayLaterActivation() {
-        val checkoutData = mockk<CheckoutData>(relaxed = true)
+        val checkoutData = CheckoutData("1",
+            null,null,null,
+            null,null,null,false,null,
+            null, listOf(),"",null,null,false)
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
         coEvery {
             paylaterActivationUseCase.getPayLaterActivationDetail(any(), any(), 0.0, "", "")

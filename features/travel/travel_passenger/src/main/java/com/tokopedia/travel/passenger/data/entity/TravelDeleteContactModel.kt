@@ -1,5 +1,6 @@
 package com.tokopedia.travel.passenger.data.entity
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class TravelDeleteContactModel(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("uuid")
         @Expose
         val uuid: List<String> = listOf()

@@ -16,6 +16,8 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
     var customP2ErrorResponsePath: String? = null
     var customAtcV2ResponsePath: String? = null
     var customTickerResponsePath: String? = null
+    var customRecomResponsePath: String? = null
+    var customDiscussionResponsePath: String? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
@@ -44,6 +46,19 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
             return mockResponse(copy, getJsonFromResource(customTickerResponsePath!!))
         }
 
+        if (requestString.contains(GET_DISCUSSION) && customDiscussionResponsePath != null) {
+            return mockResponse(copy, getJsonFromResource(customDiscussionResponsePath!!))
+        }
+
+        if (requestString.contains(GET_RECOM)) {
+            val mock = if (customRecomResponsePath == null) {
+                ""
+            } else {
+                getJsonFromResource(customRecomResponsePath!!)
+            }
+            return mockResponse(copy, mock)
+        }
+
         return chain.proceed(chain.request())
     }
 
@@ -62,10 +77,13 @@ const val GET_PDP_P1 = "pdpGetLayout"
 const val GET_PDP_P2_DATA = "GetPdpGetData"
 const val GET_SUCCESS_ATC = "add_to_cart_v2"
 const val GET_TICKER = "get_ticker"
+const val GET_RECOM = "productRecommendation"
+const val GET_DISCUSSION = "discussionMostHelpful"
 
 const val RESPONSE_P1_PATH = "raw/response_mock_p1_test.json"
 const val RESPONSE_P2_DATA_PATH = "raw/response_mock_p2_ui_test.json"
 const val RESPONSE_TICKER_PATH = "raw/response_get_ticker_sticky_login.json"
+const val RESPONSE_DISCUSSION_MOSTHELPFUL = "raw/response_mock_discussion_most_helpful.json"
 
 const val RESPONSE_MINICART_EMPTY_PATH = "raw/response_mock_mini_cart_empty.json"
 const val RESPONSE_MINICART_PATH = "raw/response_mock_mini_cart_non_var.json"

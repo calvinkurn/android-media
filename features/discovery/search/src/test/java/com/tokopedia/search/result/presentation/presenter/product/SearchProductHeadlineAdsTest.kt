@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
+import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -64,10 +64,14 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         expectedCpmModel: CpmModel,
         expectedCpmData: CpmData,
     ) {
-        visitableList[1].assertCpmModel(expectedCpmModel, expectedCpmData)
+        visitableList[1].assertCpmModel(expectedCpmModel, expectedCpmData, VerticalSeparator.None)
     }
 
-    private fun Visitable<*>.assertCpmModel(expectedCpmModel: CpmModel, expectedCpmData: CpmData) {
+    private fun Visitable<*>.assertCpmModel(
+        expectedCpmModel: CpmModel,
+        expectedCpmData: CpmData,
+        expectedSeparator: VerticalSeparator,
+    ) {
         this.shouldBeInstanceOf<CpmDataView>()
 
         val cpmDataView = this as CpmDataView
@@ -77,6 +81,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         actualCpmModel.status.shouldBe(expectedCpmModel.status)
         actualCpmModel.error.shouldBe(expectedCpmModel.error)
         actualCpmModel.data.shouldBe(listOf(expectedCpmData))
+        cpmDataView.verticalSeparator.shouldBe(expectedSeparator)
     }
 
     @Test
@@ -99,9 +104,11 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     ) {
         val firstSeparatorIndex = visitableList.indexOfLast { it is ProductItemDataView } + 1
 
-        visitableList[firstSeparatorIndex].shouldBeInstanceOf<SeparatorDataView>()
-        visitableList[firstSeparatorIndex + 1].assertCpmModel(expectedCpmModel, expectedCpmData)
-        visitableList[firstSeparatorIndex + 2].shouldBeInstanceOf<SeparatorDataView>()
+        visitableList[firstSeparatorIndex].assertCpmModel(
+            expectedCpmModel,
+            expectedCpmData,
+            VerticalSeparator.Both
+        )
     }
 
     @Test
@@ -147,21 +154,12 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
         `When load data`()
 
-        val expectedSearchProduct = searchProductModel.searchProduct.header
-        `Then verify CPM at the top of list`(expectedSearchProduct)
+        `Then verify CPM at the top of list`()
     }
 
     private fun `Then verify CPM at the top of list`(
-        expectedSearchProduct: SearchProductModel.SearchProductHeader
     ) {
-        visitableList.first().assertSearchProductCount(expectedSearchProduct)
-    }
-
-    private fun Visitable<*>.assertSearchProductCount(expectedSearchProductCount: SearchProductModel.SearchProductHeader) {
-        this.shouldBeInstanceOf<SearchProductCountDataView>()
-
-        val actualSearchProductCountDataView = this as SearchProductCountDataView
-
-        actualSearchProductCountDataView.productCountString.shouldBe(expectedSearchProductCount.totalDataText)
+        visitableList[0].shouldBeInstanceOf<ChooseAddressDataView>()
+        visitableList[1].shouldBeInstanceOf<CpmDataView>()
     }
 }

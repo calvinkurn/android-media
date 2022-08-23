@@ -11,34 +11,38 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="match_parent"
             android:layout_height="132dp"
-            app:custom_color="@color/Unify_N50" />
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="116dp"
             android:layout_height="@dimen/unify_space_12"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:custom_color="@color/Unify_N50" />
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/unify_space_12"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:custom_color="@color/Unify_N50" />
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/unify_space_12"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:custom_color="@color/Unify_N50" />
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect"/>
 
     </LinearLayout>
 

@@ -12,10 +12,15 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOM_SHEET_RESOURCE_ID
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_DURATION_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_FAQ_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_SK_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_STOCK_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -26,13 +31,18 @@ class TokoNowEducationalInfoBottomSheet :
     BottomSheetUnify(){
 
     companion object {
-        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
+        private const val SOURCE_PLAY = "play"
+        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/bg_bottomsheet_tokomart_educational_information.png"
         private val TAG = TokoNowEducationalInfoBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowEducationalInfoBottomSheet {
             return TokoNowEducationalInfoBottomSheet()
         }
     }
+
+    var source: String? = null
+
+    private var listener: EducationalInfoBottomSheetListener? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowEducationalInformationBinding>()
 
@@ -41,8 +51,10 @@ class TokoNowEducationalInfoBottomSheet :
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    fun show(fm: FragmentManager) {
+    fun show(fm: FragmentManager, educationalInfoBottomSheetListener: EducationalInfoBottomSheetListener?) {
         show(fm, TAG)
+        listener = educationalInfoBottomSheetListener
+        listener?.impressUspBottomSheet()
     }
 
     private fun initView() {
@@ -61,29 +73,62 @@ class TokoNowEducationalInfoBottomSheet :
             binding?.apply {
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
 
-                tpTime.text = MethodChecker.fromHtml(
-                    getServiceTypeFormattedCopy(
-                        context = context,
-                        key = EDU_BOTTOM_SHEET_RESOURCE_ID,
-                        serviceType = ChooseAddressUtils.getLocalizingAddressData(context).service_type,
-                        colorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                    )
-                )
+                val localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
 
-                tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet, boldColor))
+                setTimeText(localAddressData.service_type, boldColor)
+                setStockText(localAddressData.service_type, boldColor)
+
                 tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
 
-                convertStringToLink(tpTwentyFourHours, context, R.string.tokopedianow_home_educational_information_twenty_four_hours_bottomsheet)
-                convertStringToLink(tpTermsAndConditions, context, R.string.tokopedianow_home_educational_information_terms_and_conditions_bottomsheet)
+                setTwentyFourHours(localAddressData.service_type, tpTwentyFourHours, context)
+                setTermAndConditions(localAddressData.service_type, tpTermsAndConditions, context)
 
                 Glide.with(context)
                     .load(BACKGROUND_BOTTOMSHEET)
                     .into(ivBackgroundImage)
+
+                setButton()
             }
         }
     }
 
-    private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
+    private fun setButton() {
+        binding?.ubtnVisitNow?.shouldShowWithAction(
+            shouldShow = source == SOURCE_PLAY,
+            action = {
+                binding?.ubtnVisitNow?.setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+                    listener?.clickVisitNowBottomSheet()
+                }
+            }
+        )
+    }
+
+    private fun setTimeText(serviceType: String, boldColor: String) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_DURATION_RESOURCE_ID, serviceType)?.let {
+            binding?.tpTime?.text = MethodChecker.fromHtml(getString(it, boldColor))
+        }
+    }
+
+    private fun setStockText(serviceType: String, boldColor: String) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_STOCK_RESOURCE_ID, serviceType)?.let {
+            binding?.tpStockAvailable?.text = MethodChecker.fromHtml(getString(it, boldColor))
+        }
+    }
+
+    private fun setTwentyFourHours(serviceType: String, tpTwentyFourHours: Typography, context: Context) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_FAQ_RESOURCE_ID, serviceType)?.let {
+            convertStringToLink(tpTwentyFourHours, context, it, EDU_BOTTOMSHEET_FAQ_RESOURCE_ID)
+        }
+    }
+
+    private fun setTermAndConditions(serviceType: String, tpTermsAndConditions: Typography, context: Context) {
+        getServiceTypeRes(EDU_BOTTOMSHEET_SK_RESOURCE_ID, serviceType)?.let {
+            convertStringToLink(tpTermsAndConditions, context, it, EDU_BOTTOMSHEET_SK_RESOURCE_ID)
+        }
+    }
+
+    private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int, keyRes: String) {
         val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
         val linkHelper = HtmlLinkHelper(context, getString(stringRes, greenColor))
         typography.text = linkHelper.spannedString
@@ -91,11 +136,18 @@ class TokoNowEducationalInfoBottomSheet :
         linkHelper.urlList[0].let { link ->
             link.onClick = {
                 goToInformationPage(link.linkUrl)
+                listener?.clickVisitInformationPage(keyRes)
             }
         }
     }
 
     private fun goToInformationPage(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+    }
+
+    interface EducationalInfoBottomSheetListener {
+        fun impressUspBottomSheet()
+        fun clickVisitInformationPage(keyRes: String)
+        fun clickVisitNowBottomSheet()
     }
 }

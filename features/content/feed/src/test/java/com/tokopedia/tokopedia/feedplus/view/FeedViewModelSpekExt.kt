@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.TestBody
@@ -44,6 +45,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
     val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
     val addWishListUseCase by memoized<AddWishListUseCase>()
+    val addToWishlistV2UseCase by memoized<AddToWishlistV2UseCase>()
     val sendReportUseCase by memoized<SendReportUseCase>()
     val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
     val feedXTrackViewerUseCase by memoized<FeedXTrackViewerUseCase>()
@@ -65,6 +67,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         getWhitelistNewUseCase,
         sendReportUseCase,
         addWishListUseCase,
+        addToWishlistV2UseCase,
         feedBroadcastTrackerUseCase,
         feedXTrackViewerUseCase
 
@@ -129,6 +132,9 @@ fun FeatureBody.createFeedTestInstance() {
     }
     val addWishListUseCase by memoized {
         mockk<AddWishListUseCase>(relaxed = true)
+    }
+    val addWishListV2UseCase by memoized {
+        mockk<AddToWishlistV2UseCase>(relaxed = true)
     }
     val sendReportUseCase by memoized {
         mockk<SendReportUseCase>(relaxed = true)

@@ -23,7 +23,7 @@
     <string name="kyc_intro_button">Mulai Verifikasi</string>
 
     <string name="kyc_pending_title">Dokumen sedang kami proses</string>
-    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>
+    <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x12 jam ya.</string>
     <string name="kyc_pending_button">Mengerti</string>
 
     <string name="kyc_failed_title">Gagal Verifikasi</string>
@@ -57,11 +57,13 @@
     <string name="face_subtitle_kyc">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
     <string name="face_button_kyc">Mulai Foto</string>
 
-    <string name="camera_ktp_title">Verifikasi Data Diri</string>
-    <string name="camera_ktp_subtitle">Posisikan KTP di dalam bingkai,\npastikan informasi di foto terlihat jelas</string>
+    <string name="camera_ktp_title">Foto KTP</string>
+    <string name="camera_ktp_subtitle">Pastikan KTP kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="camera_ktp_subtitle_preview">Pastikan informasi di foto ini sudah terlihat jelas, ya.</string>
 
-    <string name="camera_face_title">Ambil Foto Diri Bersama KTP</string>
-    <string name="camera_face_subtitle">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
+    <string name="camera_face_title">Foto Wajah &amp; KTP</string>
+    <string name="camera_face_subtitle">Pastikan wajah dan KTP kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="camera_face_subtitle_preview">Pastikan wajah dan KTP kamu sudah terlihat jelas, ya.</string>
 
     <string name="change_button">Ubah</string>
     <string name="form_final_info">Dengan klik “Kirim Dokumen” saya menyetujui syarat &amp; ketentuan yang berlaku</string>
@@ -90,7 +92,7 @@
 
     <string name="title_kyc_form_fail_verification">Verifikasi Gagal</string>
 
-    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
+    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x12 jam.</string>
 
     <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
         (%s)</string>
@@ -157,14 +159,32 @@
     <string name="kyc_benefit_onboarding_title">Verifikasi datamu, yuk!</string>
     <string name="kyc_benefit_onboarding_subtitle">Upload foto KTP dan wajah biar dapat keuntungan ini:</string>
 
-    <string name="kyc_benefit_one_title">Akunmu makin aman</string>
-    <string name="kyc_benefit_one_desc">Datamu akan digunakan untuk mengamankan akses ke akun atau tokomu.</string>
-
-    <string name="kyc_benefit_two_title">Akses semua fitur di Tokopedia</string>
-    <string name="kyc_benefit_two_desc">Bisa dapat hadiah Referral, beli produk khusus, dan nikmatin fitur lainnya secara lengkap.</string>
-
-    <string name="kyc_benefit_three_title">Dapatkan manfaat Power Merchant</string>
-    <string name="kyc_benefit_three_desc">Dapatkan fitur-fitur khusus yang bisa menaikkan penjualan dan kepercayaan pembeli.</string>
+    <string name="kyc_benefit_complete_shopping_feature_title">Nikmatin fitur lengkap buat belanja</string>
+    <string name="kyc_benefit_complete_shopping_feature_desc">Belanja jadi makin nyaman &amp; untung, deh.</string>
+    <string name="kyc_benefit_exclusive_sales_features_title">Akses fitur penjualan khusus</string>
+    <string name="kyc_benefit_exclusive_sales_features_desc">Bisa naikin performa Seller atau jadi Mitra.</string>
+    <string name="kyc_benefit_account_more_safer_title">Akunmu makin aman</string>
+    <string name="kyc_benefit_account_more_safer_dsc">Datamu akan melindungi akses ke akunmu.</string>
+    <string name="kyc_benefit_see_more_detail">Lihat Detail Keuntungan</string>
+    <string name="kyc_benefit_detail_title">Keuntungan setelah verifikasi</string>
+    <string name="kyc_benefit_detail_for_shopping">Buat belanja</string>
+    <string name="kyc_benefit_detail_for_selling">Buat jualan</string>
+    <string name="kyc_benefit_detail_referral_title">Dapat hadiah Referral</string>
+    <string name="kyc_benefit_detail_referral_desc">Udah kumpulin teman di Referral? Kamu bisa klaim hadiahnya setelah verifikasi.</string>
+    <string name="kyc_benefit_detail_affiliate_title">Daftar Tokopedia Affiliate</string>
+    <string name="kyc_benefit_detail_affiliate_desc">Siap-siap dapat komisi kalau ada yang belanja lewat link kamu!</string>
+    <string name="kyc_benefit_detail_adult_product_title">Beli produk khusus dewasa</string>
+    <string name="kyc_benefit_detail_adult_product_desc">Kamu bisa langsung beli produknya kalau memenuhi batas minimum usia pembeli.</string>
+    <string name="kyc_benefit_detail_bank_account_title">Buka rekening bank</string>
+    <string name="kyc_benefit_detail_bank_account_desc">Bisa buka rekening di aplikasi Tokopedia dan langsung pakai buat pembayaran.</string>
+    <string name="kyc_benefit_detail_pay_later_title">Belanja sekarang, bayar nanti</string>
+    <string name="kyc_benefit_detail_pay_later_desc">Daftar kartu kredit atau pakai PayLater dari layanan keuangan tepercaya.</string>
+    <string name="kyc_benefit_detail_mitra_title">Daftar Mitra Tokopedia</string>
+    <string name="kyc_benefit_detail_mitra_desc">Tambah pendapatan dengan jualan grosir sebagai Mitra Tokopedia.</string>
+    <string name="kyc_benefit_detail_power_merchant_title">Upgrade status toko</string>
+    <string name="kyc_benefit_detail_power_merchant_desc">Bisa jadi Power Merchant atau Power Merchant PRO dan nikmatin fiturnya.</string>
+    <string name="kyc_benefit_detail_funding_title">Ajukan Modal Toko</string>
+    <string name="kyc_benefit_detail_funding_desc">Bisa dapat pinjaman bantuan dana usaha eksklusif buat Seller Tokopedia.</string>
 
     <string name="uii_simple_title">Silakan lanjut ke pengisian formulir</string>
     <string name="uii_simple_desc">Dokumen KTPmu sedang kami proses</string>

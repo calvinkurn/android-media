@@ -3,9 +3,10 @@ package com.tokopedia.vouchercreation.shop.voucherlist.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcFilterGroupBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.BaseFilterUiModel.FilterGroup
-import kotlinx.android.synthetic.main.item_mvc_filter_group.view.*
 
 /**
  * Created By @ilhamsuaib on 22/04/20
@@ -18,9 +19,9 @@ class FilterGroupViewHolder(itemView: View?) : AbstractViewHolder<FilterGroup>(i
         val RES_LAYOUT = R.layout.item_mvc_filter_group
     }
 
+    private var binding: ItemMvcFilterGroupBinding? by viewBinding()
+
     override fun bind(element: FilterGroup) {
-        with(itemView) {
-            tvMvcFilterGroupTitle.text = element.title
-        }
+        binding?.tvMvcFilterGroupTitle?.text = element.title
     }
 }

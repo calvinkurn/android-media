@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -30,6 +31,7 @@ import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.databinding.FragmentVoucherPromotionTypeBinding
 import com.tokopedia.vouchercreation.shop.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.shop.create.domain.model.VoucherRecommendationData
 import com.tokopedia.vouchercreation.shop.create.view.enums.CashbackType
@@ -93,6 +95,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private var binding by autoClearedNullable<FragmentVoucherPromotionTypeBinding>()
+
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -110,14 +114,14 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private val expensesInfoBottomSheetFragment by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(viewContext).apply {
+        GeneralExpensesInfoBottomSheetFragment.createInstance().apply {
             setTitle(bottomSheetViewTitle.toBlankOrString())
         }
     }
 
     private val percentageExpenseBottomSheet by lazy {
         viewContext?.let {
-            CashbackExpenseInfoBottomSheetFragment.createInstance(it, ::getCashbackInfo).apply {
+            CashbackExpenseInfoBottomSheetFragment.createInstance(::getCashbackInfo).apply {
                 setOnDismissListener {
                     adapter.run {
                         notifyItemChanged(dataSize - 1)
@@ -314,7 +318,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
-        return inflater.inflate(R.layout.fragment_voucher_promotion_type, container, false)
+        binding = FragmentVoucherPromotionTypeBinding.inflate(LayoutInflater.from(context), container, false)
+        return binding?.root
     }
 
     override fun onPause() {

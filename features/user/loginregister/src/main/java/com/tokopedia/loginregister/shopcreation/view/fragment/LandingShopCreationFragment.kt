@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
@@ -61,8 +62,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var shopCreationAnalytics: ShopCreationAnalytics
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -77,7 +80,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_landing_shop_creation, container, false)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
         buttonOpenShop = view.findViewById(R.id.btn_continue)
@@ -119,6 +126,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     REQUEST_CODE_NAME_SHOP_CREATION -> {
                         shopCreationViewModel.getUserInfo()
                     }
+                    ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION -> {
+                        setActionAfterAdminRedirection(data)
+                    }
                 }
             }
             else -> {
@@ -135,7 +145,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 if (userSession.isLoggedIn) {
                     RouteManager.route(it, ApplinkConstInternalUserPlatform.LOGOUT)
                     it.finish()
-                } else if(it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                } else if (it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
                     RouteManager.route(it, ApplinkConst.LOGIN)
                     it.finish()
                 } else {
@@ -164,17 +174,54 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initButtonListener() {
-        if (userSession.isLoggedIn) {
-            buttonOpenShop.setOnClickListener {
+        buttonOpenShop.setOnClickListener {
+            shopCreationAnalytics.eventClickOpenShopLanding()
+            if (userIsLoggedIn()) {
+                goToShopAdminRedirection()
+            } else {
                 showLoading()
-                shopCreationAnalytics.eventClickOpenShopLanding()
+                goToPhoneShopCreation()
+            }
+        }
+    }
+
+    private fun userIsLoggedIn(): Boolean {
+        return (userSession.userId != DEFAULT_SHOP_ID_NOT_OPEN && userSession.userId.isNotBlank())
+    }
+
+    private fun setActionAfterAdminRedirection(intent: Intent?) {
+        val appLink = intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN).orEmpty()
+        if (appLink.isNotEmpty()) {
+            setActionAfterSuccessAdminRedirection(appLink)
+        } else {
+            showToasterAfterFailAdminRedirection(intent)
+        }
+    }
+
+    private fun setActionAfterSuccessAdminRedirection(appLink: String) {
+        if (appLink == ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION) {
+            showLoading()
+            if (userSession.isLoggedIn) {
                 shopCreationViewModel.getUserProfile()
+            } else {
+                goToPhoneShopCreation()
             }
         } else {
-            buttonOpenShop.setOnClickListener {
-                showLoading()
-                shopCreationAnalytics.eventClickOpenShopLanding()
-                goToPhoneShopCreation()
+            RouteManager.route(context, appLink)
+        }
+    }
+
+    private fun showToasterAfterFailAdminRedirection(intent: Intent?) {
+        val errorMessage =
+            intent?.getStringExtra(ShopAdminDeepLinkMapper.ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN)
+        if (errorMessage?.isNotEmpty() == true) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR
+                ).show()
             }
         }
     }
@@ -216,7 +263,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         if (userProfileCompletionData.phone.isNotEmpty()) {
             if (userProfileCompletionData.isPhoneVerified) {
                 if (userProfileCompletionData.fullName.contains(CHARACTER_NOT_ALLOWED) ||
-                        userProfileCompletionData.fullName.isEmpty()) {
+                    userProfileCompletionData.fullName.isEmpty()
+                ) {
                     goToNameShopCreation()
                 } else {
                     if (userSession.hasShop())
@@ -243,7 +291,8 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onSuccessGetUserInfo() {
         if (userSession.name.contains(CHARACTER_NOT_ALLOWED) ||
-                userSession.name.isEmpty()) {
+            userSession.name.isEmpty()
+        ) {
             goToNameShopCreation()
         } else {
             saveFirstInstallTime()
@@ -256,7 +305,14 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun onFailedGetUserInfo(throwable: Throwable) {
         view?.run {
             hideLoading()
-            throwable.message?.let { Toaster.make(this, it, Toaster.toasterLength, Toaster.TYPE_ERROR) }
+            throwable.message?.let {
+                Toaster.make(
+                    this,
+                    it,
+                    Toaster.toasterLength,
+                    Toaster.TYPE_ERROR
+                )
+            }
         }
     }
 
@@ -270,23 +326,36 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun onFailedGetShopInfo(throwable: Throwable) {
         view?.run {
-            throwable.message?.let { Toaster.make(this, it, Toaster.toasterLength, Toaster.TYPE_ERROR) }
+            throwable.message?.let {
+                Toaster.make(
+                    this,
+                    it,
+                    Toaster.toasterLength,
+                    Toaster.TYPE_ERROR
+                )
+            }
         }
         goToShopPage(userSession.shopId)
     }
 
     private fun goToNameShopCreation() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_NAME_SHOP_CREATION)
     }
 
+    private fun goToShopAdminRedirection() {
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION)
+        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_ADMIN_REDIRECTION)
+    }
+
     private fun goToPhoneShopCreation() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)
     }
 
     private fun goToPhoneShopCreation(phone: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)
     }
@@ -312,8 +381,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun goToShopPage(shopId: String) {
         activity?.let {
-            val intent = RouteManager.getIntent(activity,
-                    ApplinkConst.SHOP.replace("{shop_id}", shopId))
+            val intent = RouteManager.getIntent(
+                activity,
+                ApplinkConst.SHOP.replace("{shop_id}", shopId)
+            )
             it.startActivity(intent)
             it.finish()
         }
@@ -323,7 +394,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            baseView.setBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
     }
 
@@ -338,9 +414,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE
+            )
             sharedPrefs.edit().putLong(
-                    KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+                KEY_FIRST_INSTALL_TIME_SEARCH, 0
+            ).apply()
         }
     }
 
@@ -349,10 +427,14 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val REQUEST_CODE_NAME_SHOP_CREATION = 100
         private const val REQUEST_CODE_PHONE_SHOP_CREATION = 101
 
+        private const val DEFAULT_SHOP_ID_NOT_OPEN = "0"
+
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
-        private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
-        private const val URL_DELETED_SHOP = "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
+        private const val LANDING_PICT_URL =
+            "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+        private const val URL_DELETED_SHOP =
+            "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"

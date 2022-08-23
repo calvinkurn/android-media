@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
-import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**

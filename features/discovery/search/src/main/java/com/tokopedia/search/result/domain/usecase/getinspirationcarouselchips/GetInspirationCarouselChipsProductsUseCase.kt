@@ -70,6 +70,12 @@ class GetInspirationCarouselChipsProductsUseCase(
                         name
                         city
                     }
+                    ads {
+                        id
+                        productClickUrl
+                        productWishlistUrl
+                        productViewUrl
+                    }
                 }
               }
             }

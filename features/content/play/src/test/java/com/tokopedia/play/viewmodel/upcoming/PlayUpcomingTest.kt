@@ -20,6 +20,7 @@ import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -280,11 +281,11 @@ class PlayUpcomingTest {
      * Click Partner Name
      */
     @Test
-    fun `given a upcoming channel, when user click partner name and partner is shop, then it should emit open page event`() {
+    fun `given a upcoming channel, when user click partner name should emit open page event`() {
         /** Mock */
+        val mockApplink = "tokopedia://shop/1111"
         val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
-            ApplinkConst.SHOP,
-            listOf(mockChannelData.partnerInfo.id.toString())
+            mockApplink
         )
 
         coEvery { mockPlayNewAnalytic.clickShop(any(), any(), any()) } returns Unit
@@ -302,7 +303,7 @@ class PlayUpcomingTest {
         robot.use {
             /** Test */
             val events = robot.recordEvent {
-                robot.submitAction(ClickPartnerNameUpcomingAction)
+                robot.submitAction(ClickPartnerNameUpcomingAction(appLink = mockApplink))
             }
 
             /** Verify **/
@@ -316,9 +317,9 @@ class PlayUpcomingTest {
     @Test
     fun `given a upcoming channel, when user click partner name and partner is buyer, then it should emit open page event`() {
         /** Mock */
+        val mockApplink = "tokopedia://play/1266"
         val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
-            ApplinkConst.PROFILE,
-            listOf(mockChannelDataWithBuyerPartner.partnerInfo.id.toString())
+            mockApplink
         )
 
         /** Prepare */
@@ -334,7 +335,7 @@ class PlayUpcomingTest {
         robot.use {
             /** Test */
             val events = robot.recordEvent {
-                robot.submitAction(ClickPartnerNameUpcomingAction)
+                robot.submitAction(ClickPartnerNameUpcomingAction(appLink = mockApplink))
             }
 
             /** Verify **/
@@ -404,12 +405,12 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.Followable(true))
+            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Followed))
         }
     }
 
     @Test
-    fun `given a upcoming channel, when partner is not shop, then the partner state should be not followable`() {
+    fun `given a upcoming channel, when partner is buyer, then the partner state should be followable`() {
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
@@ -426,7 +427,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.NotFollowable)
+            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed))
         }
     }
 
@@ -470,7 +471,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Refresh)
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Refresh)
 
             events.assertNotEmpty()
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.ShowInfoEvent::message)
@@ -515,7 +516,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.WatchNow)
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
         }
     }
 

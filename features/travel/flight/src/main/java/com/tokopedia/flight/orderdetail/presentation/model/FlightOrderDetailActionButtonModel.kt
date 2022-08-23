@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FlightOrderDetailActionButtonModel(
-        val id: Int,
+        val id: String,
         val label: String,
         val buttonType: String,
         val uri: String,

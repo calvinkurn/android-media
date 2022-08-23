@@ -9,16 +9,17 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
+import com.tokopedia.vouchercreation.databinding.FragmentMvcVoucherDetailBinding
 import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.shop.detail.model.*
 import com.tokopedia.vouchercreation.shop.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.shop.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**
  * Created By @ilhamsuaib on 09/05/20
@@ -35,8 +36,11 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         const val PROMO_CODE_KEY = "promo_code"
     }
 
+    protected var baseBinding by autoClearedNullable<FragmentMvcVoucherDetailBinding>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_mvc_voucher_detail, container, false)
+        baseBinding = FragmentMvcVoucherDetailBinding.inflate(LayoutInflater.from(context), container, false)
+        return baseBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,15 +100,15 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
 
     override fun showDescriptionBottomSheet(title: String, content: String) {
         if (!isAdded) return
-        DescriptionBottomSheet.createInstance(context ?: return, title)
+        DescriptionBottomSheet.createInstance(title)
                 .show(content, childFragmentManager)
     }
 
-    private fun setupActionBar() = view?.run {
+    private fun setupActionBar() {
         (activity as? AppCompatActivity)?.let { activity ->
-            activity.setSupportActionBar(toolbarMvcVoucherDetail)
+            activity.setSupportActionBar(baseBinding?.toolbarMvcVoucherDetail)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
+            baseBinding?.toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 

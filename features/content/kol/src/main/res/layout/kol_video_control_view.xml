@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/black"
+    android:background="@color/Unify_N700"
     android:layout_gravity="bottom"
     android:padding="16dp"
     android:alpha="0.75">
@@ -20,12 +20,14 @@
         <ImageView android:id="@id/exo_play"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            style="@style/ExoMediaButton.Play"/>
+            style="@style/ExoMediaButton.Play"
+            android:contentDescription="@string/kol_video_play_btn_content_desc" />
 
         <ImageView android:id="@id/exo_pause"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            style="@style/ExoMediaButton.Pause"/>
+            style="@style/ExoMediaButton.Pause"
+            android:contentDescription="@string/kol_video_pause_btn_content_desc" />
 
     </FrameLayout>
 
@@ -38,7 +40,8 @@
         app:layout_constraintLeft_toRightOf="@+id/control"
         app:layout_constraintStart_toEndOf="@+id/control"
         app:layout_constraintTop_toTopOf="@+id/control"
-        app:layout_constraintBottom_toBottomOf="@+id/control"/>
+        app:layout_constraintBottom_toBottomOf="@+id/control"
+        android:contentDescription="@string/kol_video_vol_control_btn_content_desc" />
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
         android:id="@id/exo_progress"
@@ -60,7 +63,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="00:00"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -72,7 +75,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:text="/"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toStartOf="@id/exo_duration"
         app:layout_constraintTop_toTopOf="@id/exo_duration"
         app:layout_constraintBottom_toBottomOf="@id/exo_duration"
@@ -85,7 +88,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="00:00"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toStartOf="@+id/progress_divider"
         app:layout_constraintTop_toTopOf="@id/exo_duration"
         app:layout_constraintBottom_toBottomOf="@id/exo_duration"/>

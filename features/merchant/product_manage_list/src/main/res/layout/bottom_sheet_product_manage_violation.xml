@@ -68,76 +68,84 @@
         app:unifyButtonVariant="ghost"
         tools:text="Bantuan" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_1"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_2"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_1" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_3"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_2" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_4_left"
         android:layout_width="32dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_3" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_4_right"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_violation_4_left"
         app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_violation_4_left"
         app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_violation_4_left"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_5_left"
         android:layout_width="32dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_4_left" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_5_right"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_violation_5_left"
         app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_violation_5_left"
         app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_violation_5_left"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_product_manage_violation_6"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="22dp"
         android:layout_marginBottom="16dp"
-        app:corners="8"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_5_right" />
 

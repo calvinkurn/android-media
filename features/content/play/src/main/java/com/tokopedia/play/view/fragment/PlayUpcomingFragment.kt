@@ -320,8 +320,8 @@ class PlayUpcomingFragment @Inject constructor(
         (requireActivity() as PlayActivity).onBackPressed(isSystemBack = false)
     }
 
-    override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
-        playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction)
+    override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
+        playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction(applink))
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {

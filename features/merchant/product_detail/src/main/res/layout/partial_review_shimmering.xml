@@ -5,7 +5,7 @@
     android:visibility="gone"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_header"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
@@ -14,9 +14,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/review_shimmer_image_3"
         app:layout_constraintTop_toTopOf="parent"
-        app:corners="@integer/corner_radius_shimmering" />
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_subheader"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
@@ -25,19 +26,21 @@
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
         app:layout_constraintTop_toBottomOf="@id/review_shimmer_header"
         app:layout_constraintEnd_toEndOf="@id/review_shimmer_image_3"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="12dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/review_shimmer_header"
-        app:corners="@integer/corner_radius_shimmering"
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"
         />
-    
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_image"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -45,45 +48,50 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/review_shimmer_subheader"
         app:layout_constraintStart_toStartOf="parent"
-        app:corners="12" />
+        app:loader_corner_radius="6dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_image_2"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginStart="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="@id/review_shimmer_image"
         app:layout_constraintStart_toEndOf="@id/review_shimmer_image"
-        app:corners="12" />
+        app:loader_corner_radius="6dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_image_3"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         app:layout_constraintTop_toTopOf="@id/review_shimmer_image"
         app:layout_constraintStart_toEndOf="@id/review_shimmer_image_2"
         app:layout_constraintEnd_toStartOf="@id/review_shimmer_image_4"
-        app:corners="12" />
+        app:loader_corner_radius="6dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_image_4"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintEnd_toStartOf="@id/review_shimmer_image_5"
         app:layout_constraintTop_toTopOf="@id/review_shimmer_image"
-        app:corners="12" />
+        app:loader_corner_radius="6dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_image_5"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="@id/review_shimmer_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:corners="12" />
+        app:loader_corner_radius="6dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_description"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
@@ -92,9 +100,10 @@
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
         app:layout_constraintEnd_toEndOf="@id/review_shimmer_image_3"
         app:layout_constraintTop_toBottomOf="@id/review_shimmer_image"
-        app:corners="@integer/corner_radius_shimmering"/>
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_description_1"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
@@ -103,9 +112,10 @@
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_shimmer_description"
-        app:corners="@integer/corner_radius_shimmering" />
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/review_shimmer_description_2"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
@@ -114,9 +124,10 @@
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_shimmer_description_1"
-        app:corners="@integer/corner_radius_shimmering" />
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -124,6 +135,7 @@
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_shimmer_description_2"
-        app:corners="@integer/corner_radius_shimmering" />
+        app:loader_corner_radius="10dp"
+        app:loader_type="rect"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,19 +5,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/deals_dp_100"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl5" />
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/deals_dp_200"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/deals_dp_12" />
+        android:layout_marginTop="@dimen/deals_dp_12"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"/>
 
     <include
         layout="@layout/item_deals_product_card_shimmering"

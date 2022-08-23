@@ -9,11 +9,12 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,20 +23,33 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.widget.CountdownTimeView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.data.*
+import com.tokopedia.flight.booking.data.FlightBookingModel
+import com.tokopedia.flight.booking.data.FlightCart
+import com.tokopedia.flight.booking.data.FlightCartViewEntity
+import com.tokopedia.flight.booking.data.FlightCheckoutData
+import com.tokopedia.flight.booking.data.FlightContactData
+import com.tokopedia.flight.booking.data.FlightPromoViewEntity
+import com.tokopedia.flight.booking.data.FlightVerify
+import com.tokopedia.flight.booking.data.QueryAddToCart
+import com.tokopedia.flight.booking.data.QueryCheckVoucher
+import com.tokopedia.flight.booking.data.QueryCheckoutCart
+import com.tokopedia.flight.booking.data.QueryFlightCancelVoucher
+import com.tokopedia.flight.booking.data.QueryGetCart
+import com.tokopedia.flight.booking.data.QueryGetProfile
+import com.tokopedia.flight.booking.data.QueryVerifyCart
 import com.tokopedia.flight.booking.data.mapper.FlightBookingErrorCodeMapper
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
@@ -58,11 +72,12 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -90,7 +105,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-
 
 /**
  * @author by jessica on 2019-10-24
@@ -134,7 +148,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             bookingViewModel = viewModelProvider.get(FlightBookingViewModel::class.java)
         }
 
@@ -268,7 +282,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                                 ?: ""
                         )
                     ) {
-                        checkOutCart(totalCartPrice)
+                        checkOutCart()
                     }
                 }
             }
@@ -283,7 +297,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             showRepriceTag(cart)
                             renderRepricePrice(cart)
                         } else {
-                            showCheckBookingDetailPopUp(cart.configuration.price)
+                            showCheckBookingDetailPopUp()
                         }
                     }
                 }
@@ -484,7 +498,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         } else tickerBookingPromo.visibility = View.GONE
 
         continueToPayButton.setOnClickListener {
-            showCheckBookingDetailPopUp(cart.configuration.price)
+            showCheckBookingDetailPopUp()
             bottomSheet.dismiss()
         }
 
@@ -498,7 +512,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showCheckBookingDetailPopUp(price: Int) {
+    private fun showCheckBookingDetailPopUp() {
         if (activity != null) {
             val dialog = DialogUnify(
                 activity as FlightBookingActivity,
@@ -512,7 +526,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                checkOutCart(price)
+                checkOutCart()
             }
 
             dialog.setSecondaryCTAClickListener { dialog.dismiss() }
@@ -838,10 +852,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun checkOutCart(totalPrice: Int) {
-        totalCartPrice = totalPrice
+    private fun checkOutCart() {
         showLoadingDialog()
-        bookingViewModel.checkOutCart(getCheckoutQuery(), totalPrice)
+        bookingViewModel.checkOutCart(getCheckoutQuery(), totalCartPrice)
     }
 
     private fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
@@ -1119,7 +1132,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                                 dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
                                 dialog.setPrimaryCTAClickListener {
                                     dialog.dismiss()
-                                    checkOutCart(totalCartPrice)
+                                    checkOutCart()
                                 }
                             }
                             FlightErrorConstant.FLIGHT_INVALID_USER -> {
@@ -1148,18 +1161,25 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(
-                    activity,
-                    view,
-                    ErrorHandler.getErrorMessage(activity, null),
-                    getString(com.tokopedia.globalerror.R.string.error500Desc),
-                    getString(com.tokopedia.globalerror.R.string.error500Action),
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
-                ) {
-                    NetworkErrorHelper.hideEmptyState(view)
-                    showLoadingDialog()
-                    action()
-                }
+                try {
+                    NetworkErrorHelper.showEmptyState(
+                        activity,
+                        view,
+                        ErrorHandler.getErrorMessage(activity, null),
+                        getString(com.tokopedia.globalerror.R.string.error500Desc),
+                        getString(com.tokopedia.globalerror.R.string.error500Action),
+                        0
+                    ) {
+                        NetworkErrorHelper.hideEmptyState(view)
+                        showLoadingDialog()
+                        action()
+                    }
+                    view?.let {
+                        val retryLayout = it.findViewById<LinearLayout>(com.tokopedia.abstraction.R.id.main_retry)
+                        val ivIcon = retryLayout.findViewById<ImageView>(com.tokopedia.abstraction.R.id.iv_icon)
+                        ivIcon.loadImage(getString(com.tokopedia.flight.R.string.flight_default_error_img_url))
+                    }
+                } catch (t: Throwable) { }
             }
         }
     }
@@ -1195,7 +1215,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         startActivityForResult(
             RouteManager.getIntent(
                 context,
-                ApplinkConstInternalGlobal.ADD_PHONE
+                ApplinkConstInternalUserPlatform.ADD_PHONE
             ), REQUEST_CODE_OTP
         )
     }
@@ -1328,16 +1348,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun getDepartureId(): String = bookingViewModel.getDepartureId()
     private fun getReturnId(): String = bookingViewModel.getReturnId()
-    private fun getAtcQuery(): String = FlightBookingQuery.QUERY_ADD_TO_CART
-    private fun getGetCartQuery(): String = FlightBookingQuery.QUERY_GET_CART
-    private fun getCheckVoucherQuery(): String = FlightBookingQuery.QUERY_CHECK_VOUCHER
-    private fun getVerifyCartQuery(): String = FlightBookingQuery.QUERY_VERIFY_CART
-    private fun getCheckoutQuery(): String = FlightBookingQuery.QUERY_CHECKOUT_CART
-    private fun getProfileQuery(): String =
-        GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
-
-    private fun getCancelVoucherQuery(): String =
-        PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
+    private fun getAtcQuery(): GqlQueryInterface = QueryAddToCart()
+    private fun getGetCartQuery(): GqlQueryInterface = QueryGetCart()
+    private fun getCheckVoucherQuery(): GqlQueryInterface = QueryCheckVoucher()
+    private fun getVerifyCartQuery(): GqlQueryInterface = QueryVerifyCart()
+    private fun getCheckoutQuery(): GqlQueryInterface = QueryCheckoutCart()
+    private fun getProfileQuery(): GqlQueryInterface = QueryGetProfile()
+    private fun getCancelVoucherQuery(): GqlQueryInterface = QueryFlightCancelVoucher()
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         binding?.flightBookingTicker?.let {

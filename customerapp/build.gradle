@@ -142,7 +142,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
-        checkDependencies true
+        checkDependencies false
     }
 
     signingConfigs {
@@ -277,7 +277,6 @@ dependencies {
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.customer_mid_app)
-    implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
@@ -294,7 +293,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
-    implementation projectOrAar(rootProject.ext.features.kyc)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -304,6 +302,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.libraries.screenshot_observer)
     implementation projectOrAar(rootProject.ext.features.addOnGifting)
+    implementation projectOrAar(rootProject.ext.features.appCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.network)
 
@@ -335,7 +334,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -433,6 +431,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.imageGallery
 }
 
 apply plugin: 'com.google.gms.google-services'

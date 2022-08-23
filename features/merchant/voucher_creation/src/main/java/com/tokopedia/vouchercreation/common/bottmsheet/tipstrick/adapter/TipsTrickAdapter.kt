@@ -1,12 +1,10 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickModel
-import kotlinx.android.synthetic.main.item_mvc_tips_trick.view.*
+import com.tokopedia.vouchercreation.databinding.ItemMvcTipsTrickBinding
 
 /**
  * Created By @ilhamsuaib on 08/05/20
@@ -22,8 +20,7 @@ class TipsTrickAdapter : RecyclerView.Adapter<TipsTrickAdapter.TipsTrickViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TipsTrickViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return TipsTrickViewHolder(inflater.inflate(R.layout.item_mvc_tips_trick, parent, false))
+        return TipsTrickViewHolder(ItemMvcTipsTrickBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = items.size
@@ -33,12 +30,14 @@ class TipsTrickAdapter : RecyclerView.Adapter<TipsTrickAdapter.TipsTrickViewHold
         holder.bind(item)
     }
 
-    inner class TipsTrickViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TipsTrickViewHolder(private val binding: ItemMvcTipsTrickBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: TipsTrickModel) = with(itemView) {
-            tvMvcTipsTrickNumber.text = adapterPosition.plus(1).toString()
-            tvMvcTipsTrickTitle.text = item.title
-            tvMvcTipsTrickDescription.text = item.description
+        fun bind(item: TipsTrickModel) {
+            binding.apply {
+                tvMvcTipsTrickNumber.text = adapterPosition.plus(1).toString()
+                tvMvcTipsTrickTitle.text = item.title
+                tvMvcTipsTrickDescription.text = item.description
+            }
         }
     }
 }

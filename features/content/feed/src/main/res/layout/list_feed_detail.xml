@@ -104,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:textColor="#6D7588"
+                    android:textColor="@color/Unify_NN600"
                     app:typographyType="small"
                     tools:text="Cashback 10%" />
             </LinearLayout>
@@ -134,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp"
-                    android:textColor="#6D7588"
+                    android:textColor="@color/Unify_NN600"
                     app:typographyType="body_3"
                     tools:text="4.7" />
 
@@ -144,7 +144,7 @@
                     android:layout_height="10dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4dp"
-                    android:background="#6D7588" />
+                    android:background="@color/Unify_NN600" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/soldInfo"
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp"
-                    android:textColor="#6D7588"
+                    android:textColor="@color/Unify_NN600"
                     app:typographyType="body_3"
                     tools:text="Terjual 200" />
             </LinearLayout>

@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
@@ -29,6 +30,9 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 private const val PROMO_CODE = "Promo Code"
+const val BANNER_ACTION_CODE = "CODE"
+private const val SINGLE_PROMO_CODE = "single_promo_code"
+private const val DOUBLE_PROMO_CODE = "double_promo_code"
 
 class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
@@ -125,11 +129,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun copyCodeToClipboard(position: Int) {
-        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
-            val item = listItem[position]
-            (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
+        try {
+            bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+                val item = listItem[position]
+                (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
                     ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, item.code))
-            if (!item.applinks.isNullOrEmpty()) applinkCheck.value = item.applinks else applinkCheck.value = ""
+                if (!item.applinks.isNullOrEmpty()) applinkCheck.value =
+                    item.applinks else applinkCheck.value = ""
+            }
+        } catch (e: Exception) {
+            Utils.logException(e)
         }
     }
 
@@ -213,5 +222,17 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun reload() {
         components.noOfPagesLoaded = 0
         fetchBannerData()
+    }
+
+    fun setComponentPromoNameForCoupons(bannerName: String, data: List<DataItem>){
+        data.forEach {
+            if (it.action == BANNER_ACTION_CODE) {
+                when (bannerName) {
+                    ComponentNames.SingleBanner.componentName -> it.componentPromoName = SINGLE_PROMO_CODE
+
+                    ComponentNames.DoubleBanner.componentName -> it.componentPromoName = DOUBLE_PROMO_CODE
+                }
+            }
+        }
     }
 }

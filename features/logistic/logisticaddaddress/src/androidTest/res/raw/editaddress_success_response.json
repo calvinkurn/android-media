@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "kero_edit_address": {
+        "data": {
+          "is_success": 1,
+          "is_state_chosen_address_changed": true
+        },
+        "status": "OK",
+        "config": "",
+        "server_process_time": ""
+      }
+    }
+  }
+]

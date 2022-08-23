@@ -15,7 +15,6 @@ object ProductDetailCommonConstant {
     const val PARAM_IS_SHOP_OWNER = "isShopOwner"
     const val PARAM_USER_LOCATION = "userLocation"
     const val PARAM_TOKONOW = "tokonow"
-    const val PARAM_AFFILIATE_UUID = "affiliate"
 
     const val PARAM_SHOP_IDS = "shopIds"
 
@@ -109,9 +108,12 @@ object ProductDetailCommonConstant {
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
     const val BO_TOKONOW_15 = 4
+    const val BO_PLUS = 5
+    const val BO_PLUS_DT = 6
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+    const val VALUE_BOPLUS = "bebas ongkir plus"
     const val VALUE_NONE_OTHER= "none/other"
 
     const val KEY_PRODUCT_DETAIL = "product detail"

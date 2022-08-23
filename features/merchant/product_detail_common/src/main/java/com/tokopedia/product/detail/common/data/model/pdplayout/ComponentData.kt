@@ -34,6 +34,10 @@ data class ComponentData(
         //region custom info palugada ... on pdpDataCustomInfo
         @SerializedName("label")
         val labels: List<CustomInfoLabelData> = listOf(),
+        @SerializedName("lightIcon")
+        val lightIcon: String = "",
+        @SerializedName("darkIcon")
+        val darkIcon: String = "",
         //endregion
 
         //region Content data
@@ -55,6 +59,8 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SerializedName("parentName")
+        val parentName: String = "",
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
@@ -160,6 +166,31 @@ data class ComponentData(
                 it.uRLThumbnail
             }
         })
+    }
+
+    fun getGalleryItems(): List<ProductDetailGallery.Item> {
+        return media.mapIndexed { index, media ->
+            val url: String
+            val thumbnailUrl: String
+            val type: ProductDetailGallery.Item.Type
+            if (media.type == PRODUCT_IMAGE_TYPE) {
+                url = media.uRLOriginal
+                thumbnailUrl = media.uRLOriginal
+                type = ProductDetailGallery.Item.Type.Image
+            } else {
+                url = media.videoURLAndroid
+                thumbnailUrl = media.uRLThumbnail
+                type = ProductDetailGallery.Item.Type.Video
+            }
+
+            ProductDetailGallery.Item(
+                id = index.toString(),
+                url = url,
+                thumbnailUrl = thumbnailUrl,
+                tag = media.description.takeIf { media.variantOptionId != "0" },
+                type = type
+            )
+        }
     }
 }
 

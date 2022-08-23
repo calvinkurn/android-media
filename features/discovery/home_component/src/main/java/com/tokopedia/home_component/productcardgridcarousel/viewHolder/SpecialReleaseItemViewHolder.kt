@@ -11,8 +11,10 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSp
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -20,7 +22,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class SpecialReleaseItemViewHolder(
     private val view: View,
-    private val channels: ChannelModel
+    private val channels: ChannelModel,
+    private val cardInteraction: Boolean = false,
 ) : AbstractViewHolder<CarouselSpecialReleaseDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.home_component_special_release_item
@@ -28,6 +31,9 @@ class SpecialReleaseItemViewHolder(
     private var binding: HomeComponentSpecialReleaseItemBinding? by viewBinding()
 
     override fun bind(element: CarouselSpecialReleaseDataModel?) {
+        binding?.cardCampaign?.animateOnPress = if(cardInteraction) {
+            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        } else CardUnify2.ANIMATE_OVERLAY
         if (element != null) {
             view.addOnImpressionListener(element) {
                 element.listener.onProductCardImpressed(
@@ -45,7 +51,7 @@ class SpecialReleaseItemViewHolder(
             }
 
             if (element.grid.shop.shopName.isNotEmpty()) {
-                binding?.specialReleaseShopName?.text = element.grid.shop.shopName
+                binding?.specialReleaseShopName?.text = element.grid.shop.shopName.parseAsHtml()
                 binding?.specialReleaseShopName?.visible()
             } else {
                 binding?.specialReleaseShopName?.gone()

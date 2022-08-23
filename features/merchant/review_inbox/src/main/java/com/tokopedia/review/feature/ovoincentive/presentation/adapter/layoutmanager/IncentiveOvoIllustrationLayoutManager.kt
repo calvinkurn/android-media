@@ -7,7 +7,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 
 class IncentiveOvoIllustrationLayoutManager(
-    context: Context
+    context: Context?
 ) : FlexboxLayoutManager(context, FlexDirection.ROW) {
     init {
         flexWrap = FlexWrap.WRAP
