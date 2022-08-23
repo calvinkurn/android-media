@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.SerializedCMInAppData
@@ -182,7 +183,7 @@ object CmInAppBundleConvertor {
 
     private fun getIntFromStr(strInt: String?): Int {
         return try {
-            strInt?.toInt() ?: 0
+            strInt?.toIntOrZero() ?: 0
         } catch (e: Exception) {
             0
         }
