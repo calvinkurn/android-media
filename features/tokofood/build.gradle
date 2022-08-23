@@ -9,6 +9,7 @@ android {
         viewBinding true
     }
     def pathSources = "src/main/res/"
+    def searchPath = "/search/"
     sourceSets {
         main {
             res.srcDirs = [
@@ -16,7 +17,9 @@ android {
                     pathSources + 'home',
                     pathSources + 'merchant',
                     pathSources + 'purchase',
-                    pathSources + 'ordertracking'
+                    pathSources + 'ordertracking',
+                    pathSources + searchPath + 'initialstate',
+                    pathSources + searchPath + 'searchresult'
             ]
         }
     }
