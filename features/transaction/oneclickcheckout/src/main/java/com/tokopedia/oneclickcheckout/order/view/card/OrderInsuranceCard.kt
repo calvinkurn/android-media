@@ -74,9 +74,10 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         binding.apply {
             imgBtInsuranceInfo.let { iv ->
                 iv.setOnClickListener {
-                    listener.onClickInsuranceInfo(iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                            insuranceData.insuranceUsedInfo,
-                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
+                    //TODO - need to update image url and adjust with gql update from BE
+                    listener.onClickInsuranceInfo(
+                        insuranceData.insuranceUsedInfo,
+                        com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
                 }
             }
             cbInsurance.setOnCheckedChangeListener { _, isChecked ->
@@ -118,6 +119,6 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
 
         fun onInsuranceChecked(isChecked: Boolean)
 
-        fun onClickInsuranceInfo(title: String, message: String, image: Int)
+        fun onClickInsuranceInfo( message: String, image: Int)
     }
 }

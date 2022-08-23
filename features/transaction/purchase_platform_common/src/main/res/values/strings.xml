@@ -13,7 +13,7 @@
     <string name="label_shipping_discount">Total Diskon Ongkos Kirim</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
-    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="title_bottomsheet_insurance">Keuntungan pakai asuransi</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_choose_payment">Pilih Pembayaran</string>
     <string name="checkout_common_module_title_loading">Loading</string>
