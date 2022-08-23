@@ -277,6 +277,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _toolbarTransparentState = MutableLiveData<Boolean>()
     val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
 
+    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
+
     var videoTrackerData: Pair<Long, Long>? = null
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -1204,5 +1207,21 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         } catch (throwable: Throwable) {
             _toolbarTransparentState.value = false
         }
+    }
+
+    fun getVerticalRecommendationData(productId: String) {
+        launchCatchError(block = {
+            val requestParams = GetRecommendationRequestParam(
+                pageNumber = 1,
+                pageName = "pdp_8_vertical",
+                productIds = arrayListOf(productId)
+            )
+            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+            recommendationResponse.firstOrNull()?.let {
+                _verticalRecommendation.value = it.asSuccess()
+            }
+        }, onError = {
+            _verticalRecommendation.value = Fail(it)
+        })
     }
 }

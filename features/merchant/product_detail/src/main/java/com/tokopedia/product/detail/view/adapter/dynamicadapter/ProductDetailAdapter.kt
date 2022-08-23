@@ -6,24 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 
 /**
@@ -40,6 +43,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        determineFullSpan(holder)
         bind(holder as AbstractViewHolder<DynamicPdpDataModel>, getItem(position))
     }
 
@@ -77,6 +81,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
             holder.adapterPosition < currentList.size &&
             (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
             listener?.loadPlayWidget()
+        }
+        if (holder is ProductRecommendationVerticalPlaceholderViewHolder &&
+            holder.adapterPosition < currentList.size &&
+            (currentList[holder.adapterPosition] as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null) {
+            listener?.startVerticalRecommendation()
         }
     }
 
@@ -123,5 +132,11 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         } else {
             false
         }
+    }
+
+    private fun determineFullSpan(holder: AbstractViewHolder<*>) {
+        val isFullSpan = holder !is ProductRecommendationVerticalViewHolder
+        (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)
+            ?.isFullSpan = isFullSpan
     }
 }

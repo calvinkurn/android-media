@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -580,6 +581,7 @@ open class DynamicProductDetailFragment :
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
+        observeVerticalRecommendation()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -2651,6 +2653,18 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private fun observeVerticalRecommendation(){
+        viewLifecycleOwner.observe(viewModel.verticalRecommendation){ data ->
+            data.doSuccessOrFail({
+                pdpUiUpdater?.updateVerticalRecommendationData(it.data)
+                updateUi()
+            },{
+
+            })
+
+        }
+    }
+
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
         view?.showToasterSuccess(
             result.data.message.firstOrNull()
@@ -2785,8 +2799,9 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.mapOfData?.values?.toList()
-        submitList(newData ?: listOf())
+        val newData = pdpUiUpdater?.mapOfData?.values?.toList() ?: emptyList()
+        val verticalDataModels = pdpUiUpdater?.verticalRecommendationData?.getVerticalDataModels() ?: emptyList()
+        submitList(newData + verticalDataModels)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -5361,4 +5376,8 @@ open class DynamicProductDetailFragment :
         shopDomain.orEmpty(),
         productKey.orEmpty()
     )
+
+    override fun startVerticalRecommendation() {
+        viewModel.getVerticalRecommendationData(productId ?: "")
+    }
 }
