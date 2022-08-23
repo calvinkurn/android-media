@@ -9,6 +9,7 @@
     <string name="feed_content_product_bottom_sheet_name">Yang ada di post ini</string>
     <string name="feed_content_caption_text">Tulis deskripsi yang menarik, ya!</string>
     <string name="feed_content_post_sebagai">Post sebagai</string>
+    <string name="feed_content_live_sebagai">Live sebagai</string>
     <string name="feed_content_dialog_title">Yakin nggak lanjut tag produk?</string>
     <string name="feed_content_dialog_desc">Tag produk akan hilang jika kamu keluar dari halaman ini.</string>
     <string name="feed_content_primary_cta_text">Lanjut Tag Produk</string>
@@ -89,5 +90,9 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_global_search_shop_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="cc_global_search_shop_query_not_found_title">Oops, tokonya nggak ketemu</string>
     <string name="cc_global_search_shop_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
+
+    <!--SWITCHING ACCOUNT-->
+    <string name="sa_coach_mark_title">Bisa ganti profil sesukamu, dong~</string>
+    <string name="sa_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli buat live di Tokopedia Play!</string>
 
 </resources>

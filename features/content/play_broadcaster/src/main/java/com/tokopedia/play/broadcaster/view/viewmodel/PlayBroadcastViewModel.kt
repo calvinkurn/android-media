@@ -4,6 +4,9 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -79,6 +82,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val getChannelUseCase: GetChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
+    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayWebSocket,
@@ -175,6 +179,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
     private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
 
+    private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
+
+    private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
+    val contentAccountListState: Flow<List<ContentAccountUiModel>>
+        get() = _accountListState
+
+    val contentAccountList: List<ContentAccountUiModel>
+        get() = _accountListState.value
+
+    val isAllowChangeAccount: Boolean
+        get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
+
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
@@ -231,6 +247,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState,
         _onboarding,
         _quizBottomSheetUiState,
+        _selectedAccount,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -242,7 +259,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         interactiveSetup,
         quizDetail,
         onBoarding,
-        quizBottomSheetUiState ->
+        quizBottomSheetUiState,
+        selectedFeedAccount ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -256,6 +274,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizDetail = quizDetail,
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
+            selectedContentAccount = selectedFeedAccount
         )
     }.stateIn(
         viewModelScope,
@@ -292,7 +311,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         _observableChatList.value = mutableListOf()
 
-
+        submitAction(PlayBroadcastAction.GetAccountList)
     }
 
     override fun onCleared() {
@@ -309,6 +328,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
+            is PlayBroadcastAction.GetAccountList -> handleAccountList()
+            is PlayBroadcastAction.SelectAccount -> handleSelectedAccount(event.contentAccount)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1420,6 +1441,40 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) {}
 
         mIsBroadcastStopped = true
+    }
+
+    private fun handleAccountList() {
+        viewModelScope.launchCatchError(block = {
+            val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
+
+            val feedAccountList = response.whitelist.authors.map {
+                ContentAccountUiModel(
+                    id = it.id,
+                    name = it.name,
+                    iconUrl = it.thumbnail,
+                    badge = it.badge,
+                    type = it.type,
+                    hasUsername = it.livestream.hasUsername,
+                    hasAcceptTnc = it.livestream.hasAcceptTnc,
+                )
+            }
+
+            _accountListState.value = feedAccountList
+
+            //TODO can't force to select first account need to check it first (eligible/last
+            if(feedAccountList.isNotEmpty()) {
+                _selectedAccount.value = feedAccountList.first()
+            }
+        }, onError = {})
+    }
+
+    private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val current = _selectedAccount.value
+            if(current.id != contentAccount.id) {
+                _selectedAccount.value = contentAccount
+            }
+        }, onError = { })
     }
 
     /**

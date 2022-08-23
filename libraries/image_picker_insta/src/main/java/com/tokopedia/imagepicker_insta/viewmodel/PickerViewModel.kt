@@ -4,7 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.imagepicker_insta.LiveDataResult
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.MediaVmMData
 import com.tokopedia.imagepicker_insta.models.QueryConfiguration
@@ -13,7 +13,7 @@ import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.imagepicker_insta.models.MediaUseCaseData
 import com.tokopedia.imagepicker_insta.models.MediaImporterData
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
-import com.tokopedia.imagepicker_insta.usecase.GetContentFormUseCase
+import com.tokopedia.content.common.usecase.GetContentFormUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
@@ -63,19 +63,19 @@ class PickerViewModel(
     val selectedFeedAccountId: String
         get() = _selectedFeedAccount.value.id
 
-    private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
-    val selectedFeedAccount: Flow<FeedAccountUiModel>
+    private val _selectedFeedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
+    val selectedContentAccount: Flow<ContentAccountUiModel>
         get() = _selectedFeedAccount
 
-    private val _feedAccountListState = MutableStateFlow<List<FeedAccountUiModel>>(emptyList())
-    val feedAccountListState: Flow<List<FeedAccountUiModel>>
+    private val _feedAccountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
+    val contentAccountListState: Flow<List<ContentAccountUiModel>>
         get() = _feedAccountListState
 
-    val feedAccountList: List<FeedAccountUiModel>
+    val contentAccountList: List<ContentAccountUiModel>
         get() = _feedAccountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = feedAccountList.size > 1 && feedAccountList.find { it.isUserPostEligible } != null
+        get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
 
     fun getFolderData() {
         launchCatchError(block = {
@@ -220,7 +220,7 @@ class PickerViewModel(
             }.executeOnBackground()
 
             val feedAccountList = response.feedContentForm.authors.map {
-                FeedAccountUiModel(
+                ContentAccountUiModel(
                     id = it.id,
                     name = it.name,
                     iconUrl = it.thumbnail,
@@ -239,11 +239,11 @@ class PickerViewModel(
         }, onError = {})
     }
 
-    fun setSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
+    fun setSelectedFeedAccount(contentAccount: ContentAccountUiModel) {
         launchCatchError(block = {
             val current = _selectedFeedAccount.value
-            if(current.id != feedAccount.id) {
-                _selectedFeedAccount.value = feedAccount
+            if(current.id != contentAccount.id) {
+                _selectedFeedAccount.value = contentAccount
             }
         }, onError = { })
     }
@@ -254,7 +254,7 @@ class PickerViewModel(
             if(current.id != feedAccountId) {
                 _selectedFeedAccount.value = _feedAccountListState.value.firstOrNull {
                     it.id == feedAccountId
-                } ?: FeedAccountUiModel.Empty
+                } ?: ContentAccountUiModel.Empty
             }
         }, onError = { })
     }
