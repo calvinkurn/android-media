@@ -16,17 +16,12 @@ import javax.inject.Inject
 class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapSection(input: Section) = ProductSectionUiModel.Section(
-//        productList = input.listOfProducts.map {
-//            mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
-//        },
-        productList = List(50) { input.listOfProducts }.flatten().map {
+        productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
         config = mapConfig(input),
         id = input.id,
     )
-
-    var index = 0
 
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
         title = input.sectionTitle,
@@ -36,14 +31,8 @@ class PlayProductTagUiMapper @Inject constructor() {
         endTime = input.timerEndTime,
         timerInfo = input.countdown.countdownInfo,
         background = ProductSectionUiModel.Section.BackgroundUiModel(
-//            gradients = input.background.gradientList ?: emptyList(),
-//            imageUrl = input.background.imageUrl
-            gradients = if (index++ == 0) {
-                listOf("#00FF00", "#0000FF")
-            } else emptyList(),
-            imageUrl = if (index != 0) {
-                input.background.imageUrl
-            } else "",
+            gradients = input.background.gradientList ?: emptyList(),
+            imageUrl = input.background.imageUrl
         ),
         reminder = mapReminder(hasReminder = input.id.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming), campaignId = input.id.toLongOrZero())
     )
