@@ -327,7 +327,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             if (subTitle.isNotEmpty()) {
                 SpannableString(
                     String.format(
-                        context.getString(com.tokopedia.feedcomponent.R.string.feed_header_time_new),
+                        context.getString(feedComponentR.string.feed_header_time_new),
                         avatarDate
                     )
                 )
@@ -364,10 +364,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(com.tokopedia.feedcomponent.R.string.feed_header_follow_count_text),
+                    context.getString(feedComponentR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-            } else context.getString(com.tokopedia.feedcomponent.R.string.feed_header_follow_count_less_text)
+            } else context.getString(feedComponentR.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
             shouldShow = (feedXCard.isTypeProductHighlight)
@@ -386,13 +386,13 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             )
         }
         val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
-            context.getString(com.tokopedia.feedcomponent.R.string.kol_action_following_color)
+            context.getString(feedComponentR.string.kol_action_following_color)
         } else {
-            context.getString(com.tokopedia.feedcomponent.R.string.kol_action_follow_color)
+            context.getString(feedComponentR.string.kol_action_follow_color)
         }
         if (!isFollowed || followers.transitionFollow) {
             this.authorFollowAction.text = MethodChecker.fromHtml(
-                "${context.getString(com.tokopedia.feedcomponent.R.string.feed_header_separator)}$textFollowAction"
+                "${context.getString(feedComponentR.string.feed_header_separator)}$textFollowAction"
 
             )
             this.authorFollowAction.setOnClickListener {
@@ -571,7 +571,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             likeButton2.hide()
         }
         userImage.setImageUrl(profilePicture)
-        addCommentHint.hint = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_add_comment, name)
+        addCommentHint.hint = context.getString(feedComponentR.string.feed_component_add_comment, name)
 
         commentButton.setOnClickListener {
             listener?.onCommentClicked(mData, positionInCdp)
@@ -781,7 +781,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
-            context.getString(com.tokopedia.feedcomponent.R.string.feed_component_see_all_comments, comments.countFmt)
+            context.getString(feedComponentR.string.feed_component_see_all_comments, comments.countFmt)
     }
     private fun ifProductAlreadyPresent(
         product: FeedXProduct,
@@ -970,19 +970,19 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun getCTAButtonText(card: FeedXCard) =
         if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(com.tokopedia.feedcomponent.R.string.feeds_check_x_products, card.totalProducts)
+            context.getString(feedComponentR.string.feeds_check_x_products, card.totalProducts)
         else if (card.isASGCDiscountToko && card.totalProducts > 1)
             context.getString(
-                com.tokopedia.feedcomponent.R.string.feeds_asgc_disc_x_products,
+                feedComponentR.string.feeds_asgc_disc_x_products,
                 card.totalProducts,
                 card.maximumDisPercentFmt
             )
         else if (card.isASGCDiscountToko && card.totalProducts == 1)
             context.getString(
-                com.tokopedia.feedcomponent.R.string.feeds_asgc_disc_one_products,
+                feedComponentR.string.feeds_asgc_disc_one_products,
                 card.maximumDisPercentFmt
             )
-        else context.getString(com.tokopedia.feedcomponent.R.string.feeds_cek_sekarang)
+        else context.getString(feedComponentR.string.feeds_cek_sekarang)
 
 
     fun onCTAVisible(feedXCard: FeedXCard) {
@@ -995,7 +995,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_discount_toko_btn_bg_color
+                feedComponentR.color.feed_dms_asgc_discount_toko_btn_bg_color
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
