@@ -2448,5 +2448,10 @@
           "destination_activity": "com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity", 
           "deeplink": "tokopedia-android-internal://global/youtube-video", 
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
+     },
+     {
+          "destination_activity": "com.tokopedia.autocompletecomponent.universal.UniversalSearchActivity",
+          "deeplink": "tokopedia-android-internal://discovery/universal",
+          "deeplink_variable": "ApplinkConstInternalDiscovery.UNIVERSAL"
      }
 ]

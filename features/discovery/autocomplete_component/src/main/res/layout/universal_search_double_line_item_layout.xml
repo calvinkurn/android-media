@@ -8,16 +8,42 @@
         android:id="@+id/universalSearchDoubleLineTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
         app:typographyType="display_1"
         app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/universalSearchDoubleLineSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/universalSearchDoubleLineTitle"
+        app:typographyType="paragraph_3"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/universalSearchDoubleLineHeaderBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="universalSearchDoubleLineTitle, universalSearchDoubleLineSubtitle"
+        app:barrierDirection="bottom"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/universalSearchDoubleLineSeeAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_GN500"
+        android:text="@string/universal_search_see_more"
+        android:visibility="gone"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/universalSearchDoubleLineHeaderBarrier"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/universalSearchDoubleLineRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/universalSearchDoubleLineTitle"/>
+        app:layout_constraintTop_toBottomOf="@id/universalSearchDoubleLineHeaderBarrier"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

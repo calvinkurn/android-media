@@ -2,15 +2,19 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.listgr
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.databinding.UniversalSearchDoubleLineItemLayoutBinding
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchListGridItemLayoutBinding
-import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ListGridViewHolder(itemView: View): AbstractViewHolder<ListGridDataView>(itemView) {
+class ListGridViewHolder(
+    itemView: View,
+    private val listGridListener: ListGridListener,
+): AbstractViewHolder<ListGridDataView>(itemView) {
     companion object {
         @LayoutRes
         @JvmField
@@ -21,11 +25,45 @@ class ListGridViewHolder(itemView: View): AbstractViewHolder<ListGridDataView>(i
 
     override fun bind(data: ListGridDataView) {
         bindTitle(data)
+        bindSubtitle(data)
+        bindSeeAll(data)
+        bindRecyclerView(data)
     }
 
     private fun bindTitle(data: ListGridDataView) {
         binding?.universalSearchListGridTitle?.shouldShowWithAction(data.title.isNotEmpty()) {
             binding?.universalSearchListGridTitle?.text = data.title
+        }
+    }
+
+    private fun bindSubtitle(data: ListGridDataView) {
+        binding?.universalSearchListGridSubtitle?.shouldShowWithAction(data.subtitle.isNotEmpty()) {
+            binding?.universalSearchListGridSubtitle?.text = data.subtitle
+        }
+    }
+
+    private fun bindSeeAll(data: ListGridDataView) {
+        binding?.universalSearchListGridSubtitle?.shouldShowWithAction(data.applink.isNotEmpty()) {
+            binding?.universalSearchListGridSubtitle?.setOnClickListener {
+                listGridListener.onListGridSeeAllClick(data)
+            }
+        }
+    }
+
+    private fun bindRecyclerView(data: ListGridDataView) {
+        val adapter = RelatedAdapter().apply {
+            val test = mutableListOf<RelatedItemDataView>()
+            test.addAll(data.related)
+            test.addAll(data.related)
+            test.addAll(data.related)
+            test.addAll(data.related)
+
+            updateList(test)
+        }
+
+        binding?.universalSearchListGridRecyclerView?.let {
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(itemView.context)
         }
     }
 }

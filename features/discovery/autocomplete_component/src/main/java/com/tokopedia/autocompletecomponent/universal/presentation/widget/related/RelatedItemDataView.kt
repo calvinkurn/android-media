@@ -1,4 +1,4 @@
-package com.tokopedia.autocompletecomponent.universal.presentation.model
+package com.tokopedia.autocompletecomponent.universal.presentation.widget.related
 
 class RelatedItemDataView(
     val id: String = "",

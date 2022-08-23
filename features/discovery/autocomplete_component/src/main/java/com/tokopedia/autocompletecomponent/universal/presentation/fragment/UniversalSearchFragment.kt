@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -15,11 +15,15 @@ import com.tokopedia.autocompletecomponent.databinding.UniversalSearchFragmentLa
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL_SEARCH_SCREEN_NAME
 import com.tokopedia.autocompletecomponent.universal.di.DaggerUniversalSearchComponent
 import com.tokopedia.autocompletecomponent.universal.presentation.adapter.UniversalSearchAdapter
+import com.tokopedia.autocompletecomponent.universal.presentation.itemdecoration.UniversalSearchItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactoryImpl
 import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.UniversalSearchViewModel
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselListenerDelegate
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineListenerDelegate
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridListenerDelegate
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -46,6 +50,15 @@ class UniversalSearchFragment: BaseDaggerFragment() {
 
     @Inject
     internal lateinit var universalSearchViewModel: UniversalSearchViewModel
+
+    @Inject
+    internal lateinit var carouselListenerDelegate: CarouselListenerDelegate
+
+    @Inject
+    internal lateinit var doubleLineListenerDelegate: DoubleLineListenerDelegate
+
+    @Inject
+    internal lateinit var listGridListenerDelegate: ListGridListenerDelegate
 
     private var binding by autoClearedNullable<UniversalSearchFragmentLayoutBinding>()
 
@@ -92,12 +105,12 @@ class UniversalSearchFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun createDividerItemDecoration(): DividerItemDecoration {
+    private fun createDividerItemDecoration(): RecyclerView.ItemDecoration {
         val dividerDrawable = ContextCompat.getDrawable(
             requireContext(),
             R.drawable.universal_search_divider
         )
-        val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+        val dividerItemDecoration = UniversalSearchItemDecoration(context, LinearLayoutManager.VERTICAL)
         dividerDrawable?.let {
             dividerItemDecoration.setDrawable(it)
         }
@@ -106,9 +119,11 @@ class UniversalSearchFragment: BaseDaggerFragment() {
     }
 
     private fun initUniversalSearchAdapter() {
-        val carouselListenerDelegate = CarouselListenerDelegate()
-
-        val typeFactory = UniversalSearchTypeFactoryImpl(carouselListenerDelegate)
+        val typeFactory = UniversalSearchTypeFactoryImpl(
+            carouselListener = carouselListenerDelegate,
+            doubleLineListener = doubleLineListenerDelegate,
+            listGridListener = listGridListenerDelegate,
+        )
         universalSearchAdapter = UniversalSearchAdapter(typeFactory)
     }
 
@@ -130,7 +145,7 @@ class UniversalSearchFragment: BaseDaggerFragment() {
             }
             is State.Success -> {
                 updateList(universalSearchState)
-                binding?.universalSearchLoader?.hide()
+                binding?.universalSearchLoader?.gone()
             }
             is State.Error -> {
 

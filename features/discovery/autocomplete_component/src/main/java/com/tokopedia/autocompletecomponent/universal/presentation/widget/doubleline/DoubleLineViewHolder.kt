@@ -3,18 +3,17 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.double
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.databinding.UniversalSearchCarouselItemLayoutBinding
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchDoubleLineItemLayoutBinding
-import com.tokopedia.autocompletecomponent.universal.presentation.model.RelatedItemDataView
-import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DoubleLineViewHolder(
-    private val itemView: View
+    itemView: View,
+    private val doubleLineListener: DoubleLineListener,
     ): AbstractViewHolder<DoubleLineDataView>(itemView) {
 
     companion object {
@@ -29,6 +28,8 @@ class DoubleLineViewHolder(
 
     override fun bind(data: DoubleLineDataView) {
         bindTitle(data)
+        bindSubtitle(data)
+        bindSeeAll(data)
         bindRecyclerView(data)
     }
 
@@ -38,8 +39,22 @@ class DoubleLineViewHolder(
         }
     }
 
+    private fun bindSubtitle(data: DoubleLineDataView) {
+        binding?.universalSearchDoubleLineSubtitle?.shouldShowWithAction(data.subtitle.isNotEmpty()) {
+            binding?.universalSearchDoubleLineSubtitle?.text = data.subtitle
+        }
+    }
+
+    private fun bindSeeAll(data: DoubleLineDataView) {
+        binding?.universalSearchDoubleLineSeeAll?.shouldShowWithAction(data.applink.isNotEmpty()) {
+            binding?.universalSearchDoubleLineSeeAll?.setOnClickListener {
+                doubleLineListener.onDoubleLineSeeAllClick(data)
+            }
+        }
+    }
+
     private fun bindRecyclerView(data: DoubleLineDataView) {
-        val adapter = DoubleLineRelatedAdapter().apply {
+        val adapter = RelatedAdapter().apply {
             val test = mutableListOf<RelatedItemDataView>()
             test.addAll(data.related)
             test.addAll(data.related)

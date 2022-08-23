@@ -1,7 +1,7 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocompletecomponent.universal.presentation.model.RelatedItemDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactory
 
 class ListGridDataView(

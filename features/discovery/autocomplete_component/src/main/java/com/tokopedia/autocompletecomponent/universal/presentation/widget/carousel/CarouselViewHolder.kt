@@ -5,13 +5,15 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchCarouselItemLayoutBinding
+import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CarouselViewHolder(
     itemView: View,
-    private val carouselListener: CarouselListener
+    private val carouselListener: CarouselListener,
 ): AbstractViewHolder<CarouselDataView>(itemView) {
     companion object {
         @LayoutRes
@@ -24,6 +26,7 @@ class CarouselViewHolder(
     override fun bind(data: CarouselDataView) {
         bindTitle(data)
         bindSubtitle(data)
+        bindSeeAll(data)
         bindCarousel(data)
     }
 
@@ -36,6 +39,14 @@ class CarouselViewHolder(
     private fun bindSubtitle(data: CarouselDataView) {
         binding?.universalSearchCarouselSubtitle?.shouldShowWithAction(data.subtitle.isNotEmpty()) {
             binding?.universalSearchCarouselSubtitle?.text = data.subtitle
+        }
+    }
+
+    private fun bindSeeAll(data: CarouselDataView) {
+        binding?.universalSearchCarouselSeeAll?.shouldShowWithAction(data.applink.isNotEmpty()) {
+            binding?.universalSearchCarouselSeeAll?.setOnClickListener {
+                carouselListener.onCarouselSeeAllClick(data)
+            }
         }
     }
 
@@ -62,7 +73,23 @@ class CarouselViewHolder(
                         )
                     }
                 )
-            }
+            },
+            carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    carouselListener.onCarouselItemClick(product)
+                }
+            },
+            carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    carouselListener.onCarouselItemImpressed(product)
+                }
+
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return products.getOrNull(carouselProductCardPosition)
+                }
+            },
         )
     }
 }

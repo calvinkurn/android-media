@@ -84,6 +84,7 @@ class GetCategoryFirstPageUseCase(
         }
     }
 
+
     private fun getCategoryDetail(graphqlResponse: GraphqlResponse): CategoryDetail {
         return graphqlResponse
                 .getData<TokonowCategoryDetail?>(TokonowCategoryDetail::class.java)

@@ -7,7 +7,7 @@ import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearc
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridDataView
-import com.tokopedia.autocompletecomponent.universal.presentation.model.RelatedItemDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
 import com.tokopedia.discovery.common.Mapper
 

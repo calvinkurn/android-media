@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.carous
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 class CarouselDataView(
     val id: String = "",
@@ -31,7 +32,7 @@ class CarouselDataView(
         val countSold: String = "",
         val shop: Shop = Shop(),
         val badge: List<Badge> = listOf(),
-    ) {
+    ): ImpressHolder() {
         class Shop(
             val name: String = "",
             val city: String = "",
