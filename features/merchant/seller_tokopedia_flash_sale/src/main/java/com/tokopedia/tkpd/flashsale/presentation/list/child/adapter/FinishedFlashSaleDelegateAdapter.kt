@@ -87,8 +87,8 @@ class FinishedFlashSaleDelegateAdapter : DelegateAdapter<FinishedFlashSaleItem, 
         private fun handleDescription(item: FinishedFlashSaleItem) {
             when {
                 item.productMeta.totalStockSold == 0 -> displayNoProductSold()
-                item.productMeta.rejectedProduct == item.productMeta.totalProduct -> displayAllProductAreRejected()
                 item.productSoldPercentage > 0 -> displaySoldProductPercentage(item)
+                else -> binding.tpgDescription.text = ""
             }
         }
 
