@@ -85,6 +85,7 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/explicit-profile
      **/
     const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
+    const val PARAM_TEMPLATE_NAME = "template_name"
 
     /**
      * GotoSeamlessLandingActivity
