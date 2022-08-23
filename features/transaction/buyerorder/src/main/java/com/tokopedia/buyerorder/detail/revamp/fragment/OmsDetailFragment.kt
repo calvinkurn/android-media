@@ -18,6 +18,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -40,7 +41,9 @@ import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.data.Title
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
+import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
 import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
+import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
@@ -69,6 +72,7 @@ class OmsDetailFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentOmsListDetailBinding>()
     private var isSingleButton = false
+    private var upstream: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -89,6 +93,7 @@ class OmsDetailFragment: BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         arguments?.let {
+            upstream = it.get(KEY_UPSTREAM).toString()
             showProgressBar()
             viewModel.requestOmsDetail(
                 it.get(KEY_ORDER_ID).toString(),
@@ -279,8 +284,10 @@ class OmsDetailFragment: BaseDaggerFragment() {
         }
 
         if (newItemList.isNotEmpty() && !isMetadataEmpty){
-            //binding?.recyclerView?.adapter = ItemsAdapter(context, items, false)
-            //TODO : Refactor adapter without presenter
+            binding?.recyclerView?.adapter = BaseAdapter(
+                OrderDetailTypeFactoryImpl(),
+                VisitableMapper.mappingVisitable(items, false, upstream ?: "")
+            )
         } else {
             binding?.detailsSection?.gone()
             binding?.dividerAboveInfoLabel?.gone()
