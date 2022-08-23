@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
@@ -25,6 +26,7 @@ import javax.inject.Inject
  */
 class PlayBroadcastPrepareViewModel @Inject constructor(
     private val mDataStore: PlayBroadcastDataStore,
+    private val sharedPref: HydraSharedPreferences,
     private val hydraConfigStore: HydraConfigStore,
     private val setupDataStore: PlayBroadcastSetupDataStore,
     private val channelConfigStore: ChannelConfigStore,
@@ -62,6 +64,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         override fun onChanged(t: String?) {}
     }
 
+    val isFirstSwitchAccount: Boolean
+        get() = sharedPref.isFirstSwitchAccount()
+
     init {
         _observableIngestUrl.observeForever(ingestUrlObserver)
     }
@@ -69,6 +74,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         _observableIngestUrl.removeObserver(ingestUrlObserver)
+    }
+
+    fun setNotFirstSwitchAccount() {
+        sharedPref.setNotFirstSwitchAccount()
     }
 
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {

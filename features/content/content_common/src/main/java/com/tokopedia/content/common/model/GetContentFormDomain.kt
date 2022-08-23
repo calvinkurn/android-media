@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta.models
+package com.tokopedia.content.common.model
 
 import com.google.gson.annotations.SerializedName
 

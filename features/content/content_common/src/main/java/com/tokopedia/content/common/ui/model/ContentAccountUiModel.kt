@@ -3,7 +3,7 @@ package com.tokopedia.content.common.ui.model
 /**
  * Created By : Jonathan Darwin on April 13, 2022
  */
-data class FeedAccountUiModel(
+data class ContentAccountUiModel(
     val id: String,
     val name: String,
     val iconUrl: String,
@@ -25,7 +25,7 @@ data class FeedAccountUiModel(
         private const val TYPE_USER = "content-user"
         private const val TYPE_SHOP = "content-shop"
 
-        val Empty = FeedAccountUiModel(
+        val Empty = ContentAccountUiModel(
             id = "",
             name = "",
             iconUrl = "",

@@ -2,7 +2,7 @@ package com.tokopedia.content.common.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.viewholder.FeedAccountTypeViewHolder
 
 /**
@@ -12,7 +12,7 @@ class FeedAccountTypeAdapter(
     private val listener: FeedAccountTypeViewHolder.Listener,
 ) : RecyclerView.Adapter<FeedAccountTypeViewHolder>() {
 
-    private val data = mutableListOf<FeedAccountUiModel>()
+    private val data = mutableListOf<ContentAccountUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedAccountTypeViewHolder {
         return FeedAccountTypeViewHolder.create(parent, listener)
@@ -24,7 +24,7 @@ class FeedAccountTypeAdapter(
 
     override fun getItemCount(): Int = data.size
 
-    fun updateData(itemList: List<FeedAccountUiModel>) {
+    fun updateData(itemList: List<ContentAccountUiModel>) {
         data.clear()
         data.addAll(itemList)
         notifyDataSetChanged()

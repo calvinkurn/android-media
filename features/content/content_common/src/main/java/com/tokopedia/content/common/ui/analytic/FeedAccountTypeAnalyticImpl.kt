@@ -1,6 +1,6 @@
 package com.tokopedia.content.common.ui.analytic
 
-import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -12,7 +12,7 @@ class FeedAccountTypeAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ) : FeedAccountTypeAnalytic {
 
-    override fun clickAccountTypeItem(item: FeedAccountUiModel) {
+    override fun clickAccountTypeItem(item: ContentAccountUiModel) {
         val type = when {
             item.isShop -> "shop"
             item.isUser -> "user"
