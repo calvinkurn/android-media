@@ -98,7 +98,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
         private const val MAX_BACKGROUND_ALPHA = 225f
         // for set transparent searchbar on toolbar
-        private const val ALPHA_MAX = 255
+        const val ALPHA_MAX = 255f
     }
 
     //public variable
