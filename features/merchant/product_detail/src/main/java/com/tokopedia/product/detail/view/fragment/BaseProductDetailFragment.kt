@@ -159,7 +159,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     private fun setupRecyclerView(view: View) {
         rvPdp = view.findViewById(R.id.rv_pdp)
         rvPdp?.isNestedScrollingEnabled = false
-        rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+        rvPdp?.layoutManager = CenterLayoutManager(view.context)
         rvPdp?.itemAnimator = null
         showLoading()
 
