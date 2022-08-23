@@ -88,21 +88,16 @@ class UnificationViewHolder(
         binding.shcNotifTagTab.gone()
 
         successStateBinding.containerShcUnificationSuccess.gone()
-        errorStateBinding.containerShcUnificationError.gone()
+        errorStateBinding.shcUnificationCommonErrorView.gone()
         loadingStateBinding.containerShcUnificationLoading.visible()
     }
 
     private fun showErrorState(element: UnificationWidgetUiModel) {
         loadingStateBinding.containerShcUnificationLoading.gone()
         successStateBinding.containerShcUnificationSuccess.gone()
-        errorStateBinding.containerShcUnificationError.visible()
-
-        with(errorStateBinding) {
-            shcUnificationCommonErrorView.imgWidgetOnError
-                .loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-            btnShcUnificationRetry.setOnClickListener {
-                listener.onReloadWidget(element)
-            }
+        errorStateBinding.shcUnificationCommonErrorView.visible()
+        errorStateBinding.shcUnificationCommonErrorView.setOnReloadClicked {
+            listener.onReloadWidget(element)
         }
 
         if (element.data?.tabs.isNullOrEmpty()) {
@@ -145,7 +140,7 @@ class UnificationViewHolder(
             }
 
             setupDropDownView(element)
-            setupLastUpdate(element, tab)
+            setupLastUpdate(element)
 
             listener.showUnificationWidgetCoachMark(binding.tvShcUnificationTitle)
         }
@@ -228,7 +223,7 @@ class UnificationViewHolder(
         }
     }
 
-    private fun setupLastUpdate(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
+    private fun setupLastUpdate(element: UnificationWidgetUiModel) {
         with(successStateBinding.luvShcUnification) {
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled
