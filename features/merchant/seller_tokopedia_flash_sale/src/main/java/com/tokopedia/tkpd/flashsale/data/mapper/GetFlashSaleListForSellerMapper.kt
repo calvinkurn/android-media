@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_CANCELLED
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_FINISHED
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_MISSED

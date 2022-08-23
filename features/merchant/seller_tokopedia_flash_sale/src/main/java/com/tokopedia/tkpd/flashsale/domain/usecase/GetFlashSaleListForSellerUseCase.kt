@@ -12,7 +12,7 @@ import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHea
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import javax.inject.Inject
 
 
@@ -89,7 +89,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
             GetFlashSaleListForSellerRequest.Pagination(param.rows, param.offset),
             GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.categoryIds, param.statusIds),
             GetFlashSaleListForSellerRequest.Sort(param.sortOrderBy, param.sortOrderRule),
-            GetFlashSaleListForSellerRequest.AdditionalParam()
+            GetFlashSaleListForSellerRequest.AdditionalParam(productMeta = param.requestProductMetaData)
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
@@ -109,7 +109,8 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         val categoryIds: List<Long> = emptyList(),
         val statusIds: List<String> = listOf(FlashSaleStatus.DEFAULT.id),
         val sortOrderBy: String = "DEFAULT_VALUE_PLACEHOLDER",
-        val sortOrderRule: String = "ASC"
+        val sortOrderRule: String = "ASC",
+        val requestProductMetaData: Boolean = false
     )
 
 }

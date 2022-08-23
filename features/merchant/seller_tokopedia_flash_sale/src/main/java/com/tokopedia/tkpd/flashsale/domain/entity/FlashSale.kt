@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import java.util.Date
 
 data class FlashSale(

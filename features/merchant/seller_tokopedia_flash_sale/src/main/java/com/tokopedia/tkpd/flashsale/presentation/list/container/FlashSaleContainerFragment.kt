@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -33,7 +34,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     companion object {
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
-
+        private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }
@@ -83,6 +84,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.run {
             header.setNavigationOnClickListener { activity?.finish() }
         }
+        addToolbarIcon()
     }
 
     private fun observeUiState() {
@@ -185,6 +187,14 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 }
 
             })
+        }
+    }
+
+    private fun addToolbarIcon() {
+        val shopIcon = IconUnify(requireContext(), IconUnify.LIGHT_BULB)
+        binding?.run {
+            header.addCustomRightContent(shopIcon)
+            header.setOnClickListener { routeToUrl(SELLER_EDU_ARTICLE_URL) }
         }
     }
 }

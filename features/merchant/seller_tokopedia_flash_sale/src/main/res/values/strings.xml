@@ -32,7 +32,7 @@
     <string name="stfs_add_product">Tambah Produk</string>
     <string name="stfs_change_product">Ubah Produk</string>
     <string name="stfs_view_detail">Lihat Detail</string>
-    <string name="stfs_sold_count">Stok terjual</string>
+    <string name="stfs_sold_count">Stok Terjual</string>
     <string name="stfs_all_product_rejected">Semua Produk Ditolak</string>
     <string name="stfs_ends_in">Berakhir dalam</string>
     <string name="stfs_sort">Urutkan</string>
@@ -58,7 +58,7 @@
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
     <string name="stfs_placeholder_timer_days">%s hari</string>
     <string name="stfs_placeholder_period">%s - %s</string>
-    <string name="stfs_placeholder_sold_count">%s dari %s</string>
+    <string name="stfs_placeholder_sold_count"><![CDATA[<b>%d</b>]]> dari %d</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
     <string name="stfs_placeholder_selected_status_count">%d Status</string>
     <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>

@@ -175,7 +175,8 @@ class FlashSaleListViewModel @Inject constructor(
                     categoryIds = currentState.selectedCategoryIds,
                     statusIds = currentState.selectedStatusIds,
                     sortOrderBy = currentState.selectedSort.id,
-                    sortOrderRule = currentState.selectedSort.direction
+                    sortOrderRule = currentState.selectedSort.direction,
+                    requestProductMetaData = currentState.tabName == "ongoing"
                 )
                 val response = getFlashSaleListForSellerUseCase.execute(params)
                 val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
@@ -270,7 +271,20 @@ class FlashSaleListViewModel @Inject constructor(
         return ((usedQuota.toFloat() / maxProductSubmission.toFloat()) * PERCENT).toInt()
     }
 
-    private fun FlashSale.toOngoingItem() : DelegateAdapterItem {
-        return OngoingFlashSaleItem(campaignId, name)
+    private fun FlashSale.toOngoingItem(): DelegateAdapterItem {
+        val now = Date()
+        return OngoingFlashSaleItem(
+            campaignId,
+            name,
+            coverImage,
+            formattedDate.startDate,
+            formattedDate.endDate,
+            endDateUnix,
+            hoursDifference(now, endDateUnix),
+            productMeta.totalStockSold,
+            productMeta.totalProductStock,
+            status,
+            statusText
+        )
     }
 }
