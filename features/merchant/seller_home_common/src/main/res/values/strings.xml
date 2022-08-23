@@ -56,4 +56,11 @@
     <string name="shc_new">Baru</string>
     <string name="shc_no_access">Tidak ada akses</string>
     <string name="shc_no_access_state_message">Oops, kamu tidak punya izin untuk melihat konten ini</string>
+    <string name="shc_feedback_have_seen_before">Sudah melihat ini sebelumnya</string>
+    <string name="shc_feedback_not_interesting">Tidak menarik</string>
+    <string name="shc_feedback_not_relevant">Tidak relevan</string>
+    <string name="shc_feedback_other">Lainnya, sebutkan:</string>
+    <string name="shc_feedback_other_input_placeholder">Contoh: sudah paham infonya</string>
+    <string name="shc_feedback_bottom_sheet_title">Info tidak dibutuhkan lagi</string>
+    <string name="shc_feedback_content_bottom_sheet_title">Saya ingin menghapus info ini karena:</string>
 </resources>
