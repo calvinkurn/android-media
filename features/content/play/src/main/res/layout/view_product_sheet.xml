@@ -39,7 +39,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cl_product_voucher_info"
                 app:layout_goneMarginTop="@dimen/spacing_lvl4"
-                tools:listitem="@layout/item_play_product_section_header" />
+                tools:listitem="@layout/item_play_product_sheet_section" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
