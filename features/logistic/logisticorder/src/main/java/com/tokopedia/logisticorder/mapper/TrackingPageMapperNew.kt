@@ -11,7 +11,7 @@ class TrackingPageMapperNew @Inject constructor() {
         return TrackingDataModel().apply {
             trackOrder = mapTrackOrder(data.trackOrder)
             page = mapPage(data.page)
-            tipping = mapTippingData(data.tipping)
+            tipping = mapTippingData(data.tipping, data.lastDriver)
             lastDriver = mapLastDriverData(data.lastDriver)
         }
     }
@@ -90,16 +90,16 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapTippingData(tipping: Tipping): TippingModel {
+    private fun mapTippingData(tipping: Tipping, lastDriver: LastDriver): TippingModel {
         return TippingModel().apply {
             status = tipping.status
             statusTitle = tipping.statusTitle
             statusSubtitle = tipping.statusSubtitle
-            tippingLastDriver = mapTippingLastDriverData(tipping.tippingLastDriver)
+            tippingLastDriver = mapTippingLastDriverData(lastDriver)
         }
     }
 
-    private fun mapTippingLastDriverData(tippingLastDriver: TippingLastDriver): TippingLastDriverModel {
+    private fun mapTippingLastDriverData(tippingLastDriver: LastDriver): TippingLastDriverModel {
         return TippingLastDriverModel().apply {
             phone = tippingLastDriver.phone
             name = tippingLastDriver.name
