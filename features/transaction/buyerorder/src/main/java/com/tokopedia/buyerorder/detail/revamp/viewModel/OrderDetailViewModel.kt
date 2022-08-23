@@ -3,8 +3,10 @@ package com.tokopedia.buyerorder.detail.revamp.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.DetailsData
+import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.domain.DigiPersoUseCase
 import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
@@ -41,11 +43,14 @@ class OrderDetailViewModel @Inject constructor(
     val actionButton: LiveData<Result<Pair<Int, List<ActionButton>>>>
         get() = _actionButton
 
+    private var orderDetails : OrderDetails? = null
+
     fun requestOmsDetail(orderId: String, orderCategory: String, upstream: String?){
         launchCatchError(
             block = {
                 omsDetailUseCase.get().createParams(orderId, orderCategory, upstream)
                 val result = omsDetailUseCase.get().executeOnBackground()
+                orderDetails = result.orderDetails
                 _omsDetail.postValue(Success(result))
             },
             onError = {
@@ -75,7 +80,7 @@ class OrderDetailViewModel @Inject constructor(
 
                 if (flag){
                     result.actionButtonList.forEachIndexed { index, it ->
-                        if (it.control.equals(ItemsAdapter.KEY_REFRESH, false)){
+                        if (it.control.equals(ItemsAdapter.KEY_REFRESH, true)){
                             it.body = actionButton[index].body
                         }
                     }
@@ -87,5 +92,14 @@ class OrderDetailViewModel @Inject constructor(
             }
         )
     }
+
+    fun getOrderCategoryName(): String{
+        return orderDetails?.let { OrderListAnalyticsUtils.getCategoryName(it) } ?: ""
+    }
+
+    fun getOrderProductName(): String{
+        return orderDetails?.let { OrderListAnalyticsUtils.getProductName(it) } ?: ""
+    }
+
 
 }

@@ -3,7 +3,6 @@ package com.tokopedia.buyerorder.detail.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.detail.revamp.activity.SeeInvoiceActivity
-import com.tokopedia.buyerorder.detail.revamp.fragment.OrderListDetailFragment
 import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment
 import dagger.Component
 
@@ -18,5 +17,5 @@ interface OrderDetailsComponent {
     fun inject(omsDetailFragment: OmsDetailFragment)
     fun inject(seeInvoiceActivity: SeeInvoiceActivity)
     fun inject(revampOrderListDetailActivity: RevampOrderListDetailActivity)
-    fun inject(fragment: OrderListDetailFragment)
+    fun inject(fragment: com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment)
 }
