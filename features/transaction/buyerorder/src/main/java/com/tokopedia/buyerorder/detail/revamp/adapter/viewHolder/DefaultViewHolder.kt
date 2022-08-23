@@ -12,9 +12,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.util.BuyerUtils
+import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
 import com.tokopedia.buyerorder.databinding.VoucherItemDefaultBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
@@ -114,13 +113,13 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
         metadata: MetaDataInfo,
     ){
         binding.llValid.shouldShowWithAction(metadata.endDate.isNotEmpty()){
-            binding.tvValidTillDate.text = getString(com.tokopedia.buyerorder.R.string.order_detail_date_whitespace, metadata.endDate)
+            binding.tvValidTillDate.text = getString(R.string.order_detail_date_whitespace, metadata.endDate)
             hasViews = true
         }
 
         if (metadata.startDate.isNotEmpty()){
             hasViews = true
-            binding.tvStartDate.text = getString(com.tokopedia.buyerorder.R.string.order_detail_date_whitespace, metadata.startDate)
+            binding.tvStartDate.text = getString(R.string.order_detail_date_whitespace, metadata.startDate)
             binding.llTanggalEvent.visible()
         } else {
             binding.llTanggalEvent.gone()
@@ -283,10 +282,12 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
             RouteManager.route(itemView.context, actionButton.body.appURL)
         } else {
             textView.setOnClickListener {
-                if (BuyerUtils.isUridownloadable(actionButton.body.appURL, false)){
+                clickActionButton(
+                    itemView.context,
+                    actionButton.body.appURL,
+                    false
+                ){
                     //TODO : ask permission
-                } else {
-                    RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW, actionButton.body.appURL)
                 }
                 //TODO : set uri pdp using @params uri
             }
