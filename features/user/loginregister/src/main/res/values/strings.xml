@@ -37,6 +37,7 @@
     <!--REGISTER PHONE NUMBER-->
     <string name="register_with_email">Email</string>
     <string name="phone_number_not_registered_info">Apakah nomor ponsel yang Anda masukkan sudah benar?</string>
+    <string name="text_field_label_phone_number">Nomor HP</string>
 
     <!--ADD CHANGE EMAIL-->
 
@@ -83,7 +84,7 @@
     <string name="title_register_wo_u">Daftar</string>
     <string name="account_registered_title">Akun Anda Sudah Pernah Terdaftar</string>
     <string name="account_registered_body">Anda sudah pernah melakukan pendaftaran akun tokopedia dengan email %1$s.\nSilakan login menggunakan akun anda atau klik disini untuk mengganti kata sandi anda.</string>
-    <string name="text_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
+    <string name="text_term_and_privacy">Dengan mendaftar di sini, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi Tokopedia.</string>
     <string name="error_illegal_character">Hanya dapat menggunakan huruf</string>
     <string name="error_max_35_character">Maksimal 35 karakter</string>
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>

@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -16,7 +17,12 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -122,6 +128,7 @@ import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -134,10 +141,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.fragment_login_with_phone.*
-import kotlinx.android.synthetic.main.layout_partial_register_input.*
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.fragment_login_with_phone.container
+import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
+import kotlinx.android.synthetic.main.fragment_login_with_phone.fingerprint_btn
+import kotlinx.android.synthetic.main.fragment_login_with_phone.progressBarLoginWithPhone
+import kotlinx.android.synthetic.main.fragment_login_with_phone.register_button
+import kotlinx.android.synthetic.main.layout_partial_register_input.wrapper_password
 
 
 /**
@@ -204,6 +216,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var tempValidateToken = ""
 
     private var partialRegisterInputView: PartialRegisterInputView? = null
+    private var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
     private var emailPhoneEditText: EditText? = null
     var partialActionButton: UnifyButton? = null
     private var tickerAnnouncement: Ticker? = null
@@ -347,7 +360,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_login_with_phone, container, false)
         partialRegisterInputView = view.findViewById(R.id.login_input_view)
-        emailPhoneEditText = partialRegisterInputView?.findViewById(R.id.input_email_phone)
+        fieldUnifyInputEmailPhone = partialRegisterInputView?.findViewById(R.id.input_email_phone)
+        emailPhoneEditText = fieldUnifyInputEmailPhone?.editText
         partialActionButton = partialRegisterInputView?.findViewById(R.id.register_btn)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
@@ -393,6 +407,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         partialRegisterInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
+
+        initInputType()
+    }
+
+    private fun initInputType() {
+        fieldUnifyInputEmailPhone?.apply {
+            setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
+            setLabel(requireActivity().getString(R.string.phone_or_email_input))
+        }
     }
 
     private fun checkSeamless() {
@@ -637,7 +660,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val pw = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_PASS, "") ?: ""
         partialRegisterInputView?.showLoginEmailView(email)
         emailPhoneEditText?.setText(email)
-        wrapper_password?.textFieldInput?.setText(pw)
+        wrapper_password?.editText?.setText(pw)
         loginEmail(email, pw)
         activity?.let {
             analytics.eventClickLoginEmailButton(it.applicationContext)
@@ -714,10 +737,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             registerCheck(emailPhoneEditText?.text.toString())
         }
 
-        wrapper_password?.textFieldInput?.setOnEditorActionListener { textView, id, keyEvent ->
+        wrapper_password?.editText?.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 loginEmail(emailPhoneEditText?.text.toString().trim(),
-                        wrapper_password?.textFieldInput?.text.toString(), useHash = isUseHash)
+                        wrapper_password?.editText?.text.toString(), useHash = isUseHash)
                 activity?.let {
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
@@ -879,7 +902,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         partialActionButton?.text = getString(R.string.next)
         partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
-        partialActionButton?.setOnClickListener { registerCheck(emailPhoneEditText?.text.toString()) }
+        partialActionButton?.setOnClickListener {
+            showLoadingLogin()
+            registerCheck(emailPhoneEditText?.text.toString())
+        }
         partialRegisterInputView?.showDefaultView()
     }
 
@@ -1261,12 +1287,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
         analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message.removeErrorCode())
-        partialRegisterInputView?.onErrorValidate(message)
+        partialRegisterInputView?.onErrorInputEmailPhoneValidate(message)
     }
 
     override fun onErrorEmptyEmailPhone() {
         dismissLoadingLogin()
-        partialRegisterInputView?.onErrorValidate(getString(R.string.must_insert_email_or_phone))
+        partialRegisterInputView?.onErrorInputEmailPhoneValidate(getString(R.string.must_insert_email_or_phone))
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
@@ -1292,7 +1318,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         partialRegisterInputView?.showLoginEmailView(email)
         partialActionButton?.setOnClickListener {
-            loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), useHash = isUseHash)
+            loginEmail(email, wrapper_password?.editText?.text.toString(), useHash = isUseHash)
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
@@ -1346,7 +1372,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun showErrorEmail(resId: Int) {
-        partialRegisterInputView?.onErrorValidate(getString(resId))
+        partialRegisterInputView?.onErrorInputEmailPhoneValidate(getString(resId))
     }
 
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
