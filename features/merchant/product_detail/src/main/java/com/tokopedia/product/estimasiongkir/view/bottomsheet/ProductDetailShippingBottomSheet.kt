@@ -56,7 +56,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var viewModel: RatesEstimationBoeViewModel? = null
-    private var adapter: ProductDetailShippingAdapter? = null
+    private var shippingAdapter: ProductDetailShippingAdapter? = null
     private var rv: RecyclerView? = null
     private var viewContainer: View? = null
     private val sharedViewModel by lazy {
@@ -128,7 +128,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
         viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) {
             it.doSuccessOrFail({
-                adapter?.submitList(it.data)
+                shippingAdapter?.submitList(it.data)
             }) { throwable ->
                 showError(throwable)
             }
@@ -141,26 +141,38 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         } else {
             GlobalError.SERVER_ERROR
         }
-        adapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
+        shippingAdapter?.submitList(listOf(ProductShippingErrorDataModel(errorType = errorType)))
     }
 
     private fun setupRecyclerView(view: View) {
-        rv = view.findViewById(R.id.rv_product_shipping)
-        if (rv?.itemDecorationCount == 0 && context != null) {
-            rv?.addItemDecoration(ProductSeparatorItemDecoration(requireContext()))
+        rv = view.findViewById<RecyclerView?>(R.id.rv_product_shipping).apply {
+            if (itemDecorationCount == 0 && context != null) {
+                val decorator = ProductSeparatorItemDecoration(
+                    context = requireContext(),
+                    marginHorizontal = 16
+                )
+                addItemDecoration(decorator)
+            }
+            itemAnimator = null
+
+            val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil()).build()
+
+            shippingAdapter = ProductDetailShippingAdapter(
+                asyncDifferConfig = asyncDiffer,
+                typeFactory = ProductShippingFactoryImpl(
+                    listener = this@ProductDetailShippingBottomSheet,
+                    chooseAddressListener = this@ProductDetailShippingBottomSheet
+                )
+            )
+
+            adapter = shippingAdapter
         }
-        rv?.itemAnimator = null
-        val asyncDiffer = AsyncDifferConfig.Builder(ProductDetailShippingDIffutil())
-                .build()
 
-        adapter = ProductDetailShippingAdapter(asyncDiffer, ProductShippingFactoryImpl(this, this))
-
-        rv?.adapter = adapter
         showShimmerPage()
     }
 
     private fun showShimmerPage(height: Int = 0) {
-        adapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
+        shippingAdapter?.submitList(listOf(ProductShippingShimmerDataModel(height = height)))
     }
 
     override fun onChooseAddressClicked() {
