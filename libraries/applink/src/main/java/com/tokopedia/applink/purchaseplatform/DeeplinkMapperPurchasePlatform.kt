@@ -27,8 +27,8 @@ object DeeplinkMapperPurchasePlatform {
 
     private fun useWishlistV2Rollence(): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT)
-            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_V2_VARIANT)
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
 
         } catch (e: Exception) {
             true
@@ -42,15 +42,14 @@ object DeeplinkMapperPurchasePlatform {
     private fun isEnableRemoteConfigWishlistCollection(context: Context) = FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION)
 
     private fun isEnableRollenceWishlistCollection(): Boolean {
-        /*return try {
-            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-            val abTestWishlistCollection = abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, "")
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.WISHLIST_CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
 
-            abTestWishlistCollection == RollenceKey.WISHLIST_COLLECTION
-        } catch (throwable: Throwable) {
-            false
-        }*/
+        } catch (e: Exception) {
+            true
+        }
 
-        return true
+        // return true
     }
 }

@@ -51,10 +51,10 @@ object RollenceKey {
 
     // Purchase Platform
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
-    const val WISHLIST_OLD_VARIANT = "control_variant"
-    const val WISHLIST_V2_VARIANT = "experiment_variant"
+    const val WISHLIST_CONTROL_VARIANT = "control_variant"
+    const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
     const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
-    const val WISHLIST_COLLECTION = "wl_collection_andro"
+    const val WISHLIST_COLLECTION = "WL_collection_andro"
 
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
