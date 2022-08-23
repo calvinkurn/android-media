@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="-12dp"
+    android:layout_marginEnd="-12dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.topads.sdk.widget.TopAdsBannerView
@@ -16,8 +18,8 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/headlineAdsShimmer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_0"
-        app:loader_corner_radius="@dimen/unify_space_8"
+        android:layout_height="0dp"
+        app:loader_corner_radius="8dp"
         app:loader_type="rect"
         app:layout_constraintDimensionRatio="2:1"
         app:layout_constraintStart_toStartOf="parent"
