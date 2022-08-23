@@ -174,20 +174,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onBackPressed(): Boolean {
         return when {
             binding.formTitle.visibility == View.VISIBLE -> {
-                return if(parentViewModel.channelTitle.isEmpty()) {
-                    analytic.clickCloseOnSetupPage()
-                    false
-                }
-                else {
-                    showTitleForm(false)
-                    true
-                }
+                showTitleForm(false)
+                true
             }
             binding.formCover.visibility == View.VISIBLE -> {
                 showCoverForm(false)
                 true
             }
-            else -> super.onBackPressed()
+            else -> {
+                analytic.clickCloseOnSetupPage()
+                super.onBackPressed()
+            }
         }
     }
 
