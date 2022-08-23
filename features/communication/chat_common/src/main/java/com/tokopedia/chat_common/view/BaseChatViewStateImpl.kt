@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.view
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
@@ -38,10 +39,10 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 29/11/18
  */
 abstract class BaseChatViewStateImpl(
-        @NonNull open val view: View,
-        open val toolbar: Toolbar,
-        private val typingListener: TypingListener,
-        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener
+    @NonNull open val view: View,
+    open val toolbar: Toolbar,
+    private val typingListener: TypingListener,
+    private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener
 ) : BaseChatViewState, ViewTreeObserver.OnGlobalLayoutListener {
 
     protected lateinit var rootView: ViewGroup
@@ -94,8 +95,8 @@ abstract class BaseChatViewStateImpl(
                 isTyping = false
             }
             replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                    .skip(1)
-                    .subscribe(onChatDeBounceSubscriber, onError)
+                .skip(1)
+                .subscribe(onChatDeBounceSubscriber, onError)
         }
 
 
@@ -144,10 +145,13 @@ abstract class BaseChatViewStateImpl(
 
     }
 
+    @SuppressLint("ResourcePackage")
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        loadImageCircle(avatar.context, avatar, avatarUrl,
-                R.drawable.ic_default_avatar)
+        avatar.loadImageCircle(avatarUrl, properties = {
+            setPlaceHolder(R.drawable.ic_loading_toped)
+            setErrorDrawable(R.drawable.ic_loading_toped)
+        })
     }
 
     @DrawableRes
@@ -170,7 +174,13 @@ abstract class BaseChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String
+    ) {
         val localId = IdentifierUtil.generateLocalId()
         val message = MessageUiModel.Builder()
             .withMsgId(messageId)
@@ -208,17 +218,32 @@ abstract class BaseChatViewStateImpl(
         when {
             labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.chatcommon_dms_g400))
+                label.setTextColor(
+                    MethodChecker.getColor(
+                        label.context,
+                        R.color.chatcommon_dms_g400
+                    )
+                )
                 label.visibility = View.VISIBLE
             }
             labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.chatcommon_dms_y400))
+                label.setTextColor(
+                    MethodChecker.getColor(
+                        label.context,
+                        R.color.chatcommon_dms_y400
+                    )
+                )
                 label.visibility = View.VISIBLE
             }
             labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.chatcommon_dms_y400))
+                label.setTextColor(
+                    MethodChecker.getColor(
+                        label.context,
+                        R.color.chatcommon_dms_y400
+                    )
+                )
                 label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE
@@ -237,8 +262,8 @@ abstract class BaseChatViewStateImpl(
         val onNext = Action1<Long> { recyclerView.scrollToPosition(0) }
         val onError = Action1<Throwable> { it.printStackTrace() }
         Observable.timer(SCROLL_DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext, onError)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNext, onError)
     }
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
@@ -258,7 +283,7 @@ abstract class BaseChatViewStateImpl(
     }
 
     fun getList(): List<Visitable<*>> {
-        return (recyclerView.adapter as BaseChatAdapter).getList()
+        return (recyclerView.adapter as BaseChatAdapter).list
     }
 
     open fun clearEditText() {
@@ -321,7 +346,8 @@ abstract class BaseChatViewStateImpl(
 
     private fun getStatusBarHeight(): Int {
         var height = 0
-        val resourceId = view.context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId =
+            view.context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
             height = view.context.resources.getDimensionPixelSize(resourceId)
         }

@@ -49,9 +49,9 @@
             android:background="@drawable/green_button_rounded"
             android:gravity="center"
             android:minHeight="50dp"
-            app:typographyType="display_2"
             android:text="@string/title_save"
-            android:textColor="@color/Unify_N0" />
+            android:textColor="@color/Unify_N0"
+            app:typographyType="heading_5" />
 
     </RelativeLayout>
 
