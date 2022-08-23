@@ -24,7 +24,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
+
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.track)
