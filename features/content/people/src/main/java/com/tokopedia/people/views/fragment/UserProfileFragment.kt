@@ -160,6 +160,7 @@ class UserProfileFragment @Inject constructor(
         initListener()
         initShopRecommendation()
         setHeader()
+        setupPlayVideo()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
             //TODO show error page
@@ -313,15 +314,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun initUserPost(userId: String) {
-        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
-
-
-        mainBinding.rvPost.layoutManager = gridLayoutManager
-        if (mainBinding.rvPost.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl1)
-            mainBinding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
-        }
-        mainBinding.rvPost.adapter = mAdapter
         mAdapter.resetAdapter()
         mAdapter.cursor = ""
         mAdapter.startDataLoading(userId)
@@ -343,7 +335,6 @@ class UserProfileFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
-        addUserPostObserver()
         adduserPostErrorObserver()
     }
 
@@ -363,6 +354,9 @@ class UserProfileFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
+                    is UserProfileUiEvent.LoadPlayVideo -> {
+                        initUserPost(viewModel.profileUserID)
+                    }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {
                         val message = if(event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
                         view?.showErrorToast(message)
@@ -402,16 +396,6 @@ class UserProfileFragment @Inject constructor(
                             }
                         )
                     }
-                }
-            }
-        }
-    }
-
-    private fun addUserPostObserver() {
-        viewModel.userPostLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                if (it) {
-                    initUserPost(viewModel.profileUserID)
                 }
             }
         }
@@ -679,6 +663,17 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private fun setupPlayVideo() {
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+        mainBinding.rvPost.layoutManager = gridLayoutManager
+        if (mainBinding.rvPost.itemDecorationCount == 0) {
+            val spacing = requireContext().resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl1)
+            mainBinding.rvPost.addItemDecoration(GridSpacingItemDecoration(2, spacing, false))
+        }
+        mainBinding.rvPost.adapter = mAdapter
+    }
+
     private fun navigateToEditProfile() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE)
@@ -700,7 +695,7 @@ class UserProfileFragment @Inject constructor(
 
             globalError.setActionClickListener {
                 binding.viewFlipper.displayedChild = PAGE_LOADING
-                refreshLandingPageData()
+                refreshLandingPageData(true)
             }
         }
     }
