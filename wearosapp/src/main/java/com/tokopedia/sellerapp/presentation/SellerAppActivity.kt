@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import com.tokopedia.sellerapp.util.WearMessageHelper
 
 class SellerAppActivity : ComponentActivity() {
 
@@ -20,5 +21,11 @@ class SellerAppActivity : ComponentActivity() {
                 SetupNavigation(navController = navController)
             }
         }
+
+        WearMessageHelper.sendAction(this, WearMessageHelper.Action.GET_ORDER_LIST, ::onOrderListDataReceived)
+    }
+
+    private fun onOrderListDataReceived(data: String) {
+
     }
 }
