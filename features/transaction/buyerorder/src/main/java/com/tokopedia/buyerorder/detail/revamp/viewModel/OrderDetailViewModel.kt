@@ -18,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -39,8 +40,8 @@ class OrderDetailViewModel @Inject constructor(
     val digiPerso: LiveData<Result<RecommendationDigiPersoResponse>>
         get() = _digiPerso
 
-    private val _actionButton = MutableLiveData<Result<Pair<Int, List<ActionButton>>>>()
-    val actionButton: LiveData<Result<Pair<Int, List<ActionButton>>>>
+    private val _actionButton = MutableLiveData<Pair<Int, List<ActionButton>>>()
+    val actionButton: LiveData<Pair<Int, List<ActionButton>>>
         get() = _actionButton
 
     private var orderDetails : OrderDetails? = null
@@ -73,24 +74,19 @@ class OrderDetailViewModel @Inject constructor(
     }
 
     fun requestActionButton(actionButton: List<ActionButton>, position: Int, flag: Boolean){
-        launchCatchError(
-            block = {
-                actionButtonUseCase.get().setParams(actionButton)
-                val result = actionButtonUseCase.get().executeOnBackground()
+        launch {
+            actionButtonUseCase.get().setParams(actionButton)
+            val result = actionButtonUseCase.get().executeOnBackground()
 
-                if (flag){
-                    result.actionButtonList.forEachIndexed { index, it ->
-                        if (it.control.equals(ItemsAdapter.KEY_REFRESH, true)){
-                            it.body = actionButton[index].body
-                        }
+            if (flag){
+                result.actionButtonList.forEachIndexed { index, it ->
+                    if (it.control.equals(ItemsAdapter.KEY_REFRESH, true)){
+                        it.body = actionButton[index].body
                     }
                 }
-                _actionButton.postValue(Success(Pair(position, result.actionButtonList)))
-            },
-            onError = {
-                _actionButton.postValue(Fail(it))
             }
-        )
+            _actionButton.postValue(Pair(position, result.actionButtonList))
+        }
     }
 
     fun getOrderCategoryName(): String{
