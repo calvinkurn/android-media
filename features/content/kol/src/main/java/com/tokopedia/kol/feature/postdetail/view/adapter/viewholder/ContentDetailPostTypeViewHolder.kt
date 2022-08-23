@@ -380,7 +380,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
         val text = if (followers.transitionFollow) {
             endIndex += SPACE
-            context.getString(feedComponentR.string.kol_Action_following_color)
+            context.getString(feedComponentR.string.kol_action_following_color)
         } else {
             context.getString(
                 feedComponentR.string.feed_component_follow
