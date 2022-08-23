@@ -158,7 +158,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         setupListener()
         setupObserver()
 
-        if(parentViewModel.channelTitle.isEmpty()) showTitleForm(true)
+        binding.viewPreparationMenu.isSetTitleChecked(parentViewModel.channelTitle.isNotEmpty())
     }
 
     override fun onStart() {
