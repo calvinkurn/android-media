@@ -308,7 +308,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
 
     init {
-        setToolbarStateFromRollence()
+        setToolbarState()
         iniQuantityFlow()
     }
 
@@ -1182,6 +1182,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _playWidgetModel.value = Success(reversedToggleUi)
             _playWidgetReminderSwitch.value = Fail(it)
         })
+    }
+
+    private fun setToolbarState() {
+        if (!GlobalConfig.isSellerApp()) {
+            setToolbarStateFromRollence()
+        }
     }
 
     private fun setToolbarStateFromRollence() {
