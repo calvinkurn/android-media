@@ -33,7 +33,11 @@ class AffiliateNoPromoItemFoundVH(
             errorTitle.text =
                 getString(R.string.no_promoted_products_title, filterType.lowercase())
             errorDescription.text =
-                getString(R.string.no_promoted_products_message, filterType.lowercase())
+                if (filterType.equals("toko", true)) {
+                    getString(R.string.no_promoted_toko_message, filterType.lowercase())
+                } else {
+                    getString(R.string.no_promoted_products_message, filterType.lowercase())
+                }
             errorAction.text = getString(R.string.no_promoted_products_cta, filterType)
             setActionClickListener {
                 bottomNavBarClickListener?.selectItem(

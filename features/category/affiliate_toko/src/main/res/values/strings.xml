@@ -144,5 +144,6 @@
     <string name="link_dengan_performa">Link dengan performa</string>
     <string name="no_promoted_products_title">Yaah, belum ada %s yang dipromosikan</string>
     <string name="no_promoted_products_message">Kamu bisa cari %s di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
+    <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_products_cta">Cari %s</string>
 </resources>
