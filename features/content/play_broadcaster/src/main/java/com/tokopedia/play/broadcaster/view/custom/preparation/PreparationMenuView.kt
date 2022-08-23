@@ -41,32 +41,24 @@ class PreparationMenuView : ConstraintLayout {
 
     fun isSetTitleChecked(isChecked: Boolean) = with(binding) {
         icBroTitleChecked.showWithCondition(isChecked)
-        if (isChecked){
-            val enableColor = getColor(context, Unify_Static_White)
-            icBroSetCover.setImage(newLightEnable = enableColor, newDarkEnable = enableColor)
-            tvBroSetCover.setTextColor(enableColor)
-            icBroSetProduct.setImage(newLightEnable = enableColor, newDarkEnable = enableColor)
-            tvBroSetProduct.setTextColor(enableColor)
-            icBroSetSchedule.setImage(newLightEnable = enableColor, newDarkEnable = enableColor)
-            tvBroSetSchedule.setTextColor(enableColor)
-
+        val stateColor = if (isChecked) {
             clBroSetCover.setOnClickListener { mListener?.onClickSetCover() }
             clBroSetProduct.setOnClickListener { mListener?.onClickSetProduct() }
             clBroSetSchedule.setOnClickListener { mListener?.onClickSetSchedule() }
+            getColor(context, Unify_Static_White)
         }
         else {
-            val disableColor = getColor(context, content_dms_white_disable)
-            icBroSetCover.setImage(newLightEnable = disableColor, newDarkEnable = disableColor)
-            tvBroSetCover.setTextColor(disableColor)
-            icBroSetProduct.setImage(newLightEnable = disableColor, newDarkEnable = disableColor)
-            tvBroSetProduct.setTextColor(disableColor)
-            icBroSetSchedule.setImage(newLightEnable = disableColor, newDarkEnable = disableColor)
-            tvBroSetSchedule.setTextColor(disableColor)
-
             icBroCoverChecked.showWithCondition(false)
             icBroProductChecked.showWithCondition(false)
             icBroScheduleChecked.showWithCondition(false)
+            getColor(context, content_dms_white_disable)
         }
+        icBroSetCover.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
+        tvBroSetCover.setTextColor(stateColor)
+        icBroSetProduct.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
+        tvBroSetProduct.setTextColor(stateColor)
+        icBroSetSchedule.setImage(newLightEnable = stateColor, newDarkEnable = stateColor)
+        tvBroSetSchedule.setTextColor(stateColor)
     }
 
     fun isSetCoverChecked(isChecked: Boolean) {
