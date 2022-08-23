@@ -26,7 +26,7 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
         fun newInstance(
             selectedItemIds: ArrayList<String>,
             items: ArrayList<MultipleSelectionItem>,
-            customAppearance: SingleSelectionBottomSheet.Config.() -> Unit = {}
+            customAppearance: Config.() -> Unit = {}
         ): MultipleSelectionBottomSheet {
             return MultipleSelectionBottomSheet().apply {
                 this.customAppearance = customAppearance
@@ -50,7 +50,7 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
     private var displayedTitle = ""
     private var buttonTitle = ""
     private val helper = MultipleSelectionHelper()
-    private var customAppearance: SingleSelectionBottomSheet.Config.() -> Unit = {}
+    private var customAppearance: Config.() -> Unit = {}
 
     data class Config(val recyclerView: RecyclerView, val button: UnifyButton)
 
@@ -96,7 +96,7 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
 
     private fun setupCustomAppearance() {
         binding?.run {
-            val property = SingleSelectionBottomSheet.Config(recyclerView, btnApply)
+            val property = Config(recyclerView, btnApply)
             customAppearance.invoke(property)
         }
     }
@@ -134,9 +134,6 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
         this.buttonTitle = buttonTitle
     }
 
-    fun getBottomSheetView() : View? {
-        return binding?.root
-    }
 
     fun getAllSelectedItems(): List<MultipleSelectionItem> {
         return helper.findSelectedItems(multipleSelectionAdapter.snapshot())
