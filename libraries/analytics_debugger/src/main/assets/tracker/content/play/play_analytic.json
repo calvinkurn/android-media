@@ -276,10 +276,10 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click",
+      "eventAction": "click product in bottom sheet",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
       "items": [
         {
           "item_id": "\\d+",
@@ -530,7 +530,7 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click",
+      "eventAction": "click featured product tagging",
       "event": "select_content",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - featured product tagging",
