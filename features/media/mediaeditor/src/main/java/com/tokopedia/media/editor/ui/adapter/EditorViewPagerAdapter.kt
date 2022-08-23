@@ -27,22 +27,22 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.utils.isVideoFormat
 
-class EditorViewPagerAdapter(paramContext: Context, paramData: List<EditorUiModel>) : PagerAdapter() {
-    private val context = paramContext
-    private val data = paramData.toMutableList()
+class EditorViewPagerAdapter(
+    private val context: Context,
+    private val editorList: List<EditorUiModel>
+) : PagerAdapter() {
+    private val currentPlayer: Array<Player?> = Array(editorList.size) { null }
 
-    private val currentPlayer: Array<Player?> = Array(data.size){null}
-
-    fun playVideo(index: Int){
+    fun playVideo(index: Int) {
         currentPlayer[index]?.playWhenReady = true
     }
 
-    fun stopVideo(index: Int){
+    fun stopVideo(index: Int) {
         currentPlayer[index]?.playWhenReady = false
     }
 
     override fun getCount(): Int {
-        return data.size
+        return editorList.size
     }
 
     override fun isViewFromObject(view: View, targetObject: Any): Boolean {
@@ -56,8 +56,8 @@ class EditorViewPagerAdapter(paramContext: Context, paramData: List<EditorUiMode
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layout = container.inflateLayout(R.layout.viewpager_main_editor)
 
-        val filePath = data[position].getImageUrl()
-        if(isVideoFormat(filePath)){
+        val filePath = editorList[position].getImageUrl()
+        if (isVideoFormat(filePath)) {
             val vidPreviewRef = layout.findViewById<PlayerView>(R.id.vid_main_preview)
             vidPreviewRef.visible()
 
@@ -69,7 +69,7 @@ class EditorViewPagerAdapter(paramContext: Context, paramData: List<EditorUiMode
             exoplayer.prepare(loopingMediaSource, true, false)
 
             vidPreviewRef.controllerShowTimeoutMs = 0
-        }else {
+        } else {
             val imgPreviewRef = layout.findViewById<ImageView>(R.id.img_main_preview)
             imgPreviewRef.visible()
 
