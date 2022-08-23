@@ -28,6 +28,11 @@ interface PlayTokoNowAnalytic {
     fun clickFeaturedProductNow(featuredProduct: PlayProductUiModel.Product, position: Int)
 
     fun impressProductBottomSheetNow(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    )
+
+    fun impressProductBottomSheetNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section,
     )

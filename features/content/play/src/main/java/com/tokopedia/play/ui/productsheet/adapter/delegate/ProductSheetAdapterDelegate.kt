@@ -9,7 +9,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
-import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play_common.R as commonR
 
 /**
@@ -20,13 +19,13 @@ class ProductSheetAdapterDelegate private constructor() {
     class Section(
         private val listener: ProductSheetSectionViewHolder.Listener,
     ) : TypedAdapterDelegate<
-            ProductSheetAdapter.Item.ProductWithSection,
+            ProductSheetAdapter.Item.Section,
             ProductSheetAdapter.Item,
             ProductSheetSectionViewHolder>(
         commonR.layout.view_play_empty
     ) {
         override fun onBindViewHolder(
-            item: ProductSheetAdapter.Item.ProductWithSection,
+            item: ProductSheetAdapter.Item.Section,
             holder: ProductSheetSectionViewHolder
         ) {
             holder.bind(item)
@@ -38,7 +37,7 @@ class ProductSheetAdapterDelegate private constructor() {
     }
 
     class Product(
-        private val listener: ProductBottomSheetCardView.Listener,
+        private val listener: ProductLineViewHolder.Listener,
     ) : TypedAdapterDelegate<
             ProductSheetAdapter.Item.Product,
             ProductSheetAdapter.Item,
@@ -49,7 +48,7 @@ class ProductSheetAdapterDelegate private constructor() {
             item: ProductSheetAdapter.Item.Product,
             holder: ProductLineViewHolder
         ) {
-            holder.bind(item.product)
+            holder.bind(item)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductLineViewHolder {

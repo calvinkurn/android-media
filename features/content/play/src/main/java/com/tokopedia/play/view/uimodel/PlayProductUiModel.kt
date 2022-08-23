@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.view.type.*
 
 /**
@@ -22,6 +23,9 @@ sealed class PlayProductUiModel {
         val isPinned: Boolean,
         val isRilisanSpesial: Boolean,
     ) : PlayProductUiModel() {
+
+        val impressHolder = ImpressHolder()
+
         companion object {
             val Empty: Product
                 get() = Product(

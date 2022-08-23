@@ -22,10 +22,9 @@ import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by kenny.hadisaputra on 19/08/22
@@ -53,17 +52,13 @@ class ProductBottomSheetCardView(
     init {
         binding.tvOriginalPrice.paintFlags =
             binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-//
-//        setCardUnifyBackgroundColor(
-//            MethodChecker.getColor(context, unifyR.color.Unify_Background)
-//        )
     }
 
     fun setListener(listener: Listener?) {
         mListener = listener
     }
 
-    fun setItem(item: PlayProductUiModel.Product) {
+    fun setItem(item: PlayProductUiModel.Product, section: ProductSectionUiModel.Section) {
         binding.ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         binding.tvProductTitle.text = item.title
 
@@ -119,13 +114,13 @@ class ProductBottomSheetCardView(
         }
 
         binding.btnProductBuy.setOnClickListener {
-            mListener?.onBuyProduct(this, item)
+            mListener?.onBuyProduct(this, item, section)
         }
         binding.btnProductAtc.setOnClickListener {
-            mListener?.onAtcProduct(this, item)
+            mListener?.onAtcProduct(this, item, section)
         }
         setOnClickListener {
-            if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item)
+            if (!item.applink.isNullOrEmpty()) mListener?.onClicked(this, item, section)
         }
     }
 
@@ -159,14 +154,17 @@ class ProductBottomSheetCardView(
         fun onClicked(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         )
         fun onBuyProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         )
         fun onAtcProduct(
             view: ProductBottomSheetCardView,
             product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         )
     }
 }

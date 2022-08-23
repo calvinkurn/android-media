@@ -10,14 +10,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.databinding.ItemPlayProductSheetSectionBinding
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
-import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -31,20 +28,15 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class ProductSheetSectionViewHolder(
     internal val binding: ItemPlayProductSheetSectionBinding,
     private val listener: Listener,
-): BaseViewHolder(binding.root) {
+) : BaseViewHolder(binding.root) {
 
     private val bellColor = MethodChecker.getColor(itemView.context, unifyR.color.Unify_GN500)
 
-    init {
-        binding.viewProductLine.setListener(listener)
-    }
+    fun bind(item: ProductSheetAdapter.Item.Section) {
+        binding.tvHeaderTitle.showWithCondition(item.section.config.title.isNotEmpty())
+        binding.tvHeaderTitle.text = item.section.config.title
 
-    fun bind(section: ProductSheetAdapter.Item.ProductWithSection) {
-        resetBackground()
-        binding.tvHeaderTitle.showWithCondition(section.config.title.isNotEmpty())
-        binding.tvHeaderTitle.text = section.config.title
-
-        when (section.config.reminder) {
+        when (item.section.config.reminder) {
             is PlayUpcomingBellStatus.On -> {
                 binding.btnSectionReminder.show()
                 binding.btnSectionReminder.setImage(
@@ -67,14 +59,13 @@ class ProductSheetSectionViewHolder(
             }
         }
 
-        binding.tvHeaderInfo.text = section.config.timerInfo
+        binding.tvHeaderInfo.text = item.section.config.timerInfo
 
-        when (section.config.type) {
+        when (item.section.config.type) {
             ProductSectionType.Active, ProductSectionType.Upcoming -> {
                 binding.tvHeaderInfo.show()
                 binding.sectionTimer.show()
-                setupBackground(section.config.background)
-                setupTimer(section.config)
+                setupTimer(item.section.config)
                 binding.btnInformation.hide()
             }
             ProductSectionType.Other -> {
@@ -83,7 +74,7 @@ class ProductSheetSectionViewHolder(
                 binding.btnInformation.hide()
             }
             ProductSectionType.TokoNow -> {
-                binding.btnInformation.showWithCondition(section.config.title.isNotEmpty())
+                binding.btnInformation.showWithCondition(item.section.config.title.isNotEmpty())
                 binding.tvHeaderInfo.hide()
                 binding.sectionTimer.hide()
             }
@@ -93,37 +84,22 @@ class ProductSheetSectionViewHolder(
         }
 
         binding.btnSectionReminder.setOnClickListener {
-            listener.onReminderClicked(this, section)
+            listener.onReminderClicked(this, item.section)
         }
 
         binding.btnInformation.setOnClickListener {
-            listener.onInformationClicked(this, section)
+            listener.onInformationClicked(this, item.section)
         }
 
-        binding.root.addOnImpressionListener(section) {
+        binding.root.addOnImpressionListener(item.section.impressHolder) {
             if (binding.btnSectionReminder.isVisible) {
-                listener.onReminderImpressed(this, section)
+                listener.onReminderImpressed(this, item.section)
             }
 
             if (binding.btnInformation.isVisible) {
-                listener.onInformationImpressed(this, section)
+                listener.onInformationImpressed(this, item.section)
             }
         }
-
-        binding.viewProductLine.setItem(section.product)
-    }
-
-    private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
-        if (background.gradients.isNotEmpty()) {
-//            binding.root.setGradientBackground(background.gradients)
-        } else if (background.imageUrl.isNotBlank()) {
-//            binding.ivBg.loadImage(background.imageUrl)
-        }
-    }
-
-    private fun resetBackground() {
-        binding.ivBg.setImageDrawable(null)
-        binding.root.background = null
     }
 
     @Suppress("MagicNumber")
@@ -170,22 +146,22 @@ class ProductSheetSectionViewHolder(
         )
     }
 
-    interface Listener : ProductBottomSheetCardView.Listener {
+    interface Listener {
         fun onReminderClicked(
             holder: ProductSheetSectionViewHolder,
-            section: ProductSheetAdapter.Item.ProductWithSection,
+            section: ProductSectionUiModel.Section,
         )
         fun onReminderImpressed(
             holder: ProductSheetSectionViewHolder,
-            section: ProductSheetAdapter.Item.ProductWithSection,
+            section: ProductSectionUiModel.Section,
         )
         fun onInformationClicked(
             holder: ProductSheetSectionViewHolder,
-            section: ProductSheetAdapter.Item.ProductWithSection,
+            section: ProductSectionUiModel.Section,
         )
         fun onInformationImpressed(
             holder: ProductSheetSectionViewHolder,
-            section: ProductSheetAdapter.Item.ProductWithSection,
+            section: ProductSectionUiModel.Section,
         )
     }
 }

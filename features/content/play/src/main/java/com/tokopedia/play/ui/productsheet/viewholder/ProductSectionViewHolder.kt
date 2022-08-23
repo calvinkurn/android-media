@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
  */
 class ProductSectionViewHolder(
     binding: ItemPlayProductSectionHeaderBinding,
-    private val listener: Listener
+    private val listener: Listener,
 ) : BaseViewHolder(binding.root) {
 
     private val tvSectionTitle: TextView = binding.tvHeaderTitle
@@ -50,19 +50,36 @@ class ProductSectionViewHolder(
     private lateinit var adapter: ProductLineAdapter
 
     private fun setupListener(sectionInfo: ProductSectionUiModel.Section) = object : ProductLineViewHolder.Listener {
-        override fun onBuyProduct(product: PlayProductUiModel.Product) {
+        override fun onBuyProduct(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
+        ) {
             listener.onBuyProduct(product, sectionInfo)
         }
 
-        override fun onAtcProduct(product: PlayProductUiModel.Product) {
+        override fun onAtcProduct(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
+        ) {
             listener.onATCProduct(product, sectionInfo)
         }
 
-        override fun onClicked(
+        override fun onProductClicked(
             viewHolder: ProductLineViewHolder,
-            product: PlayProductUiModel.Product
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         ) {
             listener.onClickProductCard(product, sectionInfo, viewHolder.adapterPosition)
+        }
+
+        override fun onProductImpressed(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section
+        ) {
+
         }
     }
 

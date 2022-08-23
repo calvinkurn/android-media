@@ -24,8 +24,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
+import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
-import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -72,106 +72,98 @@ class ProductSheetViewComponent(
         MethodChecker.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
-    private val productCardListener = object : ProductBottomSheetCardView.Listener {
-        override fun onClicked(
-            view: ProductBottomSheetCardView,
-            product: PlayProductUiModel.Product
+    private val productCardListener = object : ProductLineViewHolder.Listener {
+        override fun onProductImpressed(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         ) {
+            listener.onProductImpressed(
+                this@ProductSheetViewComponent,
+                product,
+                section,
+                viewHolder.adapterPosition,
+            )
+        }
 
+        override fun onProductClicked(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
+        ) {
+            listener.onProductCardClicked(
+                this@ProductSheetViewComponent,
+                product,
+                section,
+                viewHolder.adapterPosition,
+            )
         }
 
         override fun onBuyProduct(
-            view: ProductBottomSheetCardView,
-            product: PlayProductUiModel.Product
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         ) {
-
+            listener.onBuyButtonClicked(
+                this@ProductSheetViewComponent,
+                product,
+                section,
+            )
         }
 
         override fun onAtcProduct(
-            view: ProductBottomSheetCardView,
-            product: PlayProductUiModel.Product
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product,
+            section: ProductSectionUiModel.Section,
         ) {
-
+            listener.onAtcButtonClicked(
+                this@ProductSheetViewComponent,
+                product,
+                section,
+            )
         }
     }
 
     private val productAdapter = ProductSheetAdapter(
-        sectionListener = object : ProductSheetSectionViewHolder.Listener,
-            ProductBottomSheetCardView.Listener by productCardListener
-        {
+        sectionListener = object : ProductSheetSectionViewHolder.Listener {
             override fun onReminderClicked(
                 holder: ProductSheetSectionViewHolder,
-                section: ProductSheetAdapter.Item.ProductWithSection
+                section: ProductSectionUiModel.Section,
             ) {
-
+                listener.onReminderClicked(
+                    this@ProductSheetViewComponent,
+                    section,
+                )
             }
 
             override fun onReminderImpressed(
                 holder: ProductSheetSectionViewHolder,
-                section: ProductSheetAdapter.Item.ProductWithSection
+                section: ProductSectionUiModel.Section,
             ) {
-
+                listener.onReminderImpressed(
+                    this@ProductSheetViewComponent,
+                    section,
+                )
             }
 
             override fun onInformationClicked(
                 holder: ProductSheetSectionViewHolder,
-                section: ProductSheetAdapter.Item.ProductWithSection
+                section: ProductSectionUiModel.Section,
             ) {
-
+                listener.onInformationClicked(this@ProductSheetViewComponent)
             }
 
             override fun onInformationImpressed(
                 holder: ProductSheetSectionViewHolder,
-                section: ProductSheetAdapter.Item.ProductWithSection
+                section: ProductSectionUiModel.Section,
             ) {
-
+                listener.onInformationImpressed(this@ProductSheetViewComponent)
             }
         },
         productListener = productCardListener,
     )
 
 //    private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
-//        override fun onBuyProduct(
-//            product: PlayProductUiModel.Product,
-//            sectionInfo: ProductSectionUiModel.Section
-//        ) {
-//            listener.onBuyButtonClicked(this@ProductSheetViewComponent, product, sectionInfo)
-//
-//        }
-//        override fun onATCProduct(
-//            product: PlayProductUiModel.Product,
-//            sectionInfo: ProductSectionUiModel.Section
-//        ) {
-//            listener.onAtcButtonClicked(this@ProductSheetViewComponent, product, sectionInfo)
-//        }
-//        override fun onClickProductCard(
-//            product: PlayProductUiModel.Product,
-//            sectionInfo: ProductSectionUiModel.Section,
-//            position: Int
-//        ) {
-//            listener.onProductCardClicked(this@ProductSheetViewComponent, product, sectionInfo, position)
-//        }
-//
-//        override fun onReminderClicked(product: ProductSectionUiModel.Section) {
-//            listener.onReminderClicked(this@ProductSheetViewComponent, product)
-//        }
-//
-//        override fun onReminderImpressed(section: ProductSectionUiModel.Section) {
-//            listener.onReminderImpressed(this@ProductSheetViewComponent, section)
-//        }
-//
-//        override fun onInformationClicked(section: ProductSectionUiModel.Section) {
-//            listener.onInformationClicked(this@ProductSheetViewComponent)
-//        }
-//
-//        override fun onInformationImpressed() {
-//            listener.onInformationImpressed(this@ProductSheetViewComponent)
-//        }
-//
-//        override fun onProductChanged() {
-//            listener.onProductCountChanged(this@ProductSheetViewComponent)
-//        }
-//
 //        override fun onProductImpressed(
 //            product: List<Pair<PlayProductUiModel.Product, Int>>,
 //            sectionInfo: ProductSectionUiModel.Section
@@ -241,7 +233,6 @@ class ProductSheetViewComponent(
         val sections = sectionList.filterIsInstance<ProductSectionUiModel.Section>()
         val newProductList = buildProductList(sections)
         productAdapter.setItemsAndAnimateChanges(newProductList)
-//        itemDecoration.setGradient(sections.first().config.background.gradients) //TODO("MOCK")
 
         scope.launch {
             itemDecoration.setGuidelines(getBackgroundGuidelines(sections)) //TODO("MOCK")
@@ -326,18 +317,12 @@ class ProductSheetViewComponent(
                 if (section.productList.isEmpty()) return@forEach
 
                 add(
-                    ProductSheetAdapter.Item.ProductWithSection(
-                        id = section.id,
-                        config = section.config,
-                        product = section.productList.first(),
-                    )
+                    ProductSheetAdapter.Item.Section(section)
                 )
 
-                for (i in 1 until section.productList.size) {
+                section.productList.forEach {
                     add(
-                        ProductSheetAdapter.Item.Product(
-                            section.productList[i]
-                        )
+                        ProductSheetAdapter.Item.Product(it, section)
                     )
                 }
             }
@@ -350,7 +335,7 @@ class ProductSheetViewComponent(
         var currentIndex = -1
         return sectionList.map { section ->
             val startIndex = currentIndex + 1
-            val endIndex = startIndex + section.productList.size - 1
+            val endIndex = startIndex + section.productList.size
             val background = when {
                 section.productList.isEmpty() -> {
                     ProductLineItemDecoration.Background.Color.Solid(defaultSectionColor)
@@ -407,8 +392,13 @@ class ProductSheetViewComponent(
         fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent)
+        fun onProductImpressed(
+            view: ProductSheetViewComponent,
+            product: PlayProductUiModel.Product,
+            sectionInfo: ProductSectionUiModel.Section,
+            position: Int,
+        )
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
-        fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
         fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
         fun onReminderImpressed(view: ProductSheetViewComponent, section: ProductSectionUiModel.Section)

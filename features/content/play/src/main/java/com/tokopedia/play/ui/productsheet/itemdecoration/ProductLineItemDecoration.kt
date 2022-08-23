@@ -3,20 +3,17 @@ package com.tokopedia.play.ui.productsheet.itemdecoration
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.Shader
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
+import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.unifyprinciples.R as unifyR
+
 /**
  * Created by jegul on 03/03/20
  */
@@ -25,8 +22,11 @@ class ProductLineItemDecoration(
     recyclerView: RecyclerView,
 ) : RecyclerView.ItemDecoration() {
 
-    private val defaultOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
-    private val topBottomOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl2)
+    private val offset2 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_2)
+    private val offset4 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_4)
+    private val offset10 = context.resources.getDimensionPixelOffset(playCommonR.dimen.play_dp_10)
+    private val offset14 = context.resources.getDimensionPixelOffset(playCommonR.dimen.play_dp_14)
+    private val offset16 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_16)
 
     private val mPaint = Paint()
 
@@ -40,17 +40,16 @@ class ProductLineItemDecoration(
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
-        val itemCount = parent.adapter?.itemCount.orZero()
 
         val adapter = parent.adapter as ProductSheetAdapter
-        if (position > 0 &&
-            adapter.getItem(position) is ProductSheetAdapter.Item.ProductWithSection) {
-            outRect.top = defaultOffset
-        } else if (position == 0) {
-            outRect.top = topBottomOffset
-        }
 
-        if(position == itemCount - 1) outRect.bottom = topBottomOffset
+        if (position < 0) return
+
+        when (adapter.getItem(position)) {
+            is ProductSheetAdapter.Item.Section -> setSectionOffset(outRect, adapter, position)
+            is ProductSheetAdapter.Item.Product -> setProductOffset(outRect, adapter, position)
+            else -> {}
+        }
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -59,24 +58,20 @@ class ProductLineItemDecoration(
             val lastChildPos = layoutManager.findLastVisibleItemPosition()
 
             val top = if (firstChildPos <= it.startIndex) {
-                val finalPos = it.startIndex - firstChildPos
-                val firstChild = layoutManager.getChildAt(finalPos) ?: return@forEach
+                val firstChild = layoutManager.getChildAt(
+                    it.startIndex - firstChildPos
+                ) ?: return@forEach
 
-                val adapterPos = parent.getChildAdapterPosition(firstChild)
-                val adapter = parent.adapter as ProductSheetAdapter
-                if (adapterPos > 0 &&
-                    adapter.getItem(adapterPos) is ProductSheetAdapter.Item.ProductWithSection) {
-                    (firstChild.top - defaultOffset).coerceAtLeast(0)
-                } else if (adapterPos == 0) {
-                    (firstChild.top - topBottomOffset).coerceAtLeast(0)
-                } else firstChild.top
-
+                firstChild.top.coerceAtLeast(0)
             } else {
                 0
             }
 
             val bottom = if (lastChildPos > it.endIndex) {
-                val lastChild = layoutManager.getChildAt(it.endIndex - firstChildPos) ?: return@forEach
+                val lastChild = layoutManager.getChildAt(
+                    it.endIndex - firstChildPos
+                ) ?: return@forEach
+
                 lastChild.bottom
             } else {
                 parent.height
@@ -105,6 +100,36 @@ class ProductLineItemDecoration(
                 }
             }
         }
+    }
+
+    private fun setSectionOffset(
+        outRect: Rect,
+        adapter: ProductSheetAdapter,
+        position: Int,
+    ) {
+        //the previous item of a section is always a product
+        outRect.top = if (position == 0) offset16 else offset14
+        outRect.left = offset16
+        outRect.right = offset16
+    }
+
+    private fun setProductOffset(
+        outRect: Rect,
+        adapter: ProductSheetAdapter,
+        position: Int,
+    ) {
+        //the previous item of a section is always a product
+        if (position == 0) outRect.top = offset16
+        else if (position > 0) {
+            outRect.top = if (adapter.getItem(position - 1) is ProductSheetAdapter.Item.Section) {
+                offset2
+            } else 0 //per product spacing
+        }
+
+        if (position == adapter.itemCount - 1) outRect.bottom = offset4
+
+        outRect.left = offset10
+        outRect.right = offset10
     }
 
     private fun setColorBackground(

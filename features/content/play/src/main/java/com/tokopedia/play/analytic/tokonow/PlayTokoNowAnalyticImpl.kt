@@ -204,6 +204,36 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     }
 
     override fun impressProductBottomSheetNow(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    ) {
+        trackingQueue.putEETracking(
+            event = EventModel(
+                "productView",
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "view - now product bottomsheet",
+                "$channelId - ${product.id} - ${channelType.value}"
+            ),
+            enhanceECommerceMap = hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "impressions" to mutableListOf<HashMap<String, Any>>().apply {
+                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                    }
+                )
+            ),
+            customDimension =
+            hashMapOf(
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            )
+
+        )
+    }
+
+    override fun impressProductBottomSheetNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
         sectionInfo: ProductSectionUiModel.Section,
     ) {

@@ -55,8 +55,10 @@ sealed class ProductSectionUiModel {
         val productList: List<PlayProductUiModel.Product>,
         val config: ConfigUiModel,
         val id: String,
-        @TrackingField val impressHolder: ImpressHolder = ImpressHolder(),
     ) : ProductSectionUiModel() {
+
+        @TrackingField
+        val impressHolder: ImpressHolder = ImpressHolder()
 
         data class ConfigUiModel(
             val type: ProductSectionType,

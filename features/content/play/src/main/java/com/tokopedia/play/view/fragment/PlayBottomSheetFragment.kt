@@ -28,6 +28,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -189,6 +190,19 @@ class PlayBottomSheetFragment @Inject constructor(
         dismissSheets()
     }
 
+    override fun onProductImpressed(
+        view: ProductSheetViewComponent,
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        position: Int
+    ) {
+        if (playViewModel.bottomInsets.isProductSheetsShown) {
+            if(sectionInfo.config.type == ProductSectionType.TokoNow) {
+                newAnalytic.impressProductBottomSheetNow(product, position)
+            } else analytic.impressBottomSheetProduct(product, sectionInfo, position)
+        }
+    }
+
     override fun onProductsImpressed(
         view: ProductSheetViewComponent,
         products: List<Pair<PlayProductUiModel.Product, Int>>,
@@ -200,7 +214,7 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    override fun onProductCountChanged(view: ProductSheetViewComponent) {
+    fun onProductCountChanged() {
         if (playViewModel.bottomInsets.isKeyboardShown) return
 
         doShowToaster(
@@ -715,6 +729,12 @@ class PlayBottomSheetFragment @Inject constructor(
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
+
+        if (prevTagItem?.product?.productSectionList == tagItem.product.productSectionList) return
+
+        val prevSum = prevTagItem?.product?.productSectionList?.productsSum().orZero()
+        val sum = tagItem.product.productSectionList.productsSum()
+        if (prevSum != sum && prevSum != 0 && sum != 0) onProductCountChanged()
     }
 
     private fun renderVoucherSheet(tagItem: TagItemUiModel) {
@@ -745,5 +765,12 @@ class PlayBottomSheetFragment @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader
         )
+    }
+
+    private fun List<ProductSectionUiModel>.productsSum(): Int {
+        return sumOf {
+            if (it is ProductSectionUiModel.Section) it.productList.size
+            else 0
+        }
     }
 }

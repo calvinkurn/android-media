@@ -78,7 +78,7 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
-    <string name="play_product_item_stock">Sisa %d</string>
+    <string name="play_product_item_stock">Sisa %1$s</string>
 
     <!--Coupon Sheet-->
     <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>

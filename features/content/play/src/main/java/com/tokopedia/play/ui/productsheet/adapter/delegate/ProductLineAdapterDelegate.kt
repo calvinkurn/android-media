@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.R as commonR
 
 /**
@@ -18,28 +18,61 @@ class ProductLineAdapterDelegate(
 ), ProductLineViewHolder.Listener by listener {
 
     override fun onBindViewHolder(item: PlayProductUiModel.Product, holder: ProductLineViewHolder) {
-        holder.bind(item)
+//        holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductLineViewHolder {
-        return ProductLineViewHolder.create(parent, object : ProductBottomSheetCardView.Listener {
-            override fun onClicked(
-                view: ProductBottomSheetCardView,
-                product: PlayProductUiModel.Product
+//        return ProductLineViewHolder.create(parent, object : ProductBottomSheetCardView.Listener {
+//            override fun onClicked(
+//                view: ProductBottomSheetCardView,
+//                product: PlayProductUiModel.Product
+//            ) {
+//
+//            }
+//
+//            override fun onBuyProduct(
+//                view: ProductBottomSheetCardView,
+//                product: PlayProductUiModel.Product
+//            ) {
+//
+//            }
+//
+//            override fun onAtcProduct(
+//                view: ProductBottomSheetCardView,
+//                product: PlayProductUiModel.Product
+//            ) {
+//
+//            }
+//        })
+        return ProductLineViewHolder.create(parent, object : ProductLineViewHolder.Listener {
+            override fun onProductImpressed(
+                viewHolder: ProductLineViewHolder,
+                product: PlayProductUiModel.Product,
+                section: ProductSectionUiModel.Section
+            ) {
+
+            }
+
+            override fun onProductClicked(
+                viewHolder: ProductLineViewHolder,
+                product: PlayProductUiModel.Product,
+                section: ProductSectionUiModel.Section
             ) {
 
             }
 
             override fun onBuyProduct(
-                view: ProductBottomSheetCardView,
-                product: PlayProductUiModel.Product
+                viewHolder: ProductLineViewHolder,
+                product: PlayProductUiModel.Product,
+                section: ProductSectionUiModel.Section
             ) {
 
             }
 
             override fun onAtcProduct(
-                view: ProductBottomSheetCardView,
-                product: PlayProductUiModel.Product
+                viewHolder: ProductLineViewHolder,
+                product: PlayProductUiModel.Product,
+                section: ProductSectionUiModel.Section
             ) {
 
             }
