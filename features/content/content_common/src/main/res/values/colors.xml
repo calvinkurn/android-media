@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="content_color_white_disable" tools:ignore="UnsupportedDarkModeColor">#E3E3E3</color>
-    <color name="soft_gray" tools:ignore="UnsupportedDarkModeColor">#AAB4C8</color>
-    <color name="soft_dark" tools:ignore="UnsupportedDarkModeColor">#212121</color>
+    <color name="content_color_soft_gray" tools:ignore="UnsupportedDarkModeColor">#AAB4C8</color>
+    <color name="content_color_soft_dark" tools:ignore="UnsupportedDarkModeColor">#212121</color>
 </resources>

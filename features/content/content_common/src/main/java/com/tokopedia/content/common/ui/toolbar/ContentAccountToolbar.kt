@@ -11,8 +11,8 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R.color.Unify_NN1000
 import com.tokopedia.content.common.R.color.Unify_NN950
-import com.tokopedia.content.common.R.color.soft_dark
-import com.tokopedia.content.common.R.color.soft_gray
+import com.tokopedia.content.common.R.color.content_color_soft_dark
+import com.tokopedia.content.common.R.color.content_color_soft_gray
 import com.tokopedia.content.common.databinding.ContentAccountToolbarBinding
 import com.tokopedia.content.common.ui.toolbar.ContentColor.*
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -88,7 +88,7 @@ class ContentAccountToolbar @JvmOverloads constructor(
         when(contentColor) {
             LIGHT, TRANSPARENT -> {
                 content = if (enableDarkMode) getColor(context, Unify_NN0) else getColor(context, Unify_Static_White)
-                contentAccent = if (enableDarkMode) getColor(context, Unify_NN400) else getColor(context, soft_gray)
+                contentAccent = if (enableDarkMode) getColor(context, Unify_NN400) else getColor(context, content_color_soft_gray)
                 background = if (contentColor == LIGHT) {
                     if (enableDarkMode) getColor(context, Unify_NN1000) else getColor(context, Unify_Static_Black)
                 }
@@ -96,7 +96,7 @@ class ContentAccountToolbar @JvmOverloads constructor(
             }
             DARK -> {
                 content = if (enableDarkMode) getColor(context, Unify_NN1000) else getColor(context, Unify_Static_Black)
-                contentAccent = if (enableDarkMode) getColor(context, Unify_NN950) else getColor(context, soft_dark)
+                contentAccent = if (enableDarkMode) getColor(context, Unify_NN950) else getColor(context, content_color_soft_dark)
                 background = if (enableDarkMode) getColor(context, Unify_NN0) else getColor(context, Unify_Static_White)
             }
         }
