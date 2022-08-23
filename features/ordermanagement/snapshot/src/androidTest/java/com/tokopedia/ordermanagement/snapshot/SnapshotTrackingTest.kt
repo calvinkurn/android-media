@@ -6,7 +6,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.utils.Utils
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -39,12 +38,10 @@ class SnapshotTrackingTest {
     var cassavaRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
         Intents.init()
-        gtmLogDBSource.deleteAll().subscribe()
 
         setupGraphqlMockResponse {
             addMockResponse(KEY_SNAPSHOT_QUERY, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_snapshot), MockModelConfig.FIND_BY_CONTAINS)

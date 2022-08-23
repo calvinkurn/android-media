@@ -1,7 +1,6 @@
 package com.tokopedia.search.robot
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import org.hamcrest.MatcherAssert.assertThat

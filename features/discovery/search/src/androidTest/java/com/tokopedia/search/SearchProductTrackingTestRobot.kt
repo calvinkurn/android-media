@@ -22,7 +22,6 @@ internal class SearchProductTrackingTestRobot {
         prepare {
             usingRule(activityRule)
             mockResponse()
-            deleteAllTrackingRecord()
             disableOnBoarding()
         } search {
             withKeyword("samsung")

@@ -19,7 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -53,7 +52,6 @@ import org.junit.runner.RunWith
 class RechargeHomepageInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     private val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
@@ -68,8 +66,6 @@ class RechargeHomepageInstrumentTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-
             setupGraphqlMockResponse(RechargeHomepageMockResponseConfig())
         }
     }
