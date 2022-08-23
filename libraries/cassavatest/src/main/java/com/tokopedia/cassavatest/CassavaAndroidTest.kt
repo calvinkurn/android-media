@@ -28,55 +28,6 @@ import rx.schedulers.Schedulers
 fun deleteCassavaDb(context: Context) =
         CassavaDatabase.getInstance(context).cassavaDao().deleteAll()
 
-/**
- * This function is used to run analytics validation query with/without thanos
- *
- * @param gtmLogDBSource GTM Log from Local Database
- * @param queryId the value will be either thanos query id or local json file path
- * @param isFromNetwork if True, will use thanos regex validation, if false will use local regex validation
- * @param shouldSendResult if True, will send validation result to Thanos API.
- *                         Default is True, can be False for development purpose
- *
- * @return the list of Validator
- */
-@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
-fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
-                          queryId: String,
-                          isFromNetwork: Boolean,
-                          shouldSendResult: Boolean = true): List<Validator> {
-    val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryId, isFromNetwork)
-    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    val validationResult = ValidatorEngine(gtmLogDBSource, AnalyticsParser())
-            .computeRx(validators, cassavaQuery.mode.value)
-            .toBlocking()
-            .first()
-    if (isFromNetwork && shouldSendResult)
-        sendTestResult(queryId, validationResult)
-    return validationResult
-}
-
-@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
-fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
-                          context: Context,
-                          queryFileName: String): List<Validator> {
-    val cassavaQuery = getQuery(context, queryFileName)
-    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    return ValidatorEngine(gtmLogDBSource, AnalyticsParser())
-            .computeRx(validators, cassavaQuery.mode.value)
-            .toBlocking()
-            .first()
-}
-
-@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
-fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
-    val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
-    val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    return ValidatorEngine(gtmLogDBSource, AnalyticsParser())
-            .computeRx(validators, cassavaQuery.mode.value)
-            .toBlocking()
-            .first()
-}
-
 internal fun getQuery(context: Context, queryFileName: String): CassavaQuery =
         Utils.getJsonDataFromAsset(context, queryFileName)?.toCassavaQuery()
                 ?: throw AssertionError("Cassava query is not found: \"$queryFileName\"")
