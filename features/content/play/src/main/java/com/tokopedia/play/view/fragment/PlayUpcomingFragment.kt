@@ -99,7 +99,9 @@ class PlayUpcomingFragment @Inject constructor(
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
+    }
 
+    private fun setupPage(){
         try {
             playUpcomingViewModel.initPage(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
         }
@@ -125,6 +127,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        setupPage()
         playUpcomingViewModel.startSSE(channelId)
     }
 
