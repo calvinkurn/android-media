@@ -11,14 +11,15 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleListForSellerMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
 import javax.inject.Inject
 
 
 class GetFlashSaleListForSellerUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetFlashSaleListForSellerMapper
-) : GraphqlUseCase<List<Campaign>>(repository) {
+) : GraphqlUseCase<FlashSaleData>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -73,7 +74,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): List<Campaign> {
+    suspend fun execute(param: Param): FlashSaleData {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleListForSellerResponse>()
@@ -86,8 +87,8 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
             requestHeader,
             param.tabName,
             GetFlashSaleListForSellerRequest.Pagination(param.rows, param.offset),
-            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.campaignIds, param.statusIds),
-            GetFlashSaleListForSellerRequest.Sort(),
+            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.categoryIds, param.statusIds),
+            GetFlashSaleListForSellerRequest.Sort(param.sortOrderBy, param.sortOrderRule),
             GetFlashSaleListForSellerRequest.AdditionalParam()
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
@@ -106,7 +107,9 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         val keyword: String = "",
         val campaignIds: List<Long> = emptyList(),
         val categoryIds: List<Long> = emptyList(),
-        val statusIds: List<String> = listOf("DEFAULT_VALUE_PLACEHOLDER")
+        val statusIds: List<String> = listOf(FlashSaleStatus.DEFAULT.id),
+        val sortOrderBy: String = "DEFAULT_VALUE_PLACEHOLDER",
+        val sortOrderRule: String = "ASC"
     )
 
 }

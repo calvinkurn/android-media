@@ -60,13 +60,14 @@ internal class MultipleSelectionAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MultipleSelectionItem) {
-            binding.checkboxUnify.setOnCheckedChangeListener { _, isChecked ->
-                onItemSelected(item, isChecked)
-            }
+            binding.checkboxUnify.setOnCheckedChangeListener(null)
             binding.tpgName.text = item.name
             binding.checkboxUnify.isChecked = item.isSelected
             binding.root.setOnClickListener {
-                val isChecked = binding.checkboxUnify.isChecked
+                val newCheckedStatus = !binding.checkboxUnify.isChecked
+                onItemSelected(item, newCheckedStatus)
+            }
+            binding.checkboxUnify.setOnCheckedChangeListener { _, isChecked ->
                 onItemSelected(item, isChecked)
             }
         }
