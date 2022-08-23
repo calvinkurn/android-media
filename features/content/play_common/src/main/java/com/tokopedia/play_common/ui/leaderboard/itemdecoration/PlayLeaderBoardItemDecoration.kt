@@ -18,7 +18,6 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
 
     private val dividerHeight =
         context.resources.getDimensionPixelOffset(R.dimen.play_leaderboard_winner_separator_height)
-    private val bottomOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
     private val startOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl6)
     private val topOffset =
         context.resources.getDimensionPixelOffset(R.dimen.play_dp_12)
@@ -37,14 +36,13 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
             val child = parent.getChildAt(index)
             when (parent.getChildViewHolder(child)) {
                 is PlayGameViewHolder.Quiz -> outRect.bottom = topOffset
-                is PlayGameViewHolder.Winner -> super.getItemOffsets(outRect, view, parent, state)
-                else -> outRect.bottom = bottomOffset
+                else -> super.getItemOffsets(outRect, view, parent, state)
             }
         }
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        for (index in 0 until parent.childCount) {
+        for (index in 0 until parent.childCount - 1) {
             val child = parent.getChildAt(index)
 
             when (parent.getChildViewHolder(child)) {
