@@ -20,7 +20,7 @@ class MerchantVoucherTracking{
         private const val PROMO_ID = "promoId"
     }
 
-    protected fun createMap(event : String = "", category: String = "", action : String = "", label:String="") : HashMap<String , Any>{
+    private fun createMap(event : String = "", category: String = "", action : String = "", label:String="") : HashMap<String , Any>{
         val eventMap: HashMap<String, Any> = HashMap()
         eventMap[EVENT]=event
         eventMap[EVENT_CATEGORY]= category

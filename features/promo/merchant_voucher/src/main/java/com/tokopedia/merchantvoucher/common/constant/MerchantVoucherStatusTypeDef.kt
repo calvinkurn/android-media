@@ -1,19 +1,23 @@
 package com.tokopedia.merchantvoucher.common.constant
 
 import androidx.annotation.IntDef
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 
 
-@Retention(RetentionPolicy.SOURCE)
-@IntDef({})
-annotation class MerchantVoucherStatusTypeDef(
-    val TYPE_IN_USE:Int = 1,
-    val TYPE_AVAILABLE:Int = 2,
-    val TYPE_RUN_OUT:Int = 3,
-    val TYPE_RESTRICTED:Int = 4,
-)
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef.Companion.TYPE_AVAILABLE
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef.Companion.TYPE_IN_USE
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef.Companion.TYPE_RESTRICTED
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef.Companion.TYPE_RUN_OUT
+
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(value = [TYPE_AVAILABLE, TYPE_IN_USE, TYPE_RUN_OUT, TYPE_RESTRICTED])
+annotation class MerchantVoucherStatusTypeDef{
+    companion object{
+       const val TYPE_IN_USE = 1
+       const val TYPE_AVAILABLE = 2
+       const val TYPE_RUN_OUT = 3
+       const val TYPE_RESTRICTED = 4
+    }
+}
 
 
