@@ -8,7 +8,7 @@ import com.tokopedia.analyticsdebugger.cassava.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import kotlinx.coroutines.runBlocking
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -27,9 +27,9 @@ class CassavaTestRule(
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = CassavaDatabase.getInstance(context).cassavaDao()
-    private val daoSource = GtmLogDBSource(context)
+    private val repository = GtmRepo(dao)
     private val analyticsParser = AnalyticsParser()
-    private val engine = ValidatorEngine(daoSource, analyticsParser)
+    private val engine = ValidatorEngine(repository, analyticsParser)
 
     override fun apply(base: Statement?, description: Description?): Statement {
         return object : Statement() {
