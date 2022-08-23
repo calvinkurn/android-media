@@ -154,11 +154,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                 page?.let { _page -> tracker.clickOnLogin(_page) }
             }
 
-            // Temp user consent test entry point
-//            stickyLoginAction?.onClick()
-            context?.let {
-                it.startActivity(Intent(it, UserConsentDebugActivity::class.java))
-            }
+            stickyLoginAction?.onClick()
         }
 
         viewBinding.layoutStickyContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
