@@ -348,7 +348,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun observeTitle() {
         parentViewModel.observableTitle.observe(viewLifecycleOwner) {
-            binding.viewPreparationMenu.isSetTitleChecked(true)
+            binding.viewPreparationMenu.isSetTitleChecked(it.title.isNotEmpty())
         }
 
         viewModel.observableUploadTitleEvent.observe(viewLifecycleOwner) {
