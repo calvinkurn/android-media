@@ -37,7 +37,7 @@ class ItemsInsurance : Visitable<OrderDetailTypeFactoryImpl> {
     }
 }
 
-class ItemsDefault : Visitable<OrderDetailTypeFactoryImpl> {
+data class ItemsDefault(val item: Items) : Visitable<OrderDetailTypeFactoryImpl> {
     override fun type(typeFactory: OrderDetailTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

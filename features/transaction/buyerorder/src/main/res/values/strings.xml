@@ -49,6 +49,7 @@
     <string name="top_btn_text">langannan</string>
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="insurance_policy">Polis Asuransi</string>
+    <string name="order_detail_date_whitespace"> $s</string>
 
     <string name="label_event_date">Tanggal Event</string>
     <string name="button_order_detail_download_invoice">Unduh</string>
