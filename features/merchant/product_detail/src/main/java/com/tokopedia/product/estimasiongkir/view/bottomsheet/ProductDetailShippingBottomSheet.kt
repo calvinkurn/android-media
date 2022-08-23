@@ -148,8 +148,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         rv = view.findViewById<RecyclerView?>(R.id.rv_product_shipping).apply {
             if (itemDecorationCount == 0 && context != null) {
                 val decorator = ProductSeparatorItemDecoration(
-                    context = requireContext(),
-                    marginHorizontal = 16
+                    context = requireContext()
                 )
                 addItemDecoration(decorator)
             }

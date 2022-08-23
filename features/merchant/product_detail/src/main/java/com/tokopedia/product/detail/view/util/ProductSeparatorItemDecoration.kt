@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.toPx
  */
 class ProductSeparatorItemDecoration(
     private val context: Context,
-    marginHorizontal: Int = 0,
+    marginHorizontal: Int = 16,
     height: Float = 1f,
     @ColorRes private val color: Int = com.tokopedia.abstraction.R.color.dividerunify_background
 ) : RecyclerView.ItemDecoration() {
