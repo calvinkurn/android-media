@@ -99,8 +99,8 @@ class WishlistCollectionItemViewHolder(
                         binding.glCollectionItem.visible()
                         val params1: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
-                        params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
-                        params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
+                        params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
+                        params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             visible()
@@ -113,6 +113,8 @@ class WishlistCollectionItemViewHolder(
                         }
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
+                        params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                        params2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
                         params2.setMargins(0, 0, 0, WishlistV2Utils.toDp(3))
                         binding.imgCollection2.apply {
                             visible()
@@ -123,8 +125,13 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        val params3: GridLayout.LayoutParams =
+                            GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
+                        params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                        params3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
                         binding.imgCollection3.apply {
                             visible()
+                            layoutParams = params3
                             loadImage(item.dataObject.images[2]) {
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
@@ -138,8 +145,8 @@ class WishlistCollectionItemViewHolder(
                         binding.glCollectionItem.visible()
                         val params1: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
-                        params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
-                        params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
+                        params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
+                        params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             visible()
@@ -153,8 +160,8 @@ class WishlistCollectionItemViewHolder(
 
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
-                        params2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2)
-                        params2.height = WishlistV2Utils.toDp(MERGE_SIZE)
+                        params2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
+                        params2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
                         binding.imgCollection2.apply {
                             visible()
                             layoutParams = params2

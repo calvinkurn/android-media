@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.databinding.BottomsheetKebabMenuWishlistCollectionItemBinding
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_NAME
@@ -54,6 +55,7 @@ class BottomSheetKebabMenuWishlistCollectionItem: BottomSheetUnify() {
             llKebabMenu1.setOnClickListener {
                 dismiss()
                 actionListener?.onChangeCollectionName(collectionId, collectionName)
+                WishlistCollectionAnalytics.sendClickUbahNamaKoleksiOnThreeDotsBottomsheetEvent()
             }
             llKebabMenu2.setOnClickListener {
                 dismiss()

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistCollectionSettingsBinding
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
@@ -55,14 +56,17 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
             llKebabMenu1.setOnClickListener {
                 dismiss()
                 actionListener?.onChangeCollectionName(collectionId, collectionName)
+                WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(wishlistCollectionSettingTvMenu1.text.toString())
             }
             llKebabMenu2.setOnClickListener {
                 dismiss()
                 actionListener?.onManageCollectionItems()
+                WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(wishlistCollectionSettingTvMenu2.text.toString())
             }
             llKebabMenu3.setOnClickListener {
                 dismiss()
                 actionListener?.onDeleteCollectionItem(collectionId, collectionName)
+                WishlistCollectionAnalytics.sendClickOptionOnGearIconEvent(wishlistCollectionSettingTvMenu3.text.toString())
             }
         }
         setChild(binding?.root)

@@ -22,6 +22,7 @@
             app:icon_name="EDIT"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/wishlist_collection_setting_tv_menu_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/collection_item_kebab_menu_1"
@@ -47,6 +48,7 @@
             app:icon_name="BACKGROUND"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/wishlist_collection_setting_tv_menu_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/collection_settings_menu"
@@ -72,6 +74,7 @@
             app:icon_name="DELETE"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/wishlist_collection_setting_tv_menu_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/collection_item_kebab_menu_2"

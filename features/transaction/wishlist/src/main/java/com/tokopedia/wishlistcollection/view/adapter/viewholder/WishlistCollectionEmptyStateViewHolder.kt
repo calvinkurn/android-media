@@ -12,6 +12,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SEARCH_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SHOW_SEARCH_BAR
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_UPDATE_COLLECTION_NAME
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 
 class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2EmptyStateItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 

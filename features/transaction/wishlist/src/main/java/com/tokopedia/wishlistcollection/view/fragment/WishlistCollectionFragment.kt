@@ -50,6 +50,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLE
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RECOMMENDATION_TITLE
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
@@ -58,6 +59,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
+import com.tokopedia.wishlistcollection.view.adapter.itemdecoration.WishlistCollectionItemOffsetDecoration
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
@@ -133,10 +135,12 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         private const val PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection"
         const val PARAM_HOME = "home"
         private const val COACHMARK_WISHLIST = "coachmark-wishlist"
+        private const val WISHLIST_PAGE = "wishlist page"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WishlistCollectionAnalytics.sendWishListHomePageOpenedEvent(userSession.isLoggedIn, userSession.userId)
         checkLogin()
         initTrackingQueue()
     }
@@ -259,6 +263,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             rvWishlistCollection.apply {
                 layoutManager = glm
                 adapter = collectionAdapter
+                addItemDecoration(WishlistCollectionItemOffsetDecoration(requireContext(), com.tokopedia.abstraction.R.dimen.dp_8))
                 addOnScrollListener(rvScrollListener)
             }
         }
@@ -506,10 +511,12 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onCloseTicker() {
         collectionAdapter.hideTicker()
+        WishlistCollectionAnalytics.sendClickXOnIntroductionSectionEvent()
     }
 
     override fun onKebabMenuClicked(collectionId: String, collectionName: String) {
         showBottomSheetKebabMenu(collectionId, collectionName)
+        WishlistCollectionAnalytics.sendClickThreeDotsOnCollectionFolderEvent()
     }
 
     private fun showDeletionProgress() {
@@ -541,7 +548,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     private fun showBottomSheetCreateNewCollection() {
-        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance("")
+        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance("", WISHLIST_PAGE)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionFragment)
         if (bottomSheetCreateCollection.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(childFragmentManager)
@@ -659,6 +666,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     private fun doDeleteCollection(collectionId: String) {
         collectionViewModel.deleteWishlistCollection(collectionId)
+        WishlistCollectionAnalytics.sendClickHapusOnCollectionFolderEvent()
     }
 
     override fun onSuccessUpdateCollectionName(message: String) {
