@@ -13,6 +13,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.ui.LeadeboardType
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -217,18 +219,9 @@ class PlayBroQuizViewModelTest {
 
     @Test
     fun `when user click refresh on leaderboard detail bottom sheet it should return quiz detail succeed state model`() {
-        val mockLeaderboard = listOf(
-            PlayLeaderboardUiModel(
-                title = "slot 1",
-                winners = emptyList(),
-                id = "1",
-                emptyLeaderBoardCopyText = "",
-                otherParticipantText = "",
-                otherParticipant = 0L
-            )
-        )
         coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
-        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } throws mockException andThen mockLeaderboard
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } throws mockException andThen interactiveUiModelBuilder.buildLeaderboardInfoModel(
+            listOf(LeaderboardGameUiModel.Header(leaderBoardType = LeadeboardType.Quiz, id = "11", title = "Hehe")))
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo
