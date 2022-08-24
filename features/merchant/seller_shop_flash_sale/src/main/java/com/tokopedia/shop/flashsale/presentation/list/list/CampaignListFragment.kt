@@ -27,6 +27,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
@@ -73,6 +74,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val PAGE_SIZE = 10
         private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
+        private const val SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE = 3
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
         private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS: Long = 3_000
         private const val SHOP_DECORATION_ARTICLE_URL = "https://seller.tokopedia.com/dekorasi-toko"
@@ -486,16 +488,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun displayVpsPackages(packages: List<VpsPackage>) {
-        var totalQuota = 0
-        var totalRemainingQuota = 0
+        var totalQuota = ZERO
+        var totalRemainingQuota = ZERO
         val totalQuotaSource = packages.count()
         var isNearExpirePackageAvailable = false
-        var packageNearExpireCount = 0
+        var packageNearExpireCount = ZERO
 
         packages.forEach { vpsPackage ->
             totalQuota += vpsPackage.originalQuota
             totalRemainingQuota += vpsPackage.remainingQuota
-            if (vpsPackage.packageEndTime.epochToDate().daysDifference(Date()) <= 3) {
+            if (vpsPackage.packageEndTime.epochToDate()
+                    .daysDifference(Date()) <= SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
+            ) {
                 isNearExpirePackageAvailable = true
                 packageNearExpireCount++
             }
