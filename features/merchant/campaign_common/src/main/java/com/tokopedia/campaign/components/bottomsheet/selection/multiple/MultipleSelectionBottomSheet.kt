@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.BottomsheetMultipleSelectionItemBinding
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MultipleSelectionBottomSheet : BottomSheetUnify() {
@@ -45,6 +47,9 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
     private var displayedTitle = ""
     private var buttonTitle = ""
     private val helper = MultipleSelectionHelper()
+    private var customAppearance: Config.() -> Unit = {}
+
+    data class Config(val recyclerView: RecyclerView, val button: UnifyButton)
 
     init {
         clearContentPadding = true
@@ -76,6 +81,7 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
         setupClickListeners()
         setupRecyclerView()
         binding?.btnApply?.isEnabled = selectedItemIds.isNotEmpty()
+        setupCustomAppearance()
     }
 
     private fun setupClickListeners() {
@@ -84,6 +90,14 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
             dismiss()
         }
     }
+
+    private fun setupCustomAppearance() {
+        binding?.run {
+            val property = Config(recyclerView, btnApply)
+            customAppearance.invoke(property)
+        }
+    }
+
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
@@ -113,13 +127,19 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
         this.displayedTitle = title
     }
 
+    /**
+     * Use this function to override default bottomsheet appearance
+     * e.g: Change button style to buttonVariant = UnifyButton.Variant.TEXT_ONLY when bottomsheet displayed
+     */
+    fun setCustomAppearance(customAppearance: Config.() -> Unit = {}) {
+        this.customAppearance = customAppearance
+    }
+
+
     fun setBottomSheetButtonTitle(buttonTitle: String) {
         this.buttonTitle = buttonTitle
     }
 
-    fun getBottomSheetView() : View? {
-        return binding?.root
-    }
 
     fun getAllSelectedItems(): List<MultipleSelectionItem> {
         return helper.findSelectedItems(multipleSelectionAdapter.snapshot())

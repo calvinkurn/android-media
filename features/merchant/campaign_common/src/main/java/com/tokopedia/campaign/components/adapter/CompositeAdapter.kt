@@ -69,14 +69,14 @@ class CompositeAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun removeItem(loadingItem: DelegateAdapterItem) {
+    fun removeItem(item: DelegateAdapterItem) {
         val newItems = getItems().toMutableList()
-        newItems.remove(loadingItem)
+        newItems.remove(item)
 
         val diffCallback = DiffCallback(this.items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-        this.items.remove(loadingItem)
+        this.items.remove(item)
         diffResult.dispatchUpdatesTo(this)
     }
 

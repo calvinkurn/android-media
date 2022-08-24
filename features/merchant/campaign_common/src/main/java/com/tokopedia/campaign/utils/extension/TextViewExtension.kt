@@ -26,7 +26,7 @@ fun TextView.setHyperlinkText(
     fullText: String,
     hyperlinkSubstring: String,
     ignoreCase: Boolean = true,
-    onHyperlinkClick: () -> Unit
+    onHyperlinkClick: () -> Unit = {}
 ) {
     val spannableString = SpannableString(fullText)
     val clickableSpan: ClickableSpan = object : ClickableSpan() {

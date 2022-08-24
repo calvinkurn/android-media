@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_CANCELLED
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_FINISHED
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_MISSED
@@ -88,11 +88,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.formatDate(): FlashSale.FormattedDate {
         return FlashSale.FormattedDate(
             startDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            endDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            submissionStartDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            submissionEndDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            reviewStartDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            reviewEndDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+            endDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
         )
     }
 }

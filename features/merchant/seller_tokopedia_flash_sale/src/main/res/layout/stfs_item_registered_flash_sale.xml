@@ -94,7 +94,7 @@
             app:timer_unify_single_variant="informative" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnCreateCampaign"
+            android:id="@+id/btnAddProduct"
             android:layout_width="@dimen/flash_sale_list_button_width"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/unify_space_16"
@@ -102,7 +102,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/timer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tpgDescription"
-            app:unifyButtonSize="medium" />
+            app:unifyButtonSize="small" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader"

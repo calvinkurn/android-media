@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.Date
 import javax.inject.Inject
+import kotlin.math.ceil
 
 class FlashSaleListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -175,7 +176,8 @@ class FlashSaleListViewModel @Inject constructor(
                     categoryIds = currentState.selectedCategoryIds,
                     statusIds = currentState.selectedStatusIds,
                     sortOrderBy = currentState.selectedSort.id,
-                    sortOrderRule = currentState.selectedSort.direction
+                    sortOrderRule = currentState.selectedSort.direction,
+                    requestProductMetaData = currentState.tabName == "finished"
                 )
                 val response = getFlashSaleListForSellerUseCase.execute(params)
                 val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
@@ -229,20 +231,24 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun FlashSale.toFinishedItem() : DelegateAdapterItem {
-        val now = Date()
         return FinishedFlashSaleItem(
             campaignId,
             name,
             coverImage,
-            remainingQuota,
-            maxProductSubmission,
             formattedDate.startDate,
             formattedDate.endDate,
-            endDateUnix,
-            findQuotaUsagePercentage(),
-            hoursDifference(now, submissionEndDateUnix),
-            submissionEndDateUnix
+            status,
+            statusText,
+            productMeta,
+            cancellationReason,
+            findProductSoldPercentage()
         )
+    }
+
+    private fun FlashSale.findProductSoldPercentage() : Int {
+        val sold = (productMeta.totalStockSold.toFloat() / productMeta.totalProductStock.toFloat()) * PERCENT
+        val soldPercentage = ceil(sold)
+        return soldPercentage.toInt()
     }
 
     private fun FlashSale.toRegisteredItem() : DelegateAdapterItem {
@@ -251,14 +257,17 @@ class FlashSaleListViewModel @Inject constructor(
             campaignId,
             name,
             coverImage,
-            remainingQuota,
-            maxProductSubmission,
+            startDateUnix,
+            endDateUnix,
             formattedDate.startDate,
             formattedDate.endDate,
-            endDateUnix,
-            findQuotaUsagePercentage(),
-            hoursDifference(now, submissionEndDateUnix),
-            submissionEndDateUnix
+            reviewStartDateUnix,
+            reviewEndDateUnix,
+            hoursDifference(now, startDateUnix),
+            hoursDifference(now, reviewStartDateUnix),
+            hoursDifference(now, reviewEndDateUnix),
+            status,
+            statusText
         )
     }
 
@@ -267,7 +276,20 @@ class FlashSaleListViewModel @Inject constructor(
         return ((usedQuota.toFloat() / maxProductSubmission.toFloat()) * PERCENT).toInt()
     }
 
-    private fun FlashSale.toOngoingItem() : DelegateAdapterItem {
-        return OngoingFlashSaleItem(campaignId, name)
+    private fun FlashSale.toOngoingItem(): DelegateAdapterItem {
+        val now = Date()
+        return OngoingFlashSaleItem(
+            campaignId,
+            name,
+            coverImage,
+            formattedDate.startDate,
+            formattedDate.endDate,
+            endDateUnix,
+            hoursDifference(now, endDateUnix),
+            productMeta.totalStockSold,
+            productMeta.totalProductStock,
+            status,
+            statusText
+        )
     }
 }

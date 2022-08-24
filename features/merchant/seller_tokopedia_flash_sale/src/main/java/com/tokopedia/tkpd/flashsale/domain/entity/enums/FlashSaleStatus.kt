@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.domain.entity
+package com.tokopedia.tkpd.flashsale.domain.entity.enums
 
 
 enum class FlashSaleStatus(val id: String) {

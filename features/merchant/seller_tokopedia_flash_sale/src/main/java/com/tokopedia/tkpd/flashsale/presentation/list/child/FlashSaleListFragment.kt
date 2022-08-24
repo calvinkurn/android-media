@@ -28,8 +28,8 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSa
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusFilter
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.FinishedFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
@@ -76,10 +76,10 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(OngoingFlashSaleDelegateAdapter())
-            .add(RegisteredFlashSaleDelegateAdapter())
-            .add(UpcomingFlashSaleDelegateAdapter())
-            .add(FinishedFlashSaleDelegateAdapter())
+            .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -238,12 +238,14 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         when {
             isLoading -> binding?.emptyState?.gone()
             isUsingFilter && totalFlashSaleCount == 0 -> {
+                flashSaleAdapter.removeItem(LoadingItem)
                 binding?.emptyState?.visible()
                 binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
                 binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
                 binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
             }
             !isUsingFilter && totalFlashSaleCount == 0 -> {
+                flashSaleAdapter.removeItem(LoadingItem)
                 binding?.emptyState?.visible()
                 val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
                 binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
@@ -437,6 +439,13 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
 
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
+
+    }
+
+    private val onFlashSaleClicked : (Int) -> Unit = { selectedItemPosition ->
+        //TODO: Redirect to campaign detail page
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = selectedFlashSale.id()
 
     }
 

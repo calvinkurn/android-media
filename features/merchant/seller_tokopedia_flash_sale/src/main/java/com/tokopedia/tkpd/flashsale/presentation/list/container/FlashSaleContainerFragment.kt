@@ -11,8 +11,11 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -20,6 +23,7 @@ import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.TabsUnifyMediator
@@ -32,8 +36,9 @@ import javax.inject.Inject
 class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val REDIRECTION_DELAY : Long = 500
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
-
+        private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }
@@ -83,6 +88,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.run {
             header.setNavigationOnClickListener { activity?.finish() }
         }
+        addToolbarIcon()
     }
 
     private fun observeUiState() {
@@ -109,7 +115,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
         renderTicker(uiState.showTicker, uiState.error)
-        renderTabs(uiState.tabsMetadata, uiState.error)
+        renderTabs(uiState.tabsMetadata, uiState.error, findTargetTabDestination() ?: return)
         renderErrorState(uiState.error)
     }
 
@@ -127,13 +133,13 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.shimmer?.content?.isVisible = isLoading && !isError
     }
 
-    private fun renderTabs(tabs: List<TabMetadata>, error: Throwable?) {
+    private fun renderTabs(tabs: List<TabMetadata>, error: Throwable?, targetTabPosition: Int) {
         val isError = error != null
         binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError
         binding?.viewPager?.isVisible = tabs.isNotEmpty() && !isError
 
         if (tabs.isNotEmpty()) {
-            displayTabs(predefinedTabs, tabs)
+            displayTabs(predefinedTabs, tabs, targetTabPosition)
         }
     }
 
@@ -155,7 +161,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         return pages
     }
 
-    private fun displayTabs(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>) {
+    private fun displayTabs(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>, targetTabPosition: Int) {
         val fragments = createFragments(predefinedTabs, tabs)
         val pagerAdapter =
             TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
@@ -166,6 +172,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
+                handleAutoRedirectionToSpecificTab(currentPosition, targetTabPosition)
             }
         }
     }
@@ -185,6 +192,44 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 }
 
             })
+        }
+    }
+
+    private fun addToolbarIcon() {
+        val shopIcon = IconUnify(requireContext(), IconUnify.LIGHT_BULB)
+        binding?.run {
+            header.addCustomRightContent(shopIcon)
+            header.setOnClickListener { routeToUrl(SELLER_EDU_ARTICLE_URL) }
+        }
+    }
+
+
+    private fun handleAutoRedirectionToSpecificTab(currentPosition: Int, targetTabPosition: Int) {
+        if (currentPosition == targetTabPosition) {
+            focusTo(targetTabPosition)
+        }
+    }
+
+    private fun focusTo(tabPosition : Int) {
+        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        doOnDelayFinished(REDIRECTION_DELAY) {
+            val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+            val tab = tabLayout?.getTabAt(tabPosition)
+            tab?.select()
+        }
+    }
+
+    private fun findTargetTabDestination(): Int? {
+        if (activity == null) return null
+
+        val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
+
+        return when (appLinkData?.lastPathSegment.orEmpty()) {
+            "upcoming" -> FlashSaleListPageTab.UPCOMING.position
+            "registered" -> FlashSaleListPageTab.REGISTERED.position
+            "ongoing" -> FlashSaleListPageTab.ONGOING.position
+            "finished" -> FlashSaleListPageTab.FINISHED.position
+            else -> FlashSaleListPageTab.UPCOMING.position
         }
     }
 }

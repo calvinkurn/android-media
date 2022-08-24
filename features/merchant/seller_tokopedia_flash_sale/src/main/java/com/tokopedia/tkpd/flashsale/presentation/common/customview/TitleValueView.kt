@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.common.customview
+package com.tokopedia.tkpd.flashsale.presentation.common.customview
 
 import android.content.Context
 import android.util.AttributeSet

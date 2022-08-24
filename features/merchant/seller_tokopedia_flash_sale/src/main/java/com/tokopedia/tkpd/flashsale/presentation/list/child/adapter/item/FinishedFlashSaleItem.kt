@@ -1,20 +1,20 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item
 
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import java.util.Date
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 
 data class FinishedFlashSaleItem(
     val id: Long,
     val name: String,
     val imageUrl: String,
-    val remainingQuota: Int,
-    val maxProductSubmission: Int,
     val formattedStartDate: String,
     val formattedEndDate: String,
-    val endDate : Date,
-    val quotaUsagePercentage: Int,
-    val distanceHoursToSubmissionEndDate: Int,
-    val submissionEndDate: Date
+    val status: FlashSaleStatus,
+    val statusText: String,
+    val productMeta: FlashSale.ProductMeta,
+    val cancellationReason: String,
+    val productSoldPercentage: Int
 ) : DelegateAdapterItem {
     override fun id() = id
 }
