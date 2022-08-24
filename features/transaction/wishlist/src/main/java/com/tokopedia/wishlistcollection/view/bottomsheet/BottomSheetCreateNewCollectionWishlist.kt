@@ -26,6 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R as Rwishlist
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionComponent
@@ -39,6 +40,7 @@ import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBott
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetCreateNewCollectionViewModel
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
 import javax.inject.Inject
 
 class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
@@ -49,6 +51,8 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         emptyList()
     private var newCollectionName = ""
     private var _productIds = ""
+    private var _src = ""
+    private var isSavingCreateNewCollection = false
     private var actionListenerFromPdp: ActionListenerFromPdp? = null
     private var actionListenerFromCollectionPage: ActionListenerFromCollectionPage? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -72,10 +76,11 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         private const val DELAY_CHECK_NAME = 500L
 
         @JvmStatic
-        fun newInstance(productId: String): BottomSheetCreateNewCollectionWishlist {
+        fun newInstance(productId: String, source: String): BottomSheetCreateNewCollectionWishlist {
             return BottomSheetCreateNewCollectionWishlist().apply {
                 val bundle = Bundle()
                 bundle.putString(PRODUCT_IDs, productId)
+                bundle.putString(SOURCE, source)
                 arguments = bundle
             }
         }
@@ -96,6 +101,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _productIds = arguments?.getString(PRODUCT_IDs) ?: ""
+        _src = arguments?.getString(SOURCE) ?: ""
         initInjector()
         checkLogin()
     }
@@ -106,6 +112,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         savedInstanceState: Bundle?
     ): View? {
         initLayout()
+        setBottomSheetCloseListener()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -141,6 +148,13 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         }
         setChild(binding?.root)
         setTitle(getString(Rwishlist.string.collection_create_bottomsheet_title))
+    }
+
+    private fun setBottomSheetCloseListener() {
+        setCloseClickListener {
+            dismiss()
+            WishlistCollectionAnalytics.sendClickXOnCreateNewCollectionBottomSheetEvent()
+        }
     }
 
     private fun enableSaveButton() {
@@ -199,7 +213,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                 isEnabled = true
                 text = getString(Rwishlist.string.collection_create_bottomsheet_button_label)
                 setOnClickListener {
-                    saveNewCollection(newCollectionName, arrayProductIds)
+                    saveNewCollection(newCollectionName, arrayProductIds, true)
                 }
             }
         }
@@ -209,7 +223,8 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         createNewCollectionViewModel.createNewWishlistCollection(collectionName)
     }
 
-    private fun saveNewCollection(collectionName: String, productIds: List<String>) {
+    private fun saveNewCollection(collectionName: String, productIds: List<String>, isSavingCreateNewCollection: Boolean = false) {
+        this.isSavingCreateNewCollection = isSavingCreateNewCollection
         val param = AddWishlistCollectionsHostBottomSheetParams(
             productIds = productIds,
             collectionName = collectionName
@@ -326,6 +341,12 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                 is Success -> {
                     if (result.data.status == OK && result.data.dataItem.success) {
                         actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem)
+                        if (isSavingCreateNewCollection) {
+                            WishlistCollectionAnalytics.sendClickBuatKoleksiOnCreateNewCollectionBottomsheetEvent(
+                                result.data.dataItem.collectionId,
+                                _src
+                            )
+                        }
                         dismiss()
                     } else {
                         val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
@@ -356,6 +377,10 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                         actionListenerFromCollectionPage?.onSuccessCreateNewCollection(
                             result.data.dataCreate,
                             newCollectionName
+                        )
+                        WishlistCollectionAnalytics.sendClickBuatKoleksiOnCreateNewCollectionBottomsheetEvent(
+                            result.data.dataCreate.id,
+                            _src
                         )
                         dismiss()
                     } else {

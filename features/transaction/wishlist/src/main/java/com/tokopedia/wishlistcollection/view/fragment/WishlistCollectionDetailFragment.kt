@@ -99,6 +99,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAda
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
@@ -241,6 +242,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val SRC_WISHLIST = "wishlist"
+        private const val SRC_WISHLIST_PAGE = "wishlist page"
+        private const val OPTION_CLEANER_MANUAL = "sendiri"
+        private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -567,7 +571,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     } else {
                         val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
-                        WishlistV2Analytics.clickAtcOnWishlist(wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
+                        WishlistCollectionAnalytics.sendClickAddToCartOnWishlistPageEvent(collectionId, wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
                     }
                 }
                 is Fail -> {
@@ -758,7 +762,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     searchQuery =
                         wishlistCollectionDetailSearchbar.searchBarTextField.text.toString()
                     if (searchQuery.isNotEmpty()) {
-                        WishlistV2Analytics.submitSearchFromCariProduk(searchQuery)
+                        WishlistCollectionAnalytics.sendSubmitSearchFromCariProdukEvent(searchQuery)
                     }
                     hideKeyboardFromSearchBar()
                     triggerSearch()
@@ -797,6 +801,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     wishlistCollectionDetailManageLabel.show()
                     wishlistCollectionDetailManageLabel.setOnClickListener { onStickyManageClicked() }
                 }
+                WishlistCollectionAnalytics.sendAllWishListPageOpenedEvent(userSession.isLoggedIn, userSession.userId)
             } else {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
                     wishlistCollectionDetailManageLabel.gone()
@@ -806,8 +811,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             collectionId,
                             collectionName
                         )
+                        WishlistCollectionAnalytics.sendClickGearIconEvent()
                     }
                 }
+                WishlistCollectionAnalytics.sendWishListCollectionDetailPageOpenedEvent(userSession.isLoggedIn, userSession.userId)
             }
             wishlistCollectionDetailFb.circleMainMenu.setOnClickListener {
                 rvWishlistCollectionDetail.smoothScrollToPosition(0)
@@ -866,10 +873,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun changeTypeLayout() {
         if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
             wishlistPref?.setTypeLayout(TYPE_GRID_INT)
-            WishlistV2Analytics.clickLayoutSettings(TYPE_GRID)
+            WishlistCollectionAnalytics.sendClickLayoutSettingsEvent(TYPE_GRID)
         } else {
             wishlistPref?.setTypeLayout(TYPE_LIST_INT)
-            WishlistV2Analytics.clickLayoutSettings(TYPE_LIST)
+            WishlistCollectionAnalytics.sendClickLayoutSettingsEvent(TYPE_LIST)
         }
         collectionItemsAdapter.changeTypeLayout(wishlistPref?.getTypeLayout())
     }
@@ -1238,7 +1245,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     paramGetCollectionItems.collectionId = collectionId
                     if (searchQuery.isNotEmpty()) paramGetCollectionItems.query = searchQuery
                     doRefresh()
-                    WishlistV2Analytics.clickXChipsToClearFilter()
+                    WishlistCollectionAnalytics.sendClickXChipsToClearFilterEvent()
                 }
             }
         }
@@ -1360,7 +1367,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
                 filterBottomSheet.dismiss()
                 doRefresh()
-                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(
+                WishlistCollectionAnalytics.sendClickSimpanOnPenawaranFilterChipsEvent(
                     listTitleCheckboxIdSelected.toString().replace("[", "").replace("]", "")
                 )
             }
@@ -1373,16 +1380,16 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hitAnalyticsWhenClickFilter(filterName: String) {
         when (filterName) {
             FILTER_SORT -> {
-                WishlistV2Analytics.clickUrutkanFilterChips()
+                WishlistCollectionAnalytics.sendClickUrutkanFilterChipsEvent()
             }
             FILTER_CATEGORIES -> {
-                WishlistV2Analytics.clickKategoriFilterChips()
+                WishlistCollectionAnalytics.sendClickKategoriFilterChipsEvent()
             }
             FILTER_OFFERS -> {
-                WishlistV2Analytics.clickPenawaranFilterChips()
+                WishlistCollectionAnalytics.sendClickPenawaranFilterChipsEvent()
             }
             FILTER_STOCK -> {
-                WishlistV2Analytics.clickStokFilterChips()
+                WishlistCollectionAnalytics.sendClickStokFilterChipsEvent()
             }
         }
     }
@@ -1390,13 +1397,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hitAnalyticsFilterOptionSelected(filterName: String, label: String) {
         when (filterName) {
             FILTER_SORT -> {
-                WishlistV2Analytics.clickOptionOnUrutkanFilterChips(label)
+                WishlistCollectionAnalytics.sendClickOptionOnUrutkanFilterChipsEvent(label)
             }
             FILTER_CATEGORIES -> {
-                WishlistV2Analytics.clickOptionOnKategoriFilterChips(label)
+                WishlistCollectionAnalytics.sendClickOptionOnKategoriFilterChipsEvent(label)
             }
             FILTER_STOCK -> {
-                WishlistV2Analytics.clickOptionOnStokFilterChips(label)
+                WishlistCollectionAnalytics.sendClickOptionOnStokFilterChipsEvent(label)
             }
         }
     }
@@ -1450,7 +1457,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
                     }
                 }
-                WishlistV2Analytics.clickOptionOnThreeDotsMenu(additionalItem.text)
+                WishlistCollectionAnalytics.sendClickOptionOnThreeDotMenuEvent(additionalItem.text)
             }
         })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
@@ -1501,11 +1508,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
             doDeleteCollectionItems(productId)
+            WishlistCollectionAnalytics.sendClickHapusDariKoleksiSajaOnMultipleWishlistedProductsEvent()
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.collection_inside_delete_confirmation_button_secondary))
         dialog?.setSecondaryCTAClickListener {
             dialog.dismiss()
             doDeleteBulkCollectionItems(productId)
+            WishlistCollectionAnalytics.sendClickHapusDariSemuaWishlistOnMulitpleWishlistedProductsEvent()
         }
         dialog?.show()
     }
@@ -1577,6 +1586,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     bulkDeleteMode = 2
                     paramGetCollectionItems.source = SOURCE_AUTOMATIC_DELETION
                 }
+                WishlistCollectionAnalytics.sendClickLihatBarangButtonOnCleanerBottomsheetEvent(
+                    if (index == 1) OPTION_CLEANER_AUTOMATIC else OPTION_CLEANER_MANUAL
+                )
                 onTickerCTASortFromLatest()
                 turnOnBulkDeleteMode(true)
                 view?.let {
@@ -1689,8 +1701,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val toasterSuccess = Toaster
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC) {
+                WishlistCollectionAnalytics.sendClickLihatButtonOnAtcSuccessToasterEvent()
                 RouteManager.route(context, ApplinkConst.CART)
-                WishlistV2Analytics.clickLihatButtonOnAtcSuccessToaster()
             }.show()
         }
     }
@@ -1709,11 +1721,16 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onNotFoundButtonClicked(keyword: String) {
         RouteManager.route(context, "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword")
-        WishlistV2Analytics.clickCariDiTokopediaOnEmptyStateNoSearchResult()
+        WishlistCollectionAnalytics.sendClickCariDiTokopediaButtonOnEmptyStateNoSearchResultEvent()
     }
 
     override fun onProductItemClicked(wishlistItem: WishlistV2UiModel.Item, position: Int) {
-        WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
+        WishlistCollectionAnalytics.sendClickProductCardOnWishlistPageEvent(
+            collectionId,
+            wishlistItem,
+            userSession.userId,
+            position
+        )
         activity?.let {
             val intent = RouteManager.getIntent(
                 it,
@@ -1743,8 +1760,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
         userSession.userId?.let { userId ->
-            WishlistV2Analytics.viewProductCard(
-                trackingQueue,
+            WishlistCollectionAnalytics.sendViewProductCardOnWishlistPageEvent(
                 wishlistItem,
                 userId,
                 position.toString()
@@ -1896,6 +1912,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun goToWishlistAll() {
+        WishlistCollectionAnalytics.sendClickTambahBarangKeKoleksiOnEmptyStateNoCollectionItemsEvent()
         val detailCollection =
             "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
@@ -1904,6 +1921,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onChangeCollectionName() {
         showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
+        WishlistCollectionAnalytics.sendClickUbahNamaKoleksiButtonOnEmptyStateNoCollectionItemsEvent()
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(
@@ -1924,7 +1942,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
-        WishlistV2Analytics.clickThreeDotsOnProductCard()
+        WishlistCollectionAnalytics.sendClickThreeDotsOnProductCardEvent()
     }
 
     override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int) {
@@ -2092,12 +2110,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onCheckSimilarProduct(url: String) {
         RouteManager.route(context, url)
-        WishlistV2Analytics.clickLihatBarangSerupaOnProductCard()
+        WishlistCollectionAnalytics.sendClickLihatBarangSerupaOnProductCardEvent()
     }
 
     override fun onResetFilter() {
         doResetFilter()
-        WishlistV2Analytics.clickResetFilterOnEmptyStateNoFilterResult()
+        WishlistCollectionAnalytics.sendClickResetFilterButtonOnEmptyStateNoFilterResultEvent()
     }
 
     private fun doResetFilter() {
@@ -2183,6 +2201,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             collectionId,
                             collectionName
                         )
+                        WishlistCollectionAnalytics.sendClickGearIconEvent()
                     }
                 }
             }
@@ -2331,7 +2350,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             bulkDeleteAdditionalParams,
             source
         )
-        WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
+        WishlistCollectionAnalytics.sendClickHapusButtonOnConfirmationDeletionPopupEvent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -2449,6 +2468,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
             doDeleteCollection(collectionId)
+            WishlistCollectionAnalytics.sendClickHapusOnWishlistProductEvent()
         }
         dialog?.setSecondaryCTAText(getString(com.tokopedia.wishlist.R.string.wishlist_cancel_manage_label))
         dialog?.setSecondaryCTAClickListener {
@@ -2479,7 +2499,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
         val bottomSheetCreateCollection =
-            BottomSheetCreateNewCollectionWishlist.newInstance(listSelectedProductIds.toString())
+            BottomSheetCreateNewCollectionWishlist.newInstance(listSelectedProductIds.toString(), SRC_WISHLIST_PAGE)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
