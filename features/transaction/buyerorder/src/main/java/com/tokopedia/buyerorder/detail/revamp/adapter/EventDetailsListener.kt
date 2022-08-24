@@ -16,7 +16,7 @@ interface EventDetailsListener {
     fun setInsuranceDetail()
     fun setPassengerEvent(item: Items)
     fun setActionButtonEvent(actionButton: ActionButton, item: Items, orderDetails: OrderDetails)
-    fun setDealsBanner(item: Items)
+    fun setDealsBanner(metadata: MetaDataInfo)
     fun askPermission(uri: String, isDownloadable: Boolean,downloadFileName: String)
     fun sendThankYouEvent(metadata: MetaDataInfo, categoryType: Int, orderDetails: OrderDetails)
     fun sendOpenScreenDeals(isOMP: Boolean)

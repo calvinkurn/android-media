@@ -76,7 +76,7 @@ class DealsOMPViewHolder(
             binding.tvValidTillDate.text = getTimeMillis(metadata.endDate)
         }
 
-        eventDetailsListener.setDealsBanner(item)
+        eventDetailsListener.setDealsBanner(metadata)
         eventDetailsListener.setDetailTitle(getString(R.string.detail_label))
 
         binding.customView1.setOnClickListener {

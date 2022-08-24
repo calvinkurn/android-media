@@ -61,7 +61,7 @@ class DealsViewHolder(
             binding.tvValidTillDate.text = getString(R.string.order_detail_date_whitespace, metadata.endDate)
         }
 
-        eventDetailsListener.setDealsBanner(item)
+        eventDetailsListener.setDealsBanner(metadata)
 
         if (item.actionButtons.isNotEmpty()){
             eventDetailsListener.setEventDetails(item.actionButtons.first(), item)
