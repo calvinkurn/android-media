@@ -1401,8 +1401,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun setLeaderboardBadgeState(leaderboardInfo: List<LeaderboardGameUiModel>) {
-        //TODO only when winners available
-        _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
+        if(leaderboardInfo.isNotEmpty()) _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
     }
 
     private fun checkInteractive(channelId: String) {
