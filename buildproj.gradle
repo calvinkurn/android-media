@@ -21,6 +21,7 @@ allprojects {
                 username = "${artifactory_username}"
                 password = "${legacy_artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
         maven {
             url "https://jitpack.io"
