@@ -30,7 +30,7 @@ fun getDestinationUri(context: Context, filename: String? = null): Uri {
 
 @SuppressLint("SimpleDateFormat")
 fun generateFileName(): String {
-    return SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    return SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(Date())
 }
 
 fun shouldNull(value: Float): Float? {
