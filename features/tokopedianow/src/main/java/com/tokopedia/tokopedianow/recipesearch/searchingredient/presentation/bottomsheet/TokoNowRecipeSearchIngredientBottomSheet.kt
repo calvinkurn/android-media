@@ -42,7 +42,7 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (showKnob) configureBottomSheetHeight()
+        configureBottomSheetHeight()
     }
 
     fun show(fm: FragmentManager) {
