@@ -19,8 +19,6 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -29,8 +27,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.sessioncommon.domain.query.LoginQueries
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -43,7 +39,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-14.
@@ -60,7 +55,6 @@ class RegisterInitialViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
-        private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
         private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
@@ -129,10 +123,6 @@ class RegisterInitialViewModel @Inject constructor(
     private val _dynamicBannerResponse = MutableLiveData<Result<DynamicBannerDataModel>>()
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = _dynamicBannerResponse
-
-    private val _checkOvoResponse = MutableLiveData<Result<CheckOvoResponse>>()
-    val checkOvoResponse: LiveData<Result<CheckOvoResponse>>
-        get() = _checkOvoResponse
 
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
@@ -308,17 +298,6 @@ class RegisterInitialViewModel @Inject constructor(
             }
         }, {
             _dynamicBannerResponse.postValue(Fail(it))
-        })
-    }
-
-    fun checkHasOvoAccount(phone: String) {
-        launchCatchError(block = {
-            checkHasOvoAccUseCase.setParams(phone)
-            checkHasOvoAccUseCase.executeOnBackground().run {
-                _checkOvoResponse.postValue(Success(this))
-            }
-        }, onError = {
-            _checkOvoResponse.postValue(Fail(it))
         })
     }
 
