@@ -244,7 +244,7 @@ class NotificationViewModelTest {
         // then
         verifyOrder {
             notificationItemsObserver.onChanged(Success(expectedValue))
-            topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView.first()))
+            topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView))
         }
     }
 
