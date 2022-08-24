@@ -63,6 +63,8 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
         const val MONEY_IN_HARDWARE_ID = "HARDWARE_ID"
         const val STATUS_SUCCESS = 2
+        const val MONEY_IN_TNC_SPAN_START_INDEX =16
+        const val MONEY_IN_TNC_SPAN_END_INDEX =36
     }
 
     override fun initInject() {
@@ -114,7 +116,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             }
         }
         val mTvTnc = findViewById<Typography>(R.id.terms_text) as Typography
-        spannableString.setSpan(clickableSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(clickableSpan, MONEY_IN_TNC_SPAN_START_INDEX, MONEY_IN_TNC_SPAN_END_INDEX, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         mTvTnc.text = spannableString
         mTvTnc.isClickable = true
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
