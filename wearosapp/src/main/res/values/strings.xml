@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Tokopedia Wear</string>
     <string name="splash_screen_logo_content_description">Splash Screen Logo</string>
+    <string name="home_title">Tokopedia Seller</string>
     <string name="new_order_summary_text_open_order">Open</string>
     <string name="new_order_summary_text_potency">Potensi</string>
     <string name="new_order_summary_text_potency_format">+Rp%1s</string>
