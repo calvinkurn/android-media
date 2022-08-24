@@ -33,6 +33,7 @@ import com.tokopedia.buyerorder.detail.data.ConditionalInfo
 import com.tokopedia.buyerorder.detail.data.Detail
 import com.tokopedia.buyerorder.detail.data.Invoice
 import com.tokopedia.buyerorder.detail.data.Items
+import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.PayMethod
 import com.tokopedia.buyerorder.detail.data.PaymentData
@@ -41,6 +42,7 @@ import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.data.Title
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
+import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
 import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
@@ -61,7 +63,7 @@ import javax.inject.Inject
  * created by @bayazidnasir on 22/8/2022
  */
 
-class OmsDetailFragment: BaseDaggerFragment() {
+class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -285,8 +287,8 @@ class OmsDetailFragment: BaseDaggerFragment() {
 
         if (newItemList.isNotEmpty() && !isMetadataEmpty){
             binding?.recyclerView?.adapter = BaseAdapter(
-                OrderDetailTypeFactoryImpl(),
-                VisitableMapper.mappingVisitable(items, false, upstream ?: "")
+                OrderDetailTypeFactoryImpl(this),
+                VisitableMapper.mappingVisitable(items, false, upstream ?: "", orderDetails)
             )
         } else {
             binding?.detailsSection?.gone()
@@ -516,6 +518,58 @@ class OmsDetailFragment: BaseDaggerFragment() {
         return MethodChecker.getColor(context, colorId)
     }
 
+    override fun setEventDetails(actionButton: ActionButton, item: Items) {
+        TODO("Not yet implemented")
+    }
+
+    override fun openQRFragment(actionButton: ActionButton, item: Items) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setDetailTitle(title: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setInsuranceDetail() {
+        TODO("Not yet implemented")
+    }
+
+    override fun setPassengerEvent(item: Items) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setActionButtonEvent(
+        actionButton: ActionButton,
+        item: Items,
+        orderDetails: OrderDetails
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setDealsBanner(item: Items) {
+        TODO("Not yet implemented")
+    }
+
+    override fun askPermission(uri: String, isDownloadable: Boolean, downloadFileName: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendThankYouEvent(
+        metadata: MetaDataInfo,
+        categoryType: Int,
+        orderDetails: OrderDetails
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sendOpenScreenDeals(isOMP: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean) {
+        TODO("Not yet implemented")
+    }
+
     companion object{
         private const val KEY_URI = "tokopedia"
         private const val KEY_URI_PARAMETER = "idem_potency_key"
@@ -552,5 +606,4 @@ class OmsDetailFragment: BaseDaggerFragment() {
             }
         }
     }
-
 }

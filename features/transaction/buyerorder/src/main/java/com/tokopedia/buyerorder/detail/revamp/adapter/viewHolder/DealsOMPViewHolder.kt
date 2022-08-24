@@ -19,6 +19,7 @@ import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsDealsOMP
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
+import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -35,7 +36,10 @@ import java.util.concurrent.TimeUnit
  * created by @bayazidnasir on 23/8/2022
  */
 
-class DealsOMPViewHolder(itemView: View) : AbstractViewHolder<ItemsDealsOMP>(itemView) {
+class DealsOMPViewHolder(
+    itemView: View,
+    private val eventDetailsListener: EventDetailsListener
+) : AbstractViewHolder<ItemsDealsOMP>(itemView) {
 
     companion object{
         @LayoutRes
@@ -66,14 +70,14 @@ class DealsOMPViewHolder(itemView: View) : AbstractViewHolder<ItemsDealsOMP>(ite
         binding.tvDealIntro.text = metadata.name.ifEmpty { item.title }
         binding.tvBrandName.text = metadata.productName
 
-        //TODO : openScreenDeals
+        eventDetailsListener.sendOpenScreenDeals(true)
 
         binding.llValid.shouldShowWithAction(metadata.endTime.isNotEmpty()){
             binding.tvValidTillDate.text = getTimeMillis(metadata.endDate)
         }
 
-        //TODO : setDealsBanner
-        //TODO : setDetailTitle
+        eventDetailsListener.setDealsBanner(item)
+        eventDetailsListener.setDetailTitle(getString(R.string.detail_label))
 
         binding.customView1.setOnClickListener {
             RouteManager.route(itemView.context, metadata.productAppUrl)
@@ -114,21 +118,20 @@ class DealsOMPViewHolder(itemView: View) : AbstractViewHolder<ItemsDealsOMP>(ite
                 }
                 KEY_REDIRECT, KEY_REDIRECT_EXTERNAL -> {
                     //TODO : set redeemVoucherView
-                    //TODO : setEventDetail
                     //TODO : addview
                 }
                 KEY_POPUP -> {
                     val actionTextButton = renderActionButtons(index, actionButton, item)
                     binding.voucerCodeLayout.addView(actionTextButton)
                     actionTextButton.setOnClickListener {
-                        //TODO : setOpenShowQR Frag
+                        eventDetailsListener.openQRFragment(actionButton, item)
                     }
                 }
             }
         }
 
         if (orderDetails.actionButtons.isNotEmpty()){
-            //TODO : setEventDetail actionbutton event
+            eventDetailsListener.setActionButtonEvent(orderDetails.actionButtons.first(), item, orderDetails)
         }
     }
 

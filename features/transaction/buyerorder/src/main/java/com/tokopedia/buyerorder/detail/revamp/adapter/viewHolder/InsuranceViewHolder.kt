@@ -13,13 +13,17 @@ import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsInsurance
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
+import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.utils.view.DoubleTextView
 
 /**
  * created by @bayazidnasir on 23/8/2022
  */
-class InsuranceViewHolder(itemView: View): AbstractViewHolder<ItemsInsurance>(itemView) {
+class InsuranceViewHolder(
+    itemView: View,
+    private val eventDetailsListener: EventDetailsListener
+): AbstractViewHolder<ItemsInsurance>(itemView) {
 
     companion object{
         @LayoutRes
@@ -35,7 +39,6 @@ class InsuranceViewHolder(itemView: View): AbstractViewHolder<ItemsInsurance>(it
         val metadata = getMetadata(element.item)
 
         renderProduct(binding, metadata, element.item, element.orderDetails)
-
     }
 
     private fun renderProduct(
@@ -56,7 +59,8 @@ class InsuranceViewHolder(itemView: View): AbstractViewHolder<ItemsInsurance>(it
             binding.txtProductName.text = metadata.productName
         }
 
-        //TODO : setEventDetailTitle
+        eventDetailsListener.setDetailTitle(getString(R.string.insurance_detail_label))
+
         binding.txtQuantity.text = metadata.productQuantity
         binding.txtItemPrice.text = metadata.productPrice
 
@@ -71,7 +75,7 @@ class InsuranceViewHolder(itemView: View): AbstractViewHolder<ItemsInsurance>(it
         )
 
         setProductDetails(binding, map)
-        //TODO : setInsuranceDetail
+        eventDetailsListener.setInsuranceDetail()
     }
 
     private fun setProductDetails(

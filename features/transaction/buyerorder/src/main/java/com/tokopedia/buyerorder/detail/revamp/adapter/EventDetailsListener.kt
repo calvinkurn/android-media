@@ -20,5 +20,5 @@ interface EventDetailsListener {
     fun askPermission(uri: String, isDownloadable: Boolean,downloadFileName: String)
     fun sendThankYouEvent(metadata: MetaDataInfo, categoryType: Int, orderDetails: OrderDetails)
     fun sendOpenScreenDeals(isOMP: Boolean)
-    fun showRetryButtonToaster(message: String)
+    fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean)
 }

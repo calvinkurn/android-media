@@ -20,6 +20,7 @@ import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsDefault
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
+import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -30,7 +31,10 @@ import com.tokopedia.unifyprinciples.Typography
  * created by @bayazidnasir on 23/8/2022
  */
 
-class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemView) {
+class DefaultViewHolder(
+    itemView: View,
+    private val eventDetailsListener: EventDetailsListener
+) : AbstractViewHolder<ItemsDefault>(itemView) {
 
     companion object{
         @LayoutRes
@@ -42,16 +46,18 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
         private const val KEY_BUTTON = "button"
         private const val KEY_REDIRECT = "redirect"
         private const val KEY_TEXT = "text"
+        private const val ITEMS_DEALS = 1
     }
 
     private var hasViews = false
 
     override fun bind(element: ItemsDefault) {
         val binding = VoucherItemDefaultBinding.bind(itemView)
+        val metadata = Gson().fromJson(element.item.metaData, MetaDataInfo::class.java)
 
-        val metadata = getMetaData(element.item)
-
-        //TODO : set events
+        eventDetailsListener.sendThankYouEvent(metadata, ITEMS_DEALS, element.orderDetails)
+        eventDetailsListener.sendOpenScreenDeals(false)
+        eventDetailsListener.setDetailTitle(getString(R.string.purchase_detail))
 
         renderProductName(binding, metadata)
         renderEntityPackage(binding, metadata)
@@ -61,11 +67,6 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
         setDivider(binding)
         setTapActions(binding, element.item)
         setButtonActions(binding, element.item)
-    }
-
-    private fun getMetaData(item: Items): MetaDataInfo{
-        val gson = Gson()
-        return gson.fromJson(item.metaData, MetaDataInfo::class.java)
     }
 
     private fun renderProductName(
@@ -134,7 +135,7 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
         if (item.tapActions.isNotEmpty() && !item.isTapActionsLoaded){
             binding.progBar.visible()
             binding.tapAction.gone()
-            //TODO : hit action button gql
+            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, true)
         }
     }
 
@@ -162,7 +163,7 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
                 item.tapActions.forEachIndexed { i, actionButton ->
                     val actionTextView = renderActionButtons(i, actionButton, item)
                     if (actionButton.control.equals(KEY_BUTTON, true)){
-                        //TODO : action button gql
+                        eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, true)
                     } else {
                         setActionButtonClick(actionTextView, actionButton)
                     }
@@ -196,7 +197,7 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
                 } else {
                     actionTextView.setOnClickListener {
                         if (actionButton.control.equals(KEY_BUTTON, true)){
-                            //TODO : hit action gql
+                            eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, true)
                         } else {
                             setActionButtonClick(actionTextView, actionButton)
                         }
@@ -287,8 +288,8 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
                     itemView.context,
                     actionButton.body.appURL,
                     false
-                ){
-                    //TODO : ask permission
+                ){ uri ->
+                    eventDetailsListener.askPermission(uri, false, "")
                 }
                 //TODO : set uri pdp using @params uri
             }

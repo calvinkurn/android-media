@@ -21,7 +21,9 @@ import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.InsuranceViewHo
  * created by @bayazidnasir on 23/8/2022
  */
 
-class OrderDetailTypeFactoryImpl: BaseAdapterTypeFactory(), OrderDetailTypeFactory {
+class OrderDetailTypeFactoryImpl constructor(
+    private val listener: EventDetailsListener
+): BaseAdapterTypeFactory(), OrderDetailTypeFactory {
 
     override fun type(item: ItemsDealsShort): Int {
         return DealsShortViewHolder.LAYOUT
@@ -50,13 +52,13 @@ class OrderDetailTypeFactoryImpl: BaseAdapterTypeFactory(), OrderDetailTypeFacto
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         super.createViewHolder(parent, type)
         return when(type){
-            DefaultViewHolder.LAYOUT -> DefaultViewHolder(parent)
-            InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(parent)
-            EventsViewHolder.LAYOUT -> EventsViewHolder(parent)
+            DefaultViewHolder.LAYOUT -> DefaultViewHolder(parent, listener)
+            InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(parent, listener)
+            EventsViewHolder.LAYOUT -> EventsViewHolder(parent, listener)
             DealsShortViewHolder.LAYOUT -> DealsShortViewHolder(parent)
-            DealsOMPViewHolder.LAYOUT -> DealsOMPViewHolder(parent)
-            DealsViewHolder.LAYOUT -> DealsViewHolder(parent)
-            else -> DefaultViewHolder(parent)
+            DealsOMPViewHolder.LAYOUT -> DealsOMPViewHolder(parent, listener)
+            DealsViewHolder.LAYOUT -> DealsViewHolder(parent, listener)
+            else -> DefaultViewHolder(parent, listener)
         }
     }
 }

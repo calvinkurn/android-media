@@ -21,6 +21,7 @@ import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsEvents
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
+import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -33,7 +34,10 @@ import com.tokopedia.unifyprinciples.Typography
  * created by @bayazidnasir on 23/8/2022
  */
 
-class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView) {
+class EventsViewHolder(
+    itemView: View,
+    private val eventDetailsListener: EventDetailsListener
+): AbstractViewHolder<ItemsEvents>(itemView) {
 
     companion object{
         @LayoutRes
@@ -51,11 +55,14 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
         private const val CONTENT_TYPE = "application/pdf"
         private const val KEY_QRCODE = "qrcode"
         private const val KEY_POPUP = "popup"
+        private const val ITEM_EVENTS = 3
     }
 
     override fun bind(element: ItemsEvents) {
         val binding = VoucherItemCardEventsBinding.bind(itemView)
         val metadata = getMetadata(element.item)
+
+        eventDetailsListener.sendThankYouEvent(metadata, ITEM_EVENTS, element.orderDetails)
 
         renderProducts(binding, metadata, element.item)
         renderAddress(binding, metadata)
@@ -63,10 +70,11 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
         renderInfoName(binding, metadata, element.item)
 
         if (element.orderDetails.actionButtons.isNotEmpty()){
-            //TODO hit action button event
+            eventDetailsListener.setActionButtonEvent(element.orderDetails.actionButtons.first(), element.item, element.orderDetails)
         }
-        //TODO : setPassengerEvent
-        //TODO : setDetailTitleEvent
+
+        eventDetailsListener.setPassengerEvent(element.item)
+        eventDetailsListener.setDetailTitle(getString(R.string.detail_label_events))
 
         binding.customView1.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkOMSConstant.INTERNAL_DEALS+metadata.seoUrl)
@@ -173,7 +181,7 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                     }
                 } else {
                     if (actionButton.control.equals(KEY_BUTTON, true)) {
-                        //TODO : hit action Button gql
+                        eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, true)
                     } else {
                         setActionButtonClick(actionTextView, actionButton, item)
                     }
@@ -308,7 +316,7 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                     isDownloadable(actionButton) -> {
                         textView.setOnClickListener {
                             clickActionButton(itemView.context, actionButton.body.appURL, true,){
-                                //TODO : ASK permission
+                                eventDetailsListener.askPermission(it, true, getString(R.string.oms_order_detail_ticket_title))
                             }
                             //TODO : set uri pdp using @params uri
                         }
@@ -316,20 +324,15 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                     else -> {
                         textView.setOnClickListener {
                             clickActionButton(itemView.context, actionButton.body.appURL, false){
-                                //TODO : ASK permission
+                                eventDetailsListener.askPermission(it, false, "")
                             }
                         }
                     }
                 }
             }
-            actionButton.control.equals(KEY_QRCODE, true) -> {
+            actionButton.control.equals(KEY_QRCODE, true) || actionButton.control.equals(KEY_POPUP, true) -> {
                 textView?.setOnClickListener {
-                    //TODO : openshoQRfrag
-                }
-            }
-            actionButton.control.equals(KEY_POPUP, true) -> {
-                textView?.setOnClickListener {
-                    //TODO : openshoQRfrag
+                    eventDetailsListener.openQRFragment(actionButton, item)
                 }
             }
         }

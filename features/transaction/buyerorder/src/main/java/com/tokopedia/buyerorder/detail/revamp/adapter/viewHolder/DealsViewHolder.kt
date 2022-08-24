@@ -11,6 +11,8 @@ import com.tokopedia.buyerorder.databinding.VoucherItemDealsBinding
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsDeals
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
+import com.tokopedia.buyerorder.detail.data.OrderDetails
+import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -21,7 +23,10 @@ import com.tokopedia.media.loader.loadImageCircle
  * created by @bayazidnasir on 24/8/2022
  */
 
-class DealsViewHolder(itemView: View): AbstractViewHolder<ItemsDeals>(itemView) {
+class DealsViewHolder(
+    itemView: View,
+    private val eventDetailsListener: EventDetailsListener
+): AbstractViewHolder<ItemsDeals>(itemView) {
 
     companion object{
         @LayoutRes
@@ -29,13 +34,14 @@ class DealsViewHolder(itemView: View): AbstractViewHolder<ItemsDeals>(itemView) 
 
         private const val KEY_TEXT = "text"
         private const val DELIMITERS = ","
+        private const val ITEM_DEALS = 1
     }
 
     override fun bind(element: ItemsDeals) {
         val binding = VoucherItemDealsBinding.bind(itemView)
         val metadata = Gson().fromJson(element.item.metaData, MetaDataInfo::class.java)
 
-        renderProducts(binding, metadata, element.item)
+        renderProducts(binding, metadata, element.item, element.orderDetails)
         setTapAction(binding, element.item)
     }
 
@@ -43,24 +49,26 @@ class DealsViewHolder(itemView: View): AbstractViewHolder<ItemsDeals>(itemView) 
         binding: VoucherItemDealsBinding,
         metadata: MetaDataInfo,
         item: Items,
+        orderDetails: OrderDetails
     ){
         binding.ivDeal.loadImageCircle(metadata.entityImage.ifEmpty { item.imageUrl })
         binding.tvDealIntro.text = metadata.entityProductName.ifEmpty { item.title }
 
-        //TODO : sendThankyouPage
-        //TODO : sendOpenScreenDeals
+        eventDetailsListener.sendThankYouEvent(metadata, ITEM_DEALS, orderDetails)
+        eventDetailsListener.sendOpenScreenDeals(false)
 
         binding.llValid.shouldShowWithAction(metadata.endDate.isNotEmpty()){
             binding.tvValidTillDate.text = getString(R.string.order_detail_date_whitespace, metadata.endDate)
         }
-        //TODO : setDealsBanner
+
+        eventDetailsListener.setDealsBanner(item)
 
         if (item.actionButtons.isNotEmpty()){
-            //TODO : setEventDetails
+            eventDetailsListener.setEventDetails(item.actionButtons.first(), item)
         }
 
         binding.tvBrandName.text = metadata.entityBrandName
-        //TODO : setDetailTitle
+        eventDetailsListener.setDetailTitle(getString(R.string.detail_label))
         binding.customView1.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkOMSConstant.INTERNAL_DEALS+metadata.seoUrl)
         }
@@ -76,7 +84,7 @@ class DealsViewHolder(itemView: View): AbstractViewHolder<ItemsDeals>(itemView) 
                 tapActionDeals.gone()
                 customView2.gone()
             }
-            //TODO : hitactionButtonGql
+            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, true)
         } else {
             if (item.trackingNumber.isNotEmpty()){
                 val codes = item.trackingNumber.split(DELIMITERS)
