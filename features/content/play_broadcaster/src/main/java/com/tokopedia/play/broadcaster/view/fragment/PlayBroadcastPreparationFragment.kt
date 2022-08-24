@@ -226,9 +226,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.contentAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
-                        // TODO check if has draft then showing dialog
-                        if (!getSwitchAccountConfirmationDialog(contentAccount).isShowing)
+                        if (parentViewModel.channelTitle.isNotEmpty()
+                            && !getSwitchAccountConfirmationDialog(contentAccount).isShowing) {
                             getSwitchAccountConfirmationDialog(contentAccount).show()
+                        }
                     }
                 })
             }
