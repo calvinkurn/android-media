@@ -43,5 +43,5 @@
     <string name="product_manage_campaign_count">%d Promosi</string>
     <string name="product_manage_suspend_stock_info_description">Stok dikosongkan karena sering terjadi pembatalan</string>
     <string name="product_manage_notify_me_buyer_info_in_edit_stock"><![CDATA[Ada <b>%s</b> calon pembeli yang menunggu produk ini.]]></string>
-
+    <string name="product_manage_notify_me_buyer_info_in_edit_stock_variant"><![CDATA[Ada <b>%s</b> calon pembeli yang menunggu varian ini.]]></string>
 </resources>

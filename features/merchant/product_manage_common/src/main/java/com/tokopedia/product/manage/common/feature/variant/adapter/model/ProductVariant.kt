@@ -21,7 +21,8 @@ data class ProductVariant(
         val isAllStockEmpty: Boolean = false,
         val access: ProductManageAccess,
         val campaignTypeList: List<CampaignType>?,
-        val maxStock: Int?
+        val maxStock: Int?,
+        val notifymeCount: Int
 ): Visitable<ProductVariantAdapterFactory> {
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {
@@ -38,5 +39,9 @@ data class ProductVariant(
 
     fun isEmpty(): Boolean {
         return stock == 0
+    }
+
+    fun haveNotifyMe() : Boolean{
+        return notifymeCount > 0
     }
 }

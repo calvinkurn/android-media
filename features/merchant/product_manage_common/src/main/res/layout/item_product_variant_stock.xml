@@ -39,6 +39,23 @@
         tools:text="3 promosi"
         tools:visibility="visible"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_notify_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N300"
+        android:drawablePadding="4dp"
+        android:layout_marginTop="4dp"
+        android:drawableStart="@drawable/ic_notify_me_buyer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textProductName"
+        tools:text="Ada 1.223 calon pembeli yang menunggu varian ini."
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelInactive"
         android:layout_width="wrap_content"
@@ -81,7 +98,7 @@
         android:id="@+id/textStock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_variant_name"

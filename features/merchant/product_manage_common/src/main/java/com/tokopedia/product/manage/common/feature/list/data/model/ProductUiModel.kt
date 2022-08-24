@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.common.feature.list.data.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -33,7 +34,8 @@ data class ProductUiModel(
     val maxStock: Int?,
     val haveNotifyMeOOS: Boolean,
     val notifyMeOOSCount: String,
-    val notifyMeOOSWording: String
+    val notifyMeOOSWording: String,
+    val impressHolder: ImpressHolder = ImpressHolder()
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

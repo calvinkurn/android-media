@@ -14,7 +14,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.P
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -50,6 +49,7 @@ class ProductVariantStockViewHolder(
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
         setupCampaignInfo(variant)
+        setupNotifyMeInfo(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -112,6 +112,14 @@ class ProductVariantStockViewHolder(
                 }
             }
             showWithCondition(variant.isCampaign)
+        }
+    }
+
+    private fun setupNotifyMeInfo(variant: ProductVariant) {
+        binding?.tvProductManageNotifyMe?.run {
+            text = getString(R.string.product_manage_notify_me_buyer_info_in_edit_stock_variant,
+                variant.notifymeCount.toString()).parseAsHtml()
+            showWithCondition(variant.haveNotifyMe())
         }
     }
 

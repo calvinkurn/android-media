@@ -27,6 +27,8 @@ object ProductManageVariantMapper {
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
         val productName = response.productName
+        val notifymeCount = response.notifymeCount
+
         val isAllStockEmpty = response.isAllStockEmpty()
 
         val variants = response.variant.products.map {
@@ -45,11 +47,12 @@ object ProductManageVariantMapper {
                 isAllStockEmpty,
                 access,
                 it.campaignTypeList,
-                maxStock
+                maxStock,
+                it.notifymeCount
             )
         }
 
-        return GetVariantResult(productName, variants, variantSelections, variantSizeCharts)
+        return GetVariantResult(productName, notifymeCount, variants, variantSelections, variantSizeCharts)
     }
 
     fun EditVariantResult.updateVariant(variantId: String, updateBlock: (ProductVariant) -> ProductVariant): EditVariantResult {

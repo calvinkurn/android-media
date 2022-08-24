@@ -39,5 +39,8 @@ data class Product (
     val pictures: List<Picture>,
     @Expose
     @SerializedName("campaign_types")
-    val campaignTypeList: List<CampaignType>? = listOf()
+    val campaignTypeList: List<CampaignType>? = listOf(),
+    @Expose
+    @SerializedName("notifymeCount")
+    val notifymeCount: Int
 )
