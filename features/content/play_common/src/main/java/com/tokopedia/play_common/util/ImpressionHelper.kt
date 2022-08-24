@@ -22,6 +22,9 @@ fun View.addImpressionListener(
                     onView()
                     impressHolder.invoke()
                     if (vto.isAlive) vto.removeOnScrollChangedListener(this)
+
+                    val currentVto = viewTreeObserver
+                    if (currentVto.isAlive) currentVto.removeOnScrollChangedListener(this)
                 }
             }
         }
@@ -33,6 +36,10 @@ fun View.addImpressionListener(
 
             override fun onViewDetachedFromWindow(v: View) {
                 if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
+
+                val currentVto = viewTreeObserver
+                if (currentVto.isAlive) currentVto.removeOnScrollChangedListener(scrollListener)
+
                 v.removeOnAttachStateChangeListener(this)
             }
         })
