@@ -14,10 +14,7 @@ data class OptionsItem(
     var message: String = "",
 
     @SerializedName("applink")
-    var applink: String = "",
-
-    @SerializedName("textApplink")
-    var textApplink: String = "Lebih detail"
+    var applink: String = ""
 )
 
 data class Property(

@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.R
@@ -32,7 +32,7 @@ import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 class ExplicitView constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : CardUnify2(context, attrs), ExplicitAction {
+) : CardUnify(context, attrs), ExplicitAction {
 
     private var explicitViewContract: ExplicitViewContract? = null
 
@@ -214,7 +214,11 @@ class ExplicitView constructor(
 
     override fun onSubmitSuccessShow(data: OptionsItem?) {
         showShadow(true)
-        initSuccessMessageText(data?.message.orEmpty(), data?.textApplink.orEmpty(), data?.applink.orEmpty())
+        initSuccessMessageText(
+            data?.message.orEmpty(),
+            context.getString(R.string.explicit_succes_message_action),
+            data?.applink.orEmpty()
+        )
         replaceView(bindingSuccess?.root)
     }
 
@@ -242,7 +246,11 @@ class ExplicitView constructor(
         }
     }
 
-    private fun initSuccessMessageText(messageSuccess: String, textApplink: String, applink: String) {
+    private fun initSuccessMessageText(
+        messageSuccess: String,
+        textApplink: String,
+        applink: String
+    ) {
         val message = "$messageSuccess $textApplink"
         val spannable = SpannableString(message)
         spannable.setSpan(
@@ -269,7 +277,6 @@ class ExplicitView constructor(
 
     private fun goToExplicitProfilePreference(applink: String) {
         val intent = RouteManager.getIntent(context, applink)
-        //intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_TEMPLATE_NAME, applink)
         context.startActivity(intent)
     }
 
