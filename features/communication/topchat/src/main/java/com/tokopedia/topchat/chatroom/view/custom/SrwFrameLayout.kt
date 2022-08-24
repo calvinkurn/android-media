@@ -59,6 +59,7 @@ class SrwFrameLayout : FrameLayout {
             initBackground()
             itemDecoration.source = getSrwSource()
         }
+    var onBoardingAnchor: View? = null
 
     /**
      * Force to hide, used when reply to specific bubble shown
@@ -329,14 +330,14 @@ class SrwFrameLayout : FrameLayout {
                     showOnBoarding(it)
                 }
             } else {
-                srwContentContainer?.let {
+                onBoardingAnchor?.let {
                     showOnBoarding(it)
                 }
             }
         }
     }
 
-    private fun showOnBoarding(view: LinearLayout) {
+    private fun showOnBoarding(view: View) {
         onBoarding.show(context, view)
         hasShownOnBoarding = true
     }

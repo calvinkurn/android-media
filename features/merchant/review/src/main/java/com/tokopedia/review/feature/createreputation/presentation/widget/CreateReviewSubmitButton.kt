@@ -16,7 +16,7 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L

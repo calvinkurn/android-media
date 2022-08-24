@@ -229,22 +229,6 @@ class ExplicitViewModelTest {
     }
 
     @Test
-    fun `get question then success and loading variable is false`() {
-        val templateName = "food_preference"
-        val data = QuestionDataModel(
-            ExplicitprofileGetQuestion(ActiveConfig(value = true))
-        )
-
-        coEvery {
-            getQuestionUseCase(templateName)
-        } returns data
-        viewModel.getExplicitContent(templateName)
-
-        val result = viewModel.isQuestionLoading.value
-        assertEquals(false, result)
-    }
-
-    @Test
     fun `send update state and make sure update state only call once then response success`()  {
         val preferenceUpdateState = UpdateStateParam()
 

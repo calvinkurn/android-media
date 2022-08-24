@@ -40,5 +40,8 @@
     <string name="tokopedia_label">Tokopedia</string>
     <string name="warehouse_id">Warehouse Id</string>
 
+    <string name="applink_already_copied">Applink already copied</string>
+    <string name="applink_not_copied">Applink are not copied</string>
+
 
 </resources>
