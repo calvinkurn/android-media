@@ -14,7 +14,6 @@ import javax.inject.Inject
  * Get Recipe GQL Docs:
  * https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1973782733/GQL+Get+Recipe
  */
-
 class GetRecipeUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
 
     private val graphql by lazy { GraphqlUseCase<TokoNowGetRecipe>(gqlRepository) }
