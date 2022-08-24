@@ -304,4 +304,7 @@ object ApplinkConstInternalGlobal {
     const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
 
     const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
+
+    //ChatServiceActivity
+    const val CHAT_SERVICE = "$INTERNAL_GLOBAL/chat-service"
 }

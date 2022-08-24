@@ -229,6 +229,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_PEOPLE = "df_people"
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
+    const val DF_CHAT_SERVICE = "df_comm_chat_service"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -783,6 +784,8 @@ object DeeplinkDFMapper : CoroutineScope {
             // Tokomember dashboard
             add(DFP({ it.startsWith(TOKOMEMBER) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
 
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.CHAT_SERVICE) },
+                DF_CHAT_SERVICE, R.string.path_chat_service))
         }
     }
 
