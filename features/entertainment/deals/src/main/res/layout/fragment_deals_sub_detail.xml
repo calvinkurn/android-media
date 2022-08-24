@@ -9,7 +9,7 @@
     android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_deal_details"
+        android:id="@+id/tg_deal_details"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_68"

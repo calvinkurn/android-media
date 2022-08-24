@@ -1,10 +1,12 @@
 package com.tokopedia.deals.pdp.ui.activity
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.deals.DealsComponentInstance
+import com.tokopedia.deals.R
 import com.tokopedia.deals.pdp.di.DaggerDealsPDPComponent
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
@@ -21,6 +23,7 @@ class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent> {
             productId = savedInstanceState.getString(EXTRA_PRODUCT_ID, "")
         }
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
     }
 
     override fun getNewFragment(): Fragment {
@@ -31,6 +34,12 @@ class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent> {
         return DaggerDealsPDPComponent.builder()
             .dealsComponent(DealsComponentInstance.getDealsComponent(application, this))
             .build()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        menuInflater.inflate(R.menu.menu_deals_pdp, menu)
+        return true
     }
 
     companion object {
