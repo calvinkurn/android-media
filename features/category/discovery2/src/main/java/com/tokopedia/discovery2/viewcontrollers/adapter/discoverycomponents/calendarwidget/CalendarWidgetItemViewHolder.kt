@@ -11,13 +11,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
-import com.tokopedia.discovery2.analytics.CALENDAR_WIDGET_CLICK
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.di.getSubComponent
@@ -33,14 +31,13 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.Exception
 import kotlin.math.roundToInt
 
 class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var calendarWidgetItemViewModel: CalendarWidgetItemViewModel
     private var calendarCardUnify: CardUnify = itemView.findViewById(R.id.calendar_card_unify)
-    private var mNotifyCampaignId = 0
+    private var mNotifyCampaignId = ""
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         calendarWidgetItemViewModel = discoveryBaseViewModel as CalendarWidgetItemViewModel
