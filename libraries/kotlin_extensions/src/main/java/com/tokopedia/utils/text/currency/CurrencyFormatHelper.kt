@@ -3,7 +3,6 @@ package com.tokopedia.utils.text.currency
 import android.widget.EditText
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import java.lang.Integer.parseInt
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -15,7 +14,6 @@ import java.util.*
  */
 object CurrencyFormatHelper {
     private val RupiahFormat = NumberFormat.getIntegerInstance(Locale.US)
-    private val DollarFormat = NumberFormat.getCurrencyInstance(Locale("en", "US"))
     // this flag intend to block textwatcher to be called recursively
     private var LockTextWatcher = false
 
@@ -31,7 +29,16 @@ object CurrencyFormatHelper {
 
     fun convertToRupiah(string: String): String {
         return try {
-            val inrupiah: String = RupiahFormat.format(java.lang.Long.parseLong(string.replace("Rp", ""))).replace("$", "").replace("Rp", "").replace(".00", "").replace(",", ".")
+            val inrupiah: String =
+                RupiahFormat.format(
+                    string
+                        .replace("Rp", "")
+                        .toLongOrZero()
+                )
+                    .replace("$", "")
+                    .replace("Rp", "")
+                    .replace(".00", "")
+                    .replace(",", ".")
             inrupiah
         } catch (e: NumberFormatException) {
             e.printStackTrace()
@@ -40,58 +47,7 @@ object CurrencyFormatHelper {
 
     }
 
-    fun convertToDollar(string: String): String {
-        return try {
-            val indollar: String = DollarFormat.format(java.lang.Double.parseDouble(string)).replace("$", "")
-            indollar
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            "Exception raised"
-        }
-
-    }
-
-    fun setToRupiah(et: EditText) {
-        try {
-            if (et.length() > 0 && !LockTextWatcher) {
-                LockTextWatcher = true
-                var tempCursorPos = et.selectionStart
-                val tempLength = et.length()
-                et.setText(RupiahFormat.format(java.lang.Long.parseLong(et.text.toString().replace("$", "").replace(".00", "").replace(".0", "").replace(",", "").replace(".", ""))).replace("$", "").replace(".00", "").replace(".0", ""))
-                // Handler untuk tanda koma
-                if (et.length() - tempLength == 1)
-                // Untuk majuin cursor ketika nambah koma
-                {
-                    if (et.length() < 4)
-                        tempCursorPos += 1
-                    else if (et.text[tempCursorPos] != '.')
-                    // Untuk mundur ketika mencoba menghapus koma
-                        tempCursorPos += 1
-                } else if (et.length() - tempLength == -1)
-                // Mundurin cursor ketika hapus koma
-                {
-                    tempCursorPos -= 1
-                } else if (et.length() > 3 && tempCursorPos < et.length() && tempCursorPos > 0)
-                    if (et.text[tempCursorPos - 1] == '.') { // Mundurin cursor ketika menambah digit dibelakang koma
-                        tempCursorPos -= 1
-                    }
-
-                // Set posisi cursor
-                if (tempCursorPos < et.length() && tempCursorPos > -1)
-                    et.setSelection(tempCursorPos)
-                else if (tempCursorPos < 0)
-                    et.setSelection(0)
-                else
-                    et.setSelection(et.length())
-                LockTextWatcher = false
-            }
-        } catch (e: NumberFormatException) {
-            LockTextWatcher = false
-            e.printStackTrace()
-        }
-
-    }
-
+    @Suppress("MAGIC_NUMBER")
     fun setToRupiahCheckPrefix(et: EditText) {
         try {
             val noFirstCharToIgnore = countPrefixCurrency(et.text.toString())
@@ -100,14 +56,14 @@ object CurrencyFormatHelper {
                 var tempCursorPos = et.selectionStart
                 val tempLength = et.length()
                 val textToFormat = et.text.toString()
-                val formattedText = RupiahFormat.format(parseInt(
-                        textToFormat
-                                .substring(noFirstCharToIgnore)
-                                .replace("$", "")
-                                .replace(",", "")
-                                .replace(".", "")))
+                val formattedText = RupiahFormat.format(
+                    textToFormat
+                        .substring(noFirstCharToIgnore)
                         .replace("$", "")
-                        .replace(",",".")
+                        .replace(",", "")
+                        .replace(".", "")
+                        .toIntOrZero()
+                ).replace("$", "").replace(",", ".")
                 et.setText(formattedText)
                 if (et.length() - tempLength == 1) {
                     if (et.length() < 4 + noFirstCharToIgnore) {
