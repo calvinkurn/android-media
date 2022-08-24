@@ -841,7 +841,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
         context?.let {
-            if(SaldoDetailsRollenceUtil.shouldShowModalTokoWidget(it))
+            if(SaldoDetailsRollenceUtil.shouldShowModalTokoWidget())
             {
                 if (response != null && response.isEligible) {
                     statusWithDrawLock = response.status

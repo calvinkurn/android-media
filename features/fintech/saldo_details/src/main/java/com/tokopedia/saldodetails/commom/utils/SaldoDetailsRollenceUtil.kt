@@ -1,19 +1,19 @@
 package com.tokopedia.saldodetails.commom.utils
 
-import android.content.Context
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object SaldoDetailsRollenceUtil {
 
-    fun shouldShowModalTokoWidget(context: Context): Boolean {
-        return getShouldShowModalTokoWidget(context)
+    fun shouldShowModalTokoWidget(): Boolean {
+        return getShouldShowModalTokoWidget()
     }
 
-    private fun getShouldShowModalTokoWidget(context: Context): Boolean {
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        return config.getBoolean(RemoteConfigKey.SHOW_MODAL_TOKO_WIDGET_SALDO,false)
+    private fun getShouldShowModalTokoWidget(): Boolean {
+        val config: RemoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
+        val saldoModalTokoWidgetData = config.getString(RemoteConfigKey.SALDO_MODAL_TOKO_WIDGET)
+        return saldoModalTokoWidgetData != RemoteConfigKey.SALDO_MODAL_TOKO_WIDGET
     }
 
 }
