@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.picker.common.EditorParam
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEmpty
@@ -40,6 +41,13 @@ class DetailEditorViewModel @Inject constructor(
 
     private var _watermarkFilter = MutableLiveData<Int>()
     val watermarkFilter: LiveData<Int> get() = _watermarkFilter
+
+    private var _editorParam = MutableLiveData<EditorParam>()
+    val editorParam: LiveData<EditorParam> get() = _editorParam
+
+    fun setEditorParam(data: EditorParam) {
+        _editorParam.postValue(data)
+    }
 
     fun setIntentDetailUiModel(data: EditorDetailUiModel) {
         _intentUiModel.postValue(data)

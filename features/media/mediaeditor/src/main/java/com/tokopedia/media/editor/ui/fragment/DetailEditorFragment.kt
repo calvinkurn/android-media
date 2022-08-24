@@ -214,6 +214,7 @@ class DetailEditorFragment @Inject constructor(
         observeContrast()
         observeWatermark()
         observeRemoveBackground()
+        observeEditorParamModel()
     }
 
     private fun observeBrightness() {
@@ -251,6 +252,12 @@ class DetailEditorFragment @Inject constructor(
             data = it
 
             renderUiComponent(it.editorToolType)
+        }
+    }
+
+    private fun observeEditorParamModel() {
+        viewModel.editorParam.observe(viewLifecycleOwner) {
+            cropComponent.setupView(it)
         }
     }
 
@@ -343,7 +350,6 @@ class DetailEditorFragment @Inject constructor(
                         readPreviousState(data)
                     }
                 }
-                cropComponent.setupView()
 
                 initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
             }

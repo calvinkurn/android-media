@@ -2,33 +2,68 @@ package com.tokopedia.media.editor.ui.component
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 class CropToolUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_tool_crop) {
 
-    private val btn11Ref = findViewById<View>(R.id.box_crop_1_1)
-    private val btn34Ref = findViewById<View>(R.id.box_crop_3_4)
-    private val btn21Ref = findViewById<View>(R.id.box_crop_2_1)
+    fun setupView(editorParam: EditorParam?){
+        (container() as LinearLayout).apply {
+            editorParam?.autoCropRatio?.let {
+                addView(
+                    generateCropButton(
+                        it.getRatioX(),
+                        it.getRatioY()
+                    )
+                )
+            } ?: kotlin.run {
+                editorParam?.ratioList?.forEach { ratio ->
+                    addView(
+                        generateCropButton(
+                            ratio.getRatioX(),
+                            ratio.getRatioY()
+                        )
+                    )
+                }
+            }
+        }
 
-    fun setupView(){
         container().show()
+    }
 
-        btn11Ref.setOnClickListener {
-            listener.onCropRatioClicked(RATIO_1_1)
-        }
+    private fun generateCropButton(widthRatio: Int, heightRatio: Int): View{
+        return View.inflate(container().context, R.layout.ui_component_crop_action_layout, null).apply {
+            findViewById<View>(R.id.box_crop).apply {
+                val viewDefaultSize = DEFAULT_SIZE.toPx()
+                val limitSize = SIZE_LIMIT.toPx()
 
-        btn34Ref.setOnClickListener {
-            listener.onCropRatioClicked(RATIO_3_4)
-        }
+                val ls = layoutParams
 
-        btn21Ref.setOnClickListener {
-            listener.onCropRatioClicked(RATIO_2_1)
+                var width = viewDefaultSize * widthRatio
+                var height = viewDefaultSize * heightRatio
+
+                if(width > limitSize || height > limitSize){
+                    width /= 2
+                    height /= 2
+                }
+
+                ls.width = width
+                ls.height = height
+            }
+            findViewById<Typography>(R.id.text_crop).text = "$widthRatio:$heightRatio"
+
+            setOnClickListener {
+                listener.onCropRatioClicked(widthRatio/heightRatio.toFloat())
+            }
         }
     }
 
@@ -37,8 +72,7 @@ class CropToolUiComponent constructor(
     }
 
     companion object{
-        private const val RATIO_1_1 = 1f
-        private const val RATIO_3_4 = 3/4f
-        private const val RATIO_2_1 = 2/1f
+        private const val DEFAULT_SIZE = 32
+        private const val SIZE_LIMIT = DEFAULT_SIZE * 2
     }
 }

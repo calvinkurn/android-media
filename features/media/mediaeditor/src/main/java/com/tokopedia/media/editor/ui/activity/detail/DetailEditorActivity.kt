@@ -10,6 +10,7 @@ import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.picker.common.EditorParam
 import javax.inject.Inject
 
 class DetailEditorActivity : BaseEditorActivity() {
@@ -22,6 +23,7 @@ class DetailEditorActivity : BaseEditorActivity() {
     lateinit var viewModel: DetailEditorViewModel
 
     private var editorIntent = EditorDetailUiModel()
+    private var editorParam = EditorParam()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -32,6 +34,7 @@ class DetailEditorActivity : BaseEditorActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(CACHE_EDITOR_INTENT_DATA, editorIntent)
+        outState.putParcelable(CACHE_EDITOR_PARAM, editorParam)
     }
 
     override fun getNewFragment(): Fragment {
@@ -46,14 +49,17 @@ class DetailEditorActivity : BaseEditorActivity() {
     }
 
     override fun initBundle(savedInstanceState: Bundle?) {
-        val data = savedInstanceState
-            ?.getParcelable(CACHE_EDITOR_INTENT_DATA)
-            ?: intent?.getParcelableExtra<EditorDetailUiModel>(PARAM_EDITOR_DETAIL)?.also {
-                editorIntent = it
-            }
+        (savedInstanceState?.getParcelable(CACHE_EDITOR_INTENT_DATA)
+            ?: intent?.getParcelableExtra<EditorDetailUiModel>(PARAM_EDITOR_DETAIL))?.also {
+            editorIntent = it
+            viewModel.setIntentDetailUiModel(it)
+        }
 
-        if (data == null) finish()
-        viewModel.setIntentDetailUiModel(data!!)
+        (savedInstanceState?.getParcelable(CACHE_EDITOR_INTENT_DATA)
+            ?: intent?.getParcelableExtra<EditorParam>(PARAM_EDITOR))?.also {
+            editorParam = it
+            viewModel.setEditorParam(it)
+        }
     }
 
     override fun initInjector() {
@@ -99,8 +105,10 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     companion object {
         private const val CACHE_EDITOR_INTENT_DATA = "intent_data.editor_detail"
+        private const val CACHE_EDITOR_PARAM = "intent_data.editor_detail"
 
         const val PARAM_EDITOR_DETAIL = "param.editor_detail"
+        const val PARAM_EDITOR = "param.editor"
 
         const val EDITOR_RESULT_PARAM = "intent_data.editor_result"
         const val EDITOR_RESULT_CODE = 798
