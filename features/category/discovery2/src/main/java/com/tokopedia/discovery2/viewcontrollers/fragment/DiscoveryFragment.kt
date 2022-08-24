@@ -1467,10 +1467,13 @@ class DiscoveryFragment :
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+        val campaignId = arguments?.getString(CAMPAIGN_ID,"") ?: ""
+        val variantId = arguments?.getString(VARIANT_ID,"") ?: ""
+        val shopId = arguments?.getString(SHOP_ID,"") ?: ""
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "",arguments?.getString(SHOP_ID,"") ?: "")
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),campaignId,variantId,shopId)
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "",arguments?.getString(SHOP_ID,"") ?: "")
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),campaignId,variantId,shopId)
         }
         openScreenStatus = true
     }
