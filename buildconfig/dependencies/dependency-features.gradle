@@ -265,6 +265,7 @@ ext {
             notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
             attachvoucher                   : ":features:communication:attachvoucher",
+            chatService                     : ":features:communication:chat_service",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",

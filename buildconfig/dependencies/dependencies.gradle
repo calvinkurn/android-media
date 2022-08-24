@@ -91,6 +91,7 @@ ext {
     windowVersion = '1.0.0-alpha07'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
+    conversationsVersion = '7.3.2'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -308,7 +309,8 @@ ext {
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
-            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0"
+            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
+            conversation          : "com.gojek.android:conversations:$conversationsVersion"
     ]
 
     testDependencies = [

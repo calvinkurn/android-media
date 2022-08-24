@@ -431,4 +431,7 @@
 
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+
+    <!-- Chat Service -->
+    <string name="title_chat_service">Chat Service</string>
 </resources>
