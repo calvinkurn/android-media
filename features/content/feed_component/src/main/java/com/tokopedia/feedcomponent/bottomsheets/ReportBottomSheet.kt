@@ -16,6 +16,10 @@ class ReportBottomSheet : BottomSheetUnify() {
     private var reasonType: String = ""
     private var reasonDesc: String = ""
     private var contentId: Int = 0
+    var onDismiss: (() -> Unit)? = null
+    var onClosedClicked: (() -> Unit)? = null
+    private var dismissedByClosing = false
+
 
 
     companion object {
@@ -85,6 +89,15 @@ class ReportBottomSheet : BottomSheetUnify() {
         }
         report_subtext3_icon?.setOnClickListener {
             setInappropriateCase()
+        }
+        setCloseClickListener {
+            dismissedByClosing = true
+            onClosedClicked?.invoke()
+            dismiss()
+        }
+        setOnDismissListener {
+            if (!dismissedByClosing)
+                onDismiss?.invoke()
         }
     }
 

@@ -30,7 +30,6 @@ import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -103,7 +102,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -135,10 +133,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
-
-        private const val ANNIV_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_checkered.png"
-        private const val ANNIV_GRADIENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_gradient.webp"
-        private const val ANNIV_ORNAMENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_ornament.webp"
     }
 
     @Inject
@@ -1026,7 +1020,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
         setViewBackground()
-        loadAnniversaryIllustrations()
     }
 
     private fun setupEmptyState() {
@@ -1744,18 +1737,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() {
-        try {
-            binding?.viewBgShopStatus?.setImageResource(R.drawable.bg_sah_anniv)
-        } catch (ex: Exception) {
-            Timber.e(ex)
+    private fun setViewBackground() = binding?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> {
+                viewBgShopStatus.visible()
+                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_official_store)
+            }
+            isPowerMerchant -> {
+                viewBgShopStatus.visible()
+                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_power_merchant)
+            }
+            else -> {
+                viewBgShopStatus.gone()
+            }
         }
-    }
-
-    private fun loadAnniversaryIllustrations() {
-        binding?.ivSahPattern?.loadImageWithoutPlaceholder(ANNIV_PATTERN_URL)
-        binding?.ivSahOrnament?.loadImageWithoutPlaceholder(ANNIV_ORNAMENT_URL)
-        binding?.ivSahGradient?.loadImageWithoutPlaceholder(ANNIV_GRADIENT_URL)
     }
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
