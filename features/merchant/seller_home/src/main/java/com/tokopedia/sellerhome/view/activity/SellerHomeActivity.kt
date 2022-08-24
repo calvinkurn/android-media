@@ -149,10 +149,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         setupSellerHomeInsetListener()
     }
 
-    override fun checkAppUpdateAndInApp() {
-        // no op, this activity already uses UpdateCheckerHelper
-    }
-
     override fun getComponent(): HomeDashboardComponent {
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)

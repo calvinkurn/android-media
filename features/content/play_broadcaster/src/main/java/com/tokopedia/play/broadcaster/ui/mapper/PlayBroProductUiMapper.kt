@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -81,7 +83,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                     } else DiscountedPrice(
                         originalPrice = data.campaign.originalPriceFmt,
                         originalPriceNumber = 0.0,
-                        discountPercent = data.campaign.discountedPercentage.toInt(),
+                        discountPercent = data.campaign.discountedPercentage.toIntSafely(),
                         discountedPrice = data.campaign.discountedPriceFmt,
                         discountedPriceNumber = 0.0,
                     )
@@ -124,7 +126,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                         DiscountedPrice(
                             originalPrice = data.campaign.originalPrice,
                             originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                            discountPercent = data.campaign.discountPercentage.toInt(),
+                            discountPercent = data.campaign.discountPercentage.toIntSafely(),
                             discountedPrice = data.campaign.discountedPrice,
                             discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
                         )
@@ -161,7 +163,8 @@ class PlayBroProductUiMapper @Inject constructor() {
                                 discountedPrice = product.priceFmt,
                                 discountedPriceNumber = product.price,
                             )
-                        }
+                        },
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable)
                     )
                 }
             )
@@ -187,10 +190,11 @@ class PlayBroProductUiMapper @Inject constructor() {
                         else DiscountedPrice(
                             originalPrice = product.originalPriceFmt,
                             originalPriceNumber = product.originalPrice.toDouble(),
-                            discountPercent = product.discount.toInt(),
+                            discountPercent = product.discount.toIntSafely(),
                             discountedPrice = product.priceFmt,
                             discountedPriceNumber = product.price.toDouble(),
-                        )
+                        ),
+                        pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                     )
                 }
             )
@@ -211,4 +215,12 @@ class PlayBroProductUiMapper @Inject constructor() {
         calendar.add(Calendar.MILLISECOND, TimeZone.getDefault().rawOffset * -1)
         return calendar.time
     }
+
+    /**
+     * Pinned Product
+     * isPinnable -> not eligible to pin product-> hide pin container [case: out of stock]
+     * isPinned -> show [status: Lepas / Pin]
+     */
+    private fun getPinStatus(isPinned: Boolean, canPin: Boolean): PinProductUiModel =
+        PinProductUiModel(isPinned = isPinned, canPin = if (isPinned) true else canPin)
 }

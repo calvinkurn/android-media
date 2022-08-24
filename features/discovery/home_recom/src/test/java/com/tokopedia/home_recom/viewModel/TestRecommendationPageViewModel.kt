@@ -41,6 +41,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopadsProduct
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
 import com.tokopedia.topads.sdk.domain.model.Image
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -74,6 +75,7 @@ class TestRecommendationPageViewModel {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val remoteConfig = mockk<FirebaseRemoteConfigImpl>(relaxed = true)
     private val mockWishlistListener: WishlistV2ActionListener = mockk(relaxed = true)
+    private val topAdsAddressHelper: TopAdsAddressHelper = mockk(relaxed = true)
 
     private val viewModel: RecommendationPageViewModel = spyk(RecommendationPageViewModel(
             userSessionInterface = userSession,
@@ -88,7 +90,8 @@ class TestRecommendationPageViewModel {
             getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
             getPrimaryProductUseCase = getPrimaryProductUseCase,
             getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase,
-            remoteConfig = remoteConfig
+            remoteConfig = remoteConfig,
+            topAdsAddressHelper = topAdsAddressHelper
     ), recordPrivateCalls = true)
     private val recommendation = RecommendationItem(productId = 1234)
     private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
@@ -431,7 +434,7 @@ class TestRecommendationPageViewModel {
             )
         )
 
-        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just runs
         coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
 
         mockkObject(RecommendationRollenceController)
@@ -462,7 +465,7 @@ class TestRecommendationPageViewModel {
             )
         )
 
-        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just runs
         coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
 
         mockkObject(RecommendationRollenceController)
@@ -493,7 +496,7 @@ class TestRecommendationPageViewModel {
             )
         )
 
-        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        every { getTopAdsHeadlineUseCase.setParams(any(),any()) } just runs
         coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
 
         mockkObject(RecommendationRollenceController)
@@ -516,7 +519,7 @@ class TestRecommendationPageViewModel {
         every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns emptyList()
         every { viewModel invoke "eligibleToShowHeadlineCPM" withArguments listOf(queryParam) } returns true
 
-        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just runs
         coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } throws Exception()
 
         viewModel.getRecommendationList(productId, queryParam)
@@ -724,7 +727,7 @@ class TestRecommendationPageViewModel {
             )
         )
 
-        every { getTopAdsHeadlineUseCase.setParams(any()) } just runs
+        every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just runs
         coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineResponse
 
         viewModel.getRecommendationList(productId, queryParam)

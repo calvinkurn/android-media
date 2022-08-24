@@ -143,7 +143,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun observeGlobalEvent(fragment: Fragment) {
-        viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner, {
+        viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner) {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
                     onSuccessDeleteCartItem(it)
@@ -165,7 +165,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     }
                 }
             }
-        })
+        }
     }
 
     private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent) {

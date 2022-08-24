@@ -475,11 +475,6 @@
           "deeplink_variable": ""
      }, 
      {
-          "destination_activity": "com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/set-cashback/.*\\/", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.SET_CASHBACK"
-     }, 
-     {
           "destination_activity": "com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/reserved-stock/.*\\/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.RESERVED_STOCK"
@@ -551,8 +546,8 @@
      }, 
      {
           "destination_activity": "com.tokopedia.otp.verification.view.activity.VerificationActivity", 
-          "deeplink": "tokopedia-android-internal://global/cotp", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.COTP"
+          "deeplink": "tokopedia-android-internal://user/cotp", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.COTP"
      }, 
      {
           "destination_activity": "com.tokopedia.otp.silentverification.view.activity.SilentVerificationActivity", 
@@ -561,23 +556,23 @@
      }, 
      {
           "destination_activity": "com.tokopedia.otp.notif.view.activity.ReceiverNotifActivity", 
-          "deeplink": "tokopedia-android-internal://global/otp-push-notif-receiver", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_RECEIVER"
+          "deeplink": "tokopedia-android-internal://user/otp-push-notif-receiver", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_RECEIVER"
      }, 
      {
           "destination_activity": "com.tokopedia.otp.notif.view.activity.SettingNotifActivity", 
-          "deeplink": "tokopedia-android-internal://global/otp-push-notif-setting", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING"
+          "deeplink": "tokopedia-android-internal://user/otp-push-notif-setting", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_SETTING"
      }, 
      {
           "destination_activity": "com.tokopedia.otp.qrcode.view.activity.LoginByQrActivity", 
-          "deeplink": "tokopedia-android-internal://global/qr-login", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.QR_LOGIN"
+          "deeplink": "tokopedia-android-internal://user/qr-login", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.QR_LOGIN"
      }, 
      {
           "destination_activity": "com.tokopedia.otp.qrcode.view.activity.LoginByQrResultActivity", 
-          "deeplink": "tokopedia-android-internal://global/qr-login-result", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.QR_LOGIN_RESULT"
+          "deeplink": "tokopedia-android-internal://user/qr-login-result", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.QR_LOGIN_RESULT"
      }, 
      {
           "destination_activity": "com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity", 
@@ -1610,6 +1605,11 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.resolution.ResolutionSuccessActivity", 
+          "deeplink": "tokopedia-android-internal://resolution/success-create", 
+          "deeplink_variable": "ApplinkConstInternalOperational.SUCCESS_RESO"
+     }, 
+     {
           "destination_activity": "com.tokopedia.contactus.home.view.ContactUsHomeActivity", 
           "deeplink": "tokopedia://contactus", 
           "deeplink_variable": "ApplinkConst.CONTACT_US_NATIVE"
@@ -1975,12 +1975,12 @@
           "deeplink_variable": ""
      }, 
      {
-          "destination_activity": "com.tokopedia.people.views.UserProfileActivity", 
+          "destination_activity": "com.tokopedia.people.views.activity.UserProfileActivity", 
           "deeplink": "tokopedia-android-internal://people/.*\\", 
-          "deeplink_variable": ""
+          "deeplink_variable": "ApplinkConstInternalContent.PROFILE_DETAIL"
      }, 
      {
-          "destination_activity": "com.tokopedia.people.views.FollowerFollowingListingActivity", 
+          "destination_activity": "com.tokopedia.people.views.activity.FollowerFollowingListingActivity", 
           "deeplink": "tokopedia-android-internal://global/people/followers/", 
           "deeplink_variable": "ApplinkConstInternalGlobal.USER_PROFILE_FOLLOWERS"
      }, 
