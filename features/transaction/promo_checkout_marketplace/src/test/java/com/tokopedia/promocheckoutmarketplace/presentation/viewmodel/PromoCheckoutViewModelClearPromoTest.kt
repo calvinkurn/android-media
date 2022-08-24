@@ -23,6 +23,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import io.mockk.coEvery
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import java.lang.Exception
 
 class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
@@ -267,6 +268,21 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         //then
         assert(clearPromoParam.orderData.codes.isEmpty())
         assert(clearPromoParam.orderData.orders.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN clear promo error THEN should set state to error state`() {
+        // given
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            secondArg<(Exception) -> Unit>().invoke(Exception())
+        }
+
+        //when
+        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
     }
 
 }

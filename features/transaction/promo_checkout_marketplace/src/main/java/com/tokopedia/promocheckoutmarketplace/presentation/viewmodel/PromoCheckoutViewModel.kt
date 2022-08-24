@@ -1037,6 +1037,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 },
                 onError = {
                     PromoCheckoutIdlingResource.decrement()
+                    initClearPromoResponseAction()
                     setClearPromoStateFailed(it)
                 }
         )
