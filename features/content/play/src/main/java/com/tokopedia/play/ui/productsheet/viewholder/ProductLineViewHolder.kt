@@ -3,12 +3,12 @@ package com.tokopedia.play.ui.productsheet.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.databinding.ItemProductLineBinding
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.custom.ProductBottomSheetCardView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.util.addImpressionListener
 
 /**
  * Created by jegul on 03/03/20
@@ -61,7 +61,7 @@ class ProductLineViewHolder(
     fun bind(item: ProductSheetAdapter.Item.Product) {
         binding.root.setItem(item.product, item.section)
 
-        binding.root.addOnImpressionListener(
+        binding.root.addImpressionListener(
             item.product.impressHolder
         ) { listener.onProductImpressed(this, item.product, item.section) }
     }

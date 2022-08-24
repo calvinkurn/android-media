@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,6 +14,7 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -91,7 +91,7 @@ class ProductSheetSectionViewHolder(
             listener.onInformationClicked(this, item.section)
         }
 
-        binding.root.addOnImpressionListener(item.section.impressHolder) {
+        binding.root.addImpressionListener(item.section.impressHolder) {
             if (binding.btnSectionReminder.isVisible) {
                 listener.onReminderImpressed(this, item.section)
             }

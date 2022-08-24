@@ -3,10 +3,10 @@ package com.tokopedia.play.ui.pinnedvoucher.viewholder
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -30,7 +30,7 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
     }
 
     fun bind(item: MerchantVoucherUiModel) {
-        itemView.addOnImpressionListener(item.impressHolder) {
+        itemView.addImpressionListener(item.impressHolder) {
             listener.onVoucherImpressed(item, adapterPosition)
         }
 
