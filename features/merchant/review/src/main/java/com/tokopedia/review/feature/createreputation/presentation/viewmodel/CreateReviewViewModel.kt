@@ -3,7 +3,9 @@ package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -86,6 +88,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 typealias ReviewFormRequestState = RequestState<ProductRevGetForm, Nothing>
@@ -115,12 +118,14 @@ class CreateReviewViewModel @Inject constructor(
     private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase,
     private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase,
     private val getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase,
+    private val cacheManager: CacheManager
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     companion object {
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val GOOD_RATING_THRESHOLD = 2
+        private const val REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS = 1L
         private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
         private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
@@ -145,6 +150,7 @@ class CreateReviewViewModel @Inject constructor(
         private const val SAVED_STATE_POST_SUBMIT_REVIEW_RESULT = "savedStatePostSubmitReviewResult"
         private const val SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET = "savedStateShowIncentiveBottomSheet"
         private const val SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET = "savedStateShowTextAreaBottomSheet"
+        private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
     }
 
     // region state that need to be saved and restored
@@ -588,7 +594,7 @@ class CreateReviewViewModel @Inject constructor(
         )
     }
 
-    private fun mapTopics(
+    private suspend fun mapTopics(
         canRenderForm: Boolean,
         reviewFormRequestResult: ReviewFormRequestSuccessState
     ): CreateReviewTopicsUiState {
@@ -596,7 +602,10 @@ class CreateReviewViewModel @Inject constructor(
             if (reviewFormRequestResult.result.productrevGetForm.keywords.isNullOrEmpty()) {
                 CreateReviewTopicsUiState.Hidden
             } else {
-                CreateReviewTopicsUiState.Showing(reviewFormRequestResult.result.productrevGetForm.keywords)
+                CreateReviewTopicsUiState.Showing(
+                    reviewFormRequestResult.result.productrevGetForm.keywords,
+                    shouldRunReviewTopicsPeekAnimation()
+                )
             }
         } else {
             CreateReviewTopicsUiState.Hidden
@@ -1269,6 +1278,30 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun getErrorCode(throwable: Throwable): String {
         return ErrorHandler.getErrorMessagePair(null, throwable, ErrorHandler.Builder()).second
+    }
+
+    private suspend fun shouldRunReviewTopicsPeekAnimation(): Boolean {
+        return withContext(coroutineDispatcherProvider.io) {
+            val alreadyRun = isReviewTopicsPeekAnimationAlreadyRun()
+            if (alreadyRun.not()) updateIsReviewTopicsPeekAnimationAlreadyRun()
+            alreadyRun.not()
+        }
+    }
+
+    private fun isReviewTopicsPeekAnimationAlreadyRun(): Boolean {
+        return cacheManager.get(
+            customId = CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN,
+            type = Boolean::class.java,
+            defaultValue = false
+        ).orFalse()
+    }
+
+    private fun updateIsReviewTopicsPeekAnimationAlreadyRun() {
+        cacheManager.put(
+            customId = CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN,
+            objectToPut = true,
+            cacheDuration = TimeUnit.DAYS.toMillis(REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS)
+        )
     }
 
     fun submitReview() {

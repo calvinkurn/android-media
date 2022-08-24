@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -92,6 +93,9 @@ abstract class CreateReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase
 
+    @RelaxedMockK
+    lateinit var cacheManager: CacheManager
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -162,7 +166,8 @@ abstract class CreateReviewViewModelTestFixture {
             userSessionInterface,
             getReviewTemplatesUseCase,
             getBadRatingCategoryUseCase,
-            getPostSubmitBottomSheetUseCase
+            getPostSubmitBottomSheetUseCase,
+            cacheManager
         )
     }
 

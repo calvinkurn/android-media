@@ -53,12 +53,7 @@ class CreateReviewTopics @JvmOverloads constructor(
             is CreateReviewTopicsUiState.Showing -> {
                 binding.showTopics(uiState.topics)
                 animateShow(onAnimationEnd = {
-                    if (isFirstShow) {
-                        isFirstShow = false
-                        animateScrollToEnd(continuation)
-                    } else {
-                        continuation.resume(Unit)
-                    }
+                    shouldAnimatePeek(uiState.animatePeek, continuation)
                 })
             }
             is CreateReviewTopicsUiState.Hidden -> {
@@ -66,6 +61,15 @@ class CreateReviewTopics @JvmOverloads constructor(
                     continuation.resume(Unit)
                 })
             }
+        }
+    }
+
+    private fun shouldAnimatePeek(animatePeek: Boolean, continuation: Continuation<Unit>) {
+        if (animatePeek && isFirstShow) {
+            isFirstShow = false
+            animateScrollToEnd(continuation)
+        } else {
+            continuation.resume(Unit)
         }
     }
 
