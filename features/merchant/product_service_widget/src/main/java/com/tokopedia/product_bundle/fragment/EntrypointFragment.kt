@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.oldproductbundle.common.data.mapper.ProductBundleApplinkMapper.DEFAULT_VALUE_WAREHOUSE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
@@ -41,6 +40,7 @@ class EntrypointFragment : BaseDaggerFragment() {
         private const val EXTRA_WAREHOUSE_ID = "PARENT_WAREHOUSE_ID"
 
         const val tagFragment = "TAG_FRAGMENT"
+        const val DEFAULT_VALUE_WAREHOUSE_ID = "0"
 
         @JvmStatic
         fun newInstance(bundleId: Long, selectedProductsId: ArrayList<String>, source: String, parentProductId: Long, warehouseId: String): EntrypointFragment {
