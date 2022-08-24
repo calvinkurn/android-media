@@ -106,7 +106,7 @@ class PlayInteractiveLeaderboardViewComponent(
 
         registerAdapterObserver()
 
-        btnRefreshError.rootView.addImpressionListener(impressHolder){
+        btnRefreshError.addImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)
         }
     }
