@@ -28,14 +28,19 @@ class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2Empt
                 if (item.dataObject.listButton.isNotEmpty()) {
                     setPrimaryCTAText(item.dataObject.listButton[0].text)
 
-                    if (item.dataObject.listButton[0].action == ACTION_ADD_ITEM_TO_COLLECTION) {
-                        setPrimaryCTAClickListener { actionListener?.goToWishlistAll() }
-                    } else if (item.dataObject.listButton[0].action == ACTION_SEARCH_ITEM) {
-                        setPrimaryCTAClickListener { actionListener?.onNotFoundButtonClicked(item.dataObject.query) }
-                    } else if (item.dataObject.listButton[0].action == ACTION_RESET_FILTER) {
-                        setPrimaryCTAClickListener { actionListener?.onResetFilter() }
-                    } else if (item.dataObject.listButton[0].action == ACTION_SHOW_SEARCH_BAR) {
-                        setPrimaryCTAClickListener { actionListener?.onCariBarangClicked() }
+                    when (item.dataObject.listButton[0].action) {
+                        ACTION_ADD_ITEM_TO_COLLECTION -> {
+                            setPrimaryCTAClickListener { actionListener?.goToWishlistAllToAddCollection() }
+                        }
+                        ACTION_SEARCH_ITEM -> {
+                            setPrimaryCTAClickListener { actionListener?.onNotFoundButtonClicked(item.dataObject.query) }
+                        }
+                        ACTION_RESET_FILTER -> {
+                            setPrimaryCTAClickListener { actionListener?.onResetFilter() }
+                        }
+                        ACTION_SHOW_SEARCH_BAR -> {
+                            setPrimaryCTAClickListener { actionListener?.onCariBarangClicked() }
+                        }
                     }
 
                     if (item.dataObject.listButton.size > 1) {

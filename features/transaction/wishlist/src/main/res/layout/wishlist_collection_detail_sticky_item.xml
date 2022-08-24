@@ -11,31 +11,38 @@
         android:layout_height="wrap_content"
         android:visibility="visible">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_collection_detail_count_label"
+        <LinearLayout
+            android:id="@+id/ll_total_barang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            app:typographyWeight="bold"
-            app:typographyType="body_2"
-            tools:text="10"/>
+            android:orientation="horizontal"
+            tools:visibility="gone">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_barang_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/wishlist_collection_detail_count_label"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler"
-            android:text="@string/wishlist_v2_barang_label"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_collection_detail_count_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
+                app:typographyType="body_2"
+                tools:text="10"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_barang_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                android:text="@string/wishlist_v2_barang_label"/>
+
+        </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_atur_dan_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

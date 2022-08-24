@@ -1361,7 +1361,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.hideTicker()
     }
 
-    override fun goToWishlistAll() {
+    override fun goToWishlistAllToAddCollection() {
         // wishlist collection only
     }
 
@@ -1374,7 +1374,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         WishlistV2Analytics.clickThreeDotsOnProductCard()
     }
 
-    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int) {
+    override fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
         if (isChecked) {
             listBulkDelete.add(productId)
         } else {
@@ -1491,18 +1491,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun turnOnBulkDeleteMode() {
         isBulkDeleteShow = true
-        onManageClicked(showCheckbox = true, false)
+        onManageClicked(showCheckbox = true, false, false)
     }
 
     private fun turnOffBulkDeleteMode() {
         isBulkDeleteShow = false
-        onManageClicked(showCheckbox = false, false)
+        onManageClicked(showCheckbox = false, false, false)
         binding?.run {
             wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_manage_label)
         }
     }
 
-    override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean) {
+    override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean) {
         if (showCheckbox) {
             disableSwipeRefreshLayout()
             listBulkDelete.clear()

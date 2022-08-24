@@ -15,10 +15,13 @@ object WishlistV2Utils {
     private var recommPositionDefault = 4
     private var recommWithTickerPosition = 5
     private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+    private val listProductId = arrayListOf<String>()
 
     fun toDp(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
+
+    fun getListProductId(): List<String> { return listProductId }
 
     fun organizeWishlistV2Data(
         wishlistV2UiModel: WishlistV2UiModel,
@@ -40,6 +43,10 @@ object WishlistV2Utils {
 
         } else {
             if (wishlistV2UiModel.page == 1) {
+                listProductId.clear()
+                wishlistV2UiModel.items.forEach { item ->
+                    listProductId.add(item.id)
+                }
                 recommPosition = recommPositionDefault
                 if (wishlistV2UiModel.ticker.message.isNotEmpty()) {
                     recommPosition = recommWithTickerPosition

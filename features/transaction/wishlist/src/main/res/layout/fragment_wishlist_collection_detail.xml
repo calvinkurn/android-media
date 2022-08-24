@@ -146,6 +146,33 @@
         app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout">
 
         <LinearLayout
+            android:id="@+id/container_add_bulk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/bg_delete_wishlist_v2"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/bulk_add_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:enabled="true"
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/container_delete_collection_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

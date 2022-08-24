@@ -15,10 +15,18 @@ class WishlistV2CountManageRowItemViewHolder(private val binding: WishlistV2Stic
             binding.wishlistManageLabel.setOnClickListener {
                 if (!isShowCheckbox) {
                     binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_cancel_manage_label)
-                    actionListener?.onManageClicked(true, false)
+                    actionListener?.onManageClicked(
+                        showCheckbox = true,
+                        isDeleteOnly = false,
+                        isBulkAdd = false
+                    )
                 } else {
                     binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_manage_label)
-                    actionListener?.onManageClicked(false, false)
+                    actionListener?.onManageClicked(
+                        showCheckbox = false,
+                        isDeleteOnly = false,
+                        isBulkAdd = false
+                    )
                 }
                 item.dataObject.isBulkDeleteShow = !item.dataObject.isBulkDeleteShow
             }

@@ -65,12 +65,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
         fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item)
-        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int)
+        fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int)
         fun onUncheckAutomatedBulkDelete(productId: String, isChecked: Boolean, position: Int)
         fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onCheckSimilarProduct(url: String)
         fun onResetFilter()
-        fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean)
+        fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean)
         fun onProductItemClicked(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
@@ -82,7 +82,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2UiModel.StorageCleanerBottomSheet)
         fun onTickerCTASortFromLatest()
         fun onTickerCloseIconClicked()
-        fun goToWishlistAll()
+        fun goToWishlistAllToAddCollection()
         fun onChangeCollectionName()
     }
 
@@ -312,13 +312,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemChanged(position)
     }
 
-    private fun clearCheckbox() {
+    fun clearCheckbox() {
         listTypeData.forEach {
             it.isChecked = false
         }
     }
 
-    private fun checkAllCheckbox() {
+    fun checkAllCheckbox() {
         listTypeData.forEach {
             it.isChecked = true
         }
