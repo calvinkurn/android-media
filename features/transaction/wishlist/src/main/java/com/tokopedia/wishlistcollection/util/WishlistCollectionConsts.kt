@@ -16,4 +16,5 @@ object WishlistCollectionConsts {
     const val TYPE_COLLECTION_CREATE = "collection_create"
     const val TYPE_COLLECTION_EMPTY_CAROUSEL = "collection_empty_carousel"
     const val TYPE_COLLECTION_DIVIDER = "collection_divider"
+    const val TYPE_COLLECTION_LOADER = "collection_loader"
 }

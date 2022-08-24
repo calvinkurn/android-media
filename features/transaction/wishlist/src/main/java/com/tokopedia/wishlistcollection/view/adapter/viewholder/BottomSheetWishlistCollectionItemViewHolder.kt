@@ -3,6 +3,7 @@ package com.tokopedia.wishlistcollection.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.wishlist.R
@@ -30,12 +31,22 @@ class BottomSheetWishlistCollectionItemViewHolder(
                 } else {
                     labelCollectionItem.gone()
                 }
-                collectionItemImage.apply {
-                    loadImage(item.dataObject.imageUrl) {
-                        setCacheStrategy(MediaCacheStrategy.NONE)
-                        setPlaceHolder(R.drawable.placeholder_img)
+                if (item.dataObject.imageUrl.isNotEmpty()) {
+                    collectionItemImage.apply {
+                        loadImage(item.dataObject.imageUrl) {
+                            setCacheStrategy(MediaCacheStrategy.NONE)
+                            setPlaceHolder(R.drawable.placeholder_img)
+                        }
+                    }
+                } else {
+                    collectionItemImage.apply {
+                        clearImage()
+                        loadImage(R.drawable.placeholder_img) {
+                            setCacheStrategy(MediaCacheStrategy.NONE)
+                        }
                     }
                 }
+
                 mainCollectionItemName.text = item.dataObject.name
                 mainCollectionTotalItem.text =
                     "${item.dataObject.totalItem} ${item.dataObject.itemText}"

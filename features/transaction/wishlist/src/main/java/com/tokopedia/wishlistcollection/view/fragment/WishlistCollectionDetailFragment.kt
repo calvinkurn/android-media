@@ -372,12 +372,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg
                             )
                         }
-                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                     }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -397,13 +397,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 context?.getString(Rv2.string.wishlist_v2_common_error_msg)
                             if (deleteCollectionItems.data.message.isNotEmpty()) errorMessage =
                                 deleteCollectionItems.data.message
-                            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                            errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -451,7 +451,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 context?.getString(Rv2.string.wishlist_v2_common_error_msg)
                             if (bulkDeleteWishlistV2.message.isNotEmpty()) errorMessage =
                                 bulkDeleteWishlistV2.message
-                            errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                            errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
@@ -535,7 +535,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.errorMessage.isNotEmpty()) {
-                            showToaster(collectionDetail.errorMessage, "", Toaster.TYPE_ERROR)
+                            showToasterActionOke(collectionDetail.errorMessage, Toaster.TYPE_ERROR)
                         }
 
                         countRemovableAutomaticDelete =
@@ -546,7 +546,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     finishRefresh()
                     onFailedGetWishlistV2(result.throwable)
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
 
                     val labelError = String.format(
                         getString(Rv2.string.on_error_observing_wishlist_v2_string_builder),
@@ -571,7 +571,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     if (it.data.isStatusError()) {
                         val atcErrorMessage = it.data.getAtcErrorMessage()
                         if (atcErrorMessage != null) {
-                            showToaster(atcErrorMessage, "", Toaster.TYPE_ERROR)
+                            showToasterActionOke(atcErrorMessage, Toaster.TYPE_ERROR)
                         } else {
                             context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
@@ -593,7 +593,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         if (errorMessage.isBlank()) {
                             errorMessage = ctx.getString(Rv2.string.wishlist_v2_common_error_msg)
                         }
-                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
 
                         val labelError = String.format(
                             getString(Rv2.string.on_error_observing_atc_string_builder),
@@ -680,7 +680,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Fail -> {
                     finishRefresh()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
 
                     val labelError = String.format(
                         getString(Rv2.string.on_error_observing_wishlist_data_string_builder),
@@ -717,7 +717,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
 
                     val labelError = String.format(
                         getString(Rv2.string.on_error_observing_delete_wishlist_v2_string_builder),
@@ -1071,7 +1071,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun stopDeletionAndShowToasterError(message: String) {
-        showToaster(message, "", Toaster.TYPE_ERROR)
+        showToasterActionOke(message, Toaster.TYPE_ERROR)
         finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
         doRefresh()
     }

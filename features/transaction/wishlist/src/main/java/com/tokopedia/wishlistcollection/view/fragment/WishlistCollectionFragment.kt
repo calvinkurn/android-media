@@ -59,6 +59,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
 import com.tokopedia.wishlistcollection.view.adapter.itemdecoration.WishlistCollectionItemOffsetDecoration
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
@@ -68,7 +69,6 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListener
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import javax.inject.Inject
 import kotlin.math.roundToInt
-
 
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
     BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
@@ -238,6 +238,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when (collectionAdapter.getItemViewType(position)) {
+                        LAYOUT_LOADER -> 1
                         WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
                         LAYOUT_RECOMMENDATION_TITLE -> 2
                         WishlistCollectionAdapter.LAYOUT_EMPTY_COLLECTION -> 2
@@ -303,6 +304,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     private fun observingWishlistCollections() {
+        showLoader()
         collectionViewModel.collections.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -737,6 +739,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     recommendationItem.productId.toString())
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun showLoader() {
+        collectionAdapter.showLoader()
+        binding?.run {
+            wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.gone()
         }
     }
 }

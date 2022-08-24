@@ -14,6 +14,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_DIVIDER
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_EMPTY_CAROUSEL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_ITEM
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_LOADER
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.*
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
@@ -31,6 +32,10 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         const val LAYOUT_CREATE_COLLECTION = 2
         const val LAYOUT_EMPTY_COLLECTION = 3
         const val LAYOUT_DIVIDER = 5
+        // note: 16 because type layout is joined with type in WishlistV2Adapter, to prevent any conflict/crashed
+        const val LAYOUT_LOADER = 16
+        const val START_LOADER = 0
+        const val TOTAL_LOADER = 6
     }
 
     interface ActionListener {
@@ -54,6 +59,14 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            LAYOUT_LOADER -> {
+                val binding = CollectionWishlistLoaderItemBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                WishlistCollectionLoaderItemViewHolder(binding)
+            }
             LAYOUT_COLLECTION_TICKER -> {
                 val binding = CollectionWishlistTickerItemBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -106,6 +119,9 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         if (holder.itemView.layoutParams is GridLayoutManager.LayoutParams) {
             val element = listTypeData[position]
             when (element.typeLayout) {
+                TYPE_COLLECTION_LOADER -> {
+                    (holder as WishlistCollectionLoaderItemViewHolder).bind()
+                }
                 TYPE_COLLECTION_TICKER -> {
                     (holder as WishlistCollectionTickerItemViewHolder).bind(element, isTickerCloseClicked)
                 }
@@ -137,6 +153,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     override fun getItemCount(): Int {
+        println("++ size = ${listTypeData.size}")
         return listTypeData.size
     }
 
@@ -149,6 +166,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
             WishlistV2Consts.TYPE_RECOMMENDATION_LIST -> WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST
             WishlistV2Consts.TYPE_RECOMMENDATION_TITLE -> WishlistV2Adapter.LAYOUT_RECOMMENDATION_TITLE
             TYPE_COLLECTION_DIVIDER -> LAYOUT_DIVIDER
+            TYPE_COLLECTION_LOADER -> LAYOUT_LOADER
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -166,5 +184,13 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     fun resetTicker() {
         isTickerCloseClicked = false
+    }
+
+    fun showLoader() {
+        listTypeData.clear()
+        for (x in START_LOADER until TOTAL_LOADER) {
+            listTypeData.add(WishlistCollectionTypeLayoutData("", TYPE_COLLECTION_LOADER))
+        }
+        notifyDataSetChanged()
     }
 }
