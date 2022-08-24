@@ -68,7 +68,7 @@ class MessageBubbleLayout : ViewGroup {
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
-        val additionalWidthSpace = 10
+        val additionalWidthSpace = ADDITIONAL_WIDTH_SPACE
 
         /**
          * Find child max width and calculate layout height
@@ -180,5 +180,6 @@ class MessageBubbleLayout : ViewGroup {
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1
         const val DEFAULT_MSG_ORIENTATION = LEFT_MSG_ORIENTATION
+        const val ADDITIONAL_WIDTH_SPACE = 10
     }
 }

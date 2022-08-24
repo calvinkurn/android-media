@@ -54,7 +54,7 @@ class RightChatMessageUnifyViewHolder(
             customChatLayout?.fxChat?.background = backgroundChatWithReplyBubble
             customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.apply {
-                setPadding(paddingLeft,paddingTop,-4,paddingBottom)
+                setPadding(paddingLeft,paddingTop,rightMargin,paddingBottom)
             }
             customChatLayout?.background = null
             setupReplyBubble(senderName, message)
@@ -91,5 +91,6 @@ class RightChatMessageUnifyViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_chatbot_chat_right
+        const val rightMargin = -4
     }
 }
