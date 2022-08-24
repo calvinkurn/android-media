@@ -7,13 +7,13 @@ import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
  * created by @bayazidnasir on 23/8/2022
  */
 
-class ItemsDealsShort : Visitable<OrderDetailTypeFactoryImpl> {
+data class ItemsDealsShort(val item: Items) : Visitable<OrderDetailTypeFactoryImpl> {
     override fun type(typeFactory: OrderDetailTypeFactoryImpl): Int {
        return typeFactory.type(this)
     }
 }
 
-class ItemsDealsOMP(
+data class ItemsDealsOMP(
     val orderDetails: OrderDetails,
     val item: Items,
 ) : Visitable<OrderDetailTypeFactoryImpl> {
@@ -28,7 +28,7 @@ class ItemsDeals : Visitable<OrderDetailTypeFactoryImpl> {
     }
 }
 
-class ItemsEvents(
+data class ItemsEvents(
     val orderDetails: OrderDetails,
     val item: Items,
 ) : Visitable<OrderDetailTypeFactoryImpl> {
@@ -37,7 +37,7 @@ class ItemsEvents(
     }
 }
 
-class ItemsInsurance(
+data class ItemsInsurance(
     val orderDetails: OrderDetails,
     val item: Items,
 ) : Visitable<OrderDetailTypeFactoryImpl> {
