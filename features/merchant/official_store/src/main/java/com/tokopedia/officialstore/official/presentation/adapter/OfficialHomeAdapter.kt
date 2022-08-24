@@ -39,12 +39,6 @@ class OfficialHomeAdapter(private val adapterTypeFactory: OfficialHomeTypeFactor
         layoutParams.isFullSpan = item !is ProductRecommendationDataModel
     }
 
-//    override fun submitList(list: MutableList<Visitable<*>>?) {
-//        recyclerView?.runWhenReady {
-//            super.submitList(list)
-//        }
-//    }
-
     override fun getItemViewType(position: Int): Int {
         return when {
             getItem(position) is HomeComponentVisitable -> {
