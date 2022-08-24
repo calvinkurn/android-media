@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparati
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SelectAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -226,10 +227,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.contentAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        if (contentAccount.id == parentViewModel.selectedAccountID) return
                         if (parentViewModel.channelTitle.isNotEmpty()
                             && !getSwitchAccountConfirmationDialog(contentAccount).isShowing) {
                             getSwitchAccountConfirmationDialog(contentAccount).show()
-                        }
+                        } else parentViewModel.submitAction(SelectAccount(contentAccount))
                     }
                 })
             }
@@ -800,7 +802,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     else getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(PlayBroadcastAction.SelectAccount(contentAccount))
+                    parentViewModel.submitAction(SelectAccount(contentAccount))
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }
