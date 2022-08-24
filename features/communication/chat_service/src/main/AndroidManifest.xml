@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".view.activity.ChatServiceActivity"
-            android:label="@string/chat_service"
+            android:label="@string/title_chat_service"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.White">
