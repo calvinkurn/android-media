@@ -48,6 +48,7 @@ import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -802,11 +803,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getLeaderboardWithSlots(allowChat: Boolean = false) {
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
-            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat)
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz) it.copy(endsIn = endTimeInteractive)
+                else it
+            }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value =
                 QuizDetailStateUiModel.Error(allowChat = allowChat, isQuizDetail = false)
+        }
+    }
+
+    private val endTimeInteractive: Calendar? get() {
+        return when (val value = _interactive.value){
+            is InteractiveUiModel.Quiz -> return when (val status = value.status){
+                is InteractiveUiModel.Quiz.Status.Ongoing -> status.endTime
+                else -> null
+            }
+            else -> null
         }
     }
 

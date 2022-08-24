@@ -47,13 +47,13 @@ class PlayGameViewHolder {
                     )
                 )
             )
-            if (item.endsIn == 0) hideTimer() else showTimer(item.endsIn.toLong())
+            if (item.endsIn == null) hideTimer() else showTimer(item.endsIn)
         }
 
-        private fun showTimer(duration: Long) {
+        private fun showTimer(duration: Calendar) {
             binding.tvEndsIn.show()
             binding.timerEndsIn.show()
-            setTimer(duration)
+            setTargetTime(duration)
         }
 
         private fun hideTimer() {
@@ -61,13 +61,7 @@ class PlayGameViewHolder {
             binding.timerEndsIn.hide()
         }
 
-        private fun setTimer(duration: Long, onFinished: () -> Unit = {}) {
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.SECOND, duration.toInt())
-            setTargetTime(calendar, onFinished)
-        }
-
-        private fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
+        private fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit = {}) {
             binding.tvEndsIn.show()
             binding.timerEndsIn.show()
             binding.timerEndsIn.apply {

@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.model.ui
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.Calendar
 
 
 /**
@@ -10,7 +11,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 sealed class LeaderboardGameUiModel {
     data class Header(
         val title: String, val reward: String = "",
-        val endsIn: Int = 0,
+        val endsIn: Calendar? = null,
         val leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
         val id: String,
         val impressHolder: ImpressHolder = ImpressHolder()
