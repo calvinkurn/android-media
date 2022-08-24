@@ -12,7 +12,7 @@ interface PlayBroadcastChannelRepository {
 
     suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel
 
-    suspend fun createChannel(): String
+    suspend fun createChannel(authorId: String, authorType: String): String
 
     suspend fun updateChannelStatus(channelId: String, status: PlayChannelStatusType): String
 

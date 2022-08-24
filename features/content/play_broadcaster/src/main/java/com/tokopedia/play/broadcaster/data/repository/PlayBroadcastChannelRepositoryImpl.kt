@@ -49,10 +49,11 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createChannel(): String = withContext(dispatchers.io) {
+    override suspend fun createChannel(authorId: String, authorType: String): String = withContext(dispatchers.io) {
         val response = createChannelUseCase.apply {
             params = CreateChannelUseCase.createParams(
-                authorId = userSession.shopId
+                authorId = authorId,
+                authorType = authorType
             )
         }.executeOnBackground()
         return@withContext response.id

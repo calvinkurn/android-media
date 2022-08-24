@@ -49,17 +49,23 @@ class CreateChannelUseCase @Inject constructor(
         private const val PARAMS_AUTHOR_ID = "authorId"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_STATUS = "status"
-
-        private const val VALUE_SHOP_TYPE = 2 // shop type
+        private const val TYPE_USER = "content-user"
+        private const val TYPE_SHOP = "content-shop"
+        private const val VALUE_TYPE_ID_SHOP = 2
+        private const val VALUE_TYPE_ID_USER = 3
 
         fun createParams(
-                authorId: String,
-                authorType: Int = VALUE_SHOP_TYPE,
-                status: PlayChannelStatusType = PlayChannelStatusType.Draft
+            authorId: String,
+            authorType: String,
+            status: PlayChannelStatusType = PlayChannelStatusType.Draft
         ): Map<String, Any> = mapOf(
-                PARAMS_AUTHOR_ID to authorId,
-                PARAMS_AUTHOR_TYPE to authorType,
-                PARAMS_STATUS to status.value.toInt()
+            PARAMS_AUTHOR_ID to authorId,
+            PARAMS_AUTHOR_TYPE to when (authorType) {
+                TYPE_USER -> VALUE_TYPE_ID_USER
+                TYPE_SHOP -> VALUE_TYPE_ID_SHOP
+                else -> 0
+            },
+            PARAMS_STATUS to status.value.toInt()
         )
     }
 
