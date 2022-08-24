@@ -39,8 +39,8 @@ class ProductBundlingViewModel(val application: Application, val components: Com
     fun fetchProductBundlingData() {
         launchCatchError(block = {
             productBundlingUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
-            if(!components.data.isNullOrEmpty()){
-                bundledProductData.value = DiscoveryDataMapper().mapListToBundleProductList(components)
+            if(!getProductList().isNullOrEmpty()){
+                bundledProductData.value = components.getComponentsItem()?.firstOrNull()?.let { DiscoveryDataMapper().mapListToBundleProductList(it) }
             }
         }, onError = {
             _showErrorState.value = true

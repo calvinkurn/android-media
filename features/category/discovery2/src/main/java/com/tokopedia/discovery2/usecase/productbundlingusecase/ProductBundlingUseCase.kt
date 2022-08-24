@@ -16,8 +16,8 @@ class ProductBundlingUseCase @Inject constructor(private val productBundlingRepo
                         component.dynamicOriginalId!! else componentId,
                     mutableMapOf(),
                     pageEndPoint, it.name)
-            val bundleProductListData = (productListData?.data ?: emptyList()).toMutableList()
-            if (bundleProductListData.isEmpty()) return true
+            it.setComponentsItem(productListData, component.tabName)
+            if (productListData.isEmpty()) return true
             return true
         }
         return false

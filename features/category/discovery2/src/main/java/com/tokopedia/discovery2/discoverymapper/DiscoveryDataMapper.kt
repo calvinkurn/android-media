@@ -337,14 +337,14 @@ class DiscoveryDataMapper {
                 shopName = component.data?.firstOrNull()?.shopName ?: "",
                 shopIconUrl = component.data?.firstOrNull()?.shopLogo ?: ""
         )
-        component.data?.firstOrNull()?.bundlings?.forEach { bundlings ->
+        component.data?.firstOrNull()?.let { bundleData ->
             val bundleDetailUiModelList: ArrayList<BundleDetailUiModel> = arrayListOf()
             val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
             val bundleModel = BundleUiModel(
-                    bundleName = bundlings?.bundlingData?.firstOrNull()?.bundleName ?: "",
-                    bundleType = if (bundlings?.type == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
+                    bundleName = bundleData.bundleName ?: "",
+                    bundleType = if (bundleData.type == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
                     bundleDetails = bundleDetailUiModelList.apply {
-                        bundlings?.bundlingData?.firstOrNull()?.bundleDetails?.forEach { bundleDetails ->
+                        bundleData.bundleDetails?.forEach { bundleDetails ->
                             add(BundleDetailUiModel(
                                     bundleId = (bundleDetails?.bundleId ?: "").toString(),
                                     originalPrice = (bundleDetails?.originalPrice ?: "").toString(),
@@ -361,7 +361,7 @@ class DiscoveryDataMapper {
                                     totalSold = 0,// need to check for this key
                                     shopInfo = bundleShopUiModel,
                                     products = bundleProductUiModel.apply {
-                                        bundlings.bundlingData?.firstOrNull()?.bundleProducts?.forEach { bundleProducts ->
+                                        bundleData.bundleProducts?.forEach { bundleProducts ->
                                             add(BundleProductUiModel(
                                                     productId = (bundleProducts?.productId
                                                             ?: "").toString(),
