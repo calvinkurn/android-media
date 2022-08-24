@@ -14,19 +14,12 @@ class EngagementWidgetViewHolder(
 ) :
     BaseViewHolder(binding) {
 
-    fun bind(item: EngagementUiModel) {
-        when(item){
-            is EngagementUiModel.Game -> setupGame(item)
-            is EngagementUiModel.Promo -> setupPromo(item)
-        }
-    }
-
-    private fun setupPromo(item: EngagementUiModel.Promo){
+    fun bindPromo(item: EngagementUiModel.Promo){
         //TODO build string
         binding.setupPromo(title = item.info.title)
     }
 
-    private fun setupGame(item: EngagementUiModel.Game) {
+    fun bindGame(item: EngagementUiModel.Game) {
         when(item.interactive){
             is InteractiveUiModel.Giveaway -> setupGiveaway(item.interactive)
             is InteractiveUiModel.Quiz-> setupQuiz(item.interactive)
