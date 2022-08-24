@@ -101,7 +101,6 @@ class WishlistCollectionItemViewHolder(
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
                         params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
-//                        params1.height = WishlistV2Utils.toDp(MERGE_SIZE)
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             visible()
