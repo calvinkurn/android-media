@@ -11,8 +11,12 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.Gson
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.watch.databinding.ActivityTokopediaWatchBinding
 import com.tokopedia.watch.listenerservice.DataLayerServiceListener
@@ -56,6 +60,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
     private val logList = mutableListOf<String>()
 
+    lateinit var userSession: UserSessionInterface
+
     override fun onResume() {
         super.onResume()
         dataClient.addListener(this)
@@ -70,6 +76,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokopedia_watch)
+
+        userSession = UserSession(this)
 
         binding?.tvConnectedDevice?.text = ""
         binding?.tvLog?.text = ""
@@ -223,6 +231,10 @@ class TokopediaWatchActivity : AppCompatActivity(),
     }
 
     private fun getOrderList() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
+        }
+
         val useCase = GetOrderListUseCase(
             GraphqlUseCase(),
             OrderListMapper()
