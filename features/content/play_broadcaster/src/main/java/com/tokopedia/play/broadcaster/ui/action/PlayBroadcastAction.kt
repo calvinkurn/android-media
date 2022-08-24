@@ -22,7 +22,7 @@ sealed interface PlayBroadcastAction {
     data class SetProduct(val productTagSectionList: List<ProductTagSectionUiModel>) : PlayBroadcastAction
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
-    object GetAccountList: PlayBroadcastAction
+    object GetAccountConfiguration: PlayBroadcastAction
     data class SelectAccount(val contentAccount: ContentAccountUiModel): PlayBroadcastAction
 
     object ExitLive : PlayBroadcastAction

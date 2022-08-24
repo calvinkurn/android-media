@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
@@ -290,7 +291,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun getConfiguration() {
         startNetworkMonitoring()
-        viewModel.getConfiguration()
+        viewModel.submitAction(PlayBroadcastAction.GetAccountConfiguration)
     }
 
     private fun populateSavedState(savedInstanceState: Bundle) {
