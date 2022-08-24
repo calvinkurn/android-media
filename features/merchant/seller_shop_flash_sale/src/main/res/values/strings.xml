@@ -384,5 +384,5 @@
     <string name="ssfs_quota_monitoring_ticker_description">Agar bisa punya kuota lebih banyak, upgrade tipe keanggotaan tokomu atau cek Paket Promosi, yuk!</string>
     <string name="ssfs_label_learn_quota">Pelajari Tentang Kuota</string>
     <string name="ssfs_remaining_and_total_quota_value_placeholder">%d/%2d</string>
-
+    <string name="ssfs_expire_soon_value_placeholder"><![CDATA[<b><font color=#F94D63>%d</font></b> sumber akan <font color=#F94D63>segera</font> kadaluwarsa ]]></string>
 </resources>

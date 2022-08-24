@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,14 +30,7 @@ import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.showError
-import com.tokopedia.shop.flashsale.common.extension.showLoading
-import com.tokopedia.shop.flashsale.common.extension.showToaster
-import com.tokopedia.shop.flashsale.common.extension.slideDown
-import com.tokopedia.shop.flashsale.common.extension.slideUp
-import com.tokopedia.shop.flashsale.common.extension.stopLoading
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
@@ -68,6 +60,8 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.lang.reflect.Method
+import java.util.*
 import javax.inject.Inject
 
 class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>(),
@@ -491,18 +485,30 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.cardView.slideUp()
     }
 
-    @SuppressLint("ResourcePackage")
     private fun displayVpsPackages(packages: List<VpsPackage>) {
         var totalQuota = 0
         var totalRemainingQuota = 0
         val totalQuotaSource = packages.count()
+        var isNearExpirePackageAvailable = false
+        var packageNearExpireCount = 0
 
         packages.forEach { vpsPackage ->
             totalQuota += vpsPackage.originalQuota
             totalRemainingQuota += vpsPackage.remainingQuota
+            if (vpsPackage.packageEndTime.epochToDate().daysDifference(Date()) <= 3) {
+                isNearExpirePackageAvailable = true
+                packageNearExpireCount++
+            }
         }
 
         binding?.run {
+            if (isNearExpirePackageAvailable) {
+                groupAvailableSourceQuota.gone()
+                tgExpireValue.visible()
+            } else {
+                groupAvailableSourceQuota.visible()
+                tgExpireValue.gone()
+            }
             tgQuotaValue.run {
                 text = if (totalRemainingQuota.isMoreThanZero()) {
                     MethodChecker.fromHtml(
@@ -521,6 +527,14 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                         )
                     )
                 }
+            }
+            tgExpireValue.run {
+                text = MethodChecker.fromHtml(
+                    getString(
+                        R.string.ssfs_expire_soon_value_placeholder,
+                        packageNearExpireCount
+                    )
+                )
             }
             tgQuotaSourceValue.text = MethodChecker.fromHtml(
                 getString(

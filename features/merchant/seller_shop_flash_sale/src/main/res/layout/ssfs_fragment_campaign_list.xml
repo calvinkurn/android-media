@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler"
-                tools:text="@string/sfs_quota_monitoring_value_placeholder" />
+                tools:text="@string/sfs_quota_monitoring_value_placeholder_normal_state" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_quota_source_value"
@@ -64,6 +64,19 @@
                 app:typographyType="small"
                 app:typographyWeight="reguler"
                 tools:text="@string/sfs_quota_source_monitoring_value_placeholder" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_expire_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/gr_700"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="@string/ssfs_expire_soon_value_placeholder" />
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/image_chevron_right"
@@ -83,6 +96,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_available_source_quota"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="tg_quota_value,tg_quota_source_value"
+                tools:visibility="gone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
