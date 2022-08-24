@@ -348,29 +348,33 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         val addressModel = data.getParcelableExtra<RecipientAddressModel>(
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         ) ?: RecipientAddressModel()
-                        val recipientAddress = KeroGetAddress.Data(
+                        if (addressModel.id != null && addressModel.cityId != null && addressModel.provinceId != null && addressModel.destinationDistrictId != null) {
+                            val recipientAddress = KeroGetAddress.Data(
                                 addressModel.id.toInt(),
-                                addressModel.addressName,
-                                addressModel.addressName,
-                                addressModel.addressName,
+                                addressModel.addressName ?: "",
+                                addressModel.addressName ?: "",
+                                addressModel.addressName ?: "",
                                 addressModel.cityId.toInt(),
                                 addressModel.cityName ?: "",
                                 addressModel.countryName ?: "",
                                 addressModel.destinationDistrictId.toInt(),
-                                addressModel.destinationDistrictName,
+                                addressModel.destinationDistrictName ?: "",
                                 addressModel.isSelected,
                                 addressModel.isSelected,
                                 addressModel.isSelected,
-                                addressModel.latitude,
-                                addressModel.longitude,
+                                addressModel.latitude ?: "",
+                                addressModel.longitude ?: "",
                                 addressModel.recipientPhoneNumber,
-                                addressModel.postalCode,
+                                addressModel.postalCode ?: "",
                                 addressModel.provinceId.toInt(),
-                                addressModel.provinceName,
-                                addressModel.recipientName,
+                                addressModel.provinceName ?: "",
+                                addressModel.recipientName ?: "",
                                 addressModel.addressStatus
-                        )
-                        setAddressView(recipientAddress)
+                            )
+                            setAddressView(recipientAddress)
+                        }else{
+                            showMessage("Kesalahan mengambli lokasi.")
+                        }
                     }
                 }
 
