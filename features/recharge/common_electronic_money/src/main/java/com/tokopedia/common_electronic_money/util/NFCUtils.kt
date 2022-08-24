@@ -1,5 +1,6 @@
 package com.tokopedia.common_electronic_money.util
 
+import android.annotation.SuppressLint
 import java.math.BigInteger
 
 /**
@@ -33,6 +34,7 @@ class NFCUtils {
                     cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16)
         }
 
+        @SuppressLint("Method Call Prohibited")
         @JvmStatic
         fun stringToByteArrayRadix(str: String): ByteArray{
             return str.chunked(2)
