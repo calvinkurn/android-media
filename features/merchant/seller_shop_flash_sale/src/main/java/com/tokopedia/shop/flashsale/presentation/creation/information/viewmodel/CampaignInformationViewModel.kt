@@ -573,7 +573,7 @@ class CampaignInformationViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val vpsPackages = getSellerCampaignPackageListUseCase.execute()
-                val currentlySelectedVpsPackageId: Long = vpsPackage?.packageId.orZero()
+                val currentlySelectedVpsPackageId = vpsPackage?.packageId.orZero()
                 val updatedVpsPackage = applySelectionRule(currentlySelectedVpsPackageId, vpsPackages)
                 val matchedVpsPackage = updatedVpsPackage.find { vpsPackage -> vpsPackage.packageId == currentlySelectedVpsPackageId } ?: return@launchCatchError
                 _emptyQuotaVpsPackage.postValue(Success(matchedVpsPackage))
