@@ -41,6 +41,7 @@ import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -98,6 +99,7 @@ import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -290,6 +292,24 @@ class PlayUserInteractionFragment @Inject constructor(
 
         invalidateSystemUiVisibility()
         initAddress()
+        testingPurpose()
+    }
+
+    private fun testingPurpose(){
+        val cal = Calendar.getInstance().apply {
+            add(Calendar.MINUTE, 2)
+        }
+        val interactive = InteractiveUiModel.Giveaway(
+            status = InteractiveUiModel.Giveaway.Status.Ongoing(cal),
+            waitingDuration = 5000L,
+            id = "1261",
+            title = "GA sendal",
+        )
+        val list = mutableListOf<EngagementUiModel>().apply {
+            add(EngagementUiModel.Promo(size = 4, info = PlayVoucherUiModel.MerchantVoucherUiModel(title = "Ada apa", id = "11", type = MerchantVoucherType.Discount, description = "A", code = "hehe", copyable = false, highlighted = false,voucherStock = 1,expiredDate = "1")))
+            add(EngagementUiModel.Game(interactive))
+        }
+        engagementCarouselView.setData(list)
     }
 
     override fun onStart() {
