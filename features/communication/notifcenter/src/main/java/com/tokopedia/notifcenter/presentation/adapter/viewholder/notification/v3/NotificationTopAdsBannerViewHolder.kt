@@ -20,9 +20,9 @@ class NotificationTopAdsBannerViewHolder constructor(
         val tdnBannerList = TdnHelper.categoriesTdnBanners(element.ads)
 
         if (!tdnBannerList.isNullOrEmpty()) {
-            adView?.renderTdnBanner(tdnBannerList.first(), 8.toPx()) {
-                RouteManager.route(adView.context, it)
-            }
+            adView?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
+                if (it.isNotEmpty()) RouteManager.route(adView.context, it)
+            })
         }
     }
 
