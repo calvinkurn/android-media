@@ -55,7 +55,7 @@ class EventsViewHolder(
         private const val CONTENT_TYPE = "application/pdf"
         private const val KEY_QRCODE = "qrcode"
         private const val KEY_POPUP = "popup"
-        private const val ITEM_EVENTS = 3
+        const val ITEM_EVENTS = 3
     }
 
     override fun bind(element: ItemsEvents) {

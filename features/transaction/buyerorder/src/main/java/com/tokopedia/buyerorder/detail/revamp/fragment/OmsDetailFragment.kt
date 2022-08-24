@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -20,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -44,19 +47,27 @@ import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
+import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.EventsViewHolder
 import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -64,6 +75,15 @@ import javax.inject.Inject
  */
 
 class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var orderAnalytics: OrderListAnalytics
+
+    @Inject
+    lateinit var localCacheHandler: LocalCacheHandler
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -74,6 +94,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
     private var binding by autoClearedNullable<FragmentOmsListDetailBinding>()
     private var isSingleButton = false
+    private var isDownloadable = false
     private var upstream: String? = null
 
     override fun onCreateView(
@@ -546,12 +567,88 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         TODO("Not yet implemented")
     }
 
-    override fun setDealsBanner(item: Items) {
-        TODO("Not yet implemented")
+    override fun setDealsBanner(metadata: MetaDataInfo) {
+        if (metadata.customLinkType.equals(KEY_REDIRECT, true)){
+            val bannerView = binding?.bannerDealsOrderDetail?.root
+            binding?.dividerAboveBannerDeals?.visible()
+            bannerView?.visible()
+
+            if (isCoachMarkAlreadyShowed()){
+                bannerView?.post {
+                    val scrollTo =  bannerView.top + bannerView.top
+                    binding?.parentScroll?.smoothScrollTo(0, scrollTo)
+                    addCoachMark()
+                }
+            }
+            binding?.bannerDealsOrderDetail?.tgDealBannerTitle?.text =
+                getString(R.string.banner_deals_main_title, userSession.name)
+
+            if (metadata.customLinkLabel.isNotEmpty()) {
+                binding?.bannerDealsOrderDetail?.tgDealBannerSubTitle?.text = metadata.customLinkLabel
+            }
+
+            binding?.bannerDealsOrderDetail?.root?.setOnClickListener {
+                if (metadata.customLinkAppUrl.isNotEmpty()){
+                    RouteManager.route(context, metadata.customLinkAppUrl)
+                }
+            }
+        }
+    }
+
+    private fun isCoachMarkAlreadyShowed() = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+
+    private fun addCoachMark(){
+        val coachMarkItem = CoachMarkItem(
+            binding?.bannerDealsOrderDetail?.root,
+            getString(R.string.banner_deals_coachmark_title),
+            getString(R.string.banner_deals_coachmark_sub_title)
+        )
+        val listCoachMark = arrayListOf(coachMarkItem)
+
+        val coachMark = CoachMarkBuilder().build()
+        Handler(Looper.getMainLooper()).postDelayed({
+            coachMark.show(activity, "", listCoachMark)
+        }, DELAY_COACH_MARK_START)
+
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY, false)
+            applyEditor()
+        }
     }
 
     override fun askPermission(uri: String, isDownloadable: Boolean, downloadFileName: String) {
-        TODO("Not yet implemented")
+        val permissionChecker = PermissionCheckerHelper()
+        val permissions = arrayOf(
+            PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+            PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE,
+        )
+        permissionChecker.checkPermissions(this, permissions, object : PermissionCheckerHelper.PermissionCheckListener{
+            override fun onPermissionDenied(permissionText: String) {}
+
+            override fun onNeverAskAgain(permissionText: String) {}
+
+            override fun onPermissionGranted() {
+                if (isDownloadable && uri.isNotEmpty() && downloadFileName.isNotEmpty()){
+                    permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable)
+                }
+            }
+        })
+    }
+
+    private fun permissionGrantedContinueDownload(
+        uri: String,
+        fileName: String,
+        isDownloadable: Boolean
+    ){
+        this.isDownloadable = isDownloadable
+        val downloadHelper = DownloadHelper(requireContext(), uri, fileName, null)
+        downloadHelper.downloadFile { isUriDownloadable(uri) }
+    }
+
+    private fun isUriDownloadable(url: String): Boolean{
+        val pattern = Pattern.compile("^.+\\.([pP][dD][fF])\$")
+        val matcher = pattern.matcher(url)
+        return matcher.find() || isDownloadable
     }
 
     override fun sendThankYouEvent(
@@ -559,15 +656,51 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         categoryType: Int,
         orderDetails: OrderDetails
     ) {
-        TODO("Not yet implemented")
+        val fromPayment = arguments?.get(KEY_FROM_PAYMENT).toString()
+        if (!fromPayment.equals(IS_TRUE, true)){
+            return
+        }
+
+        val paymentStatus = orderDetails.status.statusText.ifEmpty { "" }
+        val paymentMethod = if (orderDetails.payMethods.isNotEmpty()
+            && orderDetails.payMethods.first().value.isNotEmpty()) {
+            orderDetails.payMethods.first().value
+        } else ""
+
+        if (categoryType == EventsViewHolder.ITEM_EVENTS) {
+            orderAnalytics.sendThankYouEvent(
+                metadata.entityProductId,
+                metadata.productName,
+                metadata.totalPrice,
+                metadata.quantity,
+                metadata.entityBrandName,
+                arguments?.get(KEY_ORDER_ID).toString(),
+                categoryType,
+                paymentMethod,
+                paymentStatus
+            )
+        } else {
+            orderAnalytics.sendThankYouEvent(
+                metadata.entityProductId,
+                metadata.entityProductName,
+                metadata.totalTicketPrice,
+                metadata.totalTicketCount,
+                metadata.entityBrandName,
+                arguments?.get(KEY_ORDER_ID).toString(),
+                categoryType,
+                paymentMethod,
+                paymentStatus
+            )
+        }
+
     }
 
     override fun sendOpenScreenDeals(isOMP: Boolean) {
-        TODO("Not yet implemented")
+        orderAnalytics.sendOpenScreenDeals(isOMP)
     }
 
     override fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean) {
-        TODO("Not yet implemented")
+        viewModel.requestActionButton(tapAction, position, flag)
     }
 
     companion object{
@@ -585,10 +718,14 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val SHAPE_CORNER_RADIUS_9 = 9f
         private const val TOTAL_SIZE_2 = 2
         private const val TOTAL_SIZE_1 = 1
+        private const val DELAY_COACH_MARK_START = 500L
         private const val KEY_TEXT = "text"
         private const val ENCODER = "UTF-8"
         private const val WEB_VIEW_TITLE = "Help Centre"
         private const val CATEGORY_GIFT_CARD = "Gift-card"
+        private const val IS_TRUE = "true"
+        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner"
+        const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(
             orderId: String,

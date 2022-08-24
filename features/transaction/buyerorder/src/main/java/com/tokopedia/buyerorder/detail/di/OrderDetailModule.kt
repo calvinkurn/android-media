@@ -2,7 +2,9 @@ package com.tokopedia.buyerorder.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
+import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment
 import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
@@ -38,6 +40,11 @@ class OrderDetailModule {
     @Provides
     fun provideOrderDetailRechargeDownloadWebviewAnalytics(): OrderDetailRechargeDownloadWebviewAnalytics {
         return OrderDetailRechargeDownloadWebviewAnalytics()
+    }
+
+    @Provides
+    fun provideLocalCacheHandler(@ApplicationContext context: Context?): LocalCacheHandler {
+        return LocalCacheHandler(context, OmsDetailFragment.PREFERENCES_NAME)
     }
 
     @Provides
