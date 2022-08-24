@@ -74,6 +74,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_engagement_desc"
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="small"
+        android:visibility="gone"
         tools:text="@string/play_common_widget_interactive_end" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -88,6 +89,7 @@
         app:timer_unify_single_type="minute_digit"
         app:timer_unify_single_variant="main"
         tools:timer_unify_single_remainingMinutes="10"
+        android:visibility="gone"
         />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

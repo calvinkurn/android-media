@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play_common.databinding.ViewGameInteractiveBinding
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
@@ -42,6 +43,7 @@ class GameSmallWidgetView : FrameLayout {
 
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
         binding.timerEngagementTools.apply {
+            visible()
             pause()
 
             targetDate = targetTime
@@ -70,7 +72,10 @@ class GameSmallWidgetView : FrameLayout {
     }
 
     fun setTimerInfo(info: String) {
-        binding.tvEngagementTimerInfo.text = info
+        binding.tvEngagementTimerInfo.apply {
+            visible()
+            text = info
+        }
     }
 
     fun cancelTimer(){

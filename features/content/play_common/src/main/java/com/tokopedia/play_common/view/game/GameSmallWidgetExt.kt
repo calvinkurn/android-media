@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play_common.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
@@ -64,4 +65,18 @@ fun GameSmallWidgetView.setupQuiz(
     setTargetTime(targetTime) { onDurationEnd(this) }
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
     description = question
+}
+
+fun GameSmallWidgetView.setupPromo(
+    title: String,
+){
+    description = title
+    getIconUnifyDrawable(
+        context = context,
+        iconId = IconUnify.PROMO,
+        assetColor = MethodChecker.getColor(context, unifyR.color.Unify_GN500)
+    )?.let(::setIcon)
+    setContentBackground(
+        MethodChecker.getDrawable(context, R.drawable.bg_play_voucher_widget)
+    )
 }
