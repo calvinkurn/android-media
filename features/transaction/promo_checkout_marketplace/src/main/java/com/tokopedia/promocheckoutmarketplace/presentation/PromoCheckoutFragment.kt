@@ -335,7 +335,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                         ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.clearPromo(promoRequest, validateUsePromoRequest, bboPromoCodes ?: ArrayList())
+                viewModel.clearPromo(
+                    promoRequest,
+                    validateUsePromoRequest,
+                    bboPromoCodes ?: ArrayList()
+                )
                 analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
             }
         }
@@ -944,7 +948,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                                 ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                        viewModel.clearPromo(promoRequest, validateUsePromoRequest, bboPromoCodes ?: ArrayList())
+                        viewModel.clearPromo(
+                            promoRequest,
+                            validateUsePromoRequest,
+                            bboPromoCodes ?: ArrayList()
+                        )
                     }
                 }
                 setSecondaryCTAClickListener {

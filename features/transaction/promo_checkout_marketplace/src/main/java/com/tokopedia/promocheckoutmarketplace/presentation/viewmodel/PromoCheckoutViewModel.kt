@@ -954,43 +954,59 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* Network Call Section : Clear Promo */
     //------------------------------------//
 
-    fun clearPromo(promoRequest: PromoRequest, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    fun clearPromo(
+        promoRequest: PromoRequest,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        bboPromoCodes: ArrayList<String>,
+        clearPromoParam: ClearPromoRequest = ClearPromoRequest()
+    ) {
         val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
 
+        // add global promo to clear code
         val globalPromo = arrayListOf<String>()
+        // from get promo response
         promoListUiModel.value?.forEach { visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
                 globalPromo.add(visitable.uiData.promoCode)
             }
         }
+        // from apply promo param
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
             if (!bboPromoCodes.contains(promoGlobalCode) && !globalPromo.contains(promoGlobalCode)) {
                 globalPromo.add(promoGlobalCode)
             }
         }
 
+        // add order promo to clear code
         val orders = arrayListOf<ClearPromoOrder>()
+        // from apply promo param
         validateUsePromoRequest.orders.forEach { order ->
+            // check if duplicate ClearPromoOrder instance exist
             var clearOrder = orders.find { it.uniqueId == order.uniqueId }
             if (clearOrder == null) {
+                // if not duplicate then create instance
                 clearOrder = ClearPromoOrder(
                         uniqueId = order.uniqueId,
                         boType = order.boType,
                 )
                 orders.add(clearOrder)
             }
+            // add all code in clearpromoorder instance
             order.codes.forEach {
                 if (!bboPromoCodes.contains(it) && !clearOrder.codes.contains(it)) {
                     clearOrder.codes.add(it)
                 }
             }
         }
+        // from get promo response
         promoListUiModel.value?.forEach { visitable ->
+            // todo should we add bebas ongkir promo in promo list here?
             if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId > 0) {
                 val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
                 if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
                     order.codes.add(visitable.uiData.promoCode)
                 } else if (order == null) {
+                    // from get promo request
                     val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
                     if (promoOrder != null) {
                         orders.add(ClearPromoOrder(
@@ -1003,14 +1019,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
 
-        val params = ClearPromoRequest(
-                ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI,
-                ClearPromoOrderData(
-                        codes = globalPromo,
-                        orders = orders
-                )
-        )
+        val params = clearPromoParam.apply {
+            serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE
+            isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI
+            orderData = ClearPromoOrderData(
+                codes = globalPromo,
+                orders = orders
+            )
+        }
+
         PromoCheckoutIdlingResource.increment()
         clearCacheAutoApplyStackUseCase.setParams(params)
         clearCacheAutoApplyStackUseCase.execute(
