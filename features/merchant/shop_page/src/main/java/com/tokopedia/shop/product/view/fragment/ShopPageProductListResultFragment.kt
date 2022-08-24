@@ -347,7 +347,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopInfo?.let {
             viewModel.getShopFilterData(
                     it,
-                    isMyShop
+                    isMyShop,
+                    isNeedToReloadData
             )
         } ?: viewModel.getShop(shopId.orEmpty(), isRefresh = isNeedToReloadData)
     }
