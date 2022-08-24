@@ -10,12 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentQuotaMonitoringBinding
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
+import com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailFragment
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.adapter.QuotaMonitoringAdapter
 import com.tokopedia.unifycomponents.CardUnify2
@@ -27,6 +31,9 @@ import javax.inject.Inject
 class QuotaMonitoringFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val FLASH_SALE_TOKO_PROMOTION_PACKAGE_ARTICLE_URL =
+        "https://seller.tokopedia.com/edu/flash-sale-toko-paket-promosi/"
+
         @JvmStatic
         fun newInstance() = QuotaMonitoringFragment()
     }
@@ -87,6 +94,12 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
             totalQuota += vpsPackage.originalQuota
         }
         binding?.apply {
+            header.apply {
+                navigationIcon = getIconUnifyDrawable(context, IconUnify.CLOSE)
+                setNavigationOnClickListener {
+                    activity?.finish()
+                }
+            }
             cardQuotaMonitoring.cardType = CardUnify2.TYPE_BORDER
             tpRemainingQuota.text = getString(
                 R.string.ssfs_remaining_quota_value_placeholder,
@@ -98,12 +111,16 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
             quotaMonitoringAdapter.clearAll()
             quotaMonitoringAdapter.submit(vpsPackage)
             rvQuota.adapter = quotaMonitoringAdapter
-            header.apply {
-                navigationIcon = getIconUnifyDrawable(context, IconUnify.CLOSE)
-                setNavigationOnClickListener {
-                    activity?.finish()
-                }
+            btnLearnQuota.setOnClickListener {
+                routeToPromotionPackageArticle()
             }
         }
+    }
+
+    private fun routeToPromotionPackageArticle() {
+        if (!isAdded) return
+        val encodedUrl = FLASH_SALE_TOKO_PROMOTION_PACKAGE_ARTICLE_URL.encodeToUtf8()
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(activity ?: return, route)
     }
 }

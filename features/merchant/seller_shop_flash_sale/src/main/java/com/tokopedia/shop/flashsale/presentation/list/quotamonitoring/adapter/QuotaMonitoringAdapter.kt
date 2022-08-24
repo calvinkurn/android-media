@@ -57,11 +57,12 @@ class QuotaMonitoringAdapter() :
         fun bind(vpsPackage: VpsPackage) {
             val remainingQuota = vpsPackage.remainingQuota
             val totalQuota = vpsPackage.originalQuota
-            val expireDate = if (vpsPackage.packageEndTime.isZero()) {
-                "Tidak Ada"
-            } else {
-                vpsPackage.packageEndTime.epochToDate().formatTo(DateConstant.DATE)
-            }
+            val expireDate =
+                if (vpsPackage.packageEndTime.isZero()) {
+                    "Tidak Ada"
+                } else {
+                    vpsPackage.packageEndTime.epochToDate().formatTo(DateConstant.DATE)
+                }
 
             binding.run {
                 tpPackageName.text = vpsPackage.packageName
