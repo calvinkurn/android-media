@@ -82,6 +82,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val DRAFT_SERVER_SAVING_DURATION = 1000L
+        private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
 
         @JvmStatic
         fun newInstance(
@@ -175,7 +176,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onResume() {
         super.onResume()
-        viewModel.getCampaignPrerequisiteData()
+        viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
     }
 
 
@@ -361,7 +362,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         if (decorStatus == "native" && hasCampaignOrDraft) {
             binding?.btnCreateCampaignEmptyState.showLoading()
             binding?.btnCreateCampaign.showLoading()
-            viewModel.validateCampaignCreationEligibility()
+            viewModel.validateCampaignCreationEligibility(VPS_PACKAGE_ID_NOT_SELECTED)
         } else {
             showShopDecorationDialog()
         }
@@ -646,7 +647,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(DRAFT_SERVER_SAVING_DURATION) {
-            viewModel.getCampaignPrerequisiteData()
+            viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
         }
     }
 
@@ -814,7 +815,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         val dialog = ShopDecorationDialog()
         dialog.setOnPrimaryActionClick {
-            viewModel.validateCampaignCreationEligibility()
+            viewModel.validateCampaignCreationEligibility(VPS_PACKAGE_ID_NOT_SELECTED)
         }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
         dialog.show(activity ?: return)

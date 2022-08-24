@@ -11,6 +11,7 @@ import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
@@ -132,7 +133,11 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         observeUpcomingCampaigns()
         observeCampaignQuota()
         viewModel.getUpcomingCampaigns()
-        viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        viewModel.getCampaignQuota(
+            dateManager.getCurrentMonth(),
+            dateManager.getCurrentYear(),
+            vpsPackage?.packageId.orZero()
+        )
     }
 
     private fun observeUpcomingCampaigns() {

@@ -90,11 +90,11 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
-    fun getCampaignPrerequisiteData() {
+    fun getCampaignPrerequisiteData(vpsPackageId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val prerequisiteData = getCampaignPrerequisiteDataUseCase.execute()
+                val prerequisiteData = getCampaignPrerequisiteDataUseCase.execute(vpsPackageId)
                 _campaignPrerequisiteData.postValue(Success(prerequisiteData))
             },
             onError = { error ->
@@ -130,11 +130,11 @@ class CampaignListViewModel @Inject constructor(
         )
     }
 
-    fun validateCampaignCreationEligibility() {
+    fun validateCampaignCreationEligibility(vpsPackageId : Long) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val metadata = validateCampaignCreationEligibility.execute()
+                val metadata = validateCampaignCreationEligibility.execute(vpsPackageId)
                 _sellerEligibility.postValue(Success(metadata))
             },
             onError = { error ->
