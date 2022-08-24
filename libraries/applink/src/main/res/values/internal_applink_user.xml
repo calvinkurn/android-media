@@ -24,8 +24,7 @@
     <string name="path_add_pin_from_2fa">/add-pin-from-2fa</string>
     <string name="path_change_name">/change-name</string>
     <string name="path_profile_completion">/profile-completion</string>
-    <string name="path_setting_profile">/setting-profile</string>
-    <string name="path_new_profile_info">/profile-info</string>
+    <string name="path_profile_info">/setting-profile</string>
     <string name="path_change_pin">/change-pin</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
     <string name="path_add_pin_complete">/add-pin-complete</string>
@@ -66,7 +65,7 @@
 
     <string name="applink_global_sharing">/sharing</string>
 
-    <string name="applink_new_profile_info">/profile-info</string>
+    <string name="applink_profile_info">/setting-profile</string>
 
     // OTP
     <string name="applink_cotp">/cotp</string>
@@ -75,5 +74,19 @@
 
     <string name="applink_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="applink_otp_push_notif_setting">/otp-push-notif-setting</string>
+
+    //Login
+    <string name="applink_login">/login</string>
+    <string name="applink_login_seamless">/login-seamless</string>
+
+    <string name="applink_term_privacy">/term-privacy/.*\</string>
+
+    <string name="applink_landing_shop_creation">/landing-shop-creation</string>
+    <string name="applink_phone_shop_creation">/phone-shop-creation</string>
+    <string name="applink_name_shop_creation">/name-shop-creation</string>
+
+    //Register
+    <string name="applink_init_register">/init-register</string>
+    <string name="applink_email_register">/email-register</string>
 
 </resources>

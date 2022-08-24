@@ -13,9 +13,6 @@
     <string name="path_liveness_detection">/liveness-detection</string>
     <string name="path_telephony_masking">/telephony-masking</string>
 
-    <string name="path_landing_shop_creation">/landing-shop-creation</string>
-    <string name="path_phone_shop_creation">/phone-shop-creation</string>
-    <string name="path_name_shop_creation">/name-shop-creation</string>
     <string name="path_inbox_talk">/inbox-talk</string>
     <string name="path_product_talk">/product-talk/.*\\/</string>
     <string name="path_detail_talk">/detail-talk/.*\\/</string>
@@ -49,10 +46,7 @@
     <string name="path_youtube_video" translatable="false">/youtube-video</string>
 
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
-    <string name="path_user_login" translatable="false">/login</string>
-    <string name="path_init_register">/init-register</string>
 
-    <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
     <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
 
@@ -64,10 +58,8 @@
     <string name="path_manage_notification">/manage-notification</string>
 
 
-    <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
     <string name="two_factor_register">/two-factor-register</string>
-    <string name="path_term_privacy">/term-privacy/.*\</string>
 
     <string name="old_home_account">/old-home-account</string>
 
