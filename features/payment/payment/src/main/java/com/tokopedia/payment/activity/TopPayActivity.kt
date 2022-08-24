@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.PaymentLoggingClient
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -529,7 +530,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         fun gotoLinkAccount() {
             showFullLoading()
             reloadUrl = scroogeWebView?.url ?: ""
-            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)

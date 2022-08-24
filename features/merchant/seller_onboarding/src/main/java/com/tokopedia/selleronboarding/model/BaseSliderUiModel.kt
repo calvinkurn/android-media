@@ -8,5 +8,5 @@ import com.tokopedia.selleronboarding.adapter.SobAdapterFactory
  */
 
 interface BaseSliderUiModel : Visitable<SobAdapterFactory> {
-    val headerResBg: Int?
+    val headerResBg: Int
 }

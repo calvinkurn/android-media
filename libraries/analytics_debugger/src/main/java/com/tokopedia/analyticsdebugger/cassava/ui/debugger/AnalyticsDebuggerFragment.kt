@@ -43,7 +43,12 @@ class AnalyticsDebuggerFragment : Fragment() {
                     "name" to it.name,
                     "timestamp" to Utils.getTimeStampFormat(it.timestamp),
                     "datum" to it.data)
-            findNavController().navigate(R.id.action_analyticsDebuggerFragment_to_analyticsDebuggerDetailFragment, bundle)
+            try {
+                findNavController().navigate(R.id.action_analyticsDebuggerFragment_to_analyticsDebuggerDetailFragment, bundle)
+            } catch (e: IllegalArgumentException) {
+                // Ignoring exception which barely occurs when this listener is double emitted simultaneously
+                // Not reproducible
+            }
         }
     }
 
