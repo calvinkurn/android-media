@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -77,7 +78,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private fun startAutoCrop(){
         loader = LoaderDialog(requireContext())
-        loader?.setLoadingText("Cropping process")
+        loader?.setLoadingText("")
+
+        loader?.customView = View.inflate(requireContext(), editorR.layout.fragment_main_crop_loader_layout, null) as LinearLayout
+
         loader?.show()
 
         val data = viewModel.editStateList.values
