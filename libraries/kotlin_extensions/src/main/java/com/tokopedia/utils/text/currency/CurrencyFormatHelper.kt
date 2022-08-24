@@ -47,7 +47,7 @@ object CurrencyFormatHelper {
 
     }
 
-    @Suppress("MAGIC_NUMBER")
+    @Suppress("MagicNumber")
     fun setToRupiahCheckPrefix(et: EditText) {
         try {
             val noFirstCharToIgnore = countPrefixCurrency(et.text.toString())
