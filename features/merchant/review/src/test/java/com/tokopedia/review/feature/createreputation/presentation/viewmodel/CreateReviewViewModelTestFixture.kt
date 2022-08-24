@@ -256,4 +256,14 @@ abstract class CreateReviewViewModelTestFixture {
     protected fun mockErrorPostSubmitBottomSheet() {
         coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } throws Exception()
     }
+
+    protected fun setShouldRunReviewTopicsPeekAnimation() {
+        every {
+            cacheManager.get(
+                customId = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun",
+                type = Boolean::class.java,
+                defaultValue = false
+            )
+        } returns false
+    }
 }

@@ -895,6 +895,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
 
     @Test
     fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not`() = runBlockingTest {
+        setShouldRunReviewTopicsPeekAnimation()
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
