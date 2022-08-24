@@ -3,7 +3,6 @@ package com.tokopedia.wishlistcollection.analytics
 import android.os.Bundle
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 
 object WishlistCollectionAnalytics {
