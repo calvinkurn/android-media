@@ -69,7 +69,6 @@ class PlayQuizInteractiveTest {
     private val socket: PlayWebSocket = mockk(relaxed = true)
     private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val modelBuilder = UiModelBuilder.get()
-    private val interactiveModelBuilder = PlayInteractiveModelBuilder()
     private val mockInteractiveStorage = object : PlayInteractiveStorage {
         private var hasJoined = false
         private var hasProcessWinner = false
