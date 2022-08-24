@@ -33,6 +33,9 @@ class ProductLineItemDecoration(
     private var mGuidelines = emptyList<BackgroundGuideline>()
 
     private val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+    private val adapter = recyclerView.adapter as ProductSheetAdapter
+
+    private var mOffsetRectForDraw = Rect()
 
     fun setGuidelines(guidelines: List<BackgroundGuideline>) {
         mGuidelines = guidelines
@@ -62,7 +65,17 @@ class ProductLineItemDecoration(
                     it.startIndex - firstChildPos
                 ) ?: return@forEach
 
-                firstChild.top.coerceAtLeast(0)
+                when (adapter.getItem(firstChildPos)) {
+                    is ProductSheetAdapter.Item.Section -> {
+                        setSectionOffset(mOffsetRectForDraw, adapter, firstChildPos)
+                    }
+                    is ProductSheetAdapter.Item.Product -> {
+                        setSectionOffset(mOffsetRectForDraw, adapter, firstChildPos)
+                    }
+                    else -> mOffsetRectForDraw.setEmpty()
+                }
+
+                (firstChild.top - mOffsetRectForDraw.top).coerceAtLeast(0)
             } else {
                 0
             }
