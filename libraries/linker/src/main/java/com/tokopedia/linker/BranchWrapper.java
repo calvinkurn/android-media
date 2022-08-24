@@ -58,7 +58,7 @@ public class BranchWrapper implements WrapperInterface {
     private String KEY_APP_FIRST_OPEN = "app_first_open";
     private LocalCacheHandler localCacheHandler;
     private boolean lastFirstOpenUpdatedValue;
-    private static final String IDENTIFIER_OPPO_INSTALL_REFERRER = "a_oppopai";
+    private static final String IDENTIFIER_OPPO_INSTALL_REFERRER = "oppopaipreinstall_int";
 
     @Override
     public void init(Context context) {
@@ -267,7 +267,7 @@ public class BranchWrapper implements WrapperInterface {
     public void setDataFromInstallReferrerParams(String installReferrerParams) {
         if (!TextUtils.isEmpty(installReferrerParams) && installReferrerParams.contains(IDENTIFIER_OPPO_INSTALL_REFERRER)) {
             Branch.getInstance().setPreinstallCampaign("oppopreinstallol-dp_int-tp-10001511-0000-alon-alon");
-            Branch.getInstance().setPreinstallPartner("a_oppopai");
+            Branch.getInstance().setPreinstallPartner("a_custom_884988300975328897");
         }
     }
 
