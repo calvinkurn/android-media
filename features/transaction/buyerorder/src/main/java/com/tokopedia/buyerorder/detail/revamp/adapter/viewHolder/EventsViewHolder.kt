@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant
 import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
 import com.tokopedia.buyerorder.databinding.VoucherItemCardEventsBinding
@@ -112,13 +113,13 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
         if (metadata.isHiburan == IS_ENTERTAIN) {
             if (metadata.endTime.isNotEmpty()){
                 binding.tanggalEventsTitle.visible()
-                binding.tanggalEventsTitle.text = itemView.context.getString(R.string.text_valid_till)
+                binding.tanggalEventsTitle.text = getString(R.string.text_valid_till)
                 binding.tanggalEvents.text = metadata.endTime
             }
         } else {
             if (metadata.endTime.isNotEmpty() && metadata.startTime.isNotEmpty()){
                 binding.tanggalEventsTitle.visible()
-                binding.tanggalEventsTitle.text = itemView.context.getString(R.string.tanggal_events)
+                binding.tanggalEventsTitle.text = getString(R.string.tanggal_events)
                 binding.tanggalEvents.text = itemView.context.getString(R.string.event_date_label, metadata.startTime, metadata.endTime)
             }
         }
@@ -130,7 +131,7 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
         item: Items,
     ){
         binding.llValid.shouldShowWithAction(item.category.isNotEmpty()){
-            binding.tvValidTillDate.text = itemView.context.getString(R.string.order_detail_date_whitespace, metadata.name)
+            binding.tvValidTillDate.text = getString(R.string.order_detail_date_whitespace, metadata.name)
         }
     }
 
@@ -161,7 +162,7 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                                     itemView.context,
                                     voucher,
                                     i,
-                                    itemView.context.getString(R.string.voucher_code_title),
+                                    getString(R.string.voucher_code_title),
                                     voucherCodes.size
                                 ).apply {
                                     background = null
@@ -189,9 +190,9 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
             binding.tvBrandName.text = String.format(
                 E_TICKET_FORMAT,
                 totalCount,
-                itemView.context.getString(R.string.event_ticket_voucher_multiple))
+                getString(R.string.event_ticket_voucher_multiple))
         } else {
-            binding.tvBrandName.text = itemView.context.getString(R.string.event_ticket_voucher_count)
+            binding.tvBrandName.text = getString(R.string.event_ticket_voucher_count)
         }
     }
 
@@ -206,10 +207,10 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                     binding.tvBrandName.text = String.format(
                         E_TICKET_FORMAT,
                         totalCount,
-                        itemView.context.getString(R.string.event_ticket_qrcode_multiple)
+                        getString(R.string.event_ticket_qrcode_multiple)
                     )
                 } else {
-                    binding.tvBrandName.text = itemView.context.getString(R.string.event_ticket_qrcode_count)
+                    binding.tvBrandName.text = getString(R.string.event_ticket_qrcode_count)
                 }
             }
             actionButton.control.equals(KEY_VOUCHER_CODE, true) -> {
@@ -217,10 +218,10 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                     binding.tvBrandName.text = String.format(
                         E_TICKET_FORMAT,
                         totalCount,
-                        itemView.context.getString(R.string.event_ticket_booking_multiple)
+                        getString(R.string.event_ticket_booking_multiple)
                     )
                 } else {
-                    binding.tvBrandName.text = itemView.context.getString(R.string.event_ticket_booking_count)
+                    binding.tvBrandName.text = getString(R.string.event_ticket_booking_count)
                 }
             }
         }
@@ -242,12 +243,12 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
 
         return Typography(itemView.context).apply {
             setPadding(
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
             )
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
             layoutParams = params
             gravity = Gravity.CENTER_HORIZONTAL
             text = actionButton.label
@@ -258,7 +259,7 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
             if (actionButton.actionColor.background.isNotEmpty()) {
                 shape.setColor(Color.parseColor(actionButton.actionColor.background))
             } else {
-                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                shape.setColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400))
             }
 
             if (actionButton.actionColor.border.isNotEmpty()) {
@@ -271,14 +272,14 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
             if (actionButton.actionColor.textColor.isNotEmpty()) {
                 setTextColor(Color.parseColor(actionButton.actionColor.textColor))
             } else {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
             }
 
             if (position == item.actionButtons.size - 1 &&  item.actionButtons.isEmpty()){
-                val radius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
+                val radius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
                 shape.cornerRadii = floatArrayOf(0F, 0F, 0F, 0F, radius, radius, radius, radius)
             } else {
-                shape.cornerRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
+                shape.cornerRadius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
             }
 
             background = shape

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
 import com.tokopedia.buyerorder.databinding.VoucherItemDefaultBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
@@ -223,12 +224,12 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
 
         return Typography(itemView.context).apply {
             setPadding(
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
+                getDimension(unifyPrinciplesR.dimen.unify_space_16),
             )
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
             layoutParams = params
             gravity = Gravity.CENTER_HORIZONTAL
             text = actionButton.label
@@ -239,7 +240,7 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
             if (actionButton.actionColor.background.isNotEmpty()) {
                 shape.setColor(Color.parseColor(actionButton.actionColor.background))
             } else {
-                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                shape.setColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400))
             }
 
             if (actionButton.actionColor.border.isNotEmpty()) {
@@ -252,14 +253,14 @@ class DefaultViewHolder(itemView: View) : AbstractViewHolder<ItemsDefault>(itemV
             if (actionButton.actionColor.textColor.isNotEmpty()) {
                 setTextColor(Color.parseColor(actionButton.actionColor.textColor))
             } else {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
             }
 
             if (position == item.actionButtons.size - 1 &&  item.actionButtons.isEmpty()){
-                val radius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
+                val radius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
                 shape.cornerRadii = floatArrayOf(0F, 0F, 0F, 0F, radius, radius, radius, radius)
             } else {
-                shape.cornerRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
+                shape.cornerRadius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
             }
 
             background = shape
