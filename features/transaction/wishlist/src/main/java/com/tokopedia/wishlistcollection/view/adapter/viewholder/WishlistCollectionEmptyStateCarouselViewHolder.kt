@@ -7,6 +7,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.WishlistCollectionEmptyStateCarouselBinding
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
@@ -30,10 +31,12 @@ class WishlistCollectionEmptyStateCarouselViewHolder(private val binding: Wishli
 
         binding.buttonSearch.setOnClickListener {
             actionListener?.onCariBarangClicked()
+            WishlistCollectionAnalytics.sendClickCariBarangButtonOnEmptyStateNoWishlistItemsEvent()
         }
 
         binding.buttonCreateCollection.setOnClickListener {
             actionListener?.onCreateNewCollectionClicked()
+            WishlistCollectionAnalytics.sendClickBuatKoleksiButtonOnEmptyStateNoWishlistItemsEvent()
         }
     }
 }

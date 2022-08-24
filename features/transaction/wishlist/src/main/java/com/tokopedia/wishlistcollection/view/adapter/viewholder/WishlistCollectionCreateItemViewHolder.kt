@@ -9,6 +9,7 @@ import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutD
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.CREATE_NEW_COLLECTION_BG_IMAGE
 import com.tokopedia.wishlist.util.WishlistV2Utils
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
@@ -33,7 +34,10 @@ class WishlistCollectionCreateItemViewHolder(
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
                         }
-                        rlCreateWishlistCollection.setOnClickListener { actionListener?.onCreateNewCollectionClicked() }
+                        rlCreateWishlistCollection.setOnClickListener {
+                            actionListener?.onCreateNewCollectionClicked()
+                            WishlistCollectionAnalytics.sendCreateNewCollectionOnWishlistPageEvent()
+                        }
                     }
                 }
             }

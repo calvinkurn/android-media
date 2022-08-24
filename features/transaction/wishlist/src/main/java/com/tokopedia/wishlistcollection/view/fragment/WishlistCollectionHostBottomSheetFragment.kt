@@ -43,6 +43,8 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         }
 
         private const val OK = "OK"
+        private const val SRC_THREE_DOTS_CREATE_COLLECTION = "three dots on \"semua wishlist\" page"
+        private const val SRC_WISHLIST = "wishlist"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +78,8 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
-            showBottomSheetCreateNewCollection(childFragmentManager)
+            val source = if (src == SRC_WISHLIST) SRC_THREE_DOTS_CREATE_COLLECTION else src
+            showBottomSheetCreateNewCollection(childFragmentManager, source)
         } else {
             val intent = Intent()
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
@@ -86,8 +89,8 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         }
     }
 
-    private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
-        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(productId)
+    private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager, source: String) {
+        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(productId, source)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionHostBottomSheetFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
