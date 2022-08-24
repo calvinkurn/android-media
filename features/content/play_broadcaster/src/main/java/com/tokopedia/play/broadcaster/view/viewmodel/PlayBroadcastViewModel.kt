@@ -428,7 +428,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun createChannel() {
-        val channelId = repo.createChannel()
+        val channelId = repo.createChannel(selectedAccountID, selectedAccountType)
         setChannelId(channelId)
     }
 
