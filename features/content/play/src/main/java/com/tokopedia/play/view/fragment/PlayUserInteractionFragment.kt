@@ -134,7 +134,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductSeeMoreViewComponent.Listener,
         InteractiveActiveViewComponent.Listener,
         InteractiveGameResultViewComponent.Listener,
-        ChooseAddressViewComponent.Listener
+        ChooseAddressViewComponent.Listener,
+        EngagementCarouselViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -166,6 +167,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
+    private val engagementCarouselView by viewComponent { EngagementCarouselViewComponent(listener = this, resId = R.id.rv_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
 
     /**
      * Interactive
