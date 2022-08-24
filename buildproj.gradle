@@ -8,7 +8,7 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven {
-            url "${artifactory_url}" + "/libs-release-local";
+            url "${new_artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
                 password = "${new_artifactory_password}"
