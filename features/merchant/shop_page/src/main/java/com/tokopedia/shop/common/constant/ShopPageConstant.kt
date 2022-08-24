@@ -54,4 +54,9 @@ object ShopPageConstant {
         const val SINGLE_BUNDLE = "Single Bundle"
         const val MULTIPLE_BUNDLE = "Multiple Bundle"
     }
+
+    object ShopTickerType {
+        const val WARNING = "warning"
+        const val INFO = "info"
+    }
 }

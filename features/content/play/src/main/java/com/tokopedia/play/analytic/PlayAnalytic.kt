@@ -424,7 +424,7 @@ class PlayAnalytic(
                 EventModel(
                     "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
-                    KEY_TRACK_CLICK,
+                    "click featured product tagging",
                     "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
                 ),
                 hashMapOf(
