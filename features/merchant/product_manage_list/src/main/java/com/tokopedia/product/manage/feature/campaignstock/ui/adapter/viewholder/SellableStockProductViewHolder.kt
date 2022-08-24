@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SellableStockProductViewHolder (itemView: View?,
-                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
+                                      private val onVariantStockChanged: (productId: String, stock: Int, maxStock: Int?) -> Unit,
                                       private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
                                       private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit,
                                       private val source: String,
@@ -90,14 +90,17 @@ class SellableStockProductViewHolder (itemView: View?,
         minValue = EditProductConstant.MINIMUM_STOCK
         maxValue = EditProductConstant.MAXIMUM_STOCK
 
-        setValue(element.stock.toIntOrZero())
+        val currentStock = element.stock.toIntOrZero()
+        setValue(currentStock)
+        setErrorMessage(currentStock, element.maxStock)
 
         stockEditTextWatcher = getStockTextChangeListener {
             val stock: Int
             if(it.isNotEmpty()) {
                 stock = getValue()
                 toggleQuantityEditorBtn(stock)
-                onVariantStockChanged(element.productId, stock)
+                setErrorMessage(stock, element.maxStock)
+                onVariantStockChanged(element.productId, stock, element.maxStock)
             } else {
                 stock = EditProductConstant.MINIMUM_STOCK
                 editText.setText(EditProductConstant.MINIMUM_STOCK.getNumberFormatted())
@@ -177,6 +180,17 @@ class SellableStockProductViewHolder (itemView: View?,
 
         addButton.isEnabled = enableAddBtn
         subtractButton.isEnabled = enableSubtractBtn
+    }
+
+    private fun QuantityEditorUnify.setErrorMessage(stock: Int, maxStock: Int?) {
+        errorMessageText =
+            maxStock?.let {
+                if (stock > it) {
+                    itemView.context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_max_stock, it)
+                } else {
+                    String.EMPTY
+                }
+            }.orEmpty()
     }
 
     private fun getStockTextChangeListener(afterTextChanged: (String) -> Unit): TextWatcher =

@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 
 sealed class CarouselProductType(val hasThreeDots: Boolean) {
     abstract fun getDataLayerList(isOrganicAds: Boolean, componentId: String): String

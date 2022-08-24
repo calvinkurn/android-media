@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/unify_space_4"
+    app:cardCornerRadius="@dimen/unify_space_8"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    app:cardElevation="@dimen/dp_0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivShopIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShopName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cool Shop Name"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintBottom_toBottomOf="@id/ivShopIcon"
+                app:layout_constraintStart_toEndOf="@id/ivShopIcon"
+                app:layout_constraintTop_toTopOf="@id/ivShopIcon"
+                app:typographyType="heading_5"
+                tools:text="Sabun Coklat" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubah Kartu"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ivShopIcon"
+                app:unifyButtonSize="small"
+                app:unifyButtonVariant="ghost"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShopMemberName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintStart_toStartOf="@id/ivShopIcon"
+                app:layout_constraintTop_toBottomOf="@id/ivShopIcon"
+                app:typographyType="heading_6"
+                tools:text="Sabun Coklat" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShopStartDateValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/Unify_N0"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintStart_toStartOf="@id/ivShopIcon"
+                app:layout_constraintTop_toBottomOf="@id/tvShopMemberName"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:typographyType="heading_3"
+                tools:text="Sabun Coklat" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvShopEndDateValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N0"
+                android:layout_marginStart="4dp"
+                app:layout_constraintStart_toEndOf="@id/tvShopStartDateValue"
+                app:layout_constraintTop_toTopOf="@id/tvShopStartDateValue"
+                app:layout_constraintBottom_toBottomOf="@id/tvShopStartDateValue"
+                app:typographyType="small"
+                tools:text="Sabun Coklat" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

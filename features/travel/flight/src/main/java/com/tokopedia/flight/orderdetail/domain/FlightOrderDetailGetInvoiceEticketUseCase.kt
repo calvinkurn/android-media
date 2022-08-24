@@ -1,8 +1,9 @@
 package com.tokopedia.flight.orderdetail.domain
 
 import com.tokopedia.flight.orderdetail.data.FlightOrderDetailETicketEntity
-import com.tokopedia.flight.orderdetail.data.FlightOrderDetailGqlConst
 import com.tokopedia.flight.orderdetail.data.FlightOrderDetailInvoiceEntity
+import com.tokopedia.flight.orderdetail.data.QueryGetOrderETicket
+import com.tokopedia.flight.orderdetail.data.QueryGetOrderInvoice
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -21,7 +22,7 @@ class FlightOrderDetailGetInvoiceEticketUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
-        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_GET_ORDER_E_TICKET,
+        val graphqlRequest = GraphqlRequest(QueryGetOrderETicket(),
                 FlightOrderDetailETicketEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 
@@ -35,7 +36,7 @@ class FlightOrderDetailGetInvoiceEticketUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
-        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_GET_ORDER_INVOICE,
+        val graphqlRequest = GraphqlRequest(QueryGetOrderInvoice(),
                 FlightOrderDetailInvoiceEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 

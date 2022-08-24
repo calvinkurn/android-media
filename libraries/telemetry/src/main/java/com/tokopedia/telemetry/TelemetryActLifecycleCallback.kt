@@ -6,6 +6,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
+import android.hardware.SensorManager.SENSOR_DELAY_UI
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -22,9 +23,12 @@ import com.tokopedia.telemetry.sensorlistener.TelemetryTouchListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import java.lang.Exception
 import java.lang.ref.WeakReference
 
-class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
+class TelemetryActLifecycleCallback(
+    val isEnabled: (() -> (Boolean))
+) : Application.ActivityLifecycleCallbacks {
 
     companion object {
         var prevActivityRef: WeakReference<AppCompatActivity>? = null
@@ -49,17 +53,18 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
 
                 val samplingRate = getSamplingRate()
                 sensorManager?.registerListener(TelemetryAccelListener, sensor, samplingRate)
+                TelemetryAccelListener.setActivity(activity)
 
                 val sensorGyro: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
                 sensorManager?.registerListener(TelemetryGyroListener, sensorGyro, samplingRate)
+                TelemetryGyroListener.setActivity(activity)
 
                 if (activity is BaseActivity) {
                     activity.addListener(TelemetryTouchListener)
                 }
                 // store this activity so it can be stopped later
                 prevActivityRef = WeakReference(activity)
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            } catch (ignored: Throwable) {
             }
         }
     }
@@ -84,50 +89,17 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
             }
         }
 
-        // start new telemetry section
-        if (activity !is AppCompatActivity) {
+        if (!isEnabled.invoke()) {
             return
         }
-        if (activity is ITelemetryActivity) {
-            val sectionName = activity.getTelemetrySectionName()
 
-            // continue track telemetry if the sectionName is different with the previous section Name.
-            if (sectionName == Telemetry.getCurrentSectionName()) {
-                return
+        try {
+            if (activity is ITelemetryActivity) {
+                collectTelemetryInTeleActivity(activity)
+            } else { // this activity is not telemetry activity
+                collectTelemetryInNonTeleActivity(activity)
             }
-            //stop time for prev telemetry
-            Telemetry.addStopTime(sectionName)
-            TelemetryWorker.scheduleWorker(activity.applicationContext)
-
-            Telemetry.addSection(sectionName)
-            registerTelemetryListener(activity)
-
-            // timer to stop after telemetry duration
-            activity.lifecycleScope.launch {
-                delay(SECTION_TELEMETRY_DURATION)
-                stopTelemetryListener(activity)
-                Telemetry.addStopTime()
-            }
-
-        } else { // this activity is not telemetry activity
-            if (Telemetry.hasOpenTime()) {
-                // check if it is already past section duration or not
-                val elapsedDiff = Telemetry.getElapsedDiff()
-                if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
-                    registerTelemetryListener(activity)
-                    // timer to stop after telemetry duration
-                    activity.lifecycleScope.launch {
-                        val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
-                        delay(remainingDurr)
-                        stopTelemetryListener(activity)
-                        Telemetry.addStopTime()
-                    }
-                } else { // duration is due
-                    val estimatedDuration =
-                        Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
-                    Telemetry.addStopTime("", estimatedDuration)
-                }
-            }
+        } catch (ignored: Throwable) {
         }
     }
 
@@ -140,23 +112,90 @@ class TelemetryActLifecycleCallback : Application.ActivityLifecycleCallbacks {
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
     override fun onActivityDestroyed(activity: Activity) {}
 
+    private fun collectTelemetryInTeleActivity(activity: ITelemetryActivity) {
+        if (activity !is AppCompatActivity) {
+            return;
+        }
+        val sectionName = activity.getTelemetrySectionName()
+
+        // Only send telemetry if section Name is different
+        if (sectionName != Telemetry.getCurrentSectionName()) {
+            collectTelemetry(activity, sectionName)
+        }
+    }
+
+    private fun collectTelemetryInNonTeleActivity(activity: Activity) {
+        if (activity !is AppCompatActivity) {
+            return;
+        }
+        if (Telemetry.hasOpenTime()) {
+            // check if it is already past section duration or not
+            val elapsedDiff = Telemetry.getElapsedDiff()
+            if (elapsedDiff < (SECTION_TELEMETRY_DURATION - STOP_THRES)) {
+                registerTelemetryListener(activity)
+                // timer to stop after telemetry duration
+                activity.lifecycleScope.launch {
+                    val remainingDurr = SECTION_TELEMETRY_DURATION - elapsedDiff
+                    delay(remainingDurr)
+                    stopTelemetryListener(activity)
+                    Telemetry.addStopTime()
+                }
+            } else { // duration is due
+                val estimatedDuration =
+                    Telemetry.telemetrySectionList[0].startTime + SECTION_TELEMETRY_DURATION
+                Telemetry.addStopTime("", estimatedDuration)
+            }
+        }
+    }
+
+    private fun collectTelemetry(activity: AppCompatActivity, sectionName: String) {
+        //stop time for prev telemetry
+        Telemetry.addStopTime(sectionName)
+        TelemetryWorker.scheduleWorker(activity.applicationContext)
+
+        Telemetry.addSection(sectionName)
+        registerTelemetryListener(activity)
+
+        // timer to stop after telemetry duration
+        activity.lifecycleScope.launch {
+            delay(SECTION_TELEMETRY_DURATION)
+            stopTelemetryListener(activity)
+            Telemetry.addStopTime()
+        }
+    }
+
     private fun stopTelemetryListener(activity: Activity) {
+        unregisterSensor(activity)
+        unregisterWatcher(activity)
+        unregisterTouch(activity)
+    }
+
+    private fun unregisterSensor(activity: Activity) {
         try {
             val sensorManager = activity.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
             sensorManager?.unregisterListener(TelemetryAccelListener)
             sensorManager?.unregisterListener(TelemetryGyroListener)
+        } catch (ignored: Exception) {
+        }
+    }
 
+    private fun unregisterWatcher(activity: Activity) {
+        try {
             activity.findViewById<View>(android.R.id.content)?.viewTreeObserver?.addOnGlobalFocusChangeListener { _, newFocus ->
                 if (newFocus is EditText) {
                     newFocus.removeTextChangedListener(TelemetryTextWatcher)
                 }
             }
+        } catch (ignored: Exception) {
+        }
+    }
 
+    private fun unregisterTouch(activity: Activity) {
+        try {
             if (activity is BaseActivity) {
                 activity.removeDispatchTouchListener(TelemetryTouchListener)
             }
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        } catch (ignored: Exception) {
         }
     }
 }

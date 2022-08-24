@@ -52,8 +52,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
+import com.tokopedia.topads.sdk.utils.TdnHelper;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
@@ -67,6 +69,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,7 +81,7 @@ import kotlin.jvm.functions.Function2;
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, InboxAdapterListener, RecommendationListener, TopAdsImageVieWApiResponseListener, TopAdsImageViewClickListener {
+        InboxView, InboxAdapterListener, RecommendationListener, TdnBannerResponseListener, TopAdsImageViewClickListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -128,7 +131,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private boolean isTopAdsBannerAdded;
     private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
     private int toAdsBannerExperimentPosition = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED;
-    private TopAdsImageViewModel topAdsBannerInProductCards;
+    private List<TopAdsImageViewModel> topAdsBannerInProductCards;
     private List<Integer> headlineIndexList;
 
     public static InboxFragment newInstance() {
@@ -628,23 +631,24 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.visitables = list;
         adapter.addElement(list);
         int index = 0;
-        if (pageNum == 0) {
-            headlineExperimentPosition = headlineIndexList.get(0);
-        } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
-            headlineExperimentPosition = headlineIndexList.get(1);
-            index = 1;
-        }
-
-        if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
-                && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
-            if (isTopAdsBannerAdded) {
-                adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
-            } else {
-                adapter.addElement(headlineExperimentPosition,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
+        if (headlineIndexList != null && !headlineIndexList.isEmpty()){
+            if (pageNum == 0) {
+                headlineExperimentPosition = headlineIndexList.get(0);
+            } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
+                headlineExperimentPosition = headlineIndexList.get(1);
+                index = 1;
             }
-            isAdded = true;
+            if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
+                    && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
+                if (isTopAdsBannerAdded) {
+                    adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                } else {
+                    adapter.addElement(headlineExperimentPosition,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                }
+                isAdded = true;
+            }
         }
 
         if (toAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED
@@ -703,16 +707,23 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
-    @Override
-    public void onImageViewResponse(@NotNull ArrayList<TopAdsImageViewModel> imageDataList) {
-        if (imageDataList.isEmpty()) return;
-        else if (imageDataList.size() == TOP_ADS_BANNER_COUNT) {
-            topAdsBannerInProductCards = imageDataList.get(TOP_ADS_BANNER_COUNT - 1);
-            toAdsBannerExperimentPosition = topAdsBannerInProductCards.getPosition()+ SHIFTING_INDEX
-                    + getStartProductPosition();
 
+
+    @Override
+    public void onTdnBannerResponse(@NonNull List<List<TopAdsImageViewModel>> categoriesList) {
+        if (categoriesList.isEmpty()) return;
+        if (categoriesList.size() == TOP_ADS_BANNER_COUNT) {
+            topAdsBannerInProductCards = categoriesList.get(1);
+            if (!topAdsBannerInProductCards.isEmpty()){
+                toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
+                        + getStartProductPosition();
+            }
+        } else if (categoriesList.get(0).size() == TOP_ADS_BANNER_COUNT) {
+            topAdsBannerInProductCards = Collections.singletonList(categoriesList.get(0).get(1));
+                toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
+                        + getStartProductPosition();
         }
-        adapter.updateTopAdsBanner(imageDataList.get(0));
+        adapter.updateTopAdsBanner(categoriesList.get(0));
     }
 
     @Override

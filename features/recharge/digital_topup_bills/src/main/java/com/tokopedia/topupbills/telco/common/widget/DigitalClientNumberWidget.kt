@@ -20,7 +20,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -50,7 +50,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
     private var favoriteNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
-    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label)
+    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label_telco)
     protected val view: View
 
     private lateinit var listener: ActionListener
@@ -129,7 +129,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
             setOnItemClickListener { _, _, position, _ ->
                 val item = autoCompleteAdapter.getItem(position)
-                if (item is TopupBillsAutoCompleteContactDataView) {
+                if (item is TopupBillsAutoCompleteContactModel) {
                     setContactName(item.name)
                     listener.onClickAutoComplete(item.name.isNotEmpty())
                 }
@@ -150,7 +150,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     private fun initSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
         val sortFilter = arrayListOf<SortFilterItem>()
-        for (number in favnum.take(5)) {
+        for (number in favnum.take(MAX_CHIP_SIZE)) {
             if (number.clientName.isEmpty()) {
                 listener.onShowFilterChip(false)
             } else {
@@ -173,7 +173,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             sortFilter.add(sortFilterItem)
         }
 
-        val isMoreThanFive = favnum.size > 5
+        val isMoreThanFive = favnum.size > MAX_CHIP_SIZE
         if (isMoreThanFive) {
             val sortFilterItem = SortFilterItem(
                 "",
@@ -283,6 +283,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
+    fun hideContactIcon() {
+        inputNumberField.icon1.hide()
+    }
+
+    fun setTextFieldStaticLabel(label: String) {
+        textFieldStaticLabel = label
+        inputNumberField.textInputLayout.hint = textFieldStaticLabel
+    }
+
     private fun initClientNumberAutoComplete(context: Context) {
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
@@ -309,7 +318,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 contactName
             }
         } else {
-            context.getString(R.string.digital_client_label)
+            textFieldStaticLabel
         }
     }
 
@@ -335,6 +344,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         private const val SORT_FILTER_PADDING_16 = 16
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
+        private const val MAX_CHIP_SIZE = 5
 
         private const val AUTOCOMPLETE_THRESHOLD = 1
         private const val AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET = 10

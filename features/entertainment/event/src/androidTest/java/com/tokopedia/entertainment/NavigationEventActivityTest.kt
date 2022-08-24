@@ -273,6 +273,7 @@ class NavigationEventActivityTest {
                 .perform(ViewActions.swipeUp())
         }
 
+        Thread.sleep(3000)
         val viewInteraction = Espresso.onView(
             AllOf.allOf(
                 AllOf.allOf(

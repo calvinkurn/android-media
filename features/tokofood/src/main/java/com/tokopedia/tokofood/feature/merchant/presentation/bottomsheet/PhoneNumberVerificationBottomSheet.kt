@@ -10,7 +10,7 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.databinding.BottomsheetPhoneNumberVerificationLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaClickListener): BottomSheetUnify() {
+class PhoneNumberVerificationBottomSheet : BottomSheetUnify() {
 
     interface OnButtonCtaClickListener {
         fun onButtonCtaClickListener(appLink: String)
@@ -21,9 +21,8 @@ class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaC
         private const val TAG = "PhoneNumberVerificationBottomSheet"
 
         @JvmStatic
-        fun createInstance(bottomSheetData: CartTokoFoodBottomSheet,
-                           clickListener: OnButtonCtaClickListener): PhoneNumberVerificationBottomSheet {
-            return PhoneNumberVerificationBottomSheet(clickListener).apply {
+        fun createInstance(bottomSheetData: CartTokoFoodBottomSheet): PhoneNumberVerificationBottomSheet {
+            return PhoneNumberVerificationBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA, bottomSheetData)
                 }
@@ -32,6 +31,7 @@ class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaC
     }
 
     private var binding: BottomsheetPhoneNumberVerificationLayoutBinding? = null
+    private var clickListener: OnButtonCtaClickListener? = null
 
     private val bottomSheetData: CartTokoFoodBottomSheet by lazy {
         arguments?.getParcelable(BUNDLE_KEY_BOTTOM_SHEET_DATA) ?: CartTokoFoodBottomSheet()
@@ -53,7 +53,7 @@ class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaC
         val buttonData = bottomSheetData.buttons.firstOrNull()
         binding?.buttonCta?.text = buttonData?.text
         binding?.buttonCta?.setOnClickListener {
-            clickListener.onButtonCtaClickListener(buttonData?.link.orEmpty())
+            clickListener?.onButtonCtaClickListener(buttonData?.link.orEmpty())
             dismiss()
         }
     }
@@ -63,7 +63,13 @@ class PhoneNumberVerificationBottomSheet(private val clickListener: OnButtonCtaC
         super.onDestroyView()
     }
 
+    fun setClickListener(clickListener: OnButtonCtaClickListener) {
+        this.clickListener = clickListener
+    }
+
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, TAG)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
     }
 }

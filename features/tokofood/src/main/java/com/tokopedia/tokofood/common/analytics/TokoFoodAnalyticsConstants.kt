@@ -18,6 +18,7 @@ object TokoFoodAnalyticsConstants {
     const val PHYSICAL_GOODS = "Physical Goods"
     const val ADD_TO_CART = "add_to_cart"
     const val VIEW_ITEM = "view_item"
+    const val BEGIN_CHECKOUT = "begin_checkout"
 
     //home
     const val EMPTY_DATA = "null"
@@ -43,6 +44,7 @@ object TokoFoodAnalyticsConstants {
     const val CLICK_ON_PESAN_PRODUCT_CARD = "click on pesan - product card"
     const val CLICK_ON_PESAN_PRODUCT_BOTTOM_SHEET = "click on pesan - product bottom sheet"
     const val CLICK_ON_PESAN_VARIANT_PAGE = "click on pesan - variant page"
+    const val CLICK_ON_CHECKOUT_BUTTON_ON_MINICART = "click on checkout button on minicart"
     const val CLOSED = "closed"
     const val OPEN = "open"
 

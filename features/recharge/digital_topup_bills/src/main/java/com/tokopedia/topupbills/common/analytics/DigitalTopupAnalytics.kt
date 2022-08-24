@@ -3,6 +3,8 @@ package com.tokopedia.topupbills.common.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
+import com.tokopedia.common.topupbills.data.constant.GeneralComponentName
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
@@ -342,6 +344,7 @@ class DigitalTopupAnalytics {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
             TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
+            GeneralCategoryType.CATEGORY_SIGNAL -> GeneralComponentName.CATEGORY_SIGNAL
             else -> TelcoComponentName.PRODUCT_PASCABAYAR
         }
     }

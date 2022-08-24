@@ -47,6 +47,7 @@ object CustomOrderDetailsMapper {
                     name = option.name,
                     price = option.price,
                     priceFmt = formattedPrice,
+                    status = option.status,
                     selectionControlType = mapSelectionRulesToSelectionControlType(variant.rules.selectionRules)
                 )
             }
@@ -73,8 +74,7 @@ object CustomOrderDetailsMapper {
     private fun mapSelectionRulesToSelectionControlType(selectionRules: CheckoutTokoFoodProductVariantSelectionRules): SelectionControlType {
         return when {
             selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_MANY -> SelectionControlType.MULTIPLE_SELECTION
-            selectionRules.type == CheckoutTokoFoodProductVariantSelectionRules.SELECT_ONE -> SelectionControlType.SINGLE_SELECTION
-            selectionRules.maxQuantity > Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
+            selectionRules.minQuantity == Int.ZERO && selectionRules.maxQuantity == Int.ONE -> SelectionControlType.MULTIPLE_SELECTION
             else -> SelectionControlType.SINGLE_SELECTION
         }
     }

@@ -6,17 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:paddingBottom="12dp"
+    android:paddingVertical="@dimen/unify_space_12"
+    android:paddingHorizontal="@dimen/unify_space_16"
     app:layout_constraintVertical_chainStyle="packed">
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/product_select_item_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/unify_space_4"
         android:visibility="gone"
         app:labelType="general_dark_red"
         app:textAllCaps="true"
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/product_select_item_label"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:maxLines="2"
         app:typographyType="heading_6"
         tools:text="Insert Product Title Here, It can accomodate 2 Lines. But keep it short for simple and clean design" />
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/product_select_item_title"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:maxLines="2"
         app:typographyType="body_3"
         tools:text="Lorem Ipsum Dolor Sit Amet. Put product description here." />
@@ -48,8 +48,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/product_select_item_desc"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:textColor="@color/Unify_Y500"
         app:typographyType="small"
         app:typographyWeight="bold"
@@ -60,8 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/product_select_item_price"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@+id/product_select_item_price"
+        android:layout_marginStart="@dimen/unify_space_0"
+        android:layout_toEndOf="@+id/product_select_item_price"
         app:typographyType="small"
         tools:text="Rp190.000" />
 

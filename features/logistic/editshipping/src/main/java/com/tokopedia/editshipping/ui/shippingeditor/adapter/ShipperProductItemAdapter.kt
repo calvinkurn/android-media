@@ -18,6 +18,16 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         fun showCoachMarkOnInfoIcon(icon: IconUnify)
     }
 
+    interface ShipperProductUncheckedListener {
+        fun uncheckedProduct()
+    }
+
+    fun setupUncheckedListener(listener: ShipperProductUncheckedListener) {
+        this.shipperProductUncheckedListener = listener
+    }
+
+    private var shipperProductUncheckedListener : ShipperProductUncheckedListener? = null
+
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperProductOnDemandViewHolder {
@@ -77,6 +87,7 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
 
             shipperProductCb?.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
+                activeProductChecker(isChecked)
             }
         }
 
@@ -85,6 +96,15 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
                     GOCAR_SHIPPER_PRODUCT_ID,
                     ignoreCase = true
                 )
+        }
+
+        private fun activeProductChecker(isChecked: Boolean) {
+            if (!isChecked) {
+                val hasActiveItem = shipperProduct.find { it.isActive }
+                if (hasActiveItem == null) {
+                    shipperProductUncheckedListener?.uncheckedProduct()
+                }
+            }
         }
     }
 }

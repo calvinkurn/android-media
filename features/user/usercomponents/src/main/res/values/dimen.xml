@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="usercomponents_card_view_padding_remover">-4dp</dimen>
+</resources>

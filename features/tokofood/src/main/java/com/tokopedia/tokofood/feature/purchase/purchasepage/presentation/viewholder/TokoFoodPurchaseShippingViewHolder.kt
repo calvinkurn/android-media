@@ -3,13 +3,13 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewho
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.SPACE
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseShippingBinding
+import com.tokopedia.tokofood.feature.purchase.goneAllChildren
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.renderAlpha
+import com.tokopedia.tokofood.feature.purchase.visibleAllChildren
 
 class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseShippingBinding,
                                          private val listener: TokoFoodPurchaseActionListener)
@@ -36,17 +36,17 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
 
     private fun renderLoading(viewBinding: ItemPurchaseShippingBinding) {
         with(viewBinding) {
-            containerPinpoint.gone()
-            containerShipping.gone()
-            containerLoading.show()
+            containerPinpoint.goneAllChildren()
+            containerShipping.goneAllChildren()
+            containerLoading.visibleAllChildren()
         }
     }
 
     private fun renderPinpoint(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            containerPinpoint.show()
-            containerShipping.gone()
-            containerLoading.gone()
+            containerPinpoint.visibleAllChildren()
+            containerShipping.goneAllChildren()
+            containerLoading.goneAllChildren()
             val noPinpointFullInformation = itemView.context.getString(com.tokopedia.tokofood.R.string.text_purchase_message_need_pinpoint)
             textNoPinpoint.text = MethodChecker.fromHtml(noPinpointFullInformation)
             textNoPinpoint.setOnClickListener {
@@ -57,9 +57,9 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
 
     private fun renderShipping(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            containerShipping.show()
-            containerPinpoint.gone()
-            containerLoading.gone()
+            containerShipping.visibleAllChildren()
+            containerPinpoint.goneAllChildren()
+            containerLoading.goneAllChildren()
             imageShippingLogo.setImageUrl(element.shippingLogoUrl)
             textShippingCourierName.text =
                 getShippingCourierInfo(element.shippingCourierName, element.shippingPriceFmt)
@@ -78,6 +78,5 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
         }
         return shippingInfo
     }
-
 
 }

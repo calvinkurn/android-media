@@ -21,10 +21,14 @@ import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
+import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
+import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,8 +46,10 @@ class CampaignStockViewModel @Inject constructor(
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val maxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val tickerStaticDataProvider: TickerStaticDataProvider,
 ) : BaseViewModel(dispatchers.main) {
 
     private var isStockVariant: Boolean = false
@@ -71,6 +77,7 @@ class CampaignStockViewModel @Inject constructor(
     private val mProductUpdateResponseLiveData =
         MutableLiveData<Result<UpdateCampaignStockResult>>()
     private val mGetStockAllocationLiveData = MutableLiveData<Result<StockAllocationResult>>()
+    private val _tickerData = MutableLiveData<List<TickerData>>()
 
     val getStockAllocationData: LiveData<Result<StockAllocationResult>>
         get() = mGetStockAllocationLiveData
@@ -80,6 +87,9 @@ class CampaignStockViewModel @Inject constructor(
 
     val showSaveBtn: LiveData<Boolean>
         get() = mShowSaveBtn
+
+    val tickerData: LiveData<List<TickerData>>
+        get() = _tickerData
 
     fun getStockAllocation(
         productIds: List<String>,
@@ -92,27 +102,35 @@ class CampaignStockViewModel @Inject constructor(
                 block = {
                     mGetStockAllocationLiveData.value = Success(withContext(dispatchers.io) {
                         val warehouseId = getWarehouseId(shopId)
-                        campaignStockAllocationUseCase.run {
-                            params = CampaignStockAllocationUseCase.createRequestParam(
-                                productIds,
-                                shopId,
-                                warehouseId
-                            )
-                            isBundling = isProductBundling
+                        val stockAllocationDataDeffered = async {
+                            campaignStockAllocationUseCase.execute(productIds, shopId, warehouseId, isProductBundling)
                         }
-                        val stockAllocationData =
-                            campaignStockAllocationUseCase.executeOnBackground()
+
+                        val maxStockDeferred = async {
+                            try {
+                                maxStockThresholdUseCase.execute(shopId)
+                            } catch (ex: Exception) {
+                                null
+                            }
+                        }
+                        val (stockAllocationData, maxStock) =
+                            stockAllocationDataDeffered.await() to maxStockDeferred.await()
                         campaignProductName = stockAllocationData.summary.productName
                         stockAllocationData.summary.isVariant.let { isVariant ->
                             isStockVariant = isVariant
-
                             if (isVariant) {
-                                getVariantResult(productId, stockAllocationData, isProductBundling)
+                                getVariantResult(
+                                    productId,
+                                    stockAllocationData,
+                                    isProductBundling,
+                                    maxStock?.getMaxStockFromResponse()
+                                )
                             } else {
                                 getNonVariantResult(
                                     productId,
                                     stockAllocationData,
-                                    isProductBundling
+                                    isProductBundling,
+                                    maxStock?.getMaxStockFromResponse()
                                 )
                             }
                         }
@@ -204,7 +222,8 @@ class CampaignStockViewModel @Inject constructor(
                 }
 
                 if (nonVariantStock != currentNonVariantStock) {
-                    result = editProductStock(nonVariantStock, result.data.isSuccess, isUpdateStatus)
+                    result =
+                        editProductStock(nonVariantStock, result.data.isSuccess, isUpdateStatus)
                 }
 
                 mProductUpdateResponseLiveData.value = result
@@ -383,7 +402,8 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getNonVariantResult(
         productId: String,
         stockAllocationData: GetStockAllocationData,
-        isProductBundling: Boolean
+        isProductBundling: Boolean,
+        maxStock: Int?
     ): NonVariantStockAllocationResult {
         val warehouseId = getWarehouseId(userSession.shopId)
         otherCampaignStockDataUseCase.params =
@@ -410,19 +430,41 @@ class CampaignStockViewModel @Inject constructor(
 
         mProductManageAccess.postValue(productManageAccess.await())
 
+        val nonVariantReservedEventInfoUiModels = stockAllocationData.detail.reserve.map {
+            CampaignStockMapper.mapToParcellableReserved(it)
+        } as ArrayList
+
+        val access = productManageAccess.await()
+
+        val sellableProducts = CampaignStockMapper.getSellableProduct(
+            id = productId,
+            isActive = otherCampaignStockData.getIsActive(),
+            access = access,
+            isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            maxStock = maxStock,
+            sellableList = stockAllocationData.detail.sellable
+        ) as ArrayList
+
         return NonVariantStockAllocationResult(
-            stockAllocationData,
+            maxStock,
+            nonVariantReservedEventInfoUiModels,
+            stockAllocationData.summary,
+            sellableProducts,
             otherCampaignStockData,
-            productManageAccess.await()
+            access
         )
     }
 
     private suspend fun getVariantResult(
         productId: String,
         stockAllocationData: GetStockAllocationData,
-        isProductBundling: Boolean
+        isProductBundling: Boolean,
+        maxStock: Int?
     ): VariantStockAllocationResult {
         campaignReservedStock = stockAllocationData.summary.reserveStock.toIntOrZero()
+
+        val variantReservedEventInfoUiModels =
+            CampaignStockMapper.mapToVariantReserved(stockAllocationData.detail.reserve) as ArrayList
 
         val warehouseId = getWarehouseId(userSession.shopId)
         val getProductVariantUseCaseRequestParams =
@@ -452,7 +494,8 @@ class CampaignStockViewModel @Inject constructor(
 
         val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(
             getProductVariantData.await().getProductV3,
-            productManageAccess.await()
+            productManageAccess.await(),
+            maxStock
         ).also {
             val sellableProductList = stockAllocationData.detail.sellable
             val variants = it.variants.map { variant ->
@@ -467,12 +510,19 @@ class CampaignStockViewModel @Inject constructor(
             editVariantResult = variantsEditResult
             variantList = variants
         }
+        val sellableStockProductUiModels =
+            CampaignStockMapper.mapToParcellableSellableProduct(
+                stockAllocationData.detail.sellable,
+                getVariantResult.variants
+            )
 
         mProductManageAccess.postValue(productManageAccess.await())
 
         return VariantStockAllocationResult(
             getVariantResult,
-            stockAllocationData,
+            variantReservedEventInfoUiModels,
+            stockAllocationData.summary,
+            sellableStockProductUiModels,
             otherCampaignStockData.await(),
             productManageAccess.await()
         )
@@ -483,6 +533,11 @@ class CampaignStockViewModel @Inject constructor(
         val canManageProduct = mProductManageAccess.value?.editProduct == true
         val shouldShowSaveBtn = (canManageStock || canManageProduct) && mainStockTab
         mShowSaveBtn.value = shouldShowSaveBtn
+    }
+
+    fun getTickerData() {
+        val isMultiLocationShop = userSession.isMultiLocationShop
+        _tickerData.value = tickerStaticDataProvider.getTickers(isMultiLocationShop)
     }
 
     private suspend fun getProductManageAccess(): ProductManageAccess {

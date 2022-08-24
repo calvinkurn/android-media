@@ -23,7 +23,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@+id/image_product"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/image_product"
         app:typographyType="display_2"
         tools:text="Milo Macchiato" />
@@ -79,13 +82,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/notes"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_product"
         app:typographyType="display_3"
         tools:text="Pesanannya jangan sampai salah ya! udah haus haus haus haus haus bang..." />

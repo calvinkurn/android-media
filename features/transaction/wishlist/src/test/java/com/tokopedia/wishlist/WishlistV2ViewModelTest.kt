@@ -588,7 +588,7 @@ class WishlistV2ViewModelTest {
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
     }
 
-    @Test
+    /*@Test
     fun `verify get count delete wishlistV2 returns success`(){
         val countWishlistV2 = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress(status = "OK")
 
@@ -610,5 +610,5 @@ class WishlistV2ViewModelTest {
         wishlistV2ViewModel.getCountDeletionWishlistV2()
 
         coVerify { countDeleteWishlistV2UseCase.executeOnBackground() }
-    }
+    }*/
 }

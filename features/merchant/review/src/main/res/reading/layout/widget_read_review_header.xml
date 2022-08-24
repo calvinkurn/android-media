@@ -3,15 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:viewBindingIgnore="true">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerReviewRating"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
@@ -56,7 +53,6 @@
             android:layout_height="wrap_content"
             android:text="@string/review_gallery_header_see_all"
             android:textColor="@color/Unify_G500"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/read_review_rating_and_review_count"
             app:layout_constraintTop_toBottomOf="@id/read_review_rating_and_review_count"
             app:typographyType="body_3"

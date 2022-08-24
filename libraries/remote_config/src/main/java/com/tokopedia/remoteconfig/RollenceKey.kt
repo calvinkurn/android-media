@@ -2,10 +2,6 @@ package com.tokopedia.remoteconfig
 
 object RollenceKey {
 
-    // Shop Settings
-    const val AB_TEST_OPERATIONAL_HOURS_KEY = "operational_hour"
-    const val AB_TEST_OPERATIONAL_HOURS_NO_KEY = "no_key"
-
     //    Shop Page
     const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
@@ -19,8 +15,6 @@ object RollenceKey {
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-
-    const val HOME_BEAUTY_FEST = "home_cantik"
 
     //home component rollence section
     const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
@@ -43,14 +37,11 @@ object RollenceKey {
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
-    const val VARIANT_NEW_PROFILE_REVAMP = "userprofile_revamp"
 
     //Auto Complete
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
     const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
 
-    //Search
-    const val SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION = "ContentTrackerUni"
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
@@ -58,9 +49,6 @@ object RollenceKey {
     const val WISHLIST_OLD_VARIANT = "control_variant"
     const val WISHLIST_V2_VARIANT = "experiment_variant"
     const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
-
-    // Fulfillment Rebranding
-    const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
 
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
@@ -82,4 +70,9 @@ object RollenceKey {
 
     // Food
     const val KEY_ROLLENCE_FOOD = "m1_gofood"
+
+    // PDP
+    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
+    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
+    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
 }

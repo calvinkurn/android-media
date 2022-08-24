@@ -33,7 +33,6 @@ class PlayViewModelCreatePageTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private val pinnedBuilder = PlayPinnedModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
 
@@ -57,13 +56,16 @@ class PlayViewModelCreatePageTest {
                 orientation = videoOrientation
         )
 
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            viewModel.observableVideoMeta.getOrAwaitValue()
-                    .videoStream
-                    .isEqualTo(expectedModel)
+        val robot = createPlayViewModelRobot()
+
+        robot.use {
+            val state = it.recordState {
+                createPage(channelData)
+            }
+
+            it.viewModel.observableVideoMeta.getOrAwaitValue()
+                .videoStream
+                .isEqualTo(expectedModel)
         }
     }
 

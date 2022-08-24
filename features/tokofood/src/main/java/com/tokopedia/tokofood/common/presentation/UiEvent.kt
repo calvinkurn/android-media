@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.common.presentation
 
 data class UiEvent(
     var state: Int = 0,
+    var source: String = "",
     var data: Any? = null,
     var throwable: Throwable? = null
 ) {

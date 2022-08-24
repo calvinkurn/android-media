@@ -11,6 +11,6 @@ object ShareComponentConstants {
         const val FOOD = "food"
         const val MERCHANT_URL = "https://www.tokopedia.com/gofood"
         const val MERCHANT_ID = "merchantId"
-        const val PRODUCT_ID = "productId"
+        const val PRODUCT_ID = "product_id"
     }
 }

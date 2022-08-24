@@ -59,7 +59,7 @@ data class PlayWidgetChannelUiModel(
     val partner: PlayWidgetPartnerUiModel,
     val video: PlayWidgetVideoUiModel,
     val channelType: PlayWidgetChannelType,
-    val hasGiveaway: Boolean,
+    val hasGame: Boolean,
     val share: PlayWidgetShareUiModel,
     val performanceSummaryLink: String,
     val poolType: String,
@@ -72,6 +72,9 @@ data class PlayWidgetChannelUiModel(
 
     val hasPromo: Boolean
         get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
+
+    val isUpcoming: Boolean
+        get() = channelType == PlayWidgetChannelType.Upcoming
 }
 
 data class PlayWidgetTotalView(

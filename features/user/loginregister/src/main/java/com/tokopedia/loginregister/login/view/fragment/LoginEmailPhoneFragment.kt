@@ -16,12 +16,7 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -41,12 +36,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
@@ -87,12 +82,19 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
+import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
+import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
@@ -167,6 +169,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     @Inject
+    lateinit var gotoSeamlessHelper: GotoSeamlessHelper
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
@@ -179,7 +184,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     protected var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
-    private var isEnableFingerprint = true
+    private var isEnableFingerprint = false
     private var isEnableSilentVerif = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
@@ -193,6 +198,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
+    private var loadingOverlay: View? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -208,6 +214,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
     private var isUsingRollenceNeedHelp = false
     private var passOnStop = false
+    private var isEnableSeamlessLogin = false
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -296,8 +303,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return super.onOptionsItemSelected(item)
     }
 
+    private fun routeToGojekSeamlessPage() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.GOTO_SEAMLESS_LOGIN)
+        startActivityForResult(intent, REQUEST_GOTO_SEAMLESS)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setupBackgroundColor()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -313,6 +326,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
+        isEnableSeamlessLogin = isEnableSeamlessGoto()
+        isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         refreshRolloutVariant()
     }
 
@@ -338,6 +353,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
         socmedButton = view.findViewById(R.id.socmed_btn)
+        loadingOverlay = view.findViewById(R.id.login_loading_overlay)
         return view
     }
 
@@ -357,10 +373,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if(savedInstanceState == null) {
             clearData()
         }
-        initObserver()
         prepareView()
-        prepareArgData()
+        setupToolbar()
+        checkSeamless()
 
+        prepareArgData()
+        initObserver()
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
                 viewModel.getDynamicBannerData(DynamicBannerConstant.Page.LOGIN)
@@ -375,8 +393,25 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         partialRegisterInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
+    }
 
-        setupToolbar()
+    private fun checkSeamless() {
+        if(isEnableSeamlessLogin) {
+            showLoadingSeamless()
+            viewModel.checkSeamlessEligiblity()
+        } else {
+            hideLoadingSeamless()
+        }
+    }
+
+    private fun showLoadingSeamless() {
+        loadingOverlay?.show()
+        (activity as? LoginActivity)?.supportActionBar?.hide()
+    }
+
+    private fun hideLoadingSeamless() {
+        loadingOverlay?.hide()
+        (activity as? LoginActivity)?.supportActionBar?.show()
     }
 
     private fun prepareArgData() {
@@ -413,6 +448,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun initObserver() {
+        viewModel.navigateToGojekSeamless.observe(viewLifecycleOwner) {
+            if(it) {
+                routeToGojekSeamlessPage()
+            } else {
+                hideLoadingSeamless()
+            }
+        }
+
         viewModel.registerCheckResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessRegisterCheck().invoke(it.data)
@@ -526,7 +569,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToSecurityQuestionAfterRelogin().invoke()
         })
+
+        viewModel.getTemporaryKeyResponse.observe(viewLifecycleOwner) {
+            if(it) {
+                context?.run {
+                    TemporaryTokenWorker.scheduleWorker(applicationContext)
+                }
+            }
+            onSuccessLogin()
+        }
     }
+
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
@@ -560,7 +613,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun goToChooseAccountPageFingerprint(validateToken: String) {
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT_FINGERPRINT).apply {
+                    ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             }
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
@@ -570,7 +623,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun fetchRemoteConfig() {
         isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
         isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
-        isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
         isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
         isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
         isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
@@ -832,7 +884,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToForgotPassword() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText?.text.toString().trim())
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
@@ -854,6 +906,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             ""
         )
         return newInactivePhoneNumberAbTestKey.isNotEmpty()
+    }
+
+    private fun isEnableSeamlessGoto(): Boolean {
+        val rollence = abTestPlatform.getString(
+            ROLLENCE_KEY_GOTO_SEAMLESS,
+            ""
+        )
+        return rollence.isNotEmpty()
     }
 
     private fun showNeedHelpBottomSheet(){
@@ -1000,7 +1060,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
-            var intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+            var intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
             if (GlobalConfig.isSellerApp()) {
                 intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
             }
@@ -1039,6 +1099,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo?) {
         currentEmail = ""
         viewModel.getUserInfo()
+    }
+
+    private fun clearTopAdsHeader() {
+        val sp = context?.getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE)
+        val editor = sp?.edit()
+        editor?.remove(RESPONSE_HEADER_KEY)
+        editor?.apply()
     }
 
     override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {
@@ -1087,6 +1154,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
+            clearTopAdsHeader()
         }
 
         refreshRolloutVariant()
@@ -1102,7 +1170,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val intent = if (userSession.hasShop()) {
                 RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
             } else {
-                RouteManager.getIntent(context, LANDING_SHOP_CREATION)
+                RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION)
             }
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -1117,11 +1185,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setTrackingUserId(userId: String) {
         try {
-            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
+            val ctx = activity?.applicationContext
+            TkpdAppsFlyerMapper.getInstance(ctx).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
             val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
             if (!GlobalConfig.DEBUG && crashlytics != null)
                 crashlytics.setUserId(userId)
+            ctx?.let {
+                TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
+            }
 
             if (userSession.isLoggedIn) {
                 val userData = UserData()
@@ -1247,7 +1319,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     if (GlobalConfig.isSellerApp()) {
                         goToRegisterInitial(source)
                     } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
@@ -1322,7 +1394,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (profilePojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
-            onSuccessLogin()
+            if(isEnableSeamlessLogin) {
+                viewModel.getTemporaryKeyForSDK(profilePojo)
+            } else {
+                onSuccessLogin()
+            }
         }
         getDefaultChosenAddress()
     }
@@ -1430,7 +1506,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)
@@ -1438,7 +1514,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
@@ -1538,7 +1614,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     onErrorVerifyFingerprint()
                 }
-            } else {
+            } else if(requestCode == REQUEST_GOTO_SEAMLESS) {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        viewModel.getUserInfo()
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        activity?.finish()
+                    }
+                    GotoSeamlessLoginFragment.RESULT_OTHER_ACCS -> {
+                        hideLoadingSeamless()
+                    }
+                    else -> {
+                        activity?.finish()
+                    }
+                }
+            }
+            else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -1579,7 +1671,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToAddPin2FA(enableSkip2FA: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
@@ -1593,7 +1685,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun isFromAtcPage(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
-        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
+        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
@@ -1629,6 +1721,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
+            intent.putExtras(Bundle().apply {
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            })
             startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_NAME)
         }
     }
@@ -1889,6 +1984,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
 
         const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+        const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_v2"
 
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 

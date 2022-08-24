@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -28,8 +29,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import java.net.URLDecoder
 import java.util.*
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -114,7 +115,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun setupSubtitle(data: DataItem){
-        var subtitle = data.subtitle
+        var subtitle = data.subtitle?.toDecodedString()
         if(!data.endDate.isNullOrEmpty() || !data.startDate.isNullOrEmpty()){
             if(!Utils.isFutureSale(data.startDate?:"",TIMER_DATE_FORMAT) && !data.subtitle_1.isNullOrEmpty()){
                 subtitle = data.subtitle_1

@@ -14,6 +14,7 @@ import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListSimplified
 import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToMiniCartData
 import com.tokopedia.usecase.coroutines.UseCase
 import dagger.Lazy
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GetMiniCartListSimplifiedUseCase @Inject constructor(
@@ -26,20 +27,23 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
 
     private var params: Map<String, Any>? = null
     private var shopIds: List<String> = emptyList()
+    private var delay: Long = 0
 
-    fun setParams(shopIds: List<String>, source: MiniCartSource) {
+    fun setParams(shopIds: List<String>, source: MiniCartSource, isShopDirectPurchase: Boolean = false, delay: Long = 0) {
         params = mapOf(
                 GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
                 GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
                         GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
                         ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value
+                        GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                        GetMiniCartListUseCase.PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
                 )
         )
         this.shopIds = shopIds
+        this.delay = delay
     }
 
-    fun setParams(shopIds: List<String>, promoId: String, promoCode: String, source: MiniCartSource) {
+    fun setParams(shopIds: List<String>, promoId: String, promoCode: String, source: MiniCartSource, delay: Long = 0) {
         params = mapOf(
                 GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
                 GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
@@ -52,11 +56,15 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                         GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value
                 )
         )
+        this.delay = delay
     }
 
     override suspend fun executeOnBackground(): MiniCartSimplifiedData {
         if (params == null) {
             throw RuntimeException("Parameter is null!")
+        }
+        if (delay > 0) {
+            delay(delay)
         }
 
         return if(remoteConfig.isNewMiniCartEnabled()) {
@@ -88,9 +96,26 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                 button_type
                 button_wording
               }
+              bottom_bar {
+                text
+                is_shop_active
+                total_price_fmt
+              }
               total_product_count
               total_product_error
               total_product_price
+              simplified_shopping_summary {
+                text
+                sections {
+                  title
+                  description
+                  icon_url
+                  details {
+                    name
+                    value
+                  }
+                }
+              }
               available_section {
                 available_group {
                   cart_string
@@ -148,6 +173,11 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                       variant_description_detail {
                         variant_name
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       product_price
                       product_quantity
                       product_invenage_value
@@ -165,7 +195,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                       title_fmt
                     }
                   }
-                  shipment_information {                                        
+                  shipment_information {
                     free_shipping {
                       eligible
                     }

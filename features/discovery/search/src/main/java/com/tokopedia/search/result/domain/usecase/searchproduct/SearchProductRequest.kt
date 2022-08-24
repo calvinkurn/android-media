@@ -68,6 +68,10 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 additionalParams
                 keywordProcess
                 componentId
+                meta {
+                    productListType
+                    isPostProcessing
+                }
             }
             data {
                 isQuerySafe
@@ -88,6 +92,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     text
                     applink
                     imageUrl
+                    componentId
+                    trackingOption
                 }
                 related {
                     relatedKeyword

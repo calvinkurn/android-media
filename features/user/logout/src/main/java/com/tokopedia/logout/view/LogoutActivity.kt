@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
@@ -199,12 +200,13 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearWebView()
         clearLocalChooseAddress()
         clearRegisterPushNotificationPref()
-
+        clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
         clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -300,6 +302,14 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutLoading?.visibility = View.GONE
     }
 
+    private fun clearTemporaryTokenForSeamless() {
+        val sharedPrefs = getSharedPreferences(
+            GOTO_SEAMLESS_PREF,
+            Context.MODE_PRIVATE
+        )
+        sharedPrefs.edit().clear().apply()
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     private fun clearWebView() {
         try {
@@ -325,6 +335,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val INVALID_TOKEN = "Token tidak valid."
 
         private const val MAX_STACKTRACE_LENGTH = 1000
+
+        const val GOTO_SEAMLESS_PREF = "goto_seamless_pref"
+        const val KEY_TEMPORARY = "temporary_key"
 
         /**
          * class [com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker]

@@ -4,6 +4,10 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
@@ -13,6 +17,7 @@ import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
@@ -203,5 +208,27 @@ class ShopProductModule {
     @Provides
     fun provideShopProductSortMapper(): ShopProductSortMapper {
         return ShopProductSortMapper()
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideAddToCart(graphqlRepository: GraphqlRepository,
+                         addToCartDataMapper: AddToCartDataMapper,
+                         chosenAddressRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartUseCase {
+        return AddToCartUseCase(graphqlRepository, addToCartDataMapper, chosenAddressRequestHelper)
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideUpdateCart(graphqlRepository: GraphqlRepository,
+                         chosenAddressRequestHelper: ChosenAddressRequestHelper): UpdateCartUseCase {
+        return UpdateCartUseCase(graphqlRepository, chosenAddressRequestHelper)
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideDeleteCart(graphqlRepository: GraphqlRepository): DeleteCartUseCase {
+        return DeleteCartUseCase(graphqlRepository)
     }
 }

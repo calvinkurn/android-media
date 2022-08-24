@@ -12,6 +12,14 @@ class FingerprintPreferenceManager @Inject constructor(@ApplicationContext val c
     val name = "android_user_biometric"
     val preference: SharedPreferences = context.getSharedPreferences(name, MODE_PRIVATE)
 
+    private fun removeOldId() {
+        val oldKey = "uniqueIdBiometric"
+        val hasOldId = preference.contains(oldKey)
+        if(hasOldId) {
+            preference.edit().remove(oldKey).apply()
+        }
+    }
+
     override fun saveUniqueIdIfEmpty(id: String) {
         if(isUniqueIdEmpty()) {
             saveUniqueId(id)
@@ -25,8 +33,10 @@ class FingerprintPreferenceManager @Inject constructor(@ApplicationContext val c
         }
     }
 
-    override fun getUniqueId(): String =
-        preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+    override fun getUniqueId(): String {
+        removeOldId()
+        return preference.getString(PARAM_UNIQUE_ID_BIOMETRIC, "") ?: ""
+    }
 
     override fun removeUniqueId() {
         saveUniqueId("")
@@ -47,7 +57,7 @@ class FingerprintPreferenceManager @Inject constructor(@ApplicationContext val c
     }
 
     companion object {
-        const val PARAM_UNIQUE_ID_BIOMETRIC = "uniqueIdBiometric"
+        const val PARAM_UNIQUE_ID_BIOMETRIC = "biometric_id_v2"
     }
 
 }

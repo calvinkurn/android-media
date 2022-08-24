@@ -55,7 +55,7 @@ private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.productCardImage] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
@@ -92,7 +92,7 @@ private fun testDeleteProductButton(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.productCardImage] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.linearLayoutImageRating] = isDisplayed()
@@ -118,7 +118,7 @@ private fun testSimilarProductButton(useViewStub: Boolean): ProductCardModelMatc
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.productCardImage] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)

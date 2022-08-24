@@ -170,12 +170,13 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     fun setParam(
         source: String?, dataProduct: Bundle,
         dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>,
+        status: String? = null
     ): RequestParams {
 
         val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
         variable[INPUT] =
-            convertToParam(source, dataProduct, dataKeyword, dataGroup)
+            convertToParam(source, dataProduct, dataKeyword, dataGroup,status)
         param.putAll(variable)
         return param
     }
@@ -183,6 +184,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     private fun convertToParam(
         source: String?, dataProduct: Bundle,
         dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>,
+        status: String? = null
     ): TopadsManagePromoGroupProductInput {
         var strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
@@ -236,7 +238,9 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         } else {
             group?.name = null
         }
-        group?.status = PUBLISHED
+        status?.let {
+            group?.status = status
+        }
         group?.strategies = strategy
         group?.suggestionBidSettings =
             dataKeyword[ParamObject.SUGGESTION_BID_SETTINGS] as? List<GroupEditInput.Group.TopadsSuggestionBidSetting>?

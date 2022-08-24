@@ -16,29 +16,20 @@
         app:closeButtonVisibility="gone"
         tools:visibility="visible" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/input_number_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
+        android:id="@+id/cc_widget_client_number"
         android:layout_below="@id/cc_ticker_view"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        app:cardCornerRadius="@dimen/layout_lvl1">
-
-        <com.tokopedia.recharge_credit_card.widget.CCClientNumberWidget
-            android:id="@+id/cc_widget_client_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/layout_lvl1" />
-
-    </androidx.cardview.widget.CardView>
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/list_bank_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/input_number_area"
+        android:layout_below="@+id/cc_widget_client_number"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/layout_lvl3"
         app:drawableLeftCompat="@drawable/cc_ic_info_full_green"

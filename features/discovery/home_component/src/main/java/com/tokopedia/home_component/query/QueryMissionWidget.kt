@@ -18,6 +18,14 @@ internal object QueryMissionWidget {
             "      subTitle\n" +
             "      applink\n" +
             "      imageURL\n" +
+            "      pageName\n" +
+            "      categoryID\n" +
+            "      productID\n" +
+            "      productName\n" +
+            "      recommendationType\n" +
+            "      buType\n" +
+            "      isTopads\n" +
+            "      isCarousel" +
             "    }\n" +
             "  }\n" +
             "}\n"

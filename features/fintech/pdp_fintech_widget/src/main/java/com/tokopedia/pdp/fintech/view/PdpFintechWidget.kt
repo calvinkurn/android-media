@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
@@ -20,6 +21,10 @@ import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
+import com.tokopedia.pdp.fintech.helper.Utils
+import com.tokopedia.pdp.fintech.helper.Utils.createRedirectionAppLink
+import com.tokopedia.pdp.fintech.helper.Utils.returnRouteObject
+import com.tokopedia.pdp.fintech.helper.Utils.setListOfData
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
@@ -63,7 +68,9 @@ class PdpFintechWidget @JvmOverloads constructor(
         initInjector()
         initView()
         initRecycler()
+
     }
+
 
 
     fun updateBaseFragmentContext(
@@ -99,8 +106,31 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun updateTestForChip(widgetDetail: WidgetDetail) {
         widgetDetail.baseWidgetResponse?.baseData?.let { baseChipResponse ->
-            if (baseChipResponse.list.size > 0)
+            if (baseChipResponse.list.size > 0) {
                 binding.quickText.text = baseChipResponse.list[0].title
+                setSeeMoreButton(baseChipResponse.list[0].chips)
+            }
+
+        }
+    }
+
+    private fun setSeeMoreButton(chips: ArrayList<ChipsData>) {
+        if(chips[chips.size-1].gatewayId == LIHAT_SEMU_GATEWAY_ID)
+        {
+            binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
+            binding.pdpFintechWidgetSeeMore.text = chips[chips.size-1].header?.parseAsHtml()
+            setSeeMoreListner(chips[chips.size-1])
+        }
+    }
+
+    private fun setSeeMoreListner(chipsData: ChipsData) {
+        val listOfAllChecker   = setListOfData(chipsData)
+        if(Utils.safeLet(listOfAllChecker) == true) {
+            binding.pdpFintechWidgetSeeMore.setOnClickListener {
+                routeToPdp(
+                    returnRouteObject(chipsData)
+                    )
+            }
         }
     }
 
@@ -138,7 +168,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         rediretionLink: String
     ) {
 
-        if (fintechRedirectionWidgetDataClass.gatewayId == 0)
+        if (fintechRedirectionWidgetDataClass.gatewayId == "0")
             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                 FintechWidgetAnalyticsEvent.PdpWidgetClick(
                     this.productID,
@@ -164,17 +194,11 @@ class PdpFintechWidget @JvmOverloads constructor(
 
 
     private fun routeToPdp(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-        val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
-                "?productID=${this.productID}" +
-                "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
-                "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}" +
-                "&productURL=${setProductUrl()}"
-
-        sendClickEvent(fintechRedirectionWidgetDataClass, rediretionLink)
+        val redirectionLink = createRedirectionAppLink(fintechRedirectionWidgetDataClass,this.productID)
+        sendClickEvent(fintechRedirectionWidgetDataClass, redirectionLink)
         instanceProductUpdateListner?.fintechChipClicked(
             fintechRedirectionWidgetDataClass,
-            rediretionLink
+            redirectionLink
         )
     }
 
@@ -245,7 +269,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
         for (i in 0 until chipList.size) {
-            if (chipList[i].gatewayId == 0)
+            if (chipList[i].gatewayId == "0")
                 pdpWidgetAnalytics.get().sendAnalyticsEvent(
                     FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                         productID ?: "",
@@ -281,6 +305,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     companion object {
         const val ACTIVATION_LINKINING_FLOW = 2
+        const val LIHAT_SEMU_GATEWAY_ID = "0"
     }
 
 }

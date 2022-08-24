@@ -25,14 +25,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
@@ -53,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -78,7 +76,11 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_recharge_general.*
@@ -481,10 +483,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     operatorGroup.operators.find { it.attributes.name == input }?.let {
-                        if (operatorId != it.id.toInt()) {
+                        if (operatorId != it.id.toIntSafely()) {
                             // Save operator id for enquiry
                             resetInputData()
-                            operatorId = it.id.toInt()
+                            operatorId = it.id.toIntSafely()
                             if (!isAddSBM) {
                                 rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
                             }
@@ -553,7 +555,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             if (productId == 0){
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
-                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toInt()
+                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toIntSafely()
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
@@ -637,7 +639,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
-            dropdownBottomSheet.setFullPage(true)
+            dropdownBottomSheet.isFullpage = false
+            dropdownBottomSheet.clearContentPadding = true
             dropdownBottomSheet.clearAction()
             dropdownBottomSheet.setCloseClickListener {
                 dropdownBottomSheet.dismiss()

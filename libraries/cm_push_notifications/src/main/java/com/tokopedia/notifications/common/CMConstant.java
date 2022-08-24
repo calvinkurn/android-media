@@ -141,16 +141,21 @@ public interface CMConstant {
         String REVIEW_NUMBER = "reviewNumber";
         String REVIEW_ICON = "reviewIcon";
         String IS_REVIEW = "isReviewNotif";
+        String REPLY_TYPE = "replyType";
 
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
         String ADVANCE_TARGET = "isAdvanceTarget";
+        String GROUP_ID = "groupId";
+        String GROUP_NAME = "groupName";
 
         interface PayloadExtraDataKey {
             String CAMPAIGN_NAME = "cmpgnName";
             String JOURNEY_ID = "jrnId";
             String JOURNEY_NAME = "jrnName";
             String SESSION_ID = "sesnId";
+            String INTENT_ACTION = "intentAction";
+            String TOPCHAT = "topChat";
         }
 
 

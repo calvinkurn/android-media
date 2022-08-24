@@ -18,7 +18,34 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
+import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -190,15 +217,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.PRODUCT_WHOLESALE_INFO, loadInitialData) {
-                productWholesaleInfoMap?.run {
-                    val minPrice = it.data.wholesale?.minByOrNull { it.price.value }?.price?.value
-                            ?: return@run
-                    subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
-                            ?: ""
-                }
-            }
-
             updateData(ProductDetailConstant.SHIPMENT, loadInitialData) {
                 shipmentData?.isTokoNow = it.basic.isTokoNow
             }
@@ -246,7 +264,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (selectedOptionId == null) return
         updateData(ProductDetailConstant.MEDIA) {
             mediaMap?.apply {
-                if(this.variantOptionIdScrollAnchor != selectedOptionId){
+                if (this.variantOptionIdScrollAnchor != selectedOptionId) {
                     this.variantOptionIdScrollAnchor = selectedOptionId
                     this.shouldUpdateImage = true
                 }
@@ -345,20 +363,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
-        val fullFillmentText = if (!isFullfillment) {
-            ""
-        } else {
-            context?.getString(R.string.multiorigin_desc) ?: ""
-        }
-
-        updateData(ProductDetailConstant.PRODUCT_FULLFILMENT) {
-            productFullfilmentMap?.run {
-                subtitle = fullFillmentText
-            }
-        }
-    }
-
     fun updateDataP2(context: Context?,
                      p2Data: ProductInfoP2UiData,
                      productId: String,
@@ -379,7 +383,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                                 it.shopChatSpeed.toLongOrZero(),
                                 it.shopInfo.activeProduct.toLongOrZero(),
                                 it.shopInfo.createdInfo.shopCreated,
-                                it.shopRating)
+                                it.shopRating,
+                                it.shopFinishRate)
                     tickerDataResponse = it.shopInfo.tickerData
                 }
             }
@@ -391,12 +396,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopLocation = shopInfo.location
                     shopAva = shopInfo.shopAssets.avatar
                     shopBadge = shopInfo.shopTierBadgeUrl
-                }
-            }
-
-            updateData(ProductDetailConstant.ORDER_PRIORITY) {
-                orderPriorityMap?.run {
-                    subtitle = it.shopCommitment.staticMessages.pdpMessage
                 }
             }
 
@@ -442,16 +441,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             } else {
                 removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO)
-            }
-
-            if (it.productFinancingRecommendationData.data.subtitle.isEmpty()) {
-                removeComponent(ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
-            } else {
-                updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
-                    productInstallmentPaylater?.run {
-                        subtitle = it.productFinancingRecommendationData.data.subtitle
-                    }
-                }
             }
 
             updatePurchaseProtectionData(it.productPurchaseProtectionInfo.ppItemDetailPage)
@@ -505,6 +494,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else if (ppItemData.titlePDP?.isNotEmpty() == true) {
                     title = ppItemData.titlePDP
                 }
+
+                if (!ppItemData.linkURL.isNullOrBlank()) {
+                    applink = ppItemData.linkURL.orEmpty()
+                }
+
                 subtitle = ppItemData.subTitlePDP ?: ""
                 additionalIcon = ppItemData.partnerLogo ?: ""
                 additionalDesc = ppItemData.partnerText ?: ""

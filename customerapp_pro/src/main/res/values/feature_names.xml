@@ -400,4 +400,7 @@
     <!-- TokoFood -->
     <string name="title_tokofood" translatable="false">TokoFood</string>
     <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
 </resources>

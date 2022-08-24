@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceT
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.ALL_DATE_TRANSACTION_POSITION
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_ONE_MONTH_POSITION
 import com.tokopedia.tokopedianow.datefilter.presentation.fragment.TokoNowDateFilterFragment.Companion.LAST_THREE_MONTHS_POSITION
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -85,7 +86,7 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
-        val categoryListUiModel = RepurchaseCategoryMapper.mapToCategoryList(response, warehouseId)
+        val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId)
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",

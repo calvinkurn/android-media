@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
 import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -34,6 +35,14 @@ class SmartBillsViewModelTest {
     private lateinit var gqlResponseFail: GraphqlResponse
     private var checkoutField = RechargeField("client_number", "0123456789")
     private val userID = "123"
+
+    private val imageUrl = "https://images.tokopedia.net/img/SnKlQx/2022/1/6/6b657144-bbd1-4504-9cdf-7ff63f998142.png"
+    private val contentId = "10"
+    private val uuID = "9839483-9483904-49384"
+    private val title = "Yuk bayar Pajak PBB 2022"
+    private val date = "Tagihan PBB 2022"
+    private val desc = "Isi Nomor Objek Pajak"
+    private val applink = "tokopedia://bayar-sekaligus"
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
@@ -677,4 +686,240 @@ class SmartBillsViewModelTest {
         assert(actualData is Fail)
     }
 
+    @Test
+    fun createParamHighlightCategory(){
+        //when
+        val actual = smartBillsViewModel.createParamHighlightCategory()
+
+        //then
+        assertEquals(actual, mapOf(
+            SmartBillsViewModel.PARAM_RECHARGE_RECOM to SmartBillsViewModel.RECHARGE_RECOM_TYPE
+        ))
+    }
+
+    @Test
+    fun createParamCloseRecom(){
+        //given
+        val uuid = "87438-498394-8493849"
+        val contentId = "2039"
+
+        //when
+        val actual = smartBillsViewModel.createParamCloseRecom(uuid, contentId)
+
+        val request =  RechargeCloseParams(uuid, contentId)
+        //then
+        assertEquals(actual, mapOf(
+            SmartBillsViewModel.PARAM_CLOSE_RECOM to request
+        ))
+    }
+
+    @Test
+    fun checkHighlightIsNotEmpty_and_allDataIsFilled() {
+        //given
+        val highlightCategory = HighlightCategoryUiModel(
+            contentId = contentId,
+            uuId = uuID,
+            imageUrl = imageUrl,
+            title = title,
+            date = date,
+            desc = desc,
+            applink = applink
+        )
+
+        //when
+        val result = smartBillsViewModel.isHighlightNotEmpty(highlightCategory)
+
+        //then
+        assertTrue(result)
+    }
+
+    @Test
+    fun checkHighlightIsNotEmpty_and_contentIdEmpty() {
+        //given
+        val highlightCategory = HighlightCategoryUiModel(
+            uuId = uuID,
+            imageUrl = imageUrl,
+            title = title,
+            date = date,
+            desc = desc,
+            applink = applink
+        )
+
+        //when
+        val result = smartBillsViewModel.isHighlightNotEmpty(highlightCategory)
+
+        //then
+        assertFalse(result)
+    }
+
+    @Test
+    fun checkHighlightIsNotEmpty_and_uuidEmpty() {
+        //given
+        val highlightCategory = HighlightCategoryUiModel(
+            contentId = contentId,
+            imageUrl = imageUrl,
+            title = title,
+            date = date,
+            desc = desc,
+            applink = applink
+        )
+
+        //when
+        val result = smartBillsViewModel.isHighlightNotEmpty(highlightCategory)
+
+        //then
+        assertFalse(result)
+    }
+
+    @Test
+    fun checkHighlightIsNotEmpty_and_applinkEmpty() {
+        //given
+        val highlightCategory = HighlightCategoryUiModel(
+            contentId = contentId,
+            uuId = uuID,
+            imageUrl = imageUrl,
+            title = title,
+            date = date,
+            desc = desc,
+        )
+
+        //when
+        val result = smartBillsViewModel.isHighlightNotEmpty(highlightCategory)
+
+        //then
+        assertFalse(result)
+    }
+
+    @Test
+    fun getHightlightCategory_dataIsNotEmpty() {
+        //given
+        val listRecommendation = listOf(
+            RechargeRecommendationData(
+                contentID = contentId,
+                iconURL = imageUrl,
+                mainText = title,
+                subText = date,
+                buttonText = desc,
+                applink = applink
+            ),
+            RechargeRecommendationData(
+                contentID = contentId,
+                iconURL = imageUrl,
+                mainText = title,
+                subText = date,
+                buttonText = desc,
+                applink = applink
+            )
+        )
+
+        val rechargeRecommendation = RechargeRecommendationResponse(
+            RechargeRecommendation(
+                uuID,
+                listRecommendation
+            )
+        )
+
+        val actualHighlightCategory = HighlightCategoryUiModel(
+            contentId = contentId,
+            uuId = uuID,
+            imageUrl = imageUrl,
+            title = title,
+            date = date,
+            desc = desc,
+            applink = applink
+        )
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeRecommendationResponse::class.java
+        result[objectType] = rechargeRecommendation
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.getHightlightCategory()
+
+        //then
+        val actualData = smartBillsViewModel.highlightCategory.value
+        assert(actualData is Success)
+        assert((actualData as Success).data == actualHighlightCategory)
+    }
+
+    @Test
+    fun getHightlightCategory_dataIsEmpty() {
+        //given
+
+        val rechargeRecommendation = RechargeRecommendationResponse(
+            RechargeRecommendation(
+                uuID
+            )
+        )
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeRecommendationResponse::class.java
+        result[objectType] = rechargeRecommendation
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.getHightlightCategory()
+
+        //then
+        val actualData = smartBillsViewModel.highlightCategory.value
+        assert(actualData is Success)
+        assert((actualData as Success).data == HighlightCategoryUiModel())
+    }
+
+    @Test
+    fun getHightlightCategory_failed() {
+        //given
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
+
+        //when
+        smartBillsViewModel.getHightlightCategory()
+
+        //then
+        val actualData = smartBillsViewModel.highlightCategory.value
+        assert(actualData is Fail)
+    }
+
+    @Test
+    fun closeHighlight_success() {
+        //given
+        val closeHighlight = RechargeCloseResponse(RecommendationClose(
+            isError = true,
+            message =  "Hai"
+        ))
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeCloseResponse::class.java
+        result[objectType] = closeHighlight
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.closeHighlight(mapOf())
+
+        //then
+        val actualData = smartBillsViewModel.recommendationClose.value
+        assert(actualData is Success)
+        assert((actualData as Success).data == closeHighlight)
+    }
+
+    @Test
+    fun closeHighlight_failed() {
+        //given
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
+
+        //when
+        smartBillsViewModel.closeHighlight(mapOf())
+
+        //then
+        val actualData = smartBillsViewModel.recommendationClose.value
+        assert(actualData is Fail)
+    }
 }

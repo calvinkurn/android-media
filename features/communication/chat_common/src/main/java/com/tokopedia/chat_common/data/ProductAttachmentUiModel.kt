@@ -150,11 +150,11 @@ open class ProductAttachmentUiModel protected constructor(
         for (variant in variants) {
             val variantOption = variant.options
             if (variantOption.isColor()) {
-                colorVariantId = variantOption.id.toString()
+                colorVariantId = variantOption.id
                 colorVariant = variantOption.value
                 colorHexVariant = variantOption.hex
             } else {
-                sizeVariantId = variantOption.id.toString()
+                sizeVariantId = variantOption.id
                 sizeVariant = variantOption.value
             }
         }
@@ -284,7 +284,7 @@ open class ProductAttachmentUiModel protected constructor(
         if (hasSizeVariant()) {
             val size = JsonObject()
             val sizeOption = JsonObject()
-            sizeOption.addProperty("id", sizeVariantId.toInt())
+            sizeOption.addProperty("id", sizeVariantId.toLongOrNull() ?: 0)
             sizeOption.addProperty("value", sizeVariant)
             size.add("option", sizeOption)
             list.add(size)
@@ -467,8 +467,8 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withVariants(variants: List<AttachmentVariant>): Builder {
-            this.variants = variants
+        fun withVariants(variants: List<AttachmentVariant>?): Builder {
+            this.variants = variants?: emptyList()
             return self()
         }
 

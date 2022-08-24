@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
@@ -18,12 +18,11 @@ import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
-import com.tokopedia.media.picker.data.URL_EMPTY_STATE_DRAWABLE
-import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
-import com.tokopedia.media.picker.di.DaggerPickerComponent
+import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
+import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
 import com.tokopedia.media.picker.ui.adapter.GalleryAdapter
 import com.tokopedia.media.picker.ui.adapter.utils.GridItemDecoration
 import com.tokopedia.media.picker.ui.observer.observe
@@ -37,24 +36,19 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
+open class GalleryFragment @Inject constructor(
+    private var viewModelFactory: ViewModelProvider.Factory,
+    private var param: ParamCacheManager,
+    private var galleryAnalytics: GalleryAnalytics,
+) : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var galleryAnalytics: GalleryAnalytics
+    private val viewModel: PickerViewModel by activityViewModels { viewModelFactory }
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var contract: PickerActivityContract? = null
 
     private val adapter by lazy {
         GalleryAdapter(emptyList(), ::selectMedia)
-    }
-
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            factory
-        )[GalleryViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -93,7 +87,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             val (id, name) = AlbumActivity.getAlbumBucketDetails(data)
 
             binding?.albumSelector?.txtName?.text = name
-            viewModel.fetch(id)
+            viewModel.loadLocalGalleryBy(bucketId = id)
 
             // force and scroll to up if the bucketId is "recent medias / all media"
             if (id == ALL_MEDIA_BUCKET_ID) {
@@ -155,7 +149,9 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun initView() {
         setupRecyclerView()
 
-        viewModel.fetch(RECENT_ALBUM_ID)
+        viewModel.loadLocalGalleryBy(
+            AlbumRepository.RECENT_ALBUM_ID
+        )
     }
 
     private fun hasMediaList(isShown: Boolean) {
@@ -166,7 +162,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun setupEmptyState(isShown: Boolean) {
         binding?.emptyState?.root?.showWithCondition(isShown)
-        binding?.emptyState?.imgEmptyState?.loadImage(URL_EMPTY_STATE_DRAWABLE)
+        binding?.emptyState?.imgEmptyState?.loadImage(getString(R.string.picker_img_empty_state))
         binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
         binding?.emptyState?.emptyNavigation?.setOnClickListener {
             contract?.onEmptyStateActionClicked()
@@ -209,55 +205,68 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.lstMedia?.adapter = adapter
     }
 
+    private fun hasVideoValid(media: MediaUiModel): Boolean {
+        if (contract?.hasVideoLimitReached() == true) {
+            contract?.onShowVideoLimitReachedGalleryToast()
+            return false
+        }
+
+        if (contract?.isMinVideoDuration(media) == true) {
+            contract?.onShowVideoMinDurationToast()
+            return false
+        }
+
+        if(contract?.isMaxVideoDuration(media) == true){
+            contract?.onShowVideoMaxDurationToast()
+            return false
+        }
+
+        if (contract?.isMaxVideoSize(media) == true) {
+            contract?.onShowVideoMaxFileSizeToast()
+            return false
+        }
+
+        return true
+    }
+
+    private fun hasImageValid(media: MediaUiModel): Boolean {
+        if (contract?.isMaxImageResolution(media) == true) {
+            contract?.onShowImageMaxResToast()
+            return false
+        }
+
+        if (contract?.isMinImageResolution(media) == true) {
+            contract?.onShowImageMinResToast()
+            return false
+        }
+
+        if (contract?.isMaxImageSize(media) == true) {
+            contract?.onShowImageMaxFileSizeToast()
+            return false
+        }
+
+        return true
+    }
+
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
+        if (!isSelected && media.file?.isVideo() == true && !hasVideoValid(media)) {
+            return false
+        } else if (!isSelected && media.file?.isImage() == true && !hasImageValid(media)) {
+            return false
+        }
+
         if (param.get().isMultipleSelectionType()) {
-            if (!isSelected && media.file?.isVideo() == true) {
-                // video validation
-                if (contract?.hasVideoLimitReached() == true) {
-                    contract?.onShowVideoLimitReachedGalleryToast()
-                    return false
-                }
-
-                if (contract?.isMinVideoDuration(media) == true) {
-                    contract?.onShowVideoMinDurationToast()
-                    return false
-                }
-
-                if(contract?.isMaxVideoDuration(media) == true){
-                    contract?.onShowVideoMaxDurationToast()
-                    return false
-                }
-
-                if (contract?.isMaxVideoSize(media) == true) {
-                    contract?.onShowVideoMaxFileSizeToast()
-                    return false
-                }
-            } else if (!isSelected && media.file?.isImage() == true) {
-                // image validation
-                if (contract?.isMaxImageResolution(media) == true) {
-                    contract?.onShowImageMaxResToast()
-                    return false
-                }
-
-                if (contract?.isMinImageResolution(media) == true) {
-                    contract?.onShowImageMinResToast()
-                    return false
-                }
-
-                if (contract?.isMaxImageSize(media) == true) {
-                    contract?.onShowImageMaxFileSizeToast()
-                    return false
-                }
-            }
-
             if (!isSelected && contract?.hasMediaLimitReached() == true) {
                 contract?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType() && (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
-            adapter.removeAllSelectedSingleClick()
+        } else {
+            if (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
+                adapter.removeAllSelectedSingleClick()
+            }
         }
 
+        // publish the state and send tracking
         if (!isSelected) {
             stateOnAddPublished(media)
             galleryAnalytics.selectGalleryItem()
@@ -268,12 +277,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         return true
     }
 
-    override fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
-    }
+    override fun initInjector() {}
 
     override fun getScreenName() = "Camera"
 

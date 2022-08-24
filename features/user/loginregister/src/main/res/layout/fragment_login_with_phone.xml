@@ -168,4 +168,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <include
+        android:id="@+id/login_loading_overlay"
+        layout="@layout/login_loading_overlay"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

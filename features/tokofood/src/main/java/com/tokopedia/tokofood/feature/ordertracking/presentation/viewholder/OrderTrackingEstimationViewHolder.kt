@@ -8,7 +8,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingEstimationBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 
-class OrderTrackingEstimationViewHolder(itemView: View):
+class OrderTrackingEstimationViewHolder(itemView: View) :
     AbstractViewHolder<OrderTrackingEstimationUiModel>(itemView) {
 
     companion object {
@@ -20,10 +20,13 @@ class OrderTrackingEstimationViewHolder(itemView: View):
 
     override fun bind(element: OrderTrackingEstimationUiModel) {
         with(binding) {
-            tvOrderTrackingEstimation.text = MethodChecker.fromHtml(root.context.getString(
-                R.string.order_tracking_estimation_time, element.estimationLabel,
-                element.estimationTime
-            ))
+            tvOrderTrackingEstimation.text = MethodChecker.fromHtml(
+                root.context.getString(
+                    com.tokopedia.tokofood.R.string.order_tracking_estimation_time,
+                    element.estimationLabel,
+                    element.estimationTime
+                )
+            )
         }
     }
 }

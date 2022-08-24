@@ -4,7 +4,7 @@ package com.tokopedia.promocheckout.common.data
  * @author by furqan on 08/10/2020
  */
 object PromoCheckoutCommonQueryConst {
-    val QUERY_FLIGHT_CANCEL_VOUCHER = """
+    const val QUERY_FLIGHT_CANCEL_VOUCHER = """
         query flightCancelVoucher {
             status
             flightCancelVoucher {
@@ -14,7 +14,7 @@ object PromoCheckoutCommonQueryConst {
               }
             }
         }
-    """.trimIndent()
+    """
 
     val QUERY_FLIGHT_CHECK_VOUCHER = """
         query flightVoucher(${'$'}cartID: String!, ${'$'}voucherCode: String!) {

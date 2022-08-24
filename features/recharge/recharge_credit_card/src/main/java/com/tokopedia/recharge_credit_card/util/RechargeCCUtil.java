@@ -27,7 +27,7 @@ public class RechargeCCUtil {
         StringBuilder formatted = new StringBuilder();
         int count = 0;
         for (char c : text) {
-            if (Character.isDigit(c)) {
+            if (Character.isDigit(c) || c == '*') {
                 if (count % DIVIDER_POSITION == 0 && count > 0) {
                     formatted.append(divider);
                 }
@@ -43,7 +43,7 @@ public class RechargeCCUtil {
         int index = 0;
         for (int i = 0; i < s.length() && index < size; i++) {
             char current = s.charAt(i);
-            if (Character.isDigit(current)) {
+            if (Character.isDigit(current) || current == '*') {
                 digits[index] = current;
                 index++;
             }

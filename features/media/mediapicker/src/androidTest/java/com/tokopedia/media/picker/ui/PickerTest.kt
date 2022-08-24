@@ -7,7 +7,9 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.media.picker.common.di.DaggerTestPickerComponent
+import com.tokopedia.media.picker.common.di.DaggerTestPreviewComponent
 import com.tokopedia.media.picker.common.di.TestPickerComponent
+import com.tokopedia.media.picker.common.di.TestPreviewComponent
 import com.tokopedia.media.picker.common.di.common.DaggerTestBaseAppComponent
 import com.tokopedia.media.picker.common.di.common.TestAppModule
 import com.tokopedia.media.picker.common.di.common.TestBaseAppComponent
@@ -37,11 +39,12 @@ abstract class PickerTest {
             .context
             .applicationContext
 
-    abstract fun createAndAppendUri(builder: Uri.Builder)
+   private fun createAndAppendUri(builder: Uri.Builder) {} //no-op for now
 
     @Before open fun setUp() {
         setupBaseDaggerComponent()
         setupPickerDaggerComponent()
+        setupPreviewDaggerComponent()
     }
 
     @After open fun tearDown() {
@@ -49,12 +52,9 @@ abstract class PickerTest {
         pickerComponent = null
     }
 
-    protected fun startPickerActivity(pickerParam: PickerParam.() -> Unit = {}) {
-        val param = PickerParam().apply(pickerParam)
-        val uri = createUriIntent().build()
-
+    protected fun startPickerActivity(param: PickerParam) {
         val intent = Intent().apply {
-            data = uri
+            data = createUriIntent().build()
         }
 
         intent.putExtra(EXTRA_PICKER_PARAM, param)
@@ -81,9 +81,16 @@ abstract class PickerTest {
             .build()
     }
 
+    private fun setupPreviewDaggerComponent() {
+        previewComponent = DaggerTestPreviewComponent.builder()
+            .testBaseAppComponent(baseComponent)
+            .build()
+    }
+
     companion object {
         var baseComponent: TestBaseAppComponent? = null
         var pickerComponent: TestPickerComponent? = null
+        var previewComponent: TestPreviewComponent? = null
     }
 
 }

@@ -33,7 +33,7 @@ class CreateReviewMediaPreviewVideoViewHolder(
     }
 
     override fun onVideoPreviewThumbnailClicked() {
-        listener.onAddMediaClicked()
+        listener.onAddMediaClicked(true)
     }
 
     override fun onRemoveMediaClicked(element: CreateReviewMediaUiModel.Video) {

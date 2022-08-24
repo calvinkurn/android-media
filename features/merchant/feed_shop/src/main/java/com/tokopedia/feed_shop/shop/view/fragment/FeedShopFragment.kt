@@ -91,6 +91,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import com.tokopedia.universal_sharing.R as universalSharingR
 
 /**
  * @author by yfsx on 08/05/19.
@@ -598,7 +599,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollow: Boolean,
         postType: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        isBottomSheetMenuOnFeed: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
@@ -667,7 +669,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             shopId: String,
             mediaType: String,
             isTopads: Boolean,
-            playChannelId: String
+            playChannelId: String,
+            weblink: String,
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -694,10 +697,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int, mediaType: String) {
+    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+
     }
 
-    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+    override fun sendWatchVODTracker(
+        feedXCard: FeedXCard,
+        playChannelId: String,
+        rowNumber: Int,
+        time: Long
+    ) {
 
     }
     override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
@@ -712,8 +721,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onPostTagItemBSImpression(activityId: String, postTagItemList: List<FeedXProduct>, type: String, shopId: String, isFollowed: Boolean, mediaType: String) {
-    }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
@@ -942,13 +949,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
     }
 
-    override fun onBottomSheetMenuClicked(
-        item: ProductPostTagViewModelNew,
-        context: Context,
-        shopId: String
-    ) {
-    }
-
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
     }
 
@@ -1061,7 +1061,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(R.string.label_close), View.OnClickListener { })
+                    getString(universalSharingR.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -1069,7 +1069,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.label_close), View.OnClickListener { })
+                    getString(universalSharingR.string.label_close), View.OnClickListener { })
         }
     }
 
