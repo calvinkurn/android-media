@@ -23,9 +23,11 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/checkout_upsell_image"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="24dp"
+                android:maxWidth="100dp"
                 android:layout_marginBottom="4dp"
+                android:adjustViewBounds="true"
                 android:scaleType="fitStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
