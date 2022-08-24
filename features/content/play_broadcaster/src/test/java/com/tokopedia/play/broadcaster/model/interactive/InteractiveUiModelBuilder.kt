@@ -7,11 +7,7 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
-import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.model.ui.*
 
 /**
  * Created By : Jonathan Darwin on February 21, 2022
@@ -19,14 +15,8 @@ import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 class InteractiveUiModelBuilder {
 
     fun buildLeaderboardInfoModel(
-        leaderboardWinners: List<PlayLeaderboardUiModel> = buildLeaderboardWinnerList(3, 3),
-        totalParticipant: String = "1",
-        config: PlayLeaderboardConfigUiModel = buildLeaderboardConfigModel(),
-    ) = PlayLeaderboardInfoUiModel(
-        leaderboardWinners = leaderboardWinners,
-        totalParticipant = totalParticipant,
-        config = config,
-    )
+       list : List<LeaderboardGameUiModel>
+    ) = list
 
     fun buildLeaderboardWinnerList(
         size: Int,

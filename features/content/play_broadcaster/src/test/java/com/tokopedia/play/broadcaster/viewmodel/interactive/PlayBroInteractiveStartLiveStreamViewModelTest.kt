@@ -32,7 +32,6 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
     private val uiModelBuilder = UiModelBuilder()
     private val interactiveUiModelBuilder = InteractiveUiModelBuilder()
 
-    private val mockLeaderboardInfoResponse = interactiveUiModelBuilder.buildLeaderboardInfoModel()
     private val mockException = uiModelBuilder.buildException()
     private val mockInteractiveConfigInactiveResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
         giveawayConfig = interactiveUiModelBuilder.buildGiveawayConfig(isActive = false),

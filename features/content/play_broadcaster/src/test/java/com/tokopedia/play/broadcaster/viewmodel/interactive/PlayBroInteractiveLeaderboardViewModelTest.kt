@@ -33,13 +33,12 @@ class PlayBroInteractiveLeaderboardViewModelTest {
     private val uiModelBuilder = UiModelBuilder()
     private val interactiveUiModelBuilder = InteractiveUiModelBuilder()
 
-    private val mockLeaderboardInfoResponse = interactiveUiModelBuilder.buildLeaderboardInfoModel()
     private val mockException = uiModelBuilder.buildException()
 
     @Test
     fun `when user successfully get leaderboard data, it should emit network result success along with leaderboard data`() {
 
-        coEvery { mockRepo.getInteractiveLeaderboard(any(), any()) } returns mockLeaderboardInfoResponse
+        coEvery { mockRepo.getInteractiveLeaderboard(any(), any()) } returns interactiveUiModelBuilder.buildLeaderboardInfoModel(list = emptyList())
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -52,7 +51,8 @@ class PlayBroInteractiveLeaderboardViewModelTest {
             val result = robot.getViewModel().observableLeaderboardInfo.getOrAwaitValue()
 
             Assert.assertTrue(result is NetworkResult.Success)
-            (result as NetworkResult.Success).data.assertEqualTo(mockLeaderboardInfoResponse)
+            (result as NetworkResult.Success).data.assertEqualTo(interactiveUiModelBuilder.buildLeaderboardInfoModel(
+                emptyList()))
         }
     }
 
