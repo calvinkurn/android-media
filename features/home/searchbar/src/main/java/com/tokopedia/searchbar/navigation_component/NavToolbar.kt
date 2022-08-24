@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
@@ -783,7 +784,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         etSearch.alpha = alpha / ALPHA_MAX
         layoutSearch.alpha = alpha / ALPHA_MAX
         iconSearchMagnify.alpha = alpha / ALPHA_MAX
-    }.onFailure {
-        Timber.e(it)
+        etSearch.isEnabled = etSearch.alpha > Float.ZERO
     }
 }
