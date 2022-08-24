@@ -55,10 +55,4 @@ class OfficialHomeAdapter(private val adapterTypeFactory: OfficialHomeTypeFactor
             }
         }
     }
-
-    private fun RecyclerView.runWhenReady(action: () -> Unit) {
-        this.post {
-            action()
-        }
-    }
 }
