@@ -295,10 +295,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toTopOf="@id/view_stats_info"
-        />
+        tools:visibility="gone" />
 
     <com.tokopedia.play_common.view.game.InteractiveFinishView
         android:id="@+id/view_interactive_finish"
@@ -403,5 +402,19 @@
         app:layout_constraintEnd_toEndOf="@id/gl_like_bubble_start"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_size" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_engagement_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/view_game_interactive"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+
+        />
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
