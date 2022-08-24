@@ -29,6 +29,7 @@ import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse.Response
 import com.tokopedia.moneyin.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
 import com.tokopedia.moneyin.viewmodel.*
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.address.AddressModel
 import com.tokopedia.moneyin.viewcontrollers.bottomsheet.MoneyInCourierBottomSheet
 import com.tokopedia.moneyin.viewcontrollers.bottomsheet.MoneyInScheduledTimeBottomSheet
@@ -348,16 +349,17 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         val addressModel = data.getParcelableExtra<RecipientAddressModel>(
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         ) ?: RecipientAddressModel()
-                        if (addressModel.id != null && addressModel.cityId != null && addressModel.provinceId != null && addressModel.destinationDistrictId != null) {
+                        if (addressModel.id != null && addressModel.cityId != null
+                            && addressModel.provinceId != null && addressModel.destinationDistrictId != null) {
                             val recipientAddress = KeroGetAddress.Data(
-                                addressModel.id.toInt(),
+                                addressModel.id.toIntOrZero(),
                                 addressModel.addressName ?: "",
                                 addressModel.addressName ?: "",
                                 addressModel.addressName ?: "",
-                                addressModel.cityId.toInt(),
+                                addressModel.cityId.toIntOrZero(),
                                 addressModel.cityName ?: "",
                                 addressModel.countryName ?: "",
-                                addressModel.destinationDistrictId.toInt(),
+                                addressModel.destinationDistrictId.toIntOrZero(),
                                 addressModel.destinationDistrictName ?: "",
                                 addressModel.isSelected,
                                 addressModel.isSelected,
@@ -366,14 +368,14 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                                 addressModel.longitude ?: "",
                                 addressModel.recipientPhoneNumber,
                                 addressModel.postalCode ?: "",
-                                addressModel.provinceId.toInt(),
+                                addressModel.provinceId.toIntOrZero(),
                                 addressModel.provinceName ?: "",
                                 addressModel.recipientName ?: "",
                                 addressModel.addressStatus
                             )
                             setAddressView(recipientAddress)
                         }else{
-                            showMessage("Kesalahan mengambli lokasi.")
+                            showMessage(getString(R.string.money_in_alert_error_fetching_location))
                         }
                     }
                 }
