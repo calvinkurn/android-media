@@ -136,8 +136,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class TmSingleCouponCreateFragment : BaseDaggerFragment() {
+private const val MINUTE_30 = 30
+private const val HOUR_4 = 4
+private const val RESULT_SUCCESS = 200
 
+class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private var programStatus: Int = ACTIVE
     private var token: String? = ""
     private var tmCouponDetail: TmCouponDetailData? = null
@@ -616,7 +619,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmCouponUpdateLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if(it.data?.merchantPromotionCreateMV?.status == 200) {
+                    if(it.data?.merchantPromotionCreateMV?.status == RESULT_SUCCESS) {
                         // Back to coupon list
                         closeLoadingDialog()
                         setButtonState()
@@ -647,7 +650,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tmSingleCouponCreateLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    if(it.data.merchantPromotionCreateMV?.status == 200) {
+                    if(it.data.merchantPromotionCreateMV?.status == RESULT_SUCCESS) {
                         //Open Dashboard
                         closeLoadingDialog()
                         activity?.finish()
@@ -754,7 +757,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             benefitType = benefitType,
             benefitIdr = tmCouponDetail?.voucherDiscountAmtMax,
             imagePortrait = tmCouponDetail?.voucherImagePortrait,
-            quota = tmSingleCouponData.quota.toInt(),
+            quota = tmSingleCouponData.quota.toIntSafely(),
             isPublic = tmCouponDetail?.isPublic,
             voucherId = tmCouponDetail?.voucherId,
             couponType = couponType,
@@ -1256,11 +1259,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                 )
                             })
                         todayCalendar.apply {
-                            add(Calendar.HOUR_OF_DAY, 4)
+                            add(Calendar.HOUR_OF_DAY, HOUR_4)
                         }
                         val minuteCurrent = todayCalendar.get(Calendar.MINUTE)
-                        if (minuteCurrent <= 30){
-                            todayCalendar.set(Calendar.MINUTE, 30)
+                        if (minuteCurrent <= MINUTE_30){
+                            todayCalendar.set(Calendar.MINUTE, MINUTE_30)
                         }
                         else{
                             todayCalendar.add(Calendar.HOUR_OF_DAY, 1)
@@ -1658,7 +1661,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 maxDate = maxTime,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
-                minuteInterval = 30
+                minuteInterval = MINUTE_30
                 when(type){
                     0 -> {
                         setTitle(TIME_TITLE)
@@ -1689,8 +1692,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if (year != null) {
                                 startTime?.set(Calendar.YEAR, year)
                             }
-                            startTime?.set(Calendar.HOUR_OF_DAY, timePicker.hourPicker.activeValue.toInt())
-                            startTime?.set(Calendar.MINUTE, timePicker.minutePicker.activeValue.toInt())
+                            startTime?.set(Calendar.HOUR_OF_DAY, timePicker.hourPicker.activeValue.toIntSafely())
+                            startTime?.set(Calendar.MINUTE, timePicker.minutePicker.activeValue.toIntSafely())
                             tmCouponStartTimeUnix = startTime
                             tmCouponStartTimeUnix?.time?.let { it1 -> TmDateUtil.convertDateTime(it1) }
                             firstTimeStart = true
@@ -1709,8 +1712,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if (year != null) {
                                 startTime?.set(Calendar.YEAR, year)
                             }
-                            startTime?.set(Calendar.HOUR_OF_DAY, timePicker.hourPicker.activeValue.toInt())
-                            startTime?.set(Calendar.MINUTE, timePicker.minutePicker.activeValue.toInt())
+                            startTime?.set(Calendar.HOUR_OF_DAY, timePicker.hourPicker.activeValue.toIntSafely())
+                            startTime?.set(Calendar.MINUTE, timePicker.minutePicker.activeValue.toIntSafely())
                             tmCouponEndTimeUnix = startTime
                             tmCouponEndTimeUnix?.time?.let { it1 -> TmDateUtil.convertDateTime(it1) }
                             firstTimeEnd = true

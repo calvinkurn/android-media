@@ -19,10 +19,11 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.tokomember_seller_dashboard.R
+
+private const val DURATION_200 = 200L
 
 class TmToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -71,16 +72,11 @@ class TmToolbar @JvmOverloads constructor(
     }
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context?, drawableId: Int): Drawable? {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            context?.let { ContextCompat.getDrawable(it, drawableId) }
-        } else BitmapDrawable(context?.resources, getBitmapFromVectorDrawable(context, drawableId))
+        return BitmapDrawable(context?.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
     private fun getBitmapFromVectorDrawable(context: Context?, drawableId: Int): Bitmap? {
-        var drawable = context?.let { ContextCompat.getDrawable(it, drawableId) }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = drawable?.let { DrawableCompat.wrap(it).mutate() }
-        }
+        val drawable = context?.let { ContextCompat.getDrawable(it, drawableId) }
         val bitmap = drawable?.intrinsicWidth?.let {
             Bitmap.createBitmap(
                 it,
@@ -106,7 +102,7 @@ class TmToolbar @JvmOverloads constructor(
                 tvToolbarTitle, "textColor",
                 whiteColor, greyColor
             )
-            colorAnim.duration = 200
+            colorAnim.duration = DURATION_200
             colorAnim.setEvaluator(ArgbEvaluator())
             colorAnim.start()
         }
@@ -122,7 +118,7 @@ class TmToolbar @JvmOverloads constructor(
                 MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
             toggleNavigationIconColor(greyColor, whiteColor)
             val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
-            colorAnim.duration = 200
+            colorAnim.duration = DURATION_200
             colorAnim.setEvaluator(ArgbEvaluator())
             colorAnim.start()
         }
@@ -131,7 +127,7 @@ class TmToolbar @JvmOverloads constructor(
     private fun toggleNavigationIconColor(startColor: Int, endColor: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && navigationIcon != null) {
             val valueAnimator = ValueAnimator.ofArgb(startColor, endColor)
-            valueAnimator.duration = 200L
+            valueAnimator.duration = DURATION_200
             valueAnimator.addUpdateListener { animation: ValueAnimator -> navigationIcon?.setColorFilter((animation.animatedValue as Int), PorterDuff.Mode.SRC_ATOP) }
             valueAnimator.start()
         }

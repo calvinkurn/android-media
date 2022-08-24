@@ -126,6 +126,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+private const val MINUTE_30 = 30
+private const val MINUTE_59 = 59
+private const val HOUR_4 = 4
+private const val HOUR_20 = 20
+private const val HOUR_23 = 23
+private const val ROTATION_180 = 180f
+private const val PROGRESS_67 = 67
+private const val PROGRESS_80 = 80
+
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
     private var tmTracker: TmTracker? = null
@@ -794,10 +803,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         when (programActionType) {
             ProgramActionType.EXTEND -> {
                 val startDate = GregorianCalendar(locale)
-                startDate.add(Calendar.HOUR, 4)
+                startDate.add(Calendar.HOUR, HOUR_4)
                 val minuteCurrent = startDate.get(Calendar.MINUTE)
-                if (minuteCurrent <= 30) {
-                    startDate.set(Calendar.MINUTE, 30)
+                if (minuteCurrent <= MINUTE_30) {
+                    startDate.set(Calendar.MINUTE, MINUTE_30)
                 } else {
                     startDate.add(Calendar.HOUR_OF_DAY, 1)
                     startDate.set(Calendar.MINUTE, 0)
@@ -808,8 +817,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
                 val maxProgramEndDate = GregorianCalendar(locale)
                 maxProgramEndDate.add(Calendar.YEAR, 1)
-                maxProgramEndDate.set(Calendar.HOUR_OF_DAY,23)
-                maxProgramEndDate.set(Calendar.MINUTE,59)
+                maxProgramEndDate.set(Calendar.HOUR_OF_DAY, HOUR_23)
+                maxProgramEndDate.set(Calendar.MINUTE, MINUTE_59)
                 val endDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
@@ -829,12 +838,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 //currentDate 14 july time jo bhi hoga
                 //currentStartDate 15 july 00:00
                 manualStartTimeProgram =
-                    if (currentHour >= 20 && checkYesterDay(currentDate, currentStartDate)) {
+                    if (currentHour >= HOUR_20 && checkYesterDay(currentDate, currentStartDate)) {
                         currentDate.set(Calendar.HOUR_OF_DAY,currentHour)
                         currentDate.set(Calendar.MINUTE,0)
-                        currentDate.add(Calendar.HOUR,4)
-                        if (minuteCurrent <= 30) {
-                            currentDate.set(Calendar.MINUTE, 30)
+                        currentDate.add(Calendar.HOUR, HOUR_4)
+                        if (minuteCurrent <= MINUTE_30) {
+                            currentDate.set(Calendar.MINUTE, MINUTE_30)
                         } else {
                             currentDate.add(Calendar.HOUR_OF_DAY, 1)
                             currentDate.set(Calendar.MINUTE, 0)
@@ -887,7 +896,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             progressKupon?.apply {
                 progressBarColorType = ProgressBarUnify.COLOR_GREEN
                 progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                setValue(80, false)
+                setValue(PROGRESS_80, false)
             }
 
             title = COUPON_HEADER_TITLE
@@ -906,7 +915,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     progressKupon?.apply {
                         progressBarColorType = ProgressBarUnify.COLOR_GREEN
                         progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                        setValue(67, false)
+                        setValue(PROGRESS_67, false)
                     }
                 }
                 ProgramActionType.EXTEND ->{
@@ -1101,7 +1110,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         icArrowPremium.setOnClickListener {
             isCollapsedPremium = if (isCollapsedPremium) {
-                icArrowPremium?.animate()?.rotation(180f)?.duration = 100L
+                icArrowPremium?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmPremiumCoupon)
                 !isCollapsedPremium
             } else{
@@ -1113,7 +1122,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         icArrowVip.setOnClickListener {
             isCollapsedVip = if (isCollapsedVip) {
-                icArrowVip?.animate()?.rotation(180f)?.duration = 100L
+                icArrowVip?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmVipCoupon)
                 !isCollapsedVip
             } else{
@@ -1353,7 +1362,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             val maxDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
-                    set(Calendar.MINUTE, 59)
+                    set(Calendar.MINUTE, MINUTE_59)
                 }
             val minDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {

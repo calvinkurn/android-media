@@ -88,6 +88,7 @@ import javax.inject.Inject
 private const val COUNTRY_ID = "ID"
 private const val LANGUAGE_ID = "in"
 private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
+private const val PROGRESS_33 = 33
 
 class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
     BottomSheetClickListener {
@@ -403,7 +404,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
                 progressProgram?.apply {
                     progressBarColorType = ProgressBarUnify.COLOR_GREEN
                     progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                    setValue(33, false)
+                    setValue(PROGRESS_33, false)
                 }
                 btnCreateProgram.text = PROGRAM_CTA
                 textFieldTranskVip.isEnabled = false

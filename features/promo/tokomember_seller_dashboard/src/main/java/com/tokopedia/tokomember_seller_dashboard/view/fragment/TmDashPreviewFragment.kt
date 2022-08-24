@@ -61,6 +61,9 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.tm_dash_preview.*
 import javax.inject.Inject
 
+private const val PROGRESS_90 = 90
+private const val RESULT_SUCCESS = 200
+
 class TmDashPreviewFragment : BaseDaggerFragment() {
 
     private var cardId = 0
@@ -193,7 +196,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     closeLoadingDialog()
-                    if (it.data.merchantPromotionCreateMultipleMV?.status == 200) {
+                    if (it.data.merchantPromotionCreateMultipleMV?.status == RESULT_SUCCESS) {
                         activity?.finish()
                         TokomemberDashHomeActivity.openActivity(arguments?.getInt(BUNDLE_SHOP_ID)?:0,cardId, context, isShowBottomSheet, programActionType)
                     } else {
@@ -264,7 +267,7 @@ class TmDashPreviewFragment : BaseDaggerFragment() {
         progressPreview?.apply {
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
             progressBarHeight = ProgressBarUnify.SIZE_SMALL
-            setValue(90, false)
+            setValue(PROGRESS_90, false)
         }
     }
 

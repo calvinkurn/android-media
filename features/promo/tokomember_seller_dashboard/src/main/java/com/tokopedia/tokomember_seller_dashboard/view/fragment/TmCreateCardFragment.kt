@@ -77,6 +77,10 @@ import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_create_card_container.*
 import javax.inject.Inject
 
+const val DP_COLOR_ITEM_DECORATOR = 12
+const val COLOR_DEFAULT_POSITION = 0
+const val PROGRESS_25 = 25
+
 class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener, BottomSheetClickListener {
 
@@ -323,7 +327,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         rvCardBg.layoutManager = layoutManagerBg
         rvCardBg.adapter = adapterBg
         if (rvCardBg.itemDecorationCount.isZero()) {
-            rvCardBg.addItemDecoration(TokomemberDashColorItemDecoration(dpToPx(12).toInt()))
+            rvCardBg.addItemDecoration(TokomemberDashColorItemDecoration(dpToPx(DP_COLOR_ITEM_DECORATOR).toInt()))
         }
         adapterBg.addItems(data = data.tokoVisitableCardBg)
         adapterBg.notifyDataSetChanged()
@@ -340,12 +344,12 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             override fun onGlobalLayout() {
                 rvColor?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    rvColor?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                    rvColor?.findViewHolderForAdapterPosition(COLOR_DEFAULT_POSITION)?.itemView?.performClick()
                 }, 500L)
             }
         })
         if (rvColor.itemDecorationCount.isZero()) {
-            rvColor.addItemDecoration(TokomemberDashColorItemDecoration(dpToPx(12).toInt()))
+            rvColor.addItemDecoration(TokomemberDashColorItemDecoration(dpToPx(DP_COLOR_ITEM_DECORATOR).toInt()))
         }
         adapterColor.addItems(data = data.tokoVisitableCardColor)
         adapterColor.notifyDataSetChanged()
@@ -363,7 +367,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
         progressCard?.apply {
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
             progressBarHeight = ProgressBarUnify.SIZE_SMALL
-            setValue(25, false)
+            setValue(PROGRESS_25, false)
         }
     }
 
@@ -453,7 +457,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     override fun onGlobalLayout() {
                         rvCardBg?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                         Handler(Looper.getMainLooper()).postDelayed({
-                            rvCardBg?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
+                            rvCardBg?.findViewHolderForAdapterPosition(COLOR_DEFAULT_POSITION)?.itemView?.performClick()
                         }, 500L)
                     }
                 })

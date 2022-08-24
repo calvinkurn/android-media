@@ -61,6 +61,10 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro_new.*
 import javax.inject.Inject
 
+private const val SDK_19 = 19
+private const val SDK_20 = 20
+private const val SDK_21 = 21
+
 class TmIntroFragment : BaseDaggerFragment(),
     TmIntroButtonVh.TokomemberIntroButtonListener {
 
@@ -345,7 +349,7 @@ class TmIntroFragment : BaseDaggerFragment(),
                 )
             }
         }
-        if (Build.VERSION.SDK_INT in 19..20) {
+        if (Build.VERSION.SDK_INT in SDK_19..SDK_20) {
             activity?.let {
                 setWindowFlag(
                     it,
@@ -354,11 +358,11 @@ class TmIntroFragment : BaseDaggerFragment(),
                 )
             }
         }
-        if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= SDK_19) {
             activity?.window?.decorView?.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= SDK_21) {
             activity?.let {
                 setWindowFlag(
                     it,
