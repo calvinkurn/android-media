@@ -159,15 +159,6 @@ class ProductSheetViewComponent(
         productListener = productCardListener,
     )
 
-//    private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
-//        override fun onProductImpressed(
-//            product: List<Pair<PlayProductUiModel.Product, Int>>,
-//            sectionInfo: ProductSectionUiModel.Section
-//        ) {
-//            listener.onProductsImpressed(this@ProductSheetViewComponent, product, sectionInfo)
-//        }
-//    })
-
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val itemDecoration: ProductLineItemDecoration
 
@@ -231,7 +222,7 @@ class ProductSheetViewComponent(
         productAdapter.setItemsAndAnimateChanges(newProductList)
 
         scope.launch {
-            itemDecoration.setGuidelines(getBackgroundGuidelines(sections)) //TODO("MOCK")
+            itemDecoration.setGuidelines(getBackgroundGuidelines(sections))
             if (productAdapter.getItems() != newProductList) {
                 rvProductList.invalidateItemDecorations()
             }
