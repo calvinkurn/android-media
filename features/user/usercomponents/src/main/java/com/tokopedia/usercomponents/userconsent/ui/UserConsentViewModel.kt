@@ -26,8 +26,8 @@ class UserConsentViewModel @Inject constructor(
 
             val response = getUserConsentCollection(consentCollectionParam)
 
-            if (response.data.success && response.data.collectionPoints.isNotEmpty()) {
-                _consentCollection.value = UserComponentsStateResult.Success(response.data)
+            _consentCollection.value = if (response.data.collectionPoints.isNotEmpty()) {
+                UserComponentsStateResult.Success(response.data)
             } else {
                 val message = if (response.data.errorMessages.isNotEmpty()) {
                     response.data.errorMessages.first()
@@ -35,7 +35,7 @@ class UserConsentViewModel @Inject constructor(
                     GENERAL_ERROR
                 }
 
-                _consentCollection.value = UserComponentsStateResult.Fail(Throwable(message))
+                UserComponentsStateResult.Fail(Throwable(message))
             }
         }, {
             _consentCollection.value = UserComponentsStateResult.Fail(it)
