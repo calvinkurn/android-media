@@ -16,6 +16,7 @@ fun View.addImpressionListener(
 ) {
     if (!impressHolder.isInvoke) {
         val vto = viewTreeObserver
+        var attachStateListener: View.OnAttachStateChangeListener? = null
         val scrollListener = object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
                 if (!impressHolder.isInvoke && viewIsVisible(this@addImpressionListener)) {
@@ -25,11 +26,13 @@ fun View.addImpressionListener(
 
                     val currentVto = viewTreeObserver
                     if (currentVto.isAlive) currentVto.removeOnScrollChangedListener(this)
+
+                    removeOnAttachStateChangeListener(attachStateListener)
                 }
             }
         }
 
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        attachStateListener = object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
 
             }
@@ -42,7 +45,8 @@ fun View.addImpressionListener(
 
                 v.removeOnAttachStateChangeListener(this)
             }
-        })
+        }
+        addOnAttachStateChangeListener(attachStateListener)
 
         vto.addOnScrollChangedListener(scrollListener)
     }
