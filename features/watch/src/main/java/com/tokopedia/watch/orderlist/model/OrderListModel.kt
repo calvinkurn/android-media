@@ -28,6 +28,10 @@ data class OrderListModel(
         @Expose
         val orderDate: String = "",
 
+        @SerializedName("deadline_text")
+        @Expose
+        val deadLineText: String = "",
+
         @SerializedName("courier_name")
         @Expose
         val courierName: String = "",

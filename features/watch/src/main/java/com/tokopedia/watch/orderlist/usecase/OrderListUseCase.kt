@@ -50,6 +50,7 @@ class GetOrderListUseCase(
                   order_status_id
                   order_total_price
                   order_date
+                  deadline_text
                   courier_name
                   destination_province
                   order_product {
