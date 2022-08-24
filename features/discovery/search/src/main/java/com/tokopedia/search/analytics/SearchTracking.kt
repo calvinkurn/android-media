@@ -20,6 +20,7 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.ID
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselAnalyticsData
 import com.tokopedia.search.utils.joinActiveOptionsToString
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

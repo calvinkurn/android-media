@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.registerinitial.view.fragment
 
-import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -223,7 +222,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {}
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400) }
             }
         }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
         return spannable
@@ -312,19 +311,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             }
         }
     }
-
-    val emailListOfAccountsUserHasLoggedInto: List<String>
-        get() {
-            val listOfAddresses: MutableSet<String> = LinkedHashSet()
-            val emailPattern = Patterns.EMAIL_ADDRESS
-            val accounts = AccountManager.get(activity).getAccountsByType("com.google")
-            for (account in accounts) {
-                if (emailPattern.matcher(account.name).matches()) {
-                    listOfAddresses.add(account.name)
-                }
-            }
-            return ArrayList(listOfAddresses)
-        }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
@@ -426,7 +412,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     fun showPasswordHint() {
         wrapperPassword?.setError(false)
-        wrapperPassword?.setMessage(resources.getString(R.string.minimal_8_character))
+        context?.resources?.let { wrapperPassword?.setMessage(it.getString(R.string.minimal_8_character)) }
     }
 
     fun showNameHint() {
@@ -472,21 +458,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         wrapperPassword?.textFieldInput?.clearFocus()
         registerButton?.clearFocus()
     }
-
-    private val isEmailAddressFromDevice: Boolean
-        private get() {
-            val list = emailListOfAccountsUserHasLoggedInto
-            var result = false
-            if (list.size > 0) {
-                for (e in list) {
-                    if (e == wrapperEmail?.textFieldInput?.text.toString()) {
-                        result = true
-                        break
-                    }
-                }
-            }
-            return result
-        }
 
     fun showInfo() {
         dismissLoadingProgress()
@@ -544,10 +515,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
         registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
     }
-
-    val isAutoVerify: Int
-        get() = if (isEmailAddressFromDevice) 1 else 0
-
 
     fun onBackPressed() {
         registerAnalytics?.trackClickOnBackButtonRegisterEmail()

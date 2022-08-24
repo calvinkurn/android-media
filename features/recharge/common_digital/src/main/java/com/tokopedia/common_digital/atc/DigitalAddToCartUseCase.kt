@@ -117,6 +117,7 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
             attributes.showSubscribeFlag = true
             attributes.isThankyouNative = true
             attributes.isThankyouNativeNew = true
+            attributes.atcSource = digitalCheckoutPassData.atcSource ?: ""
             // Handle subscription params
             val subParams: DigitalSubscriptionParams = digitalSubscriptionParams
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.annotation.DimenRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,8 +50,7 @@ import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckou
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -319,6 +319,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         if (!digitalSubscriptionParams.isSubscribed) {
             renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
         }
+
+        val isGoToPlusCheckout = cartInfo.collectionPointId.isNotEmpty()
+        checkoutBottomViewWidget.isGoToPlusCheckout = isGoToPlusCheckout
+        checkoutBottomViewWidget.isCheckoutButtonEnabled = !isGoToPlusCheckout
     }
 
     private fun disableVoucherView() {
@@ -348,13 +352,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             DigitalCartDetailInfoAdapter(object : DigitalCartDetailInfoAdapter.ActionListener {
                 override fun expandAdditionalList() {
                     tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
-                    ivSeeDetail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
+                    ivSeeDetail.loadImage(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
                 }
 
                 override fun collapseAdditionalList() {
                     tvSeeDetailToggle.text =
                         getString(R.string.digital_cart_detail_see_detail_label)
-                    ivSeeDetail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
+                    ivSeeDetail.loadImage(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
                 }
             })
         rvDetails.layoutManager = LinearLayoutManager(context)
@@ -369,6 +373,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
         }
+
+        checkoutBottomViewWidget.setOnClickConsentListener {
+            RouteManager.route(context, it)
+        }
+
     }
 
     private fun showError(error: Throwable) {
@@ -391,7 +400,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             } else {
                 viewEmptyState.errorTitle.text = getString(R.string.digital_checkout_empty_state_title)
                 viewEmptyState.errorIllustration.loadImage(getString(R.string.digital_cart_default_error_img_url))
-                viewEmptyState.errorDescription.text = "${errMsg}. Kode Error: ($errCode)"
+                viewEmptyState.errorDescription.text = getString(com.tokopedia.digital_checkout.R.string.digital_cart_error_message, errMsg, errCode)
             }
 
             viewEmptyState.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
@@ -614,7 +623,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
             moreInfoText.setPadding(
                 0, 0, 0,
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
             )
             moreInfoText.text = MethodChecker.fromHtml(fintechProductInfo.tooltipText)
 
@@ -734,14 +743,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             val linearLayout = LinearLayout(it)
             linearLayout.orientation = LinearLayout.VERTICAL
             linearLayout.setPadding(
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 0,
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
             )
 
             val descriptionArray =
-                resources.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
+                context?.resources?.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description) ?: emptyArray()
             descriptionArray.forEachIndexed { index, text ->
                 val simpleWidget = DigitalCheckoutSimpleWidget(it)
                 simpleWidget.setContent("${index + 1}.", text)
@@ -785,6 +794,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         else inputPriceHolderView.getPriceInput()?.toDouble()
     }
 
+    private fun getDimensionPixelSize(@DimenRes id: Int): Int{
+        return context?.resources?.getDimensionPixelSize(id) ?: 0
+    }
+
     companion object {
         const val ARG_PASS_DATA = "ARG_PASS_DATA"
         const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
@@ -800,7 +813,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
-
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,

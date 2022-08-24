@@ -17,15 +17,19 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usercomponents.R
+import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.usercomponents.databinding.UiUserConsentBinding
 import com.tokopedia.usercomponents.userconsent.analytics.UserConsentAnalytics
-import com.tokopedia.usercomponents.userconsent.common.*
+import com.tokopedia.usercomponents.userconsent.common.UserConsentCollectionDataModel
+import com.tokopedia.usercomponents.userconsent.common.UserConsentConst
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.MANDATORY
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.NO_CHECKLIST
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.OPTIONAL
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION
 import com.tokopedia.usercomponents.userconsent.common.UserConsentConst.TERM_CONDITION_POLICY
+import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
+import com.tokopedia.usercomponents.userconsent.common.UserConsentPurposeUiModel
 import com.tokopedia.usercomponents.userconsent.di.DaggerUserConsentComponent
 import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.adapter.UserConsentPurposeAdapter
@@ -142,14 +146,14 @@ class UserConsentWidget : FrameLayout,
         lifecycleOwner?.let {
             viewModel?.consentCollection?.observe(it) { result ->
                 when(result) {
-                    is UserConsentStateResult.Loading -> {
+                    is UserComponentsStateResult.Loading -> {
                         setLoader(true)
                     }
-                    is UserConsentStateResult.Fail -> {
+                    is UserComponentsStateResult.Fail -> {
                         setLoader(false)
                         showError(result.error)
                     }
-                    is UserConsentStateResult.Success -> {
+                    is UserComponentsStateResult.Success -> {
                         setLoader(false)
                         result.data?.let { data ->
                             collection = data.collectionPoints.first()
@@ -284,7 +288,7 @@ class UserConsentWidget : FrameLayout,
 
     private fun showError(throwable: Throwable) {
         viewBinding?.consentError?.apply {
-            title?.text = resources.getString(R.string.user_consent_failed_load_collection)
+            title?.text = resources.getString(R.string.usercomponents_failed_load_data)
             refreshBtn?.setOnClickListener {
                 consentCollectionParam?.let { param ->
                     viewModel?.getConsentCollection(param)

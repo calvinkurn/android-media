@@ -648,7 +648,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             }
             val listProductTabWidget = shopProductAdapter.data
             if(listProductTabWidget.isNotEmpty())
-                viewModel.getShopProductDataWithUpdatedQuantity(it, listProductTabWidget.toMutableList())
+                viewModel.getShopProductDataWithUpdatedQuantity(listProductTabWidget.toMutableList())
         })
     }
 
@@ -980,7 +980,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     ) {
         if (isLogin) {
             handleAtcFlow(
-                shopProductUiModel.id.orEmpty(),
                 quantity,
                 shopId.orEmpty(),
                 shopProductUiModel
@@ -993,7 +992,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel) {
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),
-            productId = shopProductUiModel.id.orEmpty(),
+            productId = shopProductUiModel.id,
             pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
             shopId = shopId.orEmpty(),
             startActivitResult = this::startActivityForResult,
@@ -1008,7 +1007,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
                 handleAtcFlow(
-                    shopProductUiModel.id.orEmpty(),
                     quantity,
                     shopId.orEmpty(),
                     shopProductUiModel
@@ -1050,13 +1048,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun handleAtcFlow(
-        productId: String,
         quantity: Int,
         shopId: String,
         shopProductUiModel: ShopProductUiModel
     ) {
         viewModel.handleAtcFlow(
-            productId,
             quantity,
             shopId,
             ShopPageConstant.ShopProductCardAtc.CARD_ETALASE,

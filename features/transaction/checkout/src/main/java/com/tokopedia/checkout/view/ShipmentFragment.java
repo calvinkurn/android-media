@@ -42,6 +42,7 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
@@ -494,6 +495,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
                                       TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       RecipientAddressModel recipientAddressModel,
+                                      ShipmentUpsellModel shipmentUpsellModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
                                       List<ShipmentCrossSellModel> shipmentCrossSellModelList,
@@ -516,6 +518,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (recipientAddressModel != null) {
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
+        }
+        if (shipmentUpsellModel.isShow()) {
+            shipmentAdapter.addUpsellData(shipmentUpsellModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
@@ -814,6 +819,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentTickerErrorModel(),
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 recipientAddressModel,
+                shipmentPresenter.getShipmentUpsellModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getListShipmentCrossSellModel(),
@@ -847,6 +853,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentTickerErrorModel(),
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
+                shipmentPresenter.getShipmentUpsellModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getListShipmentCrossSellModel(),
@@ -3409,6 +3416,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             listCartString.add(cartItemModel.getCartString());
         }
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
+    }
+
+    @Override
+    public void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
+        checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker();
+    }
+
+    @Override
+    public void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
+        if (getContext() != null) {
+            checkoutAnalyticsCourierSelection.eventClickGotoplusUpsellTicker();
+            RouteManager.route(getContext(), shipmentUpsellModel.getAppLink());
+        }
+    }
+
+    @Override
+    public void onViewFreeShippingPlusBadge() {
+        checkoutAnalyticsCourierSelection.eventViewGotoplusTicker();
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {

@@ -17,6 +17,7 @@ object TrackingConstant {
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT = "businessUnit"
+    const val TRACKER_ID = "trackerId"
 
     //event
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"

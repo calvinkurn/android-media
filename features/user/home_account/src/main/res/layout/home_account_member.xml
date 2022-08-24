@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl4"
+        android:text="@string/default_member_title"
         app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_member_icon"
         app:layout_constraintStart_toEndOf="@+id/home_account_member_layout_member_icon"
         app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_member_icon"

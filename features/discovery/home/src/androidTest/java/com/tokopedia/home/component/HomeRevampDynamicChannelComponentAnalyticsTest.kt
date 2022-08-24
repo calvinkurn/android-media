@@ -22,6 +22,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -91,6 +92,20 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
         }
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
+    }
+
+    @Test
+    fun testBalanceWidgetLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        HomeDCCassavaTest {
+            login()
+            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBalanceWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED)
+        }
     }
 
     @Test
@@ -251,19 +266,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testMissionWidget() {
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnMissionWidget(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET)
-        }
-    }
-
-    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()
@@ -420,6 +422,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
                 actionOnMerchantVoucherWidget(viewHolder, i)
             }
         } validateAnalytics {

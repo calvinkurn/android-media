@@ -5,7 +5,9 @@
     </switch>
 
     <includePackage name="includePackage">
+        <name>com.tkpd</name>
         <name>com.tokopedia</name>
+        <name>com.laku6.tradeinsdk</name>
     </includePackage>
 
     <exceptPackname name="exceptPackage">

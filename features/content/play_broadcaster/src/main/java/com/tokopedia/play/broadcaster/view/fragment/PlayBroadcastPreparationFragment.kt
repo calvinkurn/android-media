@@ -323,7 +323,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
                     binding.formTitle.setLoading(false)
-                    toaster.showError(content.error)
+                    toaster.showError(content.error, content.error.message)
                 }
                 is NetworkResult.Success -> {
                     if (!it.hasBeenHandled) {
@@ -404,7 +404,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         toaster.showErrorInView(
                             toasterContainer,
                             event.error,
-                            bottomMargin = resources.getDimensionPixelOffset(
+                            bottomMargin = requireContext().resources.getDimensionPixelOffset(
                                 unifyR.dimen.spacing_lvl3
                             )
                         )

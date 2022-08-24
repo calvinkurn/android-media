@@ -319,10 +319,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             shopId = shop.shopId
             shopName = shop.shopName
             shopType = shop.shopTypeInfo.titleFmt
-            freeShippingType =
-                    if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                    else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                    else ""
+            freeShippingType = product.freeShippingGeneral.boName
             errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId

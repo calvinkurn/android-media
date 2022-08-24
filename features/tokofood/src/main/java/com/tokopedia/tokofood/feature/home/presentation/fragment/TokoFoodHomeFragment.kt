@@ -220,9 +220,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return null
     }
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return null
-    }
+    override fun getFragmentToolbar(): Toolbar? = null
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
@@ -465,6 +463,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -696,9 +695,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showChooseAddressBottomSheet() {
-        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
-        chooseAddressBottomSheet.setListener(this)
-        chooseAddressBottomSheet.show(childFragmentManager, "")
+        if (isAdded) {
+            val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+            chooseAddressBottomSheet.setListener(this)
+            chooseAddressBottomSheet.show(childFragmentManager, "")
+        }
     }
 
     private fun checkAddressDataAndServiceArea(){
@@ -816,7 +817,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
                 shopId = chooseAddressData.tokonow.shopId.toString(),
                 warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
@@ -893,23 +895,25 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showUniversalShareBottomSheet(imageSaved: String) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@TokoFoodHomeFragment)
-            setUtmCampaignData(
-                pageName = PAGE_SHARE_NAME,
-                userId = userSession.userId,
-                pageId = PAGE_TYPE_HOME,
-                feature = SHARE
-            )
-            setMetaData(
-                tnTitle = shareHomeTokoFood?.thumbNailTitle.orEmpty(),
-                tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
-            )
-            setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
-            imageSaved(imageSaved)
-        }
+        if (isAdded) {
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@TokoFoodHomeFragment)
+                setUtmCampaignData(
+                    pageName = PAGE_SHARE_NAME,
+                    userId = userSession.userId,
+                    pageId = PAGE_TYPE_HOME,
+                    feature = SHARE
+                )
+                setMetaData(
+                    tnTitle = shareHomeTokoFood?.thumbNailTitle.orEmpty(),
+                    tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
+                )
+                setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
+                imageSaved(imageSaved)
+            }
 
-        universalShareBottomSheet?.show(childFragmentManager, this)
+            universalShareBottomSheet?.show(childFragmentManager, this)
+        }
     }
 
     private fun logExceptionTokoFoodHome(

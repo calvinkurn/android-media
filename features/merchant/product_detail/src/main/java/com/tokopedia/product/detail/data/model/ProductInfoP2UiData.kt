@@ -74,4 +74,10 @@ data class ProductInfoP2UiData(
             it.quantity
         } ?: 0
     }
+
+    fun getBebasOngkirCampaignIDsByProductId(productId: String): String {
+        return bebasOngkir.boProduct.firstOrNull {
+            it.productId == productId
+        }?.boCampaignIDs ?: ""
+    }
 }

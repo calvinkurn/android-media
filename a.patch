@@ -187,7 +187,7 @@ index 94dfbffe80c..22301700db2 100644
          maven {
              url "https://jitpack.io"
 diff --git a/customer_mid_app/build.gradle b/customer_mid_app/build.gradle
-index 72eb12a7c1b..9a60aa46683 100644
+index 4a110067f7d..9c893be797d 100644
 --- a/customer_mid_app/build.gradle
 +++ b/customer_mid_app/build.gradle
 @@ -29,8 +29,8 @@ android {
@@ -1337,7 +1337,7 @@ index a840f500506..25ba499ae07 100644
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/discovery/home_nav/build.gradle b/features/discovery/home_nav/build.gradle
-index 4da2c47e237..e8c250522cd 100644
+index 95e4c861c24..a24fa684c54 100644
 --- a/features/discovery/home_nav/build.gradle
 +++ b/features/discovery/home_nav/build.gradle
 @@ -23,16 +23,16 @@ android{
@@ -1651,7 +1651,7 @@ index 98b52cae28e..f3f1160b022 100644
      buildFeatures {
          viewBinding true
 diff --git a/features/recharge/digital_checkout/build.gradle b/features/recharge/digital_checkout/build.gradle
-index 6fd932fce50..0a96350c404 100644
+index 0d37697f50a..ad4dbedd54c 100644
 --- a/features/recharge/digital_checkout/build.gradle
 +++ b/features/recharge/digital_checkout/build.gradle
 @@ -34,11 +34,11 @@ android {
@@ -1667,8 +1667,8 @@ index 6fd932fce50..0a96350c404 100644
 -        jvmTarget = JavaVersion.VERSION_1_8
 +        jvmTarget = JavaVersion.VERSION_11
      }
- }
  
+     buildFeatures {
 diff --git a/features/recharge/digital_product_detail/build.gradle b/features/recharge/digital_product_detail/build.gradle
 index 487dcfe6e4d..d7191e9b1be 100644
 --- a/features/recharge/digital_product_detail/build.gradle
@@ -1950,7 +1950,7 @@ index 1363c1b4545..47e357abe0c 100644
  
      buildFeatures {
 diff --git a/features/user/usercomponents/build.gradle b/features/user/usercomponents/build.gradle
-index 307b2fc00b4..7c4d8d8e891 100644
+index 876c98db66f..5b2e7dfaf30 100644
 --- a/features/user/usercomponents/build.gradle
 +++ b/features/user/usercomponents/build.gradle
 @@ -22,6 +22,15 @@ android {

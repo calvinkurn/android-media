@@ -105,6 +105,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
+    private static final String RESOLUTION_APPLINK = "tokopedia://resolution/success-create";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
@@ -850,6 +851,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
             }
+            return true;
+        }
+
+        if (url.contains(RESOLUTION_APPLINK)) {
+            RouteManager.route(getContext(), url);
+            activity.finish();
             return true;
         }
 

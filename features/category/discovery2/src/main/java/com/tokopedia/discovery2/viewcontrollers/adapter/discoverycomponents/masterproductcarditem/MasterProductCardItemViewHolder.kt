@@ -166,6 +166,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
+            masterProductCardItemViewModel.saveProductCardComponent()
             showProductCardOptions(
                 fragment,
                 masterProductCardItemViewModel.getProductCardOptionsModel()

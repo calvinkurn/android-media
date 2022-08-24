@@ -14,6 +14,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_PRODUCT_CLICK = "productClick"
         const val EVENT_ATC = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
+        const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
         const val EVENT_CLICK_PG = "clickPG"

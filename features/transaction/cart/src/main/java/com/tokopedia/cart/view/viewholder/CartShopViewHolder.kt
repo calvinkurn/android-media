@@ -353,6 +353,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
+                if (!cartShopHolderData.hasSeenFreeShippingBadge && cartShopHolderData.isFreeShippingPlus) {
+                    cartShopHolderData.hasSeenFreeShippingBadge = true
+                    actionListener.onViewFreeShippingPlusBadge()
+                }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()

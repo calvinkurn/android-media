@@ -173,6 +173,11 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                       variant_description_detail {
                         variant_name
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       product_price
                       product_quantity
                       product_invenage_value
@@ -190,7 +195,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                       title_fmt
                     }
                   }
-                  shipment_information {                                        
+                  shipment_information {
                     free_shipping {
                       eligible
                     }

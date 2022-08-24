@@ -20,7 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
@@ -41,6 +45,7 @@ import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuShareButtonAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
+import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -52,13 +57,16 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener) : LifecycleObserver {
+    private var listener: Listener
+) : LifecycleObserver {
 
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
 
-        private const val ANNIVERSARY_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
-        private const val ANNIVERSARY_ORNAMENT_URL = "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
+        private const val ANNIVERSARY_PATTERN_URL =
+            "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
+        private const val ANNIVERSARY_ORNAMENT_URL =
+            "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
     }
 
     private val otherMenuAdapter by lazy {
@@ -190,7 +198,7 @@ class OtherMenuViewHolder(
         }
     }
 
-    fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
+    fun setFreeShippingData(state: SettingResponseState<TokoPlusBadgeUiModel>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setFreeShippingData(state)
         }
@@ -219,6 +227,12 @@ class OtherMenuViewHolder(
                 SCROLLVIEW_INITIAL_POSITION,
                 SCROLLVIEW_INITIAL_POSITION
             )
+        }
+    }
+
+    fun setCentralizePromoTag(state: SettingResponseState<Boolean>) {
+        if (state is SettingResponseState.SettingSuccess) {
+            otherMenuAdapter?.setCentralizedPromoTag(state.data)
         }
     }
 
@@ -524,6 +538,7 @@ class OtherMenuViewHolder(
         fun onShareButtonClicked()
         fun onShopStatusImpression(shopType: ShopType)
         fun onFreeShippingImpression()
+        fun onTokoPlusClicked()
+        fun onTokoPlusImpressed()
     }
-
 }

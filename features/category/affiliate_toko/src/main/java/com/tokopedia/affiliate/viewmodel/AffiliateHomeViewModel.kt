@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.NO_UI_METRICS
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -69,7 +70,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_HOME)
         }, onError = {
             it.printStackTrace()
         })
