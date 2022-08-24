@@ -286,6 +286,15 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
     }
 
     private fun setActionButtonClick(textView: TextView?, actionButton: ActionButton, item: Items){
+
+        fun isDownloadable(actionButton: ActionButton): Boolean{
+            return if (actionButton.header.isNotEmpty()){
+                return actionButton.headerObject.contentType.equals(CONTENT_TYPE, true)
+            } else {
+                false
+            }
+        }
+
         when{
             actionButton.control.equals(KEY_REDIRECT, true) -> {
                 if (actionButton.body.body.isEmpty() && actionButton.body.appURL.isEmpty()){
@@ -322,14 +331,6 @@ class EventsViewHolder(itemView: View): AbstractViewHolder<ItemsEvents>(itemView
                     //TODO : openshoQRfrag
                 }
             }
-        }
-    }
-
-    private fun isDownloadable(actionButton: ActionButton): Boolean{
-        return if (actionButton.header.isNotEmpty()){
-            return actionButton.headerObject.contentType.equals(CONTENT_TYPE, true)
-        } else {
-            false
         }
     }
 
