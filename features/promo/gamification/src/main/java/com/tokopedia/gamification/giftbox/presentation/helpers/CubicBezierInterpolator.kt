@@ -29,7 +29,7 @@ class CubicBezierInterpolator : Interpolator {
 
     constructor(startX: Float, startY: Float, endX: Float, endY: Float) : this(PointF(startX, startY), PointF(endX, endY))
 
-    constructor(startX: Double, startY: Double, endX: Double, endY: Double) : this(PointF(startX.toFloat(), startY.toFloat()), PointF(endX.toFloat(), endY.toFloat()))
+    constructor(startX: Double, startY: Double, endX: Double, endY: Double) : this(startX.toFloat(), startY.toFloat(), endX.toFloat(), endY.toFloat())
 
     override fun getInterpolation(time: Float): Float {
         return getBezierCoordinateY(getXForTime(time))

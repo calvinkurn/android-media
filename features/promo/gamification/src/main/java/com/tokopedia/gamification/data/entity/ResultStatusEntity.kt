@@ -22,7 +22,7 @@ data class ResultStatusEntity(
 ) : Parcelable{
 
 
-    protected constructor(@SuppressLint("EntityFieldAnnotation") p:Parcel) : this(
+    private constructor(@SuppressLint("EntityFieldAnnotation") p:Parcel) : this(
         p.readString() ?: "",
         p.createStringArrayList(),
         p.readString() ?: ""
