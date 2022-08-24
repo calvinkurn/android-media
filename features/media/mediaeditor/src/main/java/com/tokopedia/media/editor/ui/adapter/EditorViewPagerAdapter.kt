@@ -41,6 +41,10 @@ class EditorViewPagerAdapter(
         currentPlayer[index]?.playWhenReady = false
     }
 
+    fun isVideo(index: Int): Boolean{
+        return editorList[index].isVideo
+    }
+
     override fun getCount(): Int {
         return editorList.size
     }
@@ -55,6 +59,7 @@ class EditorViewPagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layout = container.inflateLayout(R.layout.viewpager_main_editor)
+        layout.tag = "editor_viewpager_$position"
 
         val filePath = editorList[position].getImageUrl()
         if (isVideoFormat(filePath)) {

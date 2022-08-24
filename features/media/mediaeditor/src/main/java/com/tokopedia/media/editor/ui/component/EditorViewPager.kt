@@ -3,6 +3,7 @@ package com.tokopedia.media.editor.ui.component
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
@@ -12,14 +13,11 @@ import com.tokopedia.media.loader.loadImage
 class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(context, attrSet){
     private var editorAdapter: EditorViewPagerAdapter? = null
     private var previousVideoIndex = -1
-    private var listRef = listOf<EditorUiModel>()
     private var callback: (position: Int, isVideo: Boolean) -> Unit = {_, _ ->}
 
     fun setAdapter(listData: List<EditorUiModel>){
         editorAdapter = EditorViewPagerAdapter(context, listData)
         adapter = editorAdapter
-
-        listRef = listData
 
         addOnPageChangeListener(object: OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
@@ -33,7 +31,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
             override fun onPageSelected(position: Int) {
                 if(previousVideoIndex != -1) stopVideoPlayer(previousVideoIndex)
 
-                val isVideo = listRef[position].isVideo
+                val isVideo = editorAdapter?.isVideo(position) ?: false
                 if(isVideo){
                     playVideoPlayer(position)
                     previousVideoIndex = position
@@ -53,7 +51,8 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
     }
 
     fun updateImage(index: Int, newImageUrl: String, onImageUpdated: () -> Unit = {}){
-        val view = getChildAt(index)?.findViewById<ImageView>(R.id.img_main_preview)
+        val layout = findViewWithTag<LinearLayout>("editor_viewpager_$index")
+        val view = layout.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl){
             listener(
                 onSuccess = {_, _ ->
