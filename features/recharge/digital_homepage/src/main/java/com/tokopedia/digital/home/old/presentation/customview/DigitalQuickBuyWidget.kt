@@ -67,12 +67,12 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
 
         if (element.desc1st.isEmpty()) {
             if ((hasPrice(element) || hasTagLabel(element))) {
-               binding.title.maxLines = 2
+               binding.title.maxLines = MAX_LINES_2
             } else {
-               binding.title.maxLines = 3
+               binding.title.maxLines = MAX_LINES_3
             }
         } else {
-           binding.title.maxLines = 1
+           binding.title.maxLines = MAX_LINES_1
         }
     }
 
@@ -87,12 +87,12 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
         if (element.title1st.isEmpty() &&
                 element.tagName.isEmpty()) {
             if (hasPrice(element) || hasTagLabel(element)) {
-                binding.subtitle.maxLines = 2
+                binding.subtitle.maxLines = MAX_LINES_2
             } else {
-                binding.subtitle.maxLines = 3
+                binding.subtitle.maxLines = MAX_LINES_3
             }
         } else {
-            binding.subtitle.maxLines = 1
+            binding.subtitle.maxLines = MAX_LINES_1
         }
     }
 
@@ -153,11 +153,11 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
             binding.footer.tagLine.visibility = View.VISIBLE
             binding.footer.tagLine.setLabel(element.tagName)
             when (element.tagType) {
-                1 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_RED)
-                2 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_GREEN)
-                3 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_BLUE)
-                4 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_ORANGE)
-                5 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_GREY)
+                TAG_TYPE_1 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_RED)
+                TAG_TYPE_2 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_GREEN)
+                TAG_TYPE_3 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_BLUE)
+                TAG_TYPE_4 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_ORANGE)
+                TAG_TYPE_5 -> binding.footer.tagLine.setLabelType(Label.GENERAL_LIGHT_GREY)
                 else -> {
                     binding.footer.tagLine.visibility = View.GONE
                 }
@@ -171,4 +171,15 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
         return R.layout.layout_quick_buy_widget
     }
 
+    companion object {
+        private const val MAX_LINES_3 = 3
+        private const val MAX_LINES_2 = 2
+        private const val MAX_LINES_1 = 1
+
+        private const val TAG_TYPE_1 = 1
+        private const val TAG_TYPE_2 = 2
+        private const val TAG_TYPE_3 = 3
+        private const val TAG_TYPE_4 = 4
+        private const val TAG_TYPE_5 = 5
+    }
 }
