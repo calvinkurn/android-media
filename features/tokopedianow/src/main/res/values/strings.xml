@@ -217,4 +217,7 @@
     <string name="tokopedianow_recipe_success_add_bookmark">“%s” berhasil ditambahkan ke Buku Resep.</string>
     <string name="tokopedianow_recipe_failed_add_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
     <string name="tokopedianow_recipe_failed_remove_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
+    <string name="tokopedianow_recipe_search_hint">Cari resep</string>
+    <string name="tokopedianow_recipe_list_header_text">Pilihan resep spesial\nTokopedia NOW!</string>
+    <string name="tokopedianow_recipe_list_count">%1$d resep</string>
 </resources>

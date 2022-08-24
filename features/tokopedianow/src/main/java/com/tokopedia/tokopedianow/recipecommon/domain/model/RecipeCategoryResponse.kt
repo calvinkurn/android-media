@@ -1,8 +1,8 @@
-package com.tokopedia.tokopedianow.recipedetail.domain.model
+package com.tokopedia.tokopedianow.recipecommon.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class RecipeTagResponse(
+data class RecipeCategoryResponse(
     @SerializedName("id")
     val id: String,
     @SerializedName("name")
