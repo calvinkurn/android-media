@@ -51,13 +51,13 @@ object VisitableMapper {
     ): Visitable<*>{
         return when {
             isShortLayout -> {
-                ItemsDealsShort()
+                ItemsDealsShort(items)
             }
             upstream.equals(UPSTREAM_KEY, true) -> {
                 ItemsDealsOMP(orderDetails, items)
             }
             else -> {
-                ItemsDeals()
+                ItemsDeals(items)
             }
         }
     }

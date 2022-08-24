@@ -22,7 +22,7 @@ data class ItemsDealsOMP(
     }
 }
 
-class ItemsDeals : Visitable<OrderDetailTypeFactoryImpl> {
+data class ItemsDeals(val item: Items) : Visitable<OrderDetailTypeFactoryImpl> {
     override fun type(typeFactory: OrderDetailTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

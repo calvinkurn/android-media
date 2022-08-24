@@ -12,6 +12,7 @@ import com.tokopedia.buyerorder.detail.data.ItemsEvents
 import com.tokopedia.buyerorder.detail.data.ItemsInsurance
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.DealsOMPViewHolder
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.DealsShortViewHolder
+import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.DealsViewHolder
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.DefaultViewHolder
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.EventsViewHolder
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.InsuranceViewHolder
@@ -31,7 +32,7 @@ class OrderDetailTypeFactoryImpl: BaseAdapterTypeFactory(), OrderDetailTypeFacto
     }
 
     override fun type(item: ItemsDeals): Int {
-        return 0
+        return DealsViewHolder.LAYOUT
     }
 
     override fun type(item: ItemsEvents): Int {
@@ -47,13 +48,15 @@ class OrderDetailTypeFactoryImpl: BaseAdapterTypeFactory(), OrderDetailTypeFacto
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        super.createViewHolder(parent, type)
         return when(type){
             DefaultViewHolder.LAYOUT -> DefaultViewHolder(parent)
             InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(parent)
             EventsViewHolder.LAYOUT -> EventsViewHolder(parent)
             DealsShortViewHolder.LAYOUT -> DealsShortViewHolder(parent)
             DealsOMPViewHolder.LAYOUT -> DealsOMPViewHolder(parent)
-            else -> super.createViewHolder(parent, type)
+            DealsViewHolder.LAYOUT -> DealsViewHolder(parent)
+            else -> DefaultViewHolder(parent)
         }
     }
 }
