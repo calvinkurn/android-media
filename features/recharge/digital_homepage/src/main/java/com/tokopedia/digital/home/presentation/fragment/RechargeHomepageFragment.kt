@@ -117,7 +117,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             sliceOpenApp = it.getBoolean(RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
-        searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
+        context?.let {
+            searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(it.resources.displayMetrics)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -169,11 +171,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(
             0
         )
-        binding.recyclerView.addItemDecoration(
-            RechargeHomeSectionDecoration(
-                SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
+        context?.let {
+            binding.recyclerView.addItemDecoration(
+                RechargeHomeSectionDecoration(
+                    SECTION_SPACING_DP.dpToPx(it.resources.displayMetrics)
+                )
             )
-        )
+        }
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
