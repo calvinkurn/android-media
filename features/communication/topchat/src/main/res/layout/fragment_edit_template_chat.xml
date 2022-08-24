@@ -41,7 +41,7 @@
             android:text="@string/minimal_char_template"
             android:textColor="@color/Unify_R600" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,8 +50,9 @@
             android:gravity="center"
             android:minHeight="50dp"
             android:text="@string/title_save"
-            android:textColor="@color/Unify_N0"
-            app:typographyType="heading_5" />
+            app:unifyButtonSize="large"
+
+            android:textColor="@color/Unify_N0"/>
 
     </RelativeLayout>
 
