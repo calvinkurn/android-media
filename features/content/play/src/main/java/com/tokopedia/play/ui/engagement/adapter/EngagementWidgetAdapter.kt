@@ -9,6 +9,7 @@ import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play_common.databinding.ViewGameInteractiveBinding
+import com.tokopedia.play_common.view.game.GameSmallWidgetView
 
 /**
  * @author by astidhiyaa on 24/08/22
@@ -49,9 +50,7 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
             parent: ViewGroup,
             basicView: View
         ): EngagementWidgetViewHolder {
-            val view = ViewGameInteractiveBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false
-            )
+            val view = GameSmallWidgetView(parent.context)
             return EngagementWidgetViewHolder(view, listener)
         }
     }
