@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureBottomSheetHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeSearchIngredientBinding
 import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.adapter.RecipeSearchIngredientAdapter
 import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.uimodel.RecipeSearchIngredientUiModel
@@ -37,6 +38,11 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (showKnob) configureBottomSheetHeight()
     }
 
     fun show(fm: FragmentManager) {
