@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentQuotaMonitoringBinding
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -95,6 +98,12 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
             quotaMonitoringAdapter.clearAll()
             quotaMonitoringAdapter.submit(vpsPackage)
             rvQuota.adapter = quotaMonitoringAdapter
+            header.apply {
+                navigationIcon = getIconUnifyDrawable(context, IconUnify.CLOSE)
+                setNavigationOnClickListener {
+                    activity?.finish()
+                }
+            }
         }
     }
 }

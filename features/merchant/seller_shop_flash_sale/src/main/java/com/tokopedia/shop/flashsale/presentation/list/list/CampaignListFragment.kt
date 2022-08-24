@@ -1,13 +1,17 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,12 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
@@ -62,6 +61,7 @@ import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuB
 import com.tokopedia.shop.flashsale.presentation.list.list.dialog.ShopDecorationDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringActivity
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -491,24 +491,37 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.cardView.slideUp()
     }
 
+    @SuppressLint("ResourcePackage")
     private fun displayVpsPackages(packages: List<VpsPackage>) {
         var totalQuota = 0
-        var totalCurrentQuota = 0
+        var totalRemainingQuota = 0
         val totalQuotaSource = packages.count()
 
         packages.forEach { vpsPackage ->
             totalQuota += vpsPackage.originalQuota
-            totalCurrentQuota += vpsPackage.remainingQuota
+            totalRemainingQuota += vpsPackage.remainingQuota
         }
 
         binding?.run {
-            tgQuotaValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.sfs_quota_monitoring_value_placeholder,
-                    totalCurrentQuota,
-                    totalQuota
-                )
-            )
+            tgQuotaValue.run {
+                text = if (totalRemainingQuota.isMoreThanZero()) {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.sfs_quota_monitoring_value_placeholder_normal_state,
+                            totalRemainingQuota,
+                            totalQuota
+                        )
+                    )
+                } else {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.sfs_quota_monitoring_value_placeholder_empty_state,
+                            totalRemainingQuota,
+                            totalQuota
+                        )
+                    )
+                }
+            }
             tgQuotaSourceValue.text = MethodChecker.fromHtml(
                 getString(
                     R.string.sfs_quota_source_monitoring_value_placeholder,
@@ -929,6 +942,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun routeToYourShopFlashSaleQuotaPage() {
         QuotaMonitoringActivity.start(activity ?: return)
+    }
+
+    private fun Typography.textColor(@ColorRes resourceId: Int) {
+        val color = ContextCompat.getColor(context, resourceId)
+        this.setTextColor(color)
     }
 }
 
