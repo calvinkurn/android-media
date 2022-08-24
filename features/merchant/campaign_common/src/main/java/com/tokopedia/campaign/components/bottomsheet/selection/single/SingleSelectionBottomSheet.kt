@@ -22,13 +22,8 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         private const val ITEM_DIVIDER_INSET = 16
 
         @JvmStatic
-        fun newInstance(
-            selectedItemId: String,
-            items: ArrayList<SingleSelectionItem>,
-            customAppearance: Config.() -> Unit = {}
-        ): SingleSelectionBottomSheet {
+        fun newInstance(selectedItemId: String, items: ArrayList<SingleSelectionItem>): SingleSelectionBottomSheet {
             return SingleSelectionBottomSheet().apply {
-                this.customAppearance = customAppearance
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SELECTED_ITEM_ID, selectedItemId)
                     putParcelableArrayList(BUNDLE_KEY_SINGLE_SELECTION_ITEMS, items)
@@ -122,6 +117,14 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
 
     fun setBottomSheetTitle(title: String) {
         this.displayedTitle = title
+    }
+
+    /**
+     * Use this function to override default bottomsheet appearance
+     * e.g: Change button style to buttonVariant = UnifyButton.Variant.TEXT_ONLY when bottomsheet displayed
+     */
+    fun setCustomAppearance(customAppearance: Config.() -> Unit = {}) {
+        this.customAppearance = customAppearance
     }
 
     fun setBottomSheetButtonTitle(buttonTitle: String) {

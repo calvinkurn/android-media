@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.databinding.BottomsheetMultipleSelectionItemBinding
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
@@ -25,11 +24,9 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun newInstance(
             selectedItemIds: ArrayList<String>,
-            items: ArrayList<MultipleSelectionItem>,
-            customAppearance: Config.() -> Unit = {}
+            items: ArrayList<MultipleSelectionItem>
         ): MultipleSelectionBottomSheet {
             return MultipleSelectionBottomSheet().apply {
-                this.customAppearance = customAppearance
                 arguments = Bundle().apply {
                     putStringArrayList(BUNDLE_KEY_SELECTED_ITEM_IDS, selectedItemIds)
                     putParcelableArrayList(BUNDLE_KEY_MULTIPLE_SELECTION_ITEMS, items)
@@ -129,6 +126,15 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
     fun setBottomSheetTitle(title: String) {
         this.displayedTitle = title
     }
+
+    /**
+     * Use this function to override default bottomsheet appearance
+     * e.g: Change button style to buttonVariant = UnifyButton.Variant.TEXT_ONLY when bottomsheet displayed
+     */
+    fun setCustomAppearance(customAppearance: Config.() -> Unit = {}) {
+        this.customAppearance = customAppearance
+    }
+
 
     fun setBottomSheetButtonTitle(buttonTitle: String) {
         this.buttonTitle = buttonTitle
