@@ -48,8 +48,8 @@
                     android:layout_rowWeight="1"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
-                    android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="3dp"
+                    android:layout_marginEnd="1.5dp"
+                    android:layout_marginBottom="1.5dp"
                     app:unify_image_placeholder="@drawable/placeholder_img"
                     />
 
@@ -61,7 +61,9 @@
                     android:layout_rowWeight="1"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
-                    app:unify_image_placeholder="@drawable/placeholder_img"/>
+                    app:unify_image_placeholder="@drawable/placeholder_img"
+                    android:layout_marginStart="1.5dp"
+                    android:layout_marginBottom="1.5dp"/>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_collection_3"
@@ -71,7 +73,9 @@
                     android:layout_rowWeight="1"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
-                    app:unify_image_placeholder="@drawable/placeholder_img"/>
+                    app:unify_image_placeholder="@drawable/placeholder_img"
+                    android:layout_marginEnd="1.5dp"
+                    android:layout_marginTop="1.5dp"/>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_collection_4"
@@ -81,7 +85,9 @@
                     android:layout_rowWeight="1"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
-                    app:unify_image_placeholder="@drawable/placeholder_img"/>
+                    app:unify_image_placeholder="@drawable/placeholder_img"
+                    android:layout_marginStart="1.5dp"
+                    android:layout_marginTop="1.5dp"/>
 
             </GridLayout>
 

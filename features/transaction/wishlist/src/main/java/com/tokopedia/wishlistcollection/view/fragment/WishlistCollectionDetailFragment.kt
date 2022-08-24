@@ -494,7 +494,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun observingWishlistCollectionItems() {
-        showLoader()
         wishlistCollectionDetailViewModel.collectionItems.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -1146,6 +1145,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onResume() {
         super.onResume()
         checkProgressDeletion()
+        showLoader()
     }
 
     private fun checkProgressDeletion() {
@@ -2387,6 +2387,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
         isBulkDeleteShow = true
         onManageClicked(showCheckbox = true, isDeleteOnly = false, isBulkAdd = true)
+        setDefaultAddCollectionButton()
     }
 
     private fun turnOffBulkAddMode() {
