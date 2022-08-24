@@ -1083,6 +1083,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[CAMPAIGN_ID] = campaignId
         map[VARIANT_ID] = variantId
         map[SHOP_ID] = shopID
+        map[TRACKER_ID] = TRACKER_ID_VALUE
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
 
         additionalInfo?.category?.levels?.let { categoryListLevels ->
             addCategoryData(categoryListLevels)?.let {
