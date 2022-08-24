@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object ChatbotSendWebsocketParam {
@@ -45,7 +46,7 @@ object ChatbotSendWebsocketParam {
 
         data.addProperty("file_path", path)
         data.addProperty("image_obj", imageObj)
-        data.addProperty("attachment_type", Integer.parseInt(TYPE_IMAGE_UPLOAD))
+        data.addProperty("attachment_type", TYPE_IMAGE_UPLOAD.toIntOrZero())
         json.add("data", data)
         return json
     }
@@ -66,7 +67,7 @@ object ChatbotSendWebsocketParam {
         data.addProperty("message", "Uploaded Image")
         data.addProperty("start_time", startTime)
         data.addProperty("file_path", path)
-        data.addProperty("attachment_type", Integer.parseInt(TYPE_SECURE_IMAGE_UPLOAD))
+        data.addProperty("attachment_type", TYPE_SECURE_IMAGE_UPLOAD.toIntOrZero())
         json.add("data", data)
         return json
     }
@@ -83,7 +84,7 @@ object ChatbotSendWebsocketParam {
         val data = JsonObject()
         data.addProperty("message", message)
         data.addProperty("message_id", messageId.convertMessageIdToLong())
-        data.addProperty("attachment_type", Integer.parseInt(TYPE_REPLY_BUBBLE))
+        data.addProperty("attachment_type", TYPE_REPLY_BUBBLE.toIntOrZero())
         data.addProperty("start_time", startTime)
         if (referredMsgObj != null)
             data.add("parent_reply", referredMsgObj)
