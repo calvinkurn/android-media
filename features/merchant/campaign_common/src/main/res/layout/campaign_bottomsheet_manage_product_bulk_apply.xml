@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/btnApply"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_period_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/textPeriod"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingTop="8dp"
+                    android:text="@string/campaign_common_discount_period"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="heading_5" />
+
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chipOneYearPeriod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="@string/campaign_common_period_one_year_ahead"
+                    app:chipType="normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textPeriod" />
+
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chipSixMonthPeriod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="@string/campaign_common_period_six_month_ahead"
+                    app:chipType="normal"
+                    app:layout_constraintStart_toEndOf="@id/chipOneYearPeriod"
+                    app:layout_constraintTop_toBottomOf="@id/textPeriod" />
+
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chipOneMonthPeriod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="@string/campaign_common_period_one_month_ahead"
+                    app:chipType="normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chipOneYearPeriod" />
+
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chipCustomSelection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="@string/campaign_common_period_custom_selection"
+                    app:chipType="normal"
+                    app:layout_constraintStart_toEndOf="@id/chipOneMonthPeriod"
+                    app:layout_constraintTop_toBottomOf="@id/chipSixMonthPeriod" />
+
+                <com.tokopedia.unifycomponents.TextFieldUnify2
+                    android:id="@+id/textFieldStartDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="4dp"
+                    app:layout_constraintEnd_toStartOf="@+id/textFieldEndDate"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chipOneMonthPeriod"
+                    app:unify_text_field_label="@string/campaign_common_period_start_date"
+                    app:unify_text_field_label_static="true" />
+
+                <com.tokopedia.unifycomponents.TextFieldUnify2
+                    android:id="@+id/textFieldEndDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/textFieldStartDate"
+                    app:layout_constraintTop_toTopOf="@+id/textFieldStartDate"
+                    app:unify_text_field_label="@string/campaign_common_period_end_date"
+                    app:unify_text_field_label_static="true" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/container_period_section" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textProductDiscount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/campaign_common_product_discount"
+                app:layout_constraintBottom_toBottomOf="@+id/contentSwitcherDiscountType"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/contentSwitcherDiscountType"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifycomponents.ContentSwitcherUnify
+                android:id="@+id/contentSwitcherDiscountType"
+                android:layout_width="96dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
+                android:textOff="@string/campaign_common_rupiah"
+                android:textOn="@string/campaign_common_percent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/textFieldDiscountAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contentSwitcherDiscountType"
+                app:unify_text_field_input_type="number"
+                app:unify_text_field_label="@string/campaign_common_discount_amount"
+                app:unify_text_field_placeholder="@string/campaign_common_discount_amount"
+                app:unify_text_field_prepend_text="@string/campaign_common_rupiah" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/dividerBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textFieldDiscountAmount" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textStock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dividerBottom"
+                app:typographyType="heading_5"
+                tools:text="Stok Campaign" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textStockAdditionalInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/Unify_NN500"
+                app:layout_constraintBottom_toBottomOf="@+id/textStock"
+                app:layout_constraintEnd_toStartOf="@+id/quantityEditor"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/textStock"
+                app:layout_constraintTop_toTopOf="@+id/textStock"
+                app:typographyType="small"
+                tools:text="(opsional)" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textStockDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/Unify_NN500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/textStockAdditionalInfo"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textStock"
+                app:layout_constraintTop_toBottomOf="@+id/textStock"
+                app:layout_constraintVertical_bias="0"
+                app:typographyType="small"
+                tools:text="Stok wajib 1 - 5" />
+
+            <com.tokopedia.unifycomponents.QuantityEditorUnify
+                android:id="@+id/quantityEditor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/textStockDescription"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textStock"
+                app:qty_default_value="0"
+                app:qty_max_value="99"
+                app:qty_min_value="0"
+                app:unify_qty_step_value="1" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textQuantityEditorError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/Unify_RN500"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="@id/quantityEditor"
+                app:layout_constraintRight_toRightOf="@id/quantityEditor"
+                app:layout_constraintTop_toBottomOf="@id/quantityEditor"
+                app:typographyType="small"
+                tools:text="100-200"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnApply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:enabled="false"
+        android:text="@string/campaign_common_apply"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonRightLoader="false"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
