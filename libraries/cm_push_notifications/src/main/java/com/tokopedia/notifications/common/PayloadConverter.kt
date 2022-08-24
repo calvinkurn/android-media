@@ -238,15 +238,15 @@ object PayloadConverter {
         val isAdvanceTarget = isBooleanTrue(bundle, ADVANCE_TARGET)
 
         val appPriorities = when {
-            mainAppPriority.toInt() < sellerAppPriority.toInt() -> NotificationPriorityType.MainApp
-            mainAppPriority.toInt() > sellerAppPriority.toInt() -> NotificationPriorityType.SellerApp
+            mainAppPriority.toIntOrZero() < sellerAppPriority.toIntOrZero() -> NotificationPriorityType.MainApp
+            mainAppPriority.toIntOrZero() > sellerAppPriority.toIntOrZero() -> NotificationPriorityType.SellerApp
             else -> NotificationPriorityType.Both
         }
 
         return NotificationTargetPriorities(appPriorities, isAdvanceTarget)
     }
 
-    private fun isBooleanTrue(data: Bundle, key: String): Boolean {
+    public fun isBooleanTrue(data: Bundle, key: String): Boolean {
         return try {
             return data.containsKey(key) && data.getString(key)?.toBoolean() == true
         } catch (e: Exception) {

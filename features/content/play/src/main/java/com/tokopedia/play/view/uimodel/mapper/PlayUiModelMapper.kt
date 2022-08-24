@@ -124,7 +124,9 @@ class PlayUiModelMapper @Inject constructor(
             minQty = prevDetail.minQty.orZero(),
             isFreeShipping = prevDetail.isFreeShipping,
             applink = prevDetail.applink,
-            isTokoNow = false,
+            isTokoNow = prevDetail.isTokoNow,
+            isPinned = prevDetail.isPinned,
+            isRilisanSpesial = prevDetail.isRilisanSpesial,
         )
     }
 }

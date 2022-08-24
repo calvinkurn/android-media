@@ -1,5 +1,7 @@
 package com.tokopedia.play.model
 
+import com.tokopedia.play.model.channel.ChannelBuilder
+import com.tokopedia.play.model.channel.ChannelBuilderImpl
 import com.tokopedia.play.model.interactive.InteractiveBuilder
 import com.tokopedia.play.model.interactive.InteractiveBuilderImpl
 import com.tokopedia.play.model.quickreply.QuickReplyBuilder
@@ -14,10 +16,11 @@ class UiModelBuilder private constructor(
     tagItemBuilder: TagItemBuilder = TagItemBuilderImpl(),
     quickReplyBuilder: QuickReplyBuilder = QuickReplyBuilderImpl(),
     interactiveBuilder: InteractiveBuilder = InteractiveBuilderImpl(),
-) : ChannelStatusBuilder by channelStatusBuilder,
-    TagItemBuilder by tagItemBuilder,
-    QuickReplyBuilder by quickReplyBuilder,
-    InteractiveBuilder by interactiveBuilder {
+    channelBuilder: ChannelBuilder = ChannelBuilderImpl(tagItemBuilder, channelStatusBuilder),
+) : QuickReplyBuilder by quickReplyBuilder,
+    InteractiveBuilder by interactiveBuilder,
+    ChannelBuilder by channelBuilder
+{
 
     companion object {
         fun get() = UiModelBuilder()

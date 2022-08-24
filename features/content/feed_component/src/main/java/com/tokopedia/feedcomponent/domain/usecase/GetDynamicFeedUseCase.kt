@@ -20,9 +20,11 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 18/12/18.
  */
-class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val context: Context,
-                                                val graphqlUseCase: GraphqlUseCase,
-                                                private val dynamicPostMapper: DynamicFeedMapper)
+class GetDynamicFeedUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
+    val graphqlUseCase: GraphqlUseCase,
+    private val dynamicPostMapper: DynamicFeedMapper,
+)
     : UseCase<DynamicFeedDomainModel>() {
 
     var queryRaw = R.raw.query_feed_dynamic;
@@ -57,13 +59,16 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         const val PARAM_SOURCE = "source"
         const val PARAM_SOURCE_ID = "sourceID"
         const val PARAM_REFRESH_CURSOR = "refreshCursor"
+        const val PARAM_ID = "idPost"
 
         const val LIMIT_3 = 3
         const val SOURCE_FEEDS = "feeds"
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: FeedV2Source,
-                                sourceId: String = "", firstPageCursor: String = ""):
+        fun createRequestParams(
+            userId: String, cursor: String = "", source: FeedV2Source,
+            sourceId: String = "", firstPageCursor: String = "",
+        ):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_USER_ID, if (userId == "") "0" else userId)

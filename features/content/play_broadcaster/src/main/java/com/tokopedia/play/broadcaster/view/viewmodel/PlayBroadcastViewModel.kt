@@ -1,5 +1,12 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -10,16 +17,25 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
-import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
+import com.tokopedia.play.broadcaster.domain.model.NewMetricList
+import com.tokopedia.play.broadcaster.domain.model.Banned
+import com.tokopedia.play.broadcaster.domain.model.Chat
+import com.tokopedia.play.broadcaster.domain.model.Freeze
+import com.tokopedia.play.broadcaster.domain.model.TotalLike
+import com.tokopedia.play.broadcaster.domain.model.TotalView
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -27,10 +43,23 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.*
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizBottomSheetUiState
+import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
+import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
+import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
+import com.tokopedia.play.broadcaster.ui.state.ScheduleConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -42,7 +71,6 @@ import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQui
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
-import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -56,6 +84,7 @@ import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.setValue
+import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
@@ -64,9 +93,29 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.getAndUpdate
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 /**
@@ -341,7 +390,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.DismissQuizDetailBottomSheet -> handleCloseQuizDetailBottomSheet()
             PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet -> handleRefreshQuizDetail()
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
-            is BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
+            is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
+            is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
         }
     }
 
@@ -1473,6 +1523,37 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getShopIconUrl(): String = userSession.shopAvatar
 
     fun getShopName(): String = userSession.shopName
+
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
+            product.updatePinProduct(isLoading = true)
+            val result = repo.setPinProduct(channelId, product)
+            if(result)
+                product.updatePinProduct(isLoading = false, needToUpdate = true)
+        }){
+            product.updatePinProduct(isLoading = false)
+            _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
+        }
+    }
+
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToUpdate: Boolean = false) {
+        _productSectionList.update { sectionList ->
+            sectionList.map { sectionUiModel ->
+                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                sectionUiModel.products.map { prod ->
+                    if (prod.id == this.id)
+                        prod.copy(
+                            pinStatus = this.pinStatus.copy(
+                                isLoading = isLoading,
+                                isPinned = if (needToUpdate) this.pinStatus.isPinned.switch() else this.pinStatus.isPinned
+                            )
+                        )
+                    else
+                        prod
+                })
+            }
+        }
+    }
 
     fun startTimer() {
         broadcastTimer.start()

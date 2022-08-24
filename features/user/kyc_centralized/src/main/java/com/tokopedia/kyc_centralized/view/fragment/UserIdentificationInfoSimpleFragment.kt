@@ -90,7 +90,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             startKyc()
         }, closeButtonAction = {
             activity?.onBackPressed()
-        }, onCheckedChanged = {})
+        }, onCheckedChanged = {}, onTncClicked = {})
     }
 
     private fun startKyc() {

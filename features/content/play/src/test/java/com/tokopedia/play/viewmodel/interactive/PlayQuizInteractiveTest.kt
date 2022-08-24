@@ -25,7 +25,7 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -43,7 +43,9 @@ class PlayQuizInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val interactiveId = "12398"
     private val title = "Quiz Ikan Koi"
@@ -149,7 +151,7 @@ class PlayQuizInteractiveTest {
                 it.viewModel.submitAction(
                     PlayViewerNewAction.ClickQuizOptionAction(item = choice)
                 )
-            }.last().assertEqualTo(QuizAnsweredEvent)
+            }.last().assertEqualTo(QuizAnsweredEvent(isTrue = true))
             mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
         }
     }
@@ -231,7 +233,7 @@ class PlayQuizInteractiveTest {
                 viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = selectedChoice))
                 mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
             }
-            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent)
+            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent(isTrue = false))
             (eventAndState.first.interactive.interactive as InteractiveUiModel.Quiz).listOfChoices.forEach { quizChoice ->
                 quizChoice.assertType<QuizChoicesUiModel> { choice ->
                     if(choice.id == selectedId) choice.type is PlayQuizOptionState.Answered

@@ -531,6 +531,26 @@
         "type": "shop_voucher"
       },
       {
+        "name":"cod",
+        "type":"custom_info",
+        "data":[
+          {
+            "icon":"https://ecs7.tokopedia.net/pdp/info/icon/cod_3x.png",
+            "title":"Tersedia COD (Bayar di Tempat)",
+            "isApplink":true,
+            "applink":"https://www.tokopedia.com/help/article/bayar-di-tempat",
+            "separator":"top",
+            "description":"Bayar melalui kurir saat pesanan tiba.",
+            "label":[
+              {
+                "value": "etstasdf asd f",
+                "color": "#DADADA"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "data": [
           {
             "applink": "",
@@ -594,6 +614,21 @@
         ],
         "name": "fulfillment",
         "type": "info"
+      },
+      {
+        "name":"installment_paylater",
+        "type":"info",
+        "data":[
+          {
+            "icon":"https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+            "title":"Paylater \u0026 Cicilan",
+            "isApplink":true,
+            "applink":"tokopedia://fintech/paylater?category=Kaos+Pria\u0026price=57500.000000\u0026productID=25522735\u0026productURL=https%3A%2F%2Fwww.tokopedia.com%2Fhalomerch%2Fkaos-polos-katun-bambu-cotton-bamboo-t-shirt",
+            "content":[
+
+            ]
+          }
+        ]
       },
       {
         "data": [

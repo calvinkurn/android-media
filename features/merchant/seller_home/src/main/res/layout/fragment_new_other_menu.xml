@@ -22,44 +22,19 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layoutDescription="@xml/fragment_new_other_menu_content_scene">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_sah_header_anniv"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_sah_new_other_curved_header"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/sah_new_other_header_background_height">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_sah_new_other_curved_header"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
-
-                    <com.tokopedia.unifycomponents.ImageUnify
-                        android:id="@+id/iv_sah_other_pattern_anniv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintVertical_bias="0"/>
-
-                    <com.tokopedia.unifycomponents.ImageUnify
-                        android:id="@+id/iv_sah_other_ornament_anniv"
-                        android:layout_width="140dp"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitXY"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="@dimen/sah_new_other_header_background_height"
+                    android:scaleType="fitXY"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/layout_sah_new_other_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl6"
+                    android:layout_marginTop="32dp"
                     android:orientation="vertical"
                     app:layout_constraintTop_toTopOf="parent">
 

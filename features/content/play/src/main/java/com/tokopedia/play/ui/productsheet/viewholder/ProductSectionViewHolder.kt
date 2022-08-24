@@ -53,8 +53,11 @@ class ProductSectionViewHolder(
             listener.onATCProduct(product, sectionInfo)
         }
 
-        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-            listener.onClickProductCard(product, sectionInfo, position)
+        override fun onClicked(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product
+        ) {
+            listener.onClickProductCard(product, sectionInfo, viewHolder.adapterPosition)
         }
     }
 
