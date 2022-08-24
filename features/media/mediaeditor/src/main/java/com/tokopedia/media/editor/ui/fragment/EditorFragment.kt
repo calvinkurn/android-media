@@ -105,9 +105,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
         val data = listData[currentProcess]
         if (isAutoCrop != null && data.editList.size == 0 && !data.isVideo) {
-            val asd = data.getImageUrl()
             loadImageWithEmptyTarget(requireContext(),
-                asd,
+                data.getImageUrl(),
                 properties = {},
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
