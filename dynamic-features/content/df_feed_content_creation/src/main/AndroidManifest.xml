@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.content.feed">
+    package="com.tokopedia.df.content.feed_content_creation">
 
-    <dist:module dist:title="@string/title_feed">
+    <dist:module dist:title="@string/title_feed_content_creation">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
