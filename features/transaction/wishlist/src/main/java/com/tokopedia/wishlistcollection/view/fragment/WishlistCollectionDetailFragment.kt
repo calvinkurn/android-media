@@ -515,8 +515,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
                             showRvWishlist()
-                            showSearchBar()
-                            showFilter()
+                            if (isAutoDeletion && isBulkDeleteShow) {
+                                hideSearchBar()
+                                hideFilter()
+                            } else {
+                                showSearchBar()
+                                showFilter()
+                            }
                             if (!collectionDetail.showDeleteProgress) updateTotalLabel(
                                 collectionDetail.totalData
                             )
