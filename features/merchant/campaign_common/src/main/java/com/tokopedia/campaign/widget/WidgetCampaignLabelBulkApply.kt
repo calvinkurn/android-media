@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.campaign.databinding.LayoutWidgetCampaignLabelBulkApplyBinding
+import com.tokopedia.campaign.databinding.LayoutCampaignWidgetLabelBulkApplyBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
@@ -23,7 +23,7 @@ class WidgetCampaignLabelBulkApply(
     private var labelIconEnabledColor: Int = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
     private var labelTitleDisabledColor: Int = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
     private var labelTitleEnabledColor: Int = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-    private var viewBinding: LayoutWidgetCampaignLabelBulkApplyBinding? = null
+    private var viewBinding: LayoutCampaignWidgetLabelBulkApplyBinding? = null
     private var textTitle: Typography? = null
     private var labelBackground: View? = null
     private var labelIcon: ImageUnify? = null
@@ -31,7 +31,7 @@ class WidgetCampaignLabelBulkApply(
     private var cardView: CardUnify2? = null
 
     init {
-        viewBinding = LayoutWidgetCampaignLabelBulkApplyBinding.inflate(
+        viewBinding = LayoutCampaignWidgetLabelBulkApplyBinding.inflate(
             LayoutInflater.from(context), this, true
         )
         initView()

@@ -24,7 +24,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_widget_campaign_bulk_apply_label" />
+            app:srcCompat="@drawable/ic_campaign_common_widget_bulk_apply_label" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_label_title"
