@@ -13,7 +13,10 @@ class ItemsDealsShort : Visitable<OrderDetailTypeFactoryImpl> {
     }
 }
 
-class ItemsDealsOMP : Visitable<OrderDetailTypeFactoryImpl> {
+class ItemsDealsOMP(
+    val orderDetails: OrderDetails,
+    val item: Items,
+) : Visitable<OrderDetailTypeFactoryImpl> {
     override fun type(typeFactory: OrderDetailTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

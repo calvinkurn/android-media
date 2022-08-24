@@ -8,6 +8,7 @@ import com.tokopedia.buyerorder.detail.data.ItemsDealsShort
 import com.tokopedia.buyerorder.detail.data.ItemsDefault
 import com.tokopedia.buyerorder.detail.data.ItemsEvents
 import com.tokopedia.buyerorder.detail.data.ItemsInsurance
+import com.tokopedia.buyerorder.detail.data.OrderDetails
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -22,33 +23,38 @@ object VisitableMapper {
     private const val EVENTS_CATEGORY_ID_2 = 23
     private const val EVENTS_CATEGORY_INSURANCE = 1301
 
-    fun mappingVisitable(list: List<Items>, isShortLayout: Boolean, upstream: String): List<Visitable<*>>{
+    fun mappingVisitable(list: List<Items>, isShortLayout: Boolean, upstream: String, orderDetails: OrderDetails): List<Visitable<*>>{
         return list.map {
            return@map when{
                 it.category.equals(CATEGORY_DEALS, true)
                         || it.category.equals(CATEGORY_DEALS_OMP, true) -> {
-                    getDealsCategory(upstream, isShortLayout)
+                    getDealsCategory(orderDetails, upstream, isShortLayout, it)
                 }
                 it.categoryID == EVENTS_CATEGORY_ID_1
                         || it.categoryID == EVENTS_CATEGORY_ID_2
                         || it.category.equals(OrderCategory.EVENT.category, true) -> {
-                    ItemsEvents()
+                    ItemsEvents(orderDetails, it)
                 }
                 it.categoryID == EVENTS_CATEGORY_INSURANCE -> {
-                    ItemsInsurance()
+                    ItemsInsurance(orderDetails, it)
                 }
-                else -> ItemsDefault()
+                else -> ItemsDefault(it)
             }
         }
     }
 
-    private fun getDealsCategory(upstream: String, isShortLayout: Boolean): Visitable<*>{
+    private fun getDealsCategory(
+        orderDetails: OrderDetails,
+        upstream: String,
+        isShortLayout: Boolean,
+        items: Items,
+    ): Visitable<*>{
         return when {
             isShortLayout -> {
                 ItemsDealsShort()
             }
             upstream.equals(UPSTREAM_KEY, true) -> {
-                ItemsDealsOMP()
+                ItemsDealsOMP(orderDetails, items)
             }
             else -> {
                 ItemsDeals()
