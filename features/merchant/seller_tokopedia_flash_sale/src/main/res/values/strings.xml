@@ -19,5 +19,6 @@
     <string name="commonbs_status_filter_title">Mau cari status apa?</string>
     <string name="commonbs_category_filter_title">Mau cari kategori apa?</string>
     <string name="commonbs_category_criteria_check_title">Kriteria campaign</string>
+    <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
 
 </resources>
