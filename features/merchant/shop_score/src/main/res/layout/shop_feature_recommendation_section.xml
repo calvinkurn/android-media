@@ -16,7 +16,7 @@
             android:id="@+id/tvTitleShopCreation"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
