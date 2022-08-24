@@ -208,6 +208,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignQuota()
         observeVpsPackages()
         observeSaveDraft()
+        observeEmptyQuotaVpsPackageError()
         handlePageMode()
         viewModel.getCurrentMonthRemainingQuota()
     }
@@ -244,6 +245,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     handleFirstStepOfCampaignCreationSuccess(result.data)
                 }
                 is Fail -> {
+                    viewModel.recheckLatestSelectedVpsPackageQuota()
+
                     binding?.btnCreateCampaign?.stopLoading()
                     binding?.cardView showError result.throwable
                 }
@@ -259,6 +262,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     handleFirstStepOfCampaignCreationSuccess(result.data)
                 }
                 is Fail -> {
+                    viewModel.recheckLatestSelectedVpsPackageQuota()
+
                     binding?.btnCreateCampaign?.stopLoading()
                     binding?.cardView showError result.throwable
                 }
@@ -324,6 +329,19 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     val nearestExpiredVpsPackage = viewModel.findNearestExpiredVpsPackage(vpsPackages) ?: return@observe
                     viewModel.setSelectedVpsPackage(nearestExpiredVpsPackage)
                     displaySelectedVpsPackage(nearestExpiredVpsPackage)
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeEmptyQuotaVpsPackageError() {
+        viewModel.emptyQuotaVpsPackage.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    displaySelectedVpsPackage(result.data)
                 }
                 is Fail -> {
                     binding?.cardView showError result.throwable

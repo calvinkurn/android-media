@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -87,6 +88,10 @@ class CampaignInformationViewModel @Inject constructor(
     private val _vpsPackages = MutableLiveData<Result<List<VpsPackageUiModel>>>()
     val vpsPackages: LiveData<Result<List<VpsPackageUiModel>>>
         get() = _vpsPackages
+
+    private val _emptyQuotaVpsPackage = MutableLiveData<Result<VpsPackageUiModel>>()
+    val emptyQuotaVpsPackage: LiveData<Result<VpsPackageUiModel>>
+        get() = _emptyQuotaVpsPackage
 
     private var vpsPackage : VpsPackageUiModel? = null
 
@@ -563,4 +568,19 @@ class CampaignInformationViewModel @Inject constructor(
         }
     }
 
+    fun recheckLatestSelectedVpsPackageQuota() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val vpsPackages = getSellerCampaignPackageListUseCase.execute()
+                val currentlySelectedVpsPackageId: Long = vpsPackage?.packageId.orZero()
+                val updatedVpsPackage = applySelectionRule(currentlySelectedVpsPackageId, vpsPackages)
+                val matchedVpsPackage = updatedVpsPackage.find { vpsPackage -> vpsPackage.packageId == currentlySelectedVpsPackageId } ?: return@launchCatchError
+                _emptyQuotaVpsPackage.postValue(Success(matchedVpsPackage))
+            },
+            onError = { error ->
+                _emptyQuotaVpsPackage.postValue(Fail(error))
+            }
+        )
+    }
 }
