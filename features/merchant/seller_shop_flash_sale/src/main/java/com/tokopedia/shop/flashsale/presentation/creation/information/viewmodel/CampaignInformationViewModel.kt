@@ -496,10 +496,10 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     private fun applySortRule(vpsPackages: List<VpsPackageUiModel>) : List<VpsPackageUiModel> {
-        val shopTierBenefit = vpsPackages.find { vpsPackage -> vpsPackage.isShopTierBenefit } ?: return listOf()
+        val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
         val nonEmptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
         val emptyVpsPackages = vpsPackages.filter { vpsPackage -> vpsPackage.remainingQuota == EMPTY_QUOTA }
-        return listOf(shopTierBenefit) + nonEmptyVpsPackages + emptyVpsPackages
+        return shopTierBenefit + nonEmptyVpsPackages + emptyVpsPackages
     }
 
     private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
