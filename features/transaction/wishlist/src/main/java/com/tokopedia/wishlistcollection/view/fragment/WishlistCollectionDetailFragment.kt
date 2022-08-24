@@ -2389,7 +2389,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
         } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST) {
-            getCollectionItems()
+            doRefresh()
         }
     }
 
