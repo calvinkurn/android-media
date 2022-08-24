@@ -2,12 +2,6 @@ apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 
-repositories{
-    flatDir {
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
-
 buildscript {
     repositories {
         google()
