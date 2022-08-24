@@ -23,6 +23,7 @@ import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
@@ -55,6 +56,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/product_incomplete.png"
         private const val SCROLL_ANIMATION_DELAY = 500L
 
+        private const val GUIDELINE_MARGIN_FOOTER_HALF_WAY = 95
         private const val GUIDELINE_MARGIN_FOOTER_MIN = 0
         private const val GUIDELINE_MARGIN_HEADER_MIN = 0
 
@@ -300,7 +302,20 @@ class ManageProductFragment : BaseDaggerFragment() {
                     setGuidelineMinAndMax()
                     setGuidelineHeader()
                     setGuidelineFooter()
-                    animateScrollDebounce.invoke(dy)
+                    if (guidelineMarginFooter <= GUIDELINE_MARGIN_FOOTER_HALF_WAY) {
+                        animateScrollDebounce.invoke(dy)
+                    } else {
+                        animateScrollDebounce.invoke(Constant.ZERO)
+                    }
+                }
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!recyclerView.canScrollVertically(Constant.ONE)
+                        && newState == RecyclerView.SCROLL_STATE_DRAGGING
+                    ) {
+                        animateScrollDebounce.invoke(Constant.ZERO)
+                    }
                 }
             })
         }
