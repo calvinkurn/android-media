@@ -1,7 +1,9 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
@@ -14,7 +16,6 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -32,12 +33,20 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ): PlayBroadcastChannelRepository {
 
-    override suspend fun getChannelConfiguration(): ConfigurationUiModel = withContext(dispatchers.io) {
-        val response = getConfigurationUseCase.apply {
-            params = GetConfigurationUseCase.createParams(userSession.shopId)
-        }.executeOnBackground()
+    override suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel = withContext(dispatchers.io) {
+        val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)
 
-        return@withContext mapper.mapConfiguration(response)
+        return@withContext mapper.mapConfiguration(mapConfiguration(response.authorConfig.config)
+            .copy(streamAllowed = response.authorConfig.streamAllowed, tnc = response.authorConfig.tnc)
+        )
+    }
+
+    private fun mapConfiguration(config: String): Config {
+        return try {
+            gson.fromJson(config, Config::class.java)
+        } catch (e: Exception) {
+            Config()
+        }
     }
 
     override suspend fun createChannel(): String = withContext(dispatchers.io) {

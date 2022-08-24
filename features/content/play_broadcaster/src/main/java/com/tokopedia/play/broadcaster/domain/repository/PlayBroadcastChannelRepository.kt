@@ -10,7 +10,7 @@ import java.util.*
  */
 interface PlayBroadcastChannelRepository {
 
-    suspend fun getChannelConfiguration(): ConfigurationUiModel
+    suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel
 
     suspend fun createChannel(): String
 
