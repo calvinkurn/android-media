@@ -6,10 +6,13 @@ import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideAppl
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideExpandedMerchantParentNotEligiblePromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListGlobalParentNotEnabled
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -121,7 +124,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList())
+        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList(), ClearPromoRequest())
 
         //then
         assert(!validateUseRequest.orders[0].codes.contains(promoBo))
@@ -145,6 +148,26 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
         //then
         assert(clearPromoParam.orderData.codes.isNotEmpty())
+        assert(clearPromoParam.orderData.orders.isEmpty())
+    }
+
+    @Test
+    fun `WHEN clear promo and show ineligible global promo THEN should include in global codes clear promo param`() {
+        // given
+        val promoList = providePromoListGlobalParentNotEnabled()
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoParam = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
+
+        //then
+        assert(clearPromoParam.orderData.codes.isEmpty())
         assert(clearPromoParam.orderData.orders.isEmpty())
     }
 
@@ -204,6 +227,25 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         //then
         assert(clearPromoParam.orderData.codes.isEmpty())
         assert(clearPromoParam.orderData.orders.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN clear promo and show parent not enabled merchant promo THEN should include in order code clear promo param`() {
+        // given
+        val promoList = provideExpandedMerchantParentNotEligiblePromoData()
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoParam = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
+
+        //then
+        assert(clearPromoParam.orderData.orders.isEmpty())
     }
 
     @Test
