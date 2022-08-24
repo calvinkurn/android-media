@@ -1058,14 +1058,14 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String) {
+    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String,shopID: String) {
         if (screenName.isNotEmpty()) {
-            val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn,campaignId, variantId)
+            val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn,campaignId, variantId,shopID)
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
         }
     }
 
-    private fun getTrackingMapOpenScreen(pageIdentifier: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String): MutableMap<String, String> {
+    private fun getTrackingMapOpenScreen(pageIdentifier: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String,shopID: String): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[KEY_EVENT] = OPEN_SCREEN
         map[EVENT_NAME] = OPEN_SCREEN
@@ -1082,6 +1082,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[SUB_CATEGORY_ID] = EMPTY_STRING
         map[CAMPAIGN_ID] = campaignId
         map[VARIANT_ID] = variantId
+        map[SHOP_ID] = shopID
 
         additionalInfo?.category?.levels?.let { categoryListLevels ->
             addCategoryData(categoryListLevels)?.let {

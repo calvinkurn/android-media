@@ -58,6 +58,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
@@ -229,6 +230,7 @@ class DiscoveryFragment :
                 bundle.putString(TARGET_TITLE_ID, queryParameterMap[TARGET_TITLE_ID])
                 bundle.putString(CAMPAIGN_ID, queryParameterMap[CAMPAIGN_ID])
                 bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
+                bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
             }
         }
     }
@@ -1466,9 +1468,9 @@ class DiscoveryFragment :
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "",arguments?.getString(SHOP_ID,"") ?: "")
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "")
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),arguments?.getString(CAMPAIGN_ID,"") ?: "",arguments?.getString(VARIANT_ID,"") ?: "",arguments?.getString(SHOP_ID,"") ?: "")
         }
         openScreenStatus = true
     }
