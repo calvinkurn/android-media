@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultBinding
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemLocationCriteriaResultBinding
+import com.tokopedia.tkpd.flashsale.common.customview.TitleValueView.IconStatusEnum
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class LocationCriteriaCheckingResultAdapter: RecyclerView.Adapter<LocationCriteriaCheckingResultAdapter.CriteriaViewHolder>() {
 
-    private var data: List<String> = emptyList()
+    private var data: List<CriteriaCheckingResult.LocationCheckingResult> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
         val binding = StfsItemLocationCriteriaResultBinding.inflate(LayoutInflater.from(parent.context),
@@ -27,7 +29,7 @@ class LocationCriteriaCheckingResultAdapter: RecyclerView.Adapter<LocationCriter
         }
     }
 
-    fun setDataList(newData: List<String>) {
+    fun setDataList(newData: List<CriteriaCheckingResult.LocationCheckingResult>) {
         data = newData
         notifyItemRangeChanged(Int.ZERO, newData.size)
     }
@@ -52,8 +54,19 @@ class LocationCriteriaCheckingResultAdapter: RecyclerView.Adapter<LocationCriter
             }
         }
 
-        fun bind(title: String) {
-            binding.tfVariantName.text = title.take(10)
+        fun bind(item: CriteriaCheckingResult.LocationCheckingResult) {
+            binding.tfCityName.text = item.cityName
+            binding.iconLocation.isVisible = item.isDilayaniTokopedia
+            binding.layoutContent.apply {
+                val priceMinFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.priceCheckingResult.min, false)
+                val priceMaxFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.priceCheckingResult.max, false)
+                tfOriginalPrice.value = "$priceMinFormatted - $priceMaxFormatted"
+                tfOriginalPrice.status = if (item.priceCheckingResult.isEligible)
+                    IconStatusEnum.PASSED_STATUS else IconStatusEnum.WARNING_STATUS
+                tfCampaignStock.value = item.stockCheckingResult.min.toString()
+                tfCampaignStock.status = if (item.stockCheckingResult.isEligible)
+                    IconStatusEnum.PASSED_STATUS else IconStatusEnum.WARNING_STATUS
+            }
         }
     }
 }
