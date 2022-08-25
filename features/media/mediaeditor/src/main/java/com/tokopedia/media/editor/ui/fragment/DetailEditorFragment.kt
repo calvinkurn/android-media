@@ -518,24 +518,26 @@ class DetailEditorFragment @Inject constructor(
 
     private fun showRemoveBackgroundSaveConfirmation(onPrimaryClick: () -> Unit){
         val dialog = DialogUnify(requireContext(),DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(editorR.string.editor_remove_bg_dialog_title))
-        dialog.setDescription(getString(editorR.string.editor_remove_bg_dialog_desc))
+        dialog.apply {
+            setTitle(getString(editorR.string.editor_remove_bg_dialog_title))
+            setDescription(getString(editorR.string.editor_remove_bg_dialog_desc))
 
-        dialog.dialogPrimaryCTA.apply {
-            text = getString(editorR.string.editor_remove_bg_dialog_primary_button_text)
-            setOnClickListener {
-                onPrimaryClick()
+            dialogPrimaryCTA.apply {
+                text = getString(editorR.string.editor_remove_bg_dialog_primary_button_text)
+                setOnClickListener {
+                    onPrimaryClick()
+                }
             }
-        }
 
-        dialog.dialogSecondaryLongCTA.apply {
-            text = getString(editorR.string.editor_remove_bg_dialog_secondary_button_text)
-            setOnClickListener {
-                dialog.hide()
+            dialogSecondaryLongCTA.apply {
+                text = getString(editorR.string.editor_remove_bg_dialog_secondary_button_text)
+                setOnClickListener {
+                    dialog.hide()
+                }
             }
-        }
 
-        dialog.show()
+            show()
+        }
     }
 
     private fun finishPage() {

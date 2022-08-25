@@ -127,7 +127,7 @@ class DetailEditorViewModel @Inject constructor(
         }
     }
 
-    fun setMirror(ucropRef: EditorDetailPreviewImage?,){
+    fun setMirror(ucropRef: EditorDetailPreviewImage?){
         ucropRef?.let {
             rotateFilterRepository.mirror(it)
         }
