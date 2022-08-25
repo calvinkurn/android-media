@@ -6,7 +6,6 @@ import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideAppl
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData
@@ -112,7 +111,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN clear promo and show BO promo THEN should include real BO promo code instead of hard coded BO promo code`() {
+    fun `WHEN clear promo and show BO promo THEN should not include BO promo`() {
         // given
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
         val validateUseRequest = provideApplyPromoBoRequest()
@@ -153,7 +152,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN clear promo and show ineligible global promo THEN should include in global codes clear promo param`() {
+    fun `WHEN clear promo and show ineligible global promo THEN should not include in global codes clear promo param`() {
         // given
         val promoList = providePromoListGlobalParentNotEnabled()
         val response = provideClearPromoResponseSuccess()
@@ -231,7 +230,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN clear promo and show parent not enabled merchant promo THEN should include in order code clear promo param`() {
+    fun `WHEN clear promo and show parent not enabled merchant promo THEN should not include in order code clear promo param`() {
         // given
         val promoList = provideExpandedMerchantParentNotEligiblePromoData()
         val response = provideClearPromoResponseSuccess()
