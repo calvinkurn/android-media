@@ -2,7 +2,7 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.communication.chat_service">
 
-    <dist:module dist:title="@string/title_chat_service">
+    <dist:module dist:title="@string/df_title_chat_service">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
