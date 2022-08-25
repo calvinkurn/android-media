@@ -30,11 +30,17 @@ class CarouselImageDownloader(baseNotificationModel: BaseNotificationModel)
     }
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
+        val downloadedUrl =  mutableMapOf<String, String>()
         baseNotificationModel.carouselList.forEach { carousel ->
             carousel.icon?.let { icon ->
-                val filePath = downloadAndStore(context, icon, ImageSizeAndTimeout.CAROUSEL)
-                filePath?.let {
-                    carousel.filePath = it
+                if(downloadedUrl.containsKey(icon)){
+                    carousel.filePath = downloadedUrl[icon]
+                }else {
+                    val filePath = downloadAndStore(context, icon, ImageSizeAndTimeout.CAROUSEL)
+                    filePath?.let {
+                        downloadedUrl[icon] = filePath
+                        carousel.filePath = it
+                    }
                 }
             }
         }

@@ -205,7 +205,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun clickableSpan(page: String): ClickableSpan {
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
-                startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                startActivity(RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
             }
 
             override fun updateDrawState(ds: TextPaint) {

@@ -669,7 +669,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             shopId: String,
             mediaType: String,
             isTopads: Boolean,
-            playChannelId: String
+            playChannelId: String,
+            weblink: String,
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -696,10 +697,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int, mediaType: String) {
+    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+
     }
 
-    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+    override fun sendWatchVODTracker(
+        feedXCard: FeedXCard,
+        playChannelId: String,
+        rowNumber: Int,
+        time: Long
+    ) {
 
     }
     override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
@@ -714,8 +721,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onPostTagItemBSImpression(activityId: String, postTagItemList: List<FeedXProduct>, type: String, shopId: String, isFollowed: Boolean, mediaType: String) {
-    }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
@@ -942,13 +947,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
-    }
-
-    override fun onBottomSheetMenuClicked(
-        item: ProductPostTagViewModelNew,
-        context: Context,
-        shopId: String
-    ) {
     }
 
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
