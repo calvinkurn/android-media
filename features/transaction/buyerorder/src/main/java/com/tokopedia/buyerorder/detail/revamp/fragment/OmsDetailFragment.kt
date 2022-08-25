@@ -597,7 +597,27 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         item: Items,
         orderDetails: OrderDetails
     ) {
-        TODO("Not yet implemented")
+        binding?.let {
+            if (orderDetails.actionButtons.isEmpty()) {
+                it.actionButton.gone()
+                it.dividerAboveActionButton.gone()
+            } else {
+                it.dividerAboveActionButton.visible()
+                it.actionButton.visible()
+                it.actionButtonText.text = actionButton.label
+                it.actionButton.setOnClickListener {
+                    if (actionButton.control.equals(KEY_BUTTON, true)
+                        && actionButton.name.equals(KEY_CUSTOMER_NOTIFICATION, true)){
+                        TODO("hit send email")
+                        return@setOnClickListener
+                    }
+
+                    if (actionButton.control.equals(KEY_REDIRECT, true)) {
+                        RouteManager.route(context, actionButton.body.appURL)
+                    }
+                }
+            }
+        }
     }
 
     override fun setDealsBanner(metadata: MetaDataInfo) {
@@ -733,6 +753,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_UPSTREAM = "upstream"
         private const val KEY_BUTTON = "button"
         private const val KEY_REDIRECT = "redirect"
+        private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val SHAPE_STROKE_2 = 2
         private const val SHAPE_CORNER_RADIUS_4 = 4f
         private const val SHAPE_CORNER_RADIUS_9 = 9f
