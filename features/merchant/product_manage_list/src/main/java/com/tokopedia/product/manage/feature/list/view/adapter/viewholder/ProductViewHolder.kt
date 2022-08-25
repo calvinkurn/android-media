@@ -146,6 +146,7 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
+
         }
 
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
