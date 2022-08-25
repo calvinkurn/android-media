@@ -50,6 +50,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     private var mAudioCaptureState: Streamer.CAPTURE_STATE? = Streamer.CAPTURE_STATE.FAILED
 
     private var mCameraManager: BroadcasterCameraManager? = null
+    private var mSelectedCamera: BroadcasterCamera? = null
 
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
@@ -139,10 +140,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
         val videoConfig = BroadcasterUtil.getVideoConfig()
 
-        // get default camera id
-        val activeCamera = cameraList.firstOrNull {
-            it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT
-        } ?: cameraManager.getCameraList().first()
+        // get camera id
+        val activeCamera = mSelectedCamera ?: getSelectedCamera(cameraList).also {
+            mSelectedCamera = it
+        }
 
         // video resolution for stream and mp4 recording,
         // larix uses same resolution for camera preview and stream to simplify setup
@@ -406,6 +407,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     override fun destroy() {
         mContext = null
         mHandler = null
+        mSelectedCamera = null
     }
 
     override fun flip() {
@@ -415,6 +417,12 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         }
         mAdaptiveBitrate?.pause()
         mStreamerGL?.flip()
+
+        // Re-select camera
+        val cameraManager = mCameraManager ?: return
+        val cameraList = cameraManager.getCameraList()
+
+        mSelectedCamera = getSelectedCamera(cameraList)
 
         updateFpsRanges()
         if (mBroadcastOn) mAdaptiveBitrate?.resume()
@@ -579,6 +587,15 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     override fun changeFpsRange(fpsRange: Streamer.FpsRange) {
         mStreamer?.changeFpsRange(fpsRange)
+    }
+
+    private fun getSelectedCamera(cameraList: List<BroadcasterCamera>): BroadcasterCamera {
+        return cameraList.firstOrNull {
+            if(mStreamerGL?.activeCameraId != null)
+                it.cameraId == mStreamerGL?.activeCameraId
+            else
+                it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT
+        } ?: cameraList.first()
     }
 
     private fun startAudioCapture() {
