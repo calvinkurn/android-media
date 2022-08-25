@@ -13,14 +13,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
@@ -51,20 +50,16 @@ class SellerOnboardingActivity : BaseActivity() {
 
         private const val PARAM_COACH_MARK = "coachmark"
         private const val DISABLED = "disabled"
-
-        private const val ANNIVERSARY_CONFETTI_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_confetti.png"
-        private const val ANNIVERSARY_PATTERN_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines_large.png"
-        private const val ANNIVERSARY_LOGO_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/ic_anniv_13th_logo.png"
     }
 
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(null),
-            SobSliderMessageUiModel(null),
-            SobSliderManageUiModel(null),
-            SobSliderPromoUiModel(null),
-            SobSliderStatisticsUiModel(null)
+            SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
+            SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
+            SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
+            SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
+            SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
@@ -76,7 +71,6 @@ class SellerOnboardingActivity : BaseActivity() {
 
         handleAppLink()
         setPageBackground()
-        setAnniversaryComponents()
         setWhiteStatusBar()
         setupViewsTopMargin()
         setupSlider()
@@ -99,28 +93,10 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full_anniv)
+            binding?.backgroundSob?.setImageResource(R.drawable.bg_sob_full)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
-    }
-
-    private fun setAnniversaryComponents() {
-        setConfettiAnniv()
-        setBackgroundPattern()
-        setAnnivLogo()
-    }
-
-    private fun setConfettiAnniv() {
-        binding?.confettiSob?.loadImageWithoutPlaceholder(ANNIVERSARY_CONFETTI_IMAGE)
-    }
-
-    private fun setBackgroundPattern() {
-        binding?.patternSob?.loadImageWithoutPlaceholder(ANNIVERSARY_PATTERN_IMAGE)
-    }
-
-    private fun setAnnivLogo() {
-        binding?.logoSob?.loadImageWithoutPlaceholder(ANNIVERSARY_LOGO_IMAGE)
     }
 
     @SuppressLint("WrongConstant")
@@ -136,8 +112,18 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
+                    updateHeaderBackground(position)
                 }
             })
+        }
+    }
+
+    private fun updateHeaderBackground(position: Int) {
+        try {
+            val slideItem = slideItems[position]
+            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
+        } catch (e: Exception) {
+            //do nothing
         }
     }
 
@@ -235,7 +221,7 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun goToLoginPage() {
-        RouteManager.route(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN)
+        RouteManager.route(this, ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN)
         finish()
     }
 
@@ -253,29 +239,30 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setupViewsTopMargin() {
         val statusBarHeight = OnboardingUtils.getStatusBarHeight(this)
-
-        val ivAnnivLogo = binding?.logoSob?.layoutParams as? ViewGroup.MarginLayoutParams
-        ivAnnivLogo?.setTopMargin(statusBarHeight)
-
         val btnSkipLp = binding?.tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
-        btnSkipLp?.setTopMargin(statusBarHeight)
+        btnSkipLp?.let { lp ->
+            val btnSkipTopMargin = lp.topMargin.plus(statusBarHeight)
+            lp.setMargins(
+                lp.leftMargin,
+                btnSkipTopMargin,
+                lp.rightMargin,
+                lp.bottomMargin
+            )
+        }
 
         val viewPagerLp = binding?.sobViewPager?.layoutParams as? ViewGroup.MarginLayoutParams
-        viewPagerLp?.setTopMargin(statusBarHeight)
+        viewPagerLp?.let { lp ->
+            val viewPagerTopMargin = lp.topMargin.plus(statusBarHeight)
+            lp.setMargins(
+                lp.leftMargin,
+                viewPagerTopMargin,
+                lp.rightMargin,
+                lp.bottomMargin
+            )
+        }
     }
 
     private fun getPositionViewPager(): Int {
         return binding?.sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
     }
-
-    private fun ViewGroup.MarginLayoutParams.setTopMargin(statusBarHeight: Int) {
-        val topMargin = topMargin.plus(statusBarHeight)
-        setMargins(
-            leftMargin,
-            topMargin,
-            rightMargin,
-            bottomMargin
-        )
-    }
-
 }

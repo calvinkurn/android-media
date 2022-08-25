@@ -61,7 +61,8 @@
                 app:layout_constraintEnd_toStartOf="@id/ic_pm_pro_reputation_right"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_pro_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_pro_reputation_score_label"
-                app:typographyType="heading_4"
+                app:typographyType="display_1"
+                app:typographyWeight="bold"
                 tools:text="@string/title_pm_pro_value" />
 
             <com.tokopedia.iconunify.IconUnify
@@ -102,7 +103,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierTitleContentPMProSection"
@@ -129,7 +131,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMProSection"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 tools:text="@string/desc_content_pm_pro_section" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
