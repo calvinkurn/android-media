@@ -15,7 +15,7 @@ class ContrastFilterRepositoryImpl @Inject constructor() : ContrastFilterReposit
      */
     override fun contrast(value: Float, source: Bitmap): Bitmap {
         val standardContrastValue = ContrastToolsUiComponent.contrastRawToStdValue(value)
-        if(standardContrastValue == 0f) return source
+        if (standardContrastValue == 0f) return source
         val width = source.width
         val height = source.height
         val pixels = IntArray(width * height)

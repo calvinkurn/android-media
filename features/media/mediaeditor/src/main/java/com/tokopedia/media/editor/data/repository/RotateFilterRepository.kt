@@ -1,14 +1,16 @@
 package com.tokopedia.media.editor.data.repository
 
-import android.os.Handler
 import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
-import com.yalantis.ucrop.view.CropImageView
 import javax.inject.Inject
-import kotlin.math.abs
 
 interface RotateFilterRepository {
-    fun rotate(editorDetailPreview: EditorDetailPreviewImage?, degree: Float, isRotateRatio: Boolean)
+    fun rotate(
+        editorDetailPreview: EditorDetailPreviewImage?,
+        degree: Float,
+        isRotateRatio: Boolean
+    )
+
     fun mirror(editorDetailPreview: EditorDetailPreviewImage?)
     fun getFinalRotationDegree(): Float
 
@@ -17,15 +19,19 @@ interface RotateFilterRepository {
     var sliderValue: Float
 }
 
-class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
+class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository {
     override var previousDegree = 0f
     override var rotateNumber = 0
     override var sliderValue = 0f
 
     private var isRatioRotated = false
 
-    override fun rotate(editorDetailPreview: EditorDetailPreviewImage?, degree: Float, isRotateRatio: Boolean) {
-        if(editorDetailPreview == null) return
+    override fun rotate(
+        editorDetailPreview: EditorDetailPreviewImage?,
+        degree: Float,
+        isRotateRatio: Boolean
+    ) {
+        if (editorDetailPreview == null) return
 
         val cropImageView = editorDetailPreview.cropImageView
         cropImageView.cancelAllAnimations()
@@ -33,7 +39,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
         val normalizeDegree = degree * editorDetailPreview.scaleNormalizeValue
 
         // rotate logic when rotation is triggered by rotate button instead on slider
-        if(isRotateRatio){
+        if (isRotateRatio) {
             val cropOverlay = editorDetailPreview.overlayView
             val originalWidth = cropImageView.drawable?.intrinsicWidth ?: 0
             val originalHeight = cropImageView.drawable?.intrinsicHeight ?: 0
@@ -41,9 +47,9 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
             cropImageView.postRotate(normalizeDegree)
 
             if (isRatioRotated) {
-                cropOverlay.setTargetAspectRatio(originalWidth/originalHeight.toFloat())
+                cropOverlay.setTargetAspectRatio(originalWidth / originalHeight.toFloat())
             } else {
-                cropOverlay.setTargetAspectRatio(originalHeight/originalWidth.toFloat())
+                cropOverlay.setTargetAspectRatio(originalHeight / originalWidth.toFloat())
             }
 
             isRatioRotated = !isRatioRotated
@@ -64,7 +70,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
             val originalDegree = it.cropImageView.currentAngle
             it.cropImageView.postRotate(-originalDegree * 2)
 
-            if(!isRatioRotated){
+            if (!isRatioRotated) {
                 it.cropImageView.scaleX = -it.cropImageView.scaleX
             } else {
                 it.cropImageView.scaleY = -it.cropImageView.scaleY
@@ -75,7 +81,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
     }
 
     // get total degree from clicked rotate button & slider value
-    override fun getFinalRotationDegree(): Float{
+    override fun getFinalRotationDegree(): Float {
         return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
     }
 }

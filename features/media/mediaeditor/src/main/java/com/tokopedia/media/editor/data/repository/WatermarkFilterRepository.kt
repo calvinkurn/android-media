@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.utils.isDark
 import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.min
@@ -36,13 +35,13 @@ interface WatermarkFilterRepository {
 
 class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepository {
     private var shopText = ""
-    set(value) {
-        field = if (value.length > SHOP_NAME_CHAR_LIMIT){
-           value.substring(0, SHOP_NAME_CHAR_LIMIT - 1) + ELLIPSIS_CONST
-        } else {
-            value
+        set(value) {
+            field = if (value.length > SHOP_NAME_CHAR_LIMIT) {
+                value.substring(0, SHOP_NAME_CHAR_LIMIT - 1) + ELLIPSIS_CONST
+            } else {
+                value
+            }
         }
-    }
 
     private var topedDrawable: Drawable? = null
 
@@ -69,14 +68,15 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         shopNameParam: String,
         isThumbnail: Boolean
     ): Bitmap {
-        shopText = if(shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
+        shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
         if (topedDrawable == null) {
             topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
         }
 
-        watermarkColor = if(!isThumbnail) {
-            ContextCompat.getColor(context,
-                if(source.isDark()) R.color.dms_watermark_text_dark
+        watermarkColor = if (!isThumbnail) {
+            ContextCompat.getColor(
+                context,
+                if (source.isDark()) R.color.dms_watermark_text_dark
                 else R.color.dms_watermark_text_light
             )
         } else {
@@ -146,10 +146,10 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
             val roundedCorner =
                 context.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
-            buttonRef.first.loadImageRounded(resultBitmap1, roundedCorner){
+            buttonRef.first.loadImageRounded(resultBitmap1, roundedCorner) {
                 centerCrop()
             }
-            buttonRef.second.loadImageRounded(resultBitmap2, roundedCorner){
+            buttonRef.second.loadImageRounded(resultBitmap2, roundedCorner) {
                 centerCrop()
             }
         }
@@ -196,7 +196,6 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val xStart = -(textWidth + paddingHorizontal)
 
 
-
         var index: Int
         topedDrawable?.setBounds(
             0,
@@ -212,7 +211,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 canvas.save()
                 canvas.rotate(-30f)
 
-                if(index % 2 == 1) {
+                if (index % 2 == 1) {
                     canvas.translate(xLastPost, yLastPost)
                     topedDrawable?.draw(canvas)
                     xLastPost += (imageWidth + (paddingHorizontal))
@@ -228,7 +227,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         }
     }
 
-    companion object{
+    companion object {
         private const val DEFAULT_SHOP_NAME = "Shop Name"
         private const val SHOP_NAME_CHAR_LIMIT = 24
         private const val ELLIPSIS_CONST = "..."
