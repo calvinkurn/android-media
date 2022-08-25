@@ -316,20 +316,48 @@ fun SpannableStringBuilder.append(
     return this
 }
 
+@Deprecated(
+    message = "please use hideKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "hideKeyboard()",
+        imports = ["com.tokopedia.content.common.util.hideKeyboard"]
+    )
+)
 fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 }
 
+@Deprecated(
+    message = "please use hideKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "hideKeyboard()",
+        imports = ["com.tokopedia.content.common.util.hideKeyboard"]
+    )
+)
 fun Fragment.hideKeyboard() {
     activity?.hideKeyboard()
 }
 
+@Deprecated(
+    message = "please use showKeyboard() from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "showKeyboard()",
+        imports = ["com.tokopedia.content.common.util.showKeyboard"]
+    )
+)
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
+@Deprecated(
+    message = "please use showKeyboard(isShow: Boolean) from content_common module",
+    replaceWith = ReplaceWith(
+        expression = "showKeyboard(isShow)",
+        imports = ["com.tokopedia.content.common.util.showKeyboard"]
+    )
+)
 fun EditText.showKeyboard(isShow: Boolean) {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
