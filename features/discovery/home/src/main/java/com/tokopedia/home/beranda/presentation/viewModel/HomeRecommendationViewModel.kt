@@ -34,6 +34,7 @@ class HomeRecommendationViewModel @Inject constructor(
         private const val TOPADS_TDN_RECOM_DIMEN = 3
         private const val TOPADS_PAGE_DEFAULT = "1"
         private const val SRC_HEADLINE_TOPADS = "homepage_foryou"
+        private const val HEADLINE_PRODUCT_COUNT = "2"
     }
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> = MutableLiveData()
@@ -148,7 +149,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 page = TOPADS_PAGE_DEFAULT,
                 src = SRC_HEADLINE_TOPADS,
                 templateId = VALUE_TEMPLATE_ID,
-                headlineProductCount = "2",
+                headlineProductCount = HEADLINE_PRODUCT_COUNT,
                 item = VALUE_ITEM,
                 seenAds = null
             )

@@ -9,7 +9,11 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.*
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -832,13 +836,13 @@ class HomeRecommendationViewModelTest{
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
 
-        val s = CpmModel()
-        val v = CpmData()
-        val d = Cpm()
-        d.position = 0
-        v.cpm = d
-        s.data = listOf(v)
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        val cpmData = CpmData()
+        val cpm = Cpm()
+        cpm.position = 0
+        cpmData.cpm = cpm
+        cpmModel.data = listOf(cpmData)
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -875,9 +879,9 @@ class HomeRecommendationViewModelTest{
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
 
-        val s = CpmModel()
-        s.data = listOf()
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        cpmModel.data = listOf()
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -914,9 +918,9 @@ class HomeRecommendationViewModelTest{
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
 
-        val s = CpmModel()
-        s.data = null
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        cpmModel.data = null
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -953,9 +957,9 @@ class HomeRecommendationViewModelTest{
         getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
 
 
-        val s = CpmModel()
-        s.data = listOf(null)
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        cpmModel.data = listOf(null)
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -997,13 +1001,13 @@ class HomeRecommendationViewModelTest{
         coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
 
 
-        val s = CpmModel()
-        val v = CpmData()
-        val d = Cpm()
-        d.position = 0
-        v.cpm = d
-        s.data = listOf(v)
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        val cpmData = CpmData()
+        val cpm = Cpm()
+        cpm.position = 0
+        cpmData.cpm = cpm
+        cpmModel.data = listOf(cpmData)
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -1043,13 +1047,13 @@ class HomeRecommendationViewModelTest{
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
 
-        val s = CpmModel()
-        val v = CpmData()
-        val d = Cpm()
-        d.position = 0
-        v.cpm = d
-        s.data = listOf(v)
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        val cpmData = CpmData()
+        val cpm = Cpm()
+        cpm.position = 0
+        cpmData.cpm = cpm
+        cpmModel.data = listOf(cpmData)
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -1096,13 +1100,13 @@ class HomeRecommendationViewModelTest{
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
 
-        val s = CpmModel()
-        val v = CpmData()
-        val d = Cpm()
-        d.position = 2
-        v.cpm = d
-        s.data = listOf(v)
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        val cpmData = CpmData()
+        val cpm = Cpm()
+        cpm.position = 2
+        cpmData.cpm = cpm
+        cpmModel.data = listOf(cpmData)
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
@@ -1144,13 +1148,13 @@ class HomeRecommendationViewModelTest{
         topAdsImageViewUseCase.givenDataReturn(arrayListOf(TopAdsImageViewModel()))
 
 
-        val s = CpmModel()
-        val v = CpmData()
-        val d = Cpm()
-        d.position = 0
-        v.cpm = d
-        s.data = listOf(v)
-        val n = TopAdsHeadlineResponse(s)
+        val cpmModel = CpmModel()
+        val cpmData = CpmData()
+        val cpm = Cpm()
+        cpm.position = 0
+        cpmData.cpm = cpm
+        cpmModel.data = listOf(cpmData)
+        val n = TopAdsHeadlineResponse(cpmModel)
 
         getTopAdsHeadlineUseCase.givenDataReturn(n)
 
