@@ -60,6 +60,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -544,8 +545,65 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         return MethodChecker.getColor(context, colorId)
     }
 
-    override fun setEventDetails(actionButton: ActionButton, item: Items) {
-        TODO("Not yet implemented")
+    override fun setEventDetails(actionButton: ActionButton, item: Items, metadata: MetaDataInfo) {
+        binding?.let {
+            if (item.actionButtons.isEmpty()) {
+                it.actionButton.gone()
+            } else {
+                it.dividerAboveActionButton.visible()
+                it.actionButton.visible()
+                it.actionButtonText.text = actionButton.label
+                it.actionButton.setOnClickListener {
+                    if (actionButton.control.equals(KEY_BUTTON, true)) {
+                        if (item.category.isNotEmpty() && item.category.equals(KEY_DEAL, true)){
+                            view?.let { v -> Toaster.build(v, String.format(
+                                TOASTER_FORMAT,
+                                getString(R.string.deal_voucher_code_copied),
+                                metadata.entityAddress.email
+                            )).show() }
+                        } else {
+                            view?.let { v -> Toaster.build(v, String.format(
+                                TOASTER_FORMAT,
+                                getString(R.string.event_voucher_code_copied),
+                                metadata.entityAddress.email
+                            )).show() }
+                        }
+
+                        viewModel.requestActionButton(item.actionButtons, 0, false)
+
+                        return@setOnClickListener
+                    }
+
+                    if (actionButton.control.equals(KEY_REDIRECT, true )) {
+                        RouteManager.route(context, actionButton.body.appURL)
+                    }
+                }
+            }
+
+            if (!item.category.equals(OrderCategory.EVENT.category, true)) {
+                if (metadata.entityPackages.isNotEmpty()) {
+                    it.userLabel.visible()
+                    it.userInformationLayout.visible()
+                    it.dividerAboveUserInfo.visible()
+                    it.userInformationLayout.removeAllViews()
+
+                    metadata.entityPessengers.forEach { entityPessenger ->
+                        val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
+                            setTopText(entityPessenger.title)
+                            setTopTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                            setBottomText(entityPessenger.value)
+                            setBottomTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                            setBottomTextStyle(BOLD_TEXT_STYLE)
+                        }
+                        it.userInformationLayout.addView(doubleTextView)
+                    }
+                } else {
+                    it.userLabel.gone()
+                    it.userInformationLayout.gone()
+                    it.dividerAboveUserInfo.gone()
+                }
+            }
+        }
     }
 
     override fun openQRFragment(actionButton: ActionButton, item: Items) {
@@ -593,9 +651,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             metadata.entityPessengers.forEach { passenger ->
                 val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
                     setTopText(passenger.title)
-                    setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setTopTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     setBottomText(passenger.value)
-                    setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    setBottomTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     setBottomTextStyle(BOLD_TEXT_STYLE)
                 }
                 it.userInformationLayout.addView(doubleTextView)
@@ -765,6 +823,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_BUTTON = "button"
         private const val KEY_REDIRECT = "redirect"
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
+        private const val KEY_DEAL = "Deal"
         private const val SHAPE_STROKE_2 = 2
         private const val SHAPE_CORNER_RADIUS_4 = 4f
         private const val SHAPE_CORNER_RADIUS_9 = 9f
@@ -778,6 +837,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val IS_TRUE = "true"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner"
         private const val BOLD_TEXT_STYLE = "bold"
+        private const val TOASTER_FORMAT = "%s %s"
         const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(

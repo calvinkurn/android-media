@@ -10,7 +10,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails
  */
 
 interface EventDetailsListener {
-    fun setEventDetails(actionButton: ActionButton, item: Items)
+    fun setEventDetails(actionButton: ActionButton, item: Items, metadata: MetaDataInfo)
     fun openQRFragment(actionButton: ActionButton, item: Items)
     fun setDetailTitle(title: String)
     fun setInsuranceDetail()

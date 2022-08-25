@@ -64,7 +64,7 @@ class DealsViewHolder(
         eventDetailsListener.setDealsBanner(metadata)
 
         if (item.actionButtons.isNotEmpty()){
-            eventDetailsListener.setEventDetails(item.actionButtons.first(), item)
+            eventDetailsListener.setEventDetails(item.actionButtons.first(), item, metadata)
         }
 
         binding.tvBrandName.text = metadata.entityBrandName
