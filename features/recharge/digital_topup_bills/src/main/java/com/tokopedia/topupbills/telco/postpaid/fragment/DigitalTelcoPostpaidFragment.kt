@@ -15,7 +15,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
@@ -31,6 +30,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -527,6 +527,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
         view?.let {
+
+            fun redirectError(error: ErrorAtc){
+                if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
+                    }
+                } else {
+                    RouteManager.route(context, error.appLinkUrl)
+                }
+            }
+
             if (error.appLinkUrl.isNotEmpty()){
                 Toaster.build(
                     it,
@@ -535,9 +546,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
                 ) {
-                    RouteManager.getIntent(context, error.appLinkUrl).apply {
-                        startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
-                    }
+                    redirectError(error)
                 }.show()
             } else {
                 Toaster.build(

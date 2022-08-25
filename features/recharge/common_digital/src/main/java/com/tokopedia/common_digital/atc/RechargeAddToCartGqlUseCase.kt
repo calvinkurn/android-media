@@ -146,6 +146,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                           label
                           url
                           applink_url
+                          action_type
                         }
                       }
                     }

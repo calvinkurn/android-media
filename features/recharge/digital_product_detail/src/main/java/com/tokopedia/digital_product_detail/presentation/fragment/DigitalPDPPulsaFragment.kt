@@ -35,6 +35,7 @@ import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
@@ -936,6 +937,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun showErrorUnverifiedNumber(error: ErrorAtc){
         view?.let {
+
+            fun redirectError(error: ErrorAtc){
+                if (error.atcErrorPage.buttons.first().actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                    }
+                } else {
+                    RouteManager.route(context, error.appLinkUrl)
+                }
+            }
+
             if (error.appLinkUrl.isNotEmpty()){
                 Toaster.build(
                     it,
@@ -944,9 +956,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
                 ) {
-                    RouteManager.getIntent(context, error.appLinkUrl).apply {
-                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
-                    }
+                    redirectError(error)
                 }.show()
             }else{
                 Toaster.build(
@@ -958,6 +968,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             }
         }
     }
+
 
     private fun getDataFromBundle() {
         arguments?.run {

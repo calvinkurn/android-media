@@ -53,5 +53,12 @@ data class AtcErrorButton(
     val appLinkUrl: String = "",
 
     @SerializedName("type")
-    val type: String = ""
-)
+    val type: String = "",
+
+    @SerializedName("action_type")
+    val actionType: String = ""
+) {
+    companion object{
+        const val TYPE_PHONE_VERIFICATION = "verify_phone"
+    }
+}

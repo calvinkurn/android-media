@@ -23,6 +23,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
@@ -438,27 +439,37 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             loaderCheckout.gone()
             hideContent()
 
-            if (error.atcErrorPage.buttons.isNullOrEmpty()){
-                it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
-                it.setActionClickListener { _ ->
-                    it.gone()
-                    loadData()
-                }
-            }else{
-                it.errorAction.text = error.atcErrorPage.buttons.first().label
-                it.setActionClickListener {
-                    RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
-                        startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
-                    }
-                }
-            }
-
             it.errorIllustration.loadImageFitCenter(error.atcErrorPage.imageUrl)
             it.errorTitle.text = error.atcErrorPage.title.ifEmpty { error.title }
             it.errorDescription.text = error.atcErrorPage.subTitle
             it.errorSecondaryAction.gone()
 
             it.show()
+
+            if (error.atcErrorPage.buttons.isNullOrEmpty()){
+                it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
+                it.setActionClickListener { _ ->
+                    it.gone()
+                    loadData()
+                }
+                return@let
+            }
+
+            val button = error.atcErrorPage.buttons.first()
+
+            it.errorAction.text = button.label
+
+            if (button.actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION){
+                it.setActionClickListener {
+                    RouteManager.getIntent(context, button.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
+                    }
+                }
+            } else {
+                it.setActionClickListener {
+                    RouteManager.route(context, button.appLinkUrl)
+                }
+            }
         }
     }
 
