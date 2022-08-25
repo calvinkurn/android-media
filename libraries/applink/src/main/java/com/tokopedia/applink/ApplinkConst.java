@@ -543,6 +543,7 @@ public interface ApplinkConst {
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
         String RECIPE_HOME = "tokopedia://now/recipe";
+        String RECIPE_SEARCH = "tokopedia://now/recipe/search";
     }
 
     interface TokoFood {
