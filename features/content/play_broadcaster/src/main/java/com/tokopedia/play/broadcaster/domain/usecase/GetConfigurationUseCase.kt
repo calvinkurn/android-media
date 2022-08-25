@@ -29,7 +29,8 @@ class GetConfigurationUseCase @Inject constructor(
                 TYPE_USER -> VALUE_TYPE_ID_USER
                 TYPE_SHOP -> VALUE_TYPE_ID_SHOP
                 else -> 0
-            }
+            },
+            PARAMS_WITH_CHANNEL_STATE to VALUE_WITH_CHANNEL_STATE
         )
         setRequestParams(request)
     }
@@ -42,14 +43,16 @@ class GetConfigurationUseCase @Inject constructor(
     companion object {
         private const val PARAMS_AUTHOR_ID = "authorID"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
+        private const val PARAMS_WITH_CHANNEL_STATE = "withChannelState"
         private const val TYPE_USER = "content-user"
         private const val TYPE_SHOP = "content-shop"
         private const val VALUE_TYPE_ID_SHOP = 2
         private const val VALUE_TYPE_ID_USER = 3
+        private const val VALUE_WITH_CHANNEL_STATE = true
         const val QUERY_NAME = "GetConfigurationUseCaseQuery"
         const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
-            query BroadcasterGetAuthorConfig(${'$'}authorID: Int64!, ${'$'}authorType: Int!) {
-              broadcasterGetAuthorConfig(authorID: ${'$'}authorID, authorType: ${'$'}authorType) {
+            query BroadcasterGetAuthorConfig(${'$'}authorID: Int64!, ${'$'}authorType: Int!, ${'$'}withChannelState: Boolean) {
+              broadcasterGetAuthorConfig(authorID: ${'$'}authorID, authorType: ${'$'}authorType, withChannelState: ${'$'}withChannelState) {
                 streamAllowed
                 config
                 tnc {
