@@ -50,9 +50,10 @@ class SomFadeRightAnimator : DefaultItemAnimator() {
     override fun endAnimations() {
         super.endAnimations()
         for (i in pendingRemoval.size.dec() downTo Int.ZERO) {
-            val item = pendingRemoval[i]
-            dispatchRemoveFinished(item)
-            pendingRemoval.removeAt(i)
+            pendingRemoval.getOrNull(i)?.let { item ->
+                dispatchRemoveFinished(item)
+                pendingRemoval.removeAt(i)
+            }
         }
 
         if (!isRunning) return
@@ -107,7 +108,7 @@ class SomFadeRightAnimator : DefaultItemAnimator() {
 
     private fun cancelAll(viewHolders: List<RecyclerView.ViewHolder>) {
         for (i in viewHolders.indices.reversed()) {
-            viewHolders[i].itemView.animate().cancel()
+            viewHolders.get(i)?.itemView?.animate()?.cancel()
         }
     }
 
