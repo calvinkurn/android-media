@@ -288,7 +288,7 @@
         app:layout_constraintTop_toBottomOf="@+id/divider3">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_description"
+            android:id="@+id/tg_description"
             app:typographyType="heading_3"
             app:typographyWeight="reguler"
             android:textColor="@color/Unify_N700_68"
@@ -301,7 +301,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_expandable_description"
+            android:id="@+id/tg_expandable_description"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             android:layout_width="0dp"
@@ -311,9 +311,9 @@
             android:ellipsize="end"
             android:maxLines="10"
             android:textColor="@color/Unify_N700_44"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_description"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_description"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_description" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seemorebutton_description"
@@ -324,8 +324,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/deals_pdp_expand"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_description"
-            app:layout_constraintTop_toBottomOf="@+id/tv_expandable_description" />
+            app:layout_constraintLeft_toLeftOf="@+id/tg_description"
+            app:layout_constraintTop_toBottomOf="@+id/tg_expandable_description" />
 
         <View
             android:id="@+id/divider4"
@@ -344,7 +344,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cl_description">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_tnc"
+            android:id="@+id/tg_tnc"
             app:typographyType="heading_3"
             app:typographyWeight="reguler"
             android:textColor="@color/Unify_N700_68"
@@ -357,7 +357,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_expandable_tnc"
+            android:id="@+id/tg_expandable_tnc"
             app:typographyType="body_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -366,9 +366,9 @@
             android:ellipsize="end"
             android:maxLines="10"
             android:textColor="@color/Unify_N700_44"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
+            app:layout_constraintLeft_toLeftOf="@+id/tg_tnc"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_tnc" />
+            app:layout_constraintTop_toBottomOf="@+id/tg_tnc" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seemorebutton_tnc"
@@ -379,8 +379,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/deals_pdp_expand"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_tnc"
-            app:layout_constraintTop_toBottomOf="@+id/tv_expandable_tnc" />
+            app:layout_constraintLeft_toLeftOf="@+id/tg_tnc"
+            app:layout_constraintTop_toBottomOf="@+id/tg_expandable_tnc" />
 
         <View
             android:id="@+id/divider5"
@@ -443,7 +443,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cl_redeem_instructions" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_recommended_deals"
+        android:id="@+id/tg_recommended_deals"
         app:typographyType="heading_3"
         app:typographyWeight="reguler"
         android:textColor="@color/Unify_N700_68"
@@ -467,7 +467,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_recommended_deals"
+        app:layout_constraintTop_toBottomOf="@+id/tg_recommended_deals"
         tools:listitem="@layout/item_deals_card_short"
         />
 

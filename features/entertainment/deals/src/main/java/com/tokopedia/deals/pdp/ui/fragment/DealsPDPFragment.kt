@@ -4,6 +4,9 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.text.Html
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -28,6 +31,7 @@ import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
+import com.tokopedia.graphql.util.Const
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -78,6 +82,12 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var tgBrandName: Typography? = null
     private var tgNumberOfLocation: Typography? = null
     private var ivBrandLogo: ImageView? = null
+    private var clDescription: ConstraintLayout? = null
+    private var clTnc: ConstraintLayout? = null
+    private var tgExpandableDesc: Typography? = null
+    private var tgExpandableTnc: Typography? = null
+    private var seeMoreButtonDesc: Typography? = null
+    private var seeMoreButtonTnc: Typography? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = arguments?.getString(EXTRA_PRODUCT_ID, "") ?: ""
@@ -131,7 +141,12 @@ class DealsPDPFragment: BaseDaggerFragment() {
             tgBrandName = binding?.subView?.tgBrandName
             tgNumberOfLocation = binding?.subView?.tgNumberOfLocations
             ivBrandLogo = binding?.subView?.imageViewBrand
-
+            clDescription = binding?.subView?.clDescription
+            clTnc = binding?.subView?.clTnc
+            tgExpandableDesc = binding?.subView?.tgExpandableDescription
+            tgExpandableTnc = binding?.subView?.tgExpandableTnc
+            seeMoreButtonDesc = binding?.subView?.seemorebuttonDescription
+            seeMoreButtonTnc = binding?.subView?.seemorebuttonTnc
             updateCollapsingToolbar()
         }
     }
@@ -174,8 +189,10 @@ class DealsPDPFragment: BaseDaggerFragment() {
         showPDPOptionsMenu(data.displayName)
         showHeader(data.displayName)
         showImageCarousel(data)
-        showContentDescription(data)
+        showContent(data)
         showBrand(data)
+        showDescription(data)
+        showTnc(data)
     }
 
     private fun showHeader(displayName: String) {
@@ -183,7 +200,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
         collapsingToolbarLayout?.title = displayName
     }
 
-    private fun showContentDescription(data: ProductDetailData) {
+    private fun showContent(data: ProductDetailData) {
         clBaseMainContent?.show()
         updateTitle(data.displayName)
         updateMrp(data.mrp)
@@ -224,6 +241,49 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }
         } else {
             clOutlets?.hide()
+        }
+    }
+
+    private fun showDescription(data: ProductDetailData) {
+        val desc = getExpandableItemText(data.longRichDesc)
+        if (desc.isNullOrEmpty()) {
+            clDescription?.hide()
+        } else {
+            tgExpandableDesc?.text = Html.fromHtml(desc)
+            Handler().postDelayed({
+                tgExpandableDesc?.let {
+                    if (it.lineCount >= 10) {
+                        seeMoreButtonDesc?.show()
+                    } else {
+                        seeMoreButtonDesc?.hide()
+                    }
+                }
+            }, 100)
+
+            seeMoreButtonDesc?.setOnClickListener {
+
+            }
+        }
+    }
+
+    private fun showTnc(data: ProductDetailData) {
+        val tnc = getExpandableItemText(data.tnc)
+        if (tnc.isNullOrEmpty()) {
+            clTnc?.hide()
+        } else {
+            tgExpandableTnc?.text = Html.fromHtml(tnc)
+            Handler().postDelayed({
+                tgExpandableTnc?.let {
+                    if (it.lineCount >= 10) {
+                        seeMoreButtonTnc?.show()
+                    } else {
+                        seeMoreButtonTnc?.hide()
+                    }
+                }
+            }, 100)
+            seeMoreButtonTnc?.setOnClickListener {
+
+            }
         }
     }
 
@@ -344,6 +404,22 @@ class DealsPDPFragment: BaseDaggerFragment() {
         if (menuPDP != null) {
             val item = menuPDP?.findItem(com.tokopedia.deals.R.id.action_menu_share)
             item?.setVisible(true)
+        }
+    }
+
+    private fun getExpandableItemText(texts: String): String? {
+        return if (texts.isNotEmpty()) {
+            val splitArray = texts.split("~").toTypedArray()
+            val tncBuffer = StringBuilder()
+            for (i in splitArray.indices) {
+                val line = splitArray[i]
+                if (i < splitArray.size - 1) tncBuffer.append(" ").append("\u2022").append("  ")
+                    .append(line.trim { it <= ' ' }).append("<br><br>")
+                else tncBuffer.append(" ").append("\u2022").append("  ").append(line.trim { it <= ' ' })
+            }
+            tncBuffer.toString()
+        } else {
+            null
         }
     }
 
