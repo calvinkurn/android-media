@@ -21,19 +21,17 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -570,11 +568,15 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun`Auto un-apply bbo when bo unstacking`() {
+    fun `Auto un-apply bbo when bo unstacking`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = helper.logisticPromo,
+            logisticPromoShipping = helper.firstCourierSecondDuration
+        )
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest().apply {
             orders = listOf(
                 OrdersItem(
@@ -591,17 +593,21 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun`Auto un-apply bbo when bo stacking`() {
+    fun `Auto un-apply bbo when bo stacking`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = helper.logisticPromo,
+            logisticPromoShipping = helper.firstCourierSecondDuration
+        )
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
             .apply {
-            orders = listOf(
-                OrdersItem(
-                    uniqueId = helper.orderData.cart.cartString,
-                    codes = mutableListOf(helper.logisticPromo.promoCode)
+                orders = listOf(
+                    OrdersItem(
+                        uniqueId = helper.orderData.cart.cartString,
+                        codes = mutableListOf(helper.logisticPromo.promoCode)
                 )
             )
         }
@@ -614,11 +620,15 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun`Auto un-apply bbo when last validate promo order empty`() {
+    fun `Auto un-apply bbo when last validate promo order empty`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = helper.logisticPromo,
+            logisticPromoShipping = helper.firstCourierSecondDuration
+        )
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest()
 
         //when
@@ -630,8 +640,87 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     //case
     // apply bo
+    @Test
+    fun `Apply Bbo promo`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(shippingId = 1, spId = 1, messageUiModel = MessageUiModel(state = "green")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+
+    }
+
     // un-apply bo
+    @Test
+    fun `un-apply Bbo promo`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(shippingId = 1, spId = 1, messageUiModel = MessageUiModel(state = "red")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
     // show toaster
+    @Test
+    fun `show bo stacking toaster error message`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = helper.logisticPromo,
+            logisticPromoShipping = helper.firstCourierSecondDuration
+        )
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            PromoUiModel(
+                additionalInfoUiModel = AdditionalInfoUiModel(
+                    errorDetailUiModel = ErrorDetailUiModel(
+                        message = "error clashing"
+                    )
+                )
+            )
+        )
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //Then
+        assertEquals(
+            "error clashing",
+            (orderSummaryPageViewModel.globalEvent.value as OccGlobalEvent.ToasterInfo).message
+        )
+    }
     // un show toaster
+    @Test
+    fun `un show bo stacking toaster error message`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = helper.logisticPromo,
+            logisticPromoShipping = helper.firstCourierSecondDuration
+        )
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //Then
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+    }
     // no promo bo
+
 }
