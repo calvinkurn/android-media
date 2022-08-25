@@ -245,8 +245,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     handleFirstStepOfCampaignCreationSuccess(result.data)
                 }
                 is Fail -> {
-                    viewModel.recheckLatestSelectedVpsPackageQuota()
-
                     binding?.btnCreateCampaign?.stopLoading()
                     binding?.cardView showError result.throwable
                 }
@@ -262,8 +260,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     handleFirstStepOfCampaignCreationSuccess(result.data)
                 }
                 is Fail -> {
-                    viewModel.recheckLatestSelectedVpsPackageQuota()
-
                     binding?.btnCreateCampaign?.stopLoading()
                     binding?.cardView showError result.throwable
                 }
@@ -980,6 +976,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         if (result.isSuccess) {
             ManageProductActivity.start(activity ?: return, result.campaignId, pageMode)
         } else {
+            viewModel.recheckLatestSelectedVpsPackageQuota()
             handleCreateCampaignError(result)
         }
     }
