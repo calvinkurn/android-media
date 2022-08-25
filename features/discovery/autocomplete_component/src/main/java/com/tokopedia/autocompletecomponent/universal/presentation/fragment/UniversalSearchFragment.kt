@@ -1,19 +1,20 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchFragmentLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL_SEARCH_SCREEN_NAME
-import com.tokopedia.autocompletecomponent.universal.di.DaggerUniversalSearchComponent
+import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContextModule
 import com.tokopedia.autocompletecomponent.universal.presentation.adapter.UniversalSearchAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.itemdecoration.UniversalSearchItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactoryImpl
@@ -21,15 +22,16 @@ import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.Univ
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselListenerDelegate
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineListenerDelegate
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridListenerDelegate
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListenerDelegate
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import javax.inject.Named
 
-class UniversalSearchFragment: BaseDaggerFragment() {
+internal class UniversalSearchFragment: BaseDaggerFragment() {
 
     companion object {
         const val UNIVERSAL_SEARCH_FRAGMENT_TAG = "UNIVERSAL_SEARCH_FRAGMENT"
@@ -48,8 +50,7 @@ class UniversalSearchFragment: BaseDaggerFragment() {
 
     private var universalSearchAdapter: UniversalSearchAdapter? = null
 
-    @Inject
-    internal lateinit var universalSearchViewModel: UniversalSearchViewModel
+    private lateinit var universalSearchViewModel: UniversalSearchViewModel
 
     @Inject
     internal lateinit var carouselListenerDelegate: CarouselListenerDelegate
@@ -60,6 +61,9 @@ class UniversalSearchFragment: BaseDaggerFragment() {
     @Inject
     internal lateinit var listGridListenerDelegate: ListGridListenerDelegate
 
+    @Inject
+    internal lateinit var relatedItemListenerDelegate: RelatedItemListenerDelegate
+
     private var binding by autoClearedNullable<UniversalSearchFragmentLayoutBinding>()
 
     override fun getScreenName(): String {
@@ -67,9 +71,9 @@ class UniversalSearchFragment: BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        DaggerUniversalSearchComponent
+        DaggerUniversalSearchFragmentComponent
             .builder()
-            .baseAppComponent(getComponent(BaseAppComponent::class.java))
+            .universalSearchContextModule(UniversalSearchContextModule(activity as Context))
             .build()
             .inject(this)
     }
@@ -86,10 +90,18 @@ class UniversalSearchFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initViewModel()
         initViews()
         observeViewModelData()
 
         universalSearchViewModel.onViewCreated()
+    }
+
+    private fun initViewModel() {
+        activity?.let {
+            universalSearchViewModel =
+                ViewModelProvider(it).get(UniversalSearchViewModel::class.java)
+        }
     }
 
     private fun initViews() {
@@ -123,6 +135,7 @@ class UniversalSearchFragment: BaseDaggerFragment() {
             carouselListener = carouselListenerDelegate,
             doubleLineListener = doubleLineListenerDelegate,
             listGridListener = listGridListenerDelegate,
+            relatedItemListener = relatedItemListenerDelegate,
         )
         universalSearchAdapter = UniversalSearchAdapter(typeFactory)
     }
@@ -148,7 +161,8 @@ class UniversalSearchFragment: BaseDaggerFragment() {
                 binding?.universalSearchLoader?.gone()
             }
             is State.Error -> {
-
+                updateList(universalSearchState)
+                binding?.universalSearchLoader?.gone()
             }
         }
     }

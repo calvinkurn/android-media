@@ -4,12 +4,13 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContext
 import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
 import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
 class CarouselListenerDelegate @Inject constructor(
-    @ApplicationContext context: Context?,
+    @UniversalSearchContext context: Context?,
 ): CarouselListener,
     ContextProvider by WeakReferenceContextProvider(context) {
 

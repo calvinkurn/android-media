@@ -1,10 +1,13 @@
 package com.tokopedia.autocompletecomponent.universal.domain.getuniversalsearch
 
+import com.tokopedia.autocompletecomponent.universal.UniversalConstant
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
+import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 internal class UniversalSearchUseCase(
@@ -17,7 +20,7 @@ internal class UniversalSearchUseCase(
         val graphqlRequest = GraphqlRequest(
             UniversalSearchQuery.GQL_QUERY,
             UniversalSearchModel::class.java,
-            mapOf("param" to "q=susu&device=desktop&user_id=12341243&source=universe&app_version=5.23&user_discrict_id=23"),
+            createGraphqlRequestParams(useCaseRequestParams),
         )
 
         val graphqlResponse = graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
@@ -29,6 +32,12 @@ internal class UniversalSearchUseCase(
         } else {
             throw Exception(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
+    }
+
+    private fun createGraphqlRequestParams(requestParams: RequestParams): Map<String, String> {
+        val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)
+
+        return mapOf(UniversalConstant.GQL.KEY_PARAM to params)
     }
 
     companion object {

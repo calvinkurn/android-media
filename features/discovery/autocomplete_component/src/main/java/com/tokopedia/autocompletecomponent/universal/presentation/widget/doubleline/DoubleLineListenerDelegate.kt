@@ -3,12 +3,13 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.double
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContext
 import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
 import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
 class DoubleLineListenerDelegate @Inject constructor(
-    @ApplicationContext context: Context?,
+    @UniversalSearchContext context: Context?,
 ): DoubleLineListener,
     ContextProvider by WeakReferenceContextProvider(context) {
 

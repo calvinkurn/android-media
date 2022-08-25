@@ -8,12 +8,14 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchDoubleLineItemLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DoubleLineViewHolder(
     itemView: View,
     private val doubleLineListener: DoubleLineListener,
+    private val relatedItemListener: RelatedItemListener,
     ): AbstractViewHolder<DoubleLineDataView>(itemView) {
 
     companion object {
@@ -54,7 +56,7 @@ class DoubleLineViewHolder(
     }
 
     private fun bindRecyclerView(data: DoubleLineDataView) {
-        val adapter = RelatedAdapter().apply {
+        val adapter = RelatedAdapter(relatedItemListener).apply {
             val test = mutableListOf<RelatedItemDataView>()
             test.addAll(data.related)
             test.addAll(data.related)

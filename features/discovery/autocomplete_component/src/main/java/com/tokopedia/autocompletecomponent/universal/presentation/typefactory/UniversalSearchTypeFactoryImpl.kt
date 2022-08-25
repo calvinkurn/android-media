@@ -9,14 +9,18 @@ import com.tokopedia.autocompletecomponent.universal.presentation.widget.carouse
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineListener
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineViewHolder
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateViewHolder
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridListener
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridViewHolder
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
 
 class UniversalSearchTypeFactoryImpl(
     private val carouselListener: CarouselListener,
     private val doubleLineListener: DoubleLineListener,
     private val listGridListener: ListGridListener,
+    private val relatedItemListener: RelatedItemListener,
 ): UniversalSearchTypeFactory, BaseAdapterTypeFactory() {
     override fun type(carouselDataView: CarouselDataView): Int {
         return CarouselViewHolder.LAYOUT
@@ -30,11 +34,24 @@ class UniversalSearchTypeFactoryImpl(
         return ListGridViewHolder.LAYOUT
     }
 
+    override fun type(errorStateDataView: ErrorStateDataView): Int {
+        return ErrorStateViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselViewHolder.LAYOUT -> CarouselViewHolder(view, carouselListener)
-            DoubleLineViewHolder.LAYOUT -> DoubleLineViewHolder(view, doubleLineListener)
-            ListGridViewHolder.LAYOUT -> ListGridViewHolder(view, listGridListener)
+            DoubleLineViewHolder.LAYOUT -> DoubleLineViewHolder(
+                view,
+                doubleLineListener,
+                relatedItemListener,
+            )
+            ListGridViewHolder.LAYOUT -> ListGridViewHolder(
+                view,
+                listGridListener,
+                relatedItemListener,
+            )
+            ErrorStateViewHolder.LAYOUT -> ErrorStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

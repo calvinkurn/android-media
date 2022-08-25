@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class RelatedAdapter: RecyclerView.Adapter<RelatedItemViewHolder>() {
+class RelatedAdapter(
+    private val relatedItemListener: RelatedItemListener
+): RecyclerView.Adapter<RelatedItemViewHolder>() {
 
     private val list = ArrayList<RelatedItemDataView>()
 
@@ -13,7 +15,7 @@ class RelatedAdapter: RecyclerView.Adapter<RelatedItemViewHolder>() {
             .from(parent.context)
             .inflate(RelatedItemViewHolder.LAYOUT, parent, false)
 
-        return RelatedItemViewHolder(view)
+        return RelatedItemViewHolder(view, relatedItemListener)
     }
 
     override fun onBindViewHolder(holder: RelatedItemViewHolder, position: Int) {

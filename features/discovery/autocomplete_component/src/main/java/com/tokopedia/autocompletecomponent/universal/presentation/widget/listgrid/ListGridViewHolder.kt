@@ -8,12 +8,14 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchListGridItemLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ListGridViewHolder(
     itemView: View,
     private val listGridListener: ListGridListener,
+    private val relatedItemListener: RelatedItemListener,
 ): AbstractViewHolder<ListGridDataView>(itemView) {
     companion object {
         @LayoutRes
@@ -51,7 +53,7 @@ class ListGridViewHolder(
     }
 
     private fun bindRecyclerView(data: ListGridDataView) {
-        val adapter = RelatedAdapter().apply {
+        val adapter = RelatedAdapter(relatedItemListener).apply {
             val test = mutableListOf<RelatedItemDataView>()
             test.addAll(data.related)
             test.addAll(data.related)

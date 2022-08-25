@@ -3,12 +3,13 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.listgr
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContext
 import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
 import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
 class ListGridListenerDelegate @Inject constructor(
-    @ApplicationContext context: Context?,
+    @UniversalSearchContext context: Context?,
 ): ListGridListener,
     ContextProvider by WeakReferenceContextProvider(context) {
 

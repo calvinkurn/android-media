@@ -10,14 +10,14 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class RelatedItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class RelatedItemViewHolder(
+    itemView: View,
+    private val relatedItemListener: RelatedItemListener,
+): RecyclerView.ViewHolder(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.universal_search_related_item_layout
     }
-
-    @Inject
-    internal lateinit var relatedItemListener: RelatedItemListenerDelegate
 
     private var binding: UniversalSearchRelatedItemLayoutBinding? by viewBinding()
 
