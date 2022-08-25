@@ -252,16 +252,16 @@ class DealsPDPFragment: BaseDaggerFragment() {
             tgExpandableDesc?.text = Html.fromHtml(desc)
             Handler().postDelayed({
                 tgExpandableDesc?.let {
-                    if (it.lineCount >= 10) {
+                    if (it.lineCount >= MAX_LINE) {
                         seeMoreButtonDesc?.show()
                     } else {
                         seeMoreButtonDesc?.hide()
                     }
                 }
-            }, 100)
+            }, TIME_LAPSE)
 
             seeMoreButtonDesc?.setOnClickListener {
-
+                //todo show fragment
             }
         }
     }
@@ -274,15 +274,15 @@ class DealsPDPFragment: BaseDaggerFragment() {
             tgExpandableTnc?.text = Html.fromHtml(tnc)
             Handler().postDelayed({
                 tgExpandableTnc?.let {
-                    if (it.lineCount >= 10) {
+                    if (it.lineCount >= MAX_LINE) {
                         seeMoreButtonTnc?.show()
                     } else {
                         seeMoreButtonTnc?.hide()
                     }
                 }
-            }, 100)
+            }, TIME_LAPSE)
             seeMoreButtonTnc?.setOnClickListener {
-
+                //todo show fragment
             }
         }
     }
@@ -325,6 +325,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun updateImageFavorite() {
+        //todo image likes
         //imgFavorite
         //tgFavorite
     }
@@ -413,9 +414,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
             val tncBuffer = StringBuilder()
             for (i in splitArray.indices) {
                 val line = splitArray[i]
-                if (i < splitArray.size - 1) tncBuffer.append(" ").append("\u2022").append("  ")
-                    .append(line.trim { it <= ' ' }).append("<br><br>")
-                else tncBuffer.append(" ").append("\u2022").append("  ").append(line.trim { it <= ' ' })
+                if (i < splitArray.size - Int.ONE) tncBuffer.append(" ").append(DOT_HTML).append("  ")
+                    .append(line.trim { it <= ' ' }).append(ENTER_HTML)
+                else tncBuffer.append(" ").append(DOT_HTML).append("  ").append(line.trim { it <= ' ' })
             }
             tncBuffer.toString()
         } else {
@@ -426,6 +427,10 @@ class DealsPDPFragment: BaseDaggerFragment() {
     companion object {
 
         private const val ZERO_PERCENT = "0%"
+        private const val MAX_LINE = 10
+        private const val TIME_LAPSE = 100L
+        private const val ENTER_HTML = "<br><br>"
+        private const val DOT_HTML = "\u2022"
 
         fun createInstance(productId: String?): DealsPDPFragment {
             val fragment = DealsPDPFragment()
