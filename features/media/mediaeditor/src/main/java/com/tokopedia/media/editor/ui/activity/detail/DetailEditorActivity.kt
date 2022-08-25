@@ -18,6 +18,7 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
@@ -75,7 +76,7 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     override fun onBackPressed() {
         val fragment = (fragment as DetailEditorFragment)
-        if (fragment.isShowDialogConfirmation()){
+        if (fragment.isShowDialogConfirmation()) {
             showBackDialogConfirmation(onPrimaryClick = {
                 fragment.saveAndExit()
             }, onSecondaryClick = {
@@ -86,26 +87,31 @@ class DetailEditorActivity : BaseEditorActivity() {
         }
     }
 
-    private fun showBackDialogConfirmation(onPrimaryClick: () -> Unit, onSecondaryClick: () -> Unit){
+    private fun showBackDialogConfirmation(
+        onPrimaryClick: () -> Unit,
+        onSecondaryClick: () -> Unit
+    ) {
         var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(editorR.string.editor_detail_activity_dialog_title))
-        dialog.setDescription(getString(editorR.string.editor_detail_activity_dialog_desc))
+        dialog.apply {
+            setTitle(getString(editorR.string.editor_detail_activity_dialog_title))
+            setDescription(getString(editorR.string.editor_detail_activity_dialog_desc))
 
-        dialog.dialogPrimaryCTA.apply {
-            text = getString(editorR.string.editor_detail_activity_dialog_primary_button_text)
-            setOnClickListener {
-                onPrimaryClick()
+            dialogPrimaryCTA.apply {
+                text = getString(editorR.string.editor_detail_activity_dialog_primary_button_text)
+                setOnClickListener {
+                    onPrimaryClick()
+                }
             }
-        }
 
-        dialog.dialogSecondaryLongCTA.apply {
-            text = getString(editorR.string.editor_detail_activity_dialog_secondary_button_text)
-            setOnClickListener {
-                onSecondaryClick()
+            dialogSecondaryLongCTA.apply {
+                text = getString(editorR.string.editor_detail_activity_dialog_secondary_button_text)
+                setOnClickListener {
+                    onSecondaryClick()
+                }
             }
-        }
 
-        dialog.show()
+            show()
+        }
     }
 
     companion object {
