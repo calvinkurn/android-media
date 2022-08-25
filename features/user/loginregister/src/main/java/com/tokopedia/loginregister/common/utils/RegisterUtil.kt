@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.common.utils
 
 import android.text.TextUtils
 import android.util.Patterns
+import com.tokopedia.sessioncommon.util.PasswordUtils
 
 /**
  * Created by nisie on 1/27/17.
@@ -13,6 +14,11 @@ object RegisterUtil {
     private const val MIN_NAME = 3
 
     var PASSWORD_MINIMUM_LENGTH = 8
+    private const val PASSWORD_MAXIMUM_LENGTH = 32
+
+    fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 
     fun checkRegexNameLocal(param: String): Boolean {
         val regex = "[A-Za-z]+".toRegex()
@@ -33,6 +39,9 @@ object RegisterUtil {
         }
         return false
     }
+
+    fun isTooShortLength(password: String): Boolean = password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH
+    fun isExceedMaximumLength(password: String): Boolean = password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH
 
     fun isCanRegister(name: String, email: String, password: String): Boolean {
         var isValid = true

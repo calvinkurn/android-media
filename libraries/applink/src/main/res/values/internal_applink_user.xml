@@ -43,4 +43,7 @@
     <string name="applink_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="applink_otp_push_notif_setting">/otp-push-notif-setting</string>
 
+    <!--Register-->
+    <string name="path_redefine_register_email">/redefine-register-email</string>
+
 </resources>

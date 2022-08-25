@@ -52,5 +52,18 @@ class RegisteredDialog {
             }
             return null
         }
+
+        fun createRedefineRegisterEmailOfferLogin(context: Context, email: String): DialogUnify {
+            val offerToLoginDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+
+            offerToLoginDialog.apply {
+                setTitle(context.getString(R.string.register_email_offer_login_title))
+                setDescription(context.getString(R.string.register_email_offer_login_subtitle, email))
+                setPrimaryCTAText(context.getString(R.string.register_email_offer_login_primary_button))
+                setSecondaryCTAText(context.getString(R.string.register_email_offer_login_secondary_button))
+            }
+
+            return offerToLoginDialog
+        }
     }
 }

@@ -196,6 +196,24 @@
     <string name="other_method_email">E-mail</string>
     <string name="other_method_title">Pilih metode untuk Daftar</string>
 
+    <!--Redefine Register Email-->
+    <string name="register_email_title">Daftar dengan E-mail</string>
+    <string name="register_email_label_field_email">E-mail</string>
+    <string name="register_email_label_field_password">Kata Sandi</string>
+    <string name="register_email_label_field_name">Nama Lengkap</string>
+    <string name="register_email_button_next">Lanjut</string>
+    <string name="register_email_desc">Setelah ini kamu perlu masukkan kode verifikasi yang akan dikirimkan ke e-mail diatas</string>
+    <string name="register_email_message_must_be_filled">Harus diisi!</string>
+    <string name="register_email_message_email_not_available">E-mail ini tidak bisa dipakai di Tokopedia</string>
+    <string name="register_email_message_email_not_valid">Format email salah</string>
+    <string name="register_email_message_name_min_length_error">Min. 3 karakter.</string>
+    <string name="register_email_message_name_character_error">Ketik namamu pakai huruf, ya.</string>
+    <string name="register_email_message_name_max_length_error">Maks. 35 karakter.</string>
+    <string name="register_email_offer_login_title">E-mail sudah Terdaftar</string>
+    <string name="register_email_offer_login_subtitle">Lanjut masuk dengan e-mail ini\n%s</string>
+    <string name="register_email_offer_login_secondary_button">Ubah</string>
+    <string name="register_email_offer_login_primary_button">Ya, Masuk</string>
+
     <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
     <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
     <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>

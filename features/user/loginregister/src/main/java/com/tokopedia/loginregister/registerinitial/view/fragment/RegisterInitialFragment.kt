@@ -407,7 +407,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         }
         bottomSheetOtherMethod?.setOnEmailClickedListener {
             bottomSheetOtherMethod?.dismiss()
-            //go to new page
+            registerInitialRouter.goToRedefineRegisterEmailPageWithParams(this, source)
         }
         bottomSheetOtherMethod?.show(childFragmentManager, getString(R.string.bottom_sheet_show))
     }
