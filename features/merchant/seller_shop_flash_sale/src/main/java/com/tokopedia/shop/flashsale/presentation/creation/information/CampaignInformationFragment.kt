@@ -322,9 +322,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                     val vpsPackages = result.data
                     viewModel.storeVpsPackage(vpsPackages)
 
-                    val nearestExpiredVpsPackage = viewModel.findNearestExpiredVpsPackage(vpsPackages) ?: return@observe
-                    viewModel.setSelectedVpsPackage(nearestExpiredVpsPackage)
-                    displaySelectedVpsPackage(nearestExpiredVpsPackage)
+                    val defaultVpsPackage = vpsPackages.firstOrNull() ?: return@observe
+                    viewModel.setSelectedVpsPackage(defaultVpsPackage)
+                    displaySelectedVpsPackage(defaultVpsPackage)
                 }
                 is Fail -> {
                     binding?.cardView showError result.throwable
