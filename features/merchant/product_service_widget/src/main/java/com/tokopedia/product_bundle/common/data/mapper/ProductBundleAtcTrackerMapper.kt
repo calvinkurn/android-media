@@ -28,13 +28,12 @@ object ProductBundleAtcTrackerMapper {
 
     fun mapSingleBundlingDataToProductTracker(
             bundleInfo: List<BundleInfo> = emptyList(),
-            atcResult: AddToCartDataResult,
-            selectedProductId: String,
-            selectedBundleId: String
+            selectedBundleId: String,
+            cartId: String
     ): List<ProductDetailBundleTracker> {
-        val productDetailWithCartId = atcResult.responseResult.data.find {
-            it.productId == selectedProductId
-        }
+//        val productDetailWithCartId = atcResult.responseResult.data.find {
+//            it.productId == selectedProductId
+//        }
         val productDetails = bundleInfo.find {
             it.bundleID.toString() == selectedBundleId
         }
@@ -42,10 +41,10 @@ object ProductBundleAtcTrackerMapper {
         if (productDetails != null) {
             return listOf(
                     ProductDetailBundleTracker(
-                            productId = selectedProductId,
+                            productId = productDetails.bundleItems[0].productID.toString(),
                             productName = productDetails.bundleItems[0].name,
                             productPrice = productDetails.bundleItems[0].bundlePrice.toString(),
-                            cartId = productDetailWithCartId?.cartId ?: "0",
+                            cartId = cartId,
                             quantity = productDetails.bundleItems[0].minOrder
                     )
             )

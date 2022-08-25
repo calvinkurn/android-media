@@ -209,7 +209,7 @@ class SingleProductBundleFragment(
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
             val productDetails = ProductBundleAtcTrackerMapper.mapSingleBundlingDataToProductTracker(
-                    bundleInfo, it, selectedProductId.toString(), selectedBundleId
+                    bundleInfo, selectedBundleId, it.responseResult.data[0].cartId
             )
 
             if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
