@@ -527,6 +527,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         return if (isReplace) replacement() else this
     }
 
+    private inline fun Int.replaceIf(isReplace: Boolean, replacement: () -> Int) : Int {
+        return if (isReplace) replacement() else this
+    }
+
     private fun getDimensionPixelSize(@DimenRes id: Int): Int{
         return context?.resources?.getDimensionPixelSize(id) ?: 0
     }
@@ -662,37 +666,24 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
 
         val paymentStatus = orderDetails.status.statusText.ifEmpty { "" }
-        val paymentMethod = if (orderDetails.payMethods.isNotEmpty()
-            && orderDetails.payMethods.first().value.isNotEmpty()) {
-            orderDetails.payMethods.first().value
-        } else ""
+        val paymentMethod = orderDetails.payMethods.first().value.replaceIf(
+            orderDetails.payMethods.isNotEmpty()
+                    && orderDetails.payMethods.first().value.isNotEmpty()
+        ) { "" }
 
-        if (categoryType == EventsViewHolder.ITEM_EVENTS) {
-            orderAnalytics.sendThankYouEvent(
-                metadata.entityProductId,
-                metadata.productName,
-                metadata.totalPrice,
-                metadata.quantity,
-                metadata.entityBrandName,
-                arguments?.get(KEY_ORDER_ID).toString(),
-                categoryType,
-                paymentMethod,
-                paymentStatus
-            )
-        } else {
-            orderAnalytics.sendThankYouEvent(
-                metadata.entityProductId,
-                metadata.entityProductName,
-                metadata.totalTicketPrice,
-                metadata.totalTicketCount,
-                metadata.entityBrandName,
-                arguments?.get(KEY_ORDER_ID).toString(),
-                categoryType,
-                paymentMethod,
-                paymentStatus
-            )
-        }
+        val isCategoryEvent = categoryType == EventsViewHolder.ITEM_EVENTS
 
+        orderAnalytics.sendThankYouEvent(
+            metadata.entityProductId,
+            metadata.productName.replaceIf(isCategoryEvent) { metadata.entityProductName },
+            metadata.totalPrice.replaceIf(isCategoryEvent) { metadata.totalTicketPrice },
+            metadata.quantity.replaceIf(isCategoryEvent) { metadata.totalTicketCount },
+            metadata.entityBrandName,
+            arguments?.get(KEY_ORDER_ID).toString(),
+            categoryType,
+            paymentMethod,
+            paymentStatus,
+        )
     }
 
     override fun sendOpenScreenDeals(isOMP: Boolean) {
