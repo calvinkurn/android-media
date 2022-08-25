@@ -1,14 +1,15 @@
 package com.tokopedia.wishlistcollection.view.adapter.viewholder
 
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
-import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
@@ -34,16 +35,20 @@ class BottomSheetWishlistCollectionItemViewHolder(
                 if (item.dataObject.imageUrl.isNotEmpty()) {
                     collectionItemImage.apply {
                         loadImage(item.dataObject.imageUrl) {
+                            overrideSize(Resize(binding.collectionItemImage.width, binding.collectionItemImage.height))
                             setCacheStrategy(MediaCacheStrategy.NONE)
                             setPlaceHolder(R.drawable.placeholder_img)
                         }
+                        scaleType = ImageView.ScaleType.CENTER_CROP
                     }
                 } else {
                     collectionItemImage.apply {
                         clearImage()
                         loadImage(R.drawable.placeholder_img) {
+                            overrideSize(Resize(binding.collectionItemImage.width, binding.collectionItemImage.height))
                             setCacheStrategy(MediaCacheStrategy.NONE)
                         }
+                        scaleType = ImageView.ScaleType.CENTER_CROP
                     }
                 }
 

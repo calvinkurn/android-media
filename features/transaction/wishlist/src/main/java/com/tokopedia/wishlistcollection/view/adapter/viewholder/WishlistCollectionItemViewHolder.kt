@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.CardUnify2
@@ -64,6 +65,7 @@ class WishlistCollectionItemViewHolder(
                         binding.imgCollection1.apply {
                             visible()
                             loadImage(item.dataObject.images[0]) {
+                                overrideSize(Resize(binding.imgCollection1.width, binding.imgCollection1.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -72,6 +74,7 @@ class WishlistCollectionItemViewHolder(
                         binding.imgCollection2.apply {
                             visible()
                             loadImage(item.dataObject.images[1]) {
+                                overrideSize(Resize(binding.imgCollection2.width, binding.imgCollection2.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -80,6 +83,7 @@ class WishlistCollectionItemViewHolder(
                         binding.imgCollection3.apply {
                             visible()
                             loadImage(item.dataObject.images[2]) {
+                                overrideSize(Resize(binding.imgCollection3.width, binding.imgCollection3.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -88,6 +92,7 @@ class WishlistCollectionItemViewHolder(
                         binding.imgCollection4.apply {
                             visible()
                             loadImage(item.dataObject.images[3]) {
+                                overrideSize(Resize(binding.imgCollection4.width, binding.imgCollection4.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -106,6 +111,7 @@ class WishlistCollectionItemViewHolder(
                             visible()
                             layoutParams = params1
                             loadImage(item.dataObject.images[0]) {
+                                overrideSize(Resize(binding.imgCollection1.width, binding.imgCollection1.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -120,6 +126,7 @@ class WishlistCollectionItemViewHolder(
                             visible()
                             layoutParams = params2
                             loadImage(item.dataObject.images[1]) {
+                                overrideSize(Resize(binding.imgCollection2.width, binding.imgCollection2.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -133,6 +140,7 @@ class WishlistCollectionItemViewHolder(
                             visible()
                             layoutParams = params3
                             loadImage(item.dataObject.images[2]) {
+                                overrideSize(Resize(binding.imgCollection3.width, binding.imgCollection3.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -152,6 +160,7 @@ class WishlistCollectionItemViewHolder(
                             visible()
                             layoutParams = params1
                             loadImage(item.dataObject.images[0]) {
+                                overrideSize(Resize(binding.imgCollection1.width, binding.imgCollection1.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -166,6 +175,7 @@ class WishlistCollectionItemViewHolder(
                             visible()
                             layoutParams = params2
                             loadImage(item.dataObject.images[1]) {
+                                overrideSize(Resize(binding.imgCollection2.width, binding.imgCollection2.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -179,6 +189,7 @@ class WishlistCollectionItemViewHolder(
                         binding.singleCollectionItem.apply {
                             visible()
                             loadImage(item.dataObject.images[0]) {
+                                overrideSize(Resize(binding.singleCollectionItem.width, binding.singleCollectionItem.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
                                 setPlaceHolder(R.drawable.placeholder_img)
                             }
@@ -195,7 +206,6 @@ class WishlistCollectionItemViewHolder(
         const val TOTAL_IMG_2 = 2
         const val TOTAL_IMG_3 = 3
         const val TOTAL_IMG_4 = 4
-        const val MERGE_SIZE = 154
         const val SEMUA_WISHLIST = "Semua Wishlist"
     }
 }
