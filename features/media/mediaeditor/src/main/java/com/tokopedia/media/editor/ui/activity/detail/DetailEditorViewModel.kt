@@ -58,6 +58,10 @@ class DetailEditorViewModel @Inject constructor(
         _brightnessFilter.value = colorFilterRepository.brightness(value)
     }
 
+    fun getBrightnessFilter(value: Float): ColorMatrixColorFilter{
+        return colorFilterRepository.brightness(value)
+    }
+
     fun setContrast(value: Float?) {
         if (value == null) return
         _contrastFilter.value = value

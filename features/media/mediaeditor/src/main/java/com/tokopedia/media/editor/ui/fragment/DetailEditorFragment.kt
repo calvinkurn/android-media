@@ -68,9 +68,6 @@ class DetailEditorFragment @Inject constructor(
     @Inject
     lateinit var rotateFilterRepositoryImpl: RotateFilterRepositoryImpl
 
-    @Inject
-    lateinit var brightnessFilterRepositoryImpl: ColorFilterRepositoryImpl
-
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
     private val removeBgComponent by uiComponent { RemoveBackgroundToolUiComponent(it, this) }
     private val contrastComponent by uiComponent { ContrastToolsUiComponent(it, this) }
@@ -361,7 +358,7 @@ class DetailEditorFragment @Inject constructor(
         isRemoveFilter: Boolean = true
     ) {
         val cropView = viewBinding?.imgUcropPreview?.cropImageView
-        cropView?.colorFilter = brightnessFilterRepositoryImpl.brightness(previousValue ?: 0f)
+        cropView?.colorFilter = viewModel.getBrightnessFilter(previousValue ?: 0f)
 
         // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
         if (isRemoveFilter) viewBinding?.imgUcropPreview?.getBitmap()?.let {
