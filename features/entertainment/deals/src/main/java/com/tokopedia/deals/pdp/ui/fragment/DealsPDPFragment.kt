@@ -18,6 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
@@ -216,7 +218,10 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 getString(com.tokopedia.deals.R.string.deals_pdp_number_of_items,
                 data.outlets.size))
             ivBrandLogo?.loadImage(data.brand.featuredThumbnailImage)
-
+            ivBrandLogo?.setOnClickListener {
+                val url = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE + "?" + data.brand.seoUrl
+                RouteManager.route(context, url)
+            }
         } else {
             clOutlets?.hide()
         }

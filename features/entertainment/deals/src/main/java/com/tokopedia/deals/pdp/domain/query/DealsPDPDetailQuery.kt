@@ -230,6 +230,7 @@ object DealsPDPDetailQuery: GqlQueryInterface {
                     featured_image
                     featured_thumbnail_image
                     city_name
+                    seo_url
                 }
                 category {
                     id

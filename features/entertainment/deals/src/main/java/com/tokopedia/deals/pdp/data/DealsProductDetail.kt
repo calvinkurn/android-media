@@ -219,7 +219,9 @@ data class Brand(
     @SerializedName("featured_thumbnail_image")
     val featuredThumbnailImage: String = "",
     @SerializedName("title")
-    val title: String = ""
+    val title: String = "",
+    @SerializedName("seo_url")
+    val seoUrl: String = ""
 )
 
 data class Catalog(
