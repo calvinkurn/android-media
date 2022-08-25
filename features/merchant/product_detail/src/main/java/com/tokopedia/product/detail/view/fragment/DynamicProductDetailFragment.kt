@@ -631,10 +631,10 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         Toaster.onCTAClick = View.OnClickListener { }
         hideProgressDialog()
         compositeSubscription.clear()
+        super.onDestroyView()
     }
 
     private fun onResultVariantBottomSheet(data: ProductVariantResult) {
