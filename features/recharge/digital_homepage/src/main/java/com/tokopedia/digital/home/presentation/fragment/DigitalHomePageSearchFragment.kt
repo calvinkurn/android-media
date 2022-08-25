@@ -23,8 +23,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
-import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchBinding
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchBinding
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
@@ -34,7 +34,7 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePag
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
-import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
+import com.tokopedia.digital.home.util.QueryDigitalHomeCategory
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -290,7 +290,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
     open fun searchCategory(searchQuery: String) {
         if (!searchQuery.isNullOrEmpty()) {
-            viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
+            viewModel.searchCategoryList(QueryDigitalHomeCategory(), searchQuery)
         } else {
             viewModel.cancelAutoComplete()
         }

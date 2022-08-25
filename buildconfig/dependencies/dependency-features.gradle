@@ -16,6 +16,7 @@ ext {
 
             catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
+            affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
@@ -192,7 +193,6 @@ ext {
             youtubeCommon                   : ":features:merchant:youtube_common",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
-            resolution                      : ":features:operational:resolution",
             csat_rating                       : ":features:operational:csat_rating",
             discovery2                       : ":features:category:discovery2",
 

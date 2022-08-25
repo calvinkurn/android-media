@@ -13,6 +13,7 @@ import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
 import com.tokopedia.analyticsdebugger.cassava.utils.Utils
 import com.tokopedia.analyticsdebugger.cassava.core.*
+import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.url.TokopediaUrl
@@ -25,7 +26,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 
 fun deleteCassavaDb(context: Context) =
-        TkpdAnalyticsDatabase.getInstance(context).gtmLogDao().deleteAll()
+        CassavaDatabase.getInstance(context).cassavaDao().deleteAll()
 
 /**
  * This function is used to run analytics validation query with/without thanos

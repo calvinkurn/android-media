@@ -22,7 +22,7 @@ object InspirationCarouselTrackingUnificationDataMapper {
         )
     }
 
-    fun getSortFilterParamStringFromSearchParameter(
+    private fun getSortFilterParamStringFromSearchParameter(
         searchParameter: SearchParameter?
     ): String {
         val parameter = searchParameter ?: return ""
