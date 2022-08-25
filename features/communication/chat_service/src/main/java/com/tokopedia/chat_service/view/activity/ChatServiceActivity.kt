@@ -1,34 +1,37 @@
 package com.tokopedia.chat_service.view.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
 import com.gojek.conversations.logging.ConversationsLogger
+import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.chat_service.R
 
-class ChatServiceActivity : AppCompatActivity(), ConversationsLogger.ILog {
+class ChatServiceActivity : BaseActivity(), ConversationsLogger.ILog {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_service)
     }
 
-    private fun initConversationRepository() {
-
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     override fun d(tag: String, message: String) {
-        TODO("Not yet implemented")
+
     }
 
     override fun e(tag: String, error: String, e: Throwable) {
-        TODO("Not yet implemented")
+
     }
 
     override fun v(tag: String, message: String) {
-        TODO("Not yet implemented")
+
     }
 
     override fun w(tag: String, message: String) {
-        TODO("Not yet implemented")
+
     }
 }
