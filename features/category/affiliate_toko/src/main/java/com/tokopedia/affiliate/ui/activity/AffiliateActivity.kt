@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
 import com.tokopedia.affiliate.FOURTH_TAB
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.SECOND_TAB
 import com.tokopedia.affiliate.THIRD_TAB
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -88,6 +89,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
                 selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
+            }else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
             }
         }
     }
