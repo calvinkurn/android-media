@@ -10,6 +10,7 @@ import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.picker.common.EditorParam
 import javax.inject.Inject
 
@@ -29,6 +30,10 @@ class DetailEditorActivity : BaseEditorActivity() {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
+
+        setHeader(
+            getString(getToolEditorText(editorIntent.editorToolType))
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

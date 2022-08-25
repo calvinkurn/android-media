@@ -39,4 +39,8 @@
     <string name="editor_remove_bg_dialog_desc">Dengan lanjut simpan, nilai atau pengaturan edit lainnya yang udah kamu atur sebelumnya akan ke-reset.</string>
     <string name="editor_remove_bg_dialog_primary_button_text">Lanjut Simpan</string>
     <string name="editor_remove_bg_dialog_secondary_button_text">Balik</string>
+
+    <!-- Header text -->
+    <string name="editor_main_header_title_text">Edit Media</string>
+    <string name="editor_main_header_action_text">Edit Media</string>
 </resources>

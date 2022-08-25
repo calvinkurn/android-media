@@ -1,7 +1,6 @@
 package com.tokopedia.media.editor.ui.activity.main
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -11,7 +10,6 @@ import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
-import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.deleteRecursive
@@ -34,6 +32,11 @@ class EditorActivity : BaseEditorActivity() {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
+
+        setHeader(
+            getString(editorR.string.editor_main_header_title_text),
+            getString(editorR.string.editor_main_header_action_text)
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

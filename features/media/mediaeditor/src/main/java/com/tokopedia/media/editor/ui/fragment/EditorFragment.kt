@@ -23,6 +23,7 @@ import com.tokopedia.media.editor.ui.component.DrawerUiComponent
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.editor.utils.writeBitmapToStorage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -259,14 +260,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     }
 
     private fun renderStateChangeToast(toastKey: Int, @EditorToolType editorToolType: Int) {
-        val sourceInt = when(editorToolType){
-            EditorToolType.BRIGHTNESS -> editorR.string.editor_tool_brightness
-            EditorToolType.CONTRAST -> editorR.string.editor_tool_contrast
-            EditorToolType.WATERMARK -> editorR.string.editor_tool_watermark
-            EditorToolType.ROTATE -> editorR.string.editor_tool_rotate
-            EditorToolType.CROP -> editorR.string.editor_tool_crop
-            else -> editorR.string.editor_tool_remove_background
-        }
+        val sourceInt = getToolEditorText(editorToolType)
 
         val toastEditText = getString(sourceInt)
         val toastStateChangeText = if (toastKey == TOAST_UNDO)

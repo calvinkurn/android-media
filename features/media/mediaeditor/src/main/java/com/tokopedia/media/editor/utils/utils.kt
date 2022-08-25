@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.tokopedia.media.editor.R
+import com.tokopedia.picker.common.types.EditorToolType
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -114,5 +116,16 @@ fun writeBitmapToStorage(
         file
     } catch (e: Exception) {
         null
+    }
+}
+
+fun getToolEditorText(editorToolType: Int): Int{
+    return when(editorToolType){
+        EditorToolType.BRIGHTNESS -> R.string.editor_tool_brightness
+        EditorToolType.CONTRAST -> R.string.editor_tool_contrast
+        EditorToolType.WATERMARK -> R.string.editor_tool_watermark
+        EditorToolType.ROTATE -> R.string.editor_tool_rotate
+        EditorToolType.CROP -> R.string.editor_tool_crop
+        else -> R.string.editor_tool_remove_background
     }
 }
