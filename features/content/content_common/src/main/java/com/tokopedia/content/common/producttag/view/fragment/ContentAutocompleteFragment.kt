@@ -8,12 +8,12 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.databinding.FragmentContentAutocompleteBinding
-import com.tokopedia.content.common.producttag.util.extension.hideKeyboard
-import com.tokopedia.content.common.producttag.util.extension.showKeyboard
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.content.common.util.showKeyboard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -16,7 +16,6 @@ import com.tokopedia.content.common.databinding.FragmentMyShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
-import com.tokopedia.content.common.producttag.util.extension.hideKeyboard
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.content.common.producttag.view.bottomsheet.SortBottomSheet
@@ -28,6 +27,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAct
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.MyShopProductUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
