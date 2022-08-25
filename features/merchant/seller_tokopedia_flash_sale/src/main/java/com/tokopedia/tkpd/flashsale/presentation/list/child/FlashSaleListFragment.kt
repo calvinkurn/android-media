@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
@@ -18,10 +17,16 @@ import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.slideDown
+import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
@@ -177,6 +182,9 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun setupView() {
         setupSortFilter()
+        binding?.imgScrollUp?.setOnClickListener {
+            binding?.recyclerView?.smoothSnapToPosition(Int.ZERO)
+        }
     }
 
     private fun observeUiState() {
@@ -221,6 +229,11 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         renderSortFilter(uiState)
         renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.totalFlashSaleCount)
         refreshScrollState(uiState.allItems)
+        renderScrollUpButton(uiState.totalFlashSaleCount)
+    }
+
+    private fun renderScrollUpButton(totalFlashSaleCount: Int) {
+        binding?.imgScrollUp?.isVisible = totalFlashSaleCount.isMoreThanZero()
     }
 
     private fun renderSortFilter(uiState: FlashSaleListUiState) {
@@ -389,11 +402,15 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
+        return binding?.recyclerView?.apply {
+            attachOnScrollListener(onScrollDown = {
+                binding?.imgScrollUp?.slideUp()
+                binding?.sortFilter?.slideDown()
+            }, onScrollUp = {
+                binding?.imgScrollUp?.slideDown()
+                binding?.sortFilter?.slideUp()
+            })
+        }
     }
 
     override fun getPerPage(): Int {

@@ -30,6 +30,18 @@
         tools:itemCount="3"
         tools:listitem="@layout/stfs_item_upcoming_flash_sale" />
 
+    <ImageView
+        android:id="@+id/imgScrollUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:src="@drawable/ic_stfs_scroll_up"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyState"
         android:layout_width="match_parent"

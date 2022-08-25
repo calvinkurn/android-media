@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -26,7 +24,6 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
     var adapter: T? = null
     var recyclerView: RecyclerView? = null
-    var swipeToRefresh: SwipeRefreshLayout? = null
     protected var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
     private val recyclerViewLayoutManager
@@ -36,7 +33,6 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
     abstract fun createAdapter(): T?
     abstract fun getRecyclerView(view: View): RecyclerView?
-    abstract fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout?
     abstract fun getPerPage(): Int
     abstract fun addElementToAdapter(list: List<F>)
     abstract fun loadData(page: Int)
@@ -63,20 +59,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         }
 
         enableLoadMore()
-        setupSwipeToRefreshLayout(view)
         recyclerView?.adapter = adapter
-        loadInitialData()
-    }
-
-    private fun setupSwipeToRefreshLayout(view: View) {
-        val loaderColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        swipeToRefresh = getSwipeRefreshLayout(view)
-        swipeToRefresh?.setColorSchemeColors(loaderColor)
-        swipeToRefresh?.setOnRefreshListener { onSwipeRefresh() }
-    }
-
-    private fun onSwipeRefresh() {
-        swipeToRefresh?.isRefreshing = true
         loadInitialData()
     }
 
@@ -114,7 +97,6 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
     private fun onGetListErrorWithEmptyData(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(activity, throwable)
-        swipeToRefresh?.isEnabled = false
         recyclerView?.gone()
         onGetListError(message)
     }
@@ -134,17 +116,11 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
     }
 
-    private fun showSwipeLoading() {
-        swipeToRefresh?.isRefreshing = true
-    }
-
     private fun showLoading() {
         onShowLoading()
     }
 
     private fun hideLoading() {
-        swipeToRefresh?.isEnabled = true
-        swipeToRefresh?.isRefreshing = false
         onHideLoading()
     }
 
