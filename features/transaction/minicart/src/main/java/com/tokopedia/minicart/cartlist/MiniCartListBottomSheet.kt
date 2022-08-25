@@ -558,6 +558,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
+            if (it == null) return@Observer
+
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 dismiss()
             }
