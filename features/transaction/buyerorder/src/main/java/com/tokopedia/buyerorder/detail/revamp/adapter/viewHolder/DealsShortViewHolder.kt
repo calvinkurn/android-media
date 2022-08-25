@@ -8,6 +8,7 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.databinding.VoucherItemCardDealsShortBinding
 import com.tokopedia.buyerorder.detail.data.ItemsDealsShort
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
+import com.tokopedia.media.loader.loadImage
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -27,5 +28,6 @@ class DealsShortViewHolder(itemView: View) : AbstractViewHolder<ItemsDealsShort>
         binding.tvDealIntro.text = metadata.entityProductName.ifEmpty { element.item.title }
         binding.tvBrandName.text = metadata.entityBrandName
         binding.tvRedeemLocations.text = metadata.entityAddress.name
+        binding.imageView.loadImage(metadata.productImage)
     }
 }

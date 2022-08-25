@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.design.image.RoundedCornerImageView
+        <com.tokopedia.topads.sdk.view.RoundedCornerImageView
             android:id="@+id/imageView"
             android:layout_width="@dimen/image_width_brand"
             android:layout_height="@dimen/image_width_brand"
