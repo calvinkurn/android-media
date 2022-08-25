@@ -592,7 +592,6 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
-        private const val DEFAULT_VALUE_WATERMARK = 0f
 
         private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
     }
