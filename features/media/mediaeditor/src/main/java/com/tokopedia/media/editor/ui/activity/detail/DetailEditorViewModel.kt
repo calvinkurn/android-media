@@ -1,8 +1,10 @@
 package com.tokopedia.media.editor.ui.activity.detail
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
+import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EditorParam
@@ -24,7 +27,8 @@ import javax.inject.Inject
 class DetailEditorViewModel @Inject constructor(
     private val colorFilterRepository: ColorFilterRepository,
     private val removeBackgroundUseCase: SetRemoveBackgroundUseCase,
-    private val contrastFilterRepository: ContrastFilterRepository
+    private val contrastFilterRepository: ContrastFilterRepository,
+    private val watermarkFilterRepository: WatermarkFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -97,4 +101,33 @@ class DetailEditorViewModel @Inject constructor(
         _watermarkFilter.value = watermarkType
     }
 
+    fun getWatermarkFilter(
+        context: Context,
+        bitmapSource: Bitmap,
+        watermarkType: Int,
+        shopName: String,
+        isThumbnail: Boolean = false
+    ): Bitmap{
+        return watermarkFilterRepository.watermark(
+            context,
+            bitmapSource,
+            watermarkType,
+            shopName,
+            isThumbnail
+        )
+    }
+
+    fun getWatermarkFilterThumbnail(
+        context: Context,
+        implementedBaseBitmap: Bitmap?,
+        shopName: String,
+        buttonRef: Pair<ImageView, ImageView>
+    ) {
+        return watermarkFilterRepository.watermarkDrawerItem(
+            context,
+            implementedBaseBitmap,
+            shopName,
+            buttonRef
+        )
+    }
 }

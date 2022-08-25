@@ -60,9 +60,6 @@ class DetailEditorFragment @Inject constructor(
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
     @Inject
-    lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
-
-    @Inject
     lateinit var rotateFilterRepositoryImpl: RotateFilterRepositoryImpl
 
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
@@ -261,14 +258,13 @@ class DetailEditorFragment @Inject constructor(
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
             implementedBaseBitmap?.let { bitmap ->
-                val text = if (userSession.shopName.isEmpty())
+                val shopName = if (userSession.shopName.isEmpty())
                     DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
-                val result = watermarkFilterRepositoryImpl.watermark(
+                val result = viewModel.getWatermarkFilter(
                     requireContext(),
                     bitmap,
                     watermarkType,
-                    text,
-                    false
+                    shopName
                 )
                 viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(result)
                 isEdited = true
@@ -509,7 +505,7 @@ class DetailEditorFragment @Inject constructor(
             val shopName = if (userSession.shopName.isEmpty())
                 DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
 
-            watermarkFilterRepositoryImpl.watermarkDrawerItem(
+            viewModel.getWatermarkFilterThumbnail(
                 requireContext(),
                 it,
                 shopName,

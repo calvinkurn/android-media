@@ -15,6 +15,7 @@ import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.utils.isDark
 import com.tokopedia.media.loader.loadImageRounded
+import kotlin.math.min
 
 interface WatermarkFilterRepository {
     fun watermark(
@@ -89,7 +90,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         imageWidth = if (!isThumbnail)
             (w / IMAGE_SIZE_DIVIDER).toFloat()
         else
-            w / 2.5f
+            min(w, h) / 3f
 
         val canvas = Canvas(result)
         canvas.drawBitmap(source, 0f, 0f, null)
