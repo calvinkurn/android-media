@@ -2,8 +2,6 @@
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
 /features/content/explore/              				@tokopedia/android-minionlance-dev
 /features/content/feed/                 				@tokopedia/android-minionlance-dev
-/features/content/interest_pick/        				@tokopedia/android-minionlance-dev
-/features/content/interest_pick_common                  @tokopedia/android-minionlance-dev
 /features/content/kol/                  				@tokopedia/android-minionlance-dev
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
 /features/content/people/                               @tokopedia/android-minionlance-dev
@@ -30,7 +28,6 @@
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
-/features/content/interest_pick_common                  @tokopedia/android-minionsolo-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
@@ -96,6 +93,7 @@
 /features/merchant/shop_discount/                       @tokopedia/android-minionken-dev
 /features/merchant/campaign_common/                     @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
+/features/promo/mvc_widget  					        @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
@@ -270,7 +268,6 @@
 /features/promo/loyalty_common                          @tokopedia/android-minionsolo-dev
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
-/features/promo/mvc_widget  					        @tokopedia/android-minionsolo-dev
 /features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionyoda-dev
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
