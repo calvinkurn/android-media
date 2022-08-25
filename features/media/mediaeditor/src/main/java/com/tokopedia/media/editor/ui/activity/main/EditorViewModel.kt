@@ -29,30 +29,30 @@ class EditorViewModel : ViewModel() {
     }
 
     fun addEditState(urlKey: String, newValue: EditorDetailUiModel) {
-        val editorDetailUiModel = getEditState(urlKey)
-        if (editorDetailUiModel == null) {
+        val state = getEditState(urlKey)
+        if (state == null) {
             val newKeyObject = EditorUiModel(urlKey)
             newKeyObject.editList.add(newValue)
             _editStateList[urlKey] = newKeyObject
         } else {
             // if state not last edit (user did undo and do edit again) then we will remove last state until current redo state)
-            if (editorDetailUiModel.backValue != 0) {
-                for (i in 0 until editorDetailUiModel.backValue) {
-                    if(editorDetailUiModel.editList.last().removeBackgroundUrl != null) {
-                        editorDetailUiModel.removedBackgroundUrl = null
-                        editorDetailUiModel.removeBackgroundStartState = 0
+            if (state.backValue != 0) {
+                for (i in 0 until state.backValue) {
+                    if (state.editList.last().removeBackgroundUrl != null) {
+                        state.removedBackgroundUrl = null
+                        state.removeBackgroundStartState = 0
                     }
-                    editorDetailUiModel.editList.removeLast()
+                    state.editList.removeLast()
                 }
-                editorDetailUiModel.backValue = 0
+                state.backValue = 0
             }
 
-            if(newValue.removeBackgroundUrl != null) {
-                editorDetailUiModel.removedBackgroundUrl = newValue.removeBackgroundUrl
-                editorDetailUiModel.removeBackgroundStartState = editorDetailUiModel.editList.size
+            if (newValue.removeBackgroundUrl != null) {
+                state.removedBackgroundUrl = newValue.removeBackgroundUrl
+                state.removeBackgroundStartState = state.editList.size
             }
 
-            editorDetailUiModel.editList.add(newValue)
+            state.editList.add(newValue)
         }
 
         updateEditedItem(urlKey)
