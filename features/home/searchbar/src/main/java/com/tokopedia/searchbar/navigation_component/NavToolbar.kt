@@ -61,7 +61,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
-import timber.log.Timber
 
 class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
