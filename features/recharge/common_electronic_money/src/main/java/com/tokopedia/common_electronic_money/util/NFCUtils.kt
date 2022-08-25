@@ -16,7 +16,7 @@ class NFCUtils {
         private const val CHUCK_2 = 2
         private const val HEX_BIT_COUNT_4 = 4
         private const val HEX_0xFF = 0xFF
-        private const val HEX_0x0F = 0xFF
+        private const val HEX_0x0F = 0x0F
         private const val CARD_SLIDE_FROM_0 = 0
         private const val CARD_SLIDE_FROM_4 = 0
         private const val CARD_SLIDE_FROM_8 = 0
