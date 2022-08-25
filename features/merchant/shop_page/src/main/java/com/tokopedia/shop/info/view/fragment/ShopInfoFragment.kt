@@ -1,5 +1,7 @@
 package com.tokopedia.shop.info.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -48,13 +50,14 @@ import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 import javax.inject.Inject
 
 class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
@@ -62,6 +65,11 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     companion object {
         private const val REQUEST_CODER_USER_LOGIN = 100
+        private const val REQUEST_REPORT_USER = 110
+        const val RESULT_REPORT_TOASTER = "result_report_toaster"
+        const val RESULT_KEY_REPORT_USER = "result_key_report_shop"
+        const val RESULT_KEY_PAYLOAD_REPORT_USER = "result_key_payload_report_shop"
+
         fun createInstance(
             shopId: String? = null,
             shopInfo: ShopInfoData? = null
@@ -108,7 +116,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
 
-    private val _sourcePage ="?source=shop_page"
+    private val _sourcePage = "?source=shop_page"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -226,7 +234,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         viewReport?.isClickable = false
     }
 
-    private fun handlingFailState(e: Throwable){
+    private fun handlingFailState(e: Throwable) {
         hideProgressGetMessageId()
         if (e is UserNotLoginException) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -246,13 +254,17 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         routeToWebViewPage(messageId)
     }
 
+    private fun createUrl(messageId: String): String {
+        return "${TkpdBaseURL.CHAT_REPORT_URL}$messageId$_sourcePage"
+    }
+
     private fun routeToWebViewPage(messageId: String) {
-        val url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId$_sourcePage"
-        val appLink = String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url)
-        RouteManager.route(
-            activity,
-            appLink
-        )
+        context?.let {
+            val reportUrl = createUrl(messageId)
+            val intent = ReportShopWebViewActivity.getStartIntent(it, reportUrl)
+            startActivityForResult(intent, REQUEST_REPORT_USER)
+        }
+
     }
 
     private fun showShopBadgeReputation(shopBadge: ShopBadge) {
@@ -475,6 +487,27 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     fun onBackPressed() {
         shopPageTracking?.clickBackArrow(false, customDimensionShopPage)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_REPORT_USER -> onReturnFromReportUser(data, resultCode)
+        }
+    }
+
+    private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
+        if (data == null || resultCode != Activity.RESULT_OK) return
+        val payload =
+            data.getStringExtra(RESULT_KEY_PAYLOAD_REPORT_USER)
+        payload?.let { showToasterConfirmation(payload) }
+    }
+
+    private fun showToasterConfirmation(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.shop_page_label_oke))
+                .show()
+        }
     }
 
 }
