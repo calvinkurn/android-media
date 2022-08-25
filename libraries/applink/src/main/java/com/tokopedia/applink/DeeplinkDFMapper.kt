@@ -655,8 +655,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
 
             //Chat Service
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.CHAT_SERVICE) },
-                DF_CHAT_SERVICE, R.string.title_chat_service))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.CHAT_SERVICE) }, DF_CHAT_SERVICE, R.string.title_applink_chat_service))
         }
     }
 

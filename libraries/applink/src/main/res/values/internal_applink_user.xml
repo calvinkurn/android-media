@@ -89,4 +89,7 @@
     <string name="applink_init_register">/init-register</string>
     <string name="applink_email_register">/email-register</string>
 
+    //Chat Service
+    <string name="title_applink_chat_service">Chat Service</string>
+
 </resources>

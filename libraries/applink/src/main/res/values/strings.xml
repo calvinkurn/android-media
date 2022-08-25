@@ -171,7 +171,4 @@
 <!--    Tokomember seller dashboard-->
     <string name="title_tokomember" translatable="false">Tokomember</string>
 
-    <!-- Chat Service -->
-    <string name="title_chat_service">Chat Service</string>
-
 </resources>
