@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity.detail
 
+import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.widget.Toast
@@ -8,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
+import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EditorParam
@@ -21,7 +23,8 @@ import javax.inject.Inject
 
 class DetailEditorViewModel @Inject constructor(
     private val colorFilterRepository: ColorFilterRepository,
-    private val removeBackgroundUseCase: SetRemoveBackgroundUseCase
+    private val removeBackgroundUseCase: SetRemoveBackgroundUseCase,
+    private val contrastFilterRepository: ContrastFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -65,6 +68,10 @@ class DetailEditorViewModel @Inject constructor(
     fun setContrast(value: Float?) {
         if (value == null) return
         _contrastFilter.value = value
+    }
+
+    fun getContrastFilter(value: Float, sourceBitmap: Bitmap): Bitmap{
+        return contrastFilterRepository.contrast(value, sourceBitmap.copy(sourceBitmap.config, true))
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {

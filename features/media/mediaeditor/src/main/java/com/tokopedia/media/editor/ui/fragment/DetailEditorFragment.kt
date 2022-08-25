@@ -60,9 +60,6 @@ class DetailEditorFragment @Inject constructor(
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
     @Inject
-    lateinit var contrastFilterRepositoryImpl: ContrastFilterRepositoryImpl
-
-    @Inject
     lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
 
     @Inject
@@ -224,10 +221,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
             implementedBaseBitmap?.let { itBitmap ->
-                val contrastBitmap = contrastFilterRepositoryImpl.contrast(
-                    it,
-                    itBitmap.copy(itBitmap.config, true)
-                )
+                val contrastBitmap = viewModel.getContrastFilter(it, itBitmap)
 
                 viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(contrastBitmap)
                 isEdited = true
@@ -371,9 +365,9 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgUcropPreview?.let {
             val bitmap = it.getBitmap()
             it.cropImageView.setImageBitmap(
-                contrastFilterRepositoryImpl.contrast(
+                viewModel.getContrastFilter(
                     previousValue ?: 0f,
-                    bitmap.copy(bitmap.config, true)
+                    bitmap
                 )
             )
         }
@@ -502,9 +496,9 @@ class DetailEditorFragment @Inject constructor(
             implementPreviousStateBrightness(previousState.brightnessValue, false)
         } else if (previousState.contrastValue != null && previousState.isToolContrast()) {
             viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
-                contrastFilterRepositoryImpl.contrast(
+                viewModel.getContrastFilter(
                     previousState.contrastValue!!,
-                    implementedBaseBitmap!!.copy(implementedBaseBitmap!!.config, true)
+                    implementedBaseBitmap!!
                 )
             )
         }
