@@ -13,7 +13,7 @@
         android:layout_width="@dimen/dp_chatbot_22"
         android:layout_height="@dimen/dp_chatbot_18"
         app:icon_name="REPLY_FILLED"
-        android:layout_marginLeft="@dimen/unify_space_8"
+        android:layout_marginLeft="@dimen/dp_chatbot_8"
         android:layout_marginTop="@dimen/dp_chatbot_10"
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_NN500"
@@ -26,7 +26,7 @@
         android:id="@+id/reply_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/dp_chatbot_16"
         android:layout_marginTop="@dimen/dp_chatbot_10"
         android:layout_marginEnd="@dimen/dp_chatbot_15"
         android:ellipsize="end"
@@ -45,7 +45,7 @@
         android:id="@+id/reply_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/dp_chatbot_16"
         android:layout_marginEnd="@dimen/dp_chatbot_15"
         android:ellipsize="end"
         android:singleLine="true"
@@ -57,12 +57,12 @@
         app:layout_constraintTop_toBottomOf="@+id/reply_from"
         app:typographyType="display_3"
         tools:text="Message Description"
-        android:paddingBottom="@dimen/chatcommon_20dp"/>
+        android:paddingBottom="@dimen/dp_chatbot_20"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/close_btn"
-        android:layout_width="@dimen/unify_space_16"
-        android:layout_height="@dimen/unify_space_16"
+        android:layout_width="@dimen/dp_chatbot_16"
+        android:layout_height="@dimen/dp_chatbot_16"
         app:icon_name="CLOSE"
         android:layout_marginRight="@dimen/dp_chatbot_10"
         app:layout_constraintBottom_toBottomOf="parent"

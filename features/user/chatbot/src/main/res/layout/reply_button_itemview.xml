@@ -4,9 +4,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingLeft="@dimen/unify_space_2"
-    android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:paddingLeft="@dimen/dp_chatbot_2"
+    android:paddingTop="@dimen/dp_chatbot_12"
+    android:paddingBottom="@dimen/dp_chatbot_12">
 
     <com.tokopedia.iconunify.IconUnify
         android:layout_width="@dimen/dp_chatbot_30"

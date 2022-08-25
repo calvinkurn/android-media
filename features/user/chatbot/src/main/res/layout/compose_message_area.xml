@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/unify_space_8"
+    android:paddingTop="@dimen/dp_chatbot_8"
     android:background="@color/chatbot_chat_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reply_box"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_chatbot_0"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/dp_chatbot_16"
+        android:paddingEnd="@dimen/dp_chatbot_16"
+        android:paddingBottom="@dimen/dp_chatbot_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/send_but"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,15 +24,15 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_compose_background"
             android:visibility="gone"
-            android:paddingBottom="20dp"
+            android:paddingBottom="@dimen/dp_chatbot_20"
             app:layout_constraintTop_toTopOf="parent"
             />
 
         <View
             android:id="@+id/view_border_radius"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="20dp"
+            android:layout_width="@dimen/dp_chatbot_0"
+            android:layout_height="@dimen/dp_chatbot_0"
+            android:layout_marginBottom="@dimen/dp_chatbot_20"
             app:layout_constraintEnd_toEndOf="@+id/new_comment_container"
             app:layout_constraintStart_toStartOf="@+id/new_comment_container"
             app:layout_constraintTop_toBottomOf="@id/reply_bubble_container"
@@ -41,15 +41,15 @@
         <LinearLayout
             android:id="@+id/new_comment_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/chatcommon_50dp"
+            android:layout_height="@dimen/dp_chatbot_50"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             app:layout_constraintTop_toBottomOf="@id/reply_bubble_container"
             app:layout_constraintBottom_toBottomOf="@id/reply_bubble_container"
-            android:paddingStart="@dimen/unify_space_12"
-            android:paddingTop="@dimen/chatcommon_10dp"
-            android:paddingEnd="@dimen/unify_space_48"
-            android:paddingBottom="@dimen/chatcommon_10dp"
+            android:paddingStart="@dimen/dp_chatbot_12"
+            android:paddingTop="@dimen/dp_chatbot_10"
+            android:paddingEnd="@dimen/dp_chatbot_48"
+            android:paddingBottom="@dimen/dp_chatbot_10"
             android:gravity="center">
 
             <EditText
@@ -60,17 +60,17 @@
                 android:hint="@string/cb_bot_reply_text"
                 android:inputType="textMultiLine"
                 android:maxLines="5"
-                android:textSize="@dimen/fontSize_lvl4"
+                android:textSize="@dimen/sp_chatbot_16"
                 tools:text="@tools:sample/lorem/random" />
 
         </LinearLayout>
 
         <FrameLayout
-            android:layout_width="@dimen/unify_space_40"
-            android:layout_height="@dimen/unify_space_40"
+            android:layout_width="@dimen/dp_chatbot_40"
+            android:layout_height="@dimen/dp_chatbot_40"
             android:layout_alignEnd="@+id/new_comment_container"
             android:layout_alignBottom="@+id/new_comment_container"
-            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/dp_chatbot_8"
             app:layout_constraintEnd_toEndOf="@id/new_comment_container"
             app:layout_constraintBottom_toBottomOf="@id/new_comment_container"
             app:layout_constraintTop_toTopOf="@+id/new_comment_container"
@@ -78,24 +78,24 @@
 
             <ImageView
                 android:id="@+id/iv_chat_menu"
-                android:layout_width="@dimen/unify_space_40"
-                android:layout_height="@dimen/unify_space_40"
+                android:layout_width="@dimen/dp_chatbot_40"
+                android:layout_height="@dimen/dp_chatbot_40"
                 android:contentDescription="@null"
-                android:padding="@dimen/unify_space_8"
+                android:padding="@dimen/dp_chatbot_8"
                 app:srcCompat="@drawable/ic_add_attachment_chatbot" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/send_but"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/dp_chatbot_40"
+        android:layout_height="@dimen/dp_chatbot_40"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:contentDescription="@null"
-        android:layout_marginRight="@dimen/unify_space_12"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/dp_chatbot_12"
+        android:layout_marginBottom="@dimen/dp_chatbot_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/ic_chatbot_send" />
