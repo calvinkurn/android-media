@@ -15,12 +15,15 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -31,6 +34,7 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
+import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo
 import com.tokopedia.buyerorder.detail.data.ConditionalInfo
@@ -42,6 +46,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.PayMethod
 import com.tokopedia.buyerorder.detail.data.PaymentData
 import com.tokopedia.buyerorder.detail.data.Pricing
+import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel
 import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.data.Title
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
@@ -54,14 +59,17 @@ import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity
+import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -92,6 +100,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
+    private lateinit var typeFactory: OrderDetailTypeFactoryImpl
+
     private val viewModel: OrderDetailViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, factory)[OrderDetailViewModel::class.java]
     }
@@ -104,6 +114,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     private var isSingleButton = false
     private var isDownloadable = false
     private var upstream: String? = null
+    private var dealsBottomSheet: DealsQRBottomSheet? = null
+    private var eventBottomSheet: BottomSheetUnify? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -122,6 +134,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        typeFactory = OrderDetailTypeFactoryImpl(this)
+        dealsBottomSheet = DealsQRBottomSheet()
+        eventBottomSheet = BottomSheetUnify()
 
         arguments?.let {
             upstream = it.get(KEY_UPSTREAM).toString()
@@ -321,7 +337,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         if (newItemList.isNotEmpty() && !isMetadataEmpty){
             binding?.recyclerView?.adapter = BaseAdapter(
-                OrderDetailTypeFactoryImpl(this),
+                typeFactory,
                 VisitableMapper.mappingVisitable(items, false, upstream ?: "", orderDetails)
             )
         } else {
@@ -631,15 +647,97 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     override fun openQRFragment(actionButton: ActionButton, item: Items) {
         if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)
             || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
-            DealsQRBottomSheet().apply {
-                renderView(actionButton)
-                show(childFragmentManager)
+            dealsBottomSheet?.let {
+                it.renderView(actionButton)
+                it.show(childFragmentManager)
             }
         } else {
-            EventsQRBottomSheet().apply {
-                renderView(actionButton)
-                show(childFragmentManager)
+            //TODO : create bottom sheet separated
+            showQREvent(actionButton)
+        }
+    }
+
+    private fun showQREvent(actionButton: ActionButton){
+        val bottomSheetView = LayoutScanQrCodeBinding.inflate(LayoutInflater.from(context), binding?.mainView, false)
+        eventBottomSheet?.let {
+            it.setTitle(getString(R.string.text_redeem_voucher))
+            it.setCloseClickListener { _ ->
+                it.dismiss()
             }
+        }
+
+        bottomSheetView.let {
+            var totalItem = 0
+            val voucherList = mutableListOf<RedeemVoucherModel>()
+            val indicatorItems = mutableListOf<ImageView>()
+
+            if (actionButton.body.body.isNotEmpty()){
+                val voucherCodes = actionButton.body.body.split(",")
+                voucherCodes.forEachIndexed { index, code ->
+                    voucherList.add(
+                        RedeemVoucherModel(
+                            actionButton.headerObject.powered_by,
+                            actionButton.body.appURL,
+                            code,
+                            actionButton.headerObject.statusLabel)
+                    )
+
+                    totalItem = voucherCodes.size
+
+                    val indicator = ImageView(context).apply {
+                        setPadding(
+                            5,
+                            0,
+                            5,
+                            0
+                        )
+                    }
+
+                    if (index == 0) {
+                        indicator.setImageResource(R.drawable.ic_indicator_selected)
+                    } else {
+                        indicator.setImageResource(R.drawable.ic_indicator_unselected)
+                    }
+
+                    indicatorItems.add(indicator)
+                    it.itemIndicator.addView(indicator)
+                }
+
+                it.tvLabelCount.showWithCondition(voucherCodes.size > 1)
+                it.itemIndicator.showWithCondition(voucherCodes.size > 1)
+            }
+
+            it.tvLabelCount.text = getString(R.string.deals_voucher_label_count, 1, totalItem)
+
+            val redeemAdapter = RedeemVoucherAdapter(voucherList)
+            with(it.rvVoucher){
+                adapter = redeemAdapter
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                setHasFixedSize(true)
+            }
+
+            if (it.rvVoucher.onFlingListener == null){
+                val snapHelper = PagerSnapHelper()
+                snapHelper.attachToRecyclerView(it.rvVoucher)
+            }
+
+            redeemAdapter.setOnCopiedListener { voucherCode ->
+                context?.let { ctx ->
+                    BuyerUtils.copyTextToClipBoard("text", voucherCode, ctx)
+                }
+                view?.let { v ->
+                    Toaster.build(v, getString(R.string.deals_msg_copy)).show()
+                }
+            }
+
+            eventBottomSheet?.setOnDismissListener {
+                it.rvVoucher.onFlingListener = null
+            }
+        }
+
+        activity?.let {
+            eventBottomSheet?.setChild(bottomSheetView.root)
+            eventBottomSheet?.show(it.supportFragmentManager, "qr_event")
         }
     }
 
