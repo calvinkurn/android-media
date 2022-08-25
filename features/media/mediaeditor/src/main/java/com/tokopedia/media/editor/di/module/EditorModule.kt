@@ -40,12 +40,6 @@ object EditorModule {
 
     @Provides
     @ActivityScope
-    fun provideColorFilterManager(): ColorFilterRepository {
-        return ColorFilterRepositoryImpl()
-    }
-
-    @Provides
-    @ActivityScope
     fun provideImageUploaderServices(
         @EditorQualifier retrofit: Retrofit.Builder,
         @EditorQualifier okHttpClient: OkHttpClient.Builder
@@ -77,6 +71,12 @@ object EditorModule {
         @ApplicationScope dispatchers: CoroutineDispatchers,
         removeBackgroundRepository: RemoveBackgroundRepository
     ) = SetRemoveBackgroundUseCase(dispatchers, removeBackgroundRepository)
+
+    @Provides
+    @ActivityScope
+    fun provideColorFilterRepository(): ColorFilterRepository {
+        return ColorFilterRepositoryImpl()
+    }
 
     @Provides
     @ActivityScope
