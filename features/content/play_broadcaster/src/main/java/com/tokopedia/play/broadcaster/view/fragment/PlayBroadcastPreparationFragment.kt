@@ -197,6 +197,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
                         else emptyList()
                     }
+
+                    override fun isEligibleForPin(): Boolean = false
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {

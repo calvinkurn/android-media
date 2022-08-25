@@ -4,15 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.MultipleBundlingItemViewHolder
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 
-class MultipleBundlingItemAdapter: RecyclerView.Adapter<MultipleBundlingItemViewHolder>() {
+class MultipleBundlingItemAdapter(
+    private val listener: ProductBundlingListener?
+): RecyclerView.Adapter<MultipleBundlingItemViewHolder>() {
 
     var bundlingList: List<BundleItem> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
+    var productBundling: ProductBundlingUiModel? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -20,7 +25,7 @@ class MultipleBundlingItemAdapter: RecyclerView.Adapter<MultipleBundlingItemView
     ): MultipleBundlingItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(MultipleBundlingItemViewHolder.LAYOUT, parent, false)
-        return MultipleBundlingItemViewHolder(view)
+        return MultipleBundlingItemViewHolder(view, listener, productBundling)
     }
 
     override fun onBindViewHolder(holder: MultipleBundlingItemViewHolder, position: Int) {

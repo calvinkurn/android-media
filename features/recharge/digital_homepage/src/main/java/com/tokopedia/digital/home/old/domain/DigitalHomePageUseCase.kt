@@ -1,6 +1,15 @@
 package com.tokopedia.digital.home.old.domain
 
-import com.tokopedia.digital.home.old.model.*
+import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageFavoritesModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageNewUserZoneModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageRecommendationModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSpotlightModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSubscriptionModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageTrustMarkModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -13,7 +22,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
                               var isFromCloud: Boolean = false): UseCase<List<DigitalHomePageItemModel>>() {
 
-    var queryList: Map<String, String> = mapOf()
+    var queryList: Map<String, GqlQueryInterface> = mapOf()
         set(value) {
             if (value.isNotEmpty()
                     && value.containsKey(QUERY_BANNER)
@@ -64,23 +73,23 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
             useCase.clearRequest()
             useCase.setCacheStrategy(GraphqlCacheStrategy
                     .Builder(if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
+                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRED_TIME).build())
 
-            val bannerRequest = GraphqlRequest(queryList[QUERY_BANNER],
+            val bannerRequest = GraphqlRequest(queryList.getValue(QUERY_BANNER),
                     DigitalHomePageBannerModel::class.java)
-            val categoryRequest = GraphqlRequest(queryList[QUERY_CATEGORY],
+            val categoryRequest = GraphqlRequest(queryList.getValue(QUERY_CATEGORY),
                     DigitalHomePageCategoryModel::class.java)
-            val recommendationRequest = GraphqlRequest(queryList[QUERY_RECOMMENDATION],
+            val recommendationRequest = GraphqlRequest(queryList.getValue(QUERY_RECOMMENDATION),
                     DigitalHomePageRecommendationModel::class.java, createParams(QUERY_RECOMMENDATION))
-            val favoritesRequest = GraphqlRequest(queryList[QUERY_SECTIONS],
+            val favoritesRequest = GraphqlRequest(queryList.getValue(QUERY_SECTIONS),
                     DigitalHomePageFavoritesModel::class.java, createParams(QUERY_FAVORITES))
-            val trustMarkRequest = GraphqlRequest(queryList[QUERY_SECTIONS],
+            val trustMarkRequest = GraphqlRequest(queryList.getValue(QUERY_SECTIONS),
                     DigitalHomePageTrustMarkModel::class.java, createParams(QUERY_TRUST_MARK))
-            val newUserZoneRequest = GraphqlRequest(queryList[QUERY_SECTIONS],
+            val newUserZoneRequest = GraphqlRequest(queryList.getValue(QUERY_SECTIONS),
                     DigitalHomePageNewUserZoneModel::class.java, createParams(QUERY_NEW_USER_ZONE))
-            val spotlightRequest = GraphqlRequest(queryList[QUERY_SECTIONS],
+            val spotlightRequest = GraphqlRequest(queryList.getValue(QUERY_SECTIONS),
                     DigitalHomePageSpotlightModel::class.java, createParams(QUERY_SPOTLIGHT))
-            val subscriptionRequest = GraphqlRequest(queryList[QUERY_SECTIONS],
+            val subscriptionRequest = GraphqlRequest(queryList.getValue(QUERY_SECTIONS),
                     DigitalHomePageSubscriptionModel::class.java, createParams(QUERY_SUBSCRIPTION))
 
             useCase.addRequests(listOf(
@@ -255,6 +264,7 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
         const val PARAM_SUBSCRIPTION = "LANGGANAN_SUGGESTION"
         const val PARAM_DEVICE_ID = "device_id"
         const val DEFAULT_DEVICE_ID = 5
+        const val EXPIRED_TIME = 5
 
         const val BANNER_ORDER = "BANNER_ORDER"
         const val FAVORITES_ORDER = "FAVORITES_ORDER"
