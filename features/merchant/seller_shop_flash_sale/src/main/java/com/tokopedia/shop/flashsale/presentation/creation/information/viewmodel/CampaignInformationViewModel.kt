@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -319,11 +320,12 @@ class CampaignInformationViewModel @Inject constructor(
                 val vpsPackages = vpsPackagesDeferred.await()
 
                 val updatedVpsPackage = applySelectionRule(campaignDetail.packageInfo.packageId, vpsPackages)
+                val sortedVpsPackages = applySortRule(updatedVpsPackage)
 
                 relatedCampaigns = campaignDetail.relatedCampaigns
                 isCampaignRuleSubmit = campaignDetail.isCampaignRuleSubmit
 
-                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, updatedVpsPackage)
+                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, sortedVpsPackages)
                 _campaignDetail.postValue(Success(combinedCampaignData))
             },
             onError = { error ->
@@ -462,7 +464,8 @@ class CampaignInformationViewModel @Inject constructor(
             block = {
                 val result = getSellerCampaignPackageListUseCase.execute()
                 val vpsPackages = applySelectionRule(selectedPackageId, result)
-                _vpsPackages.postValue(Success(vpsPackages))
+                val sortedVpsPackages = applySortRule(vpsPackages)
+                _vpsPackages.postValue(Success(sortedVpsPackages))
             },
             onError = { error ->
                 _vpsPackages.postValue(Fail(error))
@@ -475,7 +478,6 @@ class CampaignInformationViewModel @Inject constructor(
         selectedPackageId: Long,
         vpsPackages: List<VpsPackage>
     ): List<VpsPackageUiModel> {
-        val sortRule = compareBy<VpsPackageUiModel> { it.packageId }.thenBy { it.packageEndTime }
         return vpsPackages
             .map { vpsPackage ->
                 VpsPackageUiModel(
@@ -491,7 +493,13 @@ class CampaignInformationViewModel @Inject constructor(
                     vpsPackage.isShopTierBenefit()
                 )
             }
-            .sortedWith(sortRule)
+    }
+
+    private fun applySortRule(vpsPackages: List<VpsPackageUiModel>) : List<VpsPackageUiModel> {
+        val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
+        val nonEmptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
+        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> vpsPackage.remainingQuota == EMPTY_QUOTA }
+        return shopTierBenefit + nonEmptyVpsPackages + emptyVpsPackages
     }
 
     private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
@@ -546,5 +554,13 @@ class CampaignInformationViewModel @Inject constructor(
         }
     }
 
+    fun shouldEnableProceedButton(campaignName : String, selectedVpsPackage: VpsPackageUiModel): Boolean {
+        return when {
+            campaignName.length < MIN_CAMPAIGN_NAME_LENGTH -> false
+            selectedVpsPackage.isShopTierBenefit -> true
+            !selectedVpsPackage.isShopTierBenefit && selectedVpsPackage.remainingQuota.isMoreThanZero() -> true
+            else -> false
+        }
+    }
 
 }
