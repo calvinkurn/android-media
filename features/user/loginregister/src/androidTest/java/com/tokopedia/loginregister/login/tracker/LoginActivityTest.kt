@@ -15,6 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.CassavaTestRuleMatcher.getAnalyticValidator
@@ -150,7 +151,7 @@ class LoginActivityTest: LoginBase() {
     }
 
     fun simulateClickForgotPass() {
-        intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         clickForgotPass()
     }
 

@@ -13,8 +13,8 @@
         android:id="@+id/text_order_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
         android:paddingBottom="12dp"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6"
@@ -149,10 +149,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="20dp"
             android:gravity="center_vertical"
-            app:unify_image_type="rect"
+            android:scaleType="fitStart"
             app:unify_image_corner_radius="0"
             tools:src="@color/Unify_G500" />
 
