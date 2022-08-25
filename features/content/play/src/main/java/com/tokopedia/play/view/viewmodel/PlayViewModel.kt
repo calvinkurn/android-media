@@ -1160,8 +1160,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun createNewVoucherList(vouchers: List<PlayVoucherUiModel>): VoucherUiModel {
+        val eligibleForShown = vouchers.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().find { it.type != MerchantVoucherType.Private}
         val newVoucher = mutableListOf<PlayVoucherUiModel>().apply {
-            add(PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name))
+            if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name))
             addAll(vouchers)
         }
         return VoucherUiModel(
