@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.home.presentation.adapter
+package com.tokopedia.tokofood.feature.search.srp.presentation.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -9,32 +9,32 @@ import com.tokopedia.tokofood.common.presentation.adapter.TokoFoodCommonTypeFact
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodCategoryEmptyStateViewHolder
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodCategoryLoadingViewHolder
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryEmptyStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.search.srp.presentation.adapter.viewholder.MerchantSearchResultViewHolder
+import com.tokopedia.tokofood.feature.search.srp.presentation.uimodel.MerchantSearchResultUiModel
 
-class TokoFoodCategoryAdapterTypeFactory(
-    private val merchantListListener: TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener? = null,
+class TokofoodSearchResultAdapterTypeFactory(
+    private val merchantListListener: MerchantSearchResultViewHolder.TokoFoodMerchantSearchResultListener? = null,
     private val errorStateListener: TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener? = null
-):  BaseAdapterTypeFactory(),
+) : BaseAdapterTypeFactory(),
     TokoFoodCategoryTypeFactory,
-    TokoFoodMerchantListTypeFactory,
-    TokoFoodCommonTypeFactory {
+    TokoFoodCommonTypeFactory,
+    TokofoodSearchResultTypeFactory {
 
     override fun type(uiModel: TokoFoodCategoryLoadingStateUiModel): Int = TokoFoodCategoryLoadingViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodCategoryEmptyStateUiModel): Int = TokoFoodCategoryEmptyStateViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodMerchantListUiModel): Int = TokoFoodMerchantListViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodProgressBarUiModel): Int = TokoFoodProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodErrorStateUiModel): Int = TokoFoodErrorStateViewHolder.LAYOUT
+    override fun type(merchantSearchResultUiModel: MerchantSearchResultUiModel): Int = MerchantSearchResultViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type){
+        return when(type) {
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
-            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view, merchantListListener)
+            MerchantSearchResultViewHolder.LAYOUT -> MerchantSearchResultViewHolder(view, merchantListListener)
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
             TokoFoodErrorStateViewHolder.LAYOUT -> TokoFoodErrorStateViewHolder(view, errorStateListener)
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)

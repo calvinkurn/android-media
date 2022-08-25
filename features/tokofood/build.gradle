@@ -16,7 +16,8 @@ android {
                     pathSources + 'home',
                     pathSources + 'merchant',
                     pathSources + 'purchase',
-                    pathSources + 'ordertracking'
+                    pathSources + 'ordertracking',
+                    pathSources + 'search'
             ]
         }
     }

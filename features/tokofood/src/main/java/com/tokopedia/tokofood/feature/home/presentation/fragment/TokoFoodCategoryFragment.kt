@@ -25,7 +25,6 @@ import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.OPTION_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.PAGE_TITLE_PARAM
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.SORT_BY_PARAM
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -55,7 +54,7 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayo
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodCategoryAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodCategoryViewModel
@@ -489,6 +488,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun setRvPadding(isShowMiniCart: Boolean) {
+
         rvCategory?.let {
             if (isShowMiniCart){
                 it.setPadding(0,0, 0, context?.resources?.

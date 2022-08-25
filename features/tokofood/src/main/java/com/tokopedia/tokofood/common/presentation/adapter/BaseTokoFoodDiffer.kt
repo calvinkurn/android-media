@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.home.presentation.adapter
+package com.tokopedia.tokofood.common.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
