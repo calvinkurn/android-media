@@ -630,27 +630,10 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onDestroy() {
-        hideProgressDialog()
-        viewModel.p2Data.removeObservers(this)
-        viewModel.p2Other.removeObservers(this)
-        viewModel.productLayout.removeObservers(this)
-        viewModel.p2Login.removeObservers(this)
-        viewModel.loadTopAdsProduct.removeObservers(this)
-        viewModel.updatedImageVariant.removeObservers(this)
-        viewModel.initialVariantData.removeObservers(this)
-        viewModel.onVariantClickedData.removeObservers(this)
-        viewModel.toggleTeaserNotifyMe.removeObservers(this)
-        viewModel.addToCartLiveData.removeObservers(this)
-        viewModel.discussionMostHelpful.removeObservers(this)
-        viewModel.topAdsRecomChargeData.removeObservers(this)
-        viewModel.flush()
-        compositeSubscription.clear()
-        super.onDestroy()
-    }
-
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
+        hideProgressDialog()
+        compositeSubscription.clear()
         super.onDestroyView()
     }
 

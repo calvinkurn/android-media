@@ -47,7 +47,7 @@ class WholesaleActivity : BaseSimpleActivity() {
     override fun isShowCloseButton() = true
 
     private fun setupAdapter() {
-        wholesaleAdapter = WholesaleAdapter(this)
+        wholesaleAdapter = WholesaleAdapter()
     }
 
     private fun setupRecyclerView() {
