@@ -17,7 +17,6 @@ class PlayEntryPointTrackTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val playSource: PlaySource = PlaySource(id = "112", type = "FEEDS")
-    private val channelId: String = "12665"
 
     @get:Rule
     val activityRule : IntentsTestRule<PlayActivity> = object : IntentsTestRule<PlayActivity>(PlayActivity::class.java) {
