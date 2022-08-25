@@ -651,11 +651,21 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             when (result) {
                 is Success -> {
                     if (result.data.dataItem.success) {
-                        showToasterActionOke(result.data.dataItem.message, Toaster.TYPE_NORMAL)
                         collectionId = collectionIdDestination
                         if (isBulkAddShow) {
                             isBulkAddShow = false
-                            turnOffBulkAddMode()
+
+                            val intent = Intent()
+                            intent.putExtra(
+                                ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                                true
+                            )
+                            intent.putExtra(
+                                ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER,
+                                result.data.dataItem.message
+                            )
+                            intent.putExtra(WishlistCollectionConsts.EXTRA_NEED_REFRESH, true)
+                            activity?.setResult(Activity.RESULT_OK, intent)
                             activity?.finish()
                         }
                     } else {
@@ -2380,23 +2390,16 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     wishlistCollectionDetailManageLabel.text =
                         getString(Rv2.string.wishlist_cancel_manage_label)
                     wishlistCollectionDetailManageLabel.setOnClickListener {
-                        turnOffBulkAddMode()
+                        isBulkAddShow = false
+                        activity?.finish()
                     }
                 }
-                llTotalBarang.gone()
+                llTotalBarang.visible()
             }
         }
         isBulkDeleteShow = true
         onManageClicked(showCheckbox = true, isDeleteOnly = false, isBulkAdd = true)
         setDefaultAddCollectionButton()
-    }
-
-    private fun turnOffBulkAddMode() {
-        isBulkAddShow = false
-        binding?.run {
-            wishlistCollectionDetailStickyCountManageLabel.llTotalBarang.visible()
-        }
-        turnOffBulkMode()
     }
 
     private fun turnOffBulkMode() {
@@ -2611,8 +2614,20 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-        } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST) {
+        } else if (requestCode == REQUEST_CODE_GO_TO_PDP || requestCode == REQUEST_CODE_GO_TO_SEMUA_WISHLIST && data != null) {
             doRefresh()
+            val isSuccess = data?.getBooleanExtra(
+                ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS,
+                false
+            )
+            val messageToaster =
+                data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+
+            if (isSuccess == true) {
+                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_NORMAL) }
+            } else {
+                messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
+            }
         }
     }
 
