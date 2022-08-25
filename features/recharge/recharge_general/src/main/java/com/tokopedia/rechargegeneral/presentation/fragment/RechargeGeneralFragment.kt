@@ -556,7 +556,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             if (productId == 0){
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
-                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toInt()
+                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toIntSafely()
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
