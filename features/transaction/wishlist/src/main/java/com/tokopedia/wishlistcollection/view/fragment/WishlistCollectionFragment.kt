@@ -654,7 +654,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 collectionName
             )
         )
-        dialog?.dialogDesc?.gone()
+        dialog?.setDescription(getString(R.string.wishlist_collection_detail_delete_confirmation_desc))
         dialog?.setPrimaryCTAText(getString(R.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()

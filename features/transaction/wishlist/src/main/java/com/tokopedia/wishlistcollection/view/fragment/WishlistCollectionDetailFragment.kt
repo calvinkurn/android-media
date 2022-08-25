@@ -493,7 +493,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun observingWishlistCollectionItems() {
-        showLoader()
         wishlistCollectionDetailViewModel.collectionItems.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -925,6 +924,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
         }
+        showLoader()
     }
 
     private fun hideKeyboardFromSearchBar() {
@@ -2500,7 +2500,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
         } else {
             collectionItemsAdapter.hideCheckbox()
-            doResetFilter()
+            if (!isAutoDeletion) doResetFilter()
             setSwipeRefreshLayout()
             binding?.run {
                 containerDeleteSemuaWishlist.gone()
@@ -2642,6 +2642,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun refreshLayout() {
+        showLoader()
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
             wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
