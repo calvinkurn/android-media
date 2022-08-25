@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.component
+package com.tokopedia.media.editor.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,7 +20,7 @@ import com.yalantis.ucrop.view.UCropView
 import kotlin.math.abs
 import com.tokopedia.unifyprinciples.R as principleR
 
-class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
+class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     UCropView(context, attributeSet) {
 
     var onLoadComplete: (() -> Unit)? = null
@@ -33,12 +33,17 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     fun initializeRotate(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
-        overlayView.setDimmedColor(ContextCompat.getColor(context, principleR.color.Unify_Static_White))
+        overlayView.setDimmedColor(
+            ContextCompat.getColor(
+                context,
+                principleR.color.Unify_Static_White
+            )
+        )
         disabledTouchEvent()
         initListener()
     }
 
-    fun initializeBrightness(uriSource: Uri){
+    fun initializeBrightness(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
@@ -46,7 +51,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         initListener()
     }
 
-    fun initializeContrast(uriSource: Uri){
+    fun initializeContrast(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
@@ -54,7 +59,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         initListener()
     }
 
-    fun initializeWatermark(uriSource: Uri){
+    fun initializeWatermark(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
@@ -62,7 +67,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         initListener()
     }
 
-    fun initializeRemoveBackground(uriSource: Uri){
+    fun initializeRemoveBackground(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
@@ -70,14 +75,14 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         initListener()
     }
 
-    fun initializeCrop(uriSource: Uri){
+    fun initializeCrop(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         disableRotate()
         initListener()
     }
 
-    fun getBitmap(): Bitmap{
+    fun getBitmap(): Bitmap {
         return cropImageView.drawable.toBitmap()
     }
 
@@ -101,8 +106,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val imageScale = cropImageView.currentScale
 
         // if previous value is true then use it, otherwise use current editor state for indicator
-        val isRotate = if(data?.cropRotateValue?.isRotate == true) true else data?.isToolRotate() ?: false
-        val isCrop = if(data?.cropRotateValue?.isCrop == true) true else data?.isToolCrop() ?: false
+        val isRotate =
+            if (data?.cropRotateValue?.isRotate == true) true else data?.isToolRotate() ?: false
+        val isCrop =
+            if (data?.cropRotateValue?.isCrop == true) true else data?.isToolCrop() ?: false
 
         // if rotated image is same with original ratio without overflow, ucrop will skip it
         // need to manually crop & save
@@ -132,7 +139,17 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                 isCrop = isCrop
             )
 
-            onCropFinish(Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true))
+            onCropFinish(
+                Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    0,
+                    bitmap.width,
+                    bitmap.height,
+                    matrix,
+                    true
+                )
+            )
             return
         }
 
@@ -236,8 +253,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             isCrop = isCrop
         )
 
-        val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
-        val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
+        val normalizeX =
+            if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
+        val normalizeY =
+            if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
         return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
     }
 
@@ -256,32 +275,32 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         cropImageView.isRotateEnabled = false
     }
 
-    private fun getScale(): Pair<Float, Float>{
+    private fun getScale(): Pair<Float, Float> {
         return Pair(cropImageView.scaleX, cropImageView.scaleY)
     }
 
-    private fun hideOverlay(){
+    private fun hideOverlay() {
         overlayView.setCropFrameColor(Color.TRANSPARENT)
         overlayView.setCropGridColor(Color.TRANSPARENT)
         overlayView.setDimmedColor(Color.TRANSPARENT)
     }
 
-    private fun initListener(){
-        cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
+    private fun initListener() {
+        cropImageView.setTransformImageListener(object : TransformImageView.TransformImageListener {
             override fun onLoadComplete() {
-                this@EditorDetailPreviewImage.onLoadComplete?.invoke()
+                this@EditorDetailPreviewWidget.onLoadComplete?.invoke()
             }
 
             override fun onLoadFailure(e: java.lang.Exception) {
-                this@EditorDetailPreviewImage.onLoadFailure?.invoke(e)
+                this@EditorDetailPreviewWidget.onLoadFailure?.invoke(e)
             }
 
             override fun onRotate(currentAngle: Float) {
-                this@EditorDetailPreviewImage.onRotate?.invoke(currentAngle)
+                this@EditorDetailPreviewWidget.onRotate?.invoke(currentAngle)
             }
 
             override fun onScale(currentScale: Float) {
-                this@EditorDetailPreviewImage.onScale?.invoke(currentScale)
+                this@EditorDetailPreviewWidget.onScale?.invoke(currentScale)
             }
         })
     }

@@ -8,7 +8,7 @@
     android:id="@+id/editor_fragment_detail_root"
     android:orientation="vertical">
 
-    <com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
+    <com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
         android:id="@+id/img_ucrop_preview"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
