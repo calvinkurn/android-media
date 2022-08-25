@@ -28,6 +28,15 @@ fun getDestinationUri(context: Context, filename: String? = null): Uri {
         Uri.fromFile(File("${folderPath}/$filename.png"))
 }
 
+fun deleteRecursive(fileOrDirectory: File) {
+    if (fileOrDirectory.isDirectory) {
+        for (child in fileOrDirectory.listFiles()) {
+            deleteRecursive(child)
+        }
+    }
+    fileOrDirectory.delete()
+}
+
 @SuppressLint("SimpleDateFormat")
 fun generateFileName(): String {
     return SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(Date())

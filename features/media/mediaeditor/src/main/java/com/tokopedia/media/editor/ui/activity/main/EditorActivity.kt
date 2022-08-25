@@ -14,9 +14,12 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.utils.deleteRecursive
+import com.tokopedia.media.editor.utils.getEditorSaveFolderDir
 import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.ImageRatioType
+import java.io.File
 import javax.inject.Inject
 
 class EditorActivity : BaseEditorActivity() {
@@ -55,35 +58,25 @@ class EditorActivity : BaseEditorActivity() {
                 param = it
             }
 
-//        data?.let {
-//            viewModel.setEditorParam(it)
-//        }
+        data?.let {
+            viewModel.setEditorParam(it)
+        }
 
         // sample data
         val editorParam = EditorParam()
         editorParam.withRemoveBackground()
         editorParam.withWatermark()
-        editorParam.autoCropRatio = ImageRatioType.RATIO_3_4
+        editorParam.autoCropRatio = ImageRatioType.RATIO_2_1
 
         viewModel.setEditorParam(editorParam)
-//        viewModel.initStateList(
-//            arrayListOf(
-//                "https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
-//                "https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=800&q=60",
-//                "https://images.unsplash.com/photo-1531361171768-37170e369163?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHNhbXBsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
-//                "https://thumbs.dreamstime.com/b/sign-displaying-small-business-concept-individualowned-known-its-limited-size-stack-sample-cube-conceptual-caption-222695840.jpg",
-//                "https://staticg.sportskeeda.com/editor/2022/03/206cb-16473460338144-1920.jpg"
-//            )
-//        )
 
+        // temporary, will remove later
         viewModel.initStateList(
             arrayListOf(
                 "/storage/emulated/0/Pictures/iN76Hq7.jpeg",
                 "/storage/emulated/0/Pictures/aaditya-ailawadhi-D6pgxi3gwNQ-unsplash 1.png",
                 "/storage/emulated/0/Pictures/Screen Shot 2021-07-12 at 15.23.45.png",
-                "/storage/emulated/0/Pictures/Screen Shot 2022-08-09 at 08.56.58.png",
-                "/storage/emulated/0/Pictures/Screen Shot 2022-08-09 at 08.56.40.png",
-                "/storage/emulated/0/Pictures/Screen Shot 2022-08-09 at 08.57.09.png"
+                "/storage/emulated/0/Pictures/pirate.mp4"
             )
         )
     }
@@ -134,6 +127,12 @@ class EditorActivity : BaseEditorActivity() {
         }
 
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        val editorCacheFolder = File(getEditorSaveFolderDir(this))
+        deleteRecursive(editorCacheFolder)
+        super.onDestroy()
     }
 
     companion object {
