@@ -15,6 +15,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -345,6 +346,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupObserver() {
+        observeConfigInfo()
+
         observeTitle()
         observeCover()
         observeCreateLiveStream()
@@ -352,6 +355,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
+    }
+
+    private fun observeConfigInfo() {
+        parentViewModel.observableConfigInfo.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is NetworkResult.Loading -> showMainComponent(false)
+                is NetworkResult.Success -> showMainComponent(true)
+                is NetworkResult.Fail -> showMainComponent(true)
+            }
+        }
     }
 
     private fun observeTitle() {
@@ -667,7 +680,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
-        binding.groupPreparationMain.visibility = if(isShow) View.VISIBLE else View.GONE
+        binding.groupPreparationMain.showWithCondition(isShow)
     }
 
     private fun getProperErrorMessage(err: Throwable): String {
