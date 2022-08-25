@@ -50,7 +50,6 @@ class OrderDetailTypeFactoryImpl constructor(
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        super.createViewHolder(parent, type)
         return when(type){
             DefaultViewHolder.LAYOUT -> DefaultViewHolder(parent, listener)
             InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(parent, listener)
@@ -58,7 +57,7 @@ class OrderDetailTypeFactoryImpl constructor(
             DealsShortViewHolder.LAYOUT -> DealsShortViewHolder(parent)
             DealsOMPViewHolder.LAYOUT -> DealsOMPViewHolder(parent, listener)
             DealsViewHolder.LAYOUT -> DealsViewHolder(parent, listener)
-            else -> DefaultViewHolder(parent, listener)
+            else -> super.createViewHolder(parent, type)
         }
     }
 }
