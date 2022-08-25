@@ -80,4 +80,8 @@ data class ProductInfoP2UiData(
             it.productId == productId
         }?.boCampaignIDs ?: ""
     }
+
+    fun getRatesEstimateBoMetadata(productId: String): String {
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
+    }
 }
