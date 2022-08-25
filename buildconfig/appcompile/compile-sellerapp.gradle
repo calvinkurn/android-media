@@ -200,6 +200,7 @@ includeIfEnabled("features:user:telephony_masking")
 includeIfEnabled("features:category:age_restriction")
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:fintech:merchant_lending_widget")
+includeIfEnabled("features:category:common_sdk_affiliate_toko")
 
 includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")

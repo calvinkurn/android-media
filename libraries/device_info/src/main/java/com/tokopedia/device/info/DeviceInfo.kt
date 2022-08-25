@@ -25,6 +25,7 @@ object DeviceInfo {
     const val ADVERTISINGID = "ADVERTISINGID"
     const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
     const val X_86 = "x86"
+    var cacheAdsId = ""
 
     @JvmStatic
     fun isRooted(): Boolean {
@@ -146,7 +147,8 @@ object DeviceInfo {
                         "hasFID" to hasFID.toString()
                     )
                 )
-            } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {
+            }
         }
     }
 
@@ -155,7 +157,7 @@ object DeviceInfo {
         return try {
             val uuid = getUUID(context)
             uuid.isNotEmpty()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             false
         }
     }
@@ -188,11 +190,13 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                val result = runBlocking { getlatestAdId(context, 3000L) }
-                if(result.isEmpty()) {
-                    logIdentifier(context, "DeviceInfo")
-                }
-                result
+                getAdsIdSuspend(
+                    context, ({ adsId ->
+                        if (adsId.isEmpty()) {
+                            logIdentifier(context, "DeviceInfo")
+                        }
+                    }))
+                ""
             } catch (e: Exception) {
                 ""
             }
@@ -277,7 +281,8 @@ object DeviceInfo {
                     val adId = getlatestAdId(context, timeOutInMillis)
                     onSuccessGetAdsId?.invoke(adId)
                 }
-            } catch (ignored:Exception) { }
+            } catch (ignored: Exception) {
+            }
         }
     }
 
@@ -286,14 +291,18 @@ object DeviceInfo {
         return DeviceInfoCache(context).getUUID()
     }
 
-    private fun getCacheAdsId(context: Context): String {
-        val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        return sp.getString(KEY_ADVERTISINGID, "") ?: ""
+    fun getCacheAdsId(context: Context): String {
+        if (cacheAdsId.isEmpty()) {
+            val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
+            cacheAdsId = sp.getString(KEY_ADVERTISINGID, "") ?: ""
+        }
+        return cacheAdsId
     }
 
     private fun setCacheAdsId(context: Context, adsId: String) {
         val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
         sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+        cacheAdsId = adsId
     }
 
     @JvmStatic

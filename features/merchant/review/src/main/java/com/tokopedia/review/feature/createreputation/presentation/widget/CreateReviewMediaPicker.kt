@@ -29,7 +29,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewMediaPickerBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewMediaPickerBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L
@@ -210,8 +210,8 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private inner class MediaPickerListener: CreateReviewMediaAdapter.Listener, OnClickListener {
         var listener: Listener? = null
 
-        override fun onAddMediaClicked() {
-            listener?.onAddMediaClicked()
+        override fun onAddMediaClicked(enabled: Boolean) {
+            listener?.onAddMediaClicked(enabled)
         }
 
         override fun onRemoveMediaClicked(media: CreateReviewMediaUiModel) {
@@ -226,7 +226,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     }
 
     interface Listener {
-        fun onAddMediaClicked()
+        fun onAddMediaClicked(enabled: Boolean)
         fun onRemoveMediaClicked(media: CreateReviewMediaUiModel)
         fun onRetryUploadClicked()
     }
