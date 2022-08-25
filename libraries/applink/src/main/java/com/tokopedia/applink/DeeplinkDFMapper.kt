@@ -653,6 +653,10 @@ object DeeplinkDFMapper : CoroutineScope {
             //Feedback Form
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) ||
                     it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
+
+            //Chat Service
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.CHAT_SERVICE) },
+                DF_CHAT_SERVICE, R.string.title_chat_service))
         }
     }
 
@@ -783,9 +787,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Tokomember dashboard
             add(DFP({ it.startsWith(TOKOMEMBER) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
-
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.CHAT_SERVICE) },
-                DF_CHAT_SERVICE, R.string.path_chat_service))
         }
     }
 
