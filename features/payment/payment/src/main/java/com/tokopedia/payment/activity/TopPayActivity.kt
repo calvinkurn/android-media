@@ -644,7 +644,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
                 if(urlFinal.isNotEmpty() && urlFinal.contains(LINK_ATOM_GOPAY))
                 {
-                    Log.e("sfgdsfg",urlFinal)
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPaymentWithoutAuth(urlFinal))
                     return true
                 }
