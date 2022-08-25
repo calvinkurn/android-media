@@ -16,7 +16,8 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails
 
 object VisitableMapper {
 
-    private const val CATEGORY_DEALS = "deals"
+    const val CATEGORY_DEALS = "deals"
+    const val DEALS_CATEGORY_ID = 35
     private const val CATEGORY_DEALS_OMP = "Food & Voucher"
     private const val UPSTREAM_KEY = "ORDERINTERNAL"
     private const val EVENTS_CATEGORY_ID_1 = 32
@@ -27,7 +28,8 @@ object VisitableMapper {
         return list.map {
            return@map when{
                 it.category.equals(CATEGORY_DEALS, true)
-                        || it.category.equals(CATEGORY_DEALS_OMP, true) -> {
+                        || it.category.equals(CATEGORY_DEALS_OMP, true)
+                        || it.categoryID == DEALS_CATEGORY_ID -> {
                     getDealsCategory(orderDetails, upstream, isShortLayout, it)
                 }
                 it.categoryID == EVENTS_CATEGORY_ID_1
@@ -38,7 +40,7 @@ object VisitableMapper {
                 it.categoryID == EVENTS_CATEGORY_INSURANCE -> {
                     ItemsInsurance(orderDetails, it)
                 }
-                else -> ItemsDefault(it)
+                else -> ItemsDefault(orderDetails, it)
             }
         }
     }
@@ -57,7 +59,7 @@ object VisitableMapper {
                 ItemsDealsOMP(orderDetails, items)
             }
             else -> {
-                ItemsDeals(items)
+                ItemsDeals(orderDetails, items)
             }
         }
     }

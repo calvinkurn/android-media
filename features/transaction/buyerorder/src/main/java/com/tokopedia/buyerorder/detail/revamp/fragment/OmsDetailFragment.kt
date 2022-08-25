@@ -549,7 +549,18 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     override fun openQRFragment(actionButton: ActionButton, item: Items) {
-        TODO("Not yet implemented")
+        if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)
+            || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
+            DealsQRBottomSheet().apply {
+                renderView(actionButton)
+                show(childFragmentManager)
+            }
+        } else {
+            EventsQRBottomSheet().apply {
+                renderView(actionButton)
+                show(childFragmentManager)
+            }
+        }
     }
 
     override fun setDetailTitle(title: String) {
