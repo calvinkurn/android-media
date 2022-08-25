@@ -2474,7 +2474,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         // loop for red state first, then do auto apply BO
-        boolean hasUnappliedBo = false;
+        final ArrayList<String> unappliedBoPromoUniqueIds = new ArrayList<>();
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
@@ -2482,14 +2482,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shippingId > 0 && spId > 0) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel);
-                    if (!hasUnappliedBo) {
-                        hasUnappliedBo = true;
-                    }
+                    unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
-        if (hasUnappliedBo) {
-            getView().renderUnapplyBoIncompleteShipment();
+        if (!unappliedBoPromoUniqueIds.isEmpty()) {
+            getView().renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds);
         }
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
