@@ -80,8 +80,8 @@ class UploadPrescriptionUseCase @Inject constructor(
     }
 
     companion object {
-        private const val ENDPOINT_URL_LIVE = "https://epharmacy.tokopedia.com/prescription/upload"
-        private const val ENDPOINT_URL_STAGING = "https://epharmacy-staging.tokopedia.com/prescription/upload"
+        private const val ENDPOINT_URL_LIVE = "https://api.tokopedia.com/epharmacy/prescription/upload"
+        private const val ENDPOINT_URL_STAGING = "https://api-staging.tokopedia.com/epharmacy/prescription/upload"
         private const val KEY_FORMAT_VALUE="FILE"
         private const val KEY_SOURCE_VALUE="buyer"
         private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"

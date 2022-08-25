@@ -64,7 +64,7 @@ dependencies {
 
 project.ext {
     artifactId = 'epharmacy'
-    groupId = 'com.tokopedia.im'
+    groupId = 'com.tokopedia.category'
     versionName = "0.0.2"
     artifactName = "epharmacy-release"
 }
