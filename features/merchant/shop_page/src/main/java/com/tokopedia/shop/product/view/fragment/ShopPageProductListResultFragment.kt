@@ -778,7 +778,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             isEmptyState = true
             updateScrollListenerState(false)
         } else {
-            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty = false, totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false

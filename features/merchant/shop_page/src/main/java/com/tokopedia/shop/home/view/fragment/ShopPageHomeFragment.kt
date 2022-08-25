@@ -714,8 +714,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     val productListData = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductOnShop = it.data.totalProductData
+                    val currentPage = it.data.currentPage
                     addProductListHeader()
-                    updateProductListData(hasNextPage, productListData, totalProductOnShop)
+                    updateProductListData(hasNextPage, productListData, totalProductOnShop, currentPage)
                     productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
                 is Fail -> {
@@ -943,8 +944,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
-    private fun addChangeProductGridSection(totalProductData: Int) {
-        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
+    private fun addChangeProductGridSection(isProductListEmpty: Boolean, totalProductData: Int = 0) {
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty, totalProductData, gridType)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -1224,13 +1225,15 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     private fun updateProductListData(
         hasNextPage: Boolean,
         productList: List<ShopHomeProductUiModel>,
-        totalProductData: Int
+        totalProductData: Int,
+        currentPage: Int
     ) {
-        if (totalProductData.isZero()) {
+        val isProductListEmpty = (productList.size.isZero() && currentPage == Int.ONE) || totalProductData.isZero()
+        if (isProductListEmpty) {
             shopHomeAdapter.setProductListEmptyState(isOwner)
-            addChangeProductGridSection(totalProductData)
+            addChangeProductGridSection(isProductListEmpty)
         } else {
-            addChangeProductGridSection(totalProductData)
+            addChangeProductGridSection(isProductListEmpty, totalProductData)
             shopHomeAdapter.setProductListData(productList, isOwner)
             updateScrollListenerState(hasNextPage)
         }

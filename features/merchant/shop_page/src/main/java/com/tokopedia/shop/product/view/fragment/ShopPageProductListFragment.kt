@@ -34,7 +34,9 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -1416,8 +1418,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     val totalProduct = it.data.totalProductData
-                    if(!isOwner)
-                        updateProductChangeGridSection(totalProduct)
+                    val currentPage = it.data.currentPage
+                    if(!isOwner) {
+                        val isProductListEmpty = (it.data.listShopProductUiModel.size.isZero() && currentPage == Int.ONE) || totalProduct.isZero()
+                        updateProductChangeGridSection(isProductListEmpty, totalProduct)
+                    }
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
                     productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
                 }
@@ -1497,8 +1502,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     }
 
-    private fun updateProductChangeGridSection(totalProduct: Int) {
-        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
+    private fun updateProductChangeGridSection(isProductListEmpty: Boolean, totalProduct: Int = 0) {
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty, totalProduct, gridType)
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int, isFulfillmentFilterActive: Boolean) {

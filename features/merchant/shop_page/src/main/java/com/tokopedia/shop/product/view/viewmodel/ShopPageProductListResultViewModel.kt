@@ -367,7 +367,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             shopId: String,
             productFilter: ShopProductFilterInput,
             etalaseType: Int,
-            isEnableDirectPurchase: Boolean
+            isEnableDirectPurchase: Boolean,
     ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -383,6 +383,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                     isEnableDirectPurchase
                 ) },
                 totalProductData,
+                productFilter.page,
                 GetShopProductSuggestionUiModel(
                         productListResponse.suggestion.text,
                         productListResponse.suggestion.query,

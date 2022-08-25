@@ -432,7 +432,8 @@ class ShopHomeViewModel @Inject constructor(
         return GetShopHomeProductUiModel(
                 isHasNextPage,
                 productListUiModelData,
-                totalProductListData
+                totalProductListData,
+                page
         ).apply {
             updateProductCardQuantity(listShopProductUiModel.toMutableList())
         }

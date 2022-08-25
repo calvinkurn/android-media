@@ -338,7 +338,8 @@ class ShopPageProductListViewModel @Inject constructor(
                     etalaseId,
                     isEnableDirectPurchase = isEnableDirectPurchase
                 )},
-                totalProductData
+                totalProductData,
+                page
         ).apply {
             updateProductCardQuantity(listShopProductUiModel.toMutableList())
         }
@@ -479,7 +480,8 @@ class ShopPageProductListViewModel @Inject constructor(
                                 isEnableDirectPurchase = isEnableDirectPurchase
                             )
                         },
-                        initialProductListData.totalData
+                        initialProductListData.totalData,
+                        START_PAGE // current page is 1 since its initial product list
                 ).apply {
                     updateProductCardQuantity(listShopProductUiModel.toMutableList())
                 }
