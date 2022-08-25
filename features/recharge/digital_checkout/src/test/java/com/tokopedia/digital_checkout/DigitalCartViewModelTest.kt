@@ -471,7 +471,7 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.totalPrice.value == dummyResponse.price - dummyResponse.autoApply.discountAmount.toInt())
 
         assert(digitalCartViewModel.promoData.value != null)
-        assert(digitalCartViewModel.promoData.value!!.amount == dummyResponse.autoApply.discountAmount.toInt())
+        assert(digitalCartViewModel.promoData.value!!.amount == dummyResponse.autoApply.discountAmount.toLong())
     }
 
 
@@ -1114,7 +1114,7 @@ class DigitalCartViewModelTest {
 
         // then
         // if amount == 0, then expected if total price not updated and no changes on additional info
-        assert(digitalCartViewModel.promoData.value?.amount == 0)
+        assert(digitalCartViewModel.promoData.value?.amount == 0L)
         assert(digitalCartViewModel.promoData.value?.promoCode == "")
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price + getDummyGetCartResponse().adminFee)
     }
@@ -1123,7 +1123,7 @@ class DigitalCartViewModelTest {
     fun onResetVoucherCart_addOnAdditionalInfoAndUpdateTotalPayment() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.ACTIVE
 
@@ -1142,7 +1142,7 @@ class DigitalCartViewModelTest {
     fun onApplyDiscountPromoCode_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.ACTIVE
 
@@ -1185,7 +1185,7 @@ class DigitalCartViewModelTest {
         assert(!promoData.isActive())
         assert(promoData.state == TickerCheckoutView.State.INACTIVE)
         assert(promoData.description == "PROMOO")
-        assert(promoData.amount == 5000)
+        assert(promoData.amount == 5000L)
 
         //when
         digitalCartViewModel.applyPromoData(promoData)
@@ -1201,7 +1201,7 @@ class DigitalCartViewModelTest {
     fun onApplyDiscountPromoCode_withEmptyState_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.EMPTY
         // when
@@ -1219,7 +1219,7 @@ class DigitalCartViewModelTest {
     fun onApplyDiscountPromoCode_withFailedState_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
-        promoData.amount = 12000
+        promoData.amount = 12000L
         promoData.promoCode = "dummyPromoCode"
         promoData.state = TickerCheckoutView.State.FAILED
 
@@ -1288,7 +1288,7 @@ class DigitalCartViewModelTest {
     fun onDiscardPromoCode_updateCheckoutSummary() {
         // given
         val promoData1 = PromoData()
-        promoData1.amount = 12000
+        promoData1.amount = 12000L
         promoData1.promoCode = "dummyPromoCode"
         promoData1.state = TickerCheckoutView.State.ACTIVE
 

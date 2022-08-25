@@ -9,7 +9,7 @@ data class PromoData(var typePromo: Int = 0,
                      var promoCode: String = "",
                      var description: String = "",
                      var title: String = "",
-                     var amount: Int = 0,
+                     var amount: Long = 0,
                      var state: TickerCheckoutView.State = TickerCheckoutView.State.EMPTY) : Parcelable{
 
     fun getPromoCodeSafe() : String{
