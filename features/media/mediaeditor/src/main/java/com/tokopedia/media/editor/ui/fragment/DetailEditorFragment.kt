@@ -345,7 +345,7 @@ class DetailEditorFragment @Inject constructor(
         isRemoveFilter: Boolean = true
     ) {
         val cropView = viewBinding?.imgUcropPreview?.cropImageView
-        cropView?.colorFilter = viewModel.getBrightnessFilter(previousValue ?: 0f)
+        viewModel.setBrightness(previousValue ?: 0f)
 
         // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
         if (isRemoveFilter) viewBinding?.imgUcropPreview?.getBitmap()?.let {

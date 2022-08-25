@@ -65,10 +65,6 @@ class DetailEditorViewModel @Inject constructor(
         _brightnessFilter.value = colorFilterRepository.brightness(value)
     }
 
-    fun getBrightnessFilter(value: Float): ColorMatrixColorFilter{
-        return colorFilterRepository.brightness(value)
-    }
-
     fun setContrast(value: Float?) {
         if (value == null) return
         _contrastFilter.value = value
@@ -142,9 +138,6 @@ class DetailEditorViewModel @Inject constructor(
             rotateFilterRepository.mirror(it)
         }
     }
-
-    var rotatePreviousDegree: Float get() = rotateFilterRepository.previousDegree
-    set(value) {rotateFilterRepository.previousDegree = value}
 
     var rotateNumber: Int get() = rotateFilterRepository.rotateNumber
     set(value) {rotateFilterRepository.rotateNumber = value}
