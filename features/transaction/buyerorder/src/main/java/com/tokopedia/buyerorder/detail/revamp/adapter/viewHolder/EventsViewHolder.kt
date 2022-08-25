@@ -73,7 +73,7 @@ class EventsViewHolder(
             eventDetailsListener.setActionButtonEvent(element.orderDetails.actionButtons.first(), element.item, element.orderDetails)
         }
 
-        eventDetailsListener.setPassengerEvent(element.item)
+        eventDetailsListener.setPassengerEvent(element.item, metadata)
         eventDetailsListener.setDetailTitle(getString(R.string.detail_label_events))
 
         binding.customView1.setOnClickListener {

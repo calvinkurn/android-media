@@ -65,6 +65,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.view.DoubleTextView
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.regex.Pattern
@@ -559,8 +560,36 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         TODO("Not yet implemented")
     }
 
-    override fun setPassengerEvent(item: Items) {
-        TODO("Not yet implemented")
+    override fun setPassengerEvent(item: Items, metadata: MetaDataInfo) {
+        if (!item.category.equals(OrderCategory.EVENT.category, true)){
+            return
+        }
+
+        binding?.let {
+            if (metadata.passengerForms.isEmpty()){
+                it.userLabel.gone()
+                it.userInformationLayout.gone()
+                it.dividerAboveUserInfo.gone()
+
+                return@let
+            }
+
+            it.userLabel.visible()
+            it.userInformationLayout.visible()
+            it.dividerAboveUserInfo.visible()
+            it.userInformationLayout.removeAllViews()
+
+            metadata.entityPessengers.forEach { passenger ->
+                val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
+                    setTopText(passenger.title)
+                    setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setBottomText(passenger.value)
+                    setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    setBottomTextStyle(BOLD_TEXT_STYLE)
+                }
+                it.userInformationLayout.addView(doubleTextView)
+            }
+        }
     }
 
     override fun setActionButtonEvent(
@@ -716,6 +745,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val CATEGORY_GIFT_CARD = "Gift-card"
         private const val IS_TRUE = "true"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner"
+        private const val BOLD_TEXT_STYLE = "bold"
         const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(

@@ -14,7 +14,7 @@ interface EventDetailsListener {
     fun openQRFragment(actionButton: ActionButton, item: Items)
     fun setDetailTitle(title: String)
     fun setInsuranceDetail()
-    fun setPassengerEvent(item: Items)
+    fun setPassengerEvent(item: Items, metadata: MetaDataInfo)
     fun setActionButtonEvent(actionButton: ActionButton, item: Items, orderDetails: OrderDetails)
     fun setDealsBanner(metadata: MetaDataInfo)
     fun askPermission(uri: String, isDownloadable: Boolean,downloadFileName: String)
