@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
-import com.tokopedia.sellerapp.presentation.theme.NestLightBlue
+import com.tokopedia.sellerapp.presentation.theme.TextBlueColor
 import com.tokopedia.tkpd.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_1
@@ -52,7 +51,7 @@ fun CreateOpenOrder() {
             .height(32.dp)
             .padding(PaddingValues(top = 6.dp)),
         onClick = { redirectToNewOrderListScreen() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = NestLightBlue)
+        colors = ButtonDefaults.buttonColors(backgroundColor = TextBlueColor)
     ) {
         AndroidView(factory = {
             Typography(it).apply {

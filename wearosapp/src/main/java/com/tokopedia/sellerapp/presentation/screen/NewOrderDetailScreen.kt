@@ -34,6 +34,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.glide.GlideImage
+import com.tokopedia.sellerapp.presentation.theme.ActionButtonBlackColor
 import com.tokopedia.sellerapp.presentation.theme.DP_10
 import com.tokopedia.sellerapp.presentation.theme.DP_13
 import com.tokopedia.sellerapp.presentation.theme.DP_18
@@ -47,12 +48,11 @@ import com.tokopedia.sellerapp.presentation.theme.NEST_LAYOUT_LVL6
 import com.tokopedia.sellerapp.presentation.theme.NEST_SPACING_LVL1
 import com.tokopedia.sellerapp.presentation.theme.NEST_SPACING_LVL2
 import com.tokopedia.sellerapp.presentation.theme.NEST_SPACING_LVL3
-import com.tokopedia.sellerapp.presentation.theme.NestDarkGray
-import com.tokopedia.sellerapp.presentation.theme.NestLightBlack
-import com.tokopedia.sellerapp.presentation.theme.NestLightN0
-import com.tokopedia.sellerapp.presentation.theme.NestLightYellow
+import com.tokopedia.sellerapp.presentation.theme.NestLightNN0
 import com.tokopedia.sellerapp.presentation.theme.SP_18
 import com.tokopedia.sellerapp.presentation.theme.SP_20
+import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
+import com.tokopedia.sellerapp.presentation.theme.TextYellowColor
 import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SHIMMERING_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_400
 import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_500
@@ -105,7 +105,7 @@ fun NewOrderDetailHeader() {
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL3,
             text = "Pesanan Baru",
-            color = NestLightN0,
+            color = NestLightNN0,
             lineHeight = SP_18,
             weight = FONT_WEIGHT_500,
             maxLines = MAX_LINES_1,
@@ -128,7 +128,7 @@ fun NewOrderDetailMain() {
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL4,
             text = "Batas Respons (P0):",
-            color = NestLightN0,
+            color = NestLightNN0,
             lineHeight = SP_20,
             weight = FONT_WEIGHT_500,
             maxLines = MAX_LINES_1,
@@ -166,7 +166,7 @@ fun NewOrderDetailDate() {
                 ),
             fontSize = NEST_FONT_SIZE_LVL4,
             text = "13 Sep; 14:55",
-            color = NestLightYellow,
+            color = TextYellowColor,
             lineHeight = SP_20,
             weight = FONT_WEIGHT_400,
             maxLines = MAX_LINES_1,
@@ -191,12 +191,12 @@ fun NewOrderDetailProductDescription() {
                 )
             )
             .background(
-                color = NestLightN0
+                color = NestLightNN0
             ),
         imageModel = "https://asset.kompas.com/crops/0goP7FKwWF1qhOgFdSg5Q9QEOXg=/14x0:547x355/750x500/data/photo/2020/02/03/5e37dfdc0013d.png",
         shimmerParams = ShimmerParams(
             baseColor = MaterialTheme.colors.background,
-            highlightColor = NestLightN0,
+            highlightColor = NestLightNN0,
             durationMillis = ANIMATION_SHIMMERING_DURATION,
             dropOff = SHIMMERING_DROP_OFF,
             tilt = SHIMMERING_TILT
@@ -211,7 +211,7 @@ fun NewOrderDetailProductDescription() {
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL4,
         text = "Air Jorda Gym Red Satin Original Produk Hoops Malaysia Tunai Dong - Red, Black",
-        color = NestLightN0,
+        color = NestLightNN0,
         lineHeight = SP_20,
         weight = FONT_WEIGHT_400
     )
@@ -225,7 +225,7 @@ fun NewOrderDetailMoreProducts() {
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL4,
         text = "+2 produk lainnya",
-        color = NestDarkGray,
+        color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_400
     )
@@ -240,7 +240,7 @@ fun NewOrderDetailLocation() {
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL3,
         text = "Reguler - JNE",
-        color = NestDarkGray,
+        color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_400
     )
@@ -250,7 +250,7 @@ fun NewOrderDetailLocation() {
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL3,
         text = "D.I. Aceh",
-        color = NestDarkGray,
+        color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_400
     )
@@ -275,7 +275,7 @@ fun NewOrderDetailFooter() {
             ),
         fontSize = NEST_FONT_SIZE_LVL3,
         text = "Actions",
-        color = NestDarkGray,
+        color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_700,
     )
@@ -302,7 +302,7 @@ fun NewOrderDetailActionButton(
           /* nothing to do for now */
         },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = NestLightBlack
+            backgroundColor = ActionButtonBlackColor
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -318,7 +318,7 @@ fun NewOrderDetailActionButton(
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL3,
             text = text,
-            color = NestLightN0,
+            color = NestLightNN0,
             lineHeight = SP_18,
             weight = FONT_WEIGHT_700
         )

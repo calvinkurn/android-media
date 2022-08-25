@@ -17,7 +17,7 @@ fun SetupNavigation(
         startDestination = SPLASH_SCREEN
     ) {
         splashComposable(
-            navigateToHomeScreen = nav.splashToHomeScreen
+            navigateToHomeScreen = nav.newOrderListToDetailScreen
         )
         homeComposable()
         newOrderDetailComposable()
