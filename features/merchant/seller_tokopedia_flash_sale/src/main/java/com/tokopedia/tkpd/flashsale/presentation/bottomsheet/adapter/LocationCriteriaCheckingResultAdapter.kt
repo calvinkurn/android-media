@@ -7,7 +7,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemLocationCriteriaResultBinding
-import com.tokopedia.tkpd.flashsale.common.customview.TitleValueView.IconStatusEnum
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -61,11 +60,9 @@ class LocationCriteriaCheckingResultAdapter: RecyclerView.Adapter<LocationCriter
                 val priceMinFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.priceCheckingResult.min, false)
                 val priceMaxFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.priceCheckingResult.max, false)
                 tfOriginalPrice.value = "$priceMinFormatted - $priceMaxFormatted"
-                tfOriginalPrice.status = if (item.priceCheckingResult.isEligible)
-                    IconStatusEnum.PASSED_STATUS else IconStatusEnum.WARNING_STATUS
+                tfOriginalPrice.setStatusPassed(item.priceCheckingResult.isEligible)
                 tfCampaignStock.value = item.stockCheckingResult.min.toString()
-                tfCampaignStock.status = if (item.stockCheckingResult.isEligible)
-                    IconStatusEnum.PASSED_STATUS else IconStatusEnum.WARNING_STATUS
+                tfCampaignStock.setStatusPassed(item.stockCheckingResult.isEligible)
             }
         }
     }

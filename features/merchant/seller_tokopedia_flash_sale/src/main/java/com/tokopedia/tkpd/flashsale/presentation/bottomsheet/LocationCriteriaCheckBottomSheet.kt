@@ -16,7 +16,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class LocationCriteriaCheckBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<StfsBottomsheetLocationCriteriaCheckBinding>()
-    private var locationCheckingResult: List<CriteriaCheckingResult.LocationCheckingResult> = emptyList()
+    private var locationCheckingResults: List<CriteriaCheckingResult.LocationCheckingResult> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,17 +39,17 @@ class LocationCriteriaCheckBottomSheet : BottomSheetUnify() {
         binding?.rvResult?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = LocationCriteriaCheckingResultAdapter().apply {
-                setDataList(locationCheckingResult)
+                setDataList(locationCheckingResults)
             }
         }
     }
 
     fun show(
-        locationCheckingResult: List<CriteriaCheckingResult.LocationCheckingResult>,
+        locationCheckingResults: List<CriteriaCheckingResult.LocationCheckingResult>,
         manager: FragmentManager,
         tag: String?
     ) {
-        this.locationCheckingResult = locationCheckingResult
+        this.locationCheckingResults = locationCheckingResults
         show(manager, tag)
     }
 }

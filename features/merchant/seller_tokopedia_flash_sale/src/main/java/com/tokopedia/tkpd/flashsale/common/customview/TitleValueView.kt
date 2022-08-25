@@ -117,6 +117,11 @@ class TitleValueView : BaseCustomView {
         }
     }
 
+    fun setStatusPassed(isPassed: Boolean) {
+        val icon = if (isPassed) IconStatusEnum.PASSED_STATUS else IconStatusEnum.WARNING_STATUS
+        status = icon
+    }
+
     enum class IconStatusEnum(value: Int) {
         NO_ICON_STATUS(NO_ICON),
         PASSED_STATUS(PASSED),

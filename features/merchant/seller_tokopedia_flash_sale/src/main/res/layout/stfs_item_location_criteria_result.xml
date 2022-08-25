@@ -38,7 +38,6 @@
         android:layout_width="57dp"
         android:layout_height="57dp"
         android:padding="16dp"
-        android:layout_marginEnd="16dp"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

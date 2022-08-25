@@ -15,6 +15,7 @@ data class CriteriaCheckingResult(
     val freeOngkirCheckingResult: FreeOngkirCheckingResult = FreeOngkirCheckingResult(),
     val excludePreOrderCheckingResult: ExcludePreOrderCheckingResult = ExcludePreOrderCheckingResult(),
     val excludeSecondHandCheckingResult: ExcludeSecondHandCheckingResult = ExcludeSecondHandCheckingResult(),
+    val isMultiloc: Boolean = false,
     val locationResult: List<LocationCheckingResult> = emptyList()
 ) {
 
@@ -25,7 +26,7 @@ data class CriteriaCheckingResult(
 
     data class RatingResult (
         val isEligible: Boolean = false,
-        val min: Long = 0
+        val min: Double = 0.0
     )
 
     data class ProductScoreResult (
@@ -46,7 +47,8 @@ data class CriteriaCheckingResult(
 
     data class MaxAppearanceCheckingResult (
         val isEligible: Boolean = false,
-        val max: Long = 0
+        val max: Long = 0,
+        val dayPeriod: Long = 0,
     )
 
     data class PriceCheckingResult (
@@ -61,7 +63,8 @@ data class CriteriaCheckingResult(
     )
 
     data class ScoreCheckingResult (
-        val isEligible: Boolean = false
+        val isEligible: Boolean = false,
+        val min: Long = 0
     )
 
     data class FreeOngkirCheckingResult (
