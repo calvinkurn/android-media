@@ -11,13 +11,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="16dp"
             android:visibility="visible">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -191,8 +191,8 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_bar"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:indeterminate="true"
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
@@ -208,5 +208,4 @@
             android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.core.widget.NestedScrollView>

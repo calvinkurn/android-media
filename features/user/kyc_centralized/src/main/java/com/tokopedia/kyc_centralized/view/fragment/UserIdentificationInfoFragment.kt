@@ -286,64 +286,64 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun showRejectedReason(reasons: List<String>) {
         when(reasons.size) {
-            1 -> {
+            REJECTED_REASON_SIZE_ONE -> {
                 iconOne?.show()
                 reasonOne?.apply {
-                    text = reasons[0]
+                    text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
                 clReason?.show()
             }
-            2 -> {
+            REJECTED_REASON_SIZE_TWO -> {
                 iconOne?.show()
                 reasonOne?.apply {
-                    text = reasons[0]
+                    text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
                 iconTwo?.show()
                 reasonTwo?.apply {
-                    text = reasons[1]
+                    text = reasons[REJECTED_REASON_TWO]
                 }?.show()
 
                 clReason?.show()
             }
-            3 -> {
+            REJECTED_REASON_SIZE_THREE -> {
                 iconOne?.show()
                 reasonOne?.apply {
-                    text = reasons[0]
+                    text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
                 iconTwo?.show()
                 reasonTwo?.apply {
-                    text = reasons[1]
+                    text = reasons[REJECTED_REASON_TWO]
                 }?.show()
 
                 iconThree?.show()
                 reasonThree?.apply {
-                    text = reasons[2]
+                    text = reasons[REJECTED_REASON_THREE]
                 }?.show()
 
                 clReason?.show()
             }
-            4 -> {
+            REJECTED_REASON_SIZE_FOUR -> {
                 iconOne?.show()
                 reasonOne?.apply {
-                    text = reasons[0]
+                    text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
                 iconTwo?.show()
                 reasonTwo?.apply {
-                    text = reasons[1]
+                    text = reasons[REJECTED_REASON_TWO]
                 }?.show()
 
                 iconThree?.show()
                 reasonThree?.apply {
-                    text = reasons[2]
+                    text = reasons[REJECTED_REASON_THREE]
                 }?.show()
 
                 iconFour?.show()
                 reasonFour?.apply {
-                    text = reasons[3]
+                    text = reasons[REJECTED_REASON_FOUR]
                 }?.show()
 
                 clReason?.show()
@@ -461,6 +461,15 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
+        private const val REJECTED_REASON_ONE = 0
+        private const val REJECTED_REASON_TWO = 1
+        private const val REJECTED_REASON_THREE = 2
+        private const val REJECTED_REASON_FOUR = 3
+        private const val REJECTED_REASON_SIZE_ONE = 1
+        private const val REJECTED_REASON_SIZE_TWO = 2
+        private const val REJECTED_REASON_SIZE_THREE = 3
+        private const val REJECTED_REASON_SIZE_FOUR = 4
+
         const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
         fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", redirectUrl: String?): UserIdentificationInfoFragment {
             return UserIdentificationInfoFragment().apply {
