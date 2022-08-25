@@ -111,6 +111,22 @@
             app:layout_constraintTop_toBottomOf="@id/tv_product_manage_single_stock_count_variant"
             tools:visibility="visible"/>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/notifyMeBuyer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N300"
+            android:lines="2"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_notify_me_buyer"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_product_manage_single_stock_count_variant"
+            tools:visibility="visible"/>
+
         <com.tokopedia.unifycomponents.QuantityEditorUnify
             android:id="@+id/quickEditStockQuantityEditor"
             android:contentDescription="@string/content_desc_quickEditStockQuantityEditor"

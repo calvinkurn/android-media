@@ -348,9 +348,11 @@ class ProductManageQuickEditStockFragment(
             stock > getMaxStock() -> setAboveMaxStockBehavior()
             stock == getMaxStock() -> setMaxStockBehavior()
             stock <= MINIMUM_STOCK -> {
-                if (product.suspendAccess()){
+                if (product.suspendAccess()) {
                     setZeroStockSuspendBehavior()
-                }else{
+                } else if (product.haveNotifyMeBuyer()) {
+                    setNotifyMeBuyerBehavior()
+                } else {
                     setZeroStockBehavior()
                 }
             }
@@ -367,6 +369,14 @@ class ProductManageQuickEditStockFragment(
 
     private fun setZeroStockSuspendBehavior() {
         binding?.suspendStockInfo?.visible()
+        binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
+        binding?.quickEditStockSaveButton?.isEnabled = true
+    }
+
+    private fun setNotifyMeBuyerBehavior() {
+        binding?.notifyMeBuyer?.visible()
+        binding?.notifyMeBuyer?.text = context?.getString(R.string.product_manage_notify_me_buyer_info_in_edit_stock,
+            product?.notifyMeOOSCount.orEmpty()).orEmpty().parseAsHtml()
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
         binding?.quickEditStockSaveButton?.isEnabled = true
     }
