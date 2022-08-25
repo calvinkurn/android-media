@@ -75,12 +75,6 @@ data class ProductInfoP2UiData(
         } ?: 0
     }
 
-    fun getBebasOngkirCampaignIDsByProductId(productId: String): String {
-        return bebasOngkir.boProduct.firstOrNull {
-            it.productId == productId
-        }?.boCampaignIDs ?: ""
-    }
-
     fun getRatesEstimateBoMetadata(productId: String): String {
         return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
     }

@@ -341,7 +341,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   products{
                     productID
                     boType
-                    boCampaignIDs
                   }
                   images{
                     boType
