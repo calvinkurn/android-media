@@ -345,6 +345,26 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun implementPreviousStateCrop(cropRotateData: EditorCropRotateModel) {
+        viewBinding?.imgUcropPreview?.let {
+            val cropView = it.cropImageView
+            val overlayView = it.overlayView
+
+            overlayView.setTargetAspectRatio(cropRotateData.imageWidth / cropRotateData.imageHeight.toFloat())
+            overlayView.setupCropBounds()
+            cropView.zoomInImage(cropRotateData.scale)
+
+            if (!cropRotateData.isAutoCrop) {
+                cropView.post {
+                    val cropImageMatrix = cropView.imageMatrix.values()
+                    val ax = (cropImageMatrix[2] * -1) + cropRotateData.translateX
+                    val ay = (cropImageMatrix[5] * -1) + cropRotateData.translateY
+                    cropView.postTranslate(ax, ay)
+                }
+            }
+        }
+    }
+
     private fun implementPreviousStateRotate(cropRotateData: EditorCropRotateModel) {
         viewBinding?.imgUcropPreview?.let {
             val originalAsset = it.getBitmap()
@@ -355,46 +375,24 @@ class DetailEditorFragment @Inject constructor(
             val rotateDegree =
                 (cropRotateData.rotateDegree + (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE))
 
-            // read previous value & implement if current editor is rotate
-            cropView.post {
-                // === Read previous ROTATE data & implement
-                if (cropRotateData.isRotate) {
-                    // need to check if previous value is rotate / not, if rotated then ratio is changed
-                    val isRotate = cropRotateData.orientationChangeNumber % 2 == 1
+            // need to check if previous value is rotate / not, if rotated then ratio is changed
+            val isRotate = cropRotateData.orientationChangeNumber % 2 == 1
 
-                    val originalWidth = originalAsset.width.toFloat()
-                    val originalHeight = originalAsset.height.toFloat()
+            val originalWidth = originalAsset.width.toFloat()
+            val originalHeight = originalAsset.height.toFloat()
 
-                    val ratio =
-                        if (isRotate) originalHeight / originalWidth else originalWidth / originalHeight
+            val ratio =
+                if (isRotate) originalHeight / originalWidth else originalWidth / originalHeight
 
-                    cropView.scaleX = cropRotateData.scaleX
-                    cropView.scaleY = cropRotateData.scaleY
-                    viewModel.setRotate(it, rotateDegree, isRotate)
-                    viewModel.rotateNumber = cropRotateData.orientationChangeNumber
-                    viewModel.rotateSliderValue = cropRotateData.rotateDegree
+            cropView.scaleX = cropRotateData.scaleX
+            cropView.scaleY = cropRotateData.scaleY
+            viewModel.setRotate(it, rotateDegree, isRotate)
+            viewModel.rotateNumber = cropRotateData.orientationChangeNumber
+            viewModel.rotateSliderValue = cropRotateData.rotateDegree
 
-                    overlayView.setTargetAspectRatio(ratio)
+            overlayView.setTargetAspectRatio(ratio)
 
-                    cropView.setImageToWrapCropBounds()
-                }
-
-                // == Read previous CROP data & implement
-                if (cropRotateData.isCrop) {
-                    overlayView.setTargetAspectRatio(cropRotateData.imageWidth / cropRotateData.imageHeight.toFloat())
-                    overlayView.setupCropBounds()
-                    cropView.zoomInImage(cropRotateData.scale)
-
-                    if (!cropRotateData.isAutoCrop) {
-                        cropView.post {
-                            val cropImageMatrix = cropView.imageMatrix.values()
-                            val ax = (cropImageMatrix[2] * -1) + cropRotateData.translateX
-                            val ay = (cropImageMatrix[5] * -1) + cropRotateData.translateY
-                            cropView.postTranslate(ax, ay)
-                        }
-                    }
-                }
-            }
+            cropView.setImageToWrapCropBounds()
         }
     }
 
@@ -425,7 +423,17 @@ class DetailEditorFragment @Inject constructor(
 
         // if crop / rotate tool implement ucrop previous state, if not then create cropped image
         if (data.isToolRotate() || data.isToolCrop()) {
-            implementPreviousStateRotate(previousState.cropRotateValue)
+            viewBinding?.imgUcropPreview?.cropImageView?.post {
+                data.cropRotateValue.let { cropRotateValue ->
+                    if (data.cropRotateValue.isRotate) {
+                        implementPreviousStateRotate(cropRotateValue)
+                    }
+
+                    if (data.cropRotateValue.isCrop) {
+                        implementPreviousStateCrop(cropRotateValue)
+                    }
+                }
+            }
         } else if (data.cropRotateValue.isCrop || data.cropRotateValue.isRotate) {
             val currentBitmap = viewBinding?.imgUcropPreview?.getBitmap()
             val cropRotateData = data.cropRotateValue
