@@ -13,7 +13,7 @@ class NFCUtils {
         private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
         private const val RADIX_16 = 16
         private const val MULTIPLIER_2 = 2
-        private const val CHUCK_2 = 2
+        private const val CHUNK_2 = 2
         private const val HEX_BIT_COUNT_4 = 4
         private const val HEX_0xFF = 0xFF
         private const val HEX_0x0F = 0x0F
@@ -56,7 +56,7 @@ class NFCUtils {
         @SuppressLint("Method Call Prohibited")
         @JvmStatic
         fun stringToByteArrayRadix(str: String): ByteArray{
-            return str.chunked(CHUCK_2)
+            return str.chunked(CHUNK_2)
                     .map { it.toInt(RADIX_16).toByte() }
                     .toByteArray()
         }
