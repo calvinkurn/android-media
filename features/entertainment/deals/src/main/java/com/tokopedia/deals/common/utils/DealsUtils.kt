@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.ui.dataview.ProductCategoryDataView
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 object DealsUtils {
@@ -22,6 +23,14 @@ object DealsUtils {
 
     fun convertToCurrencyString(value: Long): String {
         return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value))
+    }
+
+    fun convertEpochToString(time: Int): String {
+        val sdf = SimpleDateFormat("d MMM yyyy", Locale("in", "ID", ""))
+        sdf.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+        val epochTime = time * 1000L
+        val date = Date(epochTime)
+        return sdf.format(date)
     }
 
     fun getLabelColor(context: Context, label: String): ProductCategoryDataView {

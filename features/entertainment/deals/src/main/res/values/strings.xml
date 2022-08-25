@@ -80,5 +80,7 @@
     <string name="deals_pdp_redeem_locations">Lokasi Redeem\u0020</string>
     <string name="deals_pdp_hot_deal">HOT DEAL</string>
     <string name="deals_pdp_favourite">Favourite Deals</string>
+    <string name="deals_pdp_valid_through">Berlaku hingga tanggal %s</string>
+    <string name="deals_pdp_number_of_items"> (%d)</string>
 
 </resources>
