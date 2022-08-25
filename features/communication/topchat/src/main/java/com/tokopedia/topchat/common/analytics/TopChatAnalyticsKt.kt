@@ -235,6 +235,73 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventViewProductBundlingBroadcast(
+        blastId: String,
+        statusBundle: String,
+        bundleId: String,
+        shopId: String,
+        userId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_BUNDLE_CART_CHATROOM,
+                label = "$blastId - $statusBundle - $bundleId - bundling",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35596",
+                shopId = shopId,
+                userId = userId
+            )
+        )
+    }
+
+    fun eventClickProductAttachmentOnProductBundlingBroadcast(
+        blastId: String,
+        statusBundle: String,
+        bundleId: String,
+        productId: String,
+        shopId: String,
+        userId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_PRODUCT_BUNDLE,
+                label = "$blastId - $statusBundle - $bundleId - bundling - $productId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35598",
+                shopId = shopId,
+                userId = userId
+            )
+        )
+    }
+
+    fun eventClickCtaOnProductBundlingBroadcast(
+        blastId: String,
+        statusBundle: String,
+        bundleId: String,
+        shopId: String,
+        userId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_ADD_TO_CART_BUNDLE,
+                label = "$blastId - $statusBundle - $bundleId - bundling",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35599",
+                shopId = shopId,
+                userId = userId
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -243,7 +310,8 @@ object TopChatAnalyticsKt {
         businessUnit: String,
         currentSite: String?,
         userId: String? = null,
-        trackerId: String? = null
+        trackerId: String? = null,
+        shopId: String? = null
     ): Map<String, Any> {
         val data = mutableMapOf(
             TrackAppUtils.EVENT to event,
@@ -260,6 +328,9 @@ object TopChatAnalyticsKt {
         }
         if (trackerId != null) {
             data[TRACKER_ID] = trackerId
+        }
+        if (shopId != null) {
+            data[SHOPID] = shopId
         }
         return data
     }
@@ -289,6 +360,9 @@ object TopChatAnalyticsKt {
         const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
         const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
+        const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
+        const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
+        const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
     }
 
     //Event Name
@@ -342,4 +416,5 @@ object TopChatAnalyticsKt {
     private const val PRODUCT_ID = "productId"
     private const val USER_ID = "userId"
     private const val TRACKER_ID = "trackerId"
+    private const val SHOPID = "shopId"
 }

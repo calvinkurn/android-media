@@ -63,6 +63,7 @@ object TokoFoodMerchantUiModelMapper {
             val variantId = addOnUiModel.id
             variantParams.addAll(addOnUiModel.options
                     .filter { it.isSelected } // selected options
+                    .distinctBy { it.id }
                     .map { optionUiModel ->
                         UpdateProductVariantParam(
                                 variantId = variantId,

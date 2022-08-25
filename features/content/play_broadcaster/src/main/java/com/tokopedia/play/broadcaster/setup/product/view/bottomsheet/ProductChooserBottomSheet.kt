@@ -42,11 +42,10 @@ import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -175,7 +174,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
         }
 
         setCloseClickListener {
@@ -241,9 +240,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = getString(
-                                R.string.play_bro_product_chooser_error_save
-                            )
+                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
                         )
                     }
                     else -> {}
@@ -510,6 +507,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroProductChooserBottomSheet"
+        private const val SHEET_HEIGHT_PERCENT = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,
