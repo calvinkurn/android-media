@@ -415,6 +415,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             checkoutTradeInAnalytics.eventTradeInClickBackButton(isTradeInByDropOff());
         }
         releaseBookingIfAny();
+        shipmentPresenter.clearAllBoOnTemporaryUpsell();
     }
 
     private void restoreProgressLoading() {
@@ -3483,7 +3484,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickCancelNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-
+        isPlusSelected = false;
+        shipmentPresenter.cancelUpsell(true, isOneClickShipment(), isTradeIn(), true,
+                false, null, getDeviceId(), getCheckoutLeasingId(),
+                isPlusSelected());
     }
 
     @Override

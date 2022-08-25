@@ -387,6 +387,13 @@ public interface ShipmentContract {
         void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
+
+        void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
+                          boolean isTradeIn, boolean skipUpdateOnboardingState,
+                          boolean isReloadAfterPriceChangeHinger,
+                          String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
+
+        void clearAllBoOnTemporaryUpsell();
     }
 
 }

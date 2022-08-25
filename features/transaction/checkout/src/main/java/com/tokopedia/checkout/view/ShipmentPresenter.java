@@ -2327,9 +2327,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         // As deals product is using OCS, the shipment should only contain 1 product
         long productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
         if (productId != 0) {
-            compositeSubscription.add(releaseBookingUseCase
+            releaseBookingUseCase
                     .execute(productId)
-                    .subscribe(new ReleaseBookingStockSubscriber()));
+                    .subscribe(new ReleaseBookingStockSubscriber());
         }
     }
 
@@ -2622,5 +2622,40 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         return products;
+    }
+
+    @Override
+    public void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
+                             boolean isTradeIn, boolean skipUpdateOnboardingState,
+                             boolean isReloadAfterPriceChangeHinger,
+                             String cornerId, String deviceId, String leasingId, boolean isPlusSelected) {
+        hitClearAllBo();
+        processInitialLoadCheckoutPage(isReloadData, isOneClickShipment, isTradeIn,
+                skipUpdateOnboardingState, isReloadAfterPriceChangeHinger, cornerId,
+                deviceId, leasingId, isPlusSelected);
+    }
+
+    @Override
+    public void clearAllBoOnTemporaryUpsell() {
+        if (shipmentNewUpsellModel.isShow() && shipmentNewUpsellModel.isSelected()) {
+            ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
+            boolean hasBo = false;
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel != null && shipmentCartItemModel.getShipmentCartData() != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null && !shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode().isEmpty()) {
+                    ArrayList<String> boCodes = new ArrayList<>();
+                    boCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    clearOrders.add(new ClearPromoOrder(
+                            shipmentCartItemModel.getCartString(),
+                            shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
+                            boCodes
+                    ));
+                    hasBo = true;
+                }
+            }
+            if (hasBo) {
+                clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(new ArrayList<>(), clearOrders)));
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe();
+            }
+        }
     }
 }
