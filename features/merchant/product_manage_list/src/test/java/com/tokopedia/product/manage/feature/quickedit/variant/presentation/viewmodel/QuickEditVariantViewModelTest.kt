@@ -10,7 +10,6 @@ import com.tokopedia.product.manage.data.createSelectionResponse
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
-import java.math.BigDecimal
 
 class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
@@ -84,21 +83,21 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         val productId = "1"
         val productName = "Tokopedia"
         val variantList = listOf(
-            createProductVariantResponse(productID = "1", price = BigDecimal("100")),
-            createProductVariantResponse(productID = "2", price = BigDecimal("200"))
+            createProductVariantResponse(productID = "1", price = 100.0),
+            createProductVariantResponse(productID = "2", price = 200.0)
         )
         val response = createGetVariantResponse(productName = productName, products = variantList)
 
         onGetProductVariant_thenReturn(response)
 
         viewModel.getData(productId)
-        viewModel.setVariantPrice("2", BigDecimal("300"))
-        viewModel.setVariantPrice("1", BigDecimal("150"))
+        viewModel.setVariantPrice("2", 300.0)
+        viewModel.setVariantPrice("1", 150.0)
         viewModel.saveVariants()
 
         val productVariants = listOf(
-            createProductVariant(id = "1", price = BigDecimal("150")),
-            createProductVariant(id = "2", price = BigDecimal("300"))
+            createProductVariant(id = "1", price = 150.0),
+            createProductVariant(id = "2", price = 300.0)
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
@@ -176,7 +175,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
     @Test
     fun `given variant result is null when set variant price should NOT update variant`() {
-        viewModel.setVariantPrice("1", BigDecimal("100"))
+        viewModel.setVariantPrice("1", 100.0)
         viewModel.saveVariants()
 
         viewModel.onClickSaveButton

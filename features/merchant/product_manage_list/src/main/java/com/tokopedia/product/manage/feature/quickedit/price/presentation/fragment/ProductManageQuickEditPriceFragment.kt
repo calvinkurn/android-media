@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
@@ -27,7 +28,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
-import java.math.BigDecimal
 
 class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFinishedListener? = null,
                                           private var product: ProductUiModel? = null) : BottomSheetUnify() {
@@ -133,7 +133,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val input = textFieldInput.text.toString()
-                    val price = CurrencyFormatHelper.convertRupiahToBigDecimal(input)
+                    val price = CurrencyFormatHelper.convertRupiahToDouble(input)
 
                     if(price < MINIMUM_PRICE) {
                         showErrorPriceTooLow()
@@ -163,7 +163,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
     }
 
     private fun isPriceTooLow(): Boolean {
-        val currentPrice = product?.minPrice?.price?.toBigDecimalOrNull() ?: BigDecimal.ZERO
+        val currentPrice = product?.minPrice?.price.toDoubleOrZero()
         if (currentPrice < MINIMUM_PRICE) return true
         return false
     }

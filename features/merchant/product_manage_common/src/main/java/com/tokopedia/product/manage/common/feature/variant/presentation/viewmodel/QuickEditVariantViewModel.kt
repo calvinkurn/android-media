@@ -25,7 +25,6 @@ import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 import javax.inject.Inject
 
 class QuickEditVariantViewModel @Inject constructor(
@@ -158,7 +157,7 @@ class QuickEditVariantViewModel @Inject constructor(
         _showSaveBtn.value = shouldShow
     }
 
-    fun setVariantPrice(variantId: String, price: BigDecimal) {
+    fun setVariantPrice(variantId: String, price: Double) {
         updateVariant(variantId) { it.copy(price = price) }
     }
 

@@ -15,11 +15,10 @@ import com.tokopedia.product.manage.common.feature.variant.adapter.model.Product
 import com.tokopedia.product.manage.databinding.ItemProductManageVariantBinding
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
-import java.math.BigDecimal
 
 class ProductVariantPriceViewHolder(
     itemView: View,
-    private val priceMap: MutableMap<String, BigDecimal>,
+    private val priceMap: MutableMap<String, Double>,
     private val listener: ProductVariantListener
 ): AbstractViewHolder<ProductVariant>(itemView) {
 
@@ -124,7 +123,7 @@ class ProductVariantPriceViewHolder(
         binding?.textFieldPrice?.run {
             priceTextWatcher = object: TextWatcher {
                 override fun afterTextChanged(input: Editable) {
-                    val price = CurrencyFormatHelper.convertRupiahToBigDecimal(input.toString())
+                    val price = CurrencyFormatHelper.convertRupiahToDouble(input.toString())
                     priceMap[variant.id] = price
 
                     removeTextFieldPriceListeners()
@@ -150,7 +149,7 @@ class ProductVariantPriceViewHolder(
         }
     }
 
-    private fun showHidePriceError(price: BigDecimal) {
+    private fun showHidePriceError(price: Double) {
         if (price < MINIMUM_PRICE) {
             showMinPriceError()
         } else {
@@ -159,6 +158,6 @@ class ProductVariantPriceViewHolder(
     }
 
     interface ProductVariantListener {
-        fun onPriceChanged(variantId: String, price: BigDecimal)
+        fun onPriceChanged(variantId: String, price: Double)
     }
 }

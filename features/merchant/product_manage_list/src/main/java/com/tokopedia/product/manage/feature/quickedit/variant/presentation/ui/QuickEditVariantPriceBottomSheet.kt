@@ -12,7 +12,6 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantPriceAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.ProductVariantListener
-import java.math.BigDecimal
 
 class QuickEditVariantPriceBottomSheet(
     private val onSaveVariantsPrice: (EditVariantResult) -> Unit = {}
@@ -45,7 +44,7 @@ class QuickEditVariantPriceBottomSheet(
         return ProductVariantAdapter(ProductVariantPriceAdapterFactoryImpl(this))
     }
 
-    override fun onPriceChanged(variantId: String, price: BigDecimal) {
+    override fun onPriceChanged(variantId: String, price: Double) {
         viewModel.setVariantPrice(variantId, price)
     }
 

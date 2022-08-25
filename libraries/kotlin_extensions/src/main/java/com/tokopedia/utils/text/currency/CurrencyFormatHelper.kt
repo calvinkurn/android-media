@@ -1,9 +1,9 @@
 package com.tokopedia.utils.text.currency
 
 import android.widget.EditText
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
@@ -146,7 +146,7 @@ object CurrencyFormatHelper {
         return rupiah.toRawStringOfNumbers().toLongOrZero()
     }
 
-    fun convertRupiahToBigDecimal(rupiah: String): BigDecimal {
-        return rupiah.toRawStringOfNumbers().toBigDecimalOrNull() ?: BigDecimal.ZERO
+    fun convertRupiahToDouble(rupiah: String): Double {
+        return rupiah.toRawStringOfNumbers().toDoubleOrZero()
     }
 }

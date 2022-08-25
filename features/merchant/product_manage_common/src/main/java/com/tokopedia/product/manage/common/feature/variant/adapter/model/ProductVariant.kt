@@ -6,7 +6,6 @@ import com.tokopedia.product.manage.common.feature.variant.adapter.factory.Produ
 import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import java.math.BigDecimal
 
 data class ProductVariant(
     val id: String,
@@ -15,7 +14,7 @@ data class ProductVariant(
     val combination: List<Int>,
     val isPrimary: Boolean,
     val isCampaign: Boolean,
-    val price: BigDecimal,
+    val price: Double,
     val sku: String,
     val stock: Int,
     val pictures: List<Picture>,

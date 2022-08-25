@@ -12,14 +12,13 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import java.math.BigDecimal
 
 fun createProductVariantResponse(
     productID: String = "1",
     status: ProductStatus = ProductStatus.ACTIVE,
     combination: List<Int> = emptyList(),
     isPrimary: Boolean = false,
-    price: BigDecimal = BigDecimal("100"),
+    price: Double = 100.0,
     sku: String = "sku",
     stock: Int = 0,
     stockAlertStatus: String = "2",
@@ -68,7 +67,7 @@ fun createProductVariant(
     combination: List<Int> = emptyList(),
     isPrimary: Boolean = false,
     isCampaign: Boolean = false,
-    price: BigDecimal = BigDecimal("100"),
+    price: Double = 100.0,
     sku: String = "sku",
     stock: Int = 0,
     pictures: List<Picture> = emptyList(),
