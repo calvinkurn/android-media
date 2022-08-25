@@ -91,8 +91,7 @@ class DetailEditorActivity : BaseEditorActivity() {
         onPrimaryClick: () -> Unit,
         onSecondaryClick: () -> Unit
     ) {
-        var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.apply {
+        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(editorR.string.editor_detail_activity_dialog_title))
             setDescription(getString(editorR.string.editor_detail_activity_dialog_desc))
 

@@ -62,11 +62,11 @@ class DetailEditorFragment @Inject constructor(
     private var isEdited = false
     private var initialImageMatrix: Matrix? = null
 
-    fun isShowDialogConfirmation(): Boolean{
+    fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
 
-    fun saveAndExit(){
+    fun saveAndExit() {
         if (data.isToolRotate() || data.isToolCrop()) {
             // if current tools editor not rotate then skip crop data set by sent empty object on data
             viewBinding?.imgUcropPreview?.cropRotate(
@@ -352,19 +352,21 @@ class DetailEditorFragment @Inject constructor(
             val cropView = it.cropImageView
             val overlayView = it.overlayView
 
-            val rotateDegree = (cropRotateData.rotateDegree + (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE))
+            val rotateDegree =
+                (cropRotateData.rotateDegree + (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE))
 
             // read previous value & implement if current editor is rotate
             cropView.post {
                 // === Read previous ROTATE data & implement
-                if(cropRotateData.isRotate){
+                if (cropRotateData.isRotate) {
                     // need to check if previous value is rotate / not, if rotated then ratio is changed
                     val isRotate = cropRotateData.orientationChangeNumber % 2 == 1
 
                     val originalWidth = originalAsset.width.toFloat()
                     val originalHeight = originalAsset.height.toFloat()
 
-                    val ratio = if(isRotate) originalHeight / originalWidth else originalWidth / originalHeight
+                    val ratio =
+                        if (isRotate) originalHeight / originalWidth else originalWidth / originalHeight
 
                     cropView.scaleX = cropRotateData.scaleX
                     cropView.scaleY = cropRotateData.scaleY
@@ -378,12 +380,12 @@ class DetailEditorFragment @Inject constructor(
                 }
 
                 // == Read previous CROP data & implement
-                if(cropRotateData.isCrop) {
+                if (cropRotateData.isCrop) {
                     overlayView.setTargetAspectRatio(cropRotateData.imageWidth / cropRotateData.imageHeight.toFloat())
                     overlayView.setupCropBounds()
                     cropView.zoomInImage(cropRotateData.scale)
 
-                    if(!cropRotateData.isAutoCrop){
+                    if (!cropRotateData.isAutoCrop) {
                         cropView.post {
                             val cropImageMatrix = cropView.imageMatrix.values()
                             val ax = (cropImageMatrix[2] * -1) + cropRotateData.translateX
@@ -424,11 +426,12 @@ class DetailEditorFragment @Inject constructor(
         // if crop / rotate tool implement ucrop previous state, if not then create cropped image
         if (data.isToolRotate() || data.isToolCrop()) {
             implementPreviousStateRotate(previousState.cropRotateValue)
-        } else if(data.cropRotateValue.isCrop || data.cropRotateValue.isRotate) {
+        } else if (data.cropRotateValue.isCrop || data.cropRotateValue.isRotate) {
             val currentBitmap = viewBinding?.imgUcropPreview?.getBitmap()
             val cropRotateData = data.cropRotateValue
             currentBitmap?.let {
-                val finalRotationDegree = (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
+                val finalRotationDegree =
+                    (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
 
                 val offsetX = cropRotateData.offsetX
                 val imageWidth = cropRotateData.imageWidth
@@ -493,18 +496,19 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.btnSave?.setOnClickListener { _ ->
             // check if user move crop area via image matrix translation
             initialImageMatrix?.values()?.let { initialMatrixValue ->
-                val currentMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
+                val currentMatrix =
+                    viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                 currentMatrix?.let {
                     initialMatrixValue.forEachIndexed { index, value ->
-                        if(value != currentMatrix[index]) isEdited = true
+                        if (value != currentMatrix[index]) isEdited = true
                     }
                 }
             }
 
             // if no editing perform, then skip save
-            if(isEdited) {
-                if(data.isToolRemoveBackground()){
-                    showRemoveBackgroundSaveConfirmation{
+            if (isEdited) {
+                if (data.isToolRemoveBackground()) {
+                    showRemoveBackgroundSaveConfirmation {
                         saveAndExit()
                     }
                 } else {
@@ -516,9 +520,8 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun showRemoveBackgroundSaveConfirmation(onPrimaryClick: () -> Unit){
-        val dialog = DialogUnify(requireContext(),DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.apply {
+    private fun showRemoveBackgroundSaveConfirmation(onPrimaryClick: () -> Unit) {
+        DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(editorR.string.editor_remove_bg_dialog_title))
             setDescription(getString(editorR.string.editor_remove_bg_dialog_desc))
 
@@ -532,7 +535,7 @@ class DetailEditorFragment @Inject constructor(
             dialogSecondaryLongCTA.apply {
                 text = getString(editorR.string.editor_remove_bg_dialog_secondary_button_text)
                 setOnClickListener {
-                    dialog.hide()
+                    hide()
                 }
             }
 
@@ -550,7 +553,11 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun writeToStorage(bitmapParam: Bitmap, filename: String? = null, isFinish: Boolean = true) {
+    private fun writeToStorage(
+        bitmapParam: Bitmap,
+        filename: String? = null,
+        isFinish: Boolean = true
+    ) {
         val fileResult = writeBitmapToStorage(
             requireContext(),
             bitmapParam,

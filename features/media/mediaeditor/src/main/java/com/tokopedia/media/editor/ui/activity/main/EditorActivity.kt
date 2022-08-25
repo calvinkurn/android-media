@@ -103,33 +103,34 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onBackPressed() {
         val fragment = (fragment as EditorFragment)
-        if (fragment.isShowDialogConfirmation()){
+        if (fragment.isShowDialogConfirmation()) {
             showBackDialogConfirmation()
         } else {
             super.onBackPressed()
         }
     }
 
-    private fun showBackDialogConfirmation(){
-        var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(editorR.string.editor_activity_dialog_title))
-        dialog.setDescription(getString(editorR.string.editor_activity_dialog_desc))
+    private fun showBackDialogConfirmation() {
+        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(editorR.string.editor_activity_dialog_title))
+            setDescription(getString(editorR.string.editor_activity_dialog_desc))
 
-        dialog.dialogPrimaryCTA.apply {
-            text = getString(editorR.string.editor_activity_dialog_primary_button_text)
-            setOnClickListener {
-                super.onBackPressed()
+            dialogPrimaryCTA.apply {
+                text = getString(editorR.string.editor_activity_dialog_primary_button_text)
+                setOnClickListener {
+                    super.onBackPressed()
+                }
             }
-        }
 
-        dialog.dialogSecondaryLongCTA.apply {
-            text = getString(editorR.string.editor_activity_dialog_secondary_button_text)
-            setOnClickListener {
-                dialog.hide()
+            dialogSecondaryLongCTA.apply {
+                text = getString(editorR.string.editor_activity_dialog_secondary_button_text)
+                setOnClickListener {
+                    hide()
+                }
             }
-        }
 
-        dialog.show()
+            show()
+        }
     }
 
     override fun onDestroy() {
