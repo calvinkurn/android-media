@@ -1285,7 +1285,7 @@ class ModelBuilder {
 
     fun buildDiscountedPrice(
             originalPrice: String = "Rp120.000",
-            discountPercent: Int = 10,
+            discountPercent: Long = 10L,
             discountedPrice: String = "Rp108.000",
             discountedPriceNumber: Double = 108000.0
     ) = DiscountedPrice(
