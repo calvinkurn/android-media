@@ -443,6 +443,7 @@ class PlayUpcomingFragment @Inject constructor(
                 playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
             } else {
                 analytic.clickCover(channelId)
+                description.hide()
             }
         }
 
