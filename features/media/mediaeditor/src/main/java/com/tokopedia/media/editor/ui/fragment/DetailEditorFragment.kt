@@ -5,24 +5,17 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.graphics.values
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
-import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
-import com.tokopedia.media.editor.data.repository.RotateFilterRepositoryImpl
-import com.tokopedia.media.editor.data.repository.WatermarkFilterRepositoryImpl
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
@@ -34,20 +27,15 @@ import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.getDestinationUri
 import com.tokopedia.media.editor.utils.writeBitmapToStorage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
-import kotlin.Exception
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
@@ -159,9 +147,18 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onWatermarkChanged(value: Int) {
-        viewModel.setWatermark(value)
-        data.watermarkMode = value
-        isEdited = true
+        implementedBaseBitmap?.let {
+            val shopName = if (userSession.shopName.isEmpty())
+                DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
+            viewModel.setWatermark(
+                requireContext(),
+                it,
+                value,
+                shopName
+            )
+            data.watermarkMode = value
+            isEdited = true
+        }
     }
 
     override fun onRotateValueChanged(rotateValue: Float) {
@@ -249,19 +246,9 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun observeWatermark() {
-        viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
-            implementedBaseBitmap?.let { bitmap ->
-                val shopName = if (userSession.shopName.isEmpty())
-                    DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
-                val result = viewModel.getWatermarkFilter(
-                    requireContext(),
-                    bitmap,
-                    watermarkType,
-                    shopName
-                )
-                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(result)
-                isEdited = true
-            }
+        viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
+            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(watermarkBitmap)
+            isEdited = true
         }
     }
 
@@ -489,7 +476,7 @@ class DetailEditorFragment @Inject constructor(
             val shopName = if (userSession.shopName.isEmpty())
                 DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
 
-            viewModel.getWatermarkFilterThumbnail(
+            viewModel.setWatermarkFilterThumbnail(
                 requireContext(),
                 it,
                 shopName,

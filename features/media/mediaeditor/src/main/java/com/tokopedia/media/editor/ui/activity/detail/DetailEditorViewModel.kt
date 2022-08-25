@@ -46,8 +46,8 @@ class DetailEditorViewModel @Inject constructor(
     private var _contrastFilter = MutableLiveData<Bitmap>()
     val contrastFilter: LiveData<Bitmap> get() = _contrastFilter
 
-    private var _watermarkFilter = MutableLiveData<Int>()
-    val watermarkFilter: LiveData<Int> get() = _watermarkFilter
+    private var _watermarkFilter = MutableLiveData<Bitmap>()
+    val watermarkFilter: LiveData<Bitmap> get() = _watermarkFilter
 
     private var _editorParam = MutableLiveData<EditorParam>()
     val editorParam: LiveData<EditorParam> get() = _editorParam
@@ -91,19 +91,14 @@ class DetailEditorViewModel @Inject constructor(
         }
     }
 
-    fun setWatermark(watermarkType: Int?) {
-        if (watermarkType == null) return
-        _watermarkFilter.value = watermarkType
-    }
-
-    fun getWatermarkFilter(
+    fun setWatermark(
         context: Context,
         bitmapSource: Bitmap,
         watermarkType: Int,
         shopName: String,
         isThumbnail: Boolean = false
-    ): Bitmap{
-        return watermarkFilterRepository.watermark(
+    ) {
+        _watermarkFilter.value = watermarkFilterRepository.watermark(
             context,
             bitmapSource,
             watermarkType,
@@ -112,7 +107,7 @@ class DetailEditorViewModel @Inject constructor(
         )
     }
 
-    fun getWatermarkFilterThumbnail(
+    fun setWatermarkFilterThumbnail(
         context: Context,
         implementedBaseBitmap: Bitmap?,
         shopName: String,
