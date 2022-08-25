@@ -854,7 +854,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && !allowChat) it.copy(endsIn = endTimeInteractive)
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && !allowChat && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
                 else it
             }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
@@ -866,12 +866,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val endTimeInteractive: Calendar? get() {
         return when (val value = _interactive.value){
-            is InteractiveUiModel.Quiz -> return when (value.status){
+            is InteractiveUiModel.Quiz -> return when (val endTime = value.status){
                 is InteractiveUiModel.Quiz.Status.Ongoing -> {
-                    val converted = TimeUnit.SECONDS.toMillis(_quizFormData.value.durationInMs)
-                    Calendar.getInstance().apply {
-                        add(Calendar.SECOND, converted.toInt())
-                    }
+                    endTime.endTime
                 }
                 else -> null
             }
@@ -882,7 +879,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun displayGameResultWidgetIfHasLeaderBoard() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, false).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz) it.copy(endsIn = endTimeInteractive)
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
                 else it
             }
             if (leaderboardSlots.isNotEmpty()) {
