@@ -39,7 +39,7 @@ jobs:
       matrix:
         # Override automatic language detection by changing the below list
         # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['java', 'javascript', 'python']
+        language: ['javascript', 'java', 'python']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
@@ -57,6 +57,14 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '14'
+
+    - name: Set Up Java
+      if: matrix.language == 'java'
+      uses: actions/setup-java@v1
+      with:
+        java-version: '8'
+        java-package: jdk
+        architecture: x64
 
     - name: Set Up Python
       if: matrix.language == 'python'
