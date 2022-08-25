@@ -1643,9 +1643,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     priceInput,
                     priceSuggestion
             )
-//            priceSuggestionBottomSheet?.setShowListener {
-//                priceSuggestionBottomSheet?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-//            }
+            priceSuggestionBottomSheet?.setShowListener {
+                priceSuggestionBottomSheet?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+            }
             priceSuggestionBottomSheet?.setCloseClickListener {
                 ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
                 priceSuggestionBottomSheet?.dismiss()
