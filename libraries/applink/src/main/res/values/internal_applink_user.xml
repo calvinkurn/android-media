@@ -75,4 +75,18 @@
     <string name="applink_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="applink_otp_push_notif_setting">/otp-push-notif-setting</string>
 
+    //Login
+    <string name="applink_login">/login</string>
+    <string name="applink_login_seamless">/login-seamless</string>
+
+    <string name="applink_term_privacy">/term-privacy/.*\</string>
+
+    <string name="applink_landing_shop_creation">/landing-shop-creation</string>
+    <string name="applink_phone_shop_creation">/phone-shop-creation</string>
+    <string name="applink_name_shop_creation">/name-shop-creation</string>
+
+    //Register
+    <string name="applink_init_register">/init-register</string>
+    <string name="applink_email_register">/email-register</string>
+
 </resources>

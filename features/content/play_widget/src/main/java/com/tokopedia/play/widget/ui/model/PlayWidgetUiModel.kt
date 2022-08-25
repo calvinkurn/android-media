@@ -72,6 +72,9 @@ data class PlayWidgetChannelUiModel(
 
     val hasPromo: Boolean
         get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
+
+    val isUpcoming: Boolean
+        get() = channelType == PlayWidgetChannelType.Upcoming
 }
 
 data class PlayWidgetTotalView(
