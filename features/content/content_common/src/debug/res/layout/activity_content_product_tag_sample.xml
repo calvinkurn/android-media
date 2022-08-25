@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        android:text="Demo Content Product Tag"
+        app:typographyType="heading_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_source_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Source"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        />
+
+    <RadioGroup
+        android:id="@+id/rg_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/tv_source_label"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feed"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            />
+
+    </RadioGroup>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_open_as_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open As"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        app:layout_constraintTop_toBottomOf="@id/rg_source"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        />
+
+    <RadioGroup
+        android:id="@+id/rg_open_as"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/tv_open_as_label"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_seller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seller"
+            />
+
+    </RadioGroup>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_open"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Open"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@id/rg_open_as"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="@id/tv_title"
+        />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
