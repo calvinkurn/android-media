@@ -156,9 +156,6 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         val position = when (featureName) {
             SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_MULTI_EDIT,
             SellerMigrationFeatureName.FEATURE_INSTAGRAM_IMPORT, SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT,
-            SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> {
-                PRODUCT_TAB
-            }
             SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_SELLER_CHAT,
             SellerMigrationFeatureName.FEATURE_CHAT_SETTING -> {
                 CHAT_TAB

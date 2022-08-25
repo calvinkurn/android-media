@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -646,12 +647,21 @@ class CreateReviewViewModel @Inject constructor(
                 if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
                     currentMediaPickerUiState.copy(mediaItems = mediaItems)
                 } else {
+                    val concatenatedErrorMessage = mediaItems.filter {
+                        it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                    }.joinToString("|") { it.message }
+                    val errorCode = ErrorHandler.getErrorMessagePair(
+                        context = null,
+                        e = MessageErrorException(concatenatedErrorMessage),
+                        builder = ErrorHandler.Builder()
+                    ).second
                     if (currentMediaPickerUiState.failedOccurrenceCount.isMoreThanZero()) {
-                        enqueueErrorUploadMediaToaster()
+                        enqueueErrorUploadMediaToaster(errorCode)
                     }
                     CreateReviewMediaPickerUiState.FailedUpload(
                         failedOccurrenceCount = currentMediaPickerUiState.failedOccurrenceCount + 1,
-                        mediaItems = mediaItems
+                        mediaItems = mediaItems,
+                        errorCode = errorCode
                     )
                 }
             } else {
@@ -1193,10 +1203,10 @@ class CreateReviewViewModel @Inject constructor(
         sendingReview.value = false
     }
 
-    private fun enqueueErrorUploadMediaToaster() {
+    private fun enqueueErrorUploadMediaToaster(errorCode: String) {
         _toasterQueue.tryEmit(
             CreateReviewToasterUiModel(
-                message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
+                message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message, listOf(errorCode)),
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR
@@ -1235,10 +1245,10 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun submitReview() {
-        when(mediaPickerUiState.value) {
-            is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster()
+        when(val currentMediaPickerUiState = mediaPickerUiState.value) {
+            is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster(currentMediaPickerUiState.errorCode)
             is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
-            else ->sendingReview.value = true
+            else -> sendingReview.value = true
         }
     }
 
@@ -1246,6 +1256,17 @@ class CreateReviewViewModel @Inject constructor(
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
         ) == RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
+    }
+
+    fun enqueueDisabledAddMoreMediaToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            )
+        )
     }
 
     // region MutableStateFlow updater

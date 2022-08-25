@@ -14,6 +14,10 @@ class ProductBundlingUiModel constructor(
     var productBundling: ProductBundlingData = builder.productBundling
         private set
 
+    fun isBroadcast(): Boolean {
+        return blastId != NOT_BROADCAST
+    }
+
     override var isLoading: Boolean = true
     override var isError: Boolean = false
     override val id: String = attachmentId
@@ -72,5 +76,6 @@ class ProductBundlingUiModel constructor(
 
     companion object {
         const val BUNDLE_TYPE_MULTIPLE = 2
+        private const val NOT_BROADCAST = "0"
     }
 }

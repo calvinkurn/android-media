@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
@@ -40,7 +41,7 @@ class OvoErrorFragment: ExternalAccountFinalFragment(), BaseFinalListener {
     override fun onMainSuccessButtonClicked() {
         ovoCreationAnalytics.trackClickOvoFailBtn()
         if(arguments?.getBoolean(OvoFinalPageActivity.KEY_GOTO_REGISTER) == true){
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
             intent.putExtra(OvoFinalPageActivity.KEY_GOTO_REGISTER, true)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

@@ -661,7 +661,11 @@ class ChatbotPresenter @Inject constructor(
         val imageHeight = options.outHeight
         val imageWidth = options.outWidth
 
-        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+        val fileSize = try {
+            Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+        } catch (e: NumberFormatException) {
+            0
+        }
 
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
             view.onUploadUndersizedImage()

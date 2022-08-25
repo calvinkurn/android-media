@@ -68,9 +68,8 @@ ext {
     playServiceFirebaseFirestore = '17.1.2'
     playServiceAds = '17.1.0'
     playServiceTagManager = '17.0.0'
-    playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '18.0.0'
-    playServiceMeasurementApi = '16.0.4'
+    playServiceMeasurementApi = '18.0.0'
     bomVersion = '26.2.0'
 
     JunitVersion = '4.12'
@@ -198,7 +197,6 @@ ext {
             ads           : "com.google.android.gms:play-services-ads-identifier:${playServiceAds}",
             tagManagerImpl: "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager    : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
-            safetyNet     : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
             measurementApi: "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}"
     ]
 
@@ -285,7 +283,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.5.10",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.5.12",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -310,7 +308,8 @@ ext {
             jjwtApi               : "io.jsonwebtoken:jjwt-api:0.11.2",
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
-            gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion"
+            gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
+            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0"
     ]
 
     testDependencies = [
