@@ -11,18 +11,18 @@ class BrightnessToolUiComponent constructor(
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_tool_brightness), MediaEditorSlider.Listener {
 
-    private val brightnessSlider: MediaEditorSlider = findViewById(R.id.slider_brightness)
+    private val brightnessSliderView: MediaEditorSlider = findViewById(R.id.slider_brightness)
 
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        brightnessSlider.setRangeSliderValue(
+        brightnessSliderView.setRangeSliderValue(
             BRIGHTNESS_SLIDER_START_VALUE,
             BRIGHTNESS_SLIDER_RANGE,
             BRIGHTNESS_SLIDER_STEP_VALUE,
             sliderInitValue.toInt()
         )
-        brightnessSlider.listener = this
+        brightnessSliderView.listener = this
     }
 
     override fun valueUpdated(step: Int, value: Float) {
@@ -42,7 +42,7 @@ class BrightnessToolUiComponent constructor(
         /**
          * convert slider value -100...100 to brightness value -255...255
          */
-        fun sliderValueToBrightness(value: Float): Float{
+        fun sliderValueToBrightness(value: Float): Float {
             return (value / (BRIGHTNESS_SLIDER_RANGE / 2)) * BRIGHTNESS_MAX_REAL_VALUE
         }
     }

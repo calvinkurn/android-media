@@ -13,7 +13,7 @@ import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
 import com.tokopedia.media.editor.data.repository.RotateFilterRepository
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
-import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
+import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EditorParam
 import kotlinx.coroutines.flow.collect
@@ -121,13 +121,13 @@ class DetailEditorViewModel @Inject constructor(
         )
     }
 
-    fun setRotate(ucropRef: EditorDetailPreviewImage?, rotateDegree: Float, isRotateRatio: Boolean){
+    fun setRotate(ucropRef: EditorDetailPreviewWidget?, rotateDegree: Float, isRotateRatio: Boolean){
         ucropRef?.let {
             rotateFilterRepository.rotate(it, rotateDegree, isRotateRatio)
         }
     }
 
-    fun setMirror(ucropRef: EditorDetailPreviewImage?){
+    fun setMirror(ucropRef: EditorDetailPreviewWidget?){
         ucropRef?.let {
             rotateFilterRepository.mirror(it)
         }

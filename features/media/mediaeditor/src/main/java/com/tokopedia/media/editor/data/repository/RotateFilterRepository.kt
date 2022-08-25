@@ -1,17 +1,17 @@
 package com.tokopedia.media.editor.data.repository
 
-import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
+import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import javax.inject.Inject
 
 interface RotateFilterRepository {
     fun rotate(
-        editorDetailPreview: EditorDetailPreviewImage?,
+        editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
         isRotateRatio: Boolean
     )
 
-    fun mirror(editorDetailPreview: EditorDetailPreviewImage?)
+    fun mirror(editorDetailPreview: EditorDetailPreviewWidget?)
     fun getFinalRotationDegree(): Float
 
     var previousDegree: Float
@@ -27,7 +27,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
     private var isRatioRotated = false
 
     override fun rotate(
-        editorDetailPreview: EditorDetailPreviewImage?,
+        editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
         isRotateRatio: Boolean
     ) {
@@ -65,7 +65,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
     }
 
 
-    override fun mirror(editorDetailPreview: EditorDetailPreviewImage?) {
+    override fun mirror(editorDetailPreview: EditorDetailPreviewWidget?) {
         editorDetailPreview?.let {
             val originalDegree = it.cropImageView.currentAngle
             it.cropImageView.postRotate(-originalDegree * 2)

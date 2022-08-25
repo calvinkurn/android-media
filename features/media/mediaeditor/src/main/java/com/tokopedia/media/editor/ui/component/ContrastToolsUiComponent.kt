@@ -11,20 +11,20 @@ class ContrastToolsUiComponent constructor(
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_tool_contrast), MediaEditorSlider.Listener {
 
-    private val contrastSlider: MediaEditorSlider = findViewById(R.id.slider_contrast)
+    private val contrastSliderView: MediaEditorSlider = findViewById(R.id.slider_contrast)
 
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        contrastSlider.setRangeSliderValue(
+        contrastSliderView.setRangeSliderValue(
             CONTRAST_SLIDER_START_VALUE,
             CONTRAST_SLIDER_RANGE * 2,
             CONTRAST_SLIDER_STEP_VALUE,
             sliderInitValue.toInt()
         )
-        contrastSlider.listener = this
-        contrastSlider.isValueUpdateDelay = true
-        contrastSlider.delayTime = 100L
+        contrastSliderView.listener = this
+        contrastSliderView.isValueUpdateDelay = true
+        contrastSliderView.delayTime = 100L
     }
 
     override fun valueUpdated(step: Int, value: Float) {

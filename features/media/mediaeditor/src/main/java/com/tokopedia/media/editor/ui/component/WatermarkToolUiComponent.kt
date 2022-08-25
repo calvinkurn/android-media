@@ -38,7 +38,8 @@ class WatermarkToolUiComponent constructor(
     }
 
     private fun setButtonSelected(view: View) {
-        view.background = ContextCompat.getDrawable(context, R.drawable.editor_rect_green_selected_thumbnail)
+        view.background =
+            ContextCompat.getDrawable(context, R.drawable.editor_rect_green_selected_thumbnail)
     }
 
     private fun releaseButtonSelected(view: View) {

@@ -18,8 +18,8 @@ class DrawerUiComponent constructor(
 
     private lateinit var drawerAdapter: ThumbnailDrawerAdapter
 
-    fun getCurrentIndex(): Int{
-        return if(::drawerAdapter.isInitialized) drawerAdapter.getCurrentIndex() else -1
+    fun getCurrentIndex(): Int {
+        return if (::drawerAdapter.isInitialized) drawerAdapter.getCurrentIndex() else -1
     }
 
     fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>) {
@@ -28,7 +28,7 @@ class DrawerUiComponent constructor(
         }
     }
 
-    fun clickIndex(index: Int){
+    fun clickIndex(index: Int) {
         lstThumbnail.findViewHolderForAdapterPosition(index)?.itemView?.performClick()
     }
 

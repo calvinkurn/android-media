@@ -36,7 +36,7 @@ class ToolsUiComponent constructor(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setupActiveTools(editorStateList: List<EditorDetailUiModel>, backValue: Int = 0){
+    fun setupActiveTools(editorStateList: List<EditorDetailUiModel>, backValue: Int = 0) {
 
         val limit = editorStateList.size - backValue
         val tempEditorStateList = editorStateList.subList(0, limit)
