@@ -1,7 +1,5 @@
 package com.tokopedia.kolcommon.view.viewmodel
 
-import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
-
 /**
  * @author by yoasfs on 2019-12-05
  */

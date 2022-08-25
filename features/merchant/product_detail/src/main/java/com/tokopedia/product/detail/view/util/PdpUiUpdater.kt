@@ -15,6 +15,8 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.extensions.ifNull
+import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -489,12 +491,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private fun updatePurchaseProtectionData(ppItemData: PPItemDetailPage) {
         updateData(ProductDetailConstant.PRODUCT_PROTECTION) {
             productProtectionMap?.run {
-                if (ppItemData.title?.isNotEmpty() == true) {
-                    title = ppItemData.title
-                } else if (ppItemData.titlePDP?.isNotEmpty() == true) {
-                    title = ppItemData.titlePDP
-                }
-                subtitle = ppItemData.subTitlePDP ?: ""
+                applink = ppItemData.linkURL.ifNullOrBlank { applink }
+                title = ppItemData.titlePDP.ifNullOrBlank { ppItemData.title.orEmpty() }
+                subtitle = ppItemData.subTitlePDP.ifNullOrBlank { ppItemData.subTitle.orEmpty() }
                 additionalIcon = ppItemData.partnerLogo ?: ""
                 additionalDesc = ppItemData.partnerText ?: ""
                 isApplink = ppItemData.isAppLink ?: false

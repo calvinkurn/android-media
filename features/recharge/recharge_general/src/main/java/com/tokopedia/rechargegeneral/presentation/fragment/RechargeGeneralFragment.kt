@@ -51,6 +51,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -483,10 +484,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     operatorGroup.operators.find { it.attributes.name == input }?.let {
-                        if (operatorId != it.id.toIntOrZero()) {
+                        if (operatorId != it.id.toIntSafely()) {
                             // Save operator id for enquiry
                             resetInputData()
-                            operatorId = it.id.toIntOrZero()
+                            operatorId = it.id.toIntSafely()
                             if (!isAddSBM) {
                                 rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
                             }
@@ -555,7 +556,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             if (productId == 0){
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
-                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toIntOrZero()
+                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toInt()
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
@@ -1086,10 +1087,6 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             Toaster.build(v, errorMessage.orEmpty()
                 ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
-    }
-
-    override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
-        /*no op*/
     }
 
     private fun updateFavoriteNumberInputField() {

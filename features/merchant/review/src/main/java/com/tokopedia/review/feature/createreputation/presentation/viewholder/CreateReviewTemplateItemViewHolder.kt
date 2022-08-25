@@ -7,13 +7,13 @@ import com.tokopedia.review.databinding.ItemCreateReviewTemplateItemBinding
 import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewTemplateItemUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
-import com.tokopedia.review.feature.createreputation.presentation.widget.BaseCreateReviewCustomView
+import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplateItem
 
 class CreateReviewTemplateItemViewHolder(
     itemView: View,
     private val createReviewTemplateItemViewHolderListener: Listener,
-    baseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener
+    baseReviewCustomViewListener: BaseReviewCustomView.Listener
 ) : BaseCreateReviewViewHolder<ItemCreateReviewTemplateItemBinding, CreateReviewTemplateItemUiModel>(itemView) {
 
     companion object {
@@ -24,7 +24,7 @@ class CreateReviewTemplateItemViewHolder(
     private var template: CreateReviewTemplateItemUiModel? = null
 
     init {
-        binding.createReviewTemplate.setListener(CreateReviewTemplateItemListener(), baseCreateReviewCustomViewListener)
+        binding.createReviewTemplate.setListener(CreateReviewTemplateItemListener(), baseReviewCustomViewListener)
     }
 
     override fun bind(element: CreateReviewTemplateItemUiModel) {

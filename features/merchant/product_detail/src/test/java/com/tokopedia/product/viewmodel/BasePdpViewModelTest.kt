@@ -8,12 +8,12 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
-import com.tokopedia.product.detail.usecase.CreateAffiliateCookieUseCase
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -132,7 +132,7 @@ abstract class BasePdpViewModelTest {
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
-    lateinit var createAffiliateCookieUseCase: CreateAffiliateCookieUseCase
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
@@ -186,8 +186,8 @@ abstract class BasePdpViewModelTest {
                 { getTopadsIsAdsUseCase },
                 playWidgetTools,
                 remoteConfigInstance,
-                {createAffiliateCookieUseCase},
-                userSessionInterface
+                userSessionInterface,
+                { affiliateCookieHelper }
         )
     }
 }

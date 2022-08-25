@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -41,7 +42,6 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.common.util.Utility
-import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
@@ -431,9 +431,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun refreshPage() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
-            .commit()
+        val parentActivity = activity as? ProductBundleActivity
+        parentActivity?.entrypointFragment?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, it, tagFragment)
+                .commit()
+        }
     }
 
     private fun goToLoginPage() {

@@ -1,8 +1,8 @@
 package com.tokopedia.tokofood.common.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
@@ -134,7 +134,7 @@ object TokofoodExt {
     }
 
 
-    private fun Context.scaledDrawable(bmp: Bitmap?, width: Int, height: Int): Drawable? {
+    private fun scaledDrawable(bmp: Bitmap?, resources: Resources, width: Int, height: Int): Drawable? {
         return try {
             bmp?.let {
                 val bmpScaled = Bitmap.createScaledBitmap(it, width, height, false)
@@ -148,8 +148,14 @@ object TokofoodExt {
 
     fun Toolbar?.setBackIconUnify() {
         this?.context?.let {
-            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.toBitmap()
-            val scaleDrawable: Drawable? = context.scaledDrawable(backIconUnify, ICON_BOUND_SIZE.toPx(), ICON_BOUND_SIZE.toPx())
+            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.getBitmap()
+            val scaleDrawable: Drawable? =
+                scaledDrawable(
+                    backIconUnify,
+                    resources,
+                    ICON_BOUND_SIZE.toPx(),
+                    ICON_BOUND_SIZE.toPx()
+                )
             scaleDrawable?.let { newDrawable ->
                 navigationIcon = newDrawable
             }
