@@ -991,13 +991,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
         promoListUiModel.value?.forEach { visitable ->
-            // todo should we add bebas ongkir promo in promo list here?
             if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId > 0) {
                 val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
                 if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
                     order.codes.add(visitable.uiData.promoCode)
                 } else if (order == null) {
-                    // from get promo request
                     val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
                     if (promoOrder != null) {
                         orders.add(ClearPromoOrder(
