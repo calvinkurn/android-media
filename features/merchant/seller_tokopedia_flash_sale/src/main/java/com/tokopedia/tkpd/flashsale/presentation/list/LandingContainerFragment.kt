@@ -15,7 +15,6 @@ import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSele
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -62,78 +61,4 @@ class LandingContainerFragment : BaseDaggerFragment() {
         viewModel.deleteProduct()
         viewModel.getReservedProduct()
         viewModel.getFlashSaleList()
-
-        context?.let { CampaignDetailActivity.start(context = it) }
     }
-
-    private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiState.collect { state -> handleUiState(state) }
-        }
-    }
-
-    private fun observeUiEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect { event -> handleEvent(event) }
-        }
-    }
-
-    private fun handleEvent(event: LandingContainerViewModel.UiEvent) {
-        when (event) {
-            is LandingContainerViewModel.UiEvent.FetchTabMetaError -> {
-
-            }
-        }
-    }
-
-    private fun handleUiState(uiState: LandingContainerViewModel.UiState) {
-        val tabsMeta = uiState.tabsMetadata
-        //displaySingleSelectionBottomSheet()
-        displayMultipleSelectionBottomSheet()
-    }
-
-    private fun displaySingleSelectionBottomSheet() {
-
-        val selectedItemId = "all-product"
-        val singleSelectionItems = arrayListOf(
-            SingleSelectionItem("criteria", "Memenuhi kriteria"),
-            SingleSelectionItem("all-product", "Semua Produk"),
-        )
-        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedItemId, singleSelectionItems)
-        bottomSheet.apply {
-            setBottomSheetTitle("Mau cari produk apa?")
-            setBottomSheetButtonTitle("Terapkan")
-            setOnApplyButtonClick { selectedItem ->
-                val id = selectedItem.id
-            }
-        }
-        val selectedItem = bottomSheet.getSelectedItem()
-        bottomSheet.show(childFragmentManager, tag)
-    }
-
-    private fun displayMultipleSelectionBottomSheet() {
-        val selectedItemIds = arrayListOf("clothes", "toys")
-        val multipleSelectionItems = arrayListOf(
-            MultipleSelectionItem("clothes", "Baju"),
-            MultipleSelectionItem("pants", "Celana"),
-            MultipleSelectionItem("toys", "Mainan Anak"),
-            MultipleSelectionItem("food", "Makanan"),
-        )
-        val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedItemIds, multipleSelectionItems)
-        bottomSheet.apply {
-            setBottomSheetTitle("Mau cari kategori apa?")
-            setBottomSheetButtonTitle("Terapkan")
-            setOnApplyButtonClick { selectedItems ->
-                val items = selectedItems
-            }
-        }
-        val selectedItems = bottomSheet.getAllSelectedItems()
-        bottomSheet.show(childFragmentManager, tag)
-    }
-
-    private fun setupView() {
-        binding?.run {
-            header.setNavigationOnClickListener { activity?.finish() }
-        }
-    }
-}

@@ -9,9 +9,9 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDeta
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelineFragment
-import com.tokopedia.tkpd.flashsale.presentation.list.LandingActivity
-import com.tokopedia.tkpd.flashsale.presentation.list.LandingContainerFragment
-import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment
+import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
+import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
+import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity
 import dagger.Component
 
 @TokopediaFlashSaleScope
@@ -20,8 +20,9 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface TokopediaFlashSaleComponent {
-    fun inject(activity: LandingActivity)
-    fun inject(fragment: LandingContainerFragment)
+    fun inject(activity: FlashSaleListActivity)
+    fun inject(fragment: FlashSaleContainerFragment)
+    fun inject(fragment: FlashSaleListFragment)
 
     fun inject(fragment: CampaignTimelineFragment)
     fun inject(fragment: CampaignCriteriaFragment)
