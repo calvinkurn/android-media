@@ -6,7 +6,7 @@ object ApplinkConstInternalUserPlatform {
 
     private const val HOST_USER = "user"
 
-    private const val INTERNAL_USER = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
+//    private const val INTERNAL_USER = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
 
     const val NEW_INTERNAL_USER = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_USER}"
 
@@ -23,7 +23,7 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
     //LoginActivity
-    const val LOGIN = "$INTERNAL_USER/login"
+    const val LOGIN = "$NEW_INTERNAL_USER/login"
     const val LOGIN_EMAIL = "${LOGIN}?method=$METHOD_LOGIN_EMAIL&e={email}&source={source}"
     const val LOGIN_PHONE = "${LOGIN}?method=$METHOD_LOGIN_PHONE&p={phone}&source={source}"
     const val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
@@ -75,10 +75,9 @@ object ApplinkConstInternalUserPlatform {
     // tokopedia-android-internal://user/link-acc-reminder
     const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
 
-    const val NEW_PROFILE_INFO = "${NEW_INTERNAL_USER}/profile-info"
     const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_USER}/edit-profile-info"
 
-    // SettingProfileActivity
+    // ProfileInfoActivity
     const val SETTING_PROFILE = "${NEW_INTERNAL_USER}/setting-profile"
 
     /**
@@ -131,16 +130,47 @@ object ApplinkConstInternalUserPlatform {
 
     /**
      * ReceiverNotifActivity
-     * @Applink : tokopedia-android-internal://global/otp-push-notif-receiver
+     * @Applink : tokopedia-android-internal://user/otp-push-notif-receiver
      **/
     const val OTP_PUSH_NOTIF_RECEIVER = "${NEW_INTERNAL_USER}/otp-push-notif-receiver"
 
     /**
      * SettingNotifActivity
-     * @Applink : tokopedia-android-internal://global/otp-push-notif-receiver
+     * @Applink : tokopedia-android-internal://user/otp-push-notif-receiver
      **/
     const val OTP_PUSH_NOTIF_SETTING = "${NEW_INTERNAL_USER}/otp-push-notif-setting"
 
+    /**
+     * SeamlessLoginEmailPhoneActivity
+     * @Applink : tokopedia-android-internal://user/login-seamless
+     **/
+    const val SEAMLESS_LOGIN = "${NEW_INTERNAL_USER}/login-seamless"
+
+    /**
+     * TermPrivacyActivity
+     * @applink : tokopedia-android-internal://user/term-privacy/{page}/
+     **/
+    const val TERM_PRIVACY = "${NEW_INTERNAL_USER}/term-privacy/{page}/"
+
+    // LandingShopCreationActivity
+    // tokopedia-android-internal://user/landing-shop-creation
+    const val LANDING_SHOP_CREATION = "${NEW_INTERNAL_USER}/landing-shop-creation"
+
+    // PhoneShopCreationActivity
+    // tokopedia-android-internal://user/phone-shop-creation
+    const val PHONE_SHOP_CREATION = "${NEW_INTERNAL_USER}/phone-shop-creation"
+
+    // NameShopCreationActivity
+    // tokopedia-android-internal://user/name-shop-creation
+    const val NAME_SHOP_CREATION = "${NEW_INTERNAL_USER}/name-shop-creation"
+
+    // RegisterInitialActivity
+    // tokopedia-android-internal://user/init-register
+    const val INIT_REGISTER = "${NEW_INTERNAL_USER}/init-register"
+
+    // RegisterEmailActivity
+    // tokopedia-android-internal://user/email-register
+    const val EMAIL_REGISTER = "${NEW_INTERNAL_USER}/email-register"
 
     /**
      * TkpdPaySettingActivity
