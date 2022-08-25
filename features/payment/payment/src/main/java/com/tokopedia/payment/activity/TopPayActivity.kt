@@ -641,6 +641,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
 
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
+
+                if(urlFinal.isNotEmpty() && urlFinal.contains(LINK_ATOM_GOPAY))
+                {
+                    Log.e("sfgdsfg",urlFinal)
+                    view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPaymentWithoutAuth(urlFinal))
+                    return true
+                }
+
                 if (urlFinal.isNotEmpty()) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
                     return true
@@ -816,7 +824,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         return generateWebviewHeaders(uri.path ?: "", uri.query ?: "")
     }
 
-    private fun generateWebviewHeaders(path: String, strParam: String): Map<String, String> {
+    fun getGeneratedOverrideRedirectHeaderUrlPaymentWithoutAuth(originUrl: String): MutableMap<String, String> {
+        val uri = Uri.parse(originUrl)
+        val headerMap = generateWebviewHeaders(uri.path ?: "", uri.query ?: "")
+        headerMap.remove(HEADER_AUTHORIZATION)
+        return headerMap
+    }
+
+    private fun generateWebviewHeaders(path: String, strParam: String): MutableMap<String, String> {
         val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
         header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
         header[HEADER_TKPD_SESSION_ID] = getRegistrationIdWithTemp()
@@ -870,6 +885,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val IMAGE_COMPRESS_QUALITY = 60
 
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
+        private const val LINK_ATOM_GOPAY = "afi.gopaylater.co.id"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
