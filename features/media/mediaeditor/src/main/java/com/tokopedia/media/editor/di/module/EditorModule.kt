@@ -8,8 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.editor.data.EditorNetworkServices
 import com.tokopedia.media.editor.data.repository.BitmapConverterRepository
 import com.tokopedia.media.editor.data.repository.BitmapConverterRepositoryImpl
-import com.tokopedia.media.editor.data.repository.RemoveBgRepository
-import com.tokopedia.media.editor.data.repository.RemoveBgRepositoryImpl
+import com.tokopedia.media.editor.data.repository.RemoveBackgroundRepository
+import com.tokopedia.media.editor.data.repository.RemoveBackgroundRepositoryImpl
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
@@ -67,16 +67,16 @@ object EditorModule {
     fun provideEditorRepository(
         bitmapConverterRepository: BitmapConverterRepository,
         services: EditorNetworkServices
-    ): RemoveBgRepository {
-        return RemoveBgRepositoryImpl(bitmapConverterRepository, services)
+    ): RemoveBackgroundRepository {
+        return RemoveBackgroundRepositoryImpl(bitmapConverterRepository, services)
     }
 
     @Provides
     @ActivityScope
     fun provideRemoveBackgroundUseCase(
         @ApplicationScope dispatchers: CoroutineDispatchers,
-        removeBgRepository: RemoveBgRepository
-    ) = SetRemoveBackgroundUseCase(dispatchers, removeBgRepository)
+        removeBackgroundRepository: RemoveBackgroundRepository
+    ) = SetRemoveBackgroundUseCase(dispatchers, removeBackgroundRepository)
 
     @Provides
     @ActivityScope

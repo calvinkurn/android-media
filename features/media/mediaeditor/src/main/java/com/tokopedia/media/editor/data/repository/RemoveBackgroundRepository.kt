@@ -11,14 +11,14 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
-interface RemoveBgRepository {
+interface RemoveBackgroundRepository {
     suspend operator fun invoke(filePath: String): Flow<File?>
 }
 
-class RemoveBgRepositoryImpl @Inject constructor(
+class RemoveBackgroundRepositoryImpl @Inject constructor(
     private val bitmapConverter: BitmapConverterRepository,
     private val services: EditorNetworkServices
-) : RemoveBgRepository {
+) : RemoveBackgroundRepository {
 
     /**
      * Because of we need to passing a File to request body of remove-background,
@@ -45,7 +45,7 @@ class RemoveBgRepositoryImpl @Inject constructor(
 
     private fun mapUriToFile(filePath: String): File? {
         val compressFormat = filePath.getCompressFormat()
-        val bitmap = bitmapConverter.uriToBitmap(Uri.parse(filePath))?: return null
+        val bitmap = bitmapConverter.uriToBitmap(Uri.parse(filePath)) ?: return null
 
         return ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat)
     }
