@@ -121,7 +121,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onContrastValueChanged(value: Float) {
-        viewModel.setContrast(value)
+        viewModel.setContrast(value, implementedBaseBitmap)
         data.contrastValue = value
         isEdited = true
     }
@@ -214,12 +214,8 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
-            implementedBaseBitmap?.let { itBitmap ->
-                val contrastBitmap = viewModel.getContrastFilter(it, itBitmap)
-
-                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(contrastBitmap)
-                isEdited = true
-            }
+            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(it)
+            isEdited = true
         }
     }
 
@@ -355,14 +351,10 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateContrast(previousValue: Float?) {
+
         viewBinding?.imgUcropPreview?.let {
             val bitmap = it.getBitmap()
-            it.cropImageView.setImageBitmap(
-                viewModel.getContrastFilter(
-                    previousValue ?: 0f,
-                    bitmap
-                )
-            )
+            viewModel.setContrast(previousValue ?: 0f, bitmap)
         }
     }
 
@@ -488,12 +480,7 @@ class DetailEditorFragment @Inject constructor(
             // if current editor is brightness keep the filter color so we can adjust it later
             implementPreviousStateBrightness(previousState.brightnessValue, false)
         } else if (previousState.contrastValue != null && previousState.isToolContrast()) {
-            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
-                viewModel.getContrastFilter(
-                    previousState.contrastValue!!,
-                    implementedBaseBitmap!!
-                )
-            )
+            viewModel.setContrast(previousState.contrastValue!!, implementedBaseBitmap!!)
         }
     }
 

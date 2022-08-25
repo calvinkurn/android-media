@@ -43,8 +43,8 @@ class DetailEditorViewModel @Inject constructor(
     private var _removeBackground = MutableLiveData<File?>()
     val removeBackground: LiveData<File?> get() = _removeBackground
 
-    private var _contrastFilter = MutableLiveData<Float>()
-    val contrastFilter: LiveData<Float> get() = _contrastFilter
+    private var _contrastFilter = MutableLiveData<Bitmap>()
+    val contrastFilter: LiveData<Bitmap> get() = _contrastFilter
 
     private var _watermarkFilter = MutableLiveData<Int>()
     val watermarkFilter: LiveData<Int> get() = _watermarkFilter
@@ -65,13 +65,12 @@ class DetailEditorViewModel @Inject constructor(
         _brightnessFilter.value = colorFilterRepository.brightness(value)
     }
 
-    fun setContrast(value: Float?) {
-        if (value == null) return
-        _contrastFilter.value = value
-    }
-
-    fun getContrastFilter(value: Float, sourceBitmap: Bitmap): Bitmap{
-        return contrastFilterRepository.contrast(value, sourceBitmap.copy(sourceBitmap.config, true))
+    fun setContrast(value: Float?, sourceBitmap: Bitmap?) {
+        if (value == null || sourceBitmap == null) return
+        _contrastFilter.value = contrastFilterRepository.contrast(
+            value,
+            sourceBitmap.copy(sourceBitmap.config, true)
+        )
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {
