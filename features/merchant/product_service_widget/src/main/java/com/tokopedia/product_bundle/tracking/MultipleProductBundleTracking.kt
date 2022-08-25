@@ -51,7 +51,6 @@ object MultipleProductBundleTracking: BaseProductBundleTracking() {
                 trackerId = ADD_TO_CART_BUNDLING
         )
 
-//        trackBuyClick("bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;", productId)
     }
 
     fun trackMultipleBackClick(bundleId: String, productId: String) {

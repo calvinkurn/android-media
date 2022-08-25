@@ -47,11 +47,6 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
                     bundlePrice = bundlePrice,
                     trackerId = ADD_TO_CART_BUNDLING
             )
-
-//            super.trackBuyClick(
-//                "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-//                productId
-//            )
         }
     }
 

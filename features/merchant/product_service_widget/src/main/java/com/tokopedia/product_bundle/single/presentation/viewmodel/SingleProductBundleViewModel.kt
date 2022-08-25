@@ -35,6 +35,8 @@ class SingleProductBundleViewModel @Inject constructor(
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main) {
 
+    var totalBundlePrice: Double = 0.0      // We use this to send the tracker
+
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
     val singleProductBundleUiModel: LiveData<SingleProductBundleUiModel>
         get() = mSingleProductBundleUiModel
@@ -112,8 +114,10 @@ class SingleProductBundleViewModel @Inject constructor(
     }
 
     fun updateTotalAmount(originalPrice: Double, discountedPrice: Double, quantity: Int) {
+        val _totalBundlePrice = getTotalBundlePrice(discountedPrice, quantity)
+        totalBundlePrice = _totalBundlePrice
         mTotalAmountUiModel.value = TotalAmountUiModel(
-            price = CurrencyFormatUtil.convertPriceValueToIdrFormat(discountedPrice * quantity, false),
+            price = CurrencyFormatUtil.convertPriceValueToIdrFormat(_totalBundlePrice, false),
             slashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice * quantity, false),
             discount = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice),
             priceGap = CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(originalPrice - discountedPrice) * quantity, false)
@@ -154,6 +158,10 @@ class SingleProductBundleViewModel @Inject constructor(
             else -> addToCart(parentProductID, selectedData.bundleId, selectedData.productId,
                 selectedData.shopId, selectedData.quantity, selectedData.warehouseId)
         }
+    }
+
+    private fun getTotalBundlePrice(discountedPrice: Double, quantity: Int): Double {
+        return (discountedPrice * quantity)
     }
 
     private fun addToCart(

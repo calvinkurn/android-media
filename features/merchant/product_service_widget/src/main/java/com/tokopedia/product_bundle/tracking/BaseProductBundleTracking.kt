@@ -117,12 +117,6 @@ abstract class BaseProductBundleTracking {
                 bundlePrice = bundlePrice,
                 trackerId = trackerId
         )
-
-//        initializeTracker().sendBundleClickEvent(
-//            EA_BUY_BUNDLE,
-//            label,
-//            productId
-//        )
     }
 
     fun trackBackClick(label: String, productId: String) {
@@ -233,38 +227,4 @@ abstract class BaseProductBundleTracking {
     private fun joinDash(vararg s: String?): String {
         return TextUtils.join(" - ", s)
     }
-
-//    {
-//  "event": "add_to_cart",
-//  "eventAction": "click - beli paket",
-//  "eventCategory": "bundling selection page",
-//  "eventLabel": "bundling_id:{{bundling_id}}; bundling_type:{{bundling_type}};",
-//  "trackerId": "20010",
-//  "businessUnit": "{businessUnit}",
-//  "currentSite": "{currentSite}",
-//  "items": [
-//    {
-//      "category_id": "{product_category_id}",
-//      "dimension117": "{bundling_type}",
-//      "dimension118": "{bundling_id}",
-//      "dimension40": "/{source} - product bundling - {bundling_type}",
-//      "dimension45": "{cart_id}",
-//      "dimension87": "{source}",
-//      "item_brand": "{product_brand}",
-//      "item_category": "{category_name}",
-//      "item_id": "{product_id}",
-//      "item_name": "{product_name}",
-//      "item_variant": "{product_variant}",
-//      "price": "{product_price}",
-//      "quantity": "{quantity}",
-//      "shop_id": "{shop_id}",
-//      "shop_name": "{shop_name}",
-//      "shop_type": "{shop_type}"
-//    }
-//  ],
-//  "productId": "{product_id}",
-//  "shopId": "{shop_id}",
-//  "userId": "{user_id}"
-//}
-
 }

@@ -79,7 +79,6 @@ class SingleProductBundleFragment(
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
     private var adapter = SingleProductBundleAdapter(this)
-    private var slashPrice: String = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -203,7 +202,6 @@ class SingleProductBundleFragment(
     private fun observeTotalAmountUiModel() {
         viewModel.totalAmountUiModel.observe(viewLifecycleOwner, {
             updateTotalAmount(it.price, it.discount, it.slashPrice, it.priceGap)
-            slashPrice = it.slashPrice
         })
     }
 
@@ -216,7 +214,7 @@ class SingleProductBundleFragment(
                         atcResult = it,
                         selectedProductIds = parentProductID,
                         bundleName = _bundleName,
-                        bundlePrice = slashPrice.toLong()
+                        bundlePrice = viewModel.totalBundlePrice.toLong()
                 )
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
@@ -230,7 +228,7 @@ class SingleProductBundleFragment(
                         atcResult = it,
                         selectedProductIds = parentProductID,
                         bundleName = _bundleName,
-                        bundlePrice = slashPrice.toLong()
+                        bundlePrice = viewModel.totalBundlePrice.toLong()
                 )
                 RouteManager.route(context, ApplinkConst.CART)
             }

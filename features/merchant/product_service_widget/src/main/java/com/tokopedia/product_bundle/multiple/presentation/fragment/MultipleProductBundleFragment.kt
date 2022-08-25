@@ -113,7 +113,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
     // need to put this as local variable so when user click ATC we can get the updated value
-    private var totalPriceText: String = ""
+    private var totalPrice: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -216,7 +216,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                             atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
                             bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice = totalPriceText
+                            bundlePrice = totalPrice
                     )
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
@@ -231,7 +231,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                             atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
                             bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice = totalPriceText
+                            bundlePrice = totalPrice
                     )
                     RouteManager.route(context, ApplinkConst.CART)
                 }
@@ -384,16 +384,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun updateProductBundleOverView(productBundleOverView: TotalAmount?, productBundleDetails: List<ProductBundleDetail>) {
-        val totalPrice = viewModel.calculateTotalPrice(productBundleDetails)
+        val _totalPrice = viewModel.calculateTotalPrice(productBundleDetails)
         val totalBundlePrice = viewModel.calculateTotalBundlePrice(productBundleDetails)
-        val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
-        val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
+        val totalDiscount = viewModel.calculateDiscountPercentage(_totalPrice, totalBundlePrice)
+        val totalSaving = viewModel.calculateTotalSaving(_totalPrice, totalBundlePrice)
         val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount)
-        val _totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
+        val totalPriceText = Utility.formatToRupiahFormat(_totalPrice.roundToInt())
         val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
         val totalSavingText = Utility.formatToRupiahFormat(totalSaving.roundToInt())
-        totalPriceText = _totalPriceText
-        productBundleOverView?.setTitleText(totalDiscountText, _totalPriceText)
+        totalPrice = _totalPrice.toString()
+        productBundleOverView?.setTitleText(totalDiscountText, totalPriceText)
         productBundleOverView?.amountView?.text = totalBundlePriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
