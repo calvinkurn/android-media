@@ -146,8 +146,6 @@ class ProductViewHolder(
             binding?.btnEditPrice?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
-
-
         }
 
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
@@ -179,7 +177,7 @@ class ProductViewHolder(
 
     private fun showNotifyMeBuyer(product: ProductUiModel) {
         binding?.imageNotifyMeBuyer
-            ?.showWithCondition((product.isEmpty() && product.haveNotifyMeOOS))
+            ?.showWithCondition(product.haveNotifyMeOOS)
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
