@@ -1089,6 +1089,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         }
     }
 
+    override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
+        /*no op*/
+    }
+
     private fun updateFavoriteNumberInputField() {
         if (favoriteNumbers.isNotEmpty()) {
             if (adapter.data.isNotEmpty()) {
