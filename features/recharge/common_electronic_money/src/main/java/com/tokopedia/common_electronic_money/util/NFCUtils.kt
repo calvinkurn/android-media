@@ -11,19 +11,25 @@ class NFCUtils {
     companion object {
 
         private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
+        private const val RADIX_16 = 16
+        private const val MULTIPLIER_2 = 2
+        private const val CHUCK_2 = 2
+        private const val HEX_BIT_COUNT_4 = 4
+        private const val HEX_0xFF = 0xFF
+        private const val HEX_0x0F = 0xFF
 
         @JvmStatic
         fun hexStringToByteArray(str: String): ByteArray {
-            return BigInteger(str, 16).toByteArray()
+            return BigInteger(str, RADIX_16).toByteArray()
         }
 
         @JvmStatic
         fun toHex(bytes: ByteArray): String {
-            val hexChars = CharArray(bytes.size * 2)
+            val hexChars = CharArray(bytes.size * MULTIPLIER_2)
             for (j in bytes.indices) {
-                val v = bytes[j].toInt() and 0xFF
-                hexChars[j * 2] = HEX_CHARS[v.ushr(4)]
-                hexChars[j * 2 + 1] = HEX_CHARS[v and 0x0F]
+                val v = bytes[j].toInt() and HEX_0xFF
+                hexChars[j * MULTIPLIER_2] = HEX_CHARS[v.ushr(HEX_BIT_COUNT_4)]
+                hexChars[j * MULTIPLIER_2 + 1] = HEX_CHARS[v and HEX_0x0F]
             }
             return String(hexChars)
         }
@@ -37,8 +43,8 @@ class NFCUtils {
         @SuppressLint("Method Call Prohibited")
         @JvmStatic
         fun stringToByteArrayRadix(str: String): ByteArray{
-            return str.chunked(2)
-                    .map { it.toInt(16).toByte() }
+            return str.chunked(CHUCK_2)
+                    .map { it.toInt(RADIX_16).toByte() }
                     .toByteArray()
         }
     }
