@@ -34,14 +34,13 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
-import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
-import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -208,13 +207,15 @@ class SingleProductBundleFragment(
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
-            val _bundleName = bundleInfo[0].name
+//            val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+//            adapter.getSelectedBundleId()
+//            val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it)
+
             if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
                 sendTrackerBundleAtcClickEvent(
-                        atcResult = it,
                         selectedProductIds = parentProductID,
-                        bundleName = _bundleName,
-                        bundlePrice = viewModel.totalBundlePrice.toLong()
+                        shopId = it.requestParams.shopId,
+                        productDetails = listOf()
                 )
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
@@ -225,10 +226,9 @@ class SingleProductBundleFragment(
                 activity?.finish()
             } else {
                 sendTrackerBundleAtcClickEvent(
-                        atcResult = it,
                         selectedProductIds = parentProductID,
-                        bundleName = _bundleName,
-                        bundlePrice = viewModel.totalBundlePrice.toLong()
+                        shopId = it.requestParams.shopId,
+                        productDetails = listOf()
                 )
                 RouteManager.route(context, ApplinkConst.CART)
             }
@@ -236,21 +236,20 @@ class SingleProductBundleFragment(
     }
 
     private fun sendTrackerBundleAtcClickEvent(
-            atcResult: AddToCartDataResult,
             selectedProductIds: String,
-            bundleName: String,
-            bundlePrice: Long
+            shopId: String,
+            productDetails: List<ProductDetailMultipleBundleTracker>
     ) {
         val _userId = viewModel.getUserId()
         SingleProductBundleTracking.trackSingleBuyClick(
                 userId = _userId,
-                atcResult = atcResult,
                 source = pageSource,
-                bundleName = bundleName,
-                bundlePrice = bundlePrice,
                 parentProductId = selectedProductIds,
                 bundleId = adapter.getSelectedBundleId(),
-                selectedProductId = adapter.getSelectedProductId()
+                selectedProductId = adapter.getSelectedProductId(),
+                shopId = shopId,
+                productIds = selectedProductIds,
+                productDetails = productDetails
         )
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.tracking
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -98,24 +99,24 @@ abstract class BaseProductBundleTracking {
     fun trackBuyClick(
             userId: String,
             label: String,
-            productId: String,
-            atcResult: AddToCartDataResult,
+            productIds: String,
             source: String,
-            bundleName: String,
             bundleType: String,
-            bundlePrice: Long,
-            trackerId: String
+            trackerId: String,
+            productDetails: List<ProductDetailMultipleBundleTracker>,
+            bundleId: String,
+            shopId: String
     ) {
         initializeTracker().sendBundleAtcClickEvent(
                 userId = userId,
-                productId = productId,
+                productIds = productIds,
                 label = label,
-                atcResult = atcResult,
                 source = source,
-                bundleName = bundleName,
                 bundleType = bundleType,
-                bundlePrice = bundlePrice,
-                trackerId = trackerId
+                trackerId = trackerId,
+                productDetails = productDetails,
+                bundleId = bundleId,
+                shopId = shopId
         )
     }
 
@@ -146,29 +147,29 @@ abstract class BaseProductBundleTracking {
 
     private fun ContextAnalytics.sendBundleAtcClickEvent(
             userId: String,
-            productId: String,
+            productIds: String,
             label: String,
-            atcResult: AddToCartDataResult,
             source: String,
-            bundleName: String,
             bundleType: String,
-            bundlePrice: Long,
-            trackerId: String
+            trackerId: String,
+            productDetails: List<ProductDetailMultipleBundleTracker>,
+            bundleId: String,
+            shopId: String
     ) {
         val bundle = Bundle()
         val itemBundle = arrayListOf<Bundle>()
-        val shopId = atcResult.requestParams.shopId
-        atcResult.responseResult.data.forEachIndexed { position, productDataModel ->
+        productDetails.forEachIndexed { index, productDetailMultipleBundleTracker ->
             itemBundle.add(
                     getItemsBundlingAtc(
-                            bundleId = atcResult.requestParams.bundleId,
-                            cartId = productDataModel.cartId,
-                            bundleName = bundleName,
-                            bundlePrice = bundlePrice,
-                            quantity = productDataModel.quantity.toString(),
+                            bundleId = bundleId,
+                            cartId = productDetailMultipleBundleTracker.cartId,
+                            productName = productDetailMultipleBundleTracker.productName,
+                            productPrice = productDetailMultipleBundleTracker.productPrice,
+                            quantity = productDetailMultipleBundleTracker.quantity.toString(),
                             shopId = shopId,
                             bundleType = bundleType,
-                            source = source
+                            source = source,
+                            productId = productDetailMultipleBundleTracker.productId
                     )
             )
         }
@@ -181,22 +182,57 @@ abstract class BaseProductBundleTracking {
         bundle.putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT)
         bundle.putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE)
         bundle.putParcelableArrayList(KEY_ITEMS, itemBundle)
-        bundle.putString(KEY_PRODUCT_ID, productId)
+        bundle.putString(KEY_PRODUCT_ID, productIds)
         bundle.putString(KEY_SHOP_ID, shopId)
         bundle.putString(KEY_USER_ID, userId)
 
         sendEnhanceEcommerceEvent(VALUE_ADD_TO_CART, bundle)
     }
 
+//    {
+//        "event": "add_to_cart",
+//        "eventAction": "click - beli paket",
+//        "eventCategory": "bundling selection page",
+//        "eventLabel": "bundling_id:{{bundling_id}}; bundling_type:{{bundling_type}};",
+//        "trackerId": "20010",
+//        "businessUnit": "{businessUnit}",
+//        "currentSite": "{currentSite}",
+//        "items": [
+//        {
+//            "category_id": "{product_category_id}",
+//            "dimension117": "{bundling_type}",
+//            "dimension118": "{bundling_id}",
+//            "dimension40": "/{source} - product bundling - {bundling_type}",
+//            "dimension45": "{cart_id}",
+//            "dimension87": "{source}",
+//            "item_brand": "{product_brand}",
+//            "item_category": "{category_name}",
+//            "item_id": "{product_id}",
+//            "item_name": "{product_name}",
+//            "item_variant": "{product_variant}",
+//            "price": "{product_price}",
+//            "quantity": "{quantity}",
+//            "shop_id": "{shop_id}",
+//            "shop_name": "{shop_name}",
+//            "shop_type": "{shop_type}"
+//        }
+//        ],
+//        "productId": "{product_id}",
+//        "shopId": "{shop_id}",
+//        "userId": "{user_id}"
+//    }
+
+
     private fun getItemsBundlingAtc(
             bundleId: String,
             cartId: String,
-            bundleName: String,
-            bundlePrice: Long,
+            productName: String,
+            productPrice: String,
             quantity: String,
             shopId: String,
             bundleType: String,
-            source: String
+            source: String,
+            productId: String
     ): Bundle {
         var _valueBundleType = ""
         if (bundleType == VALUE_MULTIPLE_BUNDLING) {
@@ -213,10 +249,10 @@ abstract class BaseProductBundleTracking {
             putString(KEY_DIMENSION_87, source)
             putString(KEY_ITEM_BRAND, VALUE_NONE_OTHER)
             putString(KEY_ITEM_CATEGORY, VALUE_NONE_OTHER)
-            putString(KEY_ITEM_ID, bundleId)
-            putString(KEY_ITEM_NAME, bundleName)
+            putString(KEY_ITEM_ID, productId)
+            putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, VALUE_NONE_OTHER)
-            putLong(KEY_PRICE, bundlePrice)
+            putString(KEY_PRICE, productPrice)
             putString(KEY_QUANTITY, quantity)
             putString(KEY_SHOP_ID, shopId)
             putString(KEY_SHOP_NAME, VALUE_NONE)

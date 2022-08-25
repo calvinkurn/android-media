@@ -35,6 +35,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
@@ -51,6 +52,7 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
 import com.tokopedia.product_bundle.tracking.MultipleProductBundleTracking
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.product_service_widget.R
@@ -111,9 +113,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     // product bundle detail components
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
-
-    // need to put this as local variable so when user click ATC we can get the updated value
-    private var totalPrice: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -208,15 +207,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
                 val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
-                val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
+//                val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
                 val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+                val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it) // viewModel.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it)
 
                 if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
                     sendTrackerBundleAtcClickEvent(
-                            atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
-                            bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice = totalPrice
+                            bundleId = it.requestParams.bundleId,
+                            productDetails = productDetails,
+                            shopId = it.requestParams.shopId
                     )
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
@@ -228,10 +228,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     activity?.finish()
                 } else {
                     sendTrackerBundleAtcClickEvent(
-                            atcResult = atcResult,
                             selectedProductIds = selectedProductIds,
-                            bundleName = selectedProductBundleMaster.bundleName,
-                            bundlePrice = totalPrice
+                            bundleId = it.requestParams.bundleId,
+                            productDetails = productDetails,
+                            shopId = it.requestParams.shopId
                     )
                     RouteManager.route(context, ApplinkConst.CART)
                 }
@@ -258,20 +258,19 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun sendTrackerBundleAtcClickEvent(
-            atcResult: AddToCartDataResult,
             selectedProductIds: String,
-            bundleName: String,
-            bundlePrice: String
+            bundleId: String,
+            productDetails: List<ProductDetailMultipleBundleTracker>,
+            shopId: String
     ) {
         val _userId = viewModel.getUserId()
         MultipleProductBundleTracking.trackMultipleBuyClick(
                 userId = _userId,
-                bundleId = atcResult.requestParams.bundleId,
-                productId = selectedProductIds,
-                atcResult = atcResult,
+                bundleId = bundleId,
+                productIds = selectedProductIds,
                 source = viewModel.pageSource,
-                bundleName = bundleName,
-                bundlePrice = bundlePrice.toLong()
+                productDetails = productDetails,
+                shopId = shopId
         )
     }
 
@@ -384,15 +383,14 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun updateProductBundleOverView(productBundleOverView: TotalAmount?, productBundleDetails: List<ProductBundleDetail>) {
-        val _totalPrice = viewModel.calculateTotalPrice(productBundleDetails)
+        val totalPrice = viewModel.calculateTotalPrice(productBundleDetails)
         val totalBundlePrice = viewModel.calculateTotalBundlePrice(productBundleDetails)
-        val totalDiscount = viewModel.calculateDiscountPercentage(_totalPrice, totalBundlePrice)
-        val totalSaving = viewModel.calculateTotalSaving(_totalPrice, totalBundlePrice)
+        val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
+        val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
         val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount)
-        val totalPriceText = Utility.formatToRupiahFormat(_totalPrice.roundToInt())
+        val totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
         val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
         val totalSavingText = Utility.formatToRupiahFormat(totalSaving.roundToInt())
-        totalPrice = _totalPrice.toString()
         productBundleOverView?.setTitleText(totalDiscountText, totalPriceText)
         productBundleOverView?.amountView?.text = totalBundlePriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)

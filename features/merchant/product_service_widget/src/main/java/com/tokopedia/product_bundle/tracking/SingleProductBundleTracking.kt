@@ -2,6 +2,7 @@ package com.tokopedia.product_bundle.tracking
 
 import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
 
 object SingleProductBundleTracking: BaseProductBundleTracking() {
 
@@ -24,13 +25,13 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
 
     fun trackSingleBuyClick(
             userId: String,
-            atcResult: AddToCartDataResult,
             source: String,
-            bundleName: String,
-            bundlePrice: Long,
             parentProductId: String,
             bundleId: String?,
-            selectedProductId: String?
+            selectedProductId: String?,
+            shopId: String,
+            productIds: String,
+            productDetails: List<ProductDetailMultipleBundleTracker>,
     ) {
         if (bundleId != null) {
             // selectedProductId null means variant not selected yet
@@ -39,13 +40,13 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
             trackBuyClick(
                     userId = userId,
                     label = "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                    productId = productId,
-                    atcResult = atcResult,
+                    productIds = productIds,
                     source = source,
-                    bundleName = bundleName,
                     bundleType = VALUE_SINGLE_BUNDLING,
-                    bundlePrice = bundlePrice,
-                    trackerId = ADD_TO_CART_BUNDLING
+                    trackerId = ADD_TO_CART_BUNDLING,
+                    productDetails = productDetails,
+                    bundleId = bundleId,
+                    shopId = shopId
             )
         }
     }
