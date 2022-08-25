@@ -33,6 +33,12 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
 
+const val CAROUSEL_WIDTH_RATIO = 2.5
+const val CAROUSEL_HEIGHT_RATIO = 2.2
+const val DOUBLE_ASPECT_RATIO_NUM = 16
+const val DOUBLE_ASPECT_RATIO_DENOM = 19
+const val TRIPLE_WIDTH_RATIO = 3
+
 class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var calendarWidgetItemViewModel: CalendarWidgetItemViewModel
@@ -84,10 +90,10 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val imageLayoutParams = calendarImage.layoutParams
         when (properties?.calendarLayout) {
             Calendar.CAROUSEL -> {
-                layoutParams.width = (width / 2.5).roundToInt()
+                layoutParams.width = (width / CAROUSEL_WIDTH_RATIO).roundToInt()
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
-                imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
+                imageLayoutParams.height = (layoutParams.height / CAROUSEL_HEIGHT_RATIO).roundToInt()
                 imageLayoutParams.width = imageLayoutParams.height
                     calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
@@ -98,22 +104,22 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     layoutParams.width =
                         ((width)/ 2)
                     imageLayoutParams.width =
-                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
                 } else {
                     layoutParams.width =
                         ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / 2)
                     imageLayoutParams.width =
-                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_48)
+                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
                 }
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
-                imageLayoutParams.height = ((imageLayoutParams.width * 16) / 19)
+                imageLayoutParams.height = ((imageLayoutParams.width * DOUBLE_ASPECT_RATIO_NUM) / DOUBLE_ASPECT_RATIO_DENOM)
                 calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_4)
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_2)
             }
             Calendar.TRIPLE -> {
-                layoutParams.width = ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16))/ 3)
+                layoutParams.width = ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16))/ TRIPLE_WIDTH_RATIO)
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
                 imageLayoutParams.width =
