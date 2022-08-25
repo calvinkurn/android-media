@@ -210,11 +210,12 @@ class SingleProductBundleFragment(
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
+            val _bundleName = bundleInfo[0].name
             if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
                 sendTrackerBundleAtcClickEvent(
                         atcResult = it,
                         selectedProductIds = parentProductID,
-                        bundleName = bundleInfo.,
+                        bundleName = _bundleName,
                         bundlePrice = slashPrice.toLong()
                 )
                 val intent = Intent()
@@ -228,7 +229,7 @@ class SingleProductBundleFragment(
                 sendTrackerBundleAtcClickEvent(
                         atcResult = it,
                         selectedProductIds = parentProductID,
-                        bundleName = "",
+                        bundleName = _bundleName,
                         bundlePrice = slashPrice.toLong()
                 )
                 RouteManager.route(context, ApplinkConst.CART)
