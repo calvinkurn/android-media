@@ -3,6 +3,7 @@ package com.tokopedia.buyerorder.detail.revamp.fragment
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -92,6 +93,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
     private val viewModel: OrderDetailViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, factory)[OrderDetailViewModel::class.java]
+    }
+
+    private val permissionChecker: PermissionCheckerHelper by lazy(LazyThreadSafetyMode.NONE) {
+        PermissionCheckerHelper()
     }
 
     private var binding by autoClearedNullable<FragmentOmsListDetailBinding>()
@@ -545,6 +550,17 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         return MethodChecker.getColor(context, colorId)
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            permissionChecker.onRequestPermissionsResult(activity, requestCode, permissions, grantResults)
+        }
+    }
+
     override fun setEventDetails(actionButton: ActionButton, item: Items, metadata: MetaDataInfo) {
         binding?.let {
             if (item.actionButtons.isEmpty()) {
@@ -622,11 +638,20 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     override fun setDetailTitle(title: String) {
-        TODO("Not yet implemented")
+        if (title.isNotEmpty()) {
+            binding?.detailLabel?.text = title
+        }
     }
 
     override fun setInsuranceDetail() {
-        TODO("Not yet implemented")
+        binding?.let {
+            it.policy.visible()
+            it.claim.visible()
+            it.dividerAboveInfoLabel.gone()
+            it.claim.setOnClickListener {
+                RouteManager.route(context, INSURANCE_CLAIM)
+            }
+        }
     }
 
     override fun setPassengerEvent(item: Items, metadata: MetaDataInfo) {
@@ -739,7 +764,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     override fun askPermission(uri: String, isDownloadable: Boolean, downloadFileName: String) {
-        val permissionChecker = PermissionCheckerHelper()
         val permissions = arrayOf(
             PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
             PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE,
@@ -838,6 +862,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner"
         private const val BOLD_TEXT_STYLE = "bold"
         private const val TOASTER_FORMAT = "%s %s"
+        private const val INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim"
         const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(
