@@ -153,7 +153,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
 
         viewModel.actionButton.observe(viewLifecycleOwner){
-            setTapAction(it.second)
+            renderActionButton(it.second)
         }
     }
 
@@ -172,7 +172,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         details.detail.forEach { setDetail(it) }
 
         if (details.items.isNotEmpty()){
-            setItems(details.items, details.flags.isOrderTradeIn, details)
+            setItems(details.items, details)
         }
 
         //TODO : not used
@@ -307,7 +307,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
-    private fun setItems(items: List<Items>, isTradeIn: Boolean, orderDetails: OrderDetails) {
+    private fun setItems(items: List<Items>, orderDetails: OrderDetails) {
         var isMetadataEmpty = true
 
         val newItemList = items.filter { !CATEGORY_GIFT_CARD.equals(it.category, true) }
@@ -413,7 +413,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
-    private fun setTapAction(actionButtons: List<ActionButton>){
+    private fun renderActionButton(actionButtons: List<ActionButton>){
 
         fun getLabelIfNotEmpty(actionButton: List<ActionButton>): String{
             return if (actionButton.isNotEmpty()){
