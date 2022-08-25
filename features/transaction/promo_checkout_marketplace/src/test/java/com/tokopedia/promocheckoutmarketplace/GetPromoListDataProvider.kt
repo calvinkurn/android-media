@@ -71,6 +71,18 @@ object GetPromoListDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_clashing_data.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideGetPromoListResponseBoPromoInfoDataComplete(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_bo_info_bottom_sheet_complete.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideGetPromoListResponseBoPromoInfoDataIncomplete(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_bo_info_bottom_sheet_incomplete.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideGetPromoListResponseBoPromoInfoDataEmpty(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_bo_info_bottom_sheet_incomplete.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessAllExpanded()
