@@ -235,10 +235,20 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 getString(com.tokopedia.deals.R.string.deals_pdp_number_of_items,
                 data.outlets.size))
             ivBrandLogo?.loadImage(data.brand.featuredThumbnailImage)
+
             ivBrandLogo?.setOnClickListener {
                 val url = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE + "?" + data.brand.seoUrl
                 RouteManager.route(context, url)
             }
+
+            tgViewMap?.setOnClickListener {
+                //todo goto maps
+            }
+
+            tgAllLocation?.setOnClickListener {
+                //todo show all outlets
+            }
+
         } else {
             clOutlets?.hide()
         }
