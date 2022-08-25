@@ -17,6 +17,14 @@ class NFCUtils {
         private const val HEX_BIT_COUNT_4 = 4
         private const val HEX_0xFF = 0xFF
         private const val HEX_0x0F = 0xFF
+        private const val CARD_SLIDE_FROM_0 = 0
+        private const val CARD_SLIDE_FROM_4 = 0
+        private const val CARD_SLIDE_FROM_8 = 0
+        private const val CARD_SLIDE_FROM_12 = 0
+        private const val CARD_SLICE_TO_4 = 4
+        private const val CARD_SLICE_TO_8 = 8
+        private const val CARD_SLICE_TO_12 = 12
+        private const val CARD_SLICE_TO_16 = 16
 
         @JvmStatic
         fun hexStringToByteArray(str: String): ByteArray {
@@ -36,8 +44,13 @@ class NFCUtils {
 
         @JvmStatic
         fun formatCardUID(cardNumber: String): String {
-            return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
-                    cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16)
+            return cardNumber.substring(CARD_SLIDE_FROM_0, CARD_SLICE_TO_4) +
+                    " - " +
+                    cardNumber.substring(CARD_SLIDE_FROM_4, CARD_SLICE_TO_8) +
+                    " - " +
+                    cardNumber.substring(CARD_SLIDE_FROM_8, CARD_SLICE_TO_12) +
+                    " - " +
+                    cardNumber.substring(CARD_SLIDE_FROM_12, CARD_SLICE_TO_16)
         }
 
         @SuppressLint("Method Call Prohibited")
