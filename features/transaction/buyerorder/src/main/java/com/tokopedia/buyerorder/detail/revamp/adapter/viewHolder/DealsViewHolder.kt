@@ -84,7 +84,7 @@ class DealsViewHolder(
                 tapActionDeals.gone()
                 customView2.gone()
             }
-            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, true)
+            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, flag = true, true)
         } else {
             if (item.trackingNumber.isNotEmpty()){
                 val codes = item.trackingNumber.split(DELIMITERS)

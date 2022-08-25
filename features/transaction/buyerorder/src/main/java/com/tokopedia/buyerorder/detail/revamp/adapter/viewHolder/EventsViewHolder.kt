@@ -181,7 +181,7 @@ class EventsViewHolder(
                     }
                 } else {
                     if (actionButton.control.equals(KEY_BUTTON, true)) {
-                        eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, true)
+                        eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, flag = true, true)
                     } else {
                         setActionButtonClick(actionTextView, actionButton, item)
                     }

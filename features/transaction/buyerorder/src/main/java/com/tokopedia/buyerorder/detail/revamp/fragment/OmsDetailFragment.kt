@@ -36,6 +36,7 @@ import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
 import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
+import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo
 import com.tokopedia.buyerorder.detail.data.ConditionalInfo
 import com.tokopedia.buyerorder.detail.data.Detail
@@ -101,6 +102,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     lateinit var factory: ViewModelProvider.Factory
 
     private lateinit var typeFactory: OrderDetailTypeFactoryImpl
+    private lateinit var adapter: BaseAdapter<OrderDetailTypeFactoryImpl>
 
     private val viewModel: OrderDetailViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, factory)[OrderDetailViewModel::class.java]
@@ -111,11 +113,13 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     private var binding by autoClearedNullable<FragmentOmsListDetailBinding>()
+
     private var isSingleButton = false
     private var isDownloadable = false
     private var upstream: String? = null
     private var dealsBottomSheet: DealsQRBottomSheet? = null
     private var eventBottomSheet: BottomSheetUnify? = null
+    private var listItems: List<Items>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -169,7 +173,17 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
 
         viewModel.actionButton.observe(viewLifecycleOwner){
-            renderActionButton(it.second)
+            when(it){
+                is ActionButtonEventWrapper.TapActionButton -> {
+                    setTapActionButton(it.position, it.list)
+                }
+                is ActionButtonEventWrapper.SetActionButton -> {
+                    setActionButton(it.position, it.list)
+                }
+                is ActionButtonEventWrapper.RenderActionButton -> {
+                    renderActionButton(it.list)
+                }
+            }
         }
     }
 
@@ -188,6 +202,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         details.detail.forEach { setDetail(it) }
 
         if (details.items.isNotEmpty()){
+            listItems = details.items
             setItems(details.items, details)
         }
 
@@ -336,10 +351,11 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
 
         if (newItemList.isNotEmpty() && !isMetadataEmpty){
-            binding?.recyclerView?.adapter = BaseAdapter(
+            adapter = BaseAdapter(
                 typeFactory,
                 VisitableMapper.mappingVisitable(items, false, upstream ?: "", orderDetails)
             )
+            binding?.recyclerView?.adapter = adapter
         } else {
             binding?.detailsSection?.gone()
             binding?.dividerAboveInfoLabel?.gone()
@@ -429,6 +445,26 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
+    private fun setActionButton(position: Int, actionButtons: List<ActionButton>){
+        if (!listItems.isNullOrEmpty()){
+            listItems?.let {
+                it[position].tapActions = actionButtons
+                it[position].isTapActionsLoaded = true
+            }
+            adapter.notifyItemChanged(position)
+        }
+    }
+
+    private fun setTapActionButton(position: Int, actionButtons: List<ActionButton>){
+        if (!listItems.isNullOrEmpty()){
+            listItems?.let {
+                it[position].actionButtons = actionButtons
+                it[position].isActionButtonLoaded = true
+            }
+            adapter.notifyItemChanged(position)
+        }
+    }
+
     private fun renderActionButton(actionButtons: List<ActionButton>){
 
         fun getLabelIfNotEmpty(actionButton: List<ActionButton>): String{
@@ -450,7 +486,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 val button = actionButtons.first()
 
                 if (button.control.equals(KEY_BUTTON, true)){
-                    viewModel.requestActionButton(actionButtons, 0, false)
+                    viewModel.requestActionButton(actionButtons, 0, flag = false, false)
                 } else if (button.control.equals(KEY_REDIRECT, true)){
                     RouteManager.route(context, button.body.appURL)
                 }
@@ -607,7 +643,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                             )).show() }
                         }
 
-                        viewModel.requestActionButton(item.actionButtons, 0, false)
+                        viewModel.requestActionButton(item.actionButtons, 0, flag = false, false)
 
                         return@setOnClickListener
                     }
@@ -936,8 +972,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         orderAnalytics.sendOpenScreenDeals(isOMP)
     }
 
-    override fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean) {
-        viewModel.requestActionButton(tapAction, position, flag)
+    override fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean, isCalledFromAdapter: Boolean) {
+        viewModel.requestActionButton(tapAction, position, flag, isCalledFromAdapter)
     }
 
     companion object{

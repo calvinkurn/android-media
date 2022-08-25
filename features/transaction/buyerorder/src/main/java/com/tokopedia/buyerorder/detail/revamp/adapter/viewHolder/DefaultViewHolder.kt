@@ -135,7 +135,7 @@ class DefaultViewHolder(
         if (item.tapActions.isNotEmpty() && !item.isTapActionsLoaded){
             binding.progBar.visible()
             binding.tapAction.gone()
-            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, true)
+            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, flag = true, true)
         }
     }
 
@@ -163,7 +163,7 @@ class DefaultViewHolder(
                 item.tapActions.forEachIndexed { i, actionButton ->
                     val actionTextView = renderActionButtons(i, actionButton, item)
                     if (actionButton.control.equals(KEY_BUTTON, true)){
-                        eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, true)
+                        eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, flag = true, true)
                     } else {
                         setActionButtonClick(actionTextView, actionButton)
                     }
@@ -197,7 +197,7 @@ class DefaultViewHolder(
                 } else {
                     actionTextView.setOnClickListener {
                         if (actionButton.control.equals(KEY_BUTTON, true)){
-                            eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, true)
+                            eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, flag = true, true)
                         } else {
                             setActionButtonClick(actionTextView, actionButton)
                         }

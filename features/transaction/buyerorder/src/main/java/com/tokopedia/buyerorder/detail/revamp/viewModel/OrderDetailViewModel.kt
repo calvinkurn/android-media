@@ -1,10 +1,12 @@
 package com.tokopedia.buyerorder.detail.revamp.viewModel
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.detail.data.ActionButton
+import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
@@ -40,8 +42,8 @@ class OrderDetailViewModel @Inject constructor(
     val digiPerso: LiveData<Result<RecommendationDigiPersoResponse>>
         get() = _digiPerso
 
-    private val _actionButton = MutableLiveData<Pair<Int, List<ActionButton>>>()
-    val actionButton: LiveData<Pair<Int, List<ActionButton>>>
+    private val _actionButton = MutableLiveData<ActionButtonEventWrapper>()
+    val actionButton: LiveData<ActionButtonEventWrapper>
         get() = _actionButton
 
     private var orderDetails : OrderDetails? = null
@@ -73,19 +75,26 @@ class OrderDetailViewModel @Inject constructor(
         )
     }
 
-    fun requestActionButton(actionButton: List<ActionButton>, position: Int, flag: Boolean){
+    fun requestActionButton(actionButton: List<ActionButton>, position: Int, flag: Boolean, isCalledFromAdapter: Boolean){
         launch {
             actionButtonUseCase.get().setParams(actionButton)
             val result = actionButtonUseCase.get().executeOnBackground()
 
-            if (flag){
-                result.actionButtonList.forEachIndexed { index, it ->
-                    if (it.control.equals(ItemsAdapter.KEY_REFRESH, true)){
-                        it.body = actionButton[index].body
+            if (isCalledFromAdapter){
+                if (flag){
+                    _actionButton.postValue(ActionButtonEventWrapper.TapActionButton(position, result.actionButtonList))
+                    result.actionButtonList.forEachIndexed { index, it ->
+                        if (it.control.equals(ItemsAdapter.KEY_REFRESH, true)){
+                            it.body = actionButton[index].body
+                        }
                     }
+                } else {
+                    _actionButton.postValue(ActionButtonEventWrapper.SetActionButton(position, result.actionButtonList))
                 }
+            } else {
+                _actionButton.postValue(ActionButtonEventWrapper.RenderActionButton(result.actionButtonList))
             }
-            _actionButton.postValue(Pair(position, result.actionButtonList))
+
         }
     }
 
