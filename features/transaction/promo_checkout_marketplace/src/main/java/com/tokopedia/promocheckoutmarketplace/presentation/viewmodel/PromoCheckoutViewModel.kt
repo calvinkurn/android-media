@@ -962,43 +962,34 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     ) {
         val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
 
-        // add global promo to clear code
         val globalPromo = arrayListOf<String>()
-        // from get promo response
         promoListUiModel.value?.forEach { visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
                 globalPromo.add(visitable.uiData.promoCode)
             }
         }
-        // from apply promo param
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
             if (!bboPromoCodes.contains(promoGlobalCode) && !globalPromo.contains(promoGlobalCode)) {
                 globalPromo.add(promoGlobalCode)
             }
         }
 
-        // add order promo to clear code
         val orders = arrayListOf<ClearPromoOrder>()
-        // from apply promo param
         validateUsePromoRequest.orders.forEach { order ->
-            // check if duplicate ClearPromoOrder instance exist
             var clearOrder = orders.find { it.uniqueId == order.uniqueId }
             if (clearOrder == null) {
-                // if not duplicate then create instance
                 clearOrder = ClearPromoOrder(
                         uniqueId = order.uniqueId,
                         boType = order.boType,
                 )
                 orders.add(clearOrder)
             }
-            // add all code in clearpromoorder instance
             order.codes.forEach {
                 if (!bboPromoCodes.contains(it) && !clearOrder.codes.contains(it)) {
                     clearOrder.codes.add(it)
                 }
             }
         }
-        // from get promo response
         promoListUiModel.value?.forEach { visitable ->
             // todo should we add bebas ongkir promo in promo list here?
             if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId > 0) {

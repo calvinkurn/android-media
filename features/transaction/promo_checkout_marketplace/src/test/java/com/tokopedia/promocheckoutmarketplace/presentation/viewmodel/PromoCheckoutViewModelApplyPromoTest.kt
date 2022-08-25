@@ -413,8 +413,7 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(request.orders.first().shippingId > 0)
         assert(request.orders.first().spId > 0)
     }
-
-    // todo
+    
     @Test
     fun `WHEN reapply promo BO from promo page THEN validate use request should contain shipping id and sp id from bo additional data`() {
         //given
