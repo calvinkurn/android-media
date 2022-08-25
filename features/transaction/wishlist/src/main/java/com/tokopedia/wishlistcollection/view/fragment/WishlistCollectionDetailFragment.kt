@@ -2555,7 +2555,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val dialog =
             context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
         dialog?.setTitle(getString(Rv2.string.wishlist_v2_popup_delete_bulk_title, count))
-        dialog?.dialogDesc?.gone()
+        dialog?.setDescription(getString(Rv2.string.wishlist_v2_popup_delete_bulk_desc))
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
