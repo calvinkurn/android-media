@@ -2,8 +2,6 @@
 /features/content/createpost_common/           			@tokopedia/android-minionlance-dev
 /features/content/explore/              				@tokopedia/android-minionlance-dev
 /features/content/feed/                 				@tokopedia/android-minionlance-dev
-/features/content/interest_pick/        				@tokopedia/android-minionlance-dev
-/features/content/interest_pick_common                  @tokopedia/android-minionlance-dev
 /features/content/kol/                  				@tokopedia/android-minionlance-dev
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
 /features/content/people/                               @tokopedia/android-minionlance-dev
@@ -30,7 +28,6 @@
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
-/features/content/interest_pick_common                  @tokopedia/android-minionsolo-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
