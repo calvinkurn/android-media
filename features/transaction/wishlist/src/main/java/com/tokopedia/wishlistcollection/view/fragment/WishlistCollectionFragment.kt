@@ -450,12 +450,14 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         getWishlistCollections()
                         showToaster(result.data.data.message, "", Toaster.TYPE_NORMAL)
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty {
-                            context?.getString(
-                                R.string.wishlist_v2_common_error_msg
-                            )
+                        val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
+                            result.data.errorMessage.firstOrNull() ?: ""
+                        } else if (result.data.data.message.isNotEmpty()) {
+                            result.data.data.message
+                        } else {
+                            getString(com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg)
                         }
-                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -746,6 +748,19 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         collectionAdapter.showLoader()
         binding?.run {
             wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.gone()
+        }
+    }
+
+    private fun showToasterActionOke(message: String, type: Int) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(
+                v,
+                message,
+                Toaster.LENGTH_LONG,
+                type,
+                getString(R.string.collection_CTA_oke)
+            ) {}.show()
         }
     }
 }

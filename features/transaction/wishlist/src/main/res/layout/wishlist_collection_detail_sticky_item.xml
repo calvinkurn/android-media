@@ -36,8 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                android:text="@string/wishlist_v2_barang_label"/>
+                app:typographyWeight="reguler"/>
 
         </LinearLayout>
 

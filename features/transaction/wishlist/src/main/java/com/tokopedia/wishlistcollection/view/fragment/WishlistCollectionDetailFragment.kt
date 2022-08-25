@@ -37,6 +37,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -329,37 +330,35 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun observingDeleteProgress() {
-        if (collectionItemsAdapter.getCountData() > 0) {
-            wishlistCollectionDetailViewModel.deleteWishlistProgressResult.observe(
-                viewLifecycleOwner
-            ) { result ->
-                when (result) {
-                    is Success -> {
-                        if (result.data.status == OK) {
-                            val data = result.data.data
-                            if (data.success) {
-                                if (data.successfullyRemovedItems >= data.totalItems) {
-                                    finishDeletionWidget(data)
-                                } else {
-                                    updateDeletionWidget(data)
-                                    handler.postDelayed(
-                                        progressDeletionRunnable,
-                                        DELAY_REFETCH_PROGRESS_DELETION
-                                    )
-                                }
+        wishlistCollectionDetailViewModel.deleteWishlistProgressResult.observe(
+            viewLifecycleOwner
+        ) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.status == OK) {
+                        val data = result.data.data
+                        if (data.success) {
+                            if (data.successfullyRemovedItems >= data.totalItems) {
+                                finishDeletionWidget(data)
                             } else {
-                                stopDeletionAndShowToasterError(data.toasterMessage)
+                                updateDeletionWidget(data)
+                                handler.postDelayed(
+                                    progressDeletionRunnable,
+                                    DELAY_REFETCH_PROGRESS_DELETION
+                                )
                             }
                         } else {
-                            if (result.data.errorMessage.isNotEmpty()) {
-                                stopDeletionAndShowToasterError(result.data.errorMessage[0])
-                            }
+                            stopDeletionAndShowToasterError(data.toasterMessage)
+                        }
+                    } else {
+                        if (result.data.errorMessage.isNotEmpty()) {
+                            stopDeletionAndShowToasterError(result.data.errorMessage[0])
                         }
                     }
-                    is Fail -> {
-                        val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
-                        stopDeletionAndShowToasterError(errorMessage)
-                    }
+                }
+                is Fail -> {
+                    val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
+                    stopDeletionAndShowToasterError(errorMessage)
                 }
             }
         }
@@ -494,6 +493,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun observingWishlistCollectionItems() {
+        showLoader()
         wishlistCollectionDetailViewModel.collectionItems.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
@@ -1145,7 +1145,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onResume() {
         super.onResume()
         checkProgressDeletion()
-        showLoader()
     }
 
     private fun checkProgressDeletion() {
@@ -1210,9 +1209,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
-            wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.visible()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailCountLabel.text =
-                "$totalData"
+            wishlistCollectionDetailStickyCountManageLabel.apply {
+                rlWishlistCollectionDetailManage.visible()
+                wishlistCollectionDetailCountLabel.text = "$totalData"
+                wishlistBarangLabel.text = getString(Rv2.string.wishlist_v2_barang_label)
+            }
         }
     }
 
@@ -2290,8 +2291,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             productId = wishlistItem.id.toLong(),
             productName = wishlistItem.name,
             price = wishlistItem.originalPriceFmt,
-            quantity = wishlistItem.minOrder.toInt(),
-            shopId = wishlistItem.shop.id.toInt(),
+            quantity = wishlistItem.minOrder.toIntOrZero(),
+            shopId = wishlistItem.shop.id.toIntOrZero(),
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         )
         wishlistCollectionDetailViewModel.doAtc(atcParam)
