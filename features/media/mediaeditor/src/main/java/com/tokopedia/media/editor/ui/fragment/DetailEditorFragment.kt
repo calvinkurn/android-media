@@ -59,9 +59,6 @@ class DetailEditorFragment @Inject constructor(
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
-    @Inject
-    lateinit var rotateFilterRepositoryImpl: RotateFilterRepositoryImpl
-
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
     private val removeBgComponent by uiComponent { RemoveBackgroundToolUiComponent(it, this) }
     private val contrastComponent by uiComponent { ContrastToolsUiComponent(it, this) }
@@ -85,9 +82,9 @@ class DetailEditorFragment @Inject constructor(
         if (data.isToolRotate() || data.isToolCrop()) {
             // if current tools editor not rotate then skip crop data set by sent empty object on data
             viewBinding?.imgUcropPreview?.cropRotate(
-                finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
-                sliderValue = rotateFilterRepositoryImpl.sliderValue,
-                rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
+                finalRotationDegree = viewModel.rotateRotationFinalDegree,
+                sliderValue = viewModel.rotateSliderValue,
+                rotateNumber = viewModel.rotateNumber,
                 data
             ) {
                 writeToStorage(it)
@@ -168,17 +165,17 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRotateValueChanged(rotateValue: Float) {
-        rotateFilterRepositoryImpl.rotate(viewBinding?.imgUcropPreview, rotateValue, false)
+        viewModel.setRotate(viewBinding?.imgUcropPreview, rotateValue, false)
         isEdited = true
     }
 
     override fun onImageMirror() {
-        rotateFilterRepositoryImpl.mirror(viewBinding?.imgUcropPreview)
+        viewModel.setMirror(viewBinding?.imgUcropPreview)
         isEdited = true
     }
 
     override fun onImageRotate(rotateDegree: Float) {
-        rotateFilterRepositoryImpl.rotate(
+        viewModel.setRotate(
             viewBinding?.imgUcropPreview,
             RotateToolUiComponent.ROTATE_BTN_DEGREE,
             true
@@ -392,9 +389,9 @@ class DetailEditorFragment @Inject constructor(
 
                     cropView.scaleX = cropRotateData.scaleX
                     cropView.scaleY = cropRotateData.scaleY
-                    rotateFilterRepositoryImpl.rotate(it, rotateDegree, isRotate)
-                    rotateFilterRepositoryImpl.rotateNumber = cropRotateData.orientationChangeNumber
-                    rotateFilterRepositoryImpl.sliderValue = cropRotateData.rotateDegree
+                    viewModel.setRotate(it, rotateDegree, isRotate)
+                    viewModel.rotateNumber = cropRotateData.orientationChangeNumber
+                    viewModel.rotateSliderValue = cropRotateData.rotateDegree
 
                     overlayView.setTargetAspectRatio(ratio)
 

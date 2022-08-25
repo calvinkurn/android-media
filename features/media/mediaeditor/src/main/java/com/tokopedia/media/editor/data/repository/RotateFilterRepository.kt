@@ -10,13 +10,19 @@ import kotlin.math.abs
 interface RotateFilterRepository {
     fun rotate(editorDetailPreview: EditorDetailPreviewImage?, degree: Float, isRotateRatio: Boolean)
     fun mirror(editorDetailPreview: EditorDetailPreviewImage?)
+    fun getFinalRotationDegree(): Float
+
+    var previousDegree: Float
+    var rotateNumber: Int
+    var sliderValue: Float
 }
 
 class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
-    var previousDegree = 0f
-    var rotateNumber = 0
+    override var previousDegree = 0f
+    override var rotateNumber = 0
+    override var sliderValue = 0f
+
     private var isRatioRotated = false
-    var sliderValue = 0f
 
     override fun rotate(editorDetailPreview: EditorDetailPreviewImage?, degree: Float, isRotateRatio: Boolean) {
         if(editorDetailPreview == null) return
@@ -49,10 +55,6 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
             sliderValue = degree
         }
 
-//        if (cropImageView.minScale > 0) {
-//            cropImageView.zoomOutImage(cropImageView.minScale + 0.01f)
-//        }
-
         cropImageView.setImageToWrapCropBounds(false)
     }
 
@@ -73,7 +75,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
     }
 
     // get total degree from clicked rotate button & slider value
-    fun getFinalRotationDegree(): Float{
+    override fun getFinalRotationDegree(): Float{
         return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
     }
 }

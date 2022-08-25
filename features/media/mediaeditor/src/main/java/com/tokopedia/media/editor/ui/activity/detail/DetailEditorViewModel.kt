@@ -3,22 +3,21 @@ package com.tokopedia.media.editor.ui.activity.detail
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
-import android.util.Log
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
+import com.tokopedia.media.editor.data.repository.RotateFilterRepository
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
+import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EditorParam
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
@@ -28,7 +27,8 @@ class DetailEditorViewModel @Inject constructor(
     private val colorFilterRepository: ColorFilterRepository,
     private val removeBackgroundUseCase: SetRemoveBackgroundUseCase,
     private val contrastFilterRepository: ContrastFilterRepository,
-    private val watermarkFilterRepository: WatermarkFilterRepository
+    private val watermarkFilterRepository: WatermarkFilterRepository,
+    private val rotateFilterRepository: RotateFilterRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -130,4 +130,27 @@ class DetailEditorViewModel @Inject constructor(
             buttonRef
         )
     }
+
+    fun setRotate(ucropRef: EditorDetailPreviewImage?, rotateDegree: Float, isRotateRatio: Boolean){
+        ucropRef?.let {
+            rotateFilterRepository.rotate(it, rotateDegree, isRotateRatio)
+        }
+    }
+
+    fun setMirror(ucropRef: EditorDetailPreviewImage?,){
+        ucropRef?.let {
+            rotateFilterRepository.mirror(it)
+        }
+    }
+
+    var rotatePreviousDegree: Float get() = rotateFilterRepository.previousDegree
+    set(value) {rotateFilterRepository.previousDegree = value}
+
+    var rotateNumber: Int get() = rotateFilterRepository.rotateNumber
+    set(value) {rotateFilterRepository.rotateNumber = value}
+
+    var rotateSliderValue: Float get() = rotateFilterRepository.sliderValue
+    set(value) {rotateFilterRepository.sliderValue = value}
+
+    val rotateRotationFinalDegree: Float get() = rotateFilterRepository.getFinalRotationDegree()
 }
