@@ -296,6 +296,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         if (hidden) {
             rebateCoachMark?.dismissCoachMark()
+            unificationWidgetCoachMark?.dismissCoachMark()
         } else {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
