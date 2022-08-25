@@ -33,10 +33,12 @@ import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -56,10 +58,14 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var mainView: View? = null
     private var button: UnifyButton? = null
     private var clReason: ConstraintLayout? = null
-    private var reasonOne: TextView? = null
-    private var reasonTwo: TextView? = null
-    private var iconOne: View? = null
-    private var iconTwo: View? = null
+    private var reasonOne: Typography? = null
+    private var reasonTwo: Typography? = null
+    private var reasonThree: Typography? = null
+    private var reasonFour: Typography? = null
+    private var iconOne: ImageUnify? = null
+    private var iconTwo: ImageUnify? = null
+    private var iconThree: ImageUnify? = null
+    private var iconFour: ImageUnify? = null
     private var isSourceSeller = false
     private var analytics: UserIdentificationAnalytics? = null
     private var statusCode = 0
@@ -116,8 +122,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         clReason = parentView.findViewById(R.id.cl_reason)
         reasonOne = parentView.findViewById(R.id.txt_reason_1)
         reasonTwo = parentView.findViewById(R.id.txt_reason_2)
+        reasonThree = parentView.findViewById(R.id.txt_reason_3)
+        reasonFour = parentView.findViewById(R.id.txt_reason_4)
         iconOne = parentView.findViewById(R.id.ic_x_1)
         iconTwo = parentView.findViewById(R.id.ic_x_2)
+        iconThree = parentView.findViewById(R.id.ic_x_3)
+        iconFour = parentView.findViewById(R.id.ic_x_4)
         kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
         containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
@@ -275,17 +285,72 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showRejectedReason(reasons: List<String>) {
-        clReason?.visibility = View.VISIBLE
-        reasonOne?.visibility = View.VISIBLE
-        iconOne?.visibility = View.VISIBLE
-        reasonOne?.text = reasons[0]
-        if (reasons.size > 1) {
-            reasonTwo?.visibility = View.VISIBLE
-            iconTwo?.visibility = View.VISIBLE
-            reasonTwo?.text = reasons[1]
-        } else {
-            reasonTwo?.visibility = View.GONE
-            iconTwo?.visibility = View.GONE
+        when(reasons.size) {
+            1 -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[0]
+                }?.show()
+
+                clReason?.show()
+            }
+            2 -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[0]
+                }?.show()
+
+                iconTwo?.show()
+                reasonTwo?.apply {
+                    text = reasons[1]
+                }?.show()
+
+                clReason?.show()
+            }
+            3 -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[0]
+                }?.show()
+
+                iconTwo?.show()
+                reasonTwo?.apply {
+                    text = reasons[1]
+                }?.show()
+
+                iconThree?.show()
+                reasonThree?.apply {
+                    text = reasons[2]
+                }?.show()
+
+                clReason?.show()
+            }
+            4 -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[0]
+                }?.show()
+
+                iconTwo?.show()
+                reasonTwo?.apply {
+                    text = reasons[1]
+                }?.show()
+
+                iconThree?.show()
+                reasonThree?.apply {
+                    text = reasons[2]
+                }?.show()
+
+                iconFour?.show()
+                reasonFour?.apply {
+                    text = reasons[3]
+                }?.show()
+
+                clReason?.show()
+            }
+            else -> {
+                clReason?.hide()
+            }
         }
     }
 
