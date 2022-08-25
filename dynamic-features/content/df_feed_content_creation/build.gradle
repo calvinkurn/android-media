@@ -49,6 +49,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(rootProject.ext.app.customerapp_pro)
+    implementation project(rootProject.ext.app.customerapp)
     implementation projectOrAar(rootProject.ext.features.createpost)
+
+    // Feed
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+
+    // Core
+    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
+
+    // Media
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
 }

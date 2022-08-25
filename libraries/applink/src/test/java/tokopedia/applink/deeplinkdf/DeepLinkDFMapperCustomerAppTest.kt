@@ -142,39 +142,51 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check internal affiliate create post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal affiliate create post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/create_post/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check internal affiliate draft post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal affiliate draft post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/draft/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check affiliate edit appLink then should return DF_BASE in customerapp`() {
+    fun `check affiliate edit appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/affiliate/12345/edit"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check internal content create post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal content create post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/create_post/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check internal content draft post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal content draft post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/draft/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check shop post edit appLink then should return DF_BASE in customerapp`() {
+    fun `check shop post edit appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/content-shop/12345/edit"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
+    }
+
+    @Test
+    fun `check internal new create post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
+        val appLink = ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
+    }
+
+    @Test
+    fun `check internal new image picker insta appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
+        val appLink = ApplinkConstInternalGlobal.IMAGE_PICKER_V2
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test

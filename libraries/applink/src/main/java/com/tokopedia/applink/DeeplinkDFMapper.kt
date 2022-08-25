@@ -225,8 +225,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
     const val DF_TOKOFOOD = "df_tokofood"
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
-    const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
-    const val DF_CREATE_POST = "df_createpost"
+    const val DF_FEED_CONTENT_CREATION = "df_feed_content_creation"
     const val DF_PEOPLE = "df_people"
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
@@ -261,14 +260,22 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE, R.string.applink_kol_title_media_preview))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_CREATE_POST, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
                     || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
+            add(DFP({
+                it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
+                        it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
+                        it.startsWith(ApplinkConstInternalGlobal.VIDEO_PICKER)
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
+
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2) }, DF_FEED_CONTENT_CREATION, R.string.title_feed_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.IMAGE_PICKER_V2) }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
 
             // Digital
             add(DFP({
@@ -312,15 +319,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // IM
             add(DFP({ it.startsWith(REFERRAL) }, DF_BASE, R.string.applink_title_im_referral))
-
-            //Feed
-            add(DFP({
-                it.startsWithPattern(ApplinkConstInternalGlobal.IMAGE_PICKER_V2)
-            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
-
-            add(DFP({
-                it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
-            }, DF_CREATE_POST, R.string.title_feed_create_post))
 
             // Logistic
             add(DFP({ it.startsWith(DROPOFF_PICKER) }, DF_BASE, R.string.dropoff_title))
@@ -439,12 +437,6 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
             }, DF_BASE, R.string.title_product_detail))
-
-            add(DFP({
-                it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
-                        it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
-                        it.startsWith(ApplinkConstInternalGlobal.VIDEO_PICKER)
-            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
 
             // Operational
             add(DFP({
@@ -575,7 +567,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(INTERNAL_MEDIA_PICKER) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_ALBUM) ||
                         it.startsWith(INTERNAL_MEDIA_PICKER_PREVIEW)
-            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
