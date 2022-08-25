@@ -3,6 +3,7 @@ package com.tokopedia.deals.pdp.ui.viewmodel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.pdp.data.DealsProductDetail
+import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,6 +45,18 @@ class DealsPDPViewModel @Inject constructor (
 
     fun setPDP(productId: String) {
         _inputPDPState.tryEmit(productId)
+    }
+
+    fun productImagesMapper(productDetail: ProductDetailData): List<String> {
+        val images = mutableListOf<String>()
+        if (productDetail.media.size > 0) {
+            images.addAll(productDetail.media.map {
+                it.url
+            })
+        } else {
+            images.add(productDetail.imageApp)
+        }
+        return images
     }
 
     private suspend fun getPDP(productId: String): Result<DealsProductDetail> {

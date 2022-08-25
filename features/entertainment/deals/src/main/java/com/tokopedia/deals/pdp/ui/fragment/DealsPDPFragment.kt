@@ -16,21 +16,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
-import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
+import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,6 +55,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var menuPDP: Menu? = null
     private var tgDealsDetail: Typography? = null
     private var clHeader: ConstraintLayout? = null
+    private var imageCarousel: WidgetDealsPDPCarousel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = arguments?.getString(EXTRA_PRODUCT_ID, "") ?: ""
@@ -95,6 +93,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             toolbar = binding?.toolbar
             tgDealsDetail = binding?.subView?.tgDealDetails
             clHeader = binding?.clHeader
+            imageCarousel = binding?.carouselDealsPdp
 
             updateCollapsingToolbar()
         }
@@ -125,6 +124,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private fun showLoading() {
         progressBar?.show()
         progressBarLayout?.show()
+        imageCarousel?.shimmering()
     }
 
     private fun hideLoading() {
@@ -133,25 +133,34 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun showPDPData(data: ProductDetailData) {
-        showShareButton()
-        onPreparePDPOptionsMenu()
-        clHeader?.show()
         displayName = data.displayName
+        showShareButton()
+        showPDPOptionsMenu()
+        showHeader()
+        showImageCarousel(data)
+    }
+
+    private fun showHeader() {
+        clHeader?.show()
         collapsingToolbarLayout?.title = displayName
         tgDealsDetail?.text = displayName
         tgDealsDetail?.show()
-
     }
 
-    private fun onPreparePDPOptionsMenu() {
+    private fun showImageCarousel(data: ProductDetailData) {
+        imageCarousel?.setImages(viewModel.productImagesMapper(data))
+        imageCarousel?.buildView()
+    }
+
+    private fun showPDPOptionsMenu() {
         appBarLayout?.let { mainAppBarLayout ->
             setHasOptionsMenu(true)
             setToolbar()
             mainAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
                 context?.let { context ->
-                    val menuSize = toolbar?.menu?.size() ?: 0
-                    if(menuSize > 0) {
-                        var colorInt = 0
+                    val menuSize = toolbar?.menu?.size() ?: Int.ZERO
+                    if(menuSize > Int.ZERO) {
+                        var colorInt = Int.ZERO
                         val appVerticalOffset = Math.abs(verticalOffset)
                         val difference =
                             mainAppBarLayout.totalScrollRange - (toolbar?.height ?: Int.ZERO)
@@ -177,7 +186,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                                 colorInt
                             )
                             setDrawableColorFilter(
-                                toolbar.menu.getItem(0)?.icon,
+                                toolbar.menu.getItem(Int.ZERO)?.icon,
                                 colorInt
                             )
                         }
@@ -193,7 +202,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             (activity as DealsPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
             (activity as DealsPDPActivity).supportActionBar?.title = ""
             context?.let {
-               toolbar?.setNavigationIcon(ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.ic_action_back))
+               toolbar.navigationIcon = ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.ic_action_back)
             }
         }
     }

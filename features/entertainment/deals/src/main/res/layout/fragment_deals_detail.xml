@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/Unify_NN0"
             app:contentScrim="@color/Unify_NN0"
             app:expandedTitleGravity="left|bottom"
@@ -27,32 +27,16 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
-
-                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-                    android:id="@+id/deals_images"
+                <com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
+                    android:id="@+id/carousel_deals_pdp"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    />
-
-
-                <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
-                    android:id="@+id/pager_indicator"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:padding="2dp"
-                    app:centered="false"
-                    app:fillColor="@color/Unify_G400"
-                    app:layout_constraintBottom_toBottomOf="@+id/deals_images"
-                    app:layout_constraintLeft_toLeftOf="@+id/deals_images"
-                    app:layout_constraintRight_toRightOf="@id/deals_images"
-                    app:layout_constraintWidth_default="wrap"
-                    app:pageColor="@color/Unify_N150"
-                    app:strokeColor="@color/Unify_N150" />
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax" />
 
                 <ImageView
                     app:layout_constraintTop_toTopOf="parent"
@@ -60,12 +44,9 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:background="@drawable/bg_blur_image"
-                    android:contentDescription="background deal" />
-
+                    android:background="@drawable/bg_blur_image" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -76,12 +57,13 @@
                 app:contentInsetStart="0dp"
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_collapseMode="pin" />
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScroll"
+        android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp"
@@ -103,7 +85,6 @@
         android:visibility="gone"
         app:cardBackgroundColor="@color/Unify_NN0">
 
-
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_buynow"
             android:layout_width="match_parent"
@@ -123,7 +104,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN700"
+        android:background="@color/Unify_Background"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">
