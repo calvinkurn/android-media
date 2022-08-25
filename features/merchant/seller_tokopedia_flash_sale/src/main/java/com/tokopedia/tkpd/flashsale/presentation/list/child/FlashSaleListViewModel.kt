@@ -177,7 +177,7 @@ class FlashSaleListViewModel @Inject constructor(
                     statusIds = currentState.selectedStatusIds,
                     sortOrderBy = currentState.selectedSort.id,
                     sortOrderRule = currentState.selectedSort.direction,
-                    requestProductMetaData = currentState.tabName == "finished"
+                    requestProductMetaData = currentState.tabName == "finished" || currentState.tabName == "ongoing"
                 )
                 val response = getFlashSaleListForSellerUseCase.execute(params)
                 val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
@@ -208,7 +208,7 @@ class FlashSaleListViewModel @Inject constructor(
                 TabConstant.TAB_ID_REGISTERED -> flashSale.toRegisteredItem()
                 TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem()
                 TabConstant.TAB_ID_FINISHED -> flashSale.toFinishedItem()
-                else -> throw IllegalArgumentException("Cannot map to model. Tab id is not registered.")
+                else -> flashSale.toUpcomingItem()
             }
         }
     }

@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant.IMAGE_URL_RIBBON_GREEN
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant.IMAGE_URL_RIBBON_RED
@@ -71,7 +70,12 @@ class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> 
                 else -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
             }
 
-            this.text = item.statusText
+            this.text = when (item.status) {
+                FlashSaleStatus.ONGOING -> context.getString(R.string.stfs_status_ongoing)
+                FlashSaleStatus.REJECTED -> item.statusText
+                else -> item.statusText
+            }
+
             this.setTextColorCompat(textColorResourceId)
         }
 
