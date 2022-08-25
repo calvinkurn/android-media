@@ -82,5 +82,6 @@
     <string name="deals_pdp_favourite">Favourite Deals</string>
     <string name="deals_pdp_valid_through">Berlaku hingga tanggal %s</string>
     <string name="deals_pdp_number_of_items"> (%d)</string>
-
+    <string name="deals_pdp_product_not_started">Masa penjualan produk belum dimulai</string>
+    <string name="deals_pdp_product_ended">Masa penjualan produk telah berakhir</string>
 </resources>

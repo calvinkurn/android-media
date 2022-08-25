@@ -414,7 +414,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             app:typographyType="display_2"
-            app:typographyWeight="bold"
+            app:typographyWeight="reguler"
             android:textColor="@color/Unify_G400"
             android:text="@string/deals_pdp_see_how_to_redeem_voucher"
             app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"

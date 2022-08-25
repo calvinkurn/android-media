@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -40,10 +41,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.Calendar
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
@@ -88,6 +91,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var tgExpandableTnc: Typography? = null
     private var seeMoreButtonDesc: Typography? = null
     private var seeMoreButtonTnc: Typography? = null
+    private var clRedeemInstruction: ConstraintLayout? = null
+    private var cardCheckout: CardView? = null
+    private var btnCheckout: UnifyButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = arguments?.getString(EXTRA_PRODUCT_ID, "") ?: ""
@@ -147,6 +153,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
             tgExpandableTnc = binding?.subView?.tgExpandableTnc
             seeMoreButtonDesc = binding?.subView?.seemorebuttonDescription
             seeMoreButtonTnc = binding?.subView?.seemorebuttonTnc
+            clRedeemInstruction = binding?.subView?.clRedeemInstructions
+            cardCheckout = binding?.cvCheckout
+            btnCheckout = binding?.btnBuynow
             updateCollapsingToolbar()
         }
     }
@@ -193,6 +202,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
         showBrand(data)
         showDescription(data)
         showTnc(data)
+        showRedeemInstruction(data)
+        showCheckout(data)
     }
 
     private fun showHeader(displayName: String) {
@@ -293,6 +304,32 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }, TIME_LAPSE)
             seeMoreButtonTnc?.setOnClickListener {
                 //todo show fragment
+            }
+        }
+    }
+
+    private fun showRedeemInstruction(data: ProductDetailData) {
+        clRedeemInstruction?.setOnClickListener {
+            //todo redeem instruction
+        }
+    }
+
+    private fun showCheckout(data: ProductDetailData) {
+        context?.let { context ->
+            cardCheckout?.show()
+            val currentTime = Calendar.getInstance().time
+            if (data.saleStartDate.toIntSafely() > (currentTime.time / 1000)) {
+                btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_product_not_started)
+                btnCheckout?.setClickable(false)
+            } else if (data.saleEndDate.toIntSafely() < (currentTime.time / 1000)) {
+                btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_product_ended)
+                btnCheckout?.setClickable(false)
+            } else {
+                btnCheckout?.setClickable(true)
+                btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_buy_now)
+                btnCheckout?.setOnClickListener {
+                    //todo goto checkout
+                }
             }
         }
     }
