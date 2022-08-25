@@ -815,7 +815,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean useWishlistV2Rollence() {
         boolean isWishlistV2;
         try {
-            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT).equals(RollenceKey.WISHLIST_V2_VARIANT);
+            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_CONTROL_VARIANT).equals(RollenceKey.WISHLIST_EXPERIMENT_VARIANT);
         } catch (Exception e) {
             isWishlistV2 = true;
         }
