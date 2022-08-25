@@ -333,19 +333,6 @@
         app:unifyButtonVariant="ghost"
         tools:visibility="gone" />
 
-    <View
-        android:id="@+id/pointerCoachMarkMoreOptions"
-        android:layout_width="1dp"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/product_manage_more_option_vertical_spacing"
-        android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-        app:layout_constraintBottom_toTopOf="@id/divider"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintLeft_toLeftOf="@id/btnMoreOptions"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
-        />
-
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btnMoreOptions"
         android:contentDescription="@string/content_desc_btnMoreOptions"
