@@ -866,8 +866,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val endTimeInteractive: Calendar? get() {
         return when (val value = _interactive.value){
-            is InteractiveUiModel.Quiz -> return when (val status = value.status){
-                is InteractiveUiModel.Quiz.Status.Ongoing -> status.endTime
+            is InteractiveUiModel.Quiz -> return when (value.status){
+                is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                    val converted = TimeUnit.SECONDS.toMillis(_quizFormData.value.durationInMs)
+                    Calendar.getInstance().apply {
+                        add(Calendar.SECOND, converted.toInt())
+                    }
+                }
                 else -> null
             }
             else -> null
