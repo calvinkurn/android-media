@@ -86,6 +86,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAddingWholeSale = false
     var isAddingValidationWholeSale = false
     var isSavingPriceAdjustment = false
+    var isPriceSuggestionRangeEmpty = false
 
     private var isMultiLocationShop = false
 
@@ -821,9 +822,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         return priceInput <= minPrice ||  priceInput in minPrice..maxPrice
     }
 
-    fun isPriceSuggestionLayoutVisible(productStatus: Int, isNew: Boolean): Boolean {
+    fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean): Boolean {
         val isActive = productStatus == ProductStatus.STATUS_ACTIVE
-        return isActive && isNew
+        return !isRangeEmpty && isActive && isNew
+    }
+
+    fun isPriceSuggestionRangeIsEmpty(minLimit: Double, maxLimit: Double): Boolean {
+        return minLimit == 0.0 && maxLimit == 0.0
     }
 
     /**

@@ -203,6 +203,7 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
             isInputError = isError
             setHtmlMessage(message)
         }
+        binding?.buttonSave?.isEnabled = !isError
     }
 
     fun show(fragmentManager: FragmentManager) {

@@ -149,7 +149,9 @@ object ProductAddEditTracking {
                 KEY_ACTION to action,
                 KEY_CATEGORY to category,
                 KEY_LABEL to label,
-                KEY_TRACKER_ID to trackerId
+                KEY_TRACKER_ID to trackerId,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE
         )
         getTracker().sendGeneralEvent(map)
     }
@@ -160,7 +162,9 @@ object ProductAddEditTracking {
                 KEY_ACTION to action,
                 KEY_CATEGORY to category,
                 KEY_LABEL to label,
-                KEY_TRACKER_ID to trackerId
+                KEY_TRACKER_ID to trackerId,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE
         )
         getTracker().sendGeneralEvent(map)
     }

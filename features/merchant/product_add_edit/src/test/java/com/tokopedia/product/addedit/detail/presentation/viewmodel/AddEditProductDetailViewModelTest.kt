@@ -7,11 +7,10 @@ import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
-import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
-import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
+import com.tokopedia.product.addedit.detail.domain.model.*
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
@@ -20,6 +19,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
+import com.tokopedia.product.addedit.detail.presentation.model.SimilarProduct
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
@@ -1752,6 +1753,158 @@ class AddEditProductDetailViewModelTest {
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
+    }
+
+    @Test
+    fun `getAddProductPriceSuggestion should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getAddProductPriceSuggestionUseCase.executeOnBackground()
+                    .priceSuggestionByKeyword
+        } returns PriceSuggestionByKeyword(
+                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                        suggestedPrice = 8000.0,
+                        suggestedPriceMin = 6000.0,
+                        suggestedPriceMax = 10000.0
+                )
+        )
+
+        viewModel.getAddProductPriceSuggestion("keyword","categoryL3")
+        val result = viewModel.productPriceRecommendation.getOrAwaitValue()
+
+        coVerify {
+            getEditProductPriceSuggestionUseCase.executeOnBackground()
+        }
+
+        assertEquals(8000.0, result.suggestedPrice)
+    }
+
+    @Test
+    fun `getAddProductPriceSuggestion should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            getAddProductPriceSuggestionUseCase.executeOnBackground()
+                    .priceSuggestionByKeyword
+        } throws MessageErrorException(expectedErrorMessage)
+
+        viewModel.getAddProductPriceSuggestion("keyword","categoryL3")
+        val resultErrorMessage = viewModel.addProductPriceSuggestionError.getOrAwaitValue()
+
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
+    }
+
+    @Test
+    fun `when suggestions is empty expect similar products is empty`() {
+        val testData = PriceSuggestionByKeyword(
+                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                        suggestedPrice = 8000.0,
+                        suggestedPriceMin = 6000.0,
+                        suggestedPriceMax = 10000.0
+                ), suggestions = listOf()
+        )
+        val actualResult = viewModel.mapAddPriceSuggestionToPriceSuggestionUiModel(testData)
+        assertTrue(actualResult.similarProducts.isEmpty())
+    }
+
+    @Test
+    fun `when mapping add price suggestion model to ui model expect legit result`() {
+        val testData = PriceSuggestionByKeyword(
+                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                        suggestedPrice = 8000.0,
+                        suggestedPriceMin = 6000.0,
+                        suggestedPriceMax = 10000.0
+                ),
+                suggestions = listOf(
+                        PriceSuggestionSuggestedPriceGetResponseV2(
+                                productId = "productId",
+                                displayPrice = 2000.0,
+                                imageURL = "imageUrl",
+                                totalSold = 10,
+                                rating = 4.5
+                        )
+                )
+        )
+        val expectedResult = PriceSuggestion(
+                suggestedPrice = 8000.0,
+                suggestedPriceMin = 6000.0,
+                suggestedPriceMax = 10000.0,
+                similarProducts = listOf(
+                        SimilarProduct(
+                                productId = "productId",
+                                displayPrice = 2000.0,
+                                imageURL = "imageUrl",
+                                totalSold = 10,
+                                rating = 4.5
+                        )
+                )
+        )
+        val actualResult = viewModel.mapAddPriceSuggestionToPriceSuggestionUiModel(testData)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when mapping edit price suggestion to ui model expect legit result`() {
+        val testData = PriceSuggestionSuggestedPriceGet(
+                suggestedPrice = 8000.0,
+                suggestedPriceMin = 6000.0,
+                suggestedPriceMax = 10000.0,
+                price = 2000.0,
+                title = "title",
+                productRecommendation = listOf(
+                        ProductRecommendationResponse(
+                                productID = "productId",
+                                price = 2000.0,
+                                imageURL = "imageUrl",
+                                sold = 10,
+                                rating = 4.5,
+                                title = "title"
+                        )
+                )
+        )
+        val expectedResult = PriceSuggestion(
+                suggestedPrice = 8000.0,
+                suggestedPriceMin = 6000.0,
+                suggestedPriceMax = 10000.0,
+                similarProducts = listOf(
+                        SimilarProduct(
+                                productId = "productId",
+                                displayPrice = 2000.0,
+                                imageURL = "imageUrl",
+                                totalSold = 10,
+                                rating = 4.5
+                        )
+                )
+        )
+        val actualResult = viewModel.mapEditPriceSuggestionToPriceSuggestionUiModel(testData)
+        assertEquals(expectedResult, actualResult)
+    }
+    @Test
+    fun `when the price input is below the price suggestion range expect is competitive true`() {
+        val priceSuggestionRange = 5000.0 to 10000.0
+        val productPrice = 2000.0
+        val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange)
+        assertTrue(isCompetitive)
+    }
+
+    @Test
+    fun `when the price input within the price suggestion range expect is competitive true`() {
+        val priceSuggestionRange = 5000.0 to 10000.0
+        val productPrice = 6000.0
+        val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange)
+        assertTrue(isCompetitive)
+    }
+
+    @Test
+    fun `when the price input is over the price suggestion range expect is competitive false`() {
+        val priceSuggestionRange = 5000.0 to 10000.0
+        val productPrice = 11000.0
+        val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange)
+        assertFalse(isCompetitive)
+    }
+
+    @Test
+    fun `when product is active and new expect price suggestion layout visible`() {
+        val isVisible = viewModel.isPriceSuggestionLayoutVisible(ProductStatus.STATUS_ACTIVE, true)
+        assertTrue(isVisible)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(
