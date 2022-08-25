@@ -18,11 +18,13 @@ fun NavGraphBuilder.splashComposable(
     }
 }
 
-fun NavGraphBuilder.homeComposable() {
+fun NavGraphBuilder.homeComposable(
+    navigateToNewOrderSummary: () -> Unit
+) {
     composable(
         route = ScreenConstant.HOME_SCREEN
     ) {
-        HomeScreen()
+        HomeScreen(navigateToNewOrderSummary)
     }
 }
 
@@ -34,10 +36,12 @@ fun NavGraphBuilder.newOrderDetailComposable() {
     }
 }
 
-fun NavGraphBuilder.newOrderSummaryScreenComposable() {
+fun NavGraphBuilder.newOrderSummaryScreenComposable(
+    navigateToNewOrderList: () -> Unit
+) {
     composable(
         route = ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
     ) {
-        NewOrderSummaryScreen()
+        NewOrderSummaryScreen(navigateToNewOrderList)
     }
 }

@@ -4,6 +4,7 @@ import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import com.tokopedia.sellerapp.navigation.ScreenNavigation
 import com.tokopedia.sellerapp.navigation.homeComposable
 import com.tokopedia.sellerapp.navigation.newOrderDetailComposable
+import com.tokopedia.sellerapp.navigation.newOrderSummaryScreenComposable
 import com.tokopedia.sellerapp.navigation.splashComposable
 import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
 
@@ -17,9 +18,15 @@ fun SetupNavigation(
         startDestination = SPLASH_SCREEN
     ) {
         splashComposable(
-            navigateToHomeScreen = nav.newOrderListToDetailScreen
+            navigateToHomeScreen = nav.toHomeScreen
         )
-        homeComposable()
+        homeComposable(
+            navigateToNewOrderSummary = nav.toNewOrderSummaryScreen
+        )
+        // this navigation only temp because new order list in development
+        newOrderSummaryScreenComposable(
+            navigateToNewOrderList = nav.toNewOrderDetailScreen
+        )
         newOrderDetailComposable()
     }
 }

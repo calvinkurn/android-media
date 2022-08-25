@@ -34,7 +34,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.glide.GlideImage
-import com.tokopedia.sellerapp.presentation.theme.ActionButtonBlackColor
+import com.tokopedia.sellerapp.presentation.theme.ActionButtonGrayColor
 import com.tokopedia.sellerapp.presentation.theme.DP_10
 import com.tokopedia.sellerapp.presentation.theme.DP_13
 import com.tokopedia.sellerapp.presentation.theme.DP_18
@@ -64,7 +64,7 @@ import com.tokopedia.tkpd.R
 
 @Composable
 fun NewOrderDetailScreen() {
-    LazyColumn{
+    LazyColumn {
         item {
             NewOrderDetailHeader()
         }
@@ -302,7 +302,7 @@ fun NewOrderDetailActionButton(
           /* nothing to do for now */
         },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = ActionButtonBlackColor
+            backgroundColor = ActionButtonGrayColor
         ),
         modifier = Modifier
             .fillMaxWidth()

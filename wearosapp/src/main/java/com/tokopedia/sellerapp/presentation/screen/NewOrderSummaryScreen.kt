@@ -17,7 +17,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_1
 
 @Composable
-fun NewOrderSummaryScreen() {
+fun NewOrderSummaryScreen(
+    navigateToNewOrderList: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -37,7 +39,9 @@ fun NewOrderSummaryScreen() {
             CreateOrderTitle()
             CreateOrderQuantity(totalOrder)
             CreateOrderPotential(orderPotential)
-            CreateOpenOrder()
+            CreateOpenOrder(
+                navigateToNewOrderList = navigateToNewOrderList
+            )
         }
 
     }
@@ -45,12 +49,14 @@ fun NewOrderSummaryScreen() {
 }
 
 @Composable
-fun CreateOpenOrder() {
+fun CreateOpenOrder(navigateToNewOrderList: () -> Unit) {
     Button(
         modifier = Modifier
             .height(32.dp)
             .padding(PaddingValues(top = 6.dp)),
-        onClick = { redirectToNewOrderListScreen() },
+        onClick = {
+            navigateToNewOrderList()
+        },
         colors = ButtonDefaults.buttonColors(backgroundColor = TextBlueColor)
     ) {
         AndroidView(factory = {
@@ -61,10 +67,6 @@ fun CreateOpenOrder() {
             }
         })
     }
-}
-
-fun redirectToNewOrderListScreen() {
-    //TODO will be implemented later
 }
 
 @Composable

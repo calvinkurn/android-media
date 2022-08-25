@@ -24,6 +24,7 @@ val NestLightNN1000 = Color(0xFF000000)
 val TextBlueColor = Color(0xFFAECBFA)
 val TextYellowColor = Color(0xFFFDE293)
 val TextGrayColor = Color(0xFFBDC1C6)
-val ActionButtonBlackColor = Color(0xFF202124)
+val ActionButtonGrayColor = Color(0xFF202124)
+val ChipGrayColor = Color(0xFF202124)
 
 
