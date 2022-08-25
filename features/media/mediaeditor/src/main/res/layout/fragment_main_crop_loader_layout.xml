@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        app:typographyType="paragraph_2"
+        app:typographyType="display_2"
         android:text="Tunggu sebentar, crop foto lagi diproses ya."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
