@@ -219,11 +219,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private val somListLayoutManager by lazy { somListBinding?.rvSomList?.layoutManager as? LinearLayoutManager }
 
-    private val fadeRightAnimator by lazy {
-        context?.let {
-            SomFadeRightAnimator(it)
-        } ?: defaultItemAnimator
-    }
+    private val fadeRightAnimator by lazy { SomFadeRightAnimator() }
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
     @Inject
