@@ -103,7 +103,7 @@ class ContentAutocompleteFragment @Inject constructor(
     }
 
     private fun showSearchKeyboard() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             delay(DELAY_SHOW_KEYBOARD)
 
             binding.sbAutocomplete.searchBarTextField.apply {
