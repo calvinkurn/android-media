@@ -1,7 +1,7 @@
 package com.tokopedia.product_bundle.tracking
 
 import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
-import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 
 object MultipleProductBundleTracking: BaseProductBundleTracking() {
 
@@ -35,7 +35,7 @@ object MultipleProductBundleTracking: BaseProductBundleTracking() {
             bundleId: String,
             productIds: String,
             source: String,
-            productDetails: List<ProductDetailMultipleBundleTracker>,
+            productDetails: List<ProductDetailBundleTracker>,
             shopId: String
     ) {
         trackBuyClick(

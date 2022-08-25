@@ -1,6 +1,6 @@
 package com.tokopedia.product_bundle.multiple.presentation.model
 
-data class ProductDetailMultipleBundleTracker (
+data class ProductDetailBundleTracker (
         val productId: String = "0",
         val productName: String = "",
         val productPrice: String = "0",

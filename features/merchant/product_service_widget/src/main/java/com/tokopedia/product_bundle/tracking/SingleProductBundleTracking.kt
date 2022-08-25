@@ -1,8 +1,7 @@
 package com.tokopedia.product_bundle.tracking
 
 import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
-import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
-import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 
 object SingleProductBundleTracking: BaseProductBundleTracking() {
 
@@ -31,7 +30,7 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
             selectedProductId: String?,
             shopId: String,
             productIds: String,
-            productDetails: List<ProductDetailMultipleBundleTracker>,
+            productDetails: List<ProductDetailBundleTracker>,
     ) {
         if (bundleId != null) {
             // selectedProductId null means variant not selected yet

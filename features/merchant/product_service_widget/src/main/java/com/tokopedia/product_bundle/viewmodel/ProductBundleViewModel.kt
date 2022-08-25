@@ -33,7 +33,6 @@ import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.common.util.ResourceProvider
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
-import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

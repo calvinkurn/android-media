@@ -2,8 +2,7 @@ package com.tokopedia.product_bundle.tracking
 
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
-import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -103,7 +102,7 @@ abstract class BaseProductBundleTracking {
             source: String,
             bundleType: String,
             trackerId: String,
-            productDetails: List<ProductDetailMultipleBundleTracker>,
+            productDetails: List<ProductDetailBundleTracker>,
             bundleId: String,
             shopId: String
     ) {
@@ -152,7 +151,7 @@ abstract class BaseProductBundleTracking {
             source: String,
             bundleType: String,
             trackerId: String,
-            productDetails: List<ProductDetailMultipleBundleTracker>,
+            productDetails: List<ProductDetailBundleTracker>,
             bundleId: String,
             shopId: String
     ) {

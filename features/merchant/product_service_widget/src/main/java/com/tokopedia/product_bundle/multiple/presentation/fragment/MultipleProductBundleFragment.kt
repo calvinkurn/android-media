@@ -37,7 +37,6 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
-import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
@@ -52,7 +51,7 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
-import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailMultipleBundleTracker
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 import com.tokopedia.product_bundle.tracking.MultipleProductBundleTracking
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.product_service_widget.R
@@ -207,7 +206,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
                 val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
-//                val selectedProductBundleMaster = viewModel.getSelectedProductBundleMaster()
                 val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
                 val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it) // viewModel.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it)
 
@@ -260,7 +258,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private fun sendTrackerBundleAtcClickEvent(
             selectedProductIds: String,
             bundleId: String,
-            productDetails: List<ProductDetailMultipleBundleTracker>,
+            productDetails: List<ProductDetailBundleTracker>,
             shopId: String
     ) {
         val _userId = viewModel.getUserId()
@@ -313,7 +311,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 if (isAddToCartInputValid) {
                     // collect required data
                     val bundleId = selectedProductBundleMaster.bundleId
-//                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
                     val userId = viewModel.getUserId()
                     val shopId = selectedProductBundleMaster.shopId
                     // map product bundle details to product details
@@ -322,13 +319,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                         shopId,
                         selectedBundleDetails
                     )
-//                    // track the buy button click
-//                    MultipleProductBundleTracking.trackMultipleBuyClick(
-//                            shopId = shopId,
-//                            userId = userId,
-//                            bundleId = bundleId.toString(),
-//                            productId = selectedProductIds
-//                    )
                     // add product bundle to cart
                     viewModel.addProductBundleToCart(
                         parentProductId = viewModel.parentProductID,
