@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.media.editor.databinding.MediaEditorSliderLayoutBinding
 import kotlin.math.round
 
-class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
+class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
     private var binding: MediaEditorSliderLayoutBinding =
@@ -20,7 +20,7 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
 
     private val sliderThumb: View = binding.sliderThumb
     private val sliderTrack: View = binding.sliderTrack
-    private val sliderTrackActive: MediaEditorSliderTrack = binding.sliderTrackActive
+    private val trackViewActiveSliderView: EditorTrackSliderView = binding.sliderTrackActive
     private val sliderWrapper: ConstraintLayout = binding.sliderWrapper
     private val sliderCenterIndicator: View = binding.sliderCenterIndicator
     private val sliderText: AppCompatTextView = binding.sliderText
@@ -94,7 +94,7 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
             sliderThumb.x - targetX
         }
 
-        sliderTrackActive.update(
+        trackViewActiveSliderView.update(
             sliderCenterIndicator.x,
             sliderThumb.x,
             thumbWidth / 2
@@ -141,7 +141,7 @@ class MediaEditorSlider(context: Context, attributeSet: AttributeSet) :
                 }
             }
 
-            sliderTrackActive.update(
+            trackViewActiveSliderView.update(
                 centerX,
                 newXPosition,
                 halfThumbWidth

@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+import com.tokopedia.media.editor.ui.component.slider.EditorSliderView
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     UiComponent(viewGroup, R.id.uc_tool_rotate),
-    MediaEditorSlider.Listener {
+    EditorSliderView.Listener {
 
-    private val rotateSlider = findViewById<MediaEditorSlider>(R.id.slider_rotate)
+    private val rotateSlider = findViewById<EditorSliderView>(R.id.slider_rotate)
     private val flipBtn = findViewById<IconUnify>(R.id.flip_btn)
     private val rotateBtn = findViewById<IconUnify>(R.id.rotate_btn)
 

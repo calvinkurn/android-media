@@ -3,28 +3,28 @@ package com.tokopedia.media.editor.ui.component
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+import com.tokopedia.media.editor.ui.component.slider.EditorSliderView
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class ContrastToolsUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
-) : UiComponent(viewGroup, R.id.uc_tool_contrast), MediaEditorSlider.Listener {
+) : UiComponent(viewGroup, R.id.uc_tool_contrast), EditorSliderView.Listener {
 
-    private val contrastSliderView: MediaEditorSlider = findViewById(R.id.slider_contrast)
+    private val contrastSliderViewView: EditorSliderView = findViewById(R.id.slider_contrast)
 
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        contrastSliderView.setRangeSliderValue(
+        contrastSliderViewView.setRangeSliderValue(
             CONTRAST_SLIDER_START_VALUE,
             CONTRAST_SLIDER_RANGE * 2,
             CONTRAST_SLIDER_STEP_VALUE,
             sliderInitValue.toInt()
         )
-        contrastSliderView.listener = this
-        contrastSliderView.isValueUpdateDelay = true
-        contrastSliderView.delayTime = 100L
+        contrastSliderViewView.listener = this
+        contrastSliderViewView.isValueUpdateDelay = true
+        contrastSliderViewView.delayTime = 100L
     }
 
     override fun valueUpdated(step: Int, value: Float) {

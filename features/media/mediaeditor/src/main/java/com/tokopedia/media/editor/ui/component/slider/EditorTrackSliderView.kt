@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.R
 import com.tokopedia.unifyprinciples.R as PrincipleR
 
-class MediaEditorSliderTrack(context: Context, attributeSet: AttributeSet) :
+class EditorTrackSliderView(context: Context, attributeSet: AttributeSet) :
     View(context, attributeSet) {
 
     private val paint = Paint()
@@ -25,11 +25,6 @@ class MediaEditorSliderTrack(context: Context, attributeSet: AttributeSet) :
         post {
             yCenter = (height / 2).toFloat()
         }
-    }
-
-    fun setLine(height: Float, @ColorInt color: Int) {
-        paint.strokeWidth = height
-        paint.color = color
     }
 
     fun update(newXStart: Float, newXEnd: Float, thumbSize: Float) {

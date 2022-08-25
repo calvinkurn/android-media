@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+        <com.tokopedia.media.editor.ui.component.slider.EditorSliderView
             android:id="@+id/slider_rotate"
             app:layout_constraintLeft_toRightOf="@id/flip_btn"
             app:layout_constraintRight_toLeftOf="@id/rotate_btn"

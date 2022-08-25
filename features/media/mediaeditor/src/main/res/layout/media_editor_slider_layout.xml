@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/media_editor_slider_height"/>
 
-        <com.tokopedia.media.editor.ui.component.slider.MediaEditorSliderTrack
+        <com.tokopedia.media.editor.ui.component.slider.EditorTrackSliderView
             android:id="@+id/slider_track_active"
             app:layout_constraintLeft_toRightOf="@id/slider_center_indicator"
             app:layout_constraintTop_toTopOf="parent"

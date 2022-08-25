@@ -3,26 +3,26 @@ package com.tokopedia.media.editor.ui.component
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+import com.tokopedia.media.editor.ui.component.slider.EditorSliderView
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class BrightnessToolUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
-) : UiComponent(viewGroup, R.id.uc_tool_brightness), MediaEditorSlider.Listener {
+) : UiComponent(viewGroup, R.id.uc_tool_brightness), EditorSliderView.Listener {
 
-    private val brightnessSliderView: MediaEditorSlider = findViewById(R.id.slider_brightness)
+    private val brightnessSliderViewView: EditorSliderView = findViewById(R.id.slider_brightness)
 
     fun setupView(sliderInitValue: Float) {
         container().show()
 
-        brightnessSliderView.setRangeSliderValue(
+        brightnessSliderViewView.setRangeSliderValue(
             BRIGHTNESS_SLIDER_START_VALUE,
             BRIGHTNESS_SLIDER_RANGE,
             BRIGHTNESS_SLIDER_STEP_VALUE,
             sliderInitValue.toInt()
         )
-        brightnessSliderView.listener = this
+        brightnessSliderViewView.listener = this
     }
 
     override fun valueUpdated(step: Int, value: Float) {

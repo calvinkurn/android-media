@@ -10,7 +10,7 @@
     android:padding="10dp"
     tools:visibility="visible">
 
-    <com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
+    <com.tokopedia.media.editor.ui.component.slider.EditorSliderView
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:id="@+id/slider_contrast"
