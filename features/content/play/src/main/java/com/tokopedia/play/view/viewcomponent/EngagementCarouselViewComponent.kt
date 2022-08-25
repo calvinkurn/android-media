@@ -9,6 +9,8 @@ import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @author by astidhiyaa on 24/08/22
@@ -40,10 +42,21 @@ class EngagementCarouselViewComponent(
         carousel.apply {
             adapter = carouselAdapter
         }
+        autoScroll()
     }
 
     fun setData(list: List<EngagementUiModel>){
         carouselAdapter.setItemsAndAnimateChanges(list)
+    }
+
+    private fun autoScroll(){
+        scope.launch {
+            //should be list size
+            repeat(carouselAdapter.itemCount){
+                delay(5000L)
+                carousel.smoothScrollToPosition(it)
+            }
+        }
     }
 
     interface Listener {
