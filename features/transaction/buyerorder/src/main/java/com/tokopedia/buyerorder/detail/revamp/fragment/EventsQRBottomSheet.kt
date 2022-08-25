@@ -26,6 +26,12 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class EventsQRBottomSheet : BottomSheetUnify() {
 
+    init {
+        isFullpage = false
+        isDragable = false
+        showCloseIcon = true
+    }
+
     private var binding by autoClearedNullable<LayoutScanQrCodeBinding>()
 
     override fun onCreateView(
@@ -33,15 +39,14 @@ class EventsQRBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = LayoutScanQrCodeBinding.inflate(inflater, container, false)
-        return binding?.root
+        binding = LayoutScanQrCodeBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setTitle(getString(R.string.text_redeem_voucher))
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setTitle(getString(R.string.text_redeem_voucher))
-        setChild(binding?.root)
 
         setCloseClickListener {
             dismiss()

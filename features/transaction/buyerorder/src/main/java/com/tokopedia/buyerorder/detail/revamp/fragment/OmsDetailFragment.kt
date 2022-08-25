@@ -61,6 +61,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -225,15 +226,20 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     private fun showError(throwable: Throwable?) {
-
+        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+        view?.let {
+            Toaster.build(it, errorMsg).show()
+        }
     }
 
     private fun hideProgressBar() {
-
+        binding?.progressBarLayout?.gone()
+        binding?.mainView?.visible()
     }
 
     private fun showProgressBar() {
-
+        binding?.progressBarLayout?.visible()
+        binding?.mainView?.gone()
     }
 
     private fun setStatus(status: Status) {
