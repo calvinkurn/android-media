@@ -146,6 +146,13 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         pushOpenScreenEvent()
+        Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
+            if (it.contains(PAGE_SEGMENT_HELP)) {
+                selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
+            } else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
+            }
+        }
     }
 
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
@@ -293,13 +300,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
                 validateUserdata.validateAffiliateUserStatus.data?.isEligible == true
             ) {
-                Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
-                    if (it.contains(PAGE_SEGMENT_HELP)) {
-                        selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
-                    } else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
-                        selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
-                    }
-                } ?: showAffiliatePortal()
+                showAffiliatePortal()
             } else {
                 showLoginPortal()
             }
