@@ -36,7 +36,7 @@ class ProductSectionViewHolder(
     private val ivBg: ImageView = itemView.findViewById(R.id.iv_bg)
     private val tvTimerInfo: TextView = itemView.findViewById(R.id.tv_header_info)
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
-    val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
+    private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
     private val btnReminder: IconUnify = itemView.findViewById(R.id.btn_section_reminder)
     private val btnInfo: IconUnify = itemView.findViewById(R.id.btn_information)
 

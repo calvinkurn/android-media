@@ -2,7 +2,6 @@ package com.tokopedia.play.ui.productsheet.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -17,8 +16,6 @@ class ProductSectionAdapterDelegate(
 ),
     ProductSectionViewHolder.Listener by listener {
 
-    private val rvPool = RecyclerView.RecycledViewPool()
-
     override fun onBindViewHolder(
         item: ProductSectionUiModel.Section,
         holder: ProductSectionViewHolder
@@ -29,7 +26,5 @@ class ProductSectionAdapterDelegate(
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductSectionViewHolder =
         ProductSectionViewHolder(
             listener = this, itemView = basicView
-        ).apply {
-            rvProducts.setRecycledViewPool(rvPool)
-        }
+        )
 }
