@@ -35,7 +35,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     abstract fun getRecyclerView(view: View): RecyclerView?
     abstract fun getPerPage(): Int
     abstract fun addElementToAdapter(list: List<F>)
-    abstract fun loadData(page: Int)
+    abstract fun loadData(page: Int, offset: Int)
     abstract fun clearAdapterData()
     abstract fun onShowLoading()
     abstract fun onHideLoading()
@@ -85,7 +85,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
-                loadData(page)
+                loadData(page, totalItemsCount)
             }
         }
     }
@@ -135,7 +135,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     fun loadInitialData() {
         clearAllData()
         showLoading()
-        loadData(DEFAULT_FIRST_PAGE)
+        loadData(DEFAULT_FIRST_PAGE, 0)
     }
 
     fun renderList(list: List<F>, hasNextPage: Boolean) {

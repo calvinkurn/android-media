@@ -60,7 +60,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         private const val BUNDLE_KEY_TAB_ID = "tab_id"
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val PAGE_SIZE = 10
-        private const val ONE = 1
         private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
 
 
@@ -428,16 +427,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         adapter?.submit(list)
     }
 
-    override fun loadData(page: Int) {
-        getFlashSales(page)
-    }
-
-    private fun getFlashSales(page: Int) {
-        val offset = if (page == ONE) {
-            Int.ZERO
-        } else {
-            (page - ONE) * PAGE_SIZE
-        }
+    override fun loadData(page: Int, offset: Int) {
         viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
     }
 
