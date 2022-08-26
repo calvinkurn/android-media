@@ -397,7 +397,7 @@ class DigitalCartViewModel @Inject constructor(
                             requestCheckoutParams = requestCheckoutParam,
                             digitalIdentifierParams = digitalIdentifierParam,
                             fintechProduct = it.attributes.fintechProduct.getOrNull(0),
-                            isUseGql = true
+                            isUseGql = isUseGql
                         )
                     }
 
