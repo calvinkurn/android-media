@@ -15,6 +15,7 @@ import com.tokopedia.campaign.components.bottomsheet.selection.multiple.Multiple
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
@@ -214,6 +215,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
             is FlashSaleListUiEffect.FetchCategoryError -> {
+                flashSaleAdapter.removeItem(LoadingItem)
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
             is FlashSaleListUiEffect.LoadNextPageSuccess -> {
@@ -409,6 +411,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     override fun getRecyclerView(view: View): RecyclerView? {
         return binding?.recyclerView?.apply {
+            applyPaddingToLastItem()
             attachOnScrollListener(onScrollDown = {
                 binding?.imgScrollUp?.slideUp()
                 binding?.sortFilter?.slideDown()
@@ -449,11 +452,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     override fun onGetListError(message: String) {
         flashSaleAdapter.removeItem(LoadingItem)
-    }
-
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
     }
 
     private val onFlashSaleClicked : (Int) -> Unit = { selectedItemPosition ->

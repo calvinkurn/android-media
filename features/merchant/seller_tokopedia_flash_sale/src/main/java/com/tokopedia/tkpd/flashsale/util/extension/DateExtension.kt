@@ -15,10 +15,6 @@ fun hoursDifference(currentDate: Date, futureDate : Date): Int {
     return TimeUnit.MILLISECONDS.toHours(differenceInMillis).toInt()
 }
 
-fun daysDifference(currentDate: Date, futureDate : Date): Int {
-    val differenceInMillis = futureDate.time - currentDate.time
-    return TimeUnit.MILLISECONDS.toDays(differenceInMillis).toInt()
-}
 
 /**
  * This method will return time-zone offset in millis,
