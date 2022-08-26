@@ -58,7 +58,7 @@ class ProductVariantStockViewHolder(
 
     private fun setupStockQuantityEditor(variant: ProductVariant) {
         removeStockEditorTextChangedListener()
-        setStockMinMaxValue()
+        setStockMinMaxValue(variant)
         setStockEditorValue(variant.stock, variant.maxStock)
         setAddButtonClickListener(variant)
         setSubtractButtonClickListener(variant)
@@ -115,12 +115,12 @@ class ProductVariantStockViewHolder(
         }
     }
 
-    private fun setStockMinMaxValue() {
+    private fun setStockMinMaxValue(variant: ProductVariant) {
         binding?.quantityEditorStock?.run {
             val maxLength = LengthFilter(MAXIMUM_LENGTH)
             editText.filters = arrayOf(maxLength)
             minValue = MINIMUM_STOCK
-            maxValue = Int.MAX_VALUE
+            maxValue = variant.maxStock ?: MAXIMUM_STOCK
         }
     }
 
@@ -253,9 +253,9 @@ class ProductVariantStockViewHolder(
     }
 
     private fun toggleQuantityEditorBtn(stock: Int, maxStock: Int?) {
-        val enableAddBtn = stock <= maxStock ?: MAXIMUM_STOCK
+        val enableAddBtn = stock <= (maxStock ?: MAXIMUM_STOCK)
         val enableSubtractBtn = stock > MINIMUM_STOCK
-
+        binding?.quantityEditorStock?.addButton?.isEnabled = enableAddBtn
         binding?.quantityEditorStock?.run {
             addButton.isEnabled = enableAddBtn
             subtractButton.isEnabled = enableSubtractBtn
