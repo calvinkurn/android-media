@@ -34,7 +34,6 @@ import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
@@ -680,7 +679,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onBroadcastStateChanged(state: PlayBroadcasterState) {
-        viewModel.submitAction(BroadcastStateChanged(state))
+        viewModel.submitAction(PlayBroadcastAction.BroadcastStateChanged(state))
         lifecycleScope.launch(dispatcher.main) {
             debugView?.logBroadcastState(state)
         }

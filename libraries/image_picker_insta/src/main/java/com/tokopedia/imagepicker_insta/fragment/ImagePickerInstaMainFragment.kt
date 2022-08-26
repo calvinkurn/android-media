@@ -200,7 +200,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getFeedAccountList()
+        val isCreatePostAsBuyer = (requireActivity() as? ImagePickerInstaActivity)?.isCreatePostAsBuyer ?: false
+        viewModel.getFeedAccountList(isCreatePostAsBuyer)
     }
 
     private fun hasReadPermission(): Boolean {
@@ -433,12 +434,14 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun openCamera() {
+        val isOpenFrom = (activity as? ImagePickerInstaActivity)?.isOpenFrom ?: 0
         CameraUtil.openCamera(
             this,
             (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture,
             queryConfiguration.videoMaxDuration,
             viewModel.selectedFeedAccountId,
             TAKE_PICT_REQUEST_CODE,
+            isOpenFrom,
         )
     }
 
@@ -798,11 +801,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         if (!uris.isNullOrEmpty()) {
 
-            val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
+            val mActivity = (activity as? ImagePickerInstaActivity)
+            val applink = mActivity?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 val intent = RouteManager.getIntent(activity, finalApplink)
+                intent.putExtra(BundleData.KEY_IS_OPEN_FROM, mActivity.isOpenFrom)
                 intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, viewModel.selectedFeedAccountId)
                 startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
@@ -891,6 +896,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         ) {
             val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
             viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
+            (activity as? ImagePickerInstaActivity)?.isOpenFrom = data?.getIntExtra(BundleData.KEY_IS_OPEN_FROM,0) ?: 0
         }
     }
 

@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 class TitleDataStoreImpl @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
 ) : TitleDataStore {
 
     private val _observableTitle: MutableStateFlow<PlayTitleUiModel> = MutableStateFlow(PlayTitleUiModel.NoTitle)
@@ -35,27 +35,23 @@ class TitleDataStoreImpl @Inject constructor(
         _observableTitle.value = PlayTitleUiModel.HasTitle(title)
     }
 
-    override suspend fun uploadTitle(authorId: String, channelId: String): NetworkResult<Unit> {
+    override suspend fun uploadTitle(authorId: String, channelId: String, title: String): NetworkResult<Unit> {
         return try {
-            uploadTitleToServer(authorId, channelId)
+            uploadTitleToServer(authorId, channelId, title)
+            setTitle(title)
             NetworkResult.Success(Unit)
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
         }
     }
 
-    private suspend fun uploadTitleToServer(authorId: String, channelId: String) = withContext(dispatcher.io) {
-        val theTitle = when (val title = mTitle) {
-            PlayTitleUiModel.NoTitle -> ""
-            is PlayTitleUiModel.HasTitle -> title.title
-        }
-
+    private suspend fun uploadTitleToServer(authorId: String, channelId: String, title: String) = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
             setQueryParams(
                     PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
                             channelId = channelId,
                             authorId = authorId,
-                            title = theTitle
+                            title = title
                     )
             )
         }

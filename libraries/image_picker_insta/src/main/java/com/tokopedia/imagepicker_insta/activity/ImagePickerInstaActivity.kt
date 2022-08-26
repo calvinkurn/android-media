@@ -23,6 +23,8 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
     var videoMaxDurationInSeconds:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+    var isCreatePostAsBuyer: Boolean = false
+    var isOpenFrom = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +67,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
         toolbarIconRes = intent.extras?.getInt(BundleData.TOOLBAR_ICON_RES) ?: 0
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
         maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: DEFAULT_MULTI_SELECT_LIMIT
+        isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
         if (maxMultiSelectAllowed == 0) {
             maxMultiSelectAllowed = DEFAULT_MULTI_SELECT_LIMIT
         }
@@ -76,6 +79,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
         if(videoMaxDurationInSeconds == 0L){
             videoMaxDurationInSeconds = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
+        isCreatePostAsBuyer = intent.extras?.getBoolean(BundleData.IS_CREATE_POST_AS_BUYER, false) ?: false
     }
 
     override fun finish() {

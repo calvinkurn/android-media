@@ -50,7 +50,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
     var clientNumberThrottleJob: Job? = null
-    var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
+    var operatorData: TelcoCatalogPrefixSelect =
+        TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
@@ -68,11 +69,13 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
+    private val _favoriteChipsData =
+        MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
     val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>>
         get() = _favoriteChipsData
 
-    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
+    private val _autoCompleteData =
+        MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
     val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>>
         get() = _autoCompleteData
 
@@ -81,7 +84,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val prefillData: LiveData<RechargeNetworkResult<PrefillModel>>
         get() = _prefillData
 
-    private val _catalogPrefixSelect = MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
+    private val _catalogPrefixSelect =
+        MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
@@ -97,11 +101,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val clientNumberValidatorMsg: LiveData<String>
         get() = _clientNumberValidatorMsg
 
-    private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
+    private val _recommendationData =
+        MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
 
-    fun setMenuDetailLoading(){
+    fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
     }
 
@@ -114,22 +119,22 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setRechargeCatalogInputMultiTabLoading(){
+    fun setRechargeCatalogInputMultiTabLoading() {
         _observableDenomMCCMData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String){
+    fun getRechargeCatalogInputMultiTab(menuId: Int, operator: String, clientNumber: String) {
         catalogProductJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
             val denomGrid = repo.getProductInputMultiTabDenomGrid(menuId, operator, clientNumber)
             _observableDenomMCCMData.value = RechargeNetworkResult.Success(denomGrid)
-        }){
+        }) {
             if (it !is CancellationException)
                 _observableDenomMCCMData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
-    fun setFavoriteNumberLoading(){
+    fun setFavoriteNumberLoading() {
         _favoriteChipsData.value = RechargeNetworkResult.Loading
     }
 
@@ -154,7 +159,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setPrefixOperatorLoading(){
+    fun setPrefixOperatorLoading() {
         _catalogPrefixSelect.value = RechargeNetworkResult.Loading
     }
 
@@ -180,20 +185,29 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         validatorJob?.cancel()
     }
 
-    fun setAddToCartLoading(){
+    fun setAddToCartLoading() {
         _addToCartResult.value = RechargeNetworkResult.Loading
     }
 
-    fun addToCart(digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams,
-                  userId: String
-    ){
+    fun addToCart(
+        digitalIdentifierParam: RequestBodyIdentifier,
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        userId: String,
+        isUseGql: Boolean
+    ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
-            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            val categoryIdAtc = repo.addToCart(
+                digitalCheckoutPassData,
+                digitalIdentifierParam,
+                digitalSubscriptionParams,
+                userId,
+                isUseGql
+            )
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+                _addToCartResult.value =
+                    RechargeNetworkResult.Fail(MessageErrorException(it.message))
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
@@ -220,7 +234,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun updateCheckoutPassData(denomData: DenomData, idemPotencyKeyActive: String, clientNumberWidget: String, operatorActiveId: String){
+    fun updateCheckoutPassData(
+        denomData: DenomData,
+        idemPotencyKeyActive: String,
+        clientNumberWidget: String,
+        operatorActiveId: String
+    ) {
         digitalCheckoutPassData.apply {
             categoryId = denomData.categoryId
             clientNumber = clientNumberWidget
@@ -246,7 +265,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryCheckoutPassData(categoryId: String){
+    fun updateCategoryCheckoutPassData(categoryId: String) {
         digitalCheckoutPassData.categoryId = categoryId
     }
 
@@ -266,9 +285,9 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String){
+    fun setAutoSelectedDenom(listDenomData: List<DenomData>, productId: String) {
         var denomData: DenomData? = null
-        listDenomData.forEachIndexed{ index, activeDenomData ->
+        listDenomData.forEachIndexed { index, activeDenomData ->
             if (productId.equals(activeDenomData.id)) denomData = activeDenomData
         }
 
@@ -277,11 +296,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedPositionId(listDenomData: List<DenomData>): Int?{
-        var selectedProductPositionId : Int? = null
+    fun getSelectedPositionId(listDenomData: List<DenomData>): Int? {
+        var selectedProductPositionId: Int? = null
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
+                && selectedGridProduct.denomData.id.isNotEmpty()
+            ) selectedProductPositionId = index
         }
         return selectedProductPositionId
     }
@@ -290,12 +310,13 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         position?.let { selectedGridProduct.position = it }
     }
 
-    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedGridProduct.denomData.id.isNotEmpty()
-            && selectedGridProduct.position >= 0
-            && selectedGridProduct.denomWidgetEnum == layoutType
-            && isEligibleToBuy)
+    fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
+        (selectedGridProduct.denomData.id.isNotEmpty()
+                && selectedGridProduct.position >= 0
+                && selectedGridProduct.denomWidgetEnum == layoutType
+                && isEligibleToBuy)
 
-    fun onResetSelectedProduct(){
+    fun onResetSelectedProduct() {
         selectedGridProduct = SelectedProduct()
     }
 

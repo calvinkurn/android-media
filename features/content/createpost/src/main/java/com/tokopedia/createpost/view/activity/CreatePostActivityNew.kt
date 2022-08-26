@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
@@ -57,6 +58,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
     var selectedContentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty
+    var isOpenFrom: Int = 0
 
     protected val mFeedAccountList = mutableListOf<ContentAccountUiModel>()
 
@@ -285,16 +287,19 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
-        val createPostViewModel = (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
-        createPostViewModel.authorType = selectedContentAccount.type
+        val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
+        createPostViewModel?.authorType = selectedContentAccount.type
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
-        goToFeed(createPostViewModel)
-        finish()
+
+        when (intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0)) {
+            BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
+            else -> createPostViewModel?.let { goToFeed(it) }
+        }
     }
 
     private fun goToFeed(createPostViewModel: CreatePostViewModel) {
@@ -307,7 +312,16 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             intent.putExtra(PARAM_MEDIA_PREVIEW,
                 if (!isEditState) createPostViewModel.completeImageList.first().path else "")
             startActivity(intent)
+            finish()
         }
+    }
+
+    private fun goToUserProfile() {
+        val appLink = ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
+        val intent = RouteManager.getIntent(this, appLink)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
     }
 
     private fun setupView() {
@@ -319,6 +333,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         mFeedAccountList.addAll(contentAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+        isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
         selectedContentAccount = if (mFeedAccountList.isEmpty()) ContentAccountUiModel.Empty
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
             ?: mFeedAccountList.first()
@@ -370,6 +385,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     private fun backWithActionResult() {
         val intent = Intent().apply {
             putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedContentAccount.id)
+            putExtra(BundleData.KEY_IS_OPEN_FROM, isOpenFrom)
         }
         setResult(Activity.RESULT_OK, intent)
         finish()

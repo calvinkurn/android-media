@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.app.TaskStackBuilder
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +12,24 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
@@ -72,6 +78,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
 
@@ -637,6 +644,80 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         ) {
             thanksPageDataViewModel.registerTokomember(memberShipCardId)
         }.show()
+    }
+
+     fun setUpIllustration(){
+         thanksPageData.customDataOther?.let {
+            it.customIllustration?.let { img ->
+                if(img.isNotEmpty())
+                {
+                    loadGlideImage(img)
+                }
+                else{
+                    showCharacterAnimation()
+                }
+            }?: run{
+                showCharacterAnimation()
+            }
+        }
+    }
+
+    private fun loadGlideImage(imageUrl:String){
+        setIllustrationVisibility(true)
+        context?.let {
+            try {
+                if (ivIllustrationView?.context?.isValidGlideContext() == true) {
+                    GlideApp.with(it)
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .listener(object : RequestListener<Drawable?> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable?>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                showCharacterAnimation()
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable?>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                return false
+                            }
+                        }).into(ivIllustrationView)
+                }
+            } catch (e: Throwable) {
+            }
+        }
+    }
+
+    private fun showCharacterAnimation() {
+        setIllustrationVisibility(false)
+        context?.let {
+            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
+            lottieTask?.addListener { result: LottieComposition? ->
+                result?.let {
+                    lottieAnimationView?.setComposition(result)
+                    lottieAnimationView?.playAnimation()
+                }
+            }
+        }
+    }
+
+    private fun setIllustrationVisibility(showImage:Boolean=false){
+        if(showImage)
+        {   lottieAnimationView.gone()
+            ivIllustrationView.visible()
+        } else {
+            lottieAnimationView.visible()
+            ivIllustrationView.gone()
+        }
     }
 
     companion object {

@@ -63,7 +63,7 @@ class TalkReadingActivityTest {
     @Test
     fun validateClickCreateNewQuestion() {
         actionTest {
-            clickAction(R.id.addFloatingActionButton)
+            clickAction(R.id.fb_circle_icon)
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()

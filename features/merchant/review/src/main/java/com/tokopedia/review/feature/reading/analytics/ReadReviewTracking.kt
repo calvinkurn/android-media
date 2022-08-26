@@ -4,6 +4,14 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants.SCREEN_NAME_SHOP_REVIEW
+import com.tokopedia.reviewcommon.constant.AnalyticConstant
+import com.tokopedia.reviewcommon.extension.appendBusinessUnit
+import com.tokopedia.reviewcommon.extension.appendCurrentSite
+import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductId
+import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
+import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -658,19 +666,31 @@ object ReadReviewTracking {
         )
     }
 
-    fun trackOnGoToCredibility(feedbackId: String, userId: String, statistics: String, productId: String, currentUserId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_CLICK_PDP,
-                ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_CLICK_USER_NAME,
-                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
-                ReviewTrackingConstant.EVENT_LABEL to String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_USER_NAME, feedbackId, userId, statistics),
-                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
-                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
-                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
-                ReadReviewTrackingConstants.KEY_USER_ID to currentUserId
+    fun trackOnGoToCredibility(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        productId: String,
+        currentUserId: String,
+        label: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            AnalyticConstant.EVENT_CLICK_PG,
+            ReadReviewTrackingConstants.EVENT_CATEGORY,
+            ReadReviewTrackingConstants.EVENT_ACTION_CLICK_USER_NAME,
+            String.format(
+                ReadReviewTrackingConstants.EVENT_LABEL_CLICK_USER_NAME,
+                feedbackId,
+                userId,
+                statistics,
+                label
             )
-        )
+        ).appendBusinessUnit(ReadReviewTrackingConstants.BUSINESS_UNIT)
+            .appendCurrentSite(ReadReviewTrackingConstants.CURRENT_SITE)
+            .appendProductId(productId)
+            .appendUserId(currentUserId)
+            .appendTrackerIdIfNotBlank(ReadReviewTrackingConstants.TRACKER_ID_CLICK_REVIEWER_NAME)
+            .sendGeneralEvent()
     }
 }
 

@@ -213,7 +213,7 @@ class PickerViewModel(
         })
     }
 
-    fun getFeedAccountList() {
+    fun getFeedAccountList(isCreatePostAsBuyer: Boolean) {
         launchCatchError(block = {
             val response = getContentFormUseCase.apply {
                 setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "entrypoint", ""))
@@ -234,7 +234,8 @@ class PickerViewModel(
             _feedAccountListState.value = feedAccountList
 
             if(feedAccountList.isNotEmpty()) {
-                _selectedFeedAccount.value = feedAccountList.first()
+                _selectedFeedAccount.value = if(isCreatePostAsBuyer) feedAccountList.firstOrNull { it.isUser } ?: feedAccountList.first()
+                else feedAccountList.first()
             }
         }, onError = {})
     }
