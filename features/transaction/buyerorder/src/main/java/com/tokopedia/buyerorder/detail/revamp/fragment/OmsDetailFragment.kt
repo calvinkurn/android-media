@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerUtils
+import com.tokopedia.buyerorder.databinding.DealsQrCodeLayoutBinding
 import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
 import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
@@ -66,6 +67,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -114,8 +116,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     private var isSingleButton = false
     private var isDownloadable = false
     private var upstream: String? = null
-    private var dealsBottomSheet: DealsQRBottomSheet? = null
-    private var eventBottomSheet: BottomSheetUnify? = null
+    private var bottomSheetQr: BottomSheetUnify? = null
     private var listItems: List<Items>? = null
 
     override fun onCreateView(
@@ -137,8 +138,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         super.onActivityCreated(savedInstanceState)
 
         typeFactory = OrderDetailTypeFactoryImpl(this)
-        dealsBottomSheet = DealsQRBottomSheet()
-        eventBottomSheet = BottomSheetUnify()
+        bottomSheetQr = BottomSheetUnify()
 
         arguments?.let {
             upstream = it.get(KEY_UPSTREAM).toString()
@@ -657,26 +657,53 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     override fun openQRFragment(actionButton: ActionButton, item: Items) {
         if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)
             || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
-            dealsBottomSheet?.let {
-                it.renderView(actionButton)
-                it.show(childFragmentManager)
-            }
+            showQRDeals(actionButton)
         } else {
-            //TODO : create bottom sheet separated
             showQREvent(actionButton)
+        }
+    }
+
+    private fun showQRDeals(actionButton: ActionButton){
+        val bottomView = DealsQrCodeLayoutBinding.inflate(LayoutInflater.from(context), binding?.mainView, false)
+        bottomSheetQr?.let {
+            it.setTitle(getString(R.string.text_redeem_voucher))
+            it.setChild(bottomView.root)
+        }
+
+        bottomView.apply {
+            if (actionButton.headerObject.statusLabel.isNotEmpty()){
+                redeemDialogExpiredView.visible()
+                redeemDialogExpiredText.visible()
+                redeemDialogExpiredText.text = actionButton.headerObject.statusLabel
+            }
+
+            qrCode.loadImage(actionButton.body.appURL){
+                setPlaceHolder(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+                setErrorDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+            }
+
+            redeemDialogShopName.text = actionButton.headerObject.poweredBy
+            redeemDialogVoucherCode.text = actionButton.headerObject.voucherCodes
+
+            if (actionButton.headerObject.poweredBy.isEmpty()){
+                redeemDialogShopName.gone()
+                redeemDialogPoweredBy.gone()
+            }
+        }
+
+        activity?.let {
+            bottomSheetQr?.show(it.supportFragmentManager, TAG_DEALS_QR)
         }
     }
 
     private fun showQREvent(actionButton: ActionButton){
         val bottomSheetView = LayoutScanQrCodeBinding.inflate(LayoutInflater.from(context), binding?.mainView, false)
-        eventBottomSheet?.let {
+        bottomSheetQr?.let {
             it.setTitle(getString(R.string.text_redeem_voucher))
-            it.setCloseClickListener { _ ->
-                it.dismiss()
-            }
+            it.setChild(bottomSheetView.root)
         }
 
-        bottomSheetView.let {
+        bottomSheetView.apply {
             var totalItem = 0
             val voucherList = mutableListOf<RedeemVoucherModel>()
             val indicatorItems = mutableListOf<ImageView>()
@@ -710,44 +737,41 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     }
 
                     indicatorItems.add(indicator)
-                    it.itemIndicator.addView(indicator)
+                    itemIndicator.addView(indicator)
                 }
 
-                it.tvLabelCount.showWithCondition(voucherCodes.size > 1)
-                it.itemIndicator.showWithCondition(voucherCodes.size > 1)
+               tvLabelCount.showWithCondition(voucherCodes.size > 1)
+               itemIndicator.showWithCondition(voucherCodes.size > 1)
             }
 
-            it.tvLabelCount.text = getString(R.string.deals_voucher_label_count, 1, totalItem)
+            tvLabelCount.text = getString(R.string.deals_voucher_label_count, 1, totalItem)
 
             val redeemAdapter = RedeemVoucherAdapter(voucherList)
-            with(it.rvVoucher){
+            with(rvVoucher){
                 adapter = redeemAdapter
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setHasFixedSize(true)
             }
 
-            if (it.rvVoucher.onFlingListener == null){
+            if (rvVoucher.onFlingListener == null){
                 val snapHelper = PagerSnapHelper()
-                snapHelper.attachToRecyclerView(it.rvVoucher)
+                snapHelper.attachToRecyclerView(rvVoucher)
             }
 
             redeemAdapter.setOnCopiedListener { voucherCode ->
                 context?.let { ctx ->
                     BuyerUtils.copyTextToClipBoard("text", voucherCode, ctx)
-                }
-                view?.let { v ->
-                    Toaster.build(v, getString(R.string.deals_msg_copy)).show()
+                    Toaster.build(bottomSheetView.root, getString(R.string.deals_msg_copy)).show()
                 }
             }
 
-            eventBottomSheet?.setOnDismissListener {
-                it.rvVoucher.onFlingListener = null
+            bottomSheetQr?.setOnDismissListener {
+               rvVoucher.onFlingListener = null
             }
         }
 
         activity?.let {
-            eventBottomSheet?.setChild(bottomSheetView.root)
-            eventBottomSheet?.show(it.supportFragmentManager, "qr_event")
+            bottomSheetQr?.show(it.supportFragmentManager, TAG_EVENTS_QR)
         }
     }
 
@@ -1039,6 +1063,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val TOASTER_FORMAT = "%s %s"
         private const val INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim"
         private const val DEFAULT_MESSAGE_ERROR = "Something Error"
+        private const val TAG_DEALS_QR = "qr_deals"
+        private const val TAG_EVENTS_QR = "qr_events"
         const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(
