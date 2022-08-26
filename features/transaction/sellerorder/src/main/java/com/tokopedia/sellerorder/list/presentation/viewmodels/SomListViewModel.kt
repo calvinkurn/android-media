@@ -484,6 +484,46 @@ class SomListViewModel @Inject constructor(
         }
     }
 
+    private fun getFiltersFromCloud(refreshOrders: Boolean, afterSuccessfulLoadFromCache: Boolean) {
+        launchCatchError(context = dispatcher.main, block = {
+            if (_canShowOrderData.value == true) {
+                val oldFilterData = _filterResult.value?.let { oldResult ->
+                    if (oldResult is Success) {
+                        oldResult.data.copy()
+                    } else null
+                }
+                val newFilterData = somListGetFilterListUseCase.executeOnBackground(
+                    useCache = false
+                ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
+                val filterDataChanged = isFilterDataChanged(oldFilterData, newFilterData)
+                // only true if:
+                // * was requested to refresh order and this method called not after successful load from cache
+                // * was requested to refresh order, this method called after successful load from cache and filter data changed since the cached data is invalid now
+                newFilterData.refreshOrder = (refreshOrders && !afterSuccessfulLoadFromCache) || (refreshOrders && filterDataChanged)
+                setTabActiveFromAppLink("")
+                _filterResult.value = Success(newFilterData)
+            }
+        }, onError = {
+            _filterResult.value = Fail(it)
+        })
+    }
+
+    private fun isFilterDataChanged(
+        oldFilterData: SomListFilterUiModel?,
+        newFilterData: SomListFilterUiModel
+    ): Boolean {
+        return if (oldFilterData == null) {
+            true
+        } else {
+            val selectedStatus = newFilterData.statusList.firstOrNull { it.isChecked }
+            val selectedStatusKey = selectedStatus?.key.orEmpty()
+            val selectedStatusIds = selectedStatus?.id.orEmpty()
+            oldFilterData.statusList.firstOrNull {
+                it.key == selectedStatusKey
+            }?.id != selectedStatusIds
+        }
+    }
+
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
             delay(DELAY_BULK_REQUEST_PICK_UP)
@@ -530,20 +570,14 @@ class SomListViewModel @Inject constructor(
                     result.refreshOrder = refreshOrders
                     setTabActiveFromAppLink("")
                     _filterResult.value = Success(result)
+                    getFiltersFromCloud(refreshOrders, true)
                 }
-            }, onError = {})
+            }, onError = {
+                getFiltersFromCloud(refreshOrders, false)
+            })
+        } else {
+            getFiltersFromCloud(refreshOrders, false)
         }
-        launchCatchError(context = dispatcher.main, block = {
-            if (_canShowOrderData.value == true) {
-                val result = somListGetFilterListUseCase.executeOnBackground(false)
-                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
-                result.refreshOrder = refreshOrders
-                setTabActiveFromAppLink("")
-                _filterResult.value = Success(result)
-            }
-        }, onError = {
-            _filterResult.value = Fail(it)
-        })
     }
 
     fun getHeaderIconsInfo() {
