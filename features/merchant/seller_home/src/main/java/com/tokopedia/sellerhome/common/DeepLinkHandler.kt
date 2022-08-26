@@ -83,9 +83,23 @@ object DeepLinkHandler {
             //Product Manage
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
                 val uri = intent.data
-                val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
-                val searchKeyword = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
-                callback(PageFragment(FragmentType.PRODUCT, filterId, searchKeyword))
+                val filterId = uri?.getQueryParameter(
+                    DeepLinkMapperProductManage.QUERY_PARAM_FILTER
+                ).orEmpty()
+                val searchKeyword = uri?.getQueryParameter(
+                    DeepLinkMapperProductManage.QUERY_PARAM_SEARCH
+                ).orEmpty()
+                val tab = uri?.getQueryParameter(
+                    DeepLinkMapperProductManage.QUERY_PARAM_TAB
+                ).orEmpty()
+                callback(
+                    PageFragment(
+                        type = FragmentType.PRODUCT,
+                        tabPage = filterId,
+                        keywordSearch = searchKeyword,
+                        productManageTab = tab
+                    )
+                )
             }
 
             //Top Chat

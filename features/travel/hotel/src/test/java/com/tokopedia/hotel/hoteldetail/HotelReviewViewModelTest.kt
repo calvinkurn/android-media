@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewViewModel
@@ -53,7 +54,7 @@ class HotelReviewViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelReviewViewModel.getReview("", HotelReviewParam())
+        hotelReviewViewModel.getReview(DummyHotelGqlQueryInterfaceImpl(), HotelReviewParam())
 
         //then
         assert(hotelReviewViewModel.reviewResult.value is Success)
@@ -72,7 +73,7 @@ class HotelReviewViewModelTest {
         } returns graphqlErrorResponse
 
         //when
-        hotelReviewViewModel.getReview("", HotelReviewParam())
+        hotelReviewViewModel.getReview(DummyHotelGqlQueryInterfaceImpl(), HotelReviewParam())
 
         //then
         assert(hotelReviewViewModel.reviewResult.value is Fail)

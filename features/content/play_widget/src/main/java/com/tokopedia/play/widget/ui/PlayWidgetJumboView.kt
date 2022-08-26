@@ -49,7 +49,8 @@ class PlayWidgetJumboView : FrameLayout, IPlayWidgetView {
                 channelPositionInList = position,
             )
 
-            mAnalyticListener?.onImpressReminderIcon(
+            if(item.isUpcoming)
+                mAnalyticListener?.onImpressReminderIcon(
                 view = this@PlayWidgetJumboView,
                 item = item,
                 channelPositionInList = position,

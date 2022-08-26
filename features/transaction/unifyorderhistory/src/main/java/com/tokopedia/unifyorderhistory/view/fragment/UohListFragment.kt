@@ -593,7 +593,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         setInitialValue()
         loadOrderHistoryList("")
         if (!paramUohOrder.hasActiveFilter()) {
-            uohListViewModel.loadPmsCounter()
+            uohListViewModel.loadPmsCounter(userSession.shopId)
         }
     }
 
@@ -702,7 +702,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val defDate = orderList.dateLimit
         val splitDefDate = defDate.split("-")
         if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
+            returnDate = stringToCalendar("${splitDefDate[0].toIntOrZero()}-${(splitDefDate[1].toIntOrZero()-1)}-${splitDefDate[2].toIntOrZero()}")
         }
         return returnDate
     }
@@ -1299,13 +1299,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 tempFilterDateLabel = value
                 if (label.isNotEmpty()) {
                     when {
-                        label.toInt() == LABEL_0 -> {
+                        label.toIntOrZero() == LABEL_0 -> {
                             filterDateBottomSheet.hideChooseDate()
                             tempStartDate = ""
                             tempEndDate = ""
 
                         }
-                        label.toInt() == LABEL_1 -> {
+                        label.toIntOrZero() == LABEL_1 -> {
                             filterDateBottomSheet.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
@@ -1313,7 +1313,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = endDate
 
                         }
-                        label.toInt() == LABEL_2 -> {
+                        label.toIntOrZero() == LABEL_2 -> {
                             filterDateBottomSheet.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
@@ -1321,7 +1321,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = endDate
 
                         }
-                        label.toInt() == LABEL_3 -> {
+                        label.toIntOrZero() == LABEL_3 -> {
                             var start = GregorianCalendar()
                             var end = GregorianCalendar()
                             chosenStartDate?.let { startDate -> start = startDate }
@@ -1623,7 +1623,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
         val split = stringParam.split("-")
         return if (split.isNotEmpty() && split.size == LABEL_3) {
-            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
+            GregorianCalendar(split[0].toIntOrZero(), split[1].toIntOrZero(), split[2].toIntOrZero())
         } else GregorianCalendar()
     }
 
@@ -1632,7 +1632,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         view?.let { v ->
             if (activity !is UohListActivity) {
                 try {
-                    toasterSuccess.toasterCustomBottomHeight = 48.dpToPx(resources.displayMetrics)
+                    context?.resources?.displayMetrics?.let {
+                        toasterSuccess.toasterCustomBottomHeight = 48.dpToPx(it)
+                    }
                 } catch (t: Throwable) {
                     // ignore
                     Timber.d(t)
@@ -1891,7 +1893,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         currIndexNeedUpdate = index
                         orderIdNeedUpdated = order.orderUUID
                         if (order.verticalID.isNotEmpty()) {
-                            uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+                            uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
                         }
                     }
                     button.actionType.equals(GQL_MP_EXTEND, true) -> {

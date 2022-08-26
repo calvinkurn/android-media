@@ -22,7 +22,7 @@ class CreateReviewTemplate @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTemplateBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewTemplateBinding>(context, attrs, defStyleAttr) {
 
     private val createReviewTemplateListener = CreateReviewTemplateListener()
     private val innerBaseCreateReviewCustomViewListener = BaseCreateReviewCustomViewListener()
@@ -90,8 +90,8 @@ class CreateReviewTemplate @JvmOverloads constructor(
         }
     }
 
-    private inner class BaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener {
-        var listener: BaseCreateReviewCustomView.Listener? = null
+    private inner class BaseCreateReviewCustomViewListener: BaseReviewCustomView.Listener {
+        var listener: BaseReviewCustomView.Listener? = null
 
         override fun onRequestClearTextAreaFocus() {
             listener?.onRequestClearTextAreaFocus()
