@@ -210,6 +210,21 @@ class RegisterInitialViewModelTest {
     }
 
     @Test
+    fun `on Success Register Request - unknown errors`() {
+        /* When */
+        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = arrayListOf())
+        val response = RegisterRequestPojo(data = responseData)
+
+        coEvery { registerRequestUseCase.executeOnBackground() } returns response
+
+        viewModel.registerRequest("", "", "", "")
+
+        /* Then */
+        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
+        assertThat((viewModel.registerRequestResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
+    }
+
+    @Test
     fun `on Error Register Request has errors`() {
         /* When */
         val errors = arrayListOf(RegisterRequestErrorData(name = "errors", message = "error happen"))
@@ -362,7 +377,7 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Success Activate User has other errors - 2`() {
         /* When */
-        val responseData = ActivateUserData(isSuccess = 1, accessToken = "", refreshToken = "", tokenType = "", message = "")
+        val responseData = ActivateUserData(isSuccess = 0, accessToken = "", refreshToken = "", tokenType = "", message = "")
         val response = ActivateUserPojo(data = responseData)
 
         coEvery { activateUserUseCase.executeOnBackground() } returns response
@@ -371,6 +386,7 @@ class RegisterInitialViewModelTest {
 
         /* Then */
         verify { activateUserObserver.onChanged(any<Fail>()) }
+        assertThat((viewModel.activateUserResponse.value as Fail).throwable, instanceOf(Throwable::class.java))
     }
 
     @Test

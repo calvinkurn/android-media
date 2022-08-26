@@ -404,15 +404,15 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessActivateUser(): (ActivateUserData) -> Unit {
         return {
             userSession.clearToken()
-            if (it.isSuccess == 1 &&
-                    it.accessToken.isNotEmpty() &&
+            if (it.accessToken.isNotEmpty() &&
                     it.refreshToken.isNotEmpty() &&
                     it.tokenType.isNotEmpty()) {
                 mutableActivateUserResponse.value = Success(it)
             } else if (it.message.isNotEmpty()) {
-                mutableActivateUserResponse.value =
-                        Fail(MessageErrorException(it.message))
-            } else mutableActivateUserResponse.value = Fail(RuntimeException())
+                mutableActivateUserResponse.value = Fail(MessageErrorException(it.message))
+            } else {
+                mutableActivateUserResponse.value = Fail(RuntimeException())
+            }
         }
     }
 
