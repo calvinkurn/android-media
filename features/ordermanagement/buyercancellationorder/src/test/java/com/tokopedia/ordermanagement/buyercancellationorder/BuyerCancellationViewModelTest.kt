@@ -305,6 +305,9 @@ class BuyerCancellationViewModelTest {
                                 productPrice = "Rp123",
                                 picture = "www.123.com/123.jpg"
                             )
+                        ),
+                        bundleList = listOf(
+                            BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail.Bundle()
                         )
                     )
                 ))
@@ -319,4 +322,26 @@ class BuyerCancellationViewModelTest {
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
         assert(result != null)
     }
+
+    @Test
+    fun validateBuyerNormalProductList_shouldReturnMappedListGivenNoBundleDetail() {
+        //given
+        val cancellationReason =
+            BuyerGetCancellationReasonData.Data(
+                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
+                    haveProductBundle = true,
+                    bundleDetail = null
+                ))
+        coEvery {
+            getCancellationUseCase.execute(any())
+        } returns Success(cancellationReason)
+
+        //when
+        buyerCancellationViewModel.getCancelReasons("", "")
+
+        //then
+        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
+        assert(result != null)
+    }
+
 }
