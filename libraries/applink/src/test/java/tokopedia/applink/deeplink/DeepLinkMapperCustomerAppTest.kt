@@ -2452,4 +2452,19 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val appLink = "${ApplinkConst.TokopediaNow.RECIPE_HOME}?$queryParam"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check tokonow recipe search deeplink should return recipe search internal applink in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.RECIPE_SEARCH
+        val appLink = ApplinkConst.TokopediaNow.RECIPE_SEARCH
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow recipe search deeplink should return recipe search internal applink with query param in customerapp`() {
+        val queryParam = "page=1"
+        val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.RECIPE_SEARCH}?$queryParam"
+        val appLink = "${ApplinkConst.TokopediaNow.RECIPE_SEARCH}?$queryParam"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
 }

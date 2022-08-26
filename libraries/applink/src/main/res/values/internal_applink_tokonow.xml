@@ -22,4 +22,5 @@
     <string name="path_tokopedia_now_recipe_detail" translatable="false">/recipe-detail</string>
     <string name="path_tokopedia_now_recipe_bookmark" translatable="false">/recipe-bookmark</string>
     <string name="path_tokopedia_now_recipe_home" translatable="false">/recipe-home</string>
+    <string name="path_tokopedia_now_recipe_search" translatable="false">/recipe-search</string>
 </resources>

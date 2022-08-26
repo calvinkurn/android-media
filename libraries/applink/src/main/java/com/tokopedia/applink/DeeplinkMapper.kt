@@ -101,6 +101,7 @@ import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNav
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeBookmark
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeDetail
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeHome
+import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowRecipeSearch
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowSearch
 import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.applink.user.DeeplinkMapperUser
@@ -482,6 +483,7 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.TokopediaNow.RECIPE_DETAIL) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeDetail(deeplink) },
             DLP.startWith(ApplinkConst.TokopediaNow.RECIPE_BOOKMARK) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeBookmark(deeplink) },
             DLP.exact(ApplinkConst.TokopediaNow.RECIPE_HOME) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeHome(deeplink) },
+            DLP.startWith(ApplinkConst.TokopediaNow.RECIPE_SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeSearch(deeplink) },
             DLP.startWith(ApplinkConst.TELEPHONY_MASKING, ApplinkConstInternalGlobal.TELEPHONY_MASKING),
             DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS),
             DLP.matchPattern(ApplinkConst.PRODUCT_BUNDLE, targetDeeplink = { _, _, _, idList ->
