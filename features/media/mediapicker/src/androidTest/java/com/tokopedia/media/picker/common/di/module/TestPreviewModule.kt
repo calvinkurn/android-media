@@ -5,10 +5,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.common.analytics.TestPreviewAnalytics
 import com.tokopedia.media.preview.analytics.PreviewAnalytics
-import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.ImageCompressionManagerImpl
-import com.tokopedia.media.preview.managers.SaveToGalleryManager
-import com.tokopedia.media.preview.managers.SaveToGalleryManagerImpl
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepositoryImpl
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepositoryImpl
 import dagger.Module
 import dagger.Provides
 
@@ -23,18 +23,18 @@ object TestPreviewModule {
 
     @Provides
     @ActivityScope
-    fun provideImageCompressionManager(
+    fun provideImageCompressionRepository(
         @ApplicationContext context: Context
-    ): ImageCompressionManager {
-        return ImageCompressionManagerImpl(context)
+    ): ImageCompressionRepository {
+        return ImageCompressionRepositoryImpl(context)
     }
 
     @Provides
     @ActivityScope
-    fun provideSaveToGalleryManager(
+    fun provideSaveToGalleryRepository(
         @ApplicationContext context: Context
-    ): SaveToGalleryManager {
-        return SaveToGalleryManagerImpl(context)
+    ): SaveToGalleryRepository {
+        return SaveToGalleryRepositoryImpl(context)
     }
 
 }
