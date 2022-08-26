@@ -2,8 +2,6 @@ package com.tokopedia.affiliate.ui.custom
 
 import android.content.Context
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
@@ -12,7 +10,7 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
                             private val isAffiliateWalletEnabled : Boolean,
                             private val defaultSelectedTab: Int) {
 
-    var menu: ArrayList<BottomMenu> = ArrayList()
+    private var menu: ArrayList<BottomMenu> = ArrayList()
     private val isNewNavigation = false
 
     fun populateBottomNavigationView(){
@@ -37,10 +35,6 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
 
     fun showBottomNav() {
         bottomNavigation?.show()
-    }
-
-    fun hideBottomNav(){
-        bottomNavigation?.hide()
     }
 
     fun selectBottomTab(position : Int){
