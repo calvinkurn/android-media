@@ -11,7 +11,7 @@ data class ToolUiModel(
 ) {
 
     companion object {
-        private val toolLabel = mapOf(
+        private val labels = mapOf(
             EditorToolType.BRIGHTNESS to R.string.editor_tool_brightness,
             EditorToolType.CONTRAST to R.string.editor_tool_contrast,
             EditorToolType.CROP to R.string.editor_tool_crop,
@@ -20,7 +20,7 @@ data class ToolUiModel(
             EditorToolType.WATERMARK to R.string.editor_tool_watermark,
         )
 
-        private val toolIcon = mapOf(
+        private val icons = mapOf(
             EditorToolType.BRIGHTNESS to IconUnify.BRIGHTNESS,
             EditorToolType.CONTRAST to IconUnify.CONTRAST,
             EditorToolType.CROP to IconUnify.CROP,
@@ -30,7 +30,7 @@ data class ToolUiModel(
         )
 
         fun List<Int>.create() = map {
-            ToolUiModel(it, toolLabel[it]!!, toolIcon[it]!!)
+            ToolUiModel(it, labels[it]!!, icons[it]!!)
         }
     }
 
