@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_tokofood_add_on_item_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:ellipsize="end"
@@ -20,13 +20,13 @@
         app:layout_constraintEnd_toEndOf="@id/barrier_tokofood_add_on_item"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold"
         tools:text="Less sugar"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_tokofood_add_on_item_desc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:ellipsize="end"
@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="@id/barrier_tokofood_add_on_item"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Rp 2000"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -54,7 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/barrier_tokofood_add_on_item"
         app:layout_constraintHorizontal_bias="0"
-        app:typographyType="body_3"/>
+        app:typographyType="display_3"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkbox_tokofood_add_on_item"

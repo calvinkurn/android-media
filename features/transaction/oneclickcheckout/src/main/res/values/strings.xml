@@ -27,12 +27,14 @@
     <string name="search_not_found">Pencarian tidak dapat ditemukan</string>
     <string name="lbl_shipping_insurance">Asuransi Pengiriman</string>
     <string name="lbl_change_template">Ubah</string>
-    <string name="occ_lbl_order_summary">Ringkasan belanja</string>
+    <string name="occ_lbl_order_summary">Ringkasan Belanja</string>
+    <string name="occ_lbl_total_order">Total Belanja</string>
     <string name="occ_lbl_total_item_price">Total Harga</string>
     <string name="occ_lbl_total_item_addons_price">Total Pelengkap Produk</string>
     <string name="lbl_purchase_protection_price">Total Proteksi Produk</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
     <string name="occ_lbl_installment_fee">Biaya Cicilan</string>
+    <string name="occ_lbl_transaction_fee">Biaya Transaksi</string>
 
     <string name="lbl_try_again">Coba Lagi</string>
     <string name="lbl_go_to_home">Ke Homepage</string>
@@ -95,4 +97,9 @@
     <string name="occ_lbl_gocicil_installment_inactive_description">Periode cicilan tidak tersedia.</string>
     <string name="occ_lbl_gocicil_installment_bottom_sheet_message">%1$s (%2$s)</string>
     <string name="occ_lbl_gocicil_installment_period">%1$d Bulan</string>
+
+    <!--PLATFORM FEE-->
+    <string name="occ_payment_fee_title_info">Tentang %s</string>
+    <string name="occ_service_fee_title_info">Biaya Layanan</string>
+    <string name="occ_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
 </resources>

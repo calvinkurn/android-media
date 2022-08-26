@@ -68,7 +68,8 @@ fun createProductVariant(
     pictures: List<Picture> = emptyList(),
     isAllStockEmpty: Boolean = true,
     access: ProductManageAccess = createShopOwnerAccess(),
-    campaignTypeList: List<CampaignType>? = emptyList()
+    campaignTypeList: List<CampaignType>? = emptyList(),
+    maxStock: Int? = null
 ): ProductVariant {
     return ProductVariant(
         id,
@@ -83,7 +84,8 @@ fun createProductVariant(
         pictures,
         isAllStockEmpty,
         access,
-        campaignTypeList
+        campaignTypeList,
+        maxStock
     )
 }
 

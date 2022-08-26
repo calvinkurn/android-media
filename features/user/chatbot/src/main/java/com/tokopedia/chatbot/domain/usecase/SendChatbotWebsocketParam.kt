@@ -8,6 +8,8 @@ import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * @author by nisie on 19/12/18.
@@ -21,13 +23,13 @@ object SendChatbotWebsocketParam {
 
         val data = JsonObject()
         val invoiceAttribute = invoiceLinkPojo.attributes
-        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", invoiceAttribute.code)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
 
-        data.addProperty("attachment_type", Integer.parseInt(AttachmentType
-                .Companion.TYPE_INVOICE_SEND))
+        data.addProperty("attachment_type", (AttachmentType
+                .Companion.TYPE_INVOICE_SEND).toIntOrZero())
         val payload = GsonBuilder().create().toJsonTree(invoiceLinkPojo, InvoiceLinkPojo::class.java)
         data.add("payload", payload)
         json.add("data", data)
@@ -42,14 +44,14 @@ object SendChatbotWebsocketParam {
         val data = JsonObject()
 
 
-        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
 
         data.addProperty("message", "Invoice")
         data.addProperty(
-            "attachment_type", Integer.parseInt(
+            "attachment_type", (
                 AttachmentType
                     .Companion.TYPE_INVOICE_SEND
-            )
+            ).toIntOrZero()
         )
 
 
@@ -83,13 +85,13 @@ object SendChatbotWebsocketParam {
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
         val data = JsonObject()
-        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", quickReplyViewModel.value)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
 
-        data.addProperty("attachment_type", Integer.parseInt(AttachmentType
-                .Companion.TYPE_QUICK_REPLY_SEND))
+        data.addProperty("attachment_type", (AttachmentType
+                .Companion.TYPE_QUICK_REPLY_SEND).toIntOrZero())
 
         val payload = JsonObject()
 
@@ -121,15 +123,15 @@ object SendChatbotWebsocketParam {
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
         val data = JsonObject()
-        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", quickReplyViewModel.value)
         data.addProperty("start_time", startTime)
 
         data.addProperty(
-            "attachment_type", Integer.parseInt(
+            "attachment_type", (
                 AttachmentType
                     .Companion.TYPE_QUICK_REPLY_SEND
-            )
+            ).toIntOrZero()
         )
 
         val payload = JsonObject()
@@ -162,13 +164,13 @@ object SendChatbotWebsocketParam {
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
         val data = JsonObject()
-        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", chatActionBubbleViewModel.value)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
 
-        data.addProperty("attachment_type", Integer.parseInt(AttachmentType
-                .Companion.TYPE_QUICK_REPLY_SEND))
+        data.addProperty("attachment_type", (AttachmentType
+                .Companion.TYPE_QUICK_REPLY_SEND).toIntOrZero())
 
         val payload = JsonObject()
 
@@ -185,6 +187,31 @@ object SendChatbotWebsocketParam {
 
         data.add("payload", payload)
 
+        json.add("data", data)
+        return json
+    }
+
+    fun getReadMessage(messageId: String): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("msg_id", messageId.convertMessageIdToLong())
+        data.addProperty("no_update", true)
+        json.add("data", data)
+        return json
+    }
+
+    fun generateParamSendMessage(
+        messageId: String, sendMessage: String, startTime: String, toUid
+        : String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
+        data.addProperty("message", sendMessage)
+        data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
         json.add("data", data)
         return json
     }
@@ -213,6 +240,7 @@ object SendChatbotWebsocketParam {
 
 
     }
+
 
 
 }

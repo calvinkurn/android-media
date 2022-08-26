@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -138,7 +139,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.attachment?.type.toString(),
                 pojo.replyTime,
                 pojo.msg,
-                convertToChatActionBubbleViewModelList(pojoAttribute)
+                convertToChatActionBubbleViewModelList(pojoAttribute),
+                status = pojo.status
         )
     }
 
@@ -189,7 +191,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.replyTime,
                 list,
                 pojo.msg,
-                pojo.source
+                pojo.source,
+                pojo.status
         )
     }
 

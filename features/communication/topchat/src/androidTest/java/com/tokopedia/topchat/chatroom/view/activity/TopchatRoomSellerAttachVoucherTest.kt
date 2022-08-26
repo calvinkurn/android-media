@@ -19,6 +19,8 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot
+import com.tokopedia.topchat.matchers.atPosition
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
@@ -126,8 +128,8 @@ class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
         clickAttachVoucherMenu()
 
         // Then
-        onView(withRecyclerView(R.id.rv_attachment_preview)
-            .atPositionOnView(0, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc))
-            .check(matches(withSubstring("untuk produk tertentu")))
+        onView(withIndex(withId(R.id.rv_attachment_preview), 0))
+            .check(matches(atPosition(0, com.tokopedia.merchantvoucher.R.id.tvVoucherDesc,
+                withSubstring("untuk produk tertentu"))))
     }
 }

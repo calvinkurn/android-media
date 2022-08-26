@@ -4,6 +4,8 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -76,7 +78,11 @@ interface ChatbotViewState : BaseChatViewState {
     fun handleReplyBox(isEnable: Boolean)
 
     fun showRetryUploadVideos(it: VideoUploadUiModel)
+    fun onSendingMessage(it: MessageUiModel)
 
     fun hideDummyVideoAttachment()
+    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
+                         startTime: String,parentReply: ParentReply?)
+    fun hideQuickReplyOnClick()
 
 }

@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
@@ -35,7 +34,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -44,10 +42,15 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.data.SendableUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
@@ -77,6 +80,7 @@ import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
@@ -104,7 +108,10 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.VideoUtil
+import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
+import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -123,10 +130,27 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
+import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
+import com.tokopedia.chatbot.view.adapter.ReplyBubbleBottomSheetAdapter
+import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -136,6 +160,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -146,6 +176,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
+import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import java.io.File
 import javax.inject.Inject
@@ -163,9 +194,9 @@ private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down 
 private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
-private const val FIRST_PAGE = 1
 private const val RESEND = 1
 private const val DELETE = 0
+private const val REPLY = 0
 private const val SEE_ALL_INVOICE_TEXT = "lihat_semua_transaksi"
 
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
@@ -174,6 +205,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     TypingListener, ChatOptionListListener, CsatOptionListListener,
     View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
     VideoUploadListener, AttachmentMenu.AttachmentMenuListener {
+        AttachedInvoiceSelectionListener, QuickReplyListener,
+        ChatActionListBubbleListener, ChatRatingListener,
+        TypingListener, ChatOptionListListener, CsatOptionListListener,
+        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener
+        , ReplyBubbleAreaMessage.Listener{
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -224,7 +260,26 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var textWatcher : TextWatcher
     private var isConnectedToAgent : Boolean = false
     private lateinit var attachmentMenuRecyclerView : AttachmentMenuRecyclerView
+    private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
+    private var replyBubbleEnabled : Boolean = false
+    private var senderNameForReply = ""
+    private var smoothScroll : SmoothScroller? = null
+    private var rvScrollListener : RecyclerViewScrollListener? = null
+    private var rvLayoutManager : LinearLayoutManager? = null
+    private var messageCreateTime : String = ""
+    private lateinit var chatbotAdapter: ChatbotAdapter
+
+    @Inject
+    lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
+    private var recyclerView : RecyclerView? = null
     private var isArticleDataSent : Boolean = false
+
+    @Inject
+    lateinit var getUserNameForReplyBubble : GetUserNameForReplyBubble
+
+    companion object {
+        private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
+    }
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -321,6 +376,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
         replyEditTextContainer = view.findViewById(R.id.new_comment_container)
+        replyBubbleContainer = view.findViewById(R.id.reply_bubble_container)
         bindReplyTextBackground()
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
@@ -334,11 +390,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         attachmentMenuRecyclerView = view.findViewById(R.id.rv_attachment_menu)
 
+        recyclerView = getRecyclerView(view)
         isFloatingInvoiceCancelled = false
         setChatBackground()
+        initSmoothScroller()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
 
+        chatbotAdapter = adapter as ChatbotAdapter
         return view
+    }
+
+    private fun initSmoothScroller(){
+        smoothScroll = SmoothScroller(context)
     }
 
     private fun checkForArticleEntry(uri: Uri): Boolean {
@@ -579,6 +642,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.checkForSession(messageId)
         showTicker()
 
+        initRecyclerViewListener()
+        setupBeforeReplyTime()
+
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
@@ -716,7 +782,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
-            loadData(FIRST_PAGE)
+            presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else{
@@ -735,46 +801,48 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun loadInitialData() {
         getViewState()?.clearChatOnLoadChatHistory()
-        showLoading()
+        showTopLoading()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
-    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
-        return {
-            val list = it.listChat.filter {
+    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
+        return { chatroomViewModel, chatReplies ->
+            val list = chatroomViewModel.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
 
-            updateViewData(it)
-            renderList(list, it.canLoadMore)
-            getViewState()?.onSuccessLoadFirstTime(it)
-            checkShowLoading(it.canLoadMore)
+            updateViewData(chatroomViewModel)
+            renderList(list)
+            getViewState()?.onSuccessLoadFirstTime(chatroomViewModel)
+
+            updateHasNextState(chatReplies)
+            updateHasNextAfterState(chatReplies)
             enableLoadMore()
+            checkReplyBubbleOnboardingStatus()
+            replyBubbleContainer?.setReplyListener(this)
         }
     }
 
-    private fun onSuccessGetPreviousChat(page: Int): (ChatroomViewModel) -> Unit {
-        return {
-            val list = it.listChat.filter {
+    private fun onSuccessResetChatToFirstPage(): (ChatroomViewModel, ChatReplies) -> Unit {
+        return { chatroomViewModel, chatReplies ->
+            val list = chatroomViewModel.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
-            if (page == FIRST_PAGE) isFirstPage = false
-            if (list.isNotEmpty()){
-                val filteredList= getViewState()?.clearDuplicate(list)
-                if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
+            if (list.isNotEmpty()) {
+                val filteredList = getViewState()?.clearDuplicate(list)
                 filteredList?.let { renderList ->
-                    renderList(renderList, it.canLoadMore)
+                    renderList(renderList)
                 }
-                checkShowLoading(it.canLoadMore)
+                getViewState()?.scrollToBottom()
+                updateHasNextState(chatReplies)
+                updateHasNextAfterState(chatReplies)
                 enableLoadMore()
+                replyBubbleContainer?.setReplyListener(this)
             }
-        }
-    }
 
-    fun checkShowLoading(canLoadMore: Boolean) {
-        if (canLoadMore) super.showLoading()
+        }
     }
 
     private val onGetChatRatingListMessageError: (String) -> Unit = {
@@ -792,7 +860,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPrevious(messageId, page, onError(), onSuccessGetPreviousChat(page), onGetChatRatingListMessageError)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -810,7 +877,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
-        if(visitable is MessageUiModel && visitable.isSender){
+        if(visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE){
             getViewState()?.hideInvoiceList()
             getViewState()?.hideHelpfullOptions()
         }
@@ -818,7 +885,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
-            visitable is MessageUiModel && visitable.isSender -> hideActionBubble()
+            (visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE) -> hideActionBubble()
             visitable is AttachInvoiceSentUiModel && visitable.isSender -> hideActionBubble()
         }
     }
@@ -863,7 +930,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     fun showSearchInvoiceScreen() {
         activity?.let {
-            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.toIntOrZero(), this)
+            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.convertMessageIdToLong(), this)
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
         }
@@ -872,6 +939,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onQuickReplyClicked(model: QuickReplyViewModel) {
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
+        getViewState()?.hideQuickReplyOnClick()
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
@@ -924,8 +992,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun submitRating(data: Intent?) {
-
         var csatAttributes: Attributes?
+
+        getViewState()?.scrollToBottom()
 
         if (!(::mCsatResponse.isInitialized)) {
             csatAttributes = attribute
@@ -1132,15 +1201,35 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         chatbotAnalytics.get().eventClick(ACTION_REPLY_BUTTON_CLICKED)
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
-                onSendingMessage(sendMessage, startTime))
+
+        presenter.sendMessage(
+            messageId,
+            sendMessage,
+            startTime,
+            opponentId,
+            replyBubbleContainer.referredMsg,
+            onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
+        )
+
+        replyBubbleOnBoarding.dismiss()
+        visibilityReplyBubble(false)
+        clearChatText()
     }
 
-    private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
+
+    private fun onSendingMessage(sendMessage: String, startTime: String,parentReply: ParentReply?): () -> Unit {
         return {
-            getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                    .name, sendMessage, startTime)
-            getViewState()?.scrollToBottom()
+            if (rvScrollListener?.hasNextAfterPage == true) {
+                resetData()
+                showTopLoading()
+                presenter.getExistingChat(messageId, onError(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
+            } else {
+                getViewState()?.onSendingMessage(
+                    messageId, getUserSession().userId, getUserSession()
+                        .name, sendMessage, startTime, parentReply
+                )
+                getViewState()?.scrollToBottom()
+            }
         }
     }
 
@@ -1238,13 +1327,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return true
     }
 
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                isFirstPage = false
-                showLoading()
-                loadData(page + FIRST_PAGE)
-            }
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(
+            activity, LinearLayoutManager.VERTICAL, true
+        ).also {
+            rvLayoutManager = it
         }
     }
 
@@ -1256,6 +1343,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onDestroy() {
         super.onDestroy()
+        replyBubbleOnBoarding.flush()
         presenter.detachView()
     }
 
@@ -1324,7 +1412,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val sendMessage = selectedMessage
         val startTime = SendableUiModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
-                onSendingMessage(sendMessage, startTime))
+                onSendingMessage(sendMessage, startTime,null))
     }
 
     override fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?) {
@@ -1357,14 +1445,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
         }
     }
-    
+
     private fun handleImageResendBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         getViewState()?.onImageUpload(element)
         presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
         bottomSheetPage.dismiss()
     }
-    
+
     private fun handleImageDeleteBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         bottomSheetPage.dismiss()
@@ -1400,7 +1488,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             )
         }
     }
-    
+
     private fun onErrorVideoUpload(): (String,VideoUploadUiModel) -> Unit {
         return { errorMsg,video ->
             if (view != null) {
@@ -1409,7 +1497,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
         }
     }
-    
+
     override fun removeDummy(visitable: Visitable<*>) {
         getViewState()?.removeDummy(visitable)
     }
@@ -1445,7 +1533,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         if (isResoListNotEmpty) {
                             val startTime = SendableUiModel.generateStartTime()
                             presenter.sendMessage(messageId, replyText, startTime, opponentId,
-                                    onSendingMessage(replyText, startTime))
+                                    onSendingMessage(replyText, startTime,null))
                         }
                     },
                     onError = {
@@ -1473,6 +1561,255 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
         getViewState()?.handleReplyBox(true)
     }
+
+    override fun getUserName(): String {
+        return senderNameForReply
+    }
+
+    override fun showReplyOption(messageUiModel: MessageUiModel) {
+        if (replyBubbleEnabled) {
+            val bottomSheetPage = BottomSheetUnify()
+            val viewBottomSheetPage = initBottomSheetForReply(bottomSheetPage, messageUiModel)
+
+            bottomSheetPage.apply {
+                setTitle(this@ChatbotFragment.context?.getString(R.string.chatbot_reply_bubble_bottomsheet_title)?: "")
+                showCloseIcon = true
+                setChild(viewBottomSheetPage)
+                showKnob = false
+            }
+
+            fragmentManager?.let {
+                bottomSheetPage.show(it, getString(R.string.chatbot_reply_bubble_bottomsheet_retry))
+            }
+        }
+    }
+
+    private fun initBottomSheetForReply(
+        bottomSheetPage: BottomSheetUnify,
+        messageUiModel: MessageUiModel
+    ) : View {
+        return View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
+            val rvPages = findViewById<RecyclerView>(R.id.rv_reply_bubble)
+            rvPages.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val adapter =
+                ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage,messageUiModel))
+            rvPages.adapter = adapter
+        }
+    }
+
+    override fun goToBubble(parentReply: ParentReply) {
+        val bubblePosition = chatbotAdapter.getBubblePosition (
+            parentReply.replyTime
+        )
+        if (bubblePosition != RecyclerView.NO_POSITION) {
+            smoothScrollToPosition(bubblePosition)
+        } else {
+            resetData()
+            setupBeforeReplyTime(((parentReply.replyTimeMillisOffset).toLongOrZero() + ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE).toString())
+            loadDataOnClick(parentReply.replyTime)
+        }
+    }
+
+    private fun loadDataOnClick(replyTime : String){
+        showTopLoading()
+        presenter.getTopChat(messageId, onSuccessGetTopChatData(replyTime = replyTime, fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
+    }
+
+    private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
+        return {
+            when (it) {
+                REPLY -> {
+                    replyBubbleOnBoarding.dismiss()
+                    senderNameForReply = messageUiModel.from
+                    replyBubbleContainer.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    bottomSheetPage.dismiss()
+                }
+            }
+        }
+    }
+
+
+    override fun replyBubbleStateHandler(state: Boolean) {
+        replyBubbleEnabled = state
+        checkReplyBubbleOnboardingStatus()
+    }
+
+    private fun checkReplyBubbleOnboardingStatus() {
+        val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
+        if (!replyBubbleEnabled)
+            return
+        recyclerView?.let {
+            if (!hasBeenShown){
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
+                    chatbotAdapter,
+                    reply_box, context)
+            }
+        }
+    }
+
+    override fun visibilityReplyBubble(state: Boolean) {
+        if (!state) {
+            replyBubbleContainer?.referredMsg = null
+            replyBubbleContainer.hide()
+        }else{
+            replyBubbleContainer.show()
+        }
+    }
+
+    private fun initRecyclerViewListener() {
+        rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
+            override fun loadMoreTop() {
+                showTopLoading()
+                presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat(), onGetChatRatingListMessageError)
+            }
+
+            override fun loadMoreDown() {
+               showBottomLoading()
+               presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+            }
+        }.also {
+            recyclerView?.addOnScrollListener(it)
+        }
+    }
+
+    private fun onErrorGetBottomChat() : (Throwable) -> Unit =  {
+        chatbotAdapter.hideBottomLoading()
+        onError()
+        rvScrollListener?.finishBottomLoadingState()
+    }
+
+    private fun onErrorGetTopChat() : (Throwable) -> Unit = {
+        hideTopLoading()
+        onError()
+        rvScrollListener?.finishTopLoadingState()
+    }
+
+    private fun hideTopLoading() {
+        hideLoading()
+    }
+
+    private fun onSuccessGetTopChatData(replyTime: String = "", fromOnClick : Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
+        return { chatroom , chatReplies ->
+            val list = chatroom.listChat.filter {
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
+            }
+            if (list.isNotEmpty()){
+                val filteredList= getViewState()?.clearDuplicate(list)
+                updateHasNextState(chatReplies)
+                rvScrollListener?.finishTopLoadingState()
+                filteredList?.let { renderList ->
+                    renderTopList(renderList)
+                    if (fromOnClick) {
+                        val bubblePosition = chatbotAdapter.getBubblePosition(
+                            replyTime
+                        )
+                        if (bubblePosition != RecyclerView.NO_POSITION) {
+                            smoothScrollToPosition(bubblePosition)
+                        }
+
+                    }
+                }
+                if (fromOnClick && replyTime.isNotEmpty()) {
+                    updateHasNextAfterState(chatReplies)
+                }
+            }else{
+                presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+            }
+        }
+    }
+
+    private fun onSuccessGetBottomChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
+        return { chatroom , chatReplies ->
+            val list = chatroom.listChat.filter {
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
+            }
+            if (list.isNotEmpty()){
+                val filteredList= getViewState()?.clearDuplicate(list)
+                rvScrollListener?.finishBottomLoadingState()
+                if (filteredList?.isNotEmpty()==true) {
+                    renderBottomList(filteredList)
+                } else{
+                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                }
+                updateHasNextAfterState(chatReplies)
+            }
+            else{
+                if(rvScrollListener?.hasNextAfterPage==true)
+                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                else {
+                    chatbotAdapter.hideBottomLoading()
+                    rvScrollListener?.finishBottomLoadingState()
+                }
+            }
+        }
+    }
+
+    private fun smoothScrollToPosition(bubblePosition: Int) {
+        smoothScroll?.targetPosition = bubblePosition
+        (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(
+            smoothScroll
+        )
+    }
+
+    private fun showTopLoading() {
+        chatbotAdapter.showTopLoading()
+    }
+
+    private fun showBottomLoading() {
+        chatbotAdapter.showBottomLoading()
+    }
+
+    private fun setupBeforeReplyTime(replyTimeMillis: String) {
+        messageCreateTime = replyTimeMillis
+        setupBeforeReplyTime()
+    }
+
+    private fun setupBeforeReplyTime() {
+        if (messageCreateTime.isNotEmpty()) {
+            presenter.setBeforeReplyTime(messageCreateTime)
+        }
+    }
+
+    private fun updateHasNextState(chat: ChatReplies) {
+        val hasNext = chat.hasNext
+        rvScrollListener?.updateHasNextState(chat)
+        if (hasNext) {
+            showTopLoading()
+        }
+    }
+
+    private fun updateHasNextAfterState(chat: ChatReplies) {
+        val hasNextAfter = chat.hasNextAfter
+        rvScrollListener?.updateHasNextAfterState(chat)
+        if (hasNextAfter) {
+            showBottomLoading()
+        }
+    }
+
+    private fun renderBottomList(listChat: List<Visitable<*>>) {
+        chatbotAdapter?.hideBottomLoading()
+        if (listChat.isNotEmpty()) {
+            chatbotAdapter?.addBottomData(listChat)
+        }
+    }
+
+    private fun renderTopList(listChat: List<Visitable<*>>) {
+        chatbotAdapter?.hideTopLoading()
+        if (listChat.isNotEmpty()) {
+            chatbotAdapter?.addTopData(listChat)
+        }
+    }
+
+    private fun resetData(){
+        rvScrollListener?.reset()
+        presenter.clearGetChatUseCase()
+        chatbotAdapter.reset()
+        showTopLoading()
+    }
+
 
     override fun onRetrySendVideo(element: VideoUploadUiModel) {
         createRetryMediaUploadBottomSheet(element)
@@ -1518,7 +1855,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             bottomSheetPage.show(it, "retry media bottom sheet")
         }
     }
-    
+
     private fun setUpMediaRetryBottomSheet(view: View, element: SendableUiModel, bottomSheetPage: BottomSheetUnify) {
         val rvPages = view.findViewById<RecyclerView>(R.id.rv_image_upload_option)
         rvPages.layoutManager =
@@ -1533,7 +1870,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             )
         )
     }
-    
+
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         createAttachmentMenus()

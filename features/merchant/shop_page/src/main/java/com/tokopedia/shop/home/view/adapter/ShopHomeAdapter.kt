@@ -20,10 +20,7 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -205,14 +202,13 @@ open class ShopHomeAdapter(
     }
 
     fun getAllProductWidgetPosition(): Int {
-        return visitables.filter {
-            (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
-        }.indexOfFirst { it is ShopHomeProductUiModel }
+        return visitables.indexOfFirst { it is ShopHomeProductUiModel }
     }
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
         val newList = getNewVisitableItems()
         val position = newList.indexOf(shopHomeCarousellProductUiModel)
+        shopHomeCarousellProductUiModel.copy()
         shopHomeCarousellProductUiModel.isNewData = true
         newList.setElement(position, shopHomeCarousellProductUiModel)
         submitList(newList)

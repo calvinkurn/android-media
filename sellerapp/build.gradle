@@ -272,6 +272,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
     implementation projectOrAar(rootProject.ext.features.campaignList)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopOpen)
@@ -321,9 +322,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
-
-    implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
-    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'

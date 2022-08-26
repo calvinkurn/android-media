@@ -10,6 +10,12 @@ object ChatbotConstant {
     const val ONE_SECOND_IN_MILLISECONDS = 1000
     const val MODE_AGENT = "agent"
     const val MODE_BOT = "bot"
+    const val MODE_AGENT = "agent"
+    const val MODE_BOT = "bot"
+    const val TOKOPEDIA_CARE = "Tokopedia Care"
+    const val TANYA = "Tanya"
+    const val REPLY_AGENT_NAME = "{.Name}"
+    const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
 
     object CsatRating {
         const val RATING_ONE = 1
@@ -43,6 +49,7 @@ object ChatbotConstant {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
         const val TYPE_VIDEO_UPLOAD = "30"
         const val SESSION_CHANGE = "31"
+        const val TYPE_REPLY_BUBBLE = "28"
     }
 
     object ChatbotUnification{

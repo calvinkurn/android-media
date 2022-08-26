@@ -48,15 +48,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.features.mediapickerCommon)
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.webview)
-
-    //test
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

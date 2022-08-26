@@ -5,7 +5,10 @@ import android.content.res.Resources
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
+import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
+import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.imageuploader.di.ImageUploaderModule
@@ -86,5 +89,21 @@ class ChatbotModule {
     }
 
     @Provides
+    internal fun provideChatbotCacheManager(@ApplicationContext context: Context): ChatbotCacheManager{
+        val chatbotCacheManager = context.getSharedPreferences("chatbotCache", Context.MODE_PRIVATE)
+        return ChatbotCacheManagerImpl(chatbotCacheManager)
+    }
+
+    @ChatbotScope
+    @Provides
+    fun provideGraphqlRepositoryModule(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @ChatbotScope
+    @Provides
+    fun provideGetUserNameForReplyBubble(userSession: UserSessionInterface) : GetUserNameForReplyBubble {
+        return GetUserNameForReplyBubble(userSession)
+    }
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }

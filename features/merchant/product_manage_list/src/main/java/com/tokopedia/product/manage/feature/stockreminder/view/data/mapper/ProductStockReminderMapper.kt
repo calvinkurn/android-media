@@ -7,7 +7,8 @@ import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStock
 
 object ProductStockReminderMapper {
 
-    fun mapToProductResult(response: GetProductV3): List<ProductStockReminderUiModel> {
+    fun mapToProductResult(response: GetProductV3,
+                           maxStock: Int?): List<ProductStockReminderUiModel> {
         if (response.variant.products.isEmpty()) {
             val stockAlertCount =
                 if (response.stockAlertCount.isEmpty()) 0 else response.stockAlertCount.toInt()
@@ -17,7 +18,8 @@ object ProductStockReminderMapper {
                     response.productName,
                     stockAlertCount,
                     response.stockAlertStatus,
-                    response.stock
+                    response.stock,
+                    maxStock = maxStock
                 )
             )
         } else {
@@ -34,8 +36,8 @@ object ProductStockReminderMapper {
                     it.stockAlertStatus,
                     it.stock,
                     getVariantNameFirst(it.combination, variantSelections),
-                    getVariantNameSecond(it.combination, variantSelections)
-
+                    getVariantNameSecond(it.combination, variantSelections),
+                    maxStock = maxStock
                 )
             }
             return variants

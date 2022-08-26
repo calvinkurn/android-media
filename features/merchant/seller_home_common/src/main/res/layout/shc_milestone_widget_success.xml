@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:background="@drawable/bg_circle_toggle_milestone_widget"
         app:icon_color_light_enable="@color/Unify_NN900"
-        app:icon_name="CHEVRON_UP"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintEnd_toStartOf="@+id/guidelineShcMilestoneEnd"
         app:layout_constraintTop_toTopOf="parent" />
 

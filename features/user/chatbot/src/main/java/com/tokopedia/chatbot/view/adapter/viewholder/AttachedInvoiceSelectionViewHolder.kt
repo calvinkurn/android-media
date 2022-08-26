@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.OrderStatusCode
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by Hendri on 28/03/18.
@@ -40,7 +42,12 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
     }
 
     override fun bind(element: AttachInvoiceSelectionViewModel) {
-        singleItemAdapter.setList(element.list)
+        if (element.status == RENDER_INVOICE_LIST_AND_BUTTON_ACTION) {
+            singleItemAdapter.setList(element.list)
+            invoiceSelection.show()
+        } else {
+            invoiceSelection.hide()
+        }
     }
 
     private inner class AttachedInvoicesItemsAdapter : RecyclerView.Adapter<AttachedInvoiceSingleItemViewHolder>() {
@@ -55,7 +62,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
         override fun onBindViewHolder(holder: AttachedInvoiceSingleItemViewHolder,
                                       position: Int) {
             list?.getOrNull(position)?.let { holder.bind(it) }
-            holder.itemView.setOnClickListener {
+            holder.pilihButton.setOnClickListener {
                 selectedListener.onInvoiceSelected(
                         AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
                 )
@@ -85,6 +92,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
         private val price: TextView
         private val productImage: ImageUnify
         private val pricePrefix: TextView
+        val pilihButton : UnifyButton
 
         init {
             invoiceDate = itemView.findViewById(R.id.tv_invoice_date)
@@ -94,6 +102,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             pricePrefix = itemView.findViewById(R.id.tv_price_prefix)
             price = itemView.findViewById(R.id.tv_price)
             productImage = itemView.findViewById(R.id.iv_thumbnail)
+            pilihButton = itemView.findViewById(R.id.btn_pilih)
         }
 
         fun bind(element: AttachInvoiceSingleViewModel) {

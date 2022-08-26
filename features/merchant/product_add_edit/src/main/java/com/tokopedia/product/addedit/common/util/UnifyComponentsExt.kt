@@ -21,6 +21,8 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.Exception
 import java.math.BigInteger
@@ -30,6 +32,8 @@ import java.util.*
 private const val DIALOG_MAX_WIDTH = 900
 private const val DIALOG_MARGIN_TOP = 8
 private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
+
+const val MAX_LENGTH_STOCK_INPUT = 7 // including delimiter
 
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
@@ -247,4 +251,16 @@ fun Fragment.setFragmentToUnifyBgColor() {
         activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
                 context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
+}
+
+fun Ticker.setDescriptionClick(onClick: () -> Unit) {
+    setDescriptionClickEvent(object : TickerCallback {
+        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+            onClick.invoke()
+        }
+
+        override fun onDismiss() {
+            // no-op
+        }
+    })
 }

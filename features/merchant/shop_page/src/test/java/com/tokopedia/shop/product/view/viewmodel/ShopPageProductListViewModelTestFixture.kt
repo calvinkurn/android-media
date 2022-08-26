@@ -2,6 +2,9 @@ package com.tokopedia.shop.product.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -10,6 +13,7 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
@@ -67,12 +71,23 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getFollowStatusUseCase: GetFollowStatusUseCase
     @RelaxedMockK
+    lateinit var gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase
+    @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+    @RelaxedMockK
+    lateinit var updateCartUseCase: UpdateCartUseCase
+    @RelaxedMockK
+    lateinit var deleteCartUseCase: DeleteCartUseCase
+    @RelaxedMockK
     lateinit var context: Context
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
     protected val addressWidgetData: LocalCacheModel = LocalCacheModel()
     protected val mockProductPerPage = 10
+    protected val mockIsDirectPurchaseTrue = true
+    protected val mockIsDirectPurchaseFalse = false
+    protected val mockShopId = "123"
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }
@@ -99,7 +114,10 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopFilterBottomSheetDataUseCase,
                 getShopFilterProductCountUseCase,
                 gqlGetShopSortUseCase,
-                shopProductSortMapper
+                shopProductSortMapper,
+                addToCartUseCase,
+                updateCartUseCase,
+                deleteCartUseCase
         )
 
         shopPageProductListResultViewModel = ShopPageProductListResultViewModel(
@@ -114,7 +132,11 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopFilterProductCountUseCase,
                 restrictionEngineNplUseCase,
                 toggleFavouriteShopUseCase,
-                getFollowStatusUseCase
+                getFollowStatusUseCase,
+                gqlShopPageGetDynamicTabUseCase,
+                addToCartUseCase,
+                updateCartUseCase,
+                deleteCartUseCase
         )
     }
 }

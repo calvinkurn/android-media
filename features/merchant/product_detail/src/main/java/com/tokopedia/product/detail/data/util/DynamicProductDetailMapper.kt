@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
@@ -24,12 +27,6 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateLinkDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateProductDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestHeader
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateShopDetail
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -112,13 +109,11 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
-                    listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
-                            ?: "", contentData?.title ?: "",
-                            contentData?.isApplink ?: true, contentData?.icon
-                            ?: "", content?.firstOrNull()?.subtitle
-                            ?: "", content?.firstOrNull()?.icon ?: "")
-                    )
+                    val customInfoData = mapToGeneralInfo(contentData, type = component.type, name = component.componentName)
+
+                    customInfoData?.let {
+                        listOfComponent.add(it)
+                    }
                 }
                 ProductDetailConstant.MINI_SHOP_WIDGET -> {
                     listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
@@ -221,6 +216,31 @@ object DynamicProductDetailMapper {
             }
         }
         return listOfComponent
+    }
+
+    /**
+     * mapping P1 General Info to Visitable Model
+     */
+    private fun mapToGeneralInfo(
+        contentData: ComponentData?,
+        type: String,
+        name: String
+    ): ProductGeneralInfoDataModel? {
+        if (contentData == null) return null
+
+        val content = contentData.content.ifEmpty { listOf(Content()) }
+
+        return ProductGeneralInfoDataModel(
+            name = name,
+            type = type,
+            applink = contentData.applink,
+            title = contentData.title,
+            isApplink = contentData.isApplink,
+            parentIcon = contentData.icon ,
+            subtitle = content.firstOrNull()?.subtitle.orEmpty(),
+            lightIcon = contentData.lightIcon,
+            darkIcon = contentData.darkIcon,
+        )
     }
 
     /**
@@ -362,7 +382,9 @@ object DynamicProductDetailMapper {
                 icon = componentData.icon,
                 separator = componentData.separator,
                 labelColor = label?.color ?: "",
-                labelValue = label?.value ?: ""
+                labelValue = label?.value ?: "",
+                lightIcon = componentData.lightIcon,
+                darkIcon = componentData.darkIcon
         )
     }
 
@@ -459,10 +481,12 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-                localData.district_id.checkIfNumber("district_id"),
-                localData.address_id.checkIfNumber("address_id"),
-                localData.postal_code.checkIfNumber("postal_code"),
-                latlong)
+            districtID = localData.district_id.checkIfNumber("district_id"),
+            addressID = localData.address_id.checkIfNumber("address_id"),
+            postalCode = localData.postal_code.checkIfNumber("postal_code"),
+            latlon = latlong,
+            cityId = localData.city_id.checkIfNumber("city_id")
+        )
     }
 
     fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
@@ -533,81 +557,37 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateAffiliateCookieRequest(productInfo: DynamicProductInfoP1,
-                                       affiliateUuid: String,
-                                       deviceId: String,
-                                       uuid: String,
-                                       affiliateChannel: String): AffiliateCookieRequest {
-        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
-        return AffiliateCookieRequest(
-                header = AffiliateRequestHeader(
-                        uuid = uuid,
-                        deviceId = deviceId,
-                        irisSessionId = TrackApp.getInstance().gtm.irisSessionId
-                ),
-                affiliateDetail = AffiliateRequestDetail(
-                        affiliateUniqueId = affiliateUuid
-                ),
-                affiliateProductDetail = AffiliateProductDetail(
-                        productId = productInfo.basic.productID,
-                        categoryId = categoryId,
-                        isVariant = productInfo.isProductVariant(),
-                        stockQty = productInfo.getFinalStock().toDoubleOrZero()
-                ),
-                affiliateLinkDetail = AffiliateLinkDetail(
-                        affiliateLink = "",
-                        channel = affiliateChannel,
-                        linkType = PDP_SOURCE_AFFILIATE,
-                        linkIdentifier = "0"
-                ),
-                affiliateShopDetail = AffiliateShopDetail(
-                        shopId = productInfo.basic.shopID
-                )
-        )
-    }
-
-    fun removeUnusedComponent(productInfo: DynamicProductInfoP1?,
-                              variantData: ProductVariant?,
-                              isShopOwner: Boolean,
-                              initialLayoutData: MutableList<DynamicPdpDataModel>)
-            : MutableList<DynamicPdpDataModel> {
-
+    fun removeUnusedComponent(
+        productInfo: DynamicProductInfoP1?,
+        variantData: ProductVariant?,
+        isShopOwner: Boolean,
+        initialLayoutData: MutableList<DynamicPdpDataModel>
+    ): MutableList<DynamicPdpDataModel> {
         val isTradein = productInfo?.data?.isTradeIn == true
-        val hasWholesale = productInfo?.data?.hasWholesale == true
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
 
-        val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner) && it.name() == ProductDetailConstant.TRADE_IN) {
-                it
-            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
-                it
-            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) {
-                it
-            } else if (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) {
-                it
-            } else {
-                null
-            }
-        }
-
-        if (removedData.isNotEmpty())
-            initialLayoutData.removeAll(removedData)
-
-        return initialLayoutData
+        return initialLayoutData.filterNot {
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
+                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
+                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
+                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
+                    /***
+                     * remove palugada type with name
+                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                     */
+                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
+                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
+                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
+                    || (it.name() == ProductDetailConstant.COD)
+        }.toMutableList()
     }
 
     private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {
@@ -616,5 +596,20 @@ object DynamicProductDetailMapper {
         } else {
             productInfo.finalPrice
         }
+    }
+
+    fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1): AffiliatePageDetail {
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliatePageDetail(
+            pageId = productInfo.basic.productID,
+            source = AffiliateSdkPageSource.PDP(
+                shopId = productInfo.basic.shopID,
+                productInfo = AffiliateSdkProductInfo(
+                    categoryID = categoryId,
+                    isVariant = productInfo.isProductVariant(),
+                    stockQty = productInfo.getFinalStock().toIntOrZero()
+                )
+            )
+        )
     }
 }

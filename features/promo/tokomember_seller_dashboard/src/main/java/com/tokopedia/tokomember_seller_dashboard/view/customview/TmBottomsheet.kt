@@ -29,8 +29,14 @@ class TokomemberBottomsheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initBottomSheet()
-        return super.onCreateView(inflater, container, savedInstanceState)
+        try {
+
+            initBottomSheet()
+            return super.onCreateView(inflater, container, savedInstanceState)
+        }
+        catch (e: Exception){
+            return null
+        }
     }
 
     private fun initBottomSheet() {
