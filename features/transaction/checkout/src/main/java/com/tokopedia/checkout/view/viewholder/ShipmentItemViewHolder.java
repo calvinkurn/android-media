@@ -595,6 +595,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             );
             if (shipmentCartItemModel.isFreeShippingExtra()) {
                 imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe));
+            } else if (shipmentCartItemModel.isFreeShippingPlus()) {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus));
             } else {
                 imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo));
             }

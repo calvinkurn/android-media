@@ -347,6 +347,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 )
                 val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingExtra) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                } else if (cartShopHolderData.isFreeShippingPlus) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }

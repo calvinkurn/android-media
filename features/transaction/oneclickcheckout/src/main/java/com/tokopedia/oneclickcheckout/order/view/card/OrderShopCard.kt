@@ -79,6 +79,8 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 }
                 val contentDescriptionStringResource = if (shop.isFreeOngkirExtra) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                } else if (shop.isFreeOngkirPlus) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
