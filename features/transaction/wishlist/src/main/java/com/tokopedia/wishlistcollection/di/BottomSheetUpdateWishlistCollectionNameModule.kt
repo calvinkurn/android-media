@@ -18,8 +18,4 @@ class BottomSheetUpdateWishlistCollectionNameModule() {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @ActivityScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 }
