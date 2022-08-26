@@ -30,7 +30,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
         presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
-        view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+        view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
         view.logOnErrorLoadCourier(e, itemPosition)
     }
 
@@ -50,7 +50,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                                     presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
                                     presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
                                     view.resetCourier(shipmentCartItemModel)
-                                    view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+                                    view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
                                     view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                     return
                                 } else {
@@ -69,7 +69,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
         presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
         view.resetCourier(shipmentCartItemModel)
-        view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+        view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
         view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
     }
 

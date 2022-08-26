@@ -101,7 +101,7 @@ public interface ShipmentContract {
 
         void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates);
 
-        void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff);
+        void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff, boolean isBoAutoApplyFlow);
 
         void cancelAllCourierPromo();
 
