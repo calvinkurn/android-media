@@ -22,13 +22,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.wear.compose.material.MaterialTheme
-import com.tokopedia.sellerapp.presentation.theme.LOGO_SPLASH_SCREEN_SIZE
-import com.tokopedia.sellerapp.presentation.theme.START_LOGO_ANIMATION_TARGET
-import com.tokopedia.sellerapp.presentation.theme.STOP_LOGO_ANIMATION_TARGET
+import com.tokopedia.sellerapp.presentation.theme.DP_0
+import com.tokopedia.sellerapp.presentation.theme.DP_100
 import com.tokopedia.sellerapp.presentation.theme.defaultBackgroundColor
 import com.tokopedia.sellerapp.presentation.theme.splashScreenBackgroundColor
-import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_DURATION
-import com.tokopedia.sellerapp.util.NumberConstant.DELAY_DURATION
+import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SPLASH_DURATION
+import com.tokopedia.sellerapp.util.NumberConstant.DELAY_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.START_LOGO_ALPHA_TARGET
 import com.tokopedia.sellerapp.util.NumberConstant.STOP_LOGO_ALPHA_TARGET
 import com.tokopedia.tkpd.R
@@ -41,16 +40,16 @@ fun SplashScreen(
     var startAnimation by remember { mutableStateOf(false) }
 
     val offState by animateDpAsState(
-        targetValue = if (startAnimation) START_LOGO_ANIMATION_TARGET else STOP_LOGO_ANIMATION_TARGET,
+        targetValue = if (startAnimation) DP_0 else DP_100,
         animationSpec = tween(
-            durationMillis = ANIMATION_DURATION
+            durationMillis = ANIMATION_SPLASH_DURATION
         )
     )
 
     val alphaState by animateFloatAsState(
         targetValue = if (startAnimation) START_LOGO_ALPHA_TARGET else STOP_LOGO_ALPHA_TARGET,
         animationSpec = tween(
-            durationMillis = ANIMATION_DURATION
+            durationMillis = ANIMATION_SPLASH_DURATION
         )
     )
 
@@ -58,9 +57,9 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(DELAY_DURATION)
+        delay(DELAY_SPLASH_DURATION)
         animVisibleState = false
-        delay(DELAY_DURATION)
+        delay(DELAY_SPLASH_DURATION)
         navigateToHomeScreen()
     }
 
@@ -68,12 +67,12 @@ fun SplashScreen(
         visible = animVisibleState,
         enter = fadeIn(
             animationSpec = tween(
-                durationMillis = ANIMATION_DURATION
+                durationMillis = ANIMATION_SPLASH_DURATION
             )
         ),
         exit = fadeOut(
             animationSpec = tween(
-                durationMillis = ANIMATION_DURATION
+                durationMillis = ANIMATION_SPLASH_DURATION
             )
         ),
         modifier = Modifier.background(
@@ -90,7 +89,7 @@ fun SplashScreen(
         ) {
             Image(
                 modifier = Modifier
-                    .size(LOGO_SPLASH_SCREEN_SIZE)
+                    .size(DP_100)
                     .offset(y = offState)
                     .alpha(alpha = alphaState),
                 painter = painterResource(id = R.drawable.logo_tkpd_white),

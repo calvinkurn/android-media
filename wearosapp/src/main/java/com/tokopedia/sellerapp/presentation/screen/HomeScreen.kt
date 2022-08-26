@@ -1,18 +1,32 @@
 package com.tokopedia.sellerapp.presentation.screen
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.*
 import com.tokopedia.sellerapp.presentation.model.MenuItem
-import com.tokopedia.sellerapp.presentation.theme.Grey
-import com.tokopedia.sellerapp.presentation.theme.LightGrey
 import com.tokopedia.tkpd.R
 import com.tokopedia.iconunify.R.drawable as iconR
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.ListHeader
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
+import androidx.wear.compose.material.rememberScalingLazyListState
+import com.tokopedia.sellerapp.presentation.theme.ChipGrayColor
+import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
 
 const val TITLE_NOTIF = "Notifikasi"
 const val TITLE_CHAT = "Chat"
@@ -23,18 +37,50 @@ val ICON_CHAT = iconR.iconunify_chat
 val ICON_NEW_ORDER = iconR.iconunify_product
 val ICON_READY_TO_DELIVER = iconR.iconunify_product_move
 
-private fun generateMenuItem() = listOf(
-    MenuItem(TITLE_NOTIF, 1, ICON_NOTIF),
-    MenuItem(TITLE_CHAT, 1, ICON_CHAT),
-    MenuItem(TITLE_NEW_ORDER, 4, ICON_NEW_ORDER),
-    MenuItem(TITLE_READY_TO_DELIVER, 2, ICON_READY_TO_DELIVER),
+private fun generateMenuItem(
+    navigateToNotification: () -> Unit,
+    navigateToChat: () -> Unit,
+    navigateToNewOrderList: () -> Unit,
+    navigateToNewOrderSummary: () -> Unit
+) = listOf(
+    MenuItem(
+        title = TITLE_NOTIF,
+        unreadCount = 1,
+        icon = ICON_NOTIF,
+        navigateToThePage = navigateToNotification
+    ),
+    MenuItem(
+        title = TITLE_CHAT,
+        unreadCount = 1,
+        icon = ICON_CHAT,
+        navigateToThePage = navigateToChat
+    ),
+    MenuItem(
+        title = TITLE_NEW_ORDER,
+        unreadCount = 4,
+        icon = ICON_NEW_ORDER,
+        navigateToThePage = navigateToNewOrderList
+    ),
+    MenuItem(
+        title = TITLE_READY_TO_DELIVER,
+        unreadCount = 2,
+        icon = ICON_READY_TO_DELIVER,
+        navigateToThePage = navigateToNewOrderSummary
+    )
 )
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navigateToNewOrderSummary: () -> Unit
+) {
     val listState = rememberScalingLazyListState()
 
-    val menuItems = generateMenuItem()
+    val menuItems = generateMenuItem(
+        navigateToNotification = {},
+        navigateToChat = {},
+        navigateToNewOrderList = {},
+        navigateToNewOrderSummary = navigateToNewOrderSummary
+    )
 
     Scaffold(
         timeText = {
@@ -58,7 +104,7 @@ fun HomeScreen() {
             item {
                 ListHeader {
                     Text(
-                        color = LightGrey,
+                        color = TextGrayColor,
                         text = stringResource(id = R.string.home_title)
                     )
                 }
@@ -77,7 +123,9 @@ fun MenuChip(
 ) {
     Chip(
         modifier = modifier,
-        onClick = { /* ... */ },
+        onClick = {
+            menuItem.navigateToThePage()
+        },
         label = {
             Text(
                 modifier = Modifier.padding(start = 4.dp),
@@ -95,7 +143,7 @@ fun MenuChip(
             )
         },
         colors = ChipDefaults.chipColors(
-            backgroundColor = Grey,
+            backgroundColor = ChipGrayColor,
         ),
     )
 }
