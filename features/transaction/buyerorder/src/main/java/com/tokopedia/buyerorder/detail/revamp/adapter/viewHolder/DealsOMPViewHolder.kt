@@ -142,6 +142,7 @@ class DealsOMPViewHolder(
                 }
             }
         }
+        binding.progBar.gone()
 
         if (orderDetails.actionButtons.isNotEmpty()){
             eventDetailsListener.setActionButtonEvent(orderDetails.actionButtons.first(), item, orderDetails)
