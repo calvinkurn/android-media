@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -104,7 +103,7 @@ import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomList
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderMultiSelectSectionViewHolder
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
-import com.tokopedia.sellerorder.list.presentation.animator.SomFadeRightAnimator
+import com.tokopedia.sellerorder.list.presentation.animator.SomItemAnimator
 import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkProcessOrderBottomSheet
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkAcceptOrderDialog
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkPrintDialog
@@ -218,9 +217,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private val somListLayoutManager by lazy { somListBinding?.rvSomList?.layoutManager as? LinearLayoutManager }
-
-    private val fadeRightAnimator by lazy { SomFadeRightAnimator() }
-    private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -394,7 +390,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onSwipeRefresh() {
         shouldScrollToTop = true
-        somListBinding?.rvSomList?.itemAnimator = defaultItemAnimator
         loadInitialData()
         coachMarkManager?.dismissCoachMark()
     }
@@ -414,7 +409,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         quickFilter: SomListFilterUiModel.QuickFilter,
         shouldScrollToTop: Boolean
     ) {
-        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         if (quickFilter.isChecked) {
             if (quickFilter.isOrderTypeFilter()) {
                 viewModel.addOrderTypeFilter(quickFilter.id)
@@ -490,7 +484,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         status: SomListFilterUiModel.Status,
         shouldScrollToTop: Boolean
     ) {
-        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         viewModel.setStatusOrderFilter(status.id)
         setDefaultSortByValue()
         SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
@@ -638,7 +631,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         orderId: String,
         skipValidateOrder: Boolean
     ) {
-        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
@@ -657,7 +649,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         orderId: String,
         skipValidateOrder: Boolean
     ) {
-        somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
@@ -674,7 +665,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
         view?.let {
             if (it is ViewGroup) {
-                somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
                 selectedOrderId = order.orderId
                 orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply {
                     setupBuyerRequestCancelBottomSheet(this, order)
@@ -903,7 +893,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         )
         showPlusOrderListMenuShimmer()
         showWaitingPaymentOrderListMenuShimmer()
-        somListBinding?.rvSomList?.layoutManager = somListLayoutManager
+        setupRecyclerView()
         setupHeader()
         setupSearchBar()
         setupListeners()
@@ -2515,16 +2505,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         this.shouldScrollToTop = true
         isLoadingInitialData = true
         viewModel.updateSomFilterUiModelList(somFilterUiModelList)
-        val selectedStatusFilterKey = somFilterUiModelList.find {
-            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
-        }?.somFilterData?.find {
-            it.isSelected
-        }?.key
-
-        if (viewModel.getTabActive() != selectedStatusFilterKey.orEmpty()) {
-            somListBinding?.rvSomList?.itemAnimator = fadeRightAnimator
-        }
-
         viewModel.updateGetOrderListParams(filterData)
         loadFilters(showShimmer = false, loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
@@ -2732,6 +2712,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             hidePlusOrderListMenu()
             hideWaitingPaymentOrderListMenu()
         }
+    }
+
+    private fun setupRecyclerView() {
+        somListBinding?.rvSomList?.layoutManager = somListLayoutManager
+        somListBinding?.rvSomList?.itemAnimator = SomItemAnimator()
     }
 
     private fun setupHeader() {
