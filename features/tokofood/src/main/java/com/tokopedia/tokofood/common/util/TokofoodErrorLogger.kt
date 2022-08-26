@@ -38,6 +38,10 @@ object TokofoodErrorLogger {
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error of get driver phone number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error of user not eligible set address"
         internal const val ERROR_LOAD_MORE_CATEGORY = "error of load more category"
+        internal const val ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION = "error of choose_address in manage location"
+        internal const val ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE = "error of choose_address in merchant page"
+        internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error of deliverage coverage"
+        internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error of eligible for address"
     }
 
     object ErrorType {
@@ -51,6 +55,9 @@ object TokofoodErrorLogger {
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error_driver_phone_number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error_eligible_set_address"
         internal const val ERROR_LOAD_MORE_CATEGORY = "error_load_more_category"
+        internal const val ERROR_CHOOSE_ADDRESS = "error_choose_address"
+        internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error_check_delivery_coverage"
+        internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error_eligible_for_address"
     }
 
     fun logExceptionToServerLogger(

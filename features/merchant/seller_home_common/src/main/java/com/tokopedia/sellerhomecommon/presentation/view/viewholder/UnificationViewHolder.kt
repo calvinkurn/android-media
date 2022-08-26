@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -60,12 +59,23 @@ class UnificationViewHolder(
     }
 
     override fun bind(element: UnificationWidgetUiModel) {
-        setTitle(element.title)
+        setTitle(element)
         observeState(element)
     }
 
-    private fun setTitle(title: String) {
-        binding.tvShcUnificationTitle.text = title.parseAsHtml()
+    private fun setTitle(element: UnificationWidgetUiModel) {
+        binding.tvShcUnificationTitle.run {
+            setText(element.title)
+
+            val tooltip = element.tooltip
+            val shouldShowTooltip = (tooltip?.shouldShow == true)
+                    && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+
+            showTooltipIcon(shouldShowTooltip) {
+                listener.onTooltipClicked(tooltip ?: return@showTooltipIcon)
+            }
+            showTag(element.tag)
+        }
     }
 
     private fun observeState(element: UnificationWidgetUiModel) {
@@ -88,21 +98,16 @@ class UnificationViewHolder(
         binding.shcNotifTagTab.gone()
 
         successStateBinding.containerShcUnificationSuccess.gone()
-        errorStateBinding.containerShcUnificationError.gone()
+        errorStateBinding.shcUnificationCommonErrorView.gone()
         loadingStateBinding.containerShcUnificationLoading.visible()
     }
 
     private fun showErrorState(element: UnificationWidgetUiModel) {
         loadingStateBinding.containerShcUnificationLoading.gone()
         successStateBinding.containerShcUnificationSuccess.gone()
-        errorStateBinding.containerShcUnificationError.visible()
-
-        with(errorStateBinding) {
-            shcUnificationCommonErrorView.imgWidgetOnError
-                .loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-            btnShcUnificationRetry.setOnClickListener {
-                listener.onReloadWidget(element)
-            }
+        errorStateBinding.shcUnificationCommonErrorView.visible()
+        errorStateBinding.shcUnificationCommonErrorView.setOnReloadClicked {
+            listener.onReloadWidget(element)
         }
 
         if (element.data?.tabs.isNullOrEmpty()) {
@@ -145,7 +150,7 @@ class UnificationViewHolder(
             }
 
             setupDropDownView(element)
-            setupLastUpdate(element, tab)
+            setupLastUpdate(element)
 
             listener.showUnificationWidgetCoachMark(binding.tvShcUnificationTitle)
         }
@@ -228,7 +233,7 @@ class UnificationViewHolder(
         }
     }
 
-    private fun setupLastUpdate(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
+    private fun setupLastUpdate(element: UnificationWidgetUiModel) {
         with(successStateBinding.luvShcUnification) {
             element.data?.lastUpdated?.let { lastUpdated ->
                 isVisible = lastUpdated.isEnabled

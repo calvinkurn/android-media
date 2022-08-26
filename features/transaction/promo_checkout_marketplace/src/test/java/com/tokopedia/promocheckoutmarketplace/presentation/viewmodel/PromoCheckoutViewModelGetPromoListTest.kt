@@ -12,8 +12,12 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGe
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllExpanded
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllIneligible
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithBoPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithBoPromoNotSelected
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithPreSelectedPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -307,6 +311,30 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
     }
 
     @Test
+    fun `WHEN reload action has selected expanded BO promo THEN should be added to request param`() {
+        //given
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val selectedBoPromo = promoList[1] as PromoListItemUiModel
+        selectedBoPromo.uiState.isSelected = true
+        viewModel.setPromoListValue(promoList)
+        val promoRequest = provideGetPromoListRequest()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
+        }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
+
+        //when
+        viewModel.getPromoList(promoRequest, "")
+
+        //then
+        assert(promoRequest.orders[2].codes.isNotEmpty())
+        assert(promoRequest.orders[2].spId > 0)
+        assert(promoRequest.orders[2].shippingId > 0)
+    }
+
+    @Test
     fun `WHEN get promo list and get response error THEN fragment state should be failed to load`() {
         //given
         val response = provideGetPromoListResponseError()
@@ -508,6 +536,40 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         //then
         assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == true)
+    }
+
+    @Test
+    fun `WHEN get promo list with promo BO selected THEN fragment state has applied BO should be true`() {
+        // GIVEN
+        val response = provideGetPromoListResponseSuccessWithBoPromo()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        // WHEN
+        viewModel.getPromoList(PromoRequest(), "")
+
+        // THEN
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasPreAppliedBo == true)
+        assert(viewModel.fragmentUiModel.value?.uiData?.unApplyBoMessage?.isNotEmpty() == true)
+        assert(viewModel.fragmentUiModel.value?.uiData?.unApplyBoIcon?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `WHEN get promo list with promo BO not selected THEN fragment state has applied BO should be false`() {
+        // GIVEN
+        val response = provideGetPromoListResponseSuccessWithBoPromoNotSelected()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        // WHEN
+        viewModel.getPromoList(PromoRequest(), "")
+
+        // THEN
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasPreAppliedBo == false)
+        assert(viewModel.fragmentUiModel.value?.uiData?.unApplyBoMessage?.isEmpty() == true)
+        assert(viewModel.fragmentUiModel.value?.uiData?.unApplyBoIcon?.isEmpty() == true)
     }
 
     @Test
