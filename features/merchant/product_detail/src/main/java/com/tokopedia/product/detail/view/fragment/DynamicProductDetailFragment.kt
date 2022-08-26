@@ -259,10 +259,10 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import java.util.Locale
 import java.util.UUID
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 /**
  * Separator Rule
@@ -633,6 +633,19 @@ open class DynamicProductDetailFragment :
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
         hideProgressDialog()
+        viewModel.p2Data.removeObservers(this)
+        viewModel.p2Other.removeObservers(this)
+        viewModel.productLayout.removeObservers(this)
+        viewModel.p2Login.removeObservers(this)
+        viewModel.loadTopAdsProduct.removeObservers(this)
+        viewModel.updatedImageVariant.removeObservers(this)
+        viewModel.initialVariantData.removeObservers(this)
+        viewModel.onVariantClickedData.removeObservers(this)
+        viewModel.toggleTeaserNotifyMe.removeObservers(this)
+        viewModel.addToCartLiveData.removeObservers(this)
+        viewModel.discussionMostHelpful.removeObservers(this)
+        viewModel.topAdsRecomChargeData.removeObservers(this)
+        //viewModel.flush()
         compositeSubscription.clear()
         super.onDestroyView()
     }
