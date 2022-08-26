@@ -2612,8 +2612,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void validateClearAllBoPromo() {
-        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
-            final ShipmentCartItemModel shipmentCartItemModel = shipmentCartItemModelList.get(i);
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
                 if (shipmentCartItemModel.getCartString() != null
                         && shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
