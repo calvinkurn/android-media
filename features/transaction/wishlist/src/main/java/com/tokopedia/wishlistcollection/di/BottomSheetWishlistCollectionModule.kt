@@ -16,8 +16,4 @@ class BottomSheetWishlistCollectionModule() {
     fun providesContexts(@ApplicationContext context: Context): Context {
         return context
     }
-
-    @ActivityScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 }
