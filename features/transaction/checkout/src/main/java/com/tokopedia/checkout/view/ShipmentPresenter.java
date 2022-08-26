@@ -2614,13 +2614,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void validateClearAllBoPromo() {
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
-                if (shipmentCartItemModel.getCartString() != null
-                        && shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
-                    for (String promoCode : ordersItem.getCodes()) {
-                        if (shipmentCartItemModel.getBoCode().equals(promoCode)) {
-                            doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
-                        }
-                    }
+                if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && ordersItem.getCodes().isEmpty()) {
+                    doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
                 }
             }
         }
