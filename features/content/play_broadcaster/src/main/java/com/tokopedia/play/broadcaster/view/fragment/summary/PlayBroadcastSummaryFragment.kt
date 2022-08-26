@@ -58,6 +58,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     handle: SavedStateHandle
                 ): T {
                     return summaryViewModelFactory.create(
+                        parentViewModel.authorId,
                         parentViewModel.channelId,
                         parentViewModel.channelTitle,
                         parentViewModel.productSectionList,

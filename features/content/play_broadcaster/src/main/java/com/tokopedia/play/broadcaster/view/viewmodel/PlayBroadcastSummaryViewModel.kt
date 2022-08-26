@@ -39,6 +39,7 @@ import kotlinx.coroutines.withContext
  * @author by jessica on 27/05/20
  */
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
+    @Assisted("authorId") val authorId: String,
     @Assisted("channelId") val channelId: String,
     @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
@@ -57,6 +58,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
+            @Assisted("authorId") authorId: String,
             @Assisted("channelId") channelId: String,
             @Assisted("channelTitle") channelTitle: String,
             productSectionList: List<ProductTagSectionUiModel>

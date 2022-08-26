@@ -39,7 +39,8 @@ import javax.inject.Inject
  */
 class PlayCoverSetupViewModel @AssistedInject constructor(
     @Assisted productList: List<ProductUiModel>,
-    @Assisted private val channelId: String,
+    @Assisted("authorId") private val authorId: String,
+    @Assisted("channelId") private val channelId: String,
     private val hydraConfigStore: HydraConfigStore,
     private val dispatcher: CoroutineDispatchers,
     private val setupDataStore: PlayBroadcastSetupDataStore,
@@ -53,7 +54,8 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             productList: List<ProductUiModel>,
-            channelId: String,
+            @Assisted("authorId") authorId: String,
+            @Assisted("channelId") channelId: String,
         ): PlayCoverSetupViewModel
     }
 
@@ -123,7 +125,7 @@ class PlayCoverSetupViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             uploadImageAndUpdateCoverState()
 
-            val result = setupDataStore.uploadSelectedCover(channelId)
+            val result = setupDataStore.uploadSelectedCover(authorId, channelId)
             if (result is NetworkResult.Success) _observableUploadCoverEvent.value = result.map { Event(Unit) }
             else if (result is NetworkResult.Fail) throw result.error
         }) {

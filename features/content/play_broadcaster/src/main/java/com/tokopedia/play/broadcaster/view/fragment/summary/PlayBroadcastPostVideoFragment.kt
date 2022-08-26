@@ -108,6 +108,10 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                         return viewModel.productList
                     }
 
+                    override fun getAuthorId(): String {
+                        return viewModel.authorId
+                    }
+
                     override fun getChannelId(): String {
                         return viewModel.channelId
                     }
