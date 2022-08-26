@@ -1,8 +1,6 @@
 package com.tokopedia.media.editor.ui.uimodel
 
-import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.media.editor.utils.shouldNull
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel.Companion.getEmptyEditorCropRotateModel
 import com.tokopedia.picker.common.types.EditorToolType
 import kotlinx.parcelize.Parcelize

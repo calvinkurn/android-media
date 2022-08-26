@@ -96,4 +96,8 @@ class EditorViewModel @Inject constructor(
             context, bitmapParam, filename
         )
     }
+
+    fun cleanImageCache(){
+        saveImageRepository.clearEditorCache()
+    }
 }

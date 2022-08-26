@@ -1,59 +1,26 @@
 package com.tokopedia.media.editor.utils
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import com.tokopedia.media.editor.R
 import com.tokopedia.picker.common.types.EditorToolType
-import java.io.ByteArrayOutputStream
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.*
 
-fun getEditorSaveFolderDir(context: Context): String {
-    return "${context.externalCacheDir?.path}/editor-cache/"
+private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
+
+fun getEditorSaveFolderDir(): String {
+    return FileUtil.getTokopediaInternalDirectory(ImageProcessingUtil.DEFAULT_DIRECTORY + MEDIA_EDITOR_CACHE_DIR).absolutePath
 }
 
-fun getDestinationUri(context: Context, filename: String? = null): Uri {
-    val folderPath = getEditorSaveFolderDir(context)
+fun getUCropTempResultPath(): Uri {
+    val folderPath = getEditorSaveFolderDir()
     val dir = File(folderPath)
     if (!dir.exists()) dir.mkdir()
 
-    return if (filename == null)
-        Uri.fromFile(File("${folderPath}/${generateFileName()}.png"))
-    else
-        Uri.fromFile(File("${folderPath}/$filename.png"))
-}
-
-fun deleteRecursive(fileOrDirectory: File) {
-    if (fileOrDirectory.isDirectory) {
-        for (child in fileOrDirectory.listFiles()) {
-            deleteRecursive(child)
-        }
-    }
-    fileOrDirectory.delete()
-}
-
-@SuppressLint("SimpleDateFormat")
-fun generateFileName(): String {
-    return SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(Date())
-}
-
-fun shouldNull(value: Float): Float? {
-    return if (value != -1f) {
-        value
-    } else null
-}
-
-fun shouldNull(value: Int): Int? {
-    return if (value != -1) {
-        value
-    } else null
+    return Uri.fromFile(File("${folderPath}/uCrop_temp_result.png"))
 }
 
 //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f

@@ -12,12 +12,9 @@ import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.deleteRecursive
-import com.tokopedia.media.editor.utils.getEditorSaveFolderDir
 import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.ImageRatioType
-import java.io.File
 import javax.inject.Inject
 
 class EditorActivity : BaseEditorActivity() {
@@ -139,8 +136,7 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onDestroy() {
-        val editorCacheFolder = File(getEditorSaveFolderDir(this))
-        deleteRecursive(editorCacheFolder)
+        viewModel.cleanImageCache()
         super.onDestroy()
     }
 

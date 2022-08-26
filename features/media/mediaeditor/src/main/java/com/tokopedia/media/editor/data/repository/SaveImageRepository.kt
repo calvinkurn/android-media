@@ -2,11 +2,10 @@ package com.tokopedia.media.editor.data.repository
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.net.toFile
-import com.tokopedia.media.editor.utils.getDestinationUri
-import java.io.ByteArrayOutputStream
+import com.tokopedia.media.editor.utils.getEditorSaveFolderDir
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 interface SaveImageRepository {
@@ -15,6 +14,8 @@ interface SaveImageRepository {
         bitmapParam: Bitmap,
         filename: String? = null
     ): File?
+
+    fun clearEditorCache()
 }
 
 class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
@@ -23,22 +24,14 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
         bitmapParam: Bitmap,
         filename: String?
     ): File? {
-        return try {
-            val file = getDestinationUri(context, filename).toFile()
-            file.createNewFile()
+        return ImageProcessingUtil.writeImageToTkpdPath(
+            bitmapParam,
+            Bitmap.CompressFormat.PNG,
+            getEditorSaveFolderDir()
+        )
+    }
 
-            val bos = ByteArrayOutputStream()
-            bitmapParam.compress(Bitmap.CompressFormat.PNG, 0, bos)
-            val bitmapData = bos.toByteArray()
-
-            val fos = FileOutputStream(file)
-            fos.write(bitmapData)
-            fos.flush()
-            fos.close()
-
-            file
-        } catch (e: Exception) {
-            null
-        }
+    override fun clearEditorCache() {
+        FileUtil.deleteFolder(getEditorSaveFolderDir())
     }
 }

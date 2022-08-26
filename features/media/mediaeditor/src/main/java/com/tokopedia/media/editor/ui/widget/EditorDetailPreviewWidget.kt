@@ -13,7 +13,7 @@ import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.getDestinationUri
+import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
@@ -31,7 +31,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
     fun initializeRotate(uriSource: Uri) {
-        val resultDestination = getDestinationUri(context)
+        val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         overlayView.setDimmedColor(
             ContextCompat.getColor(
@@ -44,7 +44,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     }
 
     fun initializeBrightness(uriSource: Uri) {
-        val resultDestination = getDestinationUri(context)
+        val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
@@ -52,7 +52,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     }
 
     fun initializeContrast(uriSource: Uri) {
-        val resultDestination = getDestinationUri(context)
+        val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
@@ -60,7 +60,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     }
 
     fun initializeWatermark(uriSource: Uri) {
-        val resultDestination = getDestinationUri(context)
+        val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
@@ -68,7 +68,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     }
 
     fun initializeRemoveBackground(uriSource: Uri) {
-        val resultDestination = getDestinationUri(context)
+        val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
@@ -76,7 +76,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     }
 
     fun initializeCrop(uriSource: Uri) {
-        val resultDestination = getDestinationUri(context)
+        val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         disableRotate()
         initListener()
