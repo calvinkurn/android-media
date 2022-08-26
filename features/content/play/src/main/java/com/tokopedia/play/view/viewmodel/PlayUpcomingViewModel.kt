@@ -74,7 +74,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
-    private val _isExpanded = MutableStateFlow(DescriptionUiState())
+    private val _widgetState = MutableStateFlow(DescriptionUiState())
 
     private val _observableKolId = MutableLiveData<String>()
 
@@ -90,7 +90,7 @@ class PlayUpcomingViewModel @Inject constructor(
     val uiState: Flow<PlayUpcomingUiState> = combine(
         _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _channelDetail, _isExpanded,
+        _channelDetail, _widgetState,
     ) { partner, upcomingInfo, channelDetail, isExpanded ->
         PlayUpcomingUiState(
             partner = partner,
@@ -118,7 +118,10 @@ class PlayUpcomingViewModel @Inject constructor(
         }
 
     val isExpanded: Boolean
-            get() = _isExpanded.value.isExpand
+            get() = _widgetState.value.isExpand
+
+    val isWidgetShown: Boolean
+        get() = _widgetState.value.isShown
 
     val remindState: PlayUpcomingState
         get() = _upcomingState.value
@@ -228,16 +231,25 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickShareUpcomingAction -> handleClickShareIcon()
             ShowShareExperienceUpcomingAction -> handleOpenSharingOption(false)
             ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
-            CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
             ExpandDescriptionUpcomingAction -> handleExpandText()
+            TapCover -> handleTapCover()
         }
     }
 
     private fun handleExpandText(){
-        _isExpanded.update { it.copy(isExpand = !it.isExpand) }
+        _widgetState.update { it.copy(isExpand = !it.isExpand) }
         viewModelScope.launch {
             _uiEvent.emit(PlayUpcomingUiEvent.ExpandDescriptionEvent(isExpanded))
+        }
+    }
+
+    private fun handleTapCover(){
+        if (_upcomingInfo.value.description.isNotEmpty() && isExpanded) handleExpandText()
+
+        _widgetState.update { it.copy(isShown = !it.isShown) }
+        viewModelScope.launch {
+            _uiEvent.emit(PlayUpcomingUiEvent.TapCoverEvent(isWidgetShown))
         }
     }
 
@@ -415,9 +427,6 @@ class PlayUpcomingViewModel @Inject constructor(
                 copyLink()
             }
         }
-    }
-
-    private fun handleCloseSharingOption() {
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {

@@ -228,6 +228,9 @@ class PlayUpcomingFragment @Inject constructor(
                     is PlayUpcomingUiEvent.ExpandDescriptionEvent -> {
                         binding.vOverlay.showWithCondition(event.isExpanded)
                     }
+                    is PlayUpcomingUiEvent.TapCoverEvent -> {
+                        description.rootView.showWithCondition(event.isShown)
+                    }
                 }
             }
         }
@@ -377,7 +380,6 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
         analytic.closeShareBottomSheet(channelId, playUpcomingViewModel.partnerId, playUpcomingViewModel.channelType.value, playUpcomingViewModel.isSharingBottomSheet)
-        playUpcomingViewModel.submitAction(CloseSharingOptionUpcomingAction)
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
@@ -439,12 +441,10 @@ class PlayUpcomingFragment @Inject constructor(
 
     fun setupView(){
         binding.ivUpcomingCover.setOnClickListener {
-            if (playUpcomingViewModel.isExpanded) {
-                playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
-            } else {
+            playUpcomingViewModel.submitAction(TapCover)
+            if (!playUpcomingViewModel.isExpanded) {
                 analytic.clickCover(channelId)
-                description.hide()
-            }
+            } else return@setOnClickListener
         }
 
         binding.ivUpcomingCover.addOnImpressionListener(ImpressHolder()){
