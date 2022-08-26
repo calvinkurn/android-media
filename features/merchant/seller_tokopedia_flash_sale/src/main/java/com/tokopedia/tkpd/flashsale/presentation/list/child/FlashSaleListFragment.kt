@@ -226,11 +226,18 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
 
     private fun handleUiState(uiState: FlashSaleListUiState) {
+        renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
         renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.totalFlashSaleCount)
         refreshScrollState(uiState.allItems)
         renderScrollUpButton(uiState.totalFlashSaleCount)
     }
+
+    private fun renderLoadingState(isLoading: Boolean) {
+        binding?.loader?.isVisible = isLoading
+        binding?.recyclerView?.isVisible = !isLoading
+    }
+
 
     private fun renderScrollUpButton(totalFlashSaleCount: Int) {
         binding?.imgScrollUp?.isVisible = totalFlashSaleCount.isMoreThanZero()

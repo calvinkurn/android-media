@@ -71,8 +71,7 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun onLoadPage(offset: Int) {
-        val isLoadingNextPage = offset > 0
-        _uiState.update { it.copy(offset = offset, isLoadingNextPage = isLoadingNextPage) }
+        _uiState.update { it.copy(offset = offset) }
         getFlashSaleList()
     }
 
@@ -86,7 +85,8 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedSort = selectedSort,
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
+                isFilterActive = selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER",
+                isLoading = true
             )
         }
 
@@ -110,7 +110,8 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedCategoryIds = categoryIds,
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = categories.isNotEmpty()
+                isFilterActive = categories.isNotEmpty(),
+                isLoading = true
             )
         }
 
@@ -144,10 +145,10 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedStatusIds = listOf(),
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = false
+                isFilterActive = false,
+                isLoading = true
             )
         }
-
         getFlashSaleList()
     }
 
@@ -166,8 +167,6 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun getFlashSaleList() {
-        _uiState.update { it.copy(isLoading = true) }
-
         launchCatchError(
             dispatchers.io,
             block = {
@@ -189,14 +188,13 @@ class FlashSaleListViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        isLoadingNextPage = false,
                         allItems = allItems,
                         totalFlashSaleCount = response.totalFlashSaleCount
                     )
                 }
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false) }
+                _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.tryEmit(FlashSaleListUiEffect.FetchFlashSaleError(error))
             }
         )
