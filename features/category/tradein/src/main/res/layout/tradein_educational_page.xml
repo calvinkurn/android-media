@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:background="@color/Unify_Background"
     android:layout_height="match_parent"
-    android:layout_marginBottom="16dp"
     android:orientation="vertical"
     android:scrollbars="none">
 
@@ -534,6 +533,7 @@ Syarat &amp; Ketentuan yang berlaku." />
             android:text="@string/tradein_tukar_tambah_sekarang"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edu_subtext_6" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
