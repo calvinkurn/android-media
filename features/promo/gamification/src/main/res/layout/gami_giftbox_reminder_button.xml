@@ -21,15 +21,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/gami_bell_end_margin"
             app:srcCompat="@drawable/gami_bell_1" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvReminderBtn1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            tools:text="Ingatkan Besok"
-            android:textColor="@color/white"
-            app:typographyType="@integer/gami_green_gradient_btn_typography" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
