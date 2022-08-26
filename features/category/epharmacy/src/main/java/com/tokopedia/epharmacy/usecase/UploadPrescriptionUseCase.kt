@@ -22,30 +22,20 @@ class UploadPrescriptionUseCase @Inject constructor(
         private val repository: RestRepository
 ): RestRequestUseCase(repository) {
 
-    private var localFilePath: String = ""
-    private var id : Long = 0L
-
-    override suspend fun executeOnBackground(): Map<Type, RestResponse> {
+    suspend fun executeOnBackground(id : Long, localFilePath: String): Map<Type, RestResponse> {
         val base64ImageString = getBase64OfPrescriptionImage(localFilePath)
         val restRequest = RestRequest.Builder(getEndpoint(), EPharmacyPrescriptionUploadResponse::class.java)
-            .setBody(getUploadPrescriptionBody(base64ImageString))
+            .setBody(getUploadPrescriptionBody(id,base64ImageString))
             .setRequestType(RequestType.POST)
             .build()
-        restRequestList.clear()
-        restRequestList.add(restRequest)
-        return repository.getResponses(restRequestList)
+        return repository.getResponses(arrayListOf(restRequest))
     }
 
-    private fun getUploadPrescriptionBody(base64ImageString : String): UploadPrescriptionRequest{
+    private fun getUploadPrescriptionBody(id : Long , base64ImageString : String): UploadPrescriptionRequest{
         return UploadPrescriptionRequest(arrayListOf(
             UploadPrescriptionRequest.PrescriptionRequest(
                 base64ImageString, KEY_FORMAT_VALUE, id, KEY_SOURCE_VALUE
         )))
-    }
-
-    fun setBase64Image(id : Long, localPath: String) {
-        this.id = id
-        this.localFilePath = localPath
     }
 
     private fun getBase64OfPrescriptionImage(localFilePath: String): String {

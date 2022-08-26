@@ -21,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.lang.reflect.Type
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -165,13 +166,13 @@ class UploadPrescriptionViewModel @Inject constructor(
     }
 
     fun addSelectedPrescriptionImages(originalPaths: List<String>) {
-        _prescriptionImages.value.let {
+        _prescriptionImages.value.let { prescriptionImages ->
             originalPaths.forEach { localPath ->
-                changeToLoadingState(it,localPath)
+                changeToLoadingState(prescriptionImages,localPath)
                 checkPrescriptionImages()
-                uploadImageWithPath((_prescriptionImages.value?.size ?: 0) - 1,localPath)
+                uploadImageWithPath((prescriptionImages?.size ?: 0) - 1,localPath)
             }
-            _prescriptionImages.postValue(it)
+            _prescriptionImages.postValue(prescriptionImages)
         }
     }
 
@@ -209,18 +210,23 @@ class UploadPrescriptionViewModel @Inject constructor(
         }, onError = {
             when(it){
                 is UnknownHostException, is SocketTimeoutException -> uploadFailed(uniquePositionId , EPharmacyNoInternetError(true))
-                else -> uploadFailed(uniquePositionId , EPharmacyUploadBackendError(it.message ?: ""))
+                else -> imageError(uniquePositionId,it)
             }
         })
 
     }
 
+    private fun imageError(uniquePositionId : Int , error : Throwable) {
+        uploadFailed(uniquePositionId , EPharmacyUploadEmptyImageError(false))
+        EPharmacyUtils.logException(Exception(error))
+    }
+
     private suspend fun uploadImageToServer(uniquePositionId: Int, localFilePath : String) {
         if (localFilePath.isNotBlank()){
-            uploadPrescriptionUseCase.setBase64Image((uniquePositionId + 1).toLong(),localFilePath)
-            val result = withContext(dispatcherBackground) {
-                convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground())
-            }
+            val result = convertToUploadImageResponse(uploadPrescriptionUseCase.executeOnBackground(
+                (uniquePositionId + 1).toLong(),
+                localFilePath)
+            )
             _prescriptionImages.value?.get(uniquePositionId)?.apply {
                 result.data?.firstOrNull()?.let { uploadResult ->
                     if(uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE){
@@ -245,7 +251,7 @@ class UploadPrescriptionViewModel @Inject constructor(
             _prescriptionImages.postValue(_prescriptionImages.value)
 
         }else {
-            uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError(false))
+            uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError(true))
         }
         checkPrescriptionImages()
     }
