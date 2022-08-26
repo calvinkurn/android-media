@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
@@ -29,6 +30,8 @@ class RedeemVoucherView : LinearLayout {
     private var isOMP: Boolean = false
     private var isLastItem:Boolean = false
     private var retryCount = 0
+    private var onTapActionDeals: ((TextView?, ActionButton, Items, Int, Int) -> Unit)? = null
+    private var onShowRetry: ((String) -> Unit)? = null
 
     private lateinit var actionButton: ActionButton
     private lateinit var item: Items
@@ -60,6 +63,8 @@ class RedeemVoucherView : LinearLayout {
         actionButton: ActionButton,
         item: Items,
         body: Body,
+        onTapActionDeals: ((TextView?, ActionButton, Items, Int, Int) -> Unit)?,
+        onShowRetry: ((String) -> Unit)?
     ) : super(context) {
         this.voucherCount = voucherCount
         this.position = position
@@ -68,6 +73,8 @@ class RedeemVoucherView : LinearLayout {
         this.actionButton = actionButton
         this.item = item
         this.body = body
+        this.onTapActionDeals = onTapActionDeals
+        this.onShowRetry = onShowRetry
         initView()
     }
 
@@ -90,7 +97,7 @@ class RedeemVoucherView : LinearLayout {
                 binding.redeemBtnDeals.visible()
             }
 
-            TODO("set tap action")
+            onTapActionDeals?.invoke(binding.redeemBtnDeals, actionButton, item, retryCount, position)
         }
 
         binding.dividerVoucher.showWithCondition(!isLastItem)
@@ -189,12 +196,12 @@ class RedeemVoucherView : LinearLayout {
                 }
 
                 if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)) {
-                    TODO("show retry button")
+                    onShowRetry?.invoke(context.getString(R.string.tkpdtransaction_oms_retry_failed_deals))
                 } else {
-                    TODO("show retry button")
+                    onShowRetry?.invoke(context.getString(R.string.tkpdtransaction_oms_retry_failed_event))
                 }
             } else {
-                TODO("show retry button")
+                onShowRetry?.invoke(context.getString(R.string.tkpdtransaction_oms_retry_success))
             }
         }
     }
