@@ -246,8 +246,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleTapCover(){
         if (_upcomingInfo.value.description.isNotEmpty() && isExpanded) handleExpandText()
-
-        _widgetState.update { it.copy(isShown = !it.isShown) }
+        else _widgetState.update { it.copy(isShown = !it.isShown) }
         viewModelScope.launch {
             _uiEvent.emit(PlayUpcomingUiEvent.TapCoverEvent(isWidgetShown))
         }
