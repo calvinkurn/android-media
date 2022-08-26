@@ -63,4 +63,5 @@
     <string name="shc_feedback_other_input_placeholder">Contoh: sudah paham infonya</string>
     <string name="shc_feedback_bottom_sheet_title">Info tidak dibutuhkan lagi</string>
     <string name="shc_feedback_content_bottom_sheet_title">Saya ingin menghapus info ini karena:</string>
+    <string name="shc_post_more_option_1">Pilih artikel yang ingin dihapus</string>
 </resources>
