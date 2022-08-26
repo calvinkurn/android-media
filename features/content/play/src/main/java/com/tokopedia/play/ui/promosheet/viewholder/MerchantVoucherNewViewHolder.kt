@@ -45,8 +45,10 @@ class MerchantVoucherNewViewHolder(
         }
     }
 
-    private fun countDays(expiredDate: String): Long =
-        DateUtil.getDayDiffFromToday(expiredDate)
+    private fun countDays(expiredDate: String): Long {
+        val diff = DateUtil.getDayDiffFromToday(expiredDate)
+        return if (diff > 0) diff else 1
+    }
 
     interface Listener {
         fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
