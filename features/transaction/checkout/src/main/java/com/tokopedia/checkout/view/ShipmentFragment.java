@@ -1102,7 +1102,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff) {
+    public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff, boolean isBoAutoApplyFlow) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
         if (shipmentCartItemModel != null) {
             shipmentCartItemModel.setStateLoadingCourierState(false);
@@ -1115,6 +1115,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
                 shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
                 shipmentCartItemModel.setBoCode("");
+                showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
+            } else if (isBoAutoApplyFlow) {
+                showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
             }
             onNeedUpdateViewItem(itemPosition);
         }
