@@ -132,12 +132,6 @@ class RedeemVoucherView : LinearLayout {
             shape.setStroke(ZERO_STROKE_WIDTH, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
 
-        if (HexValidator.validate(actionButton.actionColor.textColor)) {
-            binding.voucherCodeTitleDeals.setTextColor(Color.parseColor(actionButton.actionColor.textColor))
-        } else {
-            binding.voucherCodeTitleDeals.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
-
         shape.cornerRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
     }
 
