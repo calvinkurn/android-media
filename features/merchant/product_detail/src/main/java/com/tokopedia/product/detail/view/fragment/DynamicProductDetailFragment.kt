@@ -435,7 +435,7 @@ open class DynamicProductDetailFragment :
             this,
             this,
             viewModel.userId,
-            playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+            playWidgetCoordinator = PlayWidgetCoordinator(viewLifecycleOwner).apply {
                 setListener(this@DynamicProductDetailFragment)
             })
     }
@@ -631,10 +631,10 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         Toaster.onCTAClick = View.OnClickListener { }
         hideProgressDialog()
         compositeSubscription.clear()
+        super.onDestroyView()
     }
 
     private fun onResultVariantBottomSheet(data: ProductVariantResult) {

@@ -166,4 +166,10 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rvPdp?.adapter = productAdapter
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvPdp?.adapter = null
+        binding = null
+    }
 }
