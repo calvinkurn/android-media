@@ -34,12 +34,12 @@ class BottomSheetUpdateWishlistCollectionNameViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionNamesUseCase(Unit)
             if (result.getWishlistCollectionNames.status == WishlistV2CommonConsts.OK && result.getWishlistCollectionNames.errorMessage.isEmpty()) {
-                _collectionNames.postValue(Success(result.getWishlistCollectionNames))
+                _collectionNames.value = Success(result.getWishlistCollectionNames)
             } else {
-                _collectionNames.postValue(Fail(Throwable()))
+                _collectionNames.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionNames.postValue(Fail(it))
+            _collectionNames.value = Fail(it)
         })
     }
 
@@ -47,12 +47,12 @@ class BottomSheetUpdateWishlistCollectionNameViewModel @Inject constructor(
         launchCatchError(block = {
             val result = updateWishlistCollectionNameUseCase(param)
             if (result.updateWishlistCollectionName.status == WishlistV2CommonConsts.OK && result.updateWishlistCollectionName.errorMessage.isEmpty()) {
-                _updateWishlistCollectionNameResult.postValue(Success(result.updateWishlistCollectionName))
+                _updateWishlistCollectionNameResult.value = Success(result.updateWishlistCollectionName)
             } else {
-                _updateWishlistCollectionNameResult.postValue(Fail(Throwable()))
+                _updateWishlistCollectionNameResult.value = Fail(Throwable())
             }
         }, onError = {
-            _updateWishlistCollectionNameResult.postValue(Fail(it))
+            _updateWishlistCollectionNameResult.value = Fail(it)
         })
     }
 }

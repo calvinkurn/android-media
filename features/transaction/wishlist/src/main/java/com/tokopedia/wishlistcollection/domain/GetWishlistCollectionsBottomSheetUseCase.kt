@@ -18,10 +18,10 @@ class GetWishlistCollectionsBottomSheetUseCase @Inject constructor(
     CoroutineUseCase<GetWishlistCollectionsBottomSheetParams, GetWishlistCollectionsBottomSheetResponse>(dispatchers.io) {
 
     override suspend fun execute(params: GetWishlistCollectionsBottomSheetParams): GetWishlistCollectionsBottomSheetResponse {
-        return repository.request(GetWishlistCollectionsBottomsheetQuery(), params.toMap())
+        return repository.request(GetWishlistCollectionsBottomsheetQuery(), params)
     }
 
-    override fun graphqlQuery(): String = ""
+    override fun graphqlQuery(): String = query
 
     companion object {
         const val query = """

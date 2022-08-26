@@ -61,8 +61,8 @@ class WishlistCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
-                _collections.postValue(Success(result.getWishlistCollections))
-                _collectionData.postValue(
+                _collections.value = Success(result.getWishlistCollections)
+                _collectionData.value =
                     Success(
                         WishlistCollectionUtils.mapCollection(
                             result.getWishlistCollections.data, getRecommendationWishlistV2(
@@ -71,14 +71,13 @@ class WishlistCollectionViewModel @Inject constructor(
                             )
                         )
                     )
-                )
             } else {
-                _collections.postValue(Fail(Throwable()))
-                _collectionData.postValue(Fail(Throwable()))
+                _collections.value = Fail(Throwable())
+                _collectionData.value = Fail(Throwable())
             }
         }, onError = {
-            _collections.postValue(Fail(it))
-            _collectionData.postValue(Fail(Throwable()))
+            _collections.value = Fail(it)
+            _collectionData.value = Fail(Throwable())
         })
     }
 
@@ -86,12 +85,12 @@ class WishlistCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = deleteWishlistCollectionUseCase(collectionId)
             if (result.deleteWishlistCollection.status == OK && result.deleteWishlistCollection.errorMessage.isEmpty()) {
-                _deleteCollectionResult.postValue(Success(result.deleteWishlistCollection))
+                _deleteCollectionResult.value = Success(result.deleteWishlistCollection)
             } else {
-                _deleteCollectionResult.postValue(Fail(Throwable()))
+                _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionResult.postValue(Fail(it))
+            _deleteCollectionResult.value = Fail(it)
         })
     }
 
@@ -139,13 +138,13 @@ class WishlistCollectionViewModel @Inject constructor(
     fun getDeleteWishlistProgress() {
         launchCatchError(block = {
             val result = deleteWishlistProgressUseCase(Unit)
-            if (result.deleteWishlistProgress.status == WishlistV2CommonConsts.OK && result.deleteWishlistProgress.errorMessage.isEmpty()) {
-                _deleteWishlistProgressResult.postValue(Success(result.deleteWishlistProgress))
+            if (result.deleteWishlistProgress.status == OK && result.deleteWishlistProgress.errorMessage.isEmpty()) {
+                _deleteWishlistProgressResult.value = Success(result.deleteWishlistProgress)
             } else {
-                _deleteWishlistProgressResult.postValue(Fail(Throwable()))
+                _deleteWishlistProgressResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteWishlistProgressResult.postValue(Fail(it))
+            _deleteWishlistProgressResult.value = Fail(it)
         })
     }
 }

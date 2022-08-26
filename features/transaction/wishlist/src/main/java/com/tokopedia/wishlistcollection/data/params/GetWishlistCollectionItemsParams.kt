@@ -1,8 +1,7 @@
 package com.tokopedia.wishlistcollection.data.params
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS
+import com.tokopedia.graphql.data.GqlParam
 
 data class GetWishlistCollectionItemsParams(
         @SerializedName("page")
@@ -31,7 +30,7 @@ data class GetWishlistCollectionItemsParams(
 
         @SerializedName("collection_id")
         var collectionId: String = ""
-) {
+): GqlParam {
         data class WishlistSortFilterParam(
                 @SerializedName("name")
                 var name: String = "",
@@ -58,9 +57,5 @@ data class GetWishlistCollectionItemsParams(
 
                 @SerializedName("address_id")
                 var addressId: String = ""
-        )
-
-        fun toMap(): Map<String, Any> = mapOf(
-                PARAMS to this
         )
 }

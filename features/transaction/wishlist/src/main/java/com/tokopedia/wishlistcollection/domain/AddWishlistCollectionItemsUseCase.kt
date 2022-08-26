@@ -17,10 +17,10 @@ class AddWishlistCollectionItemsUseCase @Inject constructor(
 ) :
     CoroutineUseCase<AddWishlistCollectionsHostBottomSheetParams, AddWishlistCollectionItemsResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = ""
+    override fun graphqlQuery(): String = query
 
     override suspend fun execute(params: AddWishlistCollectionsHostBottomSheetParams): AddWishlistCollectionItemsResponse {
-        return repository.request(AddWishlistCollectionItemsMutation(), params.toMap())
+        return repository.request(AddWishlistCollectionItemsMutation(), params)
     }
 
     companion object {

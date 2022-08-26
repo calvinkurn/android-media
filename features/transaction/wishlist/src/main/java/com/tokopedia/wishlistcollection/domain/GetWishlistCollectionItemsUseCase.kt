@@ -16,10 +16,10 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers) :
     CoroutineUseCase<GetWishlistCollectionItemsParams, GetWishlistCollectionItemsResponse>(dispatchers.io) {
 
-    override fun graphqlQuery(): String = ""
+    override fun graphqlQuery(): String = query
 
     override suspend fun execute(params: GetWishlistCollectionItemsParams): GetWishlistCollectionItemsResponse {
-        return repository.request(GetWishlistCollectionItemsQuery(), params.toMap())
+        return repository.request(GetWishlistCollectionItemsQuery(), params)
     }
 
     companion object {

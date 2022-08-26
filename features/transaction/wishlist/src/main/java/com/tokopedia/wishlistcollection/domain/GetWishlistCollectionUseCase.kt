@@ -17,7 +17,7 @@ class GetWishlistCollectionUseCase @Inject constructor(@ApplicationContext priva
         return repository.request(GetWishlistCollectionsQuery(), params)
     }
 
-    override fun graphqlQuery(): String = ""
+    override fun graphqlQuery(): String = query
 
     companion object {
         const val query: String = """

@@ -41,12 +41,12 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionNamesUseCase(Unit)
             if (result.getWishlistCollectionNames.status == WishlistV2CommonConsts.OK && result.getWishlistCollectionNames.errorMessage.isEmpty()) {
-                _collectionNames.postValue(Success(result.getWishlistCollectionNames))
+                _collectionNames.value = Success(result.getWishlistCollectionNames)
             } else {
-                _collectionNames.postValue(Fail(Throwable()))
+                _collectionNames.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionNames.postValue(Fail(it))
+            _collectionNames.value = Fail(it)
         })
     }
 
@@ -54,12 +54,12 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = addWishlistCollectionItemsUseCase(addWishlistParam)
             if (result.addWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.addWishlistCollectionItems.errorMessage.isEmpty()) {
-                _addWishlistCollectionItem.postValue(Success(result.addWishlistCollectionItems))
+                _addWishlistCollectionItem.value = Success(result.addWishlistCollectionItems)
             } else {
-                _addWishlistCollectionItem.postValue(Fail(Throwable()))
+                _addWishlistCollectionItem.value = Fail(Throwable())
             }
         }, onError = {
-            _addWishlistCollectionItem.postValue(Fail(it))
+            _addWishlistCollectionItem.value = Fail(it)
         })
     }
 
@@ -67,12 +67,12 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = createWishlistCollectionUseCase(collectionName)
             if (result.createWishlistCollection.status == WishlistV2CommonConsts.OK && result.createWishlistCollection.errorMessage.isEmpty()) {
-                _createWishlistCollectionResult.postValue(Success(result.createWishlistCollection))
+                _createWishlistCollectionResult.value = Success(result.createWishlistCollection)
             } else {
-                _createWishlistCollectionResult.postValue(Fail(Throwable()))
+                _createWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _createWishlistCollectionResult.postValue(Fail(it))
+            _createWishlistCollectionResult.value = Fail(it)
         })
     }
 }

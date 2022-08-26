@@ -36,12 +36,12 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionsBottomSheetUseCase(param)
             if (result.getWishlistCollectionsBottomsheet.status == WishlistV2CommonConsts.OK && result.getWishlistCollectionsBottomsheet.errorMessage.isEmpty()) {
-                _collectionsBottomSheet.postValue(Success(result.getWishlistCollectionsBottomsheet))
+                _collectionsBottomSheet.value = Success(result.getWishlistCollectionsBottomsheet)
             } else {
-                _collectionsBottomSheet.postValue(Fail(Throwable()))
+                _collectionsBottomSheet.value = Fail(Throwable())
             }
         }, onError = {
-            _collectionsBottomSheet.postValue(Fail(it))
+            _collectionsBottomSheet.value = Fail(it)
         })
     }
 
@@ -49,12 +49,12 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = addWishlistCollectionItemsUseCase(param)
             if (result.addWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.addWishlistCollectionItems.errorMessage.isEmpty()) {
-                _saveItemToCollections.postValue(Success(result.addWishlistCollectionItems))
+                _saveItemToCollections.value = Success(result.addWishlistCollectionItems)
             } else {
-                _saveItemToCollections.postValue(Fail(Throwable()))
+                _saveItemToCollections.value = Fail(Throwable())
             }
         }, onError = {
-            _saveItemToCollections.postValue(Fail(it))
+            _saveItemToCollections.value = Fail(it)
         })
     }
 }

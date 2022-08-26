@@ -20,7 +20,7 @@ class DeleteWishlistCollectionUseCase @Inject constructor(
         return repository.request(DeleteWishlistCollectionMutation(), toMap(params))
     }
 
-    override fun graphqlQuery(): String = ""
+    override fun graphqlQuery(): String = query
 
     private fun toMap(collectionIdToBeDeleted: String): Map<String, Any> = mapOf(
         collectionId to collectionIdToBeDeleted

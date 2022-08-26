@@ -206,12 +206,12 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val result = deleteCollectionItemsUseCase(listProductId)
             if (result.deleteWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.deleteWishlistCollectionItems.errorMessage.isEmpty()) {
-                _deleteCollectionItemsResult.postValue(Success(result.deleteWishlistCollectionItems))
+                _deleteCollectionItemsResult.value = Success(result.deleteWishlistCollectionItems)
             } else {
-                _deleteCollectionItemsResult.postValue(Fail(Throwable()))
+                _deleteCollectionItemsResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionItemsResult.postValue(Fail(it))
+            _deleteCollectionItemsResult.value = Fail(it)
         })
     }
 
@@ -219,12 +219,12 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val result = deleteWishlistCollectionUseCase(collectionId)
             if (result.deleteWishlistCollection.status == WishlistV2CommonConsts.OK && result.deleteWishlistCollection.errorMessage.isEmpty()) {
-                _deleteCollectionResult.postValue(Success(result.deleteWishlistCollection))
+                _deleteCollectionResult.value = Success(result.deleteWishlistCollection)
             } else {
-                _deleteCollectionResult.postValue(Fail(Throwable()))
+                _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionResult.postValue(Fail(it))
+            _deleteCollectionResult.value = Fail(it)
         })
     }
 
@@ -232,12 +232,12 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val result = deleteWishlistProgressUseCase(Unit)
             if (result.deleteWishlistProgress.status == WishlistV2CommonConsts.OK && result.deleteWishlistProgress.errorMessage.isEmpty()) {
-                _deleteWishlistProgressResult.postValue(Success(result.deleteWishlistProgress))
+                _deleteWishlistProgressResult.value = Success(result.deleteWishlistProgress)
             } else {
-                _deleteWishlistProgressResult.postValue(Fail(Throwable()))
+                _deleteWishlistProgressResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteWishlistProgressResult.postValue(Fail(it))
+            _deleteWishlistProgressResult.value = Fail(it)
         })
     }
 
@@ -258,12 +258,12 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val result = addWishlistCollectionItemsUseCase(addWishlistParam)
             if (result.addWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.addWishlistCollectionItems.errorMessage.isEmpty()) {
-                _addWishlistCollectionItem.postValue(Success(result.addWishlistCollectionItems))
+                _addWishlistCollectionItem.value = Success(result.addWishlistCollectionItems)
             } else {
-                _addWishlistCollectionItem.postValue(Fail(Throwable()))
+                _addWishlistCollectionItem.value = Fail(Throwable())
             }
         }, onError = {
-            _addWishlistCollectionItem.postValue(Fail(it))
+            _addWishlistCollectionItem.value = Fail(it)
         })
     }
 }
