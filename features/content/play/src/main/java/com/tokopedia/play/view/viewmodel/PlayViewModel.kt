@@ -158,8 +158,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
-    private var _selectedCampaign: MutableStateFlow<ProductSectionUiModel.Section> = MutableStateFlow(ProductSectionUiModel.Section.Empty)
-    private val selectedCampaign: ProductSectionUiModel.Section get() = _selectedCampaign.value
+    private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
     private var _winnerStatus: MutableStateFlow<PlayUserWinnerStatusUiModel?> = MutableStateFlow(null)
     /***
@@ -2069,7 +2068,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
-            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(_selectedCampaign.value, isFromLogin = true)
+            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             else -> {}
         }
@@ -2521,19 +2520,19 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
-        _selectedCampaign.setValue { sectionUiModel }
+        selectedUpcomingCampaign = sectionUiModel
         needLogin(REQUEST_CODE_LOGIN_UPCO_REMINDER) {
-            if(isFromLogin) checkUpcomingCampaignSub(selectedCampaign)
+            if(isFromLogin) checkUpcomingCampaignSub(selectedUpcomingCampaign)
             sendReminder()
         }
     }
 
     private fun sendReminder(){
         viewModelScope.launchCatchError(block = {
-            playAnalytic.clickUpcomingReminder(selectedCampaign, channelId, channelType)
-            val data = repo.subscribeUpcomingCampaign(campaignId = selectedCampaign.id.toLongOrZero(), reminderType = selectedCampaign.config.reminder)
+            playAnalytic.clickUpcomingReminder(selectedUpcomingCampaign, channelId, channelType)
+            val data = repo.subscribeUpcomingCampaign(campaignId = selectedUpcomingCampaign.id.toLongOrZero(), reminderType = selectedUpcomingCampaign.config.reminder)
             val message = if(data.first) {
-                updateReminderUi(selectedCampaign.config.reminder.reversed(selectedCampaign.id.toLongOrZero()), selectedCampaign.id)
+                updateReminderUi(selectedUpcomingCampaign.config.reminder.reversed(selectedUpcomingCampaign.id.toLongOrZero()), selectedUpcomingCampaign.id)
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_success)
             } else {
                 if(data.second.isNotEmpty()) UiString.Text(data.second) else UiString.Resource(R.string.play_product_upcoming_reminder_error)
