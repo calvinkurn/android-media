@@ -274,8 +274,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
-    implementation "com.gojek.android:conversations:7.3.2"
-
     implementation platform(rootProject.ext.firebase.bom)
     implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
