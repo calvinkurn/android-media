@@ -15,9 +15,9 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.Merchant
+import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchSrpCardBinding
-import com.tokopedia.tokofood.feature.search.srp.domain.response.TokofoodSearchMerchantItem
-import com.tokopedia.tokofood.feature.search.srp.domain.response.TokofoodSearchPriceLevel
 import com.tokopedia.tokofood.feature.search.srp.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import java.lang.StringBuilder
@@ -36,7 +36,7 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setMerchantLayout(merchant: TokofoodSearchMerchantItem) {
+    private fun setMerchantLayout(merchant: Merchant) {
         setImageMerchant(merchant.imageURL)
         setTitleMerchant(merchant.name)
         setLabelDiscount(merchant.promo, merchant.priceLevel)
@@ -73,7 +73,7 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setLabelDiscount(label: String, priceLevel: TokofoodSearchPriceLevel) {
+    private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
         if (label.isEmpty()) {
             binding?.labelItemSrpMerchantDiskon?.hide()
         } else {
@@ -125,7 +125,7 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setViewDividerCategoryPriceLevel(categories: List<String>, priceLevel: TokofoodSearchPriceLevel) {
+    private fun setViewDividerCategoryPriceLevel(categories: List<String>, priceLevel: PriceLevel) {
         val price = getPriceLevelString(priceLevel)
         val category = getCategoryString(categories)
         if (category.isEmpty() || price.isEmpty() || priceLevel.fareCount <= 0) {
@@ -135,7 +135,7 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setMerchantCategory(categories: List<String>, priceLevel: TokofoodSearchPriceLevel) {
+    private fun setMerchantCategory(categories: List<String>, priceLevel: PriceLevel) {
         val category = getCategoryString(categories)
         if (category.isEmpty()) {
             binding?.tgTokofoodItemSrpMerchantCategory?.hide()
@@ -186,7 +186,7 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setPriceLevel(priceLevel: TokofoodSearchPriceLevel) {
+    private fun setPriceLevel(priceLevel: PriceLevel) {
         val price = getPriceLevelString(priceLevel)
         if (price.isEmpty() || priceLevel.fareCount <= 0) {
             binding?.tgTokofoodItemSrpMerchantPriceScale?.hide()
@@ -215,7 +215,7 @@ class MerchantSearchResultViewHolder(
         return category.toString()
     }
 
-    private fun getPriceLevelString(priceLevel: TokofoodSearchPriceLevel): String {
+    private fun getPriceLevelString(priceLevel: PriceLevel): String {
         val price = StringBuilder()
         val color = "#" + Integer.toHexString(
             ContextCompat.getColor(
@@ -241,8 +241,8 @@ class MerchantSearchResultViewHolder(
     }
 
     interface TokoFoodMerchantSearchResultListener {
-        fun onClickMerchant(merchant: TokofoodSearchMerchantItem, position: Int)
-        fun onImpressMerchant(merchant: TokofoodSearchMerchantItem, position: Int)
+        fun onClickMerchant(merchant: Merchant, position: Int)
+        fun onImpressMerchant(merchant: Merchant, position: Int)
         fun onBranchButtonClicked(branchApplink: String)
     }
 

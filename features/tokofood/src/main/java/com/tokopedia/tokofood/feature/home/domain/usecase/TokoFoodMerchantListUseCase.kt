@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.home.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokofood.common.domain.param.TokoFoodMerchantListParamMapper
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodMerchantListResponse
 import com.tokopedia.tokofood.feature.home.domain.query.TokoFoodMerchantListQuery
 import javax.inject.Inject
@@ -17,7 +18,8 @@ class TokoFoodMerchantListUseCase @Inject constructor(graphqlRepository: Graphql
 
     suspend fun execute(localCacheModel: LocalCacheModel?, option: Int = 0, brandUId: String = "",
                         sortBy: Int = 0, orderById: Int = 0, cuisine: String = "", pageKey: String = ""): TokoFoodMerchantListResponse {
-        setRequestParams(TokoFoodMerchantListQuery.createRequestParams(localCacheModel, option,
+        setRequestParams(
+            TokoFoodMerchantListParamMapper.createRequestParams(localCacheModel, option,
             brandUId, sortBy, orderById, cuisine, pageKey))
         return executeOnBackground()
     }
