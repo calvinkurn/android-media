@@ -229,11 +229,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         order.shippingId = boData.shippingId
                         order.spId = boData.shipperProductId
                         order.codes.add(boData.code)
-                    } else {
-                        // if code already in request param, set shipping id and sp id again
-                        // in case user changes address from other page and the courier info changes
-                        order.shippingId = boData.shippingId
-                        order.spId = boData.shipperProductId
                     }
                 }
             } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
@@ -959,7 +954,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* Network Call Section : Clear Promo */
     //------------------------------------//
 
-    fun clearPromo(promoRequest: PromoRequest, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    fun clearPromo(
+        promoRequest: PromoRequest,
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        bboPromoCodes: ArrayList<String>,
+        clearPromoParam: ClearPromoRequest = ClearPromoRequest()
+    ) {
         val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
 
         val globalPromo = arrayListOf<String>()
@@ -1008,14 +1008,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
 
-        val params = ClearPromoRequest(
-                ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI,
-                ClearPromoOrderData(
-                        codes = globalPromo,
-                        orders = orders
-                )
-        )
+        val params = clearPromoParam.apply {
+            serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE
+            isOcc = validateUsePromoRequest.cartType == PARAM_OCC_MULTI
+            orderData = ClearPromoOrderData(
+                codes = globalPromo,
+                orders = orders
+            )
+        }
+
         PromoCheckoutIdlingResource.increment()
         clearCacheAutoApplyStackUseCase.setParams(params)
         clearCacheAutoApplyStackUseCase.execute(
@@ -1025,6 +1026,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 },
                 onError = {
                     PromoCheckoutIdlingResource.decrement()
+                    initClearPromoResponseAction()
                     setClearPromoStateFailed(it)
                 }
         )
@@ -1257,8 +1259,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
         if (selectedItem.uiData.boClashingInfos.isNotEmpty() && !selectedItem.uiState.isBebasOngkir) {
             fragmentUiModel.value?.let {
-                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
-                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.firstOrNull()?.icon ?: ""
+                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.first().message
+                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.first().icon
                 it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
 
                 _fragmentUiModel.value = it
