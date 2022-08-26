@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 14/11/18.
  */
+@Deprecated("please use com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase")
 class SendReportUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val graphqlUseCase: GraphqlUseCase) : UseCase<SendReportResponse>() {

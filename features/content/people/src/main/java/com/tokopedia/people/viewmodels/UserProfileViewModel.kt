@@ -46,21 +46,15 @@ class UserProfileViewModel @AssistedInject constructor(
         fun create(username: String): UserProfileViewModel
     }
 
+    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
+    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
+
     /**
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
-    private val userPost = MutableLiveData<Boolean>()
-    val userPostLiveData : LiveData<Boolean> get() = userPost
-
-    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
-    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
-
     private val userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
-
-
-
 
 
     /** Public Getter */
@@ -329,11 +323,8 @@ class UserProfileViewModel @AssistedInject constructor(
             loadShopRecom()
         }
 
-        /**
-         * play video will be moved to dedicated fragment when
-         * developing another tab user profile eventually. so gonna leave as is for now
-         * */
-        userPost.value = isRefresh
+        if(isRefresh)
+            _uiEvent.emit(UserProfileUiEvent.LoadPlayVideo)
     }
 
     private suspend fun loadShopRecom() {

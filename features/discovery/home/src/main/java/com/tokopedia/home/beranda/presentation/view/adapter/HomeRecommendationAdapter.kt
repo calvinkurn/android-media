@@ -43,6 +43,7 @@ class HomeRecommendationAdapter(
             is HomeRecommendationEmpty,
             is HomeRecommendationLoadMore,
             is HomeRecommendationBannerTopAdsDataModel -> layout.isFullSpan = true
+            is HomeRecommendationHeadlineTopAdsDataModel -> layout.isFullSpan = true
         }
         holder.bind(item, listener)
     }

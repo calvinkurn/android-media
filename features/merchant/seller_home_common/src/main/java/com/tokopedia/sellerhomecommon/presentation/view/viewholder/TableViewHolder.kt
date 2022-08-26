@@ -39,7 +39,6 @@ class TableViewHolder(
     }
 
     private val binding by lazy { ShcWidgetTableBinding.bind(itemView) }
-    private val errorStateBinding by lazy { binding.shcTableErrorStateView }
     private val loadingStateBinding by lazy { binding.shcTableLoadingStateView }
 
     override fun bind(element: TableWidgetUiModel) {
@@ -48,7 +47,7 @@ class TableViewHolder(
         }
         binding.tvTableWidgetTitle.text = element.title
         binding.tvTableWidgetTitle.visible()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcTableErrorStateView.gone()
 
         setTagNotification(element.tag)
         setupTooltip(element)
@@ -57,7 +56,7 @@ class TableViewHolder(
         when {
             data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> {
-                showErrorState()
+                showErrorState(element)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
@@ -77,7 +76,7 @@ class TableViewHolder(
         }
 
         with(binding) {
-            errorStateBinding.commonWidgetErrorState.gone()
+            binding.shcTableErrorStateView.gone()
             loadingStateBinding.shimmerTableWidgetWidget.gone()
 
             if (dataSet.isNotEmpty()) {
@@ -186,9 +185,8 @@ class TableViewHolder(
         btnTableCta.gone()
     }
 
-    private fun showErrorState() = with(binding) {
+    private fun showErrorState(element: TableWidgetUiModel) = with(binding) {
         loadingStateBinding.shimmerTableWidgetWidget.gone()
-        errorStateBinding.commonWidgetErrorState.visible()
         tvTableWidgetTitle.visible()
         shcTableView.gone()
         tvShcTableOnEmpty.gone()
@@ -198,10 +196,10 @@ class TableViewHolder(
         btnShcTableEmpty.gone()
         luvShcTable.gone()
         btnTableCta.gone()
-
-        errorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        binding.shcTableErrorStateView.visible()
+        binding.shcTableErrorStateView.setOnReloadClicked {
+            refreshWidget(element)
+        }
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
