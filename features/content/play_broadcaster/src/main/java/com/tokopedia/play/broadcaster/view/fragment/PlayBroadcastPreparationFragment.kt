@@ -665,7 +665,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         hideKeyboard()
         binding.formTitle.setLoading(true)
-        viewModel.uploadTitle(title)
+        viewModel.uploadTitle(parentViewModel.authorId, title)
     }
 
     /** Callback Cover Form */
