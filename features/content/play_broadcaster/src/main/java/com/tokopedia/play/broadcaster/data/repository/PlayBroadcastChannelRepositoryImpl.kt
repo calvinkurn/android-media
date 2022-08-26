@@ -59,12 +59,12 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         return@withContext response.id
     }
 
-    override suspend fun updateChannelStatus(channelId: String, status: PlayChannelStatusType): String = withContext(dispatchers.io) {
+    override suspend fun updateChannelStatus(authorId: String, channelId: String, status: PlayChannelStatusType): String = withContext(dispatchers.io) {
         val response = updateChannelUseCase.apply {
             setQueryParams(
                 UpdateChannelUseCase.createUpdateStatusRequest(
                     channelId = channelId,
-                    authorId = userSession.shopId,
+                    authorId = authorId,
                     status = status
                 )
             )

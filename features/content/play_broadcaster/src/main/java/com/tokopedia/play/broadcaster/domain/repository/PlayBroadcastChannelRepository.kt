@@ -14,7 +14,7 @@ interface PlayBroadcastChannelRepository {
 
     suspend fun createChannel(authorId: String, authorType: String): String
 
-    suspend fun updateChannelStatus(channelId: String, status: PlayChannelStatusType): String
+    suspend fun updateChannelStatus(authorId: String, channelId: String, status: PlayChannelStatusType): String
 
     suspend fun updateSchedule(
         channelId: String,

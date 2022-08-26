@@ -316,7 +316,7 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
             setQueryParams(
                 UpdateChannelUseCase.createUpdateStatusRequest(
                     channelId = channelId,
-                    authorId = userSession.shopId,
+                    authorId = authorId,
                     status = PlayChannelStatusType.Transcoding
                 )
             )

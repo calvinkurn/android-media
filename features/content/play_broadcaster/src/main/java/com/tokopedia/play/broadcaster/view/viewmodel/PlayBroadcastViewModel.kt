@@ -483,7 +483,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private suspend fun updateChannelStatus(status: PlayChannelStatusType): String {
         return withContext(dispatcher.io) {
-            repo.updateChannelStatus(channelId, status)
+            repo.updateChannelStatus(authorId, channelId, status)
         }
     }
 
