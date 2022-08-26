@@ -27,7 +27,6 @@ import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.utils.writeBitmapToStorage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -566,7 +565,7 @@ class DetailEditorFragment @Inject constructor(
         filename: String? = null,
         isFinish: Boolean = true
     ) {
-        val fileResult = writeBitmapToStorage(
+        val fileResult = viewModel.saveImageCache(
             requireContext(),
             bitmapParam,
             filename

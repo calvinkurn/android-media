@@ -24,7 +24,6 @@ import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getToolEditorText
-import com.tokopedia.media.editor.utils.writeBitmapToStorage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
@@ -49,7 +48,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private var loader: LoaderDialog? = null
 
-    fun isShowDialogConfirmation(): Boolean{
+    fun isShowDialogConfirmation(): Boolean {
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
     }
 
@@ -77,16 +76,18 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         }
     }
 
-    private fun startAutoCrop(){
-        loader = LoaderDialog(requireContext())
-        loader?.setLoadingText("")
+    private fun startAutoCrop() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText("")
+            customView = View.inflate(
+                requireContext(),
+                editorR.layout.fragment_main_crop_loader_layout,
+                null
+            ) as LinearLayout
+            show()
+        }
 
-        loader?.customView = View.inflate(requireContext(), editorR.layout.fragment_main_crop_loader_layout, null) as LinearLayout
-
-        loader?.show()
-
-        val data = viewModel.editStateList.values
-        cropAll(data.toList(), 0)
+        cropAll(viewModel.editStateList.values.toList(), 0)
     }
 
     private fun cropAll(listData: List<EditorUiModel>, currentProcess: Int) {
@@ -116,13 +117,73 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
                         cropImage(bitmap, data)
-                        thumbnailDrawerComponent.refreshItem(currentProcess, viewModel.editStateList.values.toList())
+                        thumbnailDrawerComponent.refreshItem(
+                            currentProcess,
+                            viewModel.editStateList.values.toList()
+                        )
                         cropAll(listData, currentProcess + 1)
                     },
                     onCleared = {}
                 ))
         } else {
             cropAll(listData, currentProcess + 1)
+        }
+    }
+
+    private fun cropImage(sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel) {
+        sourceBitmap?.let { it ->
+            val bitmapWidth = sourceBitmap.width
+            val bitmapHeight = sourceBitmap.height
+
+            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
+            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
+            val autoCropRatio = ratioHeight / ratioWidth
+
+            var newWidth = bitmapWidth
+            var newHeight = (bitmapWidth * autoCropRatio).toInt()
+
+            var topMargin = 0
+            var leftMargin = 0
+
+            var scaledTarget = 1f
+
+            if (newHeight <= bitmapHeight && newWidth <= bitmapWidth) {
+                leftMargin = (bitmapWidth - newWidth) / 2
+                topMargin = (bitmapHeight - newHeight) / 2
+            } else if (newHeight > bitmapHeight) {
+                scaledTarget = bitmapHeight.toFloat() / newHeight
+
+                // new value after rescale small
+                newWidth = (newWidth * scaledTarget).toInt()
+                newHeight = (newHeight * scaledTarget).toInt()
+
+                leftMargin = (bitmapWidth - newWidth) / 2
+                topMargin = (bitmapHeight - newHeight) / 2
+            }
+
+            val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
+            val savedFile = viewModel.saveImageCache(
+                requireContext(),
+                bitmapResult
+            )
+
+            val newEditorDetailUiModel = EditorDetailUiModel(
+                originalUrl = editorDetailUiModel.getOriginalUrl(),
+                editorToolType = EditorToolType.CROP,
+                resultUrl = savedFile?.path ?: "",
+            )
+            newEditorDetailUiModel.cropRotateValue.apply {
+                offsetX = leftMargin
+                offsetY = topMargin
+                imageWidth = newWidth
+                imageHeight = newHeight
+                scaleX = 1f
+                scaleY = 1f
+                isCrop = true
+                isAutoCrop = true
+            }
+
+            editorDetailUiModel.editList.add(newEditorDetailUiModel)
         }
     }
 
@@ -193,9 +254,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         viewModel.getEditState(originalUrl)?.let { editorUiModel ->
             viewBinding?.viewPager?.currentItem = clickedIndex
 
-                renderUndoText(editorUiModel)
-                renderRedoText(editorUiModel)
-                renderToolsIconActiveState(editorUiModel)
+            renderUndoText(editorUiModel)
+            renderRedoText(editorUiModel)
+            renderToolsIconActiveState(editorUiModel)
         }
     }
 
@@ -208,7 +269,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue >= imageEditStateCount) return@let
 
             it.backValue++
-            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex(), targetEditorUiModel.getImageUrl())
+            viewBinding?.viewPager?.updateImage(
+                thumbnailDrawerComponent.getCurrentIndex(),
+                targetEditorUiModel.getImageUrl()
+            )
 
             renderUndoText(it)
             renderRedoText(it)
@@ -227,7 +291,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue == 0) return@let
 
             it.backValue--
-            viewBinding?.viewPager?.updateImage(thumbnailDrawerComponent.getCurrentIndex(), targetEditorUiModel.getImageUrl())
+            viewBinding?.viewPager?.updateImage(
+                thumbnailDrawerComponent.getCurrentIndex(),
+                targetEditorUiModel.getImageUrl()
+            )
 
             renderUndoText(it)
             renderRedoText(it)
@@ -241,21 +308,26 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     }
 
     private fun renderUndoText(editList: EditorUiModel) {
-        viewBinding?.btnUndo?.showWithCondition(editList.editList.isNotEmpty()
-                && editList.editList.size > editList.backValue)
+        viewBinding?.btnUndo?.showWithCondition(
+            editList.editList.isNotEmpty()
+                    && editList.editList.size > editList.backValue
+        )
     }
 
     private fun renderRedoText(editList: EditorUiModel) {
         viewBinding?.btnRedo?.showWithCondition(editList.backValue != 0)
     }
 
-    private fun renderToolsIconActiveState(editorUiModel: EditorUiModel){
+    private fun renderToolsIconActiveState(editorUiModel: EditorUiModel) {
         editorToolComponent.setupActiveTools(editorUiModel.editList, editorUiModel.backValue)
     }
 
-    private fun updateDrawerSelectionItemIcon(){
+    private fun updateDrawerSelectionItemIcon() {
         viewModel.updatedIndexItem.value?.let { updatedIndex ->
-            thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
+            thumbnailDrawerComponent.refreshItem(
+                updatedIndex,
+                viewModel.editStateList.values.toList()
+            )
         }
     }
 
@@ -280,63 +352,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         }
     }
 
-    private fun cropImage(sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel){
-        sourceBitmap?.let { it ->
-            val bitmapWidth = sourceBitmap.width
-            val bitmapHeight = sourceBitmap.height
-
-            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
-            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
-            val autoCropRatio = ratioHeight / ratioWidth
-
-            var newWidth = bitmapWidth
-            var newHeight = (bitmapWidth * autoCropRatio).toInt()
-
-            var topMargin = 0
-            var leftMargin = 0
-
-            var scaledTarget = 1f
-
-            if(newHeight <= bitmapHeight && newWidth <= bitmapWidth){
-                leftMargin = (bitmapWidth - newWidth) / 2
-                topMargin = (bitmapHeight - newHeight) / 2
-            } else if(newHeight > bitmapHeight){
-                scaledTarget = bitmapHeight.toFloat() /newHeight
-
-                // new value after rescale small
-                newWidth = (newWidth * scaledTarget).toInt()
-                newHeight = (newHeight * scaledTarget).toInt()
-
-                leftMargin = (bitmapWidth - newWidth) / 2
-                topMargin = (bitmapHeight - newHeight) / 2
-            }
-
-            val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
-            val savedFile = writeBitmapToStorage(
-                requireContext(),
-                bitmapResult
-            )
-
-            val newEditorDetailUiModel = EditorDetailUiModel(
-                originalUrl = editorDetailUiModel.getOriginalUrl(),
-                editorToolType = EditorToolType.CROP,
-                resultUrl = savedFile?.path ?: "",
-            )
-            newEditorDetailUiModel.cropRotateValue.apply {
-                offsetX = leftMargin
-                offsetY = topMargin
-                imageWidth = newWidth
-                imageHeight = newHeight
-                scaleX = 1f
-                scaleY = 1f
-                isCrop = true
-                isAutoCrop = true
-            }
-
-            editorDetailUiModel.editList.add(newEditorDetailUiModel)
-        }
-    }
-
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             editorToolComponent.setupView(it.editorToolsList)
@@ -347,7 +362,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private fun observeUpdateIndex() {
         viewModel.updatedIndexItem.observe(viewLifecycleOwner) {
-            val editList =  viewModel.editStateList.values.toList()
+            val editList = viewModel.editStateList.values.toList()
             thumbnailDrawerComponent.refreshItem(it, editList)
 
             val editorUiModel = viewModel.getEditState(activeImageUrl)

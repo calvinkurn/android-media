@@ -23,7 +23,11 @@ import javax.inject.Inject
 class EditorActivity : BaseEditorActivity() {
 
     @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
     lateinit var fragmentFactory: FragmentFactory
+
     lateinit var viewModel: EditorViewModel
 
     private var param = EditorParam()
@@ -50,7 +54,8 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun initViewModel() {
         viewModel = ViewModelProvider(
-            this
+            this,
+            viewModelFactory
         ).get(EditorViewModel::class.java)
     }
 

@@ -95,32 +95,8 @@ fun Bitmap.isDark(): Boolean {
     }
 }
 
-fun writeBitmapToStorage(
-    context: Context,
-    bitmapParam: Bitmap,
-    filename: String? = null
-): File? {
-    return try {
-        val file = getDestinationUri(context, filename).toFile()
-        file.createNewFile()
-
-        val bos = ByteArrayOutputStream()
-        bitmapParam.compress(Bitmap.CompressFormat.PNG, 0, bos)
-        val bitmapData = bos.toByteArray()
-
-        val fos = FileOutputStream(file)
-        fos.write(bitmapData)
-        fos.flush()
-        fos.close()
-
-        file
-    } catch (e: Exception) {
-        null
-    }
-}
-
-fun getToolEditorText(editorToolType: Int): Int{
-    return when(editorToolType){
+fun getToolEditorText(editorToolType: Int): Int {
+    return when (editorToolType) {
         EditorToolType.BRIGHTNESS -> R.string.editor_tool_brightness
         EditorToolType.CONTRAST -> R.string.editor_tool_contrast
         EditorToolType.WATERMARK -> R.string.editor_tool_watermark

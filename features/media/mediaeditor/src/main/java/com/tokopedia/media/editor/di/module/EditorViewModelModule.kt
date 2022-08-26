@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
+import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,5 +23,11 @@ abstract class EditorViewModelModule {
     @ActivityScope
     @ViewModelKey(DetailEditorViewModel::class)
     internal abstract fun getDetailEditorViewModel(viewModel: DetailEditorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(EditorViewModel::class)
+    internal abstract fun getEditorViewModel(viewModel: EditorViewModel): ViewModel
 
 }

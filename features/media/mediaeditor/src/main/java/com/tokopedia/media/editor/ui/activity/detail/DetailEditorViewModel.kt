@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.media.editor.data.repository.ColorFilterRepository
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
 import com.tokopedia.media.editor.data.repository.RotateFilterRepository
+import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
@@ -28,7 +29,8 @@ class DetailEditorViewModel @Inject constructor(
     private val removeBackgroundUseCase: SetRemoveBackgroundUseCase,
     private val contrastFilterRepository: ContrastFilterRepository,
     private val watermarkFilterRepository: WatermarkFilterRepository,
-    private val rotateFilterRepository: RotateFilterRepository
+    private val rotateFilterRepository: RotateFilterRepository,
+    private val saveImageRepository: SaveImageRepository
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -85,7 +87,7 @@ class DetailEditorViewModel @Inject constructor(
                     }.collect {
                         _removeBackground.value = it
                     }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 onError(e)
             }
         }
@@ -121,23 +123,43 @@ class DetailEditorViewModel @Inject constructor(
         )
     }
 
-    fun setRotate(ucropRef: EditorDetailPreviewWidget?, rotateDegree: Float, isRotateRatio: Boolean){
+    fun setRotate(
+        ucropRef: EditorDetailPreviewWidget?,
+        rotateDegree: Float,
+        isRotateRatio: Boolean
+    ) {
         ucropRef?.let {
             rotateFilterRepository.rotate(it, rotateDegree, isRotateRatio)
         }
     }
 
-    fun setMirror(ucropRef: EditorDetailPreviewWidget?){
+    fun setMirror(ucropRef: EditorDetailPreviewWidget?) {
         ucropRef?.let {
             rotateFilterRepository.mirror(it)
         }
     }
 
-    var rotateNumber: Int get() = rotateFilterRepository.rotateNumber
-    set(value) {rotateFilterRepository.rotateNumber = value}
+    var rotateNumber: Int
+        get() = rotateFilterRepository.rotateNumber
+        set(value) {
+            rotateFilterRepository.rotateNumber = value
+        }
 
-    var rotateSliderValue: Float get() = rotateFilterRepository.sliderValue
-    set(value) {rotateFilterRepository.sliderValue = value}
+    var rotateSliderValue: Float
+        get() = rotateFilterRepository.sliderValue
+        set(value) {
+            rotateFilterRepository.sliderValue = value
+        }
 
     val rotateRotationFinalDegree: Float get() = rotateFilterRepository.getFinalRotationDegree()
+
+    fun saveImageCache(
+        context: Context,
+        bitmapParam: Bitmap,
+        filename: String? = null
+    ): File? {
+        return saveImageRepository.saveToCache(
+            context, bitmapParam, filename
+        )
+    }
 }

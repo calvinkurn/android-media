@@ -1,13 +1,20 @@
 package com.tokopedia.media.editor.ui.activity.main
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
+import java.io.File
+import javax.inject.Inject
 
-class EditorViewModel : ViewModel() {
+class EditorViewModel @Inject constructor(
+    private val saveImageRepository: SaveImageRepository
+) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
     val editStateList: Map<String, EditorUiModel> get() = _editStateList
@@ -80,4 +87,13 @@ class EditorViewModel : ViewModel() {
         return if (index == -1) null else index
     }
 
+    fun saveImageCache(
+        context: Context,
+        bitmapParam: Bitmap,
+        filename: String? = null
+    ): File? {
+        return saveImageRepository.saveToCache(
+            context, bitmapParam, filename
+        )
+    }
 }
