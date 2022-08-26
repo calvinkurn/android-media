@@ -23,63 +23,64 @@ import com.tokopedia.unifyprinciples.R as principleR
 class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     UCropView(context, attributeSet) {
 
-    var onLoadComplete: (() -> Unit)? = null
-    var onLoadFailure: ((e: Exception) -> Unit)? = null
-    var onRotate: ((angle: Float) -> Unit)? = null
-    var onScale: ((scale: Float) -> Unit)? = null
-
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    fun initializeRotate(uriSource: Uri) {
+    fun initializeRotate(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
-        overlayView.setDimmedColor(
-            ContextCompat.getColor(
-                context,
-                principleR.color.Unify_Static_White
+
+        overlayView.apply {
+            setDimmedColor(
+                ContextCompat.getColor(
+                    context,
+                    principleR.color.Unify_Static_White
+                )
             )
-        )
+
+            setCropGridColor(Color.TRANSPARENT)
+        }
+
         disabledTouchEvent()
-        initListener()
+        initListener(listener)
     }
 
-    fun initializeBrightness(uriSource: Uri) {
+    fun initializeBrightness(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
-        initListener()
+        initListener(listener)
     }
 
-    fun initializeContrast(uriSource: Uri) {
+    fun initializeContrast(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
-        initListener()
+        initListener(listener)
     }
 
-    fun initializeWatermark(uriSource: Uri) {
+    fun initializeWatermark(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
-        initListener()
+        initListener(listener)
     }
 
-    fun initializeRemoveBackground(uriSource: Uri) {
+    fun initializeRemoveBackground(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
         disabledTouchEvent()
-        initListener()
+        initListener(listener)
     }
 
-    fun initializeCrop(uriSource: Uri) {
+    fun initializeCrop(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
         cropImageView.setImageUri(uriSource, resultDestination)
         disableRotate()
-        initListener()
+        initListener(listener)
     }
 
     fun getBitmap(): Bitmap {
@@ -285,23 +286,19 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         overlayView.setDimmedColor(Color.TRANSPARENT)
     }
 
-    private fun initListener() {
+    private fun initListener(listener: Listener) {
         cropImageView.setTransformImageListener(object : TransformImageView.TransformImageListener {
+            override fun onLoadFailure(e: java.lang.Exception) {}
+            override fun onRotate(currentAngle: Float) {}
+            override fun onScale(currentScale: Float) {}
+
             override fun onLoadComplete() {
-                this@EditorDetailPreviewWidget.onLoadComplete?.invoke()
-            }
-
-            override fun onLoadFailure(e: java.lang.Exception) {
-                this@EditorDetailPreviewWidget.onLoadFailure?.invoke(e)
-            }
-
-            override fun onRotate(currentAngle: Float) {
-                this@EditorDetailPreviewWidget.onRotate?.invoke(currentAngle)
-            }
-
-            override fun onScale(currentScale: Float) {
-                this@EditorDetailPreviewWidget.onScale?.invoke(currentScale)
+                listener.onLoadComplete()
             }
         })
+    }
+
+    interface Listener {
+        fun onLoadComplete()
     }
 }

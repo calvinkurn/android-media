@@ -27,6 +27,7 @@ import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -41,7 +42,8 @@ class DetailEditorFragment @Inject constructor(
     private val userSession: UserSessionInterface
 ) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
     RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener,
-    RotateToolUiComponent.Listener, CropToolUiComponent.Listener {
+    RotateToolUiComponent.Listener, CropToolUiComponent.Listener,
+    EditorDetailPreviewWidget.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -198,6 +200,14 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    // EditorDetailPreviewWidget finish load image
+    override fun onLoadComplete() {
+        if (!data.isToolRemoveBackground()){
+            readPreviousState(data)
+            if(data.isWatermark()) setWatermarkDrawerItem()
+        }
+    }
+
     override fun initObserver() {
         observeIntentUiModel()
         observeLoader()
@@ -261,71 +271,44 @@ class DetailEditorFragment @Inject constructor(
     private fun renderUiComponent(@EditorToolType type: Int) {
         val uri = Uri.fromFile(File(data.removeBackgroundUrl ?: data.originalUrl))
 
-        when (type) {
-            EditorToolType.BRIGHTNESS -> {
-                val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
-                viewBinding?.imgUcropPreview?.apply {
-                    initializeBrightness(uri)
-                    onLoadComplete = {
-                        readPreviousState(data)
-                    }
+        viewBinding?.imgUcropPreview?.apply {
+            when (type) {
+                EditorToolType.BRIGHTNESS -> {
+                    val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
+                    initializeBrightness(uri, this@DetailEditorFragment)
+                    brightnessComponent.setupView(brightnessValue)
                 }
-                brightnessComponent.setupView(brightnessValue)
-            }
-            // ==========
-            EditorToolType.REMOVE_BACKGROUND -> {
-                viewBinding?.imgUcropPreview?.apply {
+                // ==========
+                EditorToolType.REMOVE_BACKGROUND -> {
                     initializeRemoveBackground(
                         data.resultUrl?.let {
                             Uri.fromFile(File(it))
-                        } ?: uri
+                        } ?: uri,
+                        this@DetailEditorFragment
                     )
+                    removeBgComponent.setupView()
                 }
-                removeBgComponent.setupView()
-            }
-            // ==========
-            EditorToolType.CONTRAST -> {
-                val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
-                viewBinding?.imgUcropPreview?.apply {
-                    initializeContrast(uri)
-                    onLoadComplete = {
-                        readPreviousState(data)
-                    }
+                // ==========
+                EditorToolType.CONTRAST -> {
+                    val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
+                    initializeContrast(uri, this@DetailEditorFragment)
+                    contrastComponent.setupView(contrastValue)
                 }
-                contrastComponent.setupView(contrastValue)
-            }
-            // ==========
-            EditorToolType.WATERMARK -> {
-                viewBinding?.imgUcropPreview?.apply {
-                    initializeWatermark(uri)
-                    onLoadComplete = {
-                        readPreviousState(data)
-                        setWatermarkDrawerItem()
-                    }
+                // ==========
+                EditorToolType.WATERMARK -> {
+                    initializeWatermark(uri, this@DetailEditorFragment)
+                    watermarkComponent.setupView()
                 }
-
-                watermarkComponent.setupView()
-            }
-            // ==========
-            EditorToolType.ROTATE -> {
-                viewBinding?.imgUcropPreview?.apply {
-                    initializeRotate(uri)
-                    onLoadComplete = {
-                        readPreviousState(data)
-                    }
+                // ==========
+                EditorToolType.ROTATE -> {
+                    initializeRotate(uri, this@DetailEditorFragment)
+                    rotateComponent.setupView(data)
                 }
-                rotateComponent.setupView(data)
-            }
-            // ==========
-            EditorToolType.CROP -> {
-                viewBinding?.imgUcropPreview?.apply {
-                    initializeCrop(uri)
-                    onLoadComplete = {
-                        readPreviousState(data)
-                    }
+                // ==========
+                EditorToolType.CROP -> {
+                    initializeCrop(uri, this@DetailEditorFragment)
+                    initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
                 }
-
-                initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
             }
         }
     }
