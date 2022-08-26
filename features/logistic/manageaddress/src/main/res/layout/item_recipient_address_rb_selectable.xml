@@ -85,7 +85,7 @@
                 android:padding="8dp"
                 android:text="@string/change_address"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 app:typographyType="body_3" />
 
 
