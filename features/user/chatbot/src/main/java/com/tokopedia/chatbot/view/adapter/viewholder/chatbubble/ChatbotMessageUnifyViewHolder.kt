@@ -11,19 +11,21 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
+import com.tokopedia.chatbot.view.customview.MessageBubbleLayout
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.user.session.UserSessionInterface
 
-abstract class CustomChatbotMessageViewHolder(
-        itemView: View?,
-        protected val listener: ChatLinkHandlerListener,
-        val replyBubbleListener : ReplyBubbleAreaMessage.Listener
+abstract class ChatbotMessageUnifyViewHolder(
+    itemView: View?,
+    protected val listener: ChatLinkHandlerListener,
+    private val replyBubbleListener : ReplyBubbleAreaMessage.Listener,
+    private val userSession: UserSessionInterface
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
+    protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout_with_reply)
     private val dateContainer: CardView? = itemView?.findViewById(getDateContainerId())
 
     open fun getDateContainerId(): Int = R.id.dateContainer
@@ -35,7 +37,15 @@ abstract class CustomChatbotMessageViewHolder(
         ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
-
+        bindReplyBubbleListener()
+        customChatLayout?.fxChat?.setOnLongClickListener {
+            replyBubbleListener.showReplyOption(message)
+            return@setOnLongClickListener true
+        }
+        customChatLayout?.fxChat?.message?.setOnLongClickListener {
+            replyBubbleListener.showReplyOption(message)
+            return@setOnLongClickListener true
+        }
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {
@@ -48,17 +58,21 @@ abstract class CustomChatbotMessageViewHolder(
         }
     }
 
+    private fun bindReplyBubbleListener() {
+        customChatLayout?.setReplyListener(replyBubbleListener)
+    }
+
     override fun setHeaderDate(element: BaseChatUiModel) {
         if (date == null) return
-        val time = element.replyTime?.let {
+        val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
-                it,
-                itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
-                itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date)
-            )
+                    it,
+                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
+                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date))
         }
         date?.text = time
-        if (date != null && element.isShowDate && !TextUtils.isEmpty(time)) {
+        if (date != null && element.isShowDate ==true
+                && !TextUtils.isEmpty(time)) {
             dateContainer?.show()
         } else if (date != null) {
             dateContainer?.hide()
@@ -68,8 +82,4 @@ abstract class CustomChatbotMessageViewHolder(
     override val dateId: Int
         get() = R.id.date
 
-    companion object {
-        const val TYPE_LEFT = 0
-        const val TYPE_RIGHT = 1
-    }
 }
