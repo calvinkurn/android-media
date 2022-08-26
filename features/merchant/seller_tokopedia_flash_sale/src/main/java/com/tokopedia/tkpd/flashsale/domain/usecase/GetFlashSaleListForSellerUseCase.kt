@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleListForSellerMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import javax.inject.Inject
@@ -74,7 +75,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): List<Campaign> {
+    suspend fun execute(param: Param): FlashSaleData {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleListForSellerResponse>()

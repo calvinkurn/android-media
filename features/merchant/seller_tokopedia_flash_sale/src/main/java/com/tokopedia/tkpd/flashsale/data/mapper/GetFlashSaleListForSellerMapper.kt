@@ -40,6 +40,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.endDateUnix.epochToDate(),
                 flashSale.maxProductSubmission,
                 flashSale.name,
+                flashSale.hasEligibleProduct,
                 flashSale.toProductMeta(),
                 flashSale.remainingQuota,
                 flashSale.reviewEndDateUnix.epochToDate(),

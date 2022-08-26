@@ -30,6 +30,7 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusFilter
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.FinishedFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
@@ -437,7 +438,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         flashSaleAdapter.removeItem(LoadingItem)
     }
 
-
     override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
 
     }
@@ -446,7 +446,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         //TODO: Redirect to campaign detail page
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
         val selectedFlashSaleId = selectedFlashSale.id()
-
+        context?.let { CampaignDetailActivity.start(it, selectedFlashSaleId as Long) }
     }
 
 }

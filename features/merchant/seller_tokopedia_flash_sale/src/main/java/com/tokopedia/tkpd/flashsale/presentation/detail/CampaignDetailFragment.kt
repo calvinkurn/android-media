@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -30,7 +31,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = CampaignDetailFragment()
+        fun newInstance(flashSaleId: Long): CampaignDetailFragment {
+            val fragment = CampaignDetailFragment()
+            val bundle = Bundle()
+            bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
+            fragment.arguments = bundle
+            return fragment
+        }
+
         const val DATE_WITH_TIME = "dd MMM yyyy, HH:mm 'WIB'"
         const val TIME_WIB = "HH.mm 'WIB'"
         const val DATE_MONTH_ONLY = "dd MMM"
@@ -46,6 +54,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private var upcomingCdpHeaderBinding by autoClearedNullable<StfsCdpUpcomingHeaderBinding>()
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
     private var upcomingCdpBodyBinding: StfsCdpUpcomingBodyBinding? = null
+
+    private val flashSaleId by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+    }
 
     override fun getScreenName(): String =
         CampaignDetailFragment::class.java.canonicalName.orEmpty()
@@ -83,14 +95,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
-        viewModel.getCampaignDetail(784131)
+        viewModel.getCampaignDetail(flashSaleId)
     }
 
     private fun observeCampaignDetail() {
-        viewModel.campaign.observe(viewLifecycleOwner) { campaign ->
-            when (campaign) {
+        viewModel.campaign.observe(viewLifecycleOwner) { flashSale ->
+            when (flashSale) {
                 is Success -> {
-                    setupUpcoming(campaign.data)
+                    setupUpcoming(flashSale.data)
                 }
                 is Fail -> {
                 }
@@ -98,11 +110,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupUpcoming(campaign: Campaign) {
+    private fun setupUpcoming(flashSale: FlashSale) {
         val campaignStatus = when {
-            !campaign.hasEligibleProduct -> UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE
-            campaign.remainingQuota == 0 -> UpcomingCampaignStatus.FULL_QUOTA
-            viewModel.isCampaignRegisterClosed(campaign) -> UpcomingCampaignStatus.CLOSED
+            !flashSale.hasEligibleProduct -> UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE
+            flashSale.remainingQuota == 0 -> UpcomingCampaignStatus.FULL_QUOTA
+            viewModel.isCampaignRegisterClosed(flashSale) -> UpcomingCampaignStatus.CLOSED
             else -> UpcomingCampaignStatus.AVAILABLE
         }
 
@@ -114,12 +126,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             }
         }
 
-        setupUpcomingHeader(campaign, campaignStatus)
-        setupUpcomingMid(campaign, campaignStatus)
-        setupUpcomingBody(campaign)
+        setupUpcomingHeader(flashSale, campaignStatus)
+        setupUpcomingMid(flashSale, campaignStatus)
+        setupUpcomingBody(flashSale)
     }
 
-    private fun setupUpcomingHeader(campaign: Campaign, campaignStatus: UpcomingCampaignStatus) {
+    private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         val binding = binding ?: return
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_header
@@ -150,14 +162,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     tgCampaignStatus.text = getString(R.string.registration_over_in_label)
                 }
             }
-            startUpcomingTimer(this, campaign)
-            imageCampaign.setImageUrl(campaign.coverImage)
-            tgCampaignName.text = campaign.name
-            setUpcomingCampaignPeriod(this, campaign)
+            startUpcomingTimer(this, flashSale)
+            imageCampaign.setImageUrl(flashSale.coverImage)
+            tgCampaignName.text = flashSale.name
+            setUpcomingCampaignPeriod(this, flashSale)
         }
     }
 
-    private fun setupUpcomingMid(campaign: Campaign, campaignStatus: UpcomingCampaignStatus) {
+    private fun setupUpcomingMid(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         val binding = binding ?: return
         val inflatedView = binding.layoutMid
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
@@ -167,7 +179,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
                     tgCampaignQuota.text = getString(
                         R.string.campaign_quota_value_placeholder,
-                        campaign.remainingQuota
+                        flashSale.remainingQuota
                     )
                     btnCheckReason.visible()
                 }
@@ -185,20 +197,20 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 UpcomingCampaignStatus.CLOSED -> {
                     tgCampaignQuota.text = getString(
                         R.string.campaign_quota_value_placeholder_2,
-                        campaign.remainingQuota
+                        flashSale.remainingQuota
                     )
                 }
                 else -> {
                     tgCampaignQuota.text = getString(
                         R.string.campaign_quota_value_placeholder,
-                        campaign.remainingQuota
+                        flashSale.remainingQuota
                     )
                 }
             }
-            val startSubmissionDate = campaign.submissionStartDateUnix.epochToDate().formatTo(
+            val startSubmissionDate = flashSale.submissionStartDateUnix.formatTo(
                 DATE_MONTH_ONLY
             )
-            val endSubmissionDate = campaign.submissionEndDateUnix.epochToDate().formatTo(
+            val endSubmissionDate = flashSale.submissionEndDateUnix.formatTo(
                 DATE_MONTH_ONLY
             )
             tgRegisterPeriod.text = getString(
@@ -208,50 +220,56 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             )
             tgCampaignQuota.text = getString(
                 R.string.campaign_quota_value_placeholder,
-                campaign.remainingQuota
+                flashSale.remainingQuota
             )
         }
     }
 
-    private fun setupUpcomingBody(campaign: Campaign) {
+    private fun setupUpcomingBody(flashSale: FlashSale) {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
         inflatedView.inflate()
         upcomingCdpBodyBinding?.run {
             tgDescription.text = MethodChecker.fromHtml(
-                campaign.description
+                flashSale.description
             )
         }
     }
 
     private fun setUpcomingCampaignPeriod(
         binding: StfsCdpUpcomingHeaderBinding,
-        campaign: Campaign
+        flashSale: FlashSale
     ) {
         binding.run {
-            val startDate = campaign.startDateUnix.epochToDate().formatTo(DATE_WITH_TIME)
-            tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(campaign)) {
-                val endDate = campaign.endDateUnix.epochToDate().formatTo(TIME_WIB)
+            val startDate = flashSale.startDateUnix.formatTo(DATE_WITH_TIME)
+            tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(flashSale)) {
+                val endDate = flashSale.endDateUnix.formatTo(TIME_WIB)
                 "$startDate - $endDate"
             } else {
-                val endDate = campaign.endDateUnix.epochToDate().formatTo(DATE_WITH_TIME)
+                val endDate = flashSale.endDateUnix.formatTo(DATE_WITH_TIME)
                 "$startDate - $endDate"
             }
         }
     }
 
-    private fun startUpcomingTimer(binding: StfsCdpUpcomingHeaderBinding, campaign: Campaign) {
-        val targetDate = campaign.submissionEndDateUnix.epochToDate()
-        if (viewModel.isCampaignClosedMoreThan24Hours(campaign)) {
-            binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
-            binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
-        } else if (targetDate.removeTimeZone().minuteDifference() >= 60) {
-            binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
-            binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
-        } else {
-            binding.timer.timerFormat = TimerUnifySingle.FORMAT_MINUTE
-            binding.timer.targetDate = targetDate.toCalendar()
+    private fun startUpcomingTimer(binding: StfsCdpUpcomingHeaderBinding, flashSale: FlashSale) {
+        val targetDate = flashSale.submissionEndDateUnix
+        val onTimerFinished = { binding.timer.gone() }
+        when {
+            viewModel.isFlashSaleClosedMoreThan24Hours(targetDate) -> {
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
+                binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timer.onFinish = onTimerFinished
+            }
+            viewModel.isFlashSaleClosedLessThan24Hour(targetDate) -> {
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timer.onFinish = onTimerFinished
+            }
+            else -> {
+                onTimerFinished
+            }
         }
     }
 }

@@ -4,13 +4,9 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity"
-            android:exported="false" />
-        <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity"
             android:exported="false"
             android:configChanges="orientation"
-            android:exported="false"
             android:label="@string/fs_tkpd_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -28,6 +24,11 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

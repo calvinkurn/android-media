@@ -2,14 +2,15 @@ package com.tokopedia.tkpd.flashsale.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tkpd.flashsale.domain.entity.Campaign
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetFlashSaleDetailForSellerUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase,
-) : GraphqlUseCase<Campaign>(repository)  {
+) : GraphqlUseCase<FlashSale>(repository)  {
     companion object {
         const val ONE = 1
         const val FIRST_PAGE = 0
@@ -18,7 +19,7 @@ class GetFlashSaleDetailForSellerUseCase @Inject constructor(
     suspend fun execute(
         tabName: String,
         campaignId: Long
-    ): Campaign {
+    ): FlashSale {
         return coroutineScope {
             val params = GetFlashSaleListForSellerUseCase.Param(
                 tabName = tabName,
@@ -29,7 +30,7 @@ class GetFlashSaleDetailForSellerUseCase @Inject constructor(
             val campaignList = getFlashSaleListForSellerUseCase.execute(
                 params
             )
-            campaignList.first()
+            campaignList.flashSales.first()
         }
     }
 }
