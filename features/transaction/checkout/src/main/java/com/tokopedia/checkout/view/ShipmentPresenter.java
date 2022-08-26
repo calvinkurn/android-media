@@ -2481,7 +2481,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             // assuming voucher with shippingId and spId not empty as voucher for BO
             if (shippingId > 0 && spId > 0) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                    doUnapplyBo(voucherOrdersItemUiModel);
+                    doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
                     unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
@@ -2510,12 +2510,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return -1;
     }
 
-    private void doUnapplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
+    private void doUnapplyBo(String uniqueId, String promoCode) {
         final int itemPosition =
-                getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
+                getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, uniqueId);
         if (itemPosition != -1) {
             getView().resetCourier(itemPosition);
-            clearOrderPromoCodeFromLastValidateUseRequest(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
+            clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
             getView().onNeedUpdateViewItem(itemPosition);
         }
     }
@@ -2595,7 +2595,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ArrayList<Product> products = new ArrayList<>();
         if (shipmentCartItemModel != null) {
-            shipmentCartItemModel.getCartItemModels();
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (!cartItemModel.isError()) {
                     Product product = new Product();
@@ -2609,5 +2608,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         return products;
+    }
+
+    @Override
+    public void validateClearAllBoPromo() {
+        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
+            final ShipmentCartItemModel shipmentCartItemModel = shipmentCartItemModelList.get(i);
+            for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
+                if (shipmentCartItemModel.getCartString() != null
+                        && shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
+                    for (String promoCode : ordersItem.getCodes()) {
+                        if (shipmentCartItemModel.getBoCode().equals(promoCode)) {
+                            doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
+                        }
+                    }
+                }
+            }
+        }
     }
 }

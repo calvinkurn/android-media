@@ -1343,9 +1343,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                     doUpdateButtonPromoCheckout(promoUiModel);
                     shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                    // todo: reset BO -> loop shipment items: if (lastValidateUsePromoRequest with matching uniqueId do not contains BO code) voucherLogisticItemUiModel = null & reset shipment else no op
-                    // todo: flow auto unapply BO
-//                    doUnapplyBo()
+                    shipmentPresenter.validateClearAllBoPromo();
                     shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false);
                 }
 
