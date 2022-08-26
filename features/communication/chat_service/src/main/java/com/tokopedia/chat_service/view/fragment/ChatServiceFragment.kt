@@ -1,6 +1,7 @@
 package com.tokopedia.chat_service.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +62,17 @@ class ChatServiceFragment: BaseDaggerFragment() {
                 is Success -> {
                     binding?.mainTv?.text = it.data.toString()
                     viewModel.getChatHistory(it.data.url)
+                }
+                is Fail -> {
+                    it.throwable.printStackTrace()
+                }
+            }
+        }
+
+        viewModel.conversationsMessage.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    Log.d(TAG, it.data.toString())
                 }
                 is Fail -> {
                     it.throwable.printStackTrace()
