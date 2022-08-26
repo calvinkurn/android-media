@@ -255,7 +255,6 @@ class ProductVariantStockViewHolder(
     private fun toggleQuantityEditorBtn(stock: Int, maxStock: Int?) {
         val enableAddBtn = stock <= (maxStock ?: MAXIMUM_STOCK)
         val enableSubtractBtn = stock > MINIMUM_STOCK
-        binding?.quantityEditorStock?.addButton?.isEnabled = enableAddBtn
         binding?.quantityEditorStock?.run {
             addButton.isEnabled = enableAddBtn
             subtractButton.isEnabled = enableSubtractBtn
