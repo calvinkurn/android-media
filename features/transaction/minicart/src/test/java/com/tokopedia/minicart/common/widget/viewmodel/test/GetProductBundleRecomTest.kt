@@ -163,7 +163,7 @@ class GetProductBundleRecomTest {
          * Then
          */
         // check availability of product bundle recom value
-        Assert.assertTrue(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.firstOrNull { it is MiniCartProductBundleRecomUiModel } !is MiniCartProductBundleRecomUiModel)
+        Assert.assertEquals(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.firstOrNull { it is MiniCartProductBundleRecomUiModel }, null)
 
         //remove observer
         viewModel.miniCartListBottomSheetUiModel.removeObserver(observer)

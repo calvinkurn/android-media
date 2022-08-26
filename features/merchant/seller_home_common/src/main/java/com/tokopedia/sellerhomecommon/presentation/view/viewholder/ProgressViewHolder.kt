@@ -42,9 +42,6 @@ class ProgressViewHolder(
         ShcProgressCardWidgetBinding.bind(itemView)
     }
     private val errorStateBinding by lazy { binding.shcProgressErrorState }
-    private val commonErrorStateBinding by lazy {
-        errorStateBinding.shcProgressCommonErrorState
-    }
     private val loadingStateBinding by lazy { binding.shcProgressLoadingState }
 
     override fun bind(element: ProgressWidgetUiModel) {
@@ -178,8 +175,8 @@ class ProgressViewHolder(
         hideProgressLayout()
         hideShimmeringLayout()
         errorStateBinding.tvProgressTitleOnError.text = element.title
-        commonErrorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        errorStateBinding.imgShcProgressWidgetOnError.loadImage(
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
         )
         showErrorLayout()
     }

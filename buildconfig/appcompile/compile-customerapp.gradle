@@ -178,7 +178,6 @@ includeIfEnabled("features:tokopedianow")
 
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")
-includeIfEnabled("features:operational:resolution")
 
 includeIfEnabled("features:ovop2p")
 

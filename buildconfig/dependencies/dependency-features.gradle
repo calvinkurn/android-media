@@ -32,8 +32,6 @@ ext {
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
-            interestPick                    : ":features:content:interest_pick",
-            interestPickCommon              : ":features:content:interest_pick_common",
             kol                             : ":features:content:kol",
             kolCommon                       : ":features:content:kol_common",
             affiliate                       : ":features:content:affiliate",
@@ -193,7 +191,6 @@ ext {
             youtubeCommon                   : ":features:merchant:youtube_common",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
-            resolution                      : ":features:operational:resolution",
             csat_rating                       : ":features:operational:csat_rating",
             discovery2                       : ":features:category:discovery2",
 
