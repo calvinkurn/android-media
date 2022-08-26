@@ -7,6 +7,11 @@
             <certificates src="user" />
         </trust-anchors>
     </debug-overrides>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">localhost</domain>
         <domain includeSubdomains="true">172.31.2.144</domain>
@@ -22,5 +27,11 @@
         <domain includeSubdomains="false">apigw.xl.co.id</domain>
         <domain includeSubdomains="false">autohe.xl.co.id</domain>
         <domain includeSubdomains="false">gateway.egw.xl.co.id</domain>
+        <domain includeSubdomains="true">https://hansel-testsdk.tokopedia.com</domain>
+        <domain includeSubdomains="true">https://gql.tokopedia.com</domain>
+        <trust-anchors>
+            <certificates src="user"/>
+            <certificates src="system"/>
+        </trust-anchors>
     </domain-config>
 </network-security-config>
