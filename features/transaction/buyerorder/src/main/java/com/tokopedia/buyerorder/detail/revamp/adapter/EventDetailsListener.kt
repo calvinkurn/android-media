@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.revamp.adapter
 
+import android.widget.TextView
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
@@ -21,4 +22,6 @@ interface EventDetailsListener {
     fun sendThankYouEvent(metadata: MetaDataInfo, categoryType: Int, orderDetails: OrderDetails)
     fun sendOpenScreenDeals(isOMP: Boolean)
     fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean, isCalledFromAdapter: Boolean)
+    fun showRetryButtonToaster(message: String)
+    fun onTapActionDeals(view: TextView?, actionButton: ActionButton, item: Items, count: Int, position: Int)
 }

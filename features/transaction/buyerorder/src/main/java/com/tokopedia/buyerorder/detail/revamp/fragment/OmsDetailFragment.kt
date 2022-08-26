@@ -976,6 +976,20 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         viewModel.requestActionButton(tapAction, position, flag, isCalledFromAdapter)
     }
 
+    override fun showRetryButtonToaster(message: String) {
+
+    }
+
+    override fun onTapActionDeals(
+        view: TextView?,
+        actionButton: ActionButton,
+        item: Items,
+        count: Int,
+        position: Int
+    ) {
+
+    }
+
     companion object{
         private const val KEY_URI = "tokopedia"
         private const val KEY_URI_PARAMETER = "idem_potency_key"

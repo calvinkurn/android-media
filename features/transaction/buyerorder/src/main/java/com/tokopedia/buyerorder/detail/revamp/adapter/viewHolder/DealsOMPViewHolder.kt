@@ -20,6 +20,7 @@ import com.tokopedia.buyerorder.detail.data.ItemsDealsOMP
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -117,8 +118,23 @@ class DealsOMPViewHolder(
                     }
                 }
                 KEY_REDIRECT, KEY_REDIRECT_EXTERNAL -> {
-                    //TODO : set redeemVoucherView
-                    //TODO : addview
+                    val redeemVoucherView = RedeemVoucherView(
+                        itemView.context,
+                        index,
+                        adapterPosition,
+                        true,
+                        item.actionButtons.size - 1 == index,
+                        actionButton,
+                        item,
+                        actionButton.body,
+                        { textView, aButton, items, count, position ->
+                            eventDetailsListener.onTapActionDeals(textView, aButton, items, count, position)
+                        },
+                        {
+                            eventDetailsListener.showRetryButtonToaster(it)
+                        }
+                    )
+                    binding.voucerCodeLayout.addView(redeemVoucherView)
                 }
                 KEY_POPUP -> {
                     val actionTextButton = renderActionButtons(index, actionButton, item)
