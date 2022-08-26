@@ -37,9 +37,7 @@ import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
 import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
-import com.tokopedia.buyerorder.detail.data.AdditionalInfo
 import com.tokopedia.buyerorder.detail.data.ConditionalInfo
-import com.tokopedia.buyerorder.detail.data.Detail
 import com.tokopedia.buyerorder.detail.data.Invoice
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
@@ -50,7 +48,6 @@ import com.tokopedia.buyerorder.detail.data.Pricing
 import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel
 import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.data.Title
-import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
@@ -165,13 +162,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             }
         }
 
-        viewModel.digiPerso.observe(viewLifecycleOwner){
-            when(it){
-                is Success -> renderRecommendation(it.data)
-                is Fail -> showError(it.throwable)
-            }
-        }
-
         viewModel.actionButton.observe(viewLifecycleOwner){
             when(it){
                 is ActionButtonEventWrapper.TapActionButton -> {
@@ -216,19 +206,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         setInvoice(details.invoice)
 
-        details.detail.forEach { setDetail(it) }
-
         if (details.items.isNotEmpty()){
             listItems = details.items
             setItems(details.items, details)
         }
-
-        //TODO : not used
-        if (details.additionalInfo.isNotEmpty()){
-            setAdditionalInfoVisibility(View.VISIBLE)
-        }
-
-        details.additionalInfo.forEach { setAdditionalInfo(it) }
 
         val isCategoryEvent = details.items.isNotEmpty() && details.items.first().category.equals(OrderCategory.EVENT.category, true)
 
@@ -263,14 +244,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 it.tickerDetailOrder.gone()
             }
         }
-    }
-
-    private fun setDetail(detail: Detail){
-
-    }
-
-    private fun renderRecommendation(recommendation: RecommendationDigiPersoResponse) {
-
     }
 
     private fun showError(throwable: Throwable?) {
@@ -352,6 +325,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         binding?.invoice?.text = invoice.invoiceRefNum
         binding?.icCopy?.setOnClickListener {
             BuyerUtils.copyTextToClipBoard(KEY_TEXT, binding?.invoice?.text.toString(), requireContext())
+            showToaster(getString(R.string.deals_label_copied))
         }
     }
 
@@ -377,14 +351,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             binding?.detailsSection?.gone()
             binding?.dividerAboveInfoLabel?.gone()
         }
-    }
-
-    private fun setAdditionalInfoVisibility(visibility: Int) {
-
-    }
-
-    private fun setAdditionalInfo(additionalInfo: AdditionalInfo) {
-
     }
 
     private fun setPayMethodInfo(payMethod: PayMethod, isCategoryEvent: Boolean) {
