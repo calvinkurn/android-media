@@ -443,10 +443,14 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     private val onFlashSaleClicked : (Int) -> Unit = { selectedItemPosition ->
-        //TODO: Redirect to campaign detail page
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
         val selectedFlashSaleId = selectedFlashSale.id()
-        context?.let { CampaignDetailActivity.start(it, selectedFlashSaleId as Long) }
+        context?.let { CampaignDetailActivity.start(
+            it,
+            selectedFlashSaleId as Long,
+            tabName
+        )
+        }
     }
 
 }

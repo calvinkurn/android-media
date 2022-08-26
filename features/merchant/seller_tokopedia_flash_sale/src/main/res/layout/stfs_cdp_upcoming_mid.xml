@@ -15,7 +15,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_register_period_info"
@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tg_register_period_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tg_register_period_label"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="30 Jun - 3 Jul 2022" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -48,7 +48,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_register_period_label"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_campaign_quota"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tg_campaign_quota_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tg_campaign_quota_label"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="Sisa 50 kuota!" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +72,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_campaign_quota_label"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_see_criteria"
@@ -86,7 +86,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tg_campaign_criteria_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tg_campaign_criteria_label"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.UnifyButton

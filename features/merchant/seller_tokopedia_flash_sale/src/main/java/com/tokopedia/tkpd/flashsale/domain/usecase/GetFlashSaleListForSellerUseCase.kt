@@ -49,6 +49,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
                   review_start_date_unix
                   review_end_date_unix
                   start_date_unix
+                  has_eligible_products
                   end_date_unix
                   remaining_quota
                   max_product_submission

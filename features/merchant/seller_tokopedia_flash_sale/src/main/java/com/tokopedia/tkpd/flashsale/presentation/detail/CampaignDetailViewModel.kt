@@ -1,14 +1,19 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.tkpd.flashsale.common.extension.dateOnly
+import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
 import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
+import com.tokopedia.tkpd.flashsale.util.extension.minutesDifference
+import com.tokopedia.tkpd.flashsale.util.extension.removeTimeZone
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,6 +32,7 @@ class CampaignDetailViewModel @Inject constructor(
 
     companion object {
         private const val TWENTY_FOUR_HOURS = 24
+        private const val SIXTY_MINUTES = 60
         private const val TAB_NAME = "upcoming"
     }
 
@@ -47,7 +53,9 @@ class CampaignDetailViewModel @Inject constructor(
     }
 
     fun isCampaignRegisterClosed(flashSale: FlashSale): Boolean {
-        return Date() > flashSale.submissionEndDateUnix
+        val now = Date()
+        val flashSaleEndDate = flashSale.submissionEndDateUnix
+        return now > flashSaleEndDate
     }
 
     fun isFlashSalePeriodOnTheSameDate(flashSale: FlashSale): Boolean {
@@ -58,13 +66,19 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun isFlashSaleClosedMoreThan24Hours(targetDate: Date): Boolean {
         val now = Date()
-        val hourDifference = targetDate.time - now.time
-        return hourDifference > TWENTY_FOUR_HOURS
+        val distanceHoursToSubmissionEndDate = hoursDifference(now, targetDate)
+        return distanceHoursToSubmissionEndDate > TWENTY_FOUR_HOURS
     }
 
     fun isFlashSaleClosedLessThan24Hour(targetDate: Date): Boolean {
         val now = Date()
         val distanceHoursToSubmissionEndDate = hoursDifference(now, targetDate)
         return distanceHoursToSubmissionEndDate in Int.ZERO..TWENTY_FOUR_HOURS
+    }
+
+    fun isFlashSaleClosedLessThan60Minutes(targetDate: Date): Boolean {
+        val now = Date()
+        val distanceMinutesToSubmissionEndDate = minutesDifference(now, targetDate)
+        return distanceMinutesToSubmissionEndDate in Int.ZERO..SIXTY_MINUTES
     }
 }

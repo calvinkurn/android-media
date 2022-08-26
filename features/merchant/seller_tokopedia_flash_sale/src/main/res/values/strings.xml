@@ -108,4 +108,5 @@
     <string name="label_register">Daftar</string>
     <string name="product_eligible_card_title_label">Yay, produkmu sesuai kriteria!</string>
     <string name="product_eligible_card_description_label">Tunggu apa lagi? Yuk, daftar campaign sekarang!</string>
+    <string name="stfs_campaign_label">Campaign</string>
 </resources>

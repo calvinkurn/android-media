@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.extension.*
+import com.tokopedia.tkpd.flashsale.common.extension.formatTo
+import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
@@ -30,11 +30,17 @@ import javax.inject.Inject
 class CampaignDetailFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val UPCOMING_TAB = "upcoming"
+        private const val REGISTERED_TAB = "registered"
+        private const val ONGOING_TAB = "ongoing"
+        private const val FINISHED_TAB = "finished"
+
         @JvmStatic
-        fun newInstance(flashSaleId: Long): CampaignDetailFragment {
+        fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
+            bundle.putString(BundleConstant.BUNDLE_KEY_TAB_NAME, tabName)
             fragment.arguments = bundle
             return fragment
         }
@@ -53,10 +59,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
     private var upcomingCdpHeaderBinding by autoClearedNullable<StfsCdpUpcomingHeaderBinding>()
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
-    private var upcomingCdpBodyBinding: StfsCdpUpcomingBodyBinding? = null
+    private var upcomingCdpBodyBinding by autoClearedNullable<StfsCdpUpcomingBodyBinding>()
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+    }
+
+    private val tabName by lazy {
+        arguments?.getString(BundleConstant.BUNDLE_KEY_TAB_NAME).orEmpty()
     }
 
     override fun getScreenName(): String =
@@ -74,56 +84,65 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = StfsFragmentCampaignDetailBinding.inflate(inflater, container, false)
-        binding?.run {
-            layoutHeader.setOnInflateListener { _, view ->
-                upcomingCdpHeaderBinding = StfsCdpUpcomingHeaderBinding.bind(view)
-            }
-        }
-        binding?.run {
-            layoutMid.setOnInflateListener { _, view ->
-                upcomingCdpMidBinding = StfsCdpUpcomingMidBinding.bind(view)
-            }
-        }
-        binding?.run {
-            layoutBody.setOnInflateListener { _, view ->
-                upcomingCdpBodyBinding = StfsCdpUpcomingBodyBinding.bind(view)
-            }
-        }
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
-        viewModel.getCampaignDetail(flashSaleId)
+        loadData()
     }
 
     private fun observeCampaignDetail() {
         viewModel.campaign.observe(viewLifecycleOwner) { flashSale ->
+            hideLoading()
             when (flashSale) {
                 is Success -> {
-                    setupUpcoming(flashSale.data)
+                    setupView(flashSale.data)
                 }
-                is Fail -> {
-                }
+                is Fail -> { }
             }
+        }
+    }
+
+    private fun loadData() {
+        showLoading()
+        viewModel.getCampaignDetail(flashSaleId)
+    }
+
+    private fun setupView(flashSale: FlashSale) {
+        when (tabName) {
+            UPCOMING_TAB -> setupUpcoming(flashSale)
+            REGISTERED_TAB -> setupUpcoming(flashSale)
+            ONGOING_TAB -> setupUpcoming(flashSale)
+            FINISHED_TAB -> setupUpcoming(flashSale)
         }
     }
 
     private fun setupUpcoming(flashSale: FlashSale) {
         val campaignStatus = when {
-            !flashSale.hasEligibleProduct -> UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE
-            flashSale.remainingQuota == 0 -> UpcomingCampaignStatus.FULL_QUOTA
             viewModel.isCampaignRegisterClosed(flashSale) -> UpcomingCampaignStatus.CLOSED
-            else -> UpcomingCampaignStatus.AVAILABLE
+            flashSale.remainingQuota.isZero() -> UpcomingCampaignStatus.FULL_QUOTA
+            else -> {
+                if (flashSale.hasEligibleProduct) {
+                    UpcomingCampaignStatus.AVAILABLE
+                } else {
+                    UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE
+                }
+            }
         }
 
         binding?.run {
-            if (campaignStatus.isFlashSaleAvailable()) {
-                cardBottomButtonGroup.visible()
-            } else {
-                cardBottomButtonGroup.gone()
+            layoutHeader.setOnInflateListener { _, view ->
+                upcomingCdpHeaderBinding = StfsCdpUpcomingHeaderBinding.bind(view)
             }
+            layoutMid.setOnInflateListener { _, view ->
+                upcomingCdpMidBinding = StfsCdpUpcomingMidBinding.bind(view)
+            }
+            layoutBody.setOnInflateListener { _, view ->
+                upcomingCdpBodyBinding = StfsCdpUpcomingBodyBinding.bind(view)
+            }
+            cardBottomButtonGroup.isVisible = campaignStatus.isFlashSaleAvailable()
         }
 
         setupUpcomingHeader(flashSale, campaignStatus)
@@ -218,10 +237,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 startSubmissionDate,
                 endSubmissionDate
             )
-            tgCampaignQuota.text = getString(
-                R.string.campaign_quota_value_placeholder,
-                flashSale.remainingQuota
-            )
         }
     }
 
@@ -260,16 +275,37 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             viewModel.isFlashSaleClosedMoreThan24Hours(targetDate) -> {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
                 binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timer.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
                 binding.timer.onFinish = onTimerFinished
             }
             viewModel.isFlashSaleClosedLessThan24Hour(targetDate) -> {
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
                 binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
                 binding.timer.onFinish = onTimerFinished
             }
-            else -> {
-                onTimerFinished
+            viewModel.isFlashSaleClosedLessThan60Minutes(targetDate) -> {
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_MINUTE
+                binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+                binding.timer.onFinish = onTimerFinished
             }
+            else -> onTimerFinished
+        }
+    }
+
+    private fun showLoading() {
+        binding?.run {
+            loader.show()
+            nsvContent.gone()
+            cardBottomButtonGroup.gone()
+        }
+    }
+
+    private fun hideLoading() {
+        binding?.run {
+            loader.gone()
+            nsvContent.show()
         }
     }
 }

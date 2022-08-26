@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:closeButtonVisibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/img_campaign_status_indicator"
         app:layout_constraintStart_toEndOf="@id/img_campaign_status_indicator"
         app:layout_constraintTop_toTopOf="@+id/img_campaign_status_indicator"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
