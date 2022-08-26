@@ -235,7 +235,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()
-                            && !getSwitchAccountConfirmationDialog(contentAccount).isShowing) {
+                            && ::switchAccountConfirmationDialog.isInitialized
+                            && !switchAccountConfirmationDialog.isShowing) {
                             getSwitchAccountConfirmationDialog(contentAccount).show()
                         } else parentViewModel.submitAction(SelectAccount(contentAccount))
                     }
