@@ -34,6 +34,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -1081,7 +1082,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
         if (element.uiData.emptyStateStatus == STATUS_PHONE_NOT_VERIFIED) {
             analytics.eventClickButtonVerifikasiNomorHp(viewModel.getPageSource())
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
         } else {
             reloadData()

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 
@@ -56,8 +55,7 @@ class SeparatorItemDecoration(
     }
 
     private fun Visitable<*>?.isBottomSeparator(): Boolean {
-        return this is SeparatorDataView
-                || (this is VerticalSeparable && this.verticalSeparator.hasBottomSeparator)
+        return this is VerticalSeparable && this.verticalSeparator.hasBottomSeparator
     }
 
     private fun canDrawTopSeparator(

@@ -530,7 +530,6 @@ open class DynamicProductDetailFragment :
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
-        observeAffiliateCookie()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -2039,21 +2038,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeAffiliateCookie() {
-        viewModel.affiliateCookie.observe(viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
-                    isSuccess = true
-                )
-            }) { throwable ->
-                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
-                    isSuccess = false,
-                    errorMessage = throwable.message ?: ""
-                )
-            }
-        }
-    }
-
     private fun observePlayWidget() {
         viewModel.playWidgetModel.observe(viewLifecycleOwner, {
             when (it) {
@@ -2486,7 +2470,6 @@ open class DynamicProductDetailFragment :
 
                 viewModel.hitAffiliateCookie(
                     productInfo = p1,
-                    deviceId = viewModel.deviceId,
                     affiliateUuid = affiliateUniqueId,
                     uuid = uuid,
                     affiliateChannel = affiliateChannel
@@ -3136,7 +3119,6 @@ open class DynamicProductDetailFragment :
             val boData = viewModel.getBebasOngkirDataByProductId()
 
             val productId = it.basic.productID
-            val boCampaignIDs = viewModel.p2Data.value?.getBebasOngkirCampaignIDsByProductId(productId)
 
             sharedViewModel?.setRequestData(
                 RatesEstimateRequest(
@@ -3159,7 +3141,7 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boCampaignIDs = boCampaignIDs ?: ""
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: ""
                 )
             )
             shouldRefreshShippingBottomSheet = false
