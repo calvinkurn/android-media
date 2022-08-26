@@ -51,6 +51,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -75,6 +76,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("applink ${intent?.data}")
+        Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
+            if (it.contains(PAGE_SEGMENT_HELP)) {
+                selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
+            }else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
+            }
+        }
         afterViewCreated()
     }
 
