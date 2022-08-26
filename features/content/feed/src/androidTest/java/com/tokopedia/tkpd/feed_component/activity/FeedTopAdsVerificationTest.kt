@@ -74,7 +74,7 @@ class FeedTopAdsVerificationTest {
                 //for products in headline ads so that the test can pass
                 waitForData()
                 onView(withId(com.tokopedia.feedplus.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<TopAdsHeadlineV2ViewHolder>(
-                        i, CommonActions.clickChildViewWithId(com.tokopedia.feedcomponent.R.id.tv_shop_badge)))
+                        i, CommonActions.clickChildViewWithId(com.tokopedia.feedcomponent.R.id.iv_shop_badge)))
             }
         }
     }
