@@ -88,7 +88,7 @@ object GetPromoListDataProvider {
     }
 
     fun provideGetPromoListResponseBoPromoInfoDataEmpty(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_bo_info_bottom_sheet_incomplete.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_bo_info_bottom_sheet_empty.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
