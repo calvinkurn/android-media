@@ -498,7 +498,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         }
         goToPDP(
-                shopProductUiModel.id ?: "",
+                shopProductUiModel.productUrl,
                 attribution,
                 shopPageTracking?.getListNameOfProduct(PRODUCT, getSelectedEtalaseChip())
                         ?: ""
@@ -1015,12 +1015,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun goToPDP(productId: String, attribution: String?, listNameOfProduct: String) {
+    private fun goToPDP(productAppLink: String, attribution: String?, listNameOfProduct: String) {
         context?.let {
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val intent = RouteManager.getIntent(context, productAppLink)
             startActivity(intent)
         }
     }

@@ -73,7 +73,11 @@ data class ShopProduct(
 
         @SerializedName("parent_id")
         @Expose
-        val parentId: String = ""
+        val parentId: String = "",
+
+        @SerializedName("app_link")
+        @Expose
+        val appLink: String = ""
 ){
         data class Response(
                 @SerializedName("GetShopProduct")

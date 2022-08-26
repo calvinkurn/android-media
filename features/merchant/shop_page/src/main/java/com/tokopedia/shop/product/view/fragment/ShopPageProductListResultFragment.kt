@@ -902,7 +902,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId.orEmpty()
             )
         }
-        startActivity(getProductIntent(shopProductUiModel.id ?: "", attribution,
+        startActivity(getProductIntent(shopProductUiModel.productUrl, attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
@@ -1060,12 +1060,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
+    private fun getProductIntent(productAppLink: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            RouteManager.getIntent(context, productAppLink)
         } else {
             null
         }
