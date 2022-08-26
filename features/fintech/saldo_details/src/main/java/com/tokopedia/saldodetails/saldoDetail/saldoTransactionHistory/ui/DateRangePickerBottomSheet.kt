@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -143,12 +144,13 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         const val ARG_DATE_TO = "ARG_DATE_TO"
         const val BOTTOM_SHEET_HEIGHT_3 = 3
         const val BOTTOM_SHEET_HEIGHT_2 = 2
-        fun getInstance(dateFrom: Date?, dateTo: Date?): DateRangePickerBottomSheet {
+        fun getInstance(dateFrom: Date?, dateTo: Date?, childFragmentManager: FragmentManager): DateRangePickerBottomSheet {
             return DateRangePickerBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
                 bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
                 arguments = bundle
+                this.show(childFragmentManager,"")
             }
         }
     }

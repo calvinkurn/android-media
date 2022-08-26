@@ -121,7 +121,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         //semua tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.ALL_TAB
-            fragment = FilteredSaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
+            fragment =
+                FilteredSaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
         })
 
         //penjualan tab
@@ -154,8 +155,22 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     private fun openCalender() {
-        DateRangePickerBottomSheet.getInstance(selectedDateFrom, selectedDateTo)
-            .show(childFragmentManager, "")
+        if (!BOTTOMSHEET_PRESSED) {
+            BOTTOMSHEET_PRESSED = true
+            DateRangePickerBottomSheet.getInstance(
+                selectedDateFrom,
+                selectedDateTo,
+                childFragmentManager
+            ).apply {
+                setCloseClickListener {
+                    BOTTOMSHEET_PRESSED = false
+                }
+                setOnDismissListener {
+                    BOTTOMSHEET_PRESSED = false
+                }
+            }
+        }
+
     }
 
     override fun onEmptyContentItemTextClicked() {}
@@ -176,7 +191,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         super.onResume()
         // tabs are visible now start, coachMark
         if (!isCoachMarkStarted)
-          handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
+            handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
     }
 
     override fun onPause() {
@@ -200,5 +215,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     companion object {
         const val DELAY_COACH_MARK_MILLIS = 400L
+        var BOTTOMSHEET_PRESSED = false
     }
 }
