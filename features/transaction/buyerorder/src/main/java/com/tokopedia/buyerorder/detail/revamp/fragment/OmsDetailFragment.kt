@@ -977,7 +977,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     override fun showRetryButtonToaster(message: String) {
-
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_INDEFINITE, actionText = getString(R.string.review_oke)).show()
+        }
     }
 
     override fun onTapActionDeals(
