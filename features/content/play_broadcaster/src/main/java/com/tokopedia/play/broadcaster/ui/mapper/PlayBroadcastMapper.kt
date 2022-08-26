@@ -22,8 +22,8 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.Calendar
 
 /**
  * Created by jegul on 21/09/20
@@ -113,7 +113,7 @@ interface PlayBroadcastMapper {
         interactiveId: String,
     ): QuizDetailDataUiModel
 
-    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): List<LeaderboardGameUiModel>
+    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel>
 
     fun mapChoiceDetail(
         response: GetInteractiveQuizChoiceDetailResponse,

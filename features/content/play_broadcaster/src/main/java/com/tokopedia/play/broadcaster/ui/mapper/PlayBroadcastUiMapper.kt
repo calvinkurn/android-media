@@ -433,24 +433,28 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
-    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): List<LeaderboardGameUiModel> {
-        return dataUiModel.choices.mapIndexed { index, choice ->
-                LeaderboardGameUiModel.QuizOption(
-                    QuizChoicesUiModel(
-                        index = index,
-                        id = choice.id,
-                        text = textTransformer.transform(choice.text),
-                        type = PlayQuizOptionState.Participant(
-                            alphabet = generateAlphabetChoices(index),
-                            isCorrect = choice.isCorrectAnswer,
-                            count = choice.participantCount.toString(),
-                            showArrow = true
-                        ),
-                        interactiveId = dataUiModel.interactiveId,
-                        interactiveTitle = textTransformer.transform(dataUiModel.question),
-                    )
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel> {
+        val choices = dataUiModel.choices.mapIndexed { index, choice ->
+            LeaderboardGameUiModel.QuizOption(
+                QuizChoicesUiModel(
+                    index = index,
+                    id = choice.id,
+                    text = textTransformer.transform(choice.text),
+                    type = PlayQuizOptionState.Participant(
+                        alphabet = generateAlphabetChoices(index),
+                        isCorrect = choice.isCorrectAnswer,
+                        count = choice.participantCount.toString(),
+                        showArrow = true
+                    ),
+                    interactiveId = dataUiModel.interactiveId,
+                    interactiveTitle = textTransformer.transform(dataUiModel.question),
                 )
-            }
+            )
+        }
+        return mutableListOf<LeaderboardGameUiModel>().apply {
+            add(LeaderboardGameUiModel.Header(title = dataUiModel.question, reward = dataUiModel.reward, endsIn = endTime, leaderBoardType = LeadeboardType.Quiz,id = dataUiModel.interactiveId))
+            addAll(choices)
+        }
     }
 
     override fun mapChoiceDetail(

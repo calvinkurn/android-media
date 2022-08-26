@@ -335,8 +335,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    //TODO
-    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): List<LeaderboardGameUiModel> {
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel> {
         return emptyList()
     }
 
