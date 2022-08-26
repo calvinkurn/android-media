@@ -729,4 +729,100 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
     // no promo bo
 
+    @Test
+    fun `un-Apply Bbo promo`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(shippingId = 1, spId = 1, messageUiModel = MessageUiModel(state = "yellow")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    @Test
+    fun `validate bo stacking when promo checkout green but not logistic promo`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    @Test
+    fun `validate bo stacking when promo checkout green but not logistic promo but has shipping id`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(shippingId = 1, messageUiModel = MessageUiModel(state = "green")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    @Test
+    fun `validate bo stacking when promo checkout green but not logistic promo but has sp id`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(spId = 1, messageUiModel = MessageUiModel(state = "green")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    @Test
+    fun `validate bo stacking when promo checkout message state neither green or red`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(shippingId = 1, spId = 1, messageUiModel = MessageUiModel(state = "yellow")))
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    @Test
+    fun `validate bo stacking when validate use promo revamp null`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = null
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
 }
