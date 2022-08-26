@@ -71,7 +71,8 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun onLoadPage(offset: Int) {
-        _uiState.update { it.copy(offset = offset) }
+        val isLoadingNextPage = offset > 0
+        _uiState.update { it.copy(offset = offset, isLoadingNextPage = isLoadingNextPage) }
         getFlashSaleList()
     }
 
@@ -188,13 +189,14 @@ class FlashSaleListViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        isLoadingNextPage = false,
                         allItems = allItems,
                         totalFlashSaleCount = response.totalFlashSaleCount
                     )
                 }
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoading = false, isLoadingNextPage = false) }
                 _uiEffect.tryEmit(FlashSaleListUiEffect.FetchFlashSaleError(error))
             }
         )
