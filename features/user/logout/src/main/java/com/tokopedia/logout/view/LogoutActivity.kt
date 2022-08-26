@@ -100,7 +100,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         component.inject(this)
         userSession = UserSession(this)
 
-        getParams()
+        getParam()
 
         initTetraDebugger()
         initObservable()
@@ -116,7 +116,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
-    private fun getParams() {
+    private fun getParam() {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true) as Boolean
             isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean

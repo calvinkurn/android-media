@@ -1,6 +1,6 @@
 ext {
 
-    compileSdkVersion = 30
+    compileSdkVersion = 31
     minSdkVersion = 21
     targetSdkVersion = 30
     buildToolsVersion = "30.0.2"
@@ -8,7 +8,7 @@ ext {
     jacocoVersion = "0.8.7"
     kotlinVersion = "1.5.30"
 
-    navigationVersion = "2.3.0"
+    navigationVersion = "2.3.5"
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
@@ -39,7 +39,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
-    roomVersion = '2.3.0'
+    roomVersion = '2.4.1'
     sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
@@ -77,7 +77,7 @@ ext {
     kotlinTestVersion = '1.5.30'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
-    crashlyticsGradleVersion = '2.2.0'
+    crashlyticsGradleVersion = '2.5.2'
     googleServiceGradleVersion = '4.3.3'
     chuckerVersion = '4.0.6-tkpd'
     sliceVersion = '1.0.0-alpha6'
@@ -247,7 +247,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            hansel                : "io.hansel.preprocessor:preprocessor:9.1.5",
+            hansel                : "io.hansel.preprocessor:preprocessor:9.2.0",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",

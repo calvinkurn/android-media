@@ -29,8 +29,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     packagingOptions {
         exclude 'META-INF/**'
@@ -101,6 +101,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
+    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
