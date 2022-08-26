@@ -821,15 +821,17 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             it.dividerAboveUserInfo.visible()
             it.userInformationLayout.removeAllViews()
 
-            metadata.entityPessengers.forEach { passenger ->
-                val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
-                    setTopText(passenger.title)
-                    setTopTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                    setBottomText(passenger.value)
-                    setBottomTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                    setBottomTextStyle(BOLD_TEXT_STYLE)
+            metadata.passengerForms.forEach { passengerForm ->
+                passengerForm.passengerInformations.forEach { passengerInformation ->
+                    val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
+                        setTopText(passengerInformation.title)
+                        setTopTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setBottomText(passengerInformation.value)
+                        setBottomTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                        setBottomTextStyle(BOLD_TEXT_STYLE)
+                    }
+                    it.userInformationLayout.addView(doubleTextView)
                 }
-                it.userInformationLayout.addView(doubleTextView)
             }
         }
     }
