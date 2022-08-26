@@ -587,14 +587,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             showMainComponent(false)
 
             binding.formCover.setTitle(parentViewModel.channelTitle)
-            binding.formCover.setShopName(parentViewModel.getShopName())
-            binding.formCover.visibility = View.VISIBLE
+            binding.formCover.setShopName(parentViewModel.authorName)
         }
-        else {
-            showMainComponent(true)
-
-            binding.formCover.visibility = View.GONE
-        }
+        else showMainComponent(true)
+        binding.formCover.showWithCondition(isShow)
     }
 
     private fun showScheduleBottomSheet() {
