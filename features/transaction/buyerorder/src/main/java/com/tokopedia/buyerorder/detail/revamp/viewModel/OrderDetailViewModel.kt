@@ -1,26 +1,33 @@
 package com.tokopedia.buyerorder.detail.revamp.viewModel
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.buyerorder.detail.data.OrderDetails
+import com.tokopedia.buyerorder.detail.data.SendEventEmail
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.domain.DigiPersoUseCase
 import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
 import com.tokopedia.buyerorder.detail.domain.RevampActionButtonUseCase
+import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import rx.Subscriber
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 /**
@@ -31,6 +38,7 @@ class OrderDetailViewModel @Inject constructor(
     private val omsDetailUseCase: Lazy<OmsDetailUseCase>,
     private val digiPersoUseCase: Lazy<DigiPersoUseCase>,
     private val actionButtonUseCase: Lazy<RevampActionButtonUseCase>,
+    private val eventNotificationUseCase: Lazy<SendEventNotificationUseCase>,
     dispatcher: CoroutineDispatcher,
 ): BaseViewModel(dispatcher) {
 
@@ -45,6 +53,14 @@ class OrderDetailViewModel @Inject constructor(
     private val _actionButton = MutableLiveData<ActionButtonEventWrapper>()
     val actionButton: LiveData<ActionButtonEventWrapper>
         get() = _actionButton
+
+    private val _eventEmail = MutableLiveData<Result<SendEventEmail>>()
+    val eventEmail: LiveData<Result<SendEventEmail>>
+        get() = _eventEmail
+
+    private val _actionClickable = MutableLiveData<Boolean>()
+    val actionClickable: LiveData<Boolean>
+        get() = _actionClickable
 
     private var orderDetails : OrderDetails? = null
 
@@ -98,6 +114,36 @@ class OrderDetailViewModel @Inject constructor(
         }
     }
 
+    fun sendEventEmail(actionButton: ActionButton, metadata: String){
+        eventNotificationUseCase.get().apply {
+            path = actionButton.uri
+            body = metadata
+
+            execute(object : Subscriber<Map<Type, RestResponse>>(){
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable?) {
+
+                }
+
+                override fun onNext(t: Map<Type, RestResponse>?) {
+                    val token = object : TypeToken<SendEventEmail>() {}.type
+                    val response = t?.get(token)
+                    _actionClickable.postValue(false)
+                    if (response?.code == RESPONSE_SUCCESS_CODE && response.errorBody == null) {
+                        val result = response.getData<SendEventEmail>()
+                        _eventEmail.postValue(Success(result))
+                    } else {
+                        val result = Gson().fromJson(response?.errorBody, SendEventEmail::class.java)
+                        _eventEmail.postValue(Fail(MessageErrorException(result.data.message)))
+                    }
+                }
+            })
+        }
+    }
+
     fun getOrderCategoryName(): String{
         return orderDetails?.let { OrderListAnalyticsUtils.getCategoryName(it) } ?: ""
     }
@@ -106,5 +152,8 @@ class OrderDetailViewModel @Inject constructor(
         return orderDetails?.let { OrderListAnalyticsUtils.getProductName(it) } ?: ""
     }
 
+    private companion object {
+        const val RESPONSE_SUCCESS_CODE = 200
+    }
 
 }
