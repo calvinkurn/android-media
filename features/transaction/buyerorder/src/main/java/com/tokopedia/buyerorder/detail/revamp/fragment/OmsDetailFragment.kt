@@ -185,6 +185,23 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 }
             }
         }
+
+        viewModel.eventEmail.observe(viewLifecycleOwner){
+            when(it){
+                is Success -> {
+                    showToaster(getString(R.string.event_voucher_code_copied))
+                    setActionButtonText(getString(R.string.event_voucher_code_success))
+                }
+                is Fail -> {
+                    showToaster(it.throwable.message)
+                    setActionButtonText(getString(R.string.event_voucher_code_fail))
+                }
+            }
+        }
+
+        viewModel.actionClickable.observe(viewLifecycleOwner){
+            binding?.actionButton?.isClickable = it
+        }
     }
 
     private fun renderDetailsData(details: OrderDetails){
@@ -833,7 +850,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 it.actionButton.setOnClickListener {
                     if (actionButton.control.equals(KEY_BUTTON, true)
                         && actionButton.name.equals(KEY_CUSTOMER_NOTIFICATION, true)){
-                        TODO("hit send email")
+                        viewModel.sendEventEmail(actionButton, orderDetails.metadata)
                         return@setOnClickListener
                     }
 
@@ -968,9 +985,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     override fun showRetryButtonToaster(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_INDEFINITE, actionText = getString(R.string.review_oke)).show()
-        }
+        showToaster(message)
     }
 
     override fun onTapActionDeals(
@@ -1014,6 +1029,16 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         startActivity(intent)
     }
 
+    private fun showToaster(message: String?){
+        view?.let {
+            Toaster.build(it, message ?: DEFAULT_MESSAGE_ERROR, Toaster.LENGTH_INDEFINITE, actionText = getString(R.string.review_oke)).show()
+        }
+    }
+
+    private fun setActionButtonText(text: String){
+        binding?.actionButtonText?.text = text
+    }
+
     companion object{
         private const val KEY_URI = "tokopedia"
         private const val KEY_URI_PARAMETER = "idem_potency_key"
@@ -1045,6 +1070,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val BOLD_TEXT_STYLE = "bold"
         private const val TOASTER_FORMAT = "%s %s"
         private const val INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim"
+        private const val DEFAULT_MESSAGE_ERROR = "Something Error"
         const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(

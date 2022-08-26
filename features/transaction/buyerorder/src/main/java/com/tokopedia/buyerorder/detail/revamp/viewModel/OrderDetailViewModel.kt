@@ -120,12 +120,10 @@ class OrderDetailViewModel @Inject constructor(
             body = metadata
 
             execute(object : Subscriber<Map<Type, RestResponse>>(){
-                override fun onCompleted() {
-
-                }
+                override fun onCompleted() {/*no op*/}
 
                 override fun onError(e: Throwable?) {
-
+                    e?.let { _eventEmail.postValue(Fail(it)) }
                 }
 
                 override fun onNext(t: Map<Type, RestResponse>?) {
