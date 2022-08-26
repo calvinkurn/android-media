@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetTitleView
             android:id="@+id/tvShcUnificationTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -27,6 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_2"
             app:typographyWeight="bold"
+            tools:layout_height="32dp"
             tools:text="Cek keadaan produkmu" />
 
         <View
@@ -45,8 +46,8 @@
             android:id="@+id/icShcUnificationTab"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:icon_name="CHEVRON_DOWN"
             android:layout_marginEnd="8dp"
+            app:icon_name="CHEVRON_DOWN"
             app:layout_constraintBottom_toBottomOf="@+id/viewShcUnificationTabBg"
             app:layout_constraintEnd_toEndOf="@+id/viewShcUnificationTabBg"
             app:layout_constraintTop_toTopOf="@+id/viewShcUnificationTabBg" />
