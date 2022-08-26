@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -100,11 +101,11 @@ fun NewOrderDetailHeader() {
             painter = painterResource(
                 id = R.drawable.ic_seller_toped
             ),
-            contentDescription = "logo seller"
+            contentDescription = stringResource(id = R.string.new_order_detail_content_description_seller_icon)
         )
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL3,
-            text = "Pesanan Baru",
+            text = stringResource(id = R.string.new_order_detail_header_title),
             color = NestLightNN0,
             lineHeight = SP_18,
             weight = FONT_WEIGHT_500,
@@ -127,7 +128,7 @@ fun NewOrderDetailMain() {
         )
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL4,
-            text = "Batas Respons (P0):",
+            text = stringResource(id = R.string.new_order_detail_status_response),
             color = NestLightNN0,
             lineHeight = SP_20,
             weight = FONT_WEIGHT_500,
@@ -154,7 +155,7 @@ fun NewOrderDetailDate() {
             painter = painterResource(
                 id = com.tokopedia.iconunify.R.drawable.iconunify_clock_filled
             ),
-            contentDescription = "logo seller"
+            contentDescription = stringResource(id = R.string.new_order_detail_content_description_clocked_filled)
         )
         NewOrderDetailSpacer(
             height = NEST_SPACING_LVL1
@@ -274,19 +275,19 @@ fun NewOrderDetailFooter() {
                 horizontal = NEST_LAYOUT_LVL3
             ),
         fontSize = NEST_FONT_SIZE_LVL3,
-        text = "Actions",
+        text = stringResource(id = R.string.new_order_detail_footer_title),
         color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_700,
     )
     NewOrderDetailActionButton(
-        text = "Terima Pesanan"
+        text = stringResource(id = R.string.new_order_detail_accept_order)
     )
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL2
     )
     NewOrderDetailActionButton(
-        text = "Buka di handphone"
+        text = stringResource(id = R.string.new_order_detail_open_on_cellphone)
     )
     NewOrderDetailSpacer(
         height = DP_18

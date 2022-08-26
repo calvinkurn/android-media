@@ -49,7 +49,9 @@ fun NewOrderSummaryScreen(
 }
 
 @Composable
-fun CreateOpenOrder(navigateToNewOrderList: () -> Unit) {
+fun CreateOpenOrder(
+    navigateToNewOrderList: () -> Unit
+) {
     Button(
         modifier = Modifier
             .height(32.dp)
