@@ -164,6 +164,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             ).apply {
                 setCloseClickListener {
                     BOTTOMSHEET_PRESSED = false
+                    dismiss()
                 }
                 setOnDismissListener {
                     BOTTOMSHEET_PRESSED = false
