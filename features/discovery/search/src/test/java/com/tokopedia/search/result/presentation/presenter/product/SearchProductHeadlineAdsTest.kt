@@ -6,8 +6,8 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -81,8 +81,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         actualCpmModel.status.shouldBe(expectedCpmModel.status)
         actualCpmModel.error.shouldBe(expectedCpmModel.error)
         actualCpmModel.data.shouldBe(listOf(expectedCpmData))
-        cpmDataView.verticalSeparator.hasTopSeparator.shouldBe(expectedSeparator.hasTopSeparator)
-        cpmDataView.verticalSeparator.hasBottomSeparator.shouldBe(expectedSeparator.hasBottomSeparator)
+        cpmDataView.verticalSeparator.shouldBe(expectedSeparator)
     }
 
     @Test

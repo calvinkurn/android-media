@@ -48,7 +48,7 @@ class UserIdentificationFormFaceFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        analytics?.eventViewSelfiePage()
+        analytics?.eventViewSelfiePage(isKycSelfie)
         initObserver()
     }
 
@@ -104,7 +104,7 @@ class UserIdentificationFormFaceFragment :
         subtitle?.setText(R.string.face_subtitle_kyc)
         button?.setText(R.string.face_button_kyc)
         button?.setOnClickListener { v: View? ->
-            analytics?.eventClickNextSelfiePage()
+            analytics?.eventClickNextSelfiePage(false)
             goToKycSelfie()
         }
         setExampleImages()
@@ -124,7 +124,7 @@ class UserIdentificationFormFaceFragment :
         }?.show()
         button?.setText(R.string.face_button)
         button?.setOnClickListener { v: View? ->
-            analytics?.eventClickNextSelfiePage()
+            analytics?.eventClickNextSelfiePage(true)
             goToKycLiveness()
         }
         layoutSecurity?.show()
