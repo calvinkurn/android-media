@@ -61,10 +61,10 @@ import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
@@ -82,13 +82,13 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
 import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -109,7 +109,6 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_COD
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
@@ -170,6 +169,7 @@ class ChatbotPresenter @Inject constructor(
     private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
     private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
     private val uploaderUseCase : UploaderUseCase,
+    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
     private val getExistingChatMapper: ChatbotGetExistingChatMapper
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
@@ -182,7 +182,6 @@ class ChatbotPresenter @Inject constructor(
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SORCE_TYPE = "Apps"
-        const val SESSION_CHANGE = "31"
     }
 
     override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -282,15 +281,6 @@ class ChatbotPresenter @Inject constructor(
                         handleSessionChange(agentMode)
                     }
 
-
-                    if(attachmentType == SESSION_CHANGE) {
-                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
-                            chatResponse.attachment?.attributes,
-                            ReplyBubbleAttributes::class.java
-                        )
-                        handleReplyBubble(agentMode)
-                    }
-
                 } catch (e: JsonSyntaxException) { }
             }
 
@@ -335,16 +325,6 @@ class ChatbotPresenter @Inject constructor(
                 view.sessionChangeStateHandler(true)
             }else if (agentMode.sessionChange.mode==MODE_BOT){
                 view.sessionChangeStateHandler(false)
-            }
-        }
-    }
-
-    private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
-        if (agentMode!=null){
-            if (agentMode.sessionChange.mode==MODE_AGENT){
-                view.replyBubbleStateHandler(true)
-            }else if (agentMode.sessionChange.mode==MODE_BOT){
-                view.replyBubbleStateHandler(false)
             }
         }
     }
@@ -814,6 +794,7 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
         mapForVideoUploadJobs.clear()
+        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         super.detachView()
     }
 
@@ -926,6 +907,23 @@ class ChatbotPresenter @Inject constructor(
                 onErrorVideoUpload(it)
             }
         )
+    }
+
+    override fun checkUploadVideoEligibility(msgId: String) {
+        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
+        chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
+            msgId,
+            ::onSuccessVideoUploadEligibility,
+            ::onFailureVideoUploadEligibility
+        )
+    }
+
+    private fun onSuccessVideoUploadEligibility(response : ChatbotUploadVideoEligibilityResponse) {
+        view.videoUploadEligibilityHandler(response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible)
+    }
+
+    private fun onFailureVideoUploadEligibility(throwable: Throwable) {
+
     }
 
     override fun clearGetChatUseCase() {

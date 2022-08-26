@@ -44,14 +44,11 @@ import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
-import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
-import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
-import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
@@ -107,9 +104,9 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
-import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
+import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
@@ -121,16 +118,6 @@ import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.MediaRetryBottomSheetAdapter
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
-import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
-import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.ReplyBubbleBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
@@ -140,32 +127,24 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
+import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -204,12 +183,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     ChatActionListBubbleListener, ChatRatingListener,
     TypingListener, ChatOptionListListener, CsatOptionListListener,
     View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
-    VideoUploadListener, AttachmentMenu.AttachmentMenuListener {
-        AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener,
-        TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener
-        , ReplyBubbleAreaMessage.Listener{
+    VideoUploadListener, AttachmentMenu.AttachmentMenuListener, ReplyBubbleAreaMessage.Listener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -268,6 +242,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var rvLayoutManager : LinearLayoutManager? = null
     private var messageCreateTime : String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
+    private var isEligibleForVideoUplaod : Boolean = false
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -600,18 +575,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ChatbotTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                getUserSession(),
-                this
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            getUserSession(),
         )
     }
 
@@ -640,6 +616,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         viewState?.initView()
         presenter.checkForSession(messageId)
+        presenter.checkUploadVideoEligibility(messageId)
         showTicker()
 
         initRecyclerViewListener()
@@ -1349,7 +1326,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         var list = mutableListOf<AttachmentMenu>()
-        if(isConnectedToAgent){
+        if(isConnectedToAgent && isEligibleForVideoUplaod){
             attachmentMenuRecyclerView?.addVideoAttachmentMenu()
         } else {
             list.add(ChatbotImageMenu())
@@ -1366,7 +1343,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onClickAttachVideo(menu: AttachmentMenu) {
         super.onClickAttachVideo(menu)
         pickVideoFromDevice()
-        chatbotAnalytics?.get().eventOnVideoPick()
+        chatbotAnalytics?.get()?.eventOnVideoPick()
     }
 
     override fun showErrorToast(it: Throwable) {
@@ -1629,12 +1606,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-
-    override fun replyBubbleStateHandler(state: Boolean) {
-        replyBubbleEnabled = state
-        checkReplyBubbleOnboardingStatus()
-    }
-
     private fun checkReplyBubbleOnboardingStatus() {
         val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
         if (!replyBubbleEnabled)
@@ -1873,7 +1844,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
+        replyBubbleEnabled = state
+        checkReplyBubbleOnboardingStatus()
         createAttachmentMenus()
+    }
+
+    override fun videoUploadEligibilityHandler(state: Boolean) {
+        isEligibleForVideoUplaod = state
     }
 }
 

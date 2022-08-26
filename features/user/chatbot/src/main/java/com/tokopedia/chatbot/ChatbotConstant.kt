@@ -10,8 +10,6 @@ object ChatbotConstant {
     const val ONE_SECOND_IN_MILLISECONDS = 1000
     const val MODE_AGENT = "agent"
     const val MODE_BOT = "bot"
-    const val MODE_AGENT = "agent"
-    const val MODE_BOT = "bot"
     const val TOKOPEDIA_CARE = "Tokopedia Care"
     const val TANYA = "Tanya"
     const val REPLY_AGENT_NAME = "{.Name}"

@@ -68,11 +68,11 @@ interface ChatbotContract {
 
         fun sendInvoiceForArticle()
 
-        fun replyBubbleStateHandler(state: Boolean)
-
         fun visibilityReplyBubble(state: Boolean)
 
         fun sessionChangeStateHandler(state : Boolean)
+
+        fun videoUploadEligibilityHandler(state : Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -161,6 +161,8 @@ interface ChatbotContract {
         fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
 
         fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
+
+        fun checkUploadVideoEligibility(msgId : String)
 
         fun sendMessage(
             messageId: String, sendMessage: String,
