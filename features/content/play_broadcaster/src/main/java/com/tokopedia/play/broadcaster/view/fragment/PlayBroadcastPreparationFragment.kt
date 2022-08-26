@@ -234,11 +234,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
-                        if (parentViewModel.channelTitle.isNotEmpty()
-                            && ::switchAccountConfirmationDialog.isInitialized
-                            && !switchAccountConfirmationDialog.isShowing) {
-                            getSwitchAccountConfirmationDialog(contentAccount).show()
-                        } else parentViewModel.submitAction(SelectAccount(contentAccount))
+                        if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
+                        else parentViewModel.submitAction(SelectAccount(contentAccount))
                     }
                 })
             }
@@ -801,23 +798,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun getSwitchAccountConfirmationDialog(contentAccount: ContentAccountUiModel): DialogUnify {
-        if (!::switchAccountConfirmationDialog.isInitialized) {
+        if (!::switchAccountConfirmationDialog.isInitialized || !switchAccountConfirmationDialog.isShowing) {
             switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
-                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_title_buyer_dialog)
-                    else getString(R.string.play_bro_switch_account_title_shop_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_title_shop_dialog)
+                    else getString(R.string.play_bro_switch_account_title_buyer_dialog)
                 )
                 setDescription(
-                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_description_buyer_dialog)
-                    else getString(R.string.play_bro_switch_account_description_shop_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_description_shop_dialog)
+                    else getString(R.string.play_bro_switch_account_description_buyer_dialog)
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
                 setSecondaryCTAText(
-                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
-                    else getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
+                    else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(SelectAccount(contentAccount))
