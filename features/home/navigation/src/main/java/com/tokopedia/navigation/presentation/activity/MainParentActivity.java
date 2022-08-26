@@ -829,7 +829,7 @@ public class MainParentActivity extends BaseActivity implements
                 bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
                 Intent intent = new Intent(BROADCAST_FEED);
                 intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
             } else {
                 bottomNavigation.setBadge(0, FEED_MENU, View.GONE);
             }
@@ -1086,11 +1086,11 @@ public class MainParentActivity extends BaseActivity implements
     private void registerNewFeedClickedReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BROADCAST_FEED);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(newFeedClickedReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(newFeedClickedReceiver, intentFilter);
     }
 
     private void unRegisterNewFeedClickedReceiver() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(newFeedClickedReceiver);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -1357,13 +1357,13 @@ public class MainParentActivity extends BaseActivity implements
         if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed)) ) {
             isFeedClickedFortheFirstTime = true;
             Intent intent = new Intent(BROADCAST_VISIBLITY);
-            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
         else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
             intent.putExtra(FEED_IS_VISIBLE, true);
-            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
         if (isOsExperiment && !presenter.get().isUserLogin() && position == OS_MENU) { // if isOSExperiment then OS_MENU = WISHLIST_MENU
