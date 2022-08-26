@@ -31,7 +31,7 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
             digitalIdentifierParam = digitalIdentifierParam,
             digitalSubscriptionParams = digitalSubscriptionParams,
             idemPotencyKeyHeader = digitalCheckoutPassData.idemPotencyKey,
-            isUseGql = isUseGql
+            isUseGql = true
         )
 
         addToCart?.let {
