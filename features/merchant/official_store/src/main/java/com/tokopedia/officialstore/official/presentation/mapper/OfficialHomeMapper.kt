@@ -2,7 +2,14 @@ package com.tokopedia.officialstore.official.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.DynamicChannelLayout
-import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
+import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
