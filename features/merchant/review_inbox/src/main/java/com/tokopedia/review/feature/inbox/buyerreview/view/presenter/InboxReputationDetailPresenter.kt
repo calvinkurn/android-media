@@ -61,15 +61,19 @@ class InboxReputationDetailPresenter @Inject internal constructor(
                     SendSmileyReputationUseCase.getParam(reputationId, score, role.toIntOrZero())
                 )
             }
-            viewListener?.finishLoadingDialog()
-            if (success) {
-                viewListener?.onSuccessSendSmiley(score.toIntOrZero())
-            } else {
-                viewListener?.onErrorSendSmiley(viewListener?.getErrorMessage())
+            viewListener?.let { viewListener ->
+                viewListener.finishLoadingDialog()
+                if (success) {
+                    viewListener.onSuccessSendSmiley(score.toIntOrZero())
+                } else {
+                    viewListener.onErrorSendSmiley(viewListener.getErrorMessage())
+                }
             }
         }, onError = {
-            viewListener?.finishLoadingDialog()
-            viewListener?.onErrorSendSmiley(viewListener?.getErrorMessage(it))
+            viewListener?.let { viewListener ->
+                viewListener.finishLoadingDialog()
+                viewListener.onErrorSendSmiley(viewListener.getErrorMessage(it))
+            }
         })
     }
 

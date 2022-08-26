@@ -88,13 +88,16 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
         presenter.sendSmiley(anyString(), anyString(), anyString())
 
         coVerify(exactly = 1) {
-            view.showLoadingDialog()
             sendSmileyReputationUseCase.execute(any())
+        }
+
+        verify(exactly = 1) {
+            view.showLoadingDialog()
             view.finishLoadingDialog()
             view.onSuccessSendSmiley(any())
         }
 
-        coVerify(inverse = true) { view.onErrorSendSmiley(any()) }
+        verify(inverse = true) { view.onErrorSendSmiley(any()) }
     }
 
     @Test
@@ -110,7 +113,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
 
         coVerify(exactly = 1) { sendSmileyReputationUseCase.execute(any()) }
 
-        coVerify(inverse = true) {
+        verify(inverse = true) {
             view.showLoadingDialog()
             view.finishLoadingDialog()
             view.onSuccessSendSmiley(any())
@@ -119,7 +122,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
     }
 
     @Test
-    fun `when sendSmiley fail should execute expected usecase and perform expected view actions`() {
+    fun `when sendSmiley fail with exception should execute expected usecase and perform expected view actions`() {
         val expectedResponse = Throwable()
 
         coEvery {
@@ -130,13 +133,88 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
         presenter.sendSmiley(anyString(), anyString(), anyString())
 
         coVerify(exactly = 1) {
-            view.showLoadingDialog()
             sendSmileyReputationUseCase.execute(any())
+        }
+
+        verify(exactly = 1) {
+            view.showLoadingDialog()
             view.finishLoadingDialog()
             view.onErrorSendSmiley(any())
         }
 
-        coVerify(inverse = true) { view.onSuccessSendSmiley(any()) }
+        verify(inverse = true) { view.onSuccessSendSmiley(any()) }
+    }
+
+    @Test
+    fun `when sendSmiley fail without exception should execute expected usecase and perform expected view actions`() {
+        val expectedResponse = false
+
+        coEvery {
+            sendSmileyReputationUseCase.execute(any())
+        } returns expectedResponse
+
+        presenter.attachView(view)
+        presenter.sendSmiley(anyString(), anyString(), anyString())
+
+        coVerify(exactly = 1) {
+            sendSmileyReputationUseCase.execute(any())
+        }
+
+        verify(exactly = 1) {
+            view.showLoadingDialog()
+            view.finishLoadingDialog()
+            view.onErrorSendSmiley(any())
+        }
+
+        verify(inverse = true) { view.onSuccessSendSmiley(any()) }
+    }
+
+    @Test
+    fun `when sendSmiley fail with exception but view is not attached should execute expected usecase without perform expected view actions`() {
+        val expectedResponse = Throwable()
+
+        coEvery {
+            sendSmileyReputationUseCase.execute(any())
+        } throws expectedResponse
+
+        presenter.attachView(null)
+        presenter.sendSmiley(anyString(), anyString(), anyString())
+
+        coVerify(exactly = 1) {
+            sendSmileyReputationUseCase.execute(any())
+        }
+
+        verify(inverse = true) {
+            view.showLoadingDialog()
+            view.finishLoadingDialog()
+            view.onErrorSendSmiley(any())
+        }
+
+        verify(inverse = true) { view.onSuccessSendSmiley(any()) }
+    }
+
+    @Test
+    fun `when sendSmiley fail without exception but view is not attached should execute expected usecase without perform expected view actions`() {
+        val expectedResponse = false
+
+        coEvery {
+            sendSmileyReputationUseCase.execute(any())
+        } returns expectedResponse
+
+        presenter.attachView(null)
+        presenter.sendSmiley(anyString(), anyString(), anyString())
+
+        coVerify(exactly = 1) {
+            sendSmileyReputationUseCase.execute(any())
+        }
+
+        verify(inverse = true) {
+            view.showLoadingDialog()
+            view.finishLoadingDialog()
+            view.onErrorSendSmiley(any())
+        }
+
+        verify(inverse = true) { view.onSuccessSendSmiley(any()) }
     }
 
     @Test
