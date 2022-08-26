@@ -20,22 +20,9 @@ data class EditorDetailUiModel(
     var contrastValue: Float? = null,
     var watermarkMode: Int? = null,
     var removeBackgroundUrl: String? = null,
-    var isContrastExecuteFirst: Int? = null,
+    var isContrastExecuteFirst: Boolean? = null,
     var cropRotateValue: EditorCropRotateModel = getEmptyEditorCropRotateModel()
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        originalUrl = parcel.readString() ?: "",
-        editorToolType = parcel.readInt(),
-        resultUrl = parcel.readString(),
-        brightnessValue = shouldNull(parcel.readFloat()),
-        contrastValue = shouldNull(parcel.readFloat()),
-        watermarkMode = shouldNull(parcel.readInt()),
-        removeBackgroundUrl = parcel.readString(),
-        isContrastExecuteFirst = parcel.readInt(),
-        cropRotateValue = parcel.readParcelable<EditorCropRotateModel>(EditorCropRotateModel::class.java.classLoader)
-            ?: getEmptyEditorCropRotateModel()
-    )
-
     // used only for remove background
     fun clearValue() {
         brightnessValue = null

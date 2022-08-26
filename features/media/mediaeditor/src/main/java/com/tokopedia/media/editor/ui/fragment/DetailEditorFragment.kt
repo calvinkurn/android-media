@@ -398,7 +398,7 @@ class DetailEditorFragment @Inject constructor(
     private fun readPreviousState(previousState: EditorDetailUiModel) {
         // if current selected editor not brightness and contrast, implement filter with sequence
         if (!previousState.isToolBrightness() && !previousState.isToolContrast()) {
-            if (previousState.isContrastExecuteFirst == 1) {
+            if (previousState.isContrastExecuteFirst == true) {
                 implementPreviousStateContrast(previousState.contrastValue)
                 implementPreviousStateBrightness(previousState.brightnessValue)
             } else {

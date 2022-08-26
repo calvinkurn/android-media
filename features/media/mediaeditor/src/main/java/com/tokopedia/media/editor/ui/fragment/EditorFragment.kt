@@ -227,9 +227,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
                     if (item.editorToolType == EditorToolType.CONTRAST) {
-                        paramData.isContrastExecuteFirst = 0
+                        paramData.isContrastExecuteFirst = false
                     } else if (item.editorToolType == EditorToolType.BRIGHTNESS) {
-                        paramData.isContrastExecuteFirst = 1
+                        paramData.isContrastExecuteFirst = true
                     }
                 }
 
