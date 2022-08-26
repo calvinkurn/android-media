@@ -74,11 +74,21 @@ class DetailEditorFragment @Inject constructor(
                 rotateNumber = viewModel.rotateNumber,
                 data
             ) {
-                writeToStorage(it)
+                data.resultUrl = viewModel.saveImageCache(
+                    requireContext(),
+                    it
+                )?.path
+
+                finishPage()
             }
         } else {
             viewBinding?.imgUcropPreview?.getBitmap()?.let {
-                writeToStorage(it)
+                data.resultUrl = viewModel.saveImageCache(
+                    requireContext(),
+                    it
+                )?.path
+
+                finishPage()
             }
         }
     }
@@ -114,8 +124,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked() {
-        viewBinding?.imgUcropPreview?.let { editorDetailPreviewImage ->
-            writeToStorage(editorDetailPreviewImage.getBitmap(), isFinish = false)
+        viewBinding?.imgUcropPreview?.let { _ ->
             data.resultUrl?.let { it ->
                 viewModel.setRemoveBackground(it) { _ ->
                     viewBinding?.let {
@@ -140,8 +149,6 @@ class DetailEditorFragment @Inject constructor(
                     }
                 }
             }
-            // set result null, just use it as temporary for save image to cache
-            data.resultUrl = null
         }
     }
 
@@ -558,21 +565,6 @@ class DetailEditorFragment @Inject constructor(
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
         activity?.finish()
-    }
-
-    private fun writeToStorage(
-        bitmapParam: Bitmap,
-        filename: String? = null,
-        isFinish: Boolean = true
-    ) {
-        val fileResult = viewModel.saveImageCache(
-            requireContext(),
-            bitmapParam,
-            filename
-        )
-
-        data.resultUrl = fileResult?.path
-        if (isFinish) finishPage()
     }
 
     override fun getScreenName() = SCREEN_NAME

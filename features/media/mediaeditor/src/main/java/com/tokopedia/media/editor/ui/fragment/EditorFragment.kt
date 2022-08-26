@@ -233,6 +233,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     }
                 }
 
+                paramData.resultUrl = editorUiModel.getImageUrl()
+
                 val intent = Intent(it, DetailEditorActivity::class.java).apply {
                     putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)
                     putExtra(DetailEditorActivity.PARAM_EDITOR, viewModel.editorParam.value)
