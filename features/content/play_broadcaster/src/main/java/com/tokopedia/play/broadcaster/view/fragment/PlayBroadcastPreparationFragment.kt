@@ -218,6 +218,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         else emptyList()
                     }
 
+                    override fun getAuthorId(): String {
+                        return if (::parentViewModel.isInitialized) parentViewModel.authorId
+                        else ""
+                    }
+
                     override fun getChannelId(): String {
                         return if (::parentViewModel.isInitialized) parentViewModel.channelId
                         else ""
