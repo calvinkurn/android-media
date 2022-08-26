@@ -275,10 +275,11 @@ class DetailEditorFragment @Inject constructor(
             // ==========
             EditorToolType.REMOVE_BACKGROUND -> {
                 viewBinding?.imgUcropPreview?.apply {
-                    initializeRemoveBackground(uri)
-                    onLoadComplete = {
-                        readPreviousState(data)
-                    }
+                    initializeRemoveBackground(
+                        data.resultUrl?.let {
+                            Uri.fromFile(File(it))
+                        } ?: uri
+                    )
                 }
                 removeBgComponent.setupView()
             }
