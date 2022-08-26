@@ -417,17 +417,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         if (startIndexOfLink != -1){
             spannableString.setSpan(object : ClickableSpan(){
                 override fun onClick(p0: View) {
-                    if (helpLink.isNotEmpty()){
-                        RouteManager.route(context, helpLink)
-                    } else {
-                        val url = try {
-                            URLDecoder.decode(getString(R.string.contact_us_applink), ENCODER)
-                        } catch (e : UnsupportedEncodingException){
-                            ""
-                        }
-                        val intent = OrderListwebViewActivity.getWebViewIntent(context, url, WEB_VIEW_TITLE)
-                        startActivity(intent)
-                    }
+                    if (helpLink.isNotEmpty()) RouteManager.route(context, helpLink)
+                    else redirectToWebView(getString(R.string.contact_us_applink), WEB_VIEW_TITLE_HELP)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -989,7 +980,38 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         count: Int,
         position: Int
     ) {
+        if (actionButton.control.equals(KEY_BUTTON, true)
+            || actionButton.control.equals(KEY_REFRESH, true) ) {
+            viewModel.requestActionButton(item.actionButtons, position, true, isCalledFromAdapter = true)
+            return
+        }
 
+        when{
+            actionButton.control.equals(KEY_REDIRECT, true) -> {
+                if (actionButton.body.appURL.isEmpty()){
+                    return
+                }
+
+                if (view == null) RouteManager.route(context, actionButton.body.appURL)
+                else redirectToWebView(actionButton.body.appURL, WEB_VIEW_TITLE_REDEEM)
+            }
+            actionButton.control.equals(KEY_QRCODE, true) -> {
+                openQRFragment(actionButton, item)
+            }
+            actionButton.control.equals(KEY_REDIRECT_EXTERNAL, true) -> {
+                RouteManager.route(context, actionButton.body.appURL)
+            }
+        }
+    }
+
+    private fun redirectToWebView(appLink: String, title: String){
+        val url = try {
+            URLDecoder.decode(appLink, ENCODER)
+        } catch (e : UnsupportedEncodingException){
+            ""
+        }
+        val intent = OrderListwebViewActivity.getWebViewIntent(context, url, title)
+        startActivity(intent)
     }
 
     companion object{
@@ -1002,6 +1024,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_UPSTREAM = "upstream"
         private const val KEY_BUTTON = "button"
         private const val KEY_REDIRECT = "redirect"
+        private const val KEY_REDIRECT_EXTERNAL = "redirectexternal"
+        private const val KEY_REFRESH = "refresh"
+        private const val KEY_QRCODE = "qrcode"
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val KEY_DEAL = "Deal"
         private const val SHAPE_STROKE_2 = 2
@@ -1012,7 +1037,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val DELAY_COACH_MARK_START = 500L
         private const val KEY_TEXT = "text"
         private const val ENCODER = "UTF-8"
-        private const val WEB_VIEW_TITLE = "Help Centre"
+        private const val WEB_VIEW_TITLE_HELP = "Help Centre"
+        private const val WEB_VIEW_TITLE_REDEEM = "Redeem Voucher"
         private const val CATEGORY_GIFT_CARD = "Gift-card"
         private const val IS_TRUE = "true"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner"
