@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.databinding.RedeemVoucherDealsLayoutBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
-import com.tokopedia.buyerorder.detail.data.Body
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,16 +25,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 class RedeemVoucherView : LinearLayout {
 
     private var voucherCount: Int = 0
-    private var position: Int = 0
     private var isOMP: Boolean = false
-    private var isLastItem:Boolean = false
     private var retryCount = 0
-    private var onTapActionDeals: ((TextView?, ActionButton, Items, Int, Int) -> Unit)? = null
+    private var onTapActionDeals: ((TextView?, Items, Int) -> Unit)? = null
     private var onShowRetry: ((String) -> Unit)? = null
 
     private lateinit var actionButton: ActionButton
     private lateinit var item: Items
-    private lateinit var body: Body
     private lateinit var binding: RedeemVoucherDealsLayoutBinding
 
     constructor(context: Context?) : super(context){
@@ -57,22 +53,16 @@ class RedeemVoucherView : LinearLayout {
     constructor(
         context: Context?,
         voucherCount: Int,
-        position: Int,
         isOMP: Boolean,
-        isLastItem: Boolean,
         actionButton: ActionButton,
         item: Items,
-        body: Body,
-        onTapActionDeals: ((TextView?, ActionButton, Items, Int, Int) -> Unit)?,
+        onTapActionDeals: ((TextView?, Items, Int) -> Unit)?,
         onShowRetry: ((String) -> Unit)?
     ) : super(context) {
         this.voucherCount = voucherCount
-        this.position = position
         this.isOMP = isOMP
-        this.isLastItem = isLastItem
         this.actionButton = actionButton
         this.item = item
-        this.body = body
         this.onTapActionDeals = onTapActionDeals
         this.onShowRetry = onShowRetry
         initView()
@@ -97,10 +87,10 @@ class RedeemVoucherView : LinearLayout {
                 binding.redeemBtnDeals.visible()
             }
 
-            onTapActionDeals?.invoke(binding.redeemBtnDeals, actionButton, item, retryCount, position)
+            onTapActionDeals?.invoke(binding.redeemBtnDeals, item, retryCount)
         }
 
-        binding.dividerVoucher.showWithCondition(!isLastItem)
+        binding.dividerVoucher.showWithCondition(item.actionButtons.size - 1 != voucherCount)
 
     }
 

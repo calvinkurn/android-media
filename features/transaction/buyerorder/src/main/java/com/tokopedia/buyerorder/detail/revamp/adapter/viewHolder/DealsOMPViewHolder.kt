@@ -121,14 +121,11 @@ class DealsOMPViewHolder(
                     val redeemVoucherView = RedeemVoucherView(
                         itemView.context,
                         index,
-                        adapterPosition,
                         true,
-                        item.actionButtons.size - 1 == index,
                         actionButton,
                         item,
-                        actionButton.body,
-                        { textView, aButton, items, count, position ->
-                            eventDetailsListener.onTapActionDeals(textView, aButton, items, count, position)
+                        { textView, items, count ->
+                            eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
                         },
                         {
                             eventDetailsListener.showRetryButtonToaster(it)
