@@ -262,6 +262,108 @@ class ShipmentPresenterUpsellTest {
     }
 
     @Test
+    fun `WHEN clear all BO on temporary state with no BO code THEN should not try clear all BO`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = true,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                isSelected = true,
+                price = 100,
+                duration = "duration",
+                wording = "wording",
+                buttonText = "button"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+            cartString = "cartString"
+            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+            voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
+        })
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+                ClearPromoUiModel(
+                        successDataModel = SuccessDataUiModel(
+                                success = true
+                        )
+                )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
+
+        // When
+        presenter.clearAllBoOnTemporaryUpsell()
+
+        // Then
+        verify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+            clearCacheAutoApplyStackUseCase.createObservable(any())
+        }
+    }
+
+    @Test
+    fun `WHEN clear all BO on temporary state with no shipment data THEN should not try clear all BO`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = true,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                isSelected = true,
+                price = 100,
+                duration = "duration",
+                wording = "wording",
+                buttonText = "button"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+            cartString = "cartString"
+        })
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+                ClearPromoUiModel(
+                        successDataModel = SuccessDataUiModel(
+                                success = true
+                        )
+                )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } just Runs
+        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
+
+        // When
+        presenter.clearAllBoOnTemporaryUpsell()
+
+        // Then
+        verify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+            clearCacheAutoApplyStackUseCase.createObservable(any())
+        }
+    }
+
+    @Test
     fun `WHEN clear all BO not on temporary state THEN should not try clear all BO`() {
         // Given
         val groupAddress = GroupAddress().apply {
