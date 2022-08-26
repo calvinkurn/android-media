@@ -204,7 +204,7 @@
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
 /features/user/vote/                            		@tokopedia/android-minionkevin-dev
 /features/user/otp/                             		@tokopedia/android-minionkevin-dev
-/features/user/settingbank/                     		@tokopedia/android-minionyoda-dev
+/features/user/settingbank/                     		@tokopedia/android-minionmark-dev
 /features/user/settingnotif/                    		@tokopedia/android-minionkevin-dev
 /features/user/changepassword/                  		@tokopedia/android-minionkevin-dev
 /features/user/logout/                          		@tokopedia/android-minionkevin-dev
@@ -248,15 +248,15 @@
 /features/operational/contact_us        				@tokopedia/android-minionken-dev
 /features/operational/csat_rating        				@tokopedia/android-minionken-dev
 
-/features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
-/features/fintech/fintech_home_widget         			@tokopedia/android-minionyoda-dev
-/features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
-/features/fintech/layanan_finansial                     @tokopedia/android-minionyoda-dev
-/features/fintech/paylater                              @tokopedia/android-minionyoda-dev
-/features/fintech/pdp_fintech_widget                    @tokopedia/android-minionyoda-dev
-/features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionyoda-dev
-/features/fintech/saldo_details         				@tokopedia/android-minionyoda-dev
-/features/fintech/home_credit           				@tokopedia/android-minionyoda-dev
+/features/fintech/common_wallet         				@tokopedia/android-minionmark-dev
+/features/fintech/fintech_home_widget         			@tokopedia/android-minionmark-dev
+/features/fintech/instant_loan          				@tokopedia/android-minionmark-dev
+/features/fintech/layanan_finansial                     @tokopedia/android-minionmark-dev
+/features/fintech/paylater                              @tokopedia/android-minionmark-dev
+/features/fintech/pdp_fintech_widget                    @tokopedia/android-minionmark-dev
+/features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionmark-dev
+/features/fintech/saldo_details         				@tokopedia/android-minionmark-dev
+/features/fintech/home_credit           				@tokopedia/android-minionmark-dev
 /features/promo/tokopoints              				@tokopedia/android-minionsolo-dev
 /features/promo/tokopoints_notification 				@tokopedia/android-minionsolo-dev
 /features/promo/gamification            				@tokopedia/android-minionsolo-dev
@@ -269,7 +269,7 @@
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
-/features/fintech/merchant_lending_widget               @tokopedia/android-minionyoda-dev
+/features/fintech/merchant_lending_widget               @tokopedia/android-minionmark-dev
 /features/promo/tokomember_seller_dashboard  	        @tokopedia/android-minionsolo-dev
 /features/promo/tokomember_common_widget 		        @tokopedia/android-minionsolo-dev
 
@@ -278,15 +278,15 @@
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
 /features/im/cm_home_widget                   			@tokopedia/android-minionyoda-dev
-/features/ovop2p                                        @tokopedia/android-minionyoda-dev
-/features/payment/common_payment                        @tokopedia/android-minionyoda-dev
-/features/fintech/wallet                				@tokopedia/android-minionyoda-dev
-/features/payment/thankyou_native                		@tokopedia/android-minionyoda-dev
-/features/payment/withdraw/             				@tokopedia/android-minionyoda-dev
+/features/ovop2p                                        @tokopedia/android-minionmark-dev
+/features/payment/common_payment                        @tokopedia/android-minionmark-dev
+/features/fintech/wallet                				@tokopedia/android-minionmark-dev
+/features/payment/thankyou_native                		@tokopedia/android-minionmark-dev
+/features/payment/withdraw/             				@tokopedia/android-minionmark-dev
 
-/features/payment/payment_setting/              		@tokopedia/android-minionyoda-dev
-/features/payment/pms/                          		@tokopedia/android-minionyoda-dev
-/features/payment/gopay.kyc/                          	@tokopedia/android-minionyoda-dev
+/features/payment/payment_setting/              		@tokopedia/android-minionmark-dev
+/features/payment/pms/                          		@tokopedia/android-minionmark-dev
+/features/payment/gopay.kyc/                          	@tokopedia/android-minionmark-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
@@ -400,7 +400,7 @@
 /gradle.properties                                      @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
-/testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev @tokopedia/android-minionyoda-dev
+/testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev
 
 /features/transaction/buyerorder/                       @tokopedia/android-minionmark-dev
 
