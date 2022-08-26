@@ -113,7 +113,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun <T : DynamicPdpDataModel> getComponentPosition(data: T?): Int {
         return if (data != null) {
-            productAdapter.currentList.indexOf(data) ?: RecyclerView.NO_POSITION
+            productAdapter.currentList.indexOf(data)
         } else {
             RecyclerView.NO_POSITION
         }
@@ -165,11 +165,5 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         showLoading()
 
         rvPdp?.adapter = productAdapter
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        rvPdp?.adapter = null
-        binding = null
     }
 }
