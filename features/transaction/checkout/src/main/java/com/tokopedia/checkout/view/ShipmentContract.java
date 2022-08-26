@@ -382,7 +382,7 @@ public interface ShipmentContract {
 
         ShipmentUpsellModel getShipmentUpsellModel();
 
-        void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
+        ArrayList<String> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
     }

@@ -1263,16 +1263,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    // Re-fetch rates to get promo mvc icon for all order
-    private void reloadCourierForMvc(ArrayList<String> appliedMvcCartStrings) {
+    // Re-fetch rates to get promo mvc icon for all order, except already reloaded unique ids
+    private void reloadCourierForMvc(ArrayList<String> appliedMvcCartStrings, ArrayList<String> reloadedUniqueIds) {
         List<Object> object = shipmentAdapter.getShipmentDataList();
         if (object != null && object.size() > 0) {
             for (int i = 0; i < object.size(); i++) {
                 if (object.get(i) instanceof ShipmentCartItemModel) {
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object.get(i);
-                    if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(shipmentCartItemModel.getCartString())) {
+                    if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(shipmentCartItemModel.getCartString()) && !reloadedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                         prepareReloadRates(i, false);
-                    } else {
+                    } else if (!reloadedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                         prepareReloadRates(i, true);
                     }
                 }
@@ -1315,6 +1315,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                ArrayList<String> reloadedUniqueIds = new ArrayList<>();
                 if (validateUsePromoRevampUiModel != null) {
                     String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
                     if (messageInfo.length() > 0) {
@@ -1324,7 +1325,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                     updatePromoTrackingData(validateUsePromoRevampUiModel.getPromoUiModel().getTrackingDetailUiModels());
                     sendEEStep3();
-                    shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
+                    reloadedUniqueIds = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
                     if (shipmentAdapter.hasSetAllCourier()) {
                         resetPromoBenefit();
                         setPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries());
@@ -1355,8 +1356,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
                 ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
                 if (requiredToReloadRatesForMvcCourier) {
-//                  todo: hansen: validate cart strings with auto apply-unapply unique ids to prevent multiple reload
-                    reloadCourierForMvc(appliedMvcCartStrings);
+                    reloadCourierForMvc(appliedMvcCartStrings, reloadedUniqueIds);
                 }
             }
         }
