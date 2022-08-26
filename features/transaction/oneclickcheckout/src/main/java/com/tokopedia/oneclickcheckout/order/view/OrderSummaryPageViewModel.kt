@@ -1026,7 +1026,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         const val SAVE_PINPOINT_SUCCESS_MESSAGE = "Pinpoint berhasil disimpan"
 
-        const val FAIL_APPLY_BBO_ERROR_MESSAGE = "Gagal mengaplikasikan bebas ongkir"
+        const val FAIL_APPLY_BBO_ERROR_MESSAGE = "Bebas ongkir gagal diaplikasikan, silahkan coba kembali"
 
         const val ERROR_CODE_PRICE_CHANGE = "513"
         const val PRICE_CHANGE_ERROR_MESSAGE = "Harga telah berubah"

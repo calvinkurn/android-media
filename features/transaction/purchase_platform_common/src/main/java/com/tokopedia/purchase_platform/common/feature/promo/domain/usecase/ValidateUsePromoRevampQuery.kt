@@ -197,8 +197,8 @@ const val VALIDATE_USE_QUERY = """
 """
 
 const val CLEAR_CACHE_AUTO_APPLY_QUERY = """
-            mutation clearCacheAutoApplyStack(${"$"}serviceID: String!, ${"$"}promoCode: [String], ${"$"}isOCC: Boolean) {
-                clearCacheAutoApplyStack(serviceID: ${"$"}serviceID, promoCode: ${"$"}promoCode, isOCC: ${"$"}isOCC) {
+            mutation clearCacheAutoApplyStack(${"$"}serviceID: String!, ${"$"}promoCode: [String], ${"$"}isOCC: Boolean, ${"$"}orderData: OrderDataInput) {
+                clearCacheAutoApplyStack(serviceID: ${"$"}serviceID, promoCode: ${"$"}promoCode, isOCC: ${"$"}isOCC, orderData: ${"$"}orderData) {
                     Success
                     ticker_message
                     default_empty_promo_message
