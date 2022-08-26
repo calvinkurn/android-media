@@ -146,13 +146,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         pushOpenScreenEvent()
-        Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
-            if (it.contains(PAGE_SEGMENT_HELP)) {
-                selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
-            } else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
-                selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
-            }
-        }
     }
 
     private val coachMarkItemList = ArrayList<CoachMark2Item>()
@@ -260,9 +253,20 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun initBottomNavigationView() {
+        var selectedTab =  HOME_MENU
+        Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
+            if (it.contains(PAGE_SEGMENT_HELP)) {
+                selectedTab = HELP_MENU
+            } else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectedTab = INCOME_MENU
+            }
+        }
         affiliateBottomNavigation = AffiliateBottomNavbar(
             findViewById(R.id.bottom_navbar),
-            this, this, isAffiliateWalletEnabled
+            this,
+            this,
+            isAffiliateWalletEnabled,
+            selectedTab
         )
         if (isAffiliateWalletEnabled) {
             INCOME_MENU = THIRD_TAB
