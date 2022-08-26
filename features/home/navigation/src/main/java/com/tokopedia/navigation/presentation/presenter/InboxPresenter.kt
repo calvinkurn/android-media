@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.presenter
 
-import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -12,6 +10,7 @@ import com.tokopedia.devicefingerprint.appauth.AppAuthWorker.Companion.userSessi
 import com.tokopedia.navigation.GlobalNavConstant
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
+import com.tokopedia.navigation.domain.model.Param
 import com.tokopedia.navigation.domain.model.RecomTitle
 import com.tokopedia.navigation.domain.model.Recommendation
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
@@ -80,6 +79,7 @@ class InboxPresenter @Inject constructor(
                 R.raw.query_notification
             )
         )
+        requestParams.putObject(PARAM_INPUT, Param(userSessionInterface.shopId))
         getNotificationUseCase.execute(requestParams, InboxSubscriber(this.inboxView))
     }
 
@@ -301,5 +301,7 @@ class InboxPresenter @Inject constructor(
     companion object {
         val X_SOURCE_RECOM_WIDGET = "recom_widget"
         val INBOX_PAGE = "inbox"
+
+        private const val PARAM_INPUT = "input"
     }
 }
