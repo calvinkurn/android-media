@@ -3,6 +3,9 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseBoPromoInfoDataComplete
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseBoPromoInfoDataEmpty
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseBoPromoInfoDataIncomplete
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateBlacklisted
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateCouponListEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateEmpty
@@ -598,5 +601,56 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         //then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
+    }
+
+    @Test
+    fun `WHEN get promo list with BO info bottom sheet data complete THEN bottom sheet isVisible state should be true`() {
+        //given
+        val newResponse = provideGetPromoListResponseBoPromoInfoDataComplete()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
+        }
+
+        //when
+        viewModel.getPromoList(PromoRequest(), "")
+
+        //then
+        assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == true)
+    }
+
+    @Test
+    fun `WHEN get promo list with BO info bottom sheet data incomplete THEN bottom sheet isVisible state should be false`() {
+        //given
+        val newResponse = provideGetPromoListResponseBoPromoInfoDataIncomplete()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
+        }
+
+        //when
+        viewModel.getPromoList(PromoRequest(), "")
+
+        //then
+        assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == false)
+    }
+
+    @Test
+    fun `WHEN get promo list with BO info bottom sheet data empty THEN bottom sheet isVisible state should be false`() {
+        //given
+        val newResponse = provideGetPromoListResponseBoPromoInfoDataEmpty()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
+        }
+
+        //when
+        viewModel.getPromoList(PromoRequest(), "")
+
+        //then
+        assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == false)
     }
 }
