@@ -3506,4 +3506,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
+
+    @Override
+    public void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds) {
+        if (getActivity() != null) {
+            List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
+            int firstFoundPosition = 0;
+            shipment_loop:
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
+                    for (String uniqueId : unappliedBoPromoUniqueIds) {
+                        if (Objects.equals(shipmentCartItemModel.getCartString(), uniqueId) &&
+                                (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null)) {
+                            firstFoundPosition = i;
+                            shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                            shipmentCartItemModel.setStateAllItemViewExpanded(false);
+                            shipmentCartItemModel.setShippingBorderRed(true);
+                            onNeedUpdateViewItem(i);
+                            break shipment_loop;
+                        }
+                    }
+                }
+            }
+
+            rvShipment.smoothScrollToPosition(firstFoundPosition);
+        }
+    }
 }
