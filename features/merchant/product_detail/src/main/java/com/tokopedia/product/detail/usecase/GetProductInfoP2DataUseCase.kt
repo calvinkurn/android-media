@@ -341,7 +341,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   products{
                     productID
                     boType
-                    boCampaignIDs
                   }
                   images{
                     boType
@@ -382,6 +381,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 chipsLabel
                 hasUsedBenefit
               }
+              boMetadata
             }
             merchantVoucherSummary{
                 animatedInfo{
