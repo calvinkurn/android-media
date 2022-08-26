@@ -64,4 +64,7 @@
     <string name="shc_feedback_bottom_sheet_title">Info tidak dibutuhkan lagi</string>
     <string name="shc_feedback_content_bottom_sheet_title">Saya ingin menghapus info ini karena:</string>
     <string name="shc_post_more_option_1">Pilih artikel yang ingin dihapus</string>
+    <string name="shc_still_need_this_info">Masih butuh info ini?</string>
+    <string name="shc_yes">Ya</string>
+    <string name="shc_no">Tidak</string>
 </resources>
