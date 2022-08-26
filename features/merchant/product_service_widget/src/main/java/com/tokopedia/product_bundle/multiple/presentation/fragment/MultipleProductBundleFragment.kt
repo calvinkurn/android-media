@@ -207,7 +207,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             atcResult?.let {
                 val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
                 val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
-                val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it) // viewModel.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it)
+                val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it) 
 
                 if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
                     sendTrackerBundleAtcClickEvent(

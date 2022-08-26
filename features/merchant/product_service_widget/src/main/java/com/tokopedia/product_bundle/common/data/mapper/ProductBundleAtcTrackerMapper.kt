@@ -31,9 +31,6 @@ object ProductBundleAtcTrackerMapper {
             selectedBundleId: String,
             cartId: String
     ): List<ProductDetailBundleTracker> {
-//        val productDetailWithCartId = atcResult.responseResult.data.find {
-//            it.productId == selectedProductId
-//        }
         val productDetails = bundleInfo.find {
             it.bundleID.toString() == selectedBundleId
         }
