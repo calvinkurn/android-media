@@ -191,10 +191,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val isAllowChangeAccount: Boolean
         get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
 
-    val selectedAccountID: String
+    val authorId: String
         get() = _selectedAccount.value.id
 
-    private val selectedAccountType: String
+    private val authorType: String
         get() = _selectedAccount.value.type
 
     private val _channelUiState = _configInfo
@@ -376,7 +376,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getConfiguration() {
         viewModelScope.launchCatchError(block = {
 
-            val configUiModel = repo.getChannelConfiguration(selectedAccountID, selectedAccountType)
+            val configUiModel = repo.getChannelConfiguration(authorId, authorType)
             setChannelId(configUiModel.channelId)
 
             _configInfo.value = configUiModel
@@ -428,7 +428,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun createChannel() {
-        val channelId = repo.createChannel(selectedAccountID, selectedAccountType)
+        val channelId = repo.createChannel(authorId, authorType)
         setChannelId(channelId)
     }
 

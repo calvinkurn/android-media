@@ -228,7 +228,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.contentAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
-                        if (contentAccount.id == parentViewModel.selectedAccountID) return
+                        if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()
                             && !getSwitchAccountConfirmationDialog(contentAccount).isShowing) {
                             getSwitchAccountConfirmationDialog(contentAccount).show()
