@@ -799,13 +799,6 @@ class PlayUpcomingTest {
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
         }
-
-        robot.use {
-            /** Test */
-            it.recordEvent {
-                submitAction(CloseSharingOptionUpcomingAction)
-            }
-        }
     }
 
     @Test
