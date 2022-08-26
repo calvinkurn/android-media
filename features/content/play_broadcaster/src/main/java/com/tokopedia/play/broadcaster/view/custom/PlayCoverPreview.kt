@@ -3,11 +3,12 @@ package com.tokopedia.play.broadcaster.view.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.databinding.ViewPlayCoverPreviewBinding
 import com.tokopedia.play_common.view.getBitmapFromUrl
 import kotlinx.coroutines.*
@@ -65,6 +66,12 @@ class PlayCoverPreview : ConstraintLayout {
 
     fun setCoverWithPlaceholder(imageUrl: String) {
         setCover(imageUrl, true)
+    }
+
+    fun setInitialCover() {
+        binding.ivCoverImageCircleDash.showWithCondition(true)
+        binding.ivCoverImagePlaceholder.showWithCondition(true)
+        binding.ivCoverPreview.setImageDrawable(ContextCompat.getDrawable(context, unifyR.color.Unify_NN400))
     }
 
     private fun setCover(imageUrl: String, isShowPlaceholder: Boolean) {

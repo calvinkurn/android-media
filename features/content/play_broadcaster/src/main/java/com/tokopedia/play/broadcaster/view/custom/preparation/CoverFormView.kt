@@ -61,6 +61,10 @@ class CoverFormView : ConstraintLayout {
         binding.clCoverFormPreview.setCover(imageUrl)
     }
 
+    fun setInitialCover() {
+        binding.clCoverFormPreview.setInitialCover()
+    }
+
     fun setTitle(title: String) {
         binding.clCoverFormPreview.setTitle(title)
     }

@@ -399,6 +399,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()){
                         binding.viewPreparationMenu.isSetCoverChecked(true)
                         binding.formCover.setCover(croppedCover.localImage.toString())
+                    } else {
+                        binding.viewPreparationMenu.isSetCoverChecked(false)
+                        binding.formCover.setInitialCover()
                     }
                 }
             }
