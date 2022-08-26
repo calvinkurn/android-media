@@ -28,7 +28,6 @@
         <domain includeSubdomains="false">autohe.xl.co.id</domain>
         <domain includeSubdomains="false">gateway.egw.xl.co.id</domain>
         <domain includeSubdomains="true">https://hansel-testsdk.tokopedia.com</domain>
-        <domain includeSubdomains="true">https://gql.tokopedia.com</domain>
         <trust-anchors>
             <certificates src="user"/>
             <certificates src="system"/>
