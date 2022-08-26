@@ -22,6 +22,10 @@ object ApplyPromoDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_merchant_request.json"), ValidateUsePromoRequest::class.java)
     }
 
+    fun provideApplyPromoBoRequest(): ValidateUsePromoRequest {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_bo_request.json"), ValidateUsePromoRequest::class.java)
+    }
+
     fun provideApplyPromoGlobalAndMerchantRequest(): ValidateUsePromoRequest {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_global_and_merchant_request.json"), ValidateUsePromoRequest::class.java)
     }

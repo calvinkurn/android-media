@@ -92,6 +92,49 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
+    fun `WHEN click unselected BO clashing promo item THEN should show ticker BO clashing`() {
+        // GIVEN
+        val data = GetPromoListDataProvider.providePromoListWithClashingBoPromo()
+        val promoListItemUiModel = data[1] as PromoListItemUiModel
+        viewModel.setPromoListValue(data)
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // WHEN
+        viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+
+        // THEN
+        assert((viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingMessage == promoListItemUiModel.uiData.boClashingInfos.first().message)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingImage == promoListItemUiModel.uiData.boClashingInfos.first().icon)
+    }
+
+    @Test
+    fun `WHEN click selected BO clashing promo item THEN should unshow ticker BO clashing`() {
+        // GIVEN
+        val data = GetPromoListDataProvider.providePromoListWithClashingBoPromo()
+        val promoListItemUiModel = data[1] as PromoListItemUiModel
+        promoListItemUiModel.uiState.isSelected = true
+        viewModel.setPromoListValue(data)
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // WHEN
+        viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+
+        // THEN
+        assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
+    }
+
+    @Test
     fun `WHEN click unselected attempted promo item THEN sibling promo should become unselected`() {
         // GIVEN
         val data = GetPromoListDataProvider.provideNoCurrentSelectedExpandedGlobalPromoDataWithHeader()
@@ -128,6 +171,27 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+    }
+
+    @Test
+    fun `WHEN click selected attempted clashing BO promo item THEN should unshow ticker BO clashing`() {
+        // GIVEN
+        val data = GetPromoListDataProvider.providePromoListWithClashingBoPromo()
+        val promoListItemUiModel = data[1] as PromoListItemUiModel
+        promoListItemUiModel.uiState.isSelected = true
+        viewModel.setPromoListValue(data)
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // WHEN
+        viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+
+        // THEN
+        assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
 
     @Test
@@ -170,6 +234,33 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
+    }
+
+    @Test
+    fun `WHEN apply recommended promo THEN sibling coupon need to be unselected`() {
+        // GIVEN
+        val data = GetPromoListDataProvider.providePromoListWithClashingSectionRecommendedPromo()
+        val preSelectedPromo = data[1] as PromoListItemUiModel
+        preSelectedPromo.uiState.isSelected = true
+        viewModel.setPromoListValue(data)
+        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+            uiData = PromoRecommendationUiModel.UiData().apply {
+                promoCodes = listOf(
+                    "PROMO1"
+                )
+            },
+                uiState = PromoRecommendationUiModel.UiState())
+        )
+
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
+
+        // WHEN
+        viewModel.applyRecommendedPromo()
+
+        // THEN
+        assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
+        assert((viewModel.promoListUiModel.value?.get(2) as PromoListItemUiModel).uiState.isSelected)
     }
 
     @Test

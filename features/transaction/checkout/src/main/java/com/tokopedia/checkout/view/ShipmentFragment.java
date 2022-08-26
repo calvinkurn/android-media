@@ -1132,7 +1132,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff) {
+    public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff, boolean isBoAutoApplyFlow) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
         if (shipmentCartItemModel != null) {
             shipmentCartItemModel.setStateLoadingCourierState(false);
@@ -1145,6 +1145,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
                 shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
                 shipmentCartItemModel.setBoCode("");
+                showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
+            } else if (isBoAutoApplyFlow) {
+                showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
             }
             onNeedUpdateViewItem(itemPosition);
         }
@@ -1293,16 +1296,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    // Re-fetch rates to get promo mvc icon for all order
-    private void reloadCourierForMvc(ArrayList<String> appliedMvcCartStrings) {
+    // Re-fetch rates to get promo mvc icon for all order, except already reloaded unique ids
+    private void reloadCourierForMvc(ArrayList<String> appliedMvcCartStrings, ArrayList<String> reloadedUniqueIds) {
         List<Object> object = shipmentAdapter.getShipmentDataList();
         if (object != null && object.size() > 0) {
             for (int i = 0; i < object.size(); i++) {
                 if (object.get(i) instanceof ShipmentCartItemModel) {
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object.get(i);
-                    if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(shipmentCartItemModel.getCartString())) {
+                    if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(shipmentCartItemModel.getCartString()) && !reloadedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                         prepareReloadRates(i, false);
-                    } else {
+                    } else if (!reloadedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                         prepareReloadRates(i, true);
                     }
                 }
@@ -1345,6 +1348,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                ArrayList<String> reloadedUniqueIds = new ArrayList<>();
                 if (validateUsePromoRevampUiModel != null) {
                     String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
                     if (messageInfo.length() > 0) {
@@ -1354,7 +1358,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                     updatePromoTrackingData(validateUsePromoRevampUiModel.getPromoUiModel().getTrackingDetailUiModels());
                     sendEEStep3();
-                    shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
+                    reloadedUniqueIds = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
                     if (shipmentAdapter.hasSetAllCourier()) {
                         resetPromoBenefit();
                         setPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries());
@@ -1385,8 +1389,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
                 ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
                 if (requiredToReloadRatesForMvcCourier) {
-//                  todo: hansen: validate cart strings with auto apply-unapply unique ids to prevent multiple reload
-                    reloadCourierForMvc(appliedMvcCartStrings);
+                    reloadCourierForMvc(appliedMvcCartStrings, reloadedUniqueIds);
                 }
             }
         }
@@ -3560,6 +3563,33 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds) {
+        if (getActivity() != null) {
+            List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
+            int firstFoundPosition = 0;
+            shipment_loop:
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
+                    for (String uniqueId : unappliedBoPromoUniqueIds) {
+                        if (Objects.equals(shipmentCartItemModel.getCartString(), uniqueId) &&
+                                (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null)) {
+                            firstFoundPosition = i;
+                            shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                            shipmentCartItemModel.setStateAllItemViewExpanded(false);
+                            shipmentCartItemModel.setShippingBorderRed(true);
+                            onNeedUpdateViewItem(i);
+                            break shipment_loop;
+                        }
+                    }
+                }
+            }
+
+            rvShipment.smoothScrollToPosition(firstFoundPosition);
+        }
     }
 
     private void onResultFromUpsell(Intent data) {

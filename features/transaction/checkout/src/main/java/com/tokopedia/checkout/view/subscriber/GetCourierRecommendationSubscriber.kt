@@ -25,7 +25,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
     override fun onError(e: Throwable) {
         Timber.d(e)
         if (isInitialLoad) {
-            view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
@@ -47,7 +47,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                     if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId &&
                                                     shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
                                         if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
                                             view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                             return
                                         } else {
@@ -72,7 +72,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                 if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
                                                 shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                        view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+                                        view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
                                         view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                         return
                                     } else {
@@ -104,7 +104,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                     }
                 }
             }
-            view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
             view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
         } else {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.size > 0) {

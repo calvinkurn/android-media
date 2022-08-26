@@ -136,4 +136,5 @@
     <string name="checkout_label_set_pinpoint_title">Atur pinpoint alamatmu dulu, ya.</string>
     <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="checkout_label_set_pinpoint_action">Atur</string>
+    <string name="checkout_failed_auto_apply_bo_message">Bebas ongkir gagal diaplikasikan, silahkan coba lagi</string>
 </resources>

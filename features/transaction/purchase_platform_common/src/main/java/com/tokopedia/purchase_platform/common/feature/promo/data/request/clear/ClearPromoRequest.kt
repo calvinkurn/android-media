@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class ClearPromoRequest(
         @SerializedName("serviceID")
-        val serviceId: String = "",
+        var serviceId: String = "",
         @SerializedName("isOCC")
-        val isOcc: Boolean = false,
+        var isOcc: Boolean = false,
         @SerializedName("orderData")
-        val orderData: ClearPromoOrderData = ClearPromoOrderData()
+        var orderData: ClearPromoOrderData = ClearPromoOrderData()
 )
 
 data class ClearPromoOrderData(
