@@ -870,7 +870,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
             if (isCoachMarkAlreadyShowed()){
                 bannerView?.post {
-                    val scrollTo =  bannerView.top + bannerView.top
+                    val scrollTo =  (bannerView.parent as View).top  + bannerView.top
                     binding?.parentScroll?.smoothScrollTo(0, scrollTo)
                     addCoachMark()
                 }
