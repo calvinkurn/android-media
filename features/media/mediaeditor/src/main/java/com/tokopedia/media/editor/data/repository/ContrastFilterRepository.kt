@@ -36,37 +36,57 @@ class ContrastFilterRepositoryImpl @Inject constructor() : ContrastFilterReposit
         var blue: Float
 
         for (i in 0 until (width * height)) {
-            red = ((pixels[i] shr 16) and 0xFF).toFloat()
-            green = ((pixels[i] shr 8) and 0xFF).toFloat()
-            blue = (pixels[i] and 0xFF).toFloat()
+            red = ((pixels[i] shr RED_SHIFT_VALUE) and HEX_STANDARDIZE_VALUE).toFloat()
+            green = ((pixels[i] shr GREEN_SHIFT_VALUE) and HEX_STANDARDIZE_VALUE).toFloat()
+            blue = (pixels[i] and HEX_STANDARDIZE_VALUE).toFloat()
 
-            red = (((((red / 255.0f) - 0.5f) * tempValue) + 0.5f) * 255.0f)
-            green = (((((green / 255.0f) - 0.5f) * tempValue) + 0.5f) * 255.0f)
-            blue = (((((blue / 255.0f) - 0.5f) * tempValue) + 0.5f) * 255.0f)
+            red =
+                (((((red / CHANNEL_COLOR_MAX_VALUE) - COLOR_STANDARDIZE_VALUE) * tempValue) + COLOR_STANDARDIZE_VALUE) * CHANNEL_COLOR_MAX_VALUE)
+            green =
+                (((((green / CHANNEL_COLOR_MAX_VALUE) - COLOR_STANDARDIZE_VALUE) * tempValue) + COLOR_STANDARDIZE_VALUE) * CHANNEL_COLOR_MAX_VALUE)
+            blue =
+                (((((blue / CHANNEL_COLOR_MAX_VALUE) - COLOR_STANDARDIZE_VALUE) * tempValue) + COLOR_STANDARDIZE_VALUE) * CHANNEL_COLOR_MAX_VALUE)
 
             // validation check
-            if (red > 255)
-                red = 255f
-            else if (red < 0)
-                red = 0f
+            if (red > CHANNEL_COLOR_MAX_VALUE) {
+                red = CHANNEL_COLOR_MAX_VALUE
+            } else if (red < CHANNEL_COLOR_MIN_VALUE) {
+                red = CHANNEL_COLOR_MIN_VALUE
+            }
 
-            if (green > 255)
-                green = 255f
-            else if (green < 0)
-                green = 0f
+            if (green > CHANNEL_COLOR_MAX_VALUE) {
+                green = CHANNEL_COLOR_MAX_VALUE
+            } else if (green < CHANNEL_COLOR_MIN_VALUE) {
+                green = CHANNEL_COLOR_MIN_VALUE
+            }
 
-            if (blue > 255)
-                blue = 255f
-            else if (blue < 0)
-                blue = 0f
+            if (blue > CHANNEL_COLOR_MAX_VALUE) {
+                blue = CHANNEL_COLOR_MAX_VALUE
+            } else if (blue < CHANNEL_COLOR_MIN_VALUE) {
+                blue = CHANNEL_COLOR_MIN_VALUE
+            }
 
             val finalRed = red.toInt()
             val finalGreen = green.toInt()
             val finalBlue = blue.toInt()
-            pixels[i] = (pixels[i] and 0xFF000000.toInt()) or
-                    ((finalRed shl 16) and 0x00FF0000) or
-                    ((finalGreen shl 8) and 0x0000FF00) or
-                    (finalBlue and 0x000000FF)
+            pixels[i] = (pixels[i] and ALPHA_COLOR_INT.toInt()) or
+                    ((finalRed shl RED_SHIFT_VALUE) and RED_COLOR_INT) or
+                    ((finalGreen shl GREEN_SHIFT_VALUE) and GREEN_COLOR_INT) or
+                    (finalBlue and BLUE_COLOR_INT)
         }
+    }
+
+    companion object {
+        private const val HEX_STANDARDIZE_VALUE = 0xFF
+        private const val COLOR_STANDARDIZE_VALUE = 0.5f
+        private const val CHANNEL_COLOR_MAX_VALUE = 255f
+        private const val CHANNEL_COLOR_MIN_VALUE = 0F
+        private const val RED_SHIFT_VALUE = 16
+        private const val GREEN_SHIFT_VALUE = 8
+
+        private const val RED_COLOR_INT = 0x00FF0000
+        private const val GREEN_COLOR_INT = 0x0000FF00
+        private const val BLUE_COLOR_INT = 0x000000FF
+        private const val ALPHA_COLOR_INT = 0xFF000000
     }
 }
