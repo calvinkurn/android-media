@@ -118,7 +118,7 @@ class HomeRecommendationViewModel @Inject constructor(
                 if (position == Int.ZERO) {
                     newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
                     if (newList.size > visitableBanner.position + Int.ONE) {
-                        newList[visitableBanner.position + 1] =
+                        newList[visitableBanner.position + Int.ONE] =
                             HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
                     }
 
@@ -129,7 +129,7 @@ class HomeRecommendationViewModel @Inject constructor(
                     }
 
                     position?.let {
-                        if (newList.size >= position) {
+                        if (newList.size >= position + Int.ONE) {
                             newList.add(
                                 it + Int.ONE,
                                 HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
