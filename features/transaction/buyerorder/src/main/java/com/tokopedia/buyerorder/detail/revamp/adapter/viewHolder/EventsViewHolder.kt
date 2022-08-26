@@ -22,6 +22,7 @@ import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsEvents
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -159,7 +160,23 @@ class EventsViewHolder(
             item.actionButtons.forEachIndexed { index, actionButton ->
                 val actionTextView = renderActionButtons(index, actionButton, item)
                 if (actionButton.control.equals(KEY_REFRESH, true)) {
-                    //TODO : refactor redeemVoucher
+                    val redeemView = RedeemVoucherView(
+                        itemView.context,
+                        index,
+                        adapterPosition,
+                        false,
+                        item.actionButtons.size - 1 == index,
+                        actionButton,
+                        item,
+                        actionButton.body,
+                        { textView, aButton, items, count, position ->
+                            eventDetailsListener.onTapActionDeals(textView, aButton, items, count, position)
+                        },
+                        {
+                            eventDetailsListener.showRetryButtonToaster(it)
+                        }
+                    )
+                    binding.tapActionEvents.addView(redeemView)
                 } else if (actionButton.control.equals(KEY_VOUCHER_CODE, true)) {
                     if (actionButton.body.body.isNotEmpty()){
                         val voucherCodes = actionButton.body.body.split(",")

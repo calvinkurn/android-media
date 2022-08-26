@@ -13,6 +13,7 @@ import com.tokopedia.buyerorder.detail.data.ItemsDeals
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -122,7 +123,23 @@ class DealsViewHolder(
 
                 item.actionButtons.forEachIndexed { index, actionButton ->
                     if (actionButton.control.equals(KEY_TEXT, true)) {
-                        //TODO : create and add redeemVoucherView
+                        val redeemView = RedeemVoucherView(
+                            itemView.context,
+                            index,
+                            adapterPosition,
+                            false,
+                            item.actionButtons.size - 1 == index,
+                            actionButton,
+                            item,
+                            actionButton.body,
+                            { textView, aButton, items, count, position ->
+                                eventDetailsListener.onTapActionDeals(textView, aButton, items, count, position)
+                            },
+                            {
+                                eventDetailsListener.showRetryButtonToaster(it)
+                            }
+                        )
+                        binding.tapActionDeals.addView(redeemView)
                     } else {
                         val voucherCodes = actionButton.headerObject.voucherCodes.split(DELIMITERS)
                         voucherCodes.forEachIndexed { i, code ->
