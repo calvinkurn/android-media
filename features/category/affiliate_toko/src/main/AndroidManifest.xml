@@ -9,7 +9,7 @@
         <activity
             android:name="com.tokopedia.affiliate.ui.activity.AffiliateActivity"
             android:label="@string/label_affiliate"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:exported="false"
             android:windowSoftInputMode="adjustPan">
