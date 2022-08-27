@@ -3,6 +3,7 @@ package com.tokopedia.wishlistcollection.di
 import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -16,25 +17,25 @@ import dagger.Provides
 
 @Module
 class WishlistCollectionDetailModule(private val activity: Activity) {
-    @WishlistCollectionDetailScope
+    @ActivityScope
     @Provides
     fun provideContext(): Context = activity
 
-    @WishlistCollectionDetailScope
+    @ActivityScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @WishlistCollectionDetailScope
+    @ActivityScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @WishlistCollectionDetailScope
+    @ActivityScope
     @Provides
     fun providePreference(@ApplicationContext context: Context): WishlistV2LayoutPreference = WishlistV2LayoutPreference(context)
 
     @Provides
-    @WishlistCollectionDetailScope
+    @ActivityScope
     fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase = TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
 }
