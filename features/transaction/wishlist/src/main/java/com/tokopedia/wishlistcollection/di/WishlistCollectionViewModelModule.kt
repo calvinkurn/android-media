@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
+import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetUpdateWishlistCollectionNameViewModel
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import dagger.Binds
@@ -35,4 +36,10 @@ abstract class WishlistCollectionViewModelModule {
     @IntoMap
     @ViewModelKey(BottomSheetAddCollectionViewModel::class)
     internal abstract fun bottomSheetWishlistCollectionViewModel(viewModel: BottomSheetAddCollectionViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(BottomSheetUpdateWishlistCollectionNameViewModel::class)
+    internal abstract fun bottomSheetUpdateWishlistCollectionNameViewModel(viewModel: BottomSheetUpdateWishlistCollectionNameViewModel): ViewModel
 }

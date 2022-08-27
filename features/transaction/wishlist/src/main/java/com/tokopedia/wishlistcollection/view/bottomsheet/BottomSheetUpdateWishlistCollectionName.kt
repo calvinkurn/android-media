@@ -38,7 +38,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_NAME
 import javax.inject.Inject
 
-class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<BottomSheetUpdateWishlistCollectionNameComponent> {
+class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
@@ -286,10 +286,10 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
         show(fm, TAG)
     }
 
-    override fun getComponent(): BottomSheetUpdateWishlistCollectionNameComponent {
-        return DaggerBottomSheetUpdateWishlistCollectionNameComponent.builder()
+    override fun getComponent(): WishlistCollectionComponent {
+        return DaggerWishlistCollectionComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .bottomSheetUpdateWishlistCollectionNameModule(BottomSheetUpdateWishlistCollectionNameModule())
+            .wishlistCollectionModule(WishlistCollectionModule(requireActivity()))
             .build()
     }
 
