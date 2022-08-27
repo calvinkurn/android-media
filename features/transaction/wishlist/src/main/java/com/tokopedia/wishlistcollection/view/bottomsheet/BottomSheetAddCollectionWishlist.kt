@@ -33,7 +33,8 @@ import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollection
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_PDP
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
@@ -52,7 +53,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIV
 import java.util.ArrayList
 import javax.inject.Inject
 
-class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.BottomSheetWishlistCollectionComponent> {
+class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
@@ -309,9 +310,10 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
-    override fun getComponent(): com.tokopedia.wishlistcollection.di.BottomSheetWishlistCollectionComponent {
-        return DaggerBottomSheetWishlistCollectionComponent.builder()
+    override fun getComponent(): com.tokopedia.wishlistcollection.di.WishlistCollectionComponent {
+        return DaggerWishlistCollectionComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .wishlistCollectionModule(WishlistCollectionModule(requireActivity()))
             .build()
     }
 
