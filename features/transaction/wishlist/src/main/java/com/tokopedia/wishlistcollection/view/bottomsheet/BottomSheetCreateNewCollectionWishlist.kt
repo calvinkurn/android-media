@@ -29,9 +29,7 @@ import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollection
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
-import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionComponent
-import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionModule
-import com.tokopedia.wishlistcollection.di.DaggerBottomSheetCreateWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.*
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
@@ -44,7 +42,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
 import javax.inject.Inject
 
 class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
-    HasComponent<BottomSheetCreateWishlistCollectionComponent> {
+    HasComponent<WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> =
@@ -421,10 +419,10 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         show(fm, TAG)
     }
 
-    override fun getComponent(): BottomSheetCreateWishlistCollectionComponent {
-        return DaggerBottomSheetCreateWishlistCollectionComponent.builder()
+    override fun getComponent(): WishlistCollectionComponent {
+        return DaggerWishlistCollectionComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-            .bottomSheetCreateWishlistCollectionModule(BottomSheetCreateWishlistCollectionModule())
+            .wishlistCollectionModule(WishlistCollectionModule(requireActivity()))
             .build()
     }
 
