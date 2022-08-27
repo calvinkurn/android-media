@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,10 @@ abstract class WishlistCollectionViewModelModule {
     @IntoMap
     @ViewModelKey(WishlistCollectionViewModel::class)
     internal abstract fun collectionWishlistViewModel(viewModel: WishlistCollectionViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(WishlistCollectionDetailViewModel::class)
+    internal abstract fun wishlistCollectionDetailViewModel(viewModel: WishlistCollectionDetailViewModel): ViewModel
 }

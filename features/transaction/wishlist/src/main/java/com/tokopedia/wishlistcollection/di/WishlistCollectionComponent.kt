@@ -13,4 +13,5 @@ import dagger.Component
 )
 interface WishlistCollectionComponent {
     fun inject(fragment: WishlistCollectionFragment)
+    fun inject(fragment: WishlistCollectionDetailFragment)
 }

@@ -108,8 +108,8 @@ import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsPa
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
-import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
-import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
+import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
@@ -202,9 +202,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun initInjector() {
         activity?.let { activity ->
-            DaggerWishlistCollectionDetailComponent.builder()
+            DaggerWishlistCollectionComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
-                .wishlistCollectionDetailModule(WishlistCollectionDetailModule(activity))
+                .wishlistCollectionModule(WishlistCollectionModule(activity))
                 .build()
                 .inject(this)
         }
