@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -21,11 +22,13 @@
 
         <include
             android:id="@+id/shcPostListLoadingView"
-            layout="@layout/shc_partial_shimmering_post_list_widget" />
+            layout="@layout/shc_partial_shimmering_post_list_widget"
+            tools:visibility="gone" />
 
         <include
             android:id="@+id/shcPostListErrorView"
-            layout="@layout/shc_partial_post_list_widget_error" />
+            layout="@layout/shc_partial_post_list_widget_error"
+            tools:visibility="gone" />
 
     </com.tokopedia.unifycomponents.CardUnify>
 </androidx.constraintlayout.widget.ConstraintLayout>

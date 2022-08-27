@@ -67,4 +67,7 @@
     <string name="shc_still_need_this_info">Masih butuh info ini?</string>
     <string name="shc_yes">Ya</string>
     <string name="shc_no">Tidak</string>
+    <string name="shc_info_deleted">Info terhapus</string>
+    <string name="shc_thanks_for_the_suggestion">Terima kasih atas masukanmu, ya!</string>
+    <string name="shc_cancel">Batal</string>
 </resources>

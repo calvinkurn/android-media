@@ -176,11 +176,23 @@ class PostListViewHolder(
             showListLayout()
             addImpressionTracker(element)
             setupLastUpdated(element)
+            setupMoreView(element)
 
             if (isWidgetEmpty()) {
                 showEmptyState(element)
             } else {
                 setupPostPager(postPagers)
+            }
+        }
+    }
+
+    private fun setupMoreView(element: PostListWidgetUiModel) {
+        binding.shcPostListSuccessView.run {
+            moreShcPostWidget.setOnMoreClicked {
+                listener.showMoreOption(element)
+            }
+            moreShcPostWidget.setOnCancelClicked {
+                listener.cancelItemRemoval(element)
             }
         }
     }
@@ -380,5 +392,9 @@ class PostListViewHolder(
         fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {}
 
         fun showPostFilter(element: PostListWidgetUiModel) {}
+
+        fun showMoreOption(element: PostListWidgetUiModel) {}
+
+        fun cancelItemRemoval(element: PostListWidgetUiModel) {}
     }
 }
