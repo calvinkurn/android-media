@@ -24,7 +24,7 @@ class AnalyticsParser @Inject constructor() {
         )
     }
 
-    fun inferName(data: Map<String, Any>, @AnalyticsSource source: String): String {
+    fun inferName(data: Map<String, Any>, source: String): String {
        return runCatching {
            when(source) {
                AnalyticsSource.GTM -> data["event"].toString()

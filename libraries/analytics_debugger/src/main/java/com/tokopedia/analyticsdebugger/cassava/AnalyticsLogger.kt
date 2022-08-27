@@ -5,7 +5,7 @@ interface AnalyticsLogger {
     fun save(
         data: Map<String, Any>,
         name: String? = null,
-        @AnalyticsSource source: String = AnalyticsSource.OTHER
+        source: String
     )
 
     fun enableNotification(status: Boolean)

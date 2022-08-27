@@ -28,7 +28,7 @@ class GtmLogger private constructor(
             Timber.e(t, "gtm_logger")
         }
 
-    override fun save(data: Map<String, Any>, name: String?, @AnalyticsSource source: String) {
+    override fun save(data: Map<String, Any>, name: String?, source: String) {
         launch {
             val nameNotNull = name ?: parser.inferName(data, source)
             val logData = AnalyticsLogData(
@@ -37,7 +37,7 @@ class GtmLogger private constructor(
                 source = source
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
-                dbSource.insert(logData.data, logData.name, logData.source.orEmpty())
+                dbSource.insert(logData.data, logData.name, logData.source)
             } else {
                 Timber.w("analytics data was not logged because of empty name")
             }
@@ -86,7 +86,7 @@ class GtmLogger private constructor(
                 override fun save(
                     data: Map<String, Any>,
                     name: String?,
-                    @AnalyticsSource source: String
+                    source: String
                 ) {
 
                 }
