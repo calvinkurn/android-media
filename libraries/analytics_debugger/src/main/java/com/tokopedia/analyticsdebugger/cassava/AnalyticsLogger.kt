@@ -1,7 +1,5 @@
 package com.tokopedia.analyticsdebugger.cassava
 
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
-
 interface AnalyticsLogger {
 
     fun save(

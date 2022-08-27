@@ -5,7 +5,6 @@ import android.text.TextUtils
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.database.CassavaDatabase
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
@@ -38,7 +37,7 @@ class GtmLogger private constructor(
                 source = source
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
-                dbSource.insert(logData)
+                dbSource.insert(logData.data, logData.name, logData.source.orEmpty())
             } else {
                 Timber.w("analytics data was not logged because of empty name")
             }

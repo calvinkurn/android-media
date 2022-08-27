@@ -1,7 +1,7 @@
 package com.tokopedia.analyticsdebugger.cassava.core
 
-import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
+import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import kotlinx.coroutines.Dispatchers
