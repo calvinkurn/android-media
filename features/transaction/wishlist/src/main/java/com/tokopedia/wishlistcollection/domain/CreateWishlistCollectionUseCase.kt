@@ -21,6 +21,8 @@ class CreateWishlistCollectionUseCase @Inject constructor(
         return repository.request(CreateWishlistCollectionMutation(), toMap(params))
     }
 
+    override fun graphqlQuery(): String = query
+
     private fun toMap(name: String): Map<String, Any> = mapOf(
         paramName to name
     )
@@ -39,6 +41,4 @@ class CreateWishlistCollectionUseCase @Inject constructor(
                   }
                 }"""
     }
-
-    override fun graphqlQuery(): String = ""
 }
