@@ -2,7 +2,6 @@ package com.tokopedia.analyticsdebugger.cassava.utils
 
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 import com.tokopedia.analyticsdebugger.cassava.core.JsonMap
 import java.lang.reflect.Type
 import java.math.BigDecimal
@@ -27,9 +26,9 @@ class AnalyticsParser @Inject constructor() {
     fun inferName(data: Map<String, Any>, source: String): String {
        return runCatching {
            when(source) {
-               AnalyticsSource.GTM -> data["event"].toString()
-               AnalyticsSource.BRANCH_IO -> data["eventName"].toString()
-               AnalyticsSource.ERROR -> "ERROR GTM V5"
+               "gtm" -> data["event"].toString()
+               "branch_io" -> data["eventName"].toString()
+               "error" -> "ERROR GTM V5"
                else -> ""
            }
        }.getOrElse { "" }
