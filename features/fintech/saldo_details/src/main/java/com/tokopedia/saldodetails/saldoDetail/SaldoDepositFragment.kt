@@ -840,29 +840,26 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
-        context?.let {
-            if(SaldoDetailsRollenceUtil.shouldShowModalTokoWidget())
-            {
-                if (response != null && response.isEligible) {
-                    statusWithDrawLock = response.status
-                    when (statusWithDrawLock) {
-                        MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
-                        MCL_STATUS_BLOCK1 -> {
-                            showTicker()
-                            showMerchantCreditLineWidget(response)
-                        }
-                        MCL_STATUS_BLOCK3 -> {
-                            showTicker()
-                            hideMerchantCreditLineFragment()
-                        }
-                        else -> showMerchantCreditLineWidget(response)
+        if (SaldoDetailsRollenceUtil.shouldShowModalTokoWidget()) {
+            if (response != null && response.isEligible) {
+                statusWithDrawLock = response.status
+                when (statusWithDrawLock) {
+                    MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
+                    MCL_STATUS_BLOCK1 -> {
+                        showTicker()
+                        showMerchantCreditLineWidget(response)
                     }
-                } else {
-                    hideMerchantCreditLineFragment()
+                    MCL_STATUS_BLOCK3 -> {
+                        showTicker()
+                        hideMerchantCreditLineFragment()
+                    }
+                    else -> showMerchantCreditLineWidget(response)
                 }
-            }else{
+            } else {
                 hideMerchantCreditLineFragment()
             }
+        } else {
+            hideMerchantCreditLineFragment()
         }
     }
 
