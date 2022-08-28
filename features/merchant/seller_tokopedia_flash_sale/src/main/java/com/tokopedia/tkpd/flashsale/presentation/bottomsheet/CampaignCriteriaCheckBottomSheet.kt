@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetCampaignCriteriaCheckBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
@@ -17,6 +18,8 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<StfsBottomsheetCampaignCriteriaCheckBinding>()
     private var criteriaCheckingResults: List<CriteriaCheckingResult> = emptyList()
+    private var productName: String = ""
+    private var productImageUrl: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,12 +30,21 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupProductPreview()
+        setupCheckingList(binding?.rvResult ?: return)
+    }
+
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = StfsBottomsheetCampaignCriteriaCheckBinding.inflate(inflater, container, false)
         clearContentPadding = true
         setChild(binding?.root)
         setTitle(getString(R.string.commonbs_category_criteria_check_title))
-        binding?.rvResult?.apply {
+    }
+
+    private fun setupCheckingList(rvResult: RecyclerView) {
+        rvResult.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = CampaignCriteriaCheckingResultAdapter().apply {
                 setDataList(criteriaCheckingResults)
@@ -41,11 +53,22 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun setupProductPreview() {
+        binding?.apply {
+            tfProductName.text = productName
+            imgProduct.setImageUrl(productImageUrl)
+        }
+    }
+
     private fun onListTickerClick(list: List<CriteriaCheckingResult.LocationCheckingResult>) {
         val bottomSheet = LocationCriteriaCheckBottomSheet()
         bottomSheet.show(list, childFragmentManager, "")
     }
 
+    fun setProductPreview(productName: String, productImageUrl: String) {
+        this.productName = productName
+        this.productImageUrl = productImageUrl
+    }
 
     fun show(
         criteriaCheckingResults: List<CriteriaCheckingResult>,
