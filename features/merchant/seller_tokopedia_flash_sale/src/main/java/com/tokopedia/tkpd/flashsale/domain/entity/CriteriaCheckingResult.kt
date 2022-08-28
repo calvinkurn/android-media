@@ -12,9 +12,10 @@ data class CriteriaCheckingResult(
     val priceCheckingResult: PriceCheckingResult = PriceCheckingResult(),
     val stockCheckingResult: StockCheckingResult = StockCheckingResult(),
     val scoreCheckingResult: ScoreCheckingResult = ScoreCheckingResult(),
-    val freeOngkirCheckingResult: FreeOngkirCheckingResult = FreeOngkirCheckingResult(),
-    val excludePreOrderCheckingResult: ExcludePreOrderCheckingResult = ExcludePreOrderCheckingResult(),
-    val excludeSecondHandCheckingResult: ExcludeSecondHandCheckingResult = ExcludeSecondHandCheckingResult(),
+    val includeFreeOngkirCheckingResult: OtherCriteriaCheckingResult = OtherCriteriaCheckingResult(),
+    val includeWholesaleCheckingResult: OtherCriteriaCheckingResult = OtherCriteriaCheckingResult(),
+    val includePreOrderCheckingResult: OtherCriteriaCheckingResult = OtherCriteriaCheckingResult(),
+    val includeSecondHandCheckingResult: OtherCriteriaCheckingResult = OtherCriteriaCheckingResult(),
     val isMultiloc: Boolean = false,
     val locationResult: List<LocationCheckingResult> = emptyList()
 ) {
@@ -67,17 +68,7 @@ data class CriteriaCheckingResult(
         val min: Long = 0
     )
 
-    data class FreeOngkirCheckingResult (
-        val isEligible: Boolean = false,
-        val isActive: Boolean = false
-    )
-
-    data class ExcludePreOrderCheckingResult (
-        val isEligible: Boolean = false,
-        val isActive: Boolean = false
-    )
-
-    data class ExcludeSecondHandCheckingResult (
+    data class OtherCriteriaCheckingResult (
         val isEligible: Boolean = false,
         val isActive: Boolean = false
     )

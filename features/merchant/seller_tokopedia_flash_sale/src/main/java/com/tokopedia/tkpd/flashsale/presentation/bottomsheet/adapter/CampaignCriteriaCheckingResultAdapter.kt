@@ -5,9 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultContentBinding
+import com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -61,6 +64,7 @@ class CampaignCriteriaCheckingResultAdapter: RecyclerView.Adapter<CampaignCriter
                     setExpandIcon(isVisible)
                 }
             }
+            adjustLayoutItemWidth(binding.layoutContent)
             val htmlDecText = binding.root.context.getString(R.string.commonbs_multiloc_desc)
             binding.layoutContent.tickerMultiloc.setHtmlDescription(htmlDecText)
         }
@@ -71,39 +75,74 @@ class CampaignCriteriaCheckingResultAdapter: RecyclerView.Adapter<CampaignCriter
             binding.layoutContent.apply {
                 val priceMinFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.priceCheckingResult.min, false)
                 val priceMaxFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.priceCheckingResult.max, false)
-                tfOriginalPrice.value = "$priceMinFormatted - $priceMaxFormatted"
-                tfOriginalPrice.setStatusPassed(item.priceCheckingResult.isEligible)
-
-                tfCampaignStock.value = item.stockCheckingResult.min.toString()
-                tfCampaignStock.setStatusPassed(item.stockCheckingResult.isEligible)
-
-                tfMinRating.value = item.ratingResult.min.toString()
-                tfMinRating.setStatusPassed(item.ratingResult.isEligible)
-
-                tfMinProductScore.value = item.scoreCheckingResult.min.toString()
-                tfMinProductScore.setStatusPassed(item.scoreCheckingResult.isEligible)
-
                 val soldMax = item.countSoldResult.max
                 val soldMin = item.countSoldResult.min
-                tfSoldProduct.value = "$soldMin - $soldMax"
-                tfSoldProduct.setStatusPassed(item.countSoldResult.isEligible)
-
-                tfMinBuy.value = item.minOrderCheckingResult.min.toString()
-                tfMinBuy.setStatusPassed(item.minOrderCheckingResult.isEligible)
-
                 val maxShown = item.maxAppearanceCheckingResult.max
                 val periodShown = item.maxAppearanceCheckingResult.dayPeriod
-                tfMaxShown.value = context.getString(R.string.commonbs_max_shown_format, maxShown, periodShown)
-                tfMaxShown.setStatusPassed(item.maxAppearanceCheckingResult.isEligible)
+                val maxShownText = context.getString(R.string.commonbs_max_shown_format, maxShown, periodShown)
 
+                tfOriginalPrice.setStatusAndValue(item.priceCheckingResult.isEligible, "$priceMinFormatted - $priceMaxFormatted")
+                tfCampaignStock.setStatusAndValue(item.stockCheckingResult.isEligible, item.stockCheckingResult.min)
+                tfMinRating.setStatusAndValue(item.ratingResult.isEligible, item.ratingResult.min.toString())
+                tfMinProductScore.setStatusAndValue(item.scoreCheckingResult.isEligible, item.scoreCheckingResult.min)
+                tfSoldProduct.setStatusAndValue(item.countSoldResult.isEligible, "$soldMin - $soldMax")
+                tfMinBuy.setStatusAndValue(item.minOrderCheckingResult.isEligible, item.minOrderCheckingResult.min)
+                tfMaxShown.setStatusAndValue(item.maxAppearanceCheckingResult.isEligible, maxShownText)
+
+                setupMultiloc(this, item)
+                setupOtherCriteria(this, item)
+            }
+        }
+
+        private fun setupOtherCriteria(
+            bindingContent: StfsItemCampaignCriteriaResultContentBinding,
+            item: CriteriaCheckingResult,
+        ) {
+            bindingContent.apply {
+                tfOtherCriteriaFreeOngkir.isVisible = item.includeFreeOngkirCheckingResult.isActive
+                tfOtherCriteriaFreeOngkir.setStatusPassed(item.includeFreeOngkirCheckingResult.isEligible)
+
+                tfOtherCriteriaReadyStock.isVisible = item.includePreOrderCheckingResult.isActive
+                tfOtherCriteriaReadyStock.setStatusPassed(item.includePreOrderCheckingResult.isEligible)
+
+                tfOtherCriteriaWholesale.isVisible = item.includeWholesaleCheckingResult.isActive
+                tfOtherCriteriaWholesale.setStatusPassed(item.includeWholesaleCheckingResult.isEligible)
+
+                tfOtherCriteriaCondition.isVisible = item.includeSecondHandCheckingResult.isActive
+                tfOtherCriteriaCondition.setStatusPassed(item.includeSecondHandCheckingResult.isEligible)
+            }
+        }
+
+        private fun setupMultiloc(
+            bindingContent: StfsItemCampaignCriteriaResultContentBinding,
+            item: CriteriaCheckingResult
+        ) {
+            bindingContent.apply {
                 tickerMultiloc.isVisible = item.isMultiloc
                 tickerMultiloc.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         onTickerClick(item.locationResult)
                     }
-
                     override fun onDismiss() {}
                 })
+                tfOriginalPrice.isVisible = !item.isMultiloc
+                tfCampaignStock.isVisible = !item.isMultiloc
+            }
+        }
+
+        private fun TitleValueView.setStatusAndValue(fieldIsEligible: Boolean, fieldValue: Long) {
+            setStatusAndValue(fieldIsEligible, fieldValue.toString())
+        }
+
+        private fun TitleValueView.setStatusAndValue(fieldIsEligible: Boolean, fieldValue: String) {
+            value = fieldValue
+            setStatusPassed(fieldIsEligible)
+        }
+
+        private fun adjustLayoutItemWidth(layout: StfsItemCampaignCriteriaResultContentBinding) {
+            (0 until layout.root.childCount).forEach {
+                val view = layout.root.getChildAt(it)
+                if (view is TitleValueView) view.layoutParams.width = (getScreenWidth() * 0.45F).toInt()
             }
         }
     }

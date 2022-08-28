@@ -16,11 +16,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        tool:text="Merah | L"
         app:layout_constraintBottom_toBottomOf="@+id/iconExpand"
         app:layout_constraintEnd_toStartOf="@+id/iconExpand"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="Merah | L" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconExpand"
@@ -38,6 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/iconExpand" />
+        app:layout_constraintTop_toBottomOf="@+id/tfVariantName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

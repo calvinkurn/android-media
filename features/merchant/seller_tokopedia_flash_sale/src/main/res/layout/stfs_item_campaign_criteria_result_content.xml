@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.flexbox.FlexboxLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:flexDirection="row"
+    app:flexWrap="wrap"
+    app:flow_wrapMode="chain"
     xmlns:tool="http://schemas.android.com/tools">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineCenter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <!--left views-->
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfOriginalPrice"
-        android:layout_width="0dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
         app:textvalue_title="Kisaran Harga Awal"
@@ -29,13 +21,9 @@
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfMinRating"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfOriginalPrice"
         app:textvalue_icon_rating_visibility="true"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
@@ -44,12 +32,9 @@
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfSoldProduct"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfMinRating"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
         app:textvalue_title="Produk Terjual"
@@ -57,27 +42,19 @@
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfMaxShown"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfSoldProduct"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Dibatasi"
         app:textvalue_title="Maks. Tampil"
         tool:textvalue_value="80-100" />
 
-    <!--right views-->
-
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfCampaignStock"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
         app:textvalue_title="Stok Campaign"
@@ -85,12 +62,9 @@
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfMinProductScore"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@+id/tfOriginalPrice"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
         app:textvalue_title="Min. Skor Produk"
@@ -98,29 +72,53 @@
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfMinBuy"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@+id/tfMinRating"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
         app:textvalue_title="Min. Pembelian"
         tool:textvalue_value="80-100" />
 
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
-        android:id="@+id/tfOtherCriteria"
-        android:layout_width="0dp"
+        android:id="@+id/tfOtherCriteriaCondition"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@+id/tfSoldProduct"
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="Diwajibkan"
         app:textvalue_title="Kriteria Khusus"
-        tool:textvalue_value="80-100" />
+        app:textvalue_value="Baru" />
+
+    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+        android:id="@+id/tfOtherCriteriaWholesale"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:textvalue_icon_status="PASSED"
+        app:textvalue_subtitle="Diwajibkan"
+        app:textvalue_title="Kriteria Khusus"
+        app:textvalue_value="Grosir" />
+
+    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+        android:id="@+id/tfOtherCriteriaReadyStock"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:textvalue_icon_status="PASSED"
+        app:textvalue_subtitle="Diwajibkan"
+        app:textvalue_title="Kriteria Khusus"
+        app:textvalue_value="Ready Stok" />
+
+    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+        android:id="@+id/tfOtherCriteriaFreeOngkir"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:textvalue_icon_status="PASSED"
+        app:textvalue_subtitle="Diwajibkan"
+        app:textvalue_title="Kriteria Khusus"
+        app:textvalue_value="Free Ongkir" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerMultiloc"
@@ -128,10 +126,8 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         app:closeButtonVisibility="gone"
-        app:tickerType="warning"
         app:tickerShapeType="loose"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tfMaxShown"
+        app:tickerType="warning"
         tool:descriptionText="2 lokasi tidak sesuai kriteria. Cek Detail Per Lokasi" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.flexbox.FlexboxLayout>
