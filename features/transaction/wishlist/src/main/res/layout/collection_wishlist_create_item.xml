@@ -63,24 +63,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!--<androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/single_collection_item"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_image_placeholder="@drawable/placeholder_img"/>
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
     </com.tokopedia.unifycomponents.CardUnify2>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -88,7 +70,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_collection_item"
+        app:layout_constraintTop_toBottomOf="@id/card_collection_create_item"
         app:layout_constraintEnd_toStartOf="@id/collection_kebab_menu"
         android:layout_marginTop="8dp"
         app:typographyType="body_2"
@@ -116,46 +98,3 @@
         app:layout_constraintTop_toBottomOf="@id/collection_title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--
-<RelativeLayout
-    android:id="@+id/rl_create_wishlist_collection"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="10dp">
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/wishlist_collection_create_new"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/icon_create_new_collection"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            app:icon_name="ADD"
-            android:layout_centerHorizontal="true"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_new_collection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/collection_label_new"
-            android:layout_below="@id/icon_create_new_collection"
-            android:textColor="@color/Unify_NN1000"
-            app:typographyType="body_3" />
-
-    </RelativeLayout>
-</RelativeLayout>-->
