@@ -2,6 +2,8 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
@@ -1783,6 +1785,24 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
     }
+    private fun changeCTABtnColorAsPerColorCodeFromBE(color: String) {
+        changeCTABtnColor(
+            primaryColor = Color.parseColor(color),
+            secondaryColor = MethodChecker.getColor(
+                context,
+                unifyPrinciplesR.color.Unify_N0
+            ),
+        )
+    }
+    private fun changeCTABtnColorAsPerColorGradientFromBE(colorArray: ArrayList<String>,) {
+        changeCTABtnColorGradient(
+            colorArray = colorArray,
+            secondaryColor = MethodChecker.getColor(
+                context,
+                unifyPrinciplesR.color.Unify_N0
+            ),
+        )
+    }
 
     private fun changeCTABtnColorToRed() {
         changeCTABtnColor(
@@ -1826,14 +1846,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun changeCTABtnColorAsPerWidget(card: FeedXCard, delayInMs: Long? = null) {
+        val colorGradient: List<FeedXCtaColorGradient> = listOf(
+        FeedXCtaColorGradient(color ="#D74049", position = 0f ),
+        FeedXCtaColorGradient(color ="#F56958", position = 100f ))
         topAdsJob?.cancel()
+
         topAdsJob = scope.launch {
             if (delayInMs != null) delay(delayInMs)
 
-            card.isAsgcColorChangedAsPerWidgetColor = true
 
-            if (card.isASGCDiscountToko) changeCTABtnColorToRed()
-            else changeCTABtnColorToGreen()
+            card.isAsgcColorChangedAsPerWidgetColor = true
+            if (card.isTypeProductHighlight)
+                changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
+                    colorGradient.color
+                } as ArrayList<String>)
+            else
+                changeCTABtnColorToGreen()
         }
     }
 
@@ -1851,20 +1879,41 @@ class PostDynamicViewNew @JvmOverloads constructor(
         topAdsCard.setBackgroundColor(primaryColor)
     }
 
+    private fun changeCTABtnColorGradient(
+        colorArray: ArrayList<String>,
+        secondaryColor: Int,
+    ) {
+//        TransitionManager.beginDelayedTransition(
+//            this,
+//            BackgroundColorTransition()
+//                .addTarget(topAdsCard)
+//        )
+        topAdsProductName.setTextColor(secondaryColor)
+        topAdsChevron.setColorFilter(secondaryColor)
+        topAdsCard.setGradientBackground(colorArray)
+    }
+
+    private fun View.setGradientBackground(colorArray: ArrayList<String>) {
+        try {
+            if (colorArray.size > 1) {
+                val colors = IntArray(colorArray.size)
+                for (i in 0 until colorArray.size) {
+                    colors[i] = Color.parseColor(colorArray[i])
+                }
+                val gradient = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors)
+                gradient.cornerRadius = 0f
+                this.background = gradient
+            } else {
+                this.setBackgroundColor(Color.parseColor(colorArray[0]))
+            }
+        } catch (e: Exception) {
+
+        }
+    }
+
+
     private fun getCTAButtonText(card: FeedXCard) =
-        if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(R.string.feeds_check_x_products, card.totalProducts)
-        else if (card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(
-                R.string.feeds_asgc_disc_x_products,
-                card.totalProducts,
-                card.maximumDisPercentFmt
-            )
-        else if (card.isASGCDiscountToko && card.totalProducts == 1)
-            context.getString(
-                R.string.feeds_asgc_disc_one_products,
-                card.maximumDisPercentFmt
-            )
+        if (card.isTypeProductHighlight) card.cta.text
         else context.getString(R.string.feeds_cek_sekarang)
 
     override fun onDetachedFromWindow() {

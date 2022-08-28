@@ -44,6 +44,12 @@ data class FeedXCard(
     var subTitle: String = "",
     @SerializedName("totalProducts")
     var totalProducts: Int = 0,
+    @SerializedName("cta")
+    val cta: FeedXCta = FeedXCta(),
+    @SerializedName("ribbonImageURL")
+    val ribbonImageURL: String = "",
+    @SerializedName("campaign")
+    val campaign: FeedXCampaign = FeedXCampaign(),
     @SerializedName("text")
     var text: String = "",
     @SerializedName("title")
@@ -141,6 +147,9 @@ data class FeedXCard(
             products = products,
             subTitle = subTitle,
             text = text,
+            cta = cta,
+            ribbonImageURL = ribbonImageURL,
+            campaign = campaign,
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,

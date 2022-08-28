@@ -314,6 +314,23 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           webLink
           appLink
         }
+        cta {
+          text
+          color
+          colorGradient {
+          color
+          position
+          }
+        }
+        ribbonImageURL
+        campaign {
+            id
+            status
+            name
+            shortName
+            startTime
+            endTime
+          }
         title
         subTitle
         text
@@ -324,6 +341,24 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         maximumDiscountPercentage
         maximumDiscountPercentageFmt
         totalProducts
+        cta {
+          text
+          color
+          colorGradient {
+          color
+          position
+          }
+          __typename
+        }
+        ribbonImageURL
+        campaign {
+            id
+            status
+            name
+            shortName
+            startTime
+            endTime
+          }
         products {
           id
           name
