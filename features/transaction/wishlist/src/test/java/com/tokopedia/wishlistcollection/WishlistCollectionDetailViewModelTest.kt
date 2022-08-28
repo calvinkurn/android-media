@@ -1,6 +1,7 @@
 package com.tokopedia.wishlistcollection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
@@ -12,15 +13,18 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
@@ -64,6 +68,15 @@ class WishlistCollectionDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
+
+    @RelaxedMockK
+    lateinit var atcUseCase: AddToCartUseCase
+
+    @RelaxedMockK
+    lateinit var addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
 
     private var getWishlistCollectionItemsResponseDataStatusOk = GetWishlistCollectionItemsResponse(
         getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "")
@@ -145,7 +158,10 @@ class WishlistCollectionDetailViewModelTest {
                 deleteWishlistV2UseCase,
                 bulkDeleteWishlistV2UseCase,
                 deleteCollectionItemsUseCase,
-                deleteWishlistCollectionUseCase
+                deleteWishlistCollectionUseCase,
+                deleteWishlistProgressUseCase,
+                atcUseCase,
+                addWishlistCollectionItemsUseCase
             )
         )
     }
@@ -283,12 +299,12 @@ class WishlistCollectionDetailViewModelTest {
         val bulkDeleteResult = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2(id = "",
             success = true, message = "", button = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2.Button("", "", ""))
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any(), any())
         } returns Success(bulkDeleteResult)
 
 
         //when
-        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0)
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams(), "")
 
         //then
         assert(wishlistCollectionDetailViewModel.bulkDeleteWishlistV2Result.value is Success)
@@ -299,11 +315,11 @@ class WishlistCollectionDetailViewModelTest {
     fun `Bulk Delete Failed`() {
         //given
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any(), any())
         } returns Fail(Exception())
 
         //when
-        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0)
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams(), "")
 
         //then
         assert(wishlistCollectionDetailViewModel.bulkDeleteWishlistV2Result.value is Fail)

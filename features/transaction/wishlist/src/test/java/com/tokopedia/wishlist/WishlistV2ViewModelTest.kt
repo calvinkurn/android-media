@@ -297,7 +297,7 @@ class WishlistV2ViewModelTest {
         val bulkDeleteResult = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2(id = "",
                 success = true, message = "", button = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2.Button("", "", ""))
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any(), any())
         } returns Success(bulkDeleteResult)
 
 
@@ -314,7 +314,7 @@ class WishlistV2ViewModelTest {
     fun bulkDeleteWishlist_shouldReturnFail() {
         //given
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any(), any())
         } returns Fail(Exception())
 
         //when

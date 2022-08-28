@@ -1,9 +1,12 @@
 package com.tokopedia.wishlistcollection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
@@ -33,6 +36,12 @@ class WishlistCollectionViewModelTest {
     @RelaxedMockK
     lateinit var deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
 
+    @RelaxedMockK
+    lateinit var singleRecommendationUseCase: GetSingleRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
+
     private var collectionWishlistResponseDataStatusOk = GetWishlistCollectionResponse(
         getWishlistCollections = GetWishlistCollectionResponse.GetWishlistCollections(status = "OK"))
 
@@ -56,7 +65,9 @@ class WishlistCollectionViewModelTest {
             WishlistCollectionViewModel(
                 dispatcher,
                 getWishlistCollectionUseCase,
-                deleteWishlistCollectionUseCase
+                deleteWishlistCollectionUseCase,
+                singleRecommendationUseCase,
+                deleteWishlistProgressUseCase
             )
         )
     }
@@ -67,6 +78,10 @@ class WishlistCollectionViewModelTest {
         coEvery {
             getWishlistCollectionUseCase(Unit)
         } returns collectionWishlistResponseDataStatusOk
+
+        coEvery {
+            singleRecommendationUseCase.getData(any())
+        } returns RecommendationWidget()
 
         //when
         wishlistCollectionViewModel.getWishlistCollections()
