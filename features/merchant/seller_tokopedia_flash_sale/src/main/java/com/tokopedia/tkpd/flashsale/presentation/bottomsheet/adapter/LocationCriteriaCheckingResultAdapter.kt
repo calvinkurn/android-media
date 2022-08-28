@@ -36,14 +36,6 @@ class LocationCriteriaCheckingResultAdapter: RecyclerView.Adapter<LocationCriter
     inner class CriteriaViewHolder(private val binding: StfsItemLocationCriteriaResultBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private fun setExpandIcon(isContentVisible: Boolean) {
-            binding.iconExpand.setImage(if (isContentVisible) {
-                IconUnify.CHEVRON_UP
-            } else {
-                IconUnify.CHEVRON_DOWN
-            })
-        }
-
         init {
             binding.iconExpand.setOnClickListener {
                 binding.layoutContent.root.apply {
@@ -51,6 +43,14 @@ class LocationCriteriaCheckingResultAdapter: RecyclerView.Adapter<LocationCriter
                     setExpandIcon(isVisible)
                 }
             }
+        }
+
+        private fun setExpandIcon(isContentVisible: Boolean) {
+            binding.iconExpand.setImage(if (isContentVisible) {
+                IconUnify.CHEVRON_UP
+            } else {
+                IconUnify.CHEVRON_DOWN
+            })
         }
 
         fun bind(item: CriteriaCheckingResult.LocationCheckingResult) {
