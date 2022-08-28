@@ -327,18 +327,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return false
         }
 
-        if (!DeviceConnectionInfo.isInternetAvailable(context,
-                checkWifi = true,
-                checkCellular = true,
-                checkEthernet = true)) {
-            broadcastStateChanged(
-                BroadcastState.Error(
-                    BroadcasterException(BroadcasterErrorType.InternetUnavailable)
-                )
-            )
-            return false
-        }
-
         val connectionId = mStreamer?.createConnection(connectionConfig) ?: -1
         if (connectionId == -1) {
             broadcastStateChanged(
