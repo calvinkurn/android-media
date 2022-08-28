@@ -146,7 +146,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                     (holder as WishlistCollectionEmptyStateCarouselViewHolder).bind(carouselItems)
                 }
                 TYPE_COLLECTION_DIVIDER -> {
-                    (holder as WishlistCollectionDividerViewHolder).bind(element)
+                    (holder as WishlistCollectionDividerViewHolder).bind()
                 }
             }
         }

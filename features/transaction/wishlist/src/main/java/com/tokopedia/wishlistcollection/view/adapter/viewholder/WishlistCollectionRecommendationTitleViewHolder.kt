@@ -9,13 +9,13 @@ import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutD
 class WishlistCollectionRecommendationTitleViewHolder(private val binding: WishlistV2RecommendationTitleItemBinding, private val isWithMargin: Boolean) : RecyclerView.ViewHolder(binding.root) {
 
     private companion object {
-        private const val PADDING_20 = 20
+        private const val PADDING_8 = 8
         private const val PADDING_12 = 12
     }
     
     fun bind(data: WishlistCollectionTypeLayoutData) {
         binding.root.visible()
-        binding.root.setPadding(PADDING_20.toPx(), PADDING_20.toPx(), 0, PADDING_12.toPx())
+        binding.root.setPadding(PADDING_8.toPx(), PADDING_8.toPx(), 0, PADDING_12.toPx())
         binding.tvRvTitleWishlistV2.text = data.dataObject as String
     }
 }
