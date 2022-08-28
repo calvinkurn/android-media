@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:textColor="@color/Unify_NN600"
-        android:text="Menampilkan produk dan lokasi campaign yang belum sesuai kriteria."
+        android:text="@string/commonbs_criteria_check_description"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="paragraph_3" />
 

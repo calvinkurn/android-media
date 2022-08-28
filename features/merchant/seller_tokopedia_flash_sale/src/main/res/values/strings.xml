@@ -87,5 +87,16 @@
     <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
     <string name="commonbs_max_shown_format">Maks. %1d kali dalam %2d hari</string>
     <string name="commonbs_multiloc_desc"><![CDATA[2 lokasi tokomu tidak sesuai dengan kriteria campaign. <a href="#">Cek Lokasi</a>]]></string>
+    <string name="commonbs_criteria_check_description">Menampilkan produk dan lokasi campaign yang belum sesuai kriteria.</string>
+    <string name="commonbs_criteria_check_original_price_field_title">Kisaran Harga Awal</string>
+    <string name="commonbs_criteria_check_min_rating_field_title">Min. Rating</string>
+    <string name="commonbs_criteria_check_sold_product_field_title">Produk Terjual</string>
+    <string name="commonbs_criteria_check_max_shown_field_title">Maks. Tampil</string>
+    <string name="commonbs_criteria_check_campaign_stock_field_title">Stok Campaign</string>
+    <string name="commonbs_criteria_check_min_score_field_title">Min. Skor Produk</string>
+    <string name="commonbs_criteria_check_min_buy_field_title">Min. Pembelian</string>
+    <string name="commonbs_criteria_check_other_criteria_field_title">Kriteria Khusus</string>
+    <string name="commonbs_field_required">Diwajibkan</string>
+    <string name="commonbs_field_limited">Dibatasi</string>
 
 </resources>

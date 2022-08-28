@@ -19,7 +19,7 @@
         android:textColor="@color/Unify_NN600"
         android:layout_marginHorizontal="16dp"
         app:typographyType="paragraph_3"
-        android:text="Menampilkan produk dan lokasi campaign yang belum sesuai kriteria." />
+        android:text="@string/commonbs_criteria_check_description" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvResult"

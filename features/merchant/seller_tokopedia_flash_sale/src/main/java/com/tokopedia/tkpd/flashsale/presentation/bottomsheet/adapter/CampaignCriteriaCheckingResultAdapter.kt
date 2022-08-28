@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultBinding
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultContentBinding
-import com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
+import com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
