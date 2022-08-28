@@ -661,14 +661,8 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private fun broadcastStateChanged(state: BroadcastState) {
         if (state is BroadcastState.Error
-            && state.cause.errorType == BroadcasterErrorType.InternetUnavailable) {
-
-            val context = mContext ?: return
-            if (DeviceConnectionInfo.isConnectWifi(context)
-                || DeviceConnectionInfo.isConnectCellular(context)) {
+            && state.cause.errorType == BroadcasterErrorType.InternetUnavailable)
                 return
-            }
-        }
 
         mState = state
         mListeners.forEach { it.onBroadcastStateChanged(state) }
