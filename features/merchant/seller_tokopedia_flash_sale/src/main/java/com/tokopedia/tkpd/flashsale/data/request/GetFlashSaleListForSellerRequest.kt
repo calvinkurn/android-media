@@ -34,9 +34,9 @@ data class GetFlashSaleListForSellerRequest(
 
     data class Sort(
         @SerializedName("order_by")
-        val orderBy: String = "ASC",
+        val orderBy: String,
         @SerializedName("order_rule")
-        val orderRule: String = "DEFAULT_VALUE_PLACEHOLDER",
+        val orderRule: String,
     )
 
     data class AdditionalParam(

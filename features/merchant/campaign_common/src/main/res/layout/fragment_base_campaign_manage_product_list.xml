@@ -23,7 +23,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.campaign.widget.WidgetCampaignLabelBulkApply
-        android:id="@+id/label_bulk_apply"
+        android:id="@+id/widget_bulk_apply"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
