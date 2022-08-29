@@ -85,10 +85,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     }
 
     /** Setup Title */
-    fun uploadTitle(title: String) {
+    fun uploadTitle(authorId: String, title: String) {
         viewModelScope.launchCatchError(dispatcher.main, block = {
             val result = withContext(dispatcher.io) {
-                setupDataStore.uploadTitle(hydraConfigStore.getChannelId(), title)
+                setupDataStore.uploadTitle(authorId, hydraConfigStore.getChannelId(), title)
             }
 
             _observableUploadTitleEvent.value = Event(result)

@@ -80,7 +80,7 @@
         tools:text="Review Peralatan Sepeda Rockbros" />
     
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_cover_shop_name"
+        android:id="@+id/tv_cover_author_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"

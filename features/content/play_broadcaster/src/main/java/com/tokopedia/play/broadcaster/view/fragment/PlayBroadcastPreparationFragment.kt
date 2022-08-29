@@ -15,6 +15,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -23,6 +24,7 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparati
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SelectAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -218,6 +220,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         else emptyList()
                     }
 
+                    override fun getAuthorId(): String {
+                        return if (::parentViewModel.isInitialized) parentViewModel.authorId
+                        else ""
+                    }
+
                     override fun getChannelId(): String {
                         return if (::parentViewModel.isInitialized) parentViewModel.channelId
                         else ""
@@ -228,9 +235,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.contentAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
-                        // TODO check if has draft then showing dialog
-                        if (!getSwitchAccountConfirmationDialog(contentAccount).isShowing)
-                            getSwitchAccountConfirmationDialog(contentAccount).show()
+                        if (contentAccount.id == parentViewModel.authorId) return
+                        if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
+                        else parentViewModel.submitAction(SelectAccount(contentAccount))
                     }
                 })
             }
@@ -344,6 +351,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupObserver() {
+        observeConfigInfo()
+
         observeTitle()
         observeCover()
         observeCreateLiveStream()
@@ -351,6 +360,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
+    }
+
+    private fun observeConfigInfo() {
+        parentViewModel.observableConfigInfo.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is NetworkResult.Loading -> showMainComponent(false)
+                is NetworkResult.Success -> showMainComponent(true)
+                is NetworkResult.Fail -> showMainComponent(true)
+            }
+        }
     }
 
     private fun observeTitle() {
@@ -385,6 +404,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     } else if (!croppedCover.localImage?.toString().isNullOrEmpty()){
                         binding.viewPreparationMenu.isSetCoverChecked(true)
                         binding.formCover.setCover(croppedCover.localImage.toString())
+                    } else {
+                        binding.viewPreparationMenu.isSetCoverChecked(false)
+                        binding.formCover.setInitialCover()
                     }
                 }
             }
@@ -573,14 +595,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             showMainComponent(false)
 
             binding.formCover.setTitle(parentViewModel.channelTitle)
-            binding.formCover.setShopName(parentViewModel.getShopName())
-            binding.formCover.visibility = View.VISIBLE
+            binding.formCover.setAuthorName(parentViewModel.authorName)
         }
-        else {
-            showMainComponent(true)
-
-            binding.formCover.visibility = View.GONE
-        }
+        else showMainComponent(true)
+        binding.formCover.showWithCondition(isShow)
     }
 
     private fun showScheduleBottomSheet() {
@@ -651,7 +669,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         hideKeyboard()
         binding.formTitle.setLoading(true)
-        viewModel.uploadTitle(title)
+        viewModel.uploadTitle(parentViewModel.authorId, title)
     }
 
     /** Callback Cover Form */
@@ -666,7 +684,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
-        binding.groupPreparationMain.visibility = if(isShow) View.VISIBLE else View.GONE
+        binding.groupPreparationMain.showWithCondition(isShow)
     }
 
     private fun getProperErrorMessage(err: Throwable): String {
@@ -782,26 +800,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun getSwitchAccountConfirmationDialog(contentAccount: ContentAccountUiModel): DialogUnify {
-        if (!::switchAccountConfirmationDialog.isInitialized) {
+        if (!::switchAccountConfirmationDialog.isInitialized || !switchAccountConfirmationDialog.isShowing) {
             switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
-                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_title_buyer_dialog)
-                    else getString(R.string.play_bro_switch_account_title_shop_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_title_shop_dialog)
+                    else getString(R.string.play_bro_switch_account_title_buyer_dialog)
                 )
                 setDescription(
-                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_description_buyer_dialog)
-                    else getString(R.string.play_bro_switch_account_description_shop_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_description_shop_dialog)
+                    else getString(R.string.play_bro_switch_account_description_buyer_dialog)
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
                 setSecondaryCTAText(
-                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
-                    else getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
+                    if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
+                    else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(PlayBroadcastAction.SelectAccount(contentAccount))
+                    parentViewModel.submitAction(SelectAccount(contentAccount))
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }

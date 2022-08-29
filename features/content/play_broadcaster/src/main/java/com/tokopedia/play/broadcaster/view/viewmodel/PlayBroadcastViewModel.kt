@@ -240,6 +240,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val isAllowChangeAccount: Boolean
         get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
 
+    val authorId: String
+        get() = _selectedAccount.value.id
+
+    val authorName: String
+        get() = _selectedAccount.value.name
+
+    private val authorType: String
+        get() = _selectedAccount.value.type
+
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
@@ -359,8 +368,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         _observableChatList.value = mutableListOf()
-
-        submitAction(PlayBroadcastAction.GetAccountList)
     }
 
     override fun onCleared() {
@@ -377,7 +384,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountList -> handleAccountList()
+            is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
             is PlayBroadcastAction.SelectAccount -> handleSelectedAccount(event.contentAccount)
 
             /** Game */
@@ -421,9 +428,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun getConfiguration() {
         viewModelScope.launchCatchError(block = {
-            _observableConfigInfo.value = NetworkResult.Loading
 
-            val configUiModel = repo.getChannelConfiguration()
+            val configUiModel = repo.getChannelConfiguration(authorId, authorType)
             setChannelId(configUiModel.channelId)
 
             _configInfo.value = configUiModel
@@ -475,7 +481,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun createChannel() {
-        val channelId = repo.createChannel()
+        val channelId = repo.createChannel(authorId, authorType)
         setChannelId(channelId)
     }
 
@@ -527,7 +533,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private suspend fun updateChannelStatus(status: PlayChannelStatusType): String {
         return withContext(dispatcher.io) {
-            repo.updateChannelStatus(channelId, status)
+            repo.updateChannelStatus(authorId, channelId, status)
         }
     }
 
@@ -1493,8 +1499,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleAccountList() {
+    private fun handleGetAccountList() {
         viewModelScope.launchCatchError(block = {
+            _observableConfigInfo.value = NetworkResult.Loading
+
             val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
 
             val feedAccountList = response.whitelist.authors.map {
@@ -1511,20 +1519,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _accountListState.value = feedAccountList
 
-            //TODO can't force to select first account need to check it first (eligible/last
+            //TODO can't force to select first account need to check it first (eligible/last)
             if(feedAccountList.isNotEmpty()) {
                 _selectedAccount.value = feedAccountList.first()
+                getConfiguration()
             }
-        }, onError = {})
+        }, onError = {
+            _observableConfigInfo.value = NetworkResult.Fail(it)
+        })
     }
 
     private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
-        viewModelScope.launchCatchError(block = {
-            val current = _selectedAccount.value
-            if(current.id != contentAccount.id) {
-                _selectedAccount.value = contentAccount
-            }
-        }, onError = { })
+        _observableConfigInfo.value = NetworkResult.Loading
+        _selectedAccount.value = contentAccount
+        getConfiguration()
     }
 
     /**

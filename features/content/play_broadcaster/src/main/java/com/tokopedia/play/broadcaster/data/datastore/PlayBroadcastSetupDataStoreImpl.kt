@@ -89,8 +89,8 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         coverDataStore.updateCoverState(state)
     }
 
-    override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
-        return coverDataStore.uploadSelectedCover(channelId)
+    override suspend fun uploadSelectedCover(authorId: String, channelId: String): NetworkResult<Unit> {
+        return coverDataStore.uploadSelectedCover(authorId, channelId)
     }
 
     /**

@@ -16,6 +16,7 @@ interface TitleDataStore {
     fun setTitle(title: String)
 
     suspend fun uploadTitle(
+        authorId: String,
         channelId: String,
         title: String,
     ): NetworkResult<Unit>
