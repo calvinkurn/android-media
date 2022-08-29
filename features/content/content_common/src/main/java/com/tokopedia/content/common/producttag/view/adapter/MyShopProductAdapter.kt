@@ -16,6 +16,7 @@ class MyShopProductAdapter(
     init {
         delegatesManager
             .addDelegate(MyShopProductAdapterDelegate.Product(onSelected))
+            .addDelegate(MyShopProductAdapterDelegate.ProductWithCheckbox(onSelected))
             .addDelegate(MyShopProductAdapterDelegate.Loading())
     }
 
@@ -42,6 +43,11 @@ class MyShopProductAdapter(
     sealed interface Model {
         data class Product(
             val product: ProductUiModel,
+        ) : Model
+
+        data class ProductWithCheckbox(
+            val product: ProductUiModel,
+            val isSelected: Boolean,
         ) : Model
 
         object Loading: Model
