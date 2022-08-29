@@ -1,13 +1,13 @@
-package com.tokopedia.campaign.components.bottomsheet.bulkapply.di.module
+package com.tokopedia.campaign.di.module
 
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.di.scope.CampaignManageProductBulkApplyBottomSheetScope
+import com.tokopedia.campaign.di.scope.CampaignManageProductBulkApplyBottomSheetScope
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class CampaignManageProductBulkApplyBottomSheetModule {
+class CampaignCommonModule {
 
     @CampaignManageProductBulkApplyBottomSheetScope
     @Provides

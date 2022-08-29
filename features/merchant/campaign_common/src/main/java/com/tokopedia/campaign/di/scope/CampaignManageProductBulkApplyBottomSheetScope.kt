@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.components.bottomsheet.bulkapply.di.scope
+package com.tokopedia.campaign.di.scope
 
 import javax.inject.Scope
 

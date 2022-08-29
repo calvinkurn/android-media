@@ -14,7 +14,7 @@ import com.tokopedia.campaign.R
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.CampaignManageProductBulkApplyBottomSheetConfigUiModel
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.CampaignManageProductBulkApplyBottomSheetResultUiModel
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.DiscountType
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.di.component.DaggerCampaignManageProductBulkApplyBottomSheetComponent
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.di.component.DaggerCampaignCommonComponent
 import com.tokopedia.campaign.databinding.CampaignBottomsheetManageProductBulkApplyBinding
 import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
@@ -107,7 +107,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupDependencyInjection() {
-        DaggerCampaignManageProductBulkApplyBottomSheetComponent.builder()
+        DaggerCampaignCommonComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
