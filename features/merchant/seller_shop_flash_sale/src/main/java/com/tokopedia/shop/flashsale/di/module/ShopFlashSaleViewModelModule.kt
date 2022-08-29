@@ -19,6 +19,7 @@ import com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailViewModel
 import com.tokopedia.shop.flashsale.presentation.draft.viewmodel.DraftDeleteViewModel
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerViewModel
 import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListViewModel
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -98,4 +99,9 @@ abstract class ShopFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(VpsPackageViewModel::class)
     internal abstract fun provideVpsPackageViewModel(viewModel: VpsPackageViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(QuotaMonitoringViewModel::class)
+    internal abstract fun provideQuotaMonitoringViewModel(viewModel: QuotaMonitoringViewModel) : ViewModel
 }

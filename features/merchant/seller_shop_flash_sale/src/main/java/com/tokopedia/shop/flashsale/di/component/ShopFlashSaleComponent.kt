@@ -24,6 +24,7 @@ import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftDeleteBo
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringFragment
 import dagger.Component
 
 @ShopFlashSaleScope
@@ -35,6 +36,7 @@ interface ShopFlashSaleComponent {
     fun inject(activity: CampaignListActivity)
     fun inject(fragment: CampaignListContainerFragment)
     fun inject(fragment: CampaignListFragment)
+    fun inject(fragment: QuotaMonitoringFragment)
 
     fun inject(activity: CampaignInformationActivity)
     fun inject(fragment: CampaignInformationFragment)
