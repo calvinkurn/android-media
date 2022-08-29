@@ -3153,7 +3153,6 @@ open class DynamicProductDetailFragment :
             val boData = viewModel.getBebasOngkirDataByProductId()
 
             val productId = it.basic.productID
-            val boCampaignIDs = viewModel.p2Data.value?.getBebasOngkirCampaignIDsByProductId(productId)
 
             sharedViewModel?.setRequestData(
                 RatesEstimateRequest(
@@ -3176,7 +3175,7 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boCampaignIDs = boCampaignIDs ?: ""
+                    boMetadata = viewModel.p2Data.value?.getRatesEstimateBoMetadata(productId) ?: ""
                 )
             )
             shouldRefreshShippingBottomSheet = false

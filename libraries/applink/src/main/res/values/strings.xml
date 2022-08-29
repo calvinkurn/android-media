@@ -169,4 +169,7 @@
     <!-- Shop Flash Sale -->
     <string name="title_shop_flash_sale">Flash Sale Toko</string>
 
+<!--    Tokomember seller dashboard-->
+    <string name="title_tokomember" translatable="false">Tokomember</string>
+
 </resources>

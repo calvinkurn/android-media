@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -36,14 +37,16 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
-                                              private val wishlistV2UseCase: WishlistV2UseCase,
-                                              private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
-                                              private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-                                              private val countDeletionWishlistV2UseCase: DeleteWishlistProgressUseCase,
-                                              private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-                                              private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-                                              private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
+class WishlistV2ViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatchers,
+    private val wishlistV2UseCase: WishlistV2UseCase,
+    private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
+    private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
+    private val countDeletionWishlistV2UseCase: DeleteWishlistProgressUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+    private val atcUseCase: AddToCartUseCase
+) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2 = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
     val wishlistV2: LiveData<Result<WishlistV2Response.Data.WishlistV2>>
@@ -58,7 +61,8 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
     val deleteWishlistV2Result: LiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>
         get() = _deleteWishlistV2Result
 
-    private val _bulkDeleteWishlistV2Result = MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
+    private val _bulkDeleteWishlistV2Result =
+        MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
     val bulkDeleteWishlistV2Result: LiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>
         get() = _bulkDeleteWishlistV2Result
 
@@ -66,7 +70,8 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _deleteWishlistProgressResult = MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
+    private val _deleteWishlistProgressResult =
+        MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
     val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
         get() = _deleteWishlistProgressResult
 
@@ -89,7 +94,8 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
         val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
-                val recommItems = getRecommendationWishlistV2(page, listOf(), EMPTY_WISHLIST_PAGE_NAME)
+                val recommItems =
+                    getRecommendationWishlistV2(page, listOf(), EMPTY_WISHLIST_PAGE_NAME)
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(WishlistV2TypeLayoutData(item, TYPE_RECOMMENDATION_LIST))
                 }
@@ -108,9 +114,19 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
         }
     }
 
-    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int, additionalParams: WishlistV2BulkRemoveAdditionalParams) {
+    fun bulkDeleteWishlistV2(
+        listProductId: List<String>,
+        userId: String,
+        mode: Int,
+        additionalParams: WishlistV2BulkRemoveAdditionalParams
+    ) {
         launch {
-            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId, mode, additionalParams, "")
+            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(
+                listProductId,
+                userId,
+                mode,
+                additionalParams
+            , "")
         }
     }
 
@@ -147,8 +163,10 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                         productIds = productIds,
                         pageName = pageName)
         )
+        )
         return WishlistV2RecommendationDataModel(WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
-                recommendation.recommendationItemList, recommendation.title)
+            recommendation.recommendationItemList, recommendation.title
+        )
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel?  {
@@ -159,5 +177,65 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
             Timber.d(e)
             return null
         }
+    fun convertRecommendationIntoProductDataModel(data: List<RecommendationItem>): List<ProductCardModel> {
+        return data.map { element ->
+            ProductCardModel(
+                slashedPrice = element.slashedPrice,
+                productName = element.name,
+                formattedPrice = element.price,
+                productImageUrl = element.imageUrl,
+                isTopAds = element.isTopAds,
+                discountPercentage = element.discountPercentage,
+                reviewCount = element.countReview,
+                ratingCount = element.rating,
+                shopLocation = element.location,
+                isWishlistVisible = true,
+                isWishlisted = element.isWishlist,
+                shopBadgeList = element.badgesUrl.map {
+                    ProductCardModel.ShopBadge(imageUrl = it)
+                },
+                freeOngkir = ProductCardModel.FreeOngkir(
+                    isActive = element.isFreeOngkirActive,
+                    imageUrl = element.freeOngkirImageUrl
+                ),
+                labelGroupList = element.labelGroupList.map { recommendationLabel ->
+                    ProductCardModel.LabelGroup(
+                        position = recommendationLabel.position,
+                        title = recommendationLabel.title,
+                        type = recommendationLabel.type,
+                        imageUrl = recommendationLabel.imageUrl
+                    )
+                }
+            )
+        }
+    }
+
+    suspend fun getTopAdsData(): TopAdsImageViewModel? {
+        var result: TopAdsImageViewModel? = null
+        launchCatchError(dispatcher.io, {
+            result = topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    WISHLIST_TOPADS_SOURCE,
+                    "",
+                    WISHLIST_TOPADS_ADS_COUNT,
+                    WISHLIST_TOPADS_DIMENS,
+                    ""
+                )
+            ).firstOrNull()
+        }, {
+            result = null
+        })
+        return result
+    }
+
+    companion object {
+        private var recommPosition = 4
+        private var recommPositionDefault = 4
+        private var recommWithTickerPosition = 5
+        private const val WISHLIST_TOPADS_SOURCE = "6"
+        private const val WISHLIST_TOPADS_ADS_COUNT = 1
+        private const val WISHLIST_TOPADS_DIMENS = 3
+        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     }
 }
