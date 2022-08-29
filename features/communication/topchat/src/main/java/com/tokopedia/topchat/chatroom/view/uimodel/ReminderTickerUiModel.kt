@@ -14,7 +14,7 @@ data class ReminderTickerUiModel(
     @SerializedName("enableClose")
     var isEnableClose: Boolean = false,
     @SerializedName("featureId")
-    var featureId: String = "0",
+    var featureId: Long = 0,
     @SerializedName("mainText")
     var mainText: String = "",
     @SerializedName("regexMessage")
@@ -40,7 +40,7 @@ data class ReminderTickerUiModel(
             return ReminderTickerUiModel(
                 isEnable = reminderPojo.isEnable?: false,
                 isEnableClose = reminderPojo.isEnableClose?: false,
-                featureId = (reminderPojo.featureId.orZero()).toString(),
+                featureId = reminderPojo.featureId.orZero(),
                 mainText = reminderPojo.mainText?: "",
                 regexMessage = reminderPojo.regexMessage?: "",
                 subText = reminderPojo.subText?: "",
