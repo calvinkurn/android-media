@@ -32,6 +32,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -119,6 +120,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
     lateinit var viewModel: ShopPageProductListResultViewModel
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -296,6 +299,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             (it as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         observeLiveData()
+        initAffiliateCookie()
+    }
+
+    private fun initAffiliateCookie() {
+        viewModel?.initAffiliateCookie(
+            affiliateCookieHelper,
+            shopId.orEmpty()
+        )
     }
 
     private fun initView() {
@@ -1062,13 +1073,26 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
+            val pdpAppLink = getPdpAppLink(productId)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            RouteManager.getIntent(context, pdpAppLink)
         } else {
             null
         }
+    }
+
+    private fun getPdpAppLink(productId: String): String {
+        val basePdpAppLink = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        return createPdpAffiliateLink(basePdpAppLink)
+    }
+
+    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
     private fun onSuccessAddWishlist(productId: String) {
