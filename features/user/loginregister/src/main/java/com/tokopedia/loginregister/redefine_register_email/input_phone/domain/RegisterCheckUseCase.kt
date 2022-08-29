@@ -17,7 +17,7 @@ class RegisterCheckUseCase @Inject constructor(
         """
             mutation registerCheck(${'$'}id: String!) {
                 registerCheck(id: ${'$'}id) {
-                    status
+                    isExist
                     errors
                     view
                 }

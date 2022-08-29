@@ -123,11 +123,11 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     showLoading(false)
                     showDialogConfirmPhone(phone = it.message)
                 }
-                is RegisteredPhoneState.Failed -> {
+                is RegisteredPhoneState.Ineligible -> {
                     showLoading(false)
                     binding?.fieldInputPhone?.setMessageFromString(it.message)
                 }
-                is RegisteredPhoneState.Error -> {
+                is RegisteredPhoneState.Failed -> {
                     showLoading(false)
                     it.throwable?.let { throwable -> showToasterError(throwable) }
                 }

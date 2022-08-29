@@ -58,19 +58,19 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
             val response = registerCheckUseCase(phone)
 
             _isRegisteredPhone.value = when {
-                response.data.status == STATUS_USER_ACTIVE -> {
+                response.data.errors.isNotEmpty() -> {
+                    RegisteredPhoneState.Ineligible(message = response.data.errors[0])
+                }
+                response.data.isExist -> {
                     RegisteredPhoneState.Registered()
                 }
-                response.data.errors.isNotEmpty() -> {
-                    RegisteredPhoneState.Failed(message = response.data.errors[0])
-                }
                 else -> {
-                    RegisteredPhoneState.Unregistered(response.data.view)
+                    RegisteredPhoneState.Unregistered(phoneNumber = response.data.view)
                 }
             }
 
         }, {
-            _isRegisteredPhone.value = RegisteredPhoneState.Error(it)
+            _isRegisteredPhone.value = RegisteredPhoneState.Failed(throwable = it)
         })
     }
 

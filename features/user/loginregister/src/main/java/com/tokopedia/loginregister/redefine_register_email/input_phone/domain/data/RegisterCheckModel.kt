@@ -8,12 +8,12 @@ data class RegisterCheckModel(
 )
 
 data class RegisterCheckData(
-    @SerializedName("status")
-    var status: Int = 0,
+    @SerializedName("isExist")
+    var isExist: Boolean = false,
 
     @SerializedName("errors")
     val errors: List<String> = emptyList(),
 
     @SerializedName("view")
-    val view: String =""
+    val view: String = ""
 )
