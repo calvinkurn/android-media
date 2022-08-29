@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
@@ -126,8 +127,8 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             viewModel?.setRatesRequest(it)
         }
 
-        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) {
-            it.doSuccessOrFail({
+        viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) { result ->
+            result.doSuccessOrFail({
                 shippingAdapter?.submitList(it.data)
             }) { throwable ->
                 showError(throwable)
@@ -146,7 +147,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     private fun setupRecyclerView(view: View) {
         rv = view.findViewById<RecyclerView?>(R.id.rv_product_shipping).apply {
-            if (itemDecorationCount == 0 && context != null) {
+            if (itemDecorationCount == Int.ZERO && context != null) {
                 val decorator = ProductSeparatorItemDecoration(
                     context = requireContext()
                 )
