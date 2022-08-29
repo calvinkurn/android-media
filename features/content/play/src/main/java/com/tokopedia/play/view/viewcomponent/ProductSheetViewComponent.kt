@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
@@ -22,6 +23,7 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductSectionAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
@@ -53,6 +55,7 @@ class ProductSheetViewComponent(
 
     private val tvVoucherHeaderTitle: TextView = findViewById(R.id.tv_first_voucher_title)
     private val tvVoucherHeaderDesc: TextView = findViewById(R.id.tv_voucher_count)
+    private val ivVoucherHeader: IconUnify = findViewById(R.id.iv_promo)
 
     private val globalError: GlobalError = findViewById(R.id.global_error_product)
 
@@ -178,8 +181,10 @@ class ProductSheetViewComponent(
             }
 
             voucherList.let {
+                val totalVoucher = merchantVoucher.size
                 tvVoucherHeaderTitle.text = merchantVoucher.getOrNull(0)?.title ?: ""
-                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, merchantVoucher.size.toString())
+                tvVoucherHeaderDesc.text = if(totalVoucher == 1) getString(R.string.play_product_voucher_header_empty_desc) else getString(R.string.play_product_voucher_header_desc, totalVoucher.toString())
+                ivVoucherHeader.setImage(newIconId = if (merchantVoucher.getOrNull(0)?.type == MerchantVoucherType.Shipping) IconUnify.COURIER_FAST else IconUnify.PROMO)
             }
             clProductVoucher.show()
         }
