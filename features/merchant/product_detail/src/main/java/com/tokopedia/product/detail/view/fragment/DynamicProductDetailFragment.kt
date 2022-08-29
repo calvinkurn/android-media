@@ -30,14 +30,22 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.review.ReviewApplinkConst
-import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -4191,7 +4199,7 @@ open class DynamicProductDetailFragment :
 
     private fun goToWishlistCollection(collectionId: String) {
         val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
+            "${WISHLIST_COLLECTION_DETAIL}?${PATH_COLLECTION_ID}=$collectionId"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
         startActivity(intentCollectionDetail)
     }
@@ -4753,7 +4761,7 @@ open class DynamicProductDetailFragment :
             ) {
                 context?.let { context ->
                     if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
-                        val applinkCollection = "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
+                        val applinkCollection = "${WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
                         val intentBottomSheetWishlistCollection = RouteManager.getIntent(context, applinkCollection)
                         val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
                         intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, !isOos)
