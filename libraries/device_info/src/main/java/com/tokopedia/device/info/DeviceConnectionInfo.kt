@@ -89,6 +89,7 @@ object DeviceConnectionInfo {
         return isInternetAvailable(context, checkEthernet = true)
     }
 
+    @Deprecated("Use isConnectWifi(context), isConnectCellular(context), or isConnectEthernet(context) instead.")
     @JvmStatic
     fun isInternetAvailable(
         context: Context,
