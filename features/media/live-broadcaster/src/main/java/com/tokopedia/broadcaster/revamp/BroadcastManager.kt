@@ -315,10 +315,18 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         if (success) broadcastStateChanged(BroadcastState.Started)
     }
 
+    private fun isStreamerReady(): Boolean {
+        return isAudioCaptureStarted() && isVideoCaptureStarted()
+    }
+
+    private fun isInternetAvailable(context: Context): Boolean {
+        return DeviceConnectionInfo.isConnectWifi(context) ||
+                DeviceConnectionInfo.isConnectCellular(context)
+    }
+
     private fun createConnection(connectionConfig: ConnectionConfig): Boolean {
         val context = mContext ?: return false
-        val isStreamerReady = isAudioCaptureStarted() && isVideoCaptureStarted()
-        if (!isStreamerReady) {
+        if (!isStreamerReady()) {
             broadcastStateChanged(
                 BroadcastState.Error(
                     BroadcasterException(BroadcasterErrorType.ServiceNotReady)
@@ -327,10 +335,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return false
         }
 
-        if (!DeviceConnectionInfo.isInternetAvailable(context,
-                checkWifi = true,
-                checkCellular = true,
-                checkEthernet = true)) {
+        if (!isInternetAvailable(context)) {
             broadcastStateChanged(
                 BroadcastState.Error(
                     BroadcasterException(BroadcasterErrorType.InternetUnavailable)
