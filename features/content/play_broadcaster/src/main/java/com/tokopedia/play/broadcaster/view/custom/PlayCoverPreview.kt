@@ -87,7 +87,7 @@ class PlayCoverPreview : ConstraintLayout {
         binding.tvCoverTitle.text = title
     }
 
-    fun setShopName(shopName: String) {
-        binding.tvCoverShopName.text = shopName
+    fun setAuthorName(authorName: String) {
+        binding.tvCoverAuthorName.text = authorName
     }
 }
