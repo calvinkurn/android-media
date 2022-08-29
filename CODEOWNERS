@@ -220,7 +220,7 @@
 /features/user/user_identification/             		@tokopedia/android-minionkevin-dev
 /features/user/user_identification_common/      		@tokopedia/android-minionkevin-dev
 /features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
-/features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
+/features/user/fcm_common/                              @tokopedia/android-miniondave-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
 /features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
@@ -277,7 +277,7 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
-/features/im/cm_home_widget                   			@tokopedia/android-minionyoda-dev
+/features/im/cm_home_widget                   			@tokopedia/android-miniondave-dev
 /features/ovop2p                                        @tokopedia/android-minionmark-dev
 /features/payment/common_payment                        @tokopedia/android-minionmark-dev
 /features/fintech/wallet                				@tokopedia/android-minionmark-dev
@@ -304,7 +304,7 @@
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
 /libraries/circular_view_pager/				    		@tokopedia/android-core-dev
-/libraries/cm_push_notifications/						@tokopedia/android-minionyoda-dev
+/libraries/cm_push_notifications/						@tokopedia/android-miniondave-dev
 /libraries/collapsing_tab_layout/						@tokopedia/android-core-dev
 /libraries/common_network/								@tokopedia/android-core-dev
 /libraries/composite_lib/								@tokopedia/android-core-dev
