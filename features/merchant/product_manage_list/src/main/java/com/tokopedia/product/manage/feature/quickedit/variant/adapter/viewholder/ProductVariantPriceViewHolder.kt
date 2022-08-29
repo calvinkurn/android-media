@@ -71,7 +71,7 @@ class ProductVariantPriceViewHolder(
        binding?.textFieldPrice?.run {
            val price = priceMap.getOrElse(variant.id) { variant.price }
            // For now, set the price to int first as we do not support decimal price edit
-           val priceString = price.toString()
+           val priceString = price.toLong().toString()
            val priceRupiah = CurrencyFormatHelper.convertToRupiah(priceString)
            val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
            val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
