@@ -146,6 +146,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
@@ -3165,10 +3166,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
-        TopChatAnalyticsKt.eventClickProductBundlingCta(
-            element.productBundling.bundleItem?.first()?.productId?: "",
-            element.productBundling.bundleId?: ""
-        )
+        if (element.isBroadcast()) {
+            TopChatAnalyticsKt.eventClickCtaOnProductBundlingBroadcast(
+                element.blastId,
+                element.productBundling.bundleStatus.toString(),
+                element.productBundling.bundleId.toString(),
+                getBroadcastSenderShopId(element),
+                session.userId
+            )
+        } else {
+            TopChatAnalyticsKt.eventClickProductBundlingCta(
+                element.productBundling.bundleItem?.first()?.productId?: "",
+                element.productBundling.bundleId?: ""
+            )
+        }
+
         if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
             context?.let {
                 val intent = RouteManager.getIntent(it,
@@ -3180,10 +3192,48 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
-            TopChatAnalyticsKt.eventViewProductBundling(
-                element.productBundling.bundleItem?.first()?.productId?: "",
-                element.productBundling.bundleId?: ""
+            if (element.isBroadcast()) {
+                TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                    element.blastId,
+                    element.productBundling.bundleStatus.toString(),
+                    element.productBundling.bundleId.toString(),
+                    getBroadcastSenderShopId(element),
+                    session.userId
+                )
+            } else {
+                TopChatAnalyticsKt.eventViewProductBundling(
+                    element.productBundling.bundleItem?.first()?.productId?: "",
+                    element.productBundling.bundleId?: ""
+                )
+            }
+        }
+    }
+
+    override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
+        if (element.isBroadcast()) {
+            TopChatAnalyticsKt.eventClickProductAttachmentOnProductBundlingBroadcast(
+                element.blastId,
+                element.productBundling.bundleStatus.toString(),
+                element.productBundling.bundleId.toString(),
+                item.productId,
+                getBroadcastSenderShopId(element),
+                session.userId
             )
+        }
+
+        if (item.androidUrl.isNotEmpty()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, item.androidUrl)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun getBroadcastSenderShopId(element: ProductBundlingUiModel): String {
+        return if (element.isSender) {
+            session.shopId
+        } else {
+            shopId
         }
     }
 

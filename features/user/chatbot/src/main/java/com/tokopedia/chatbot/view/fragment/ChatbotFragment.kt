@@ -919,7 +919,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             if (!selectedOption.isNullOrEmpty()) {
                 for (filter in selectedOption) {
                     if (filter.isNotEmpty())
-                        filters += reasonList?.get(filter.toInt()) + ","
+                        filters += reasonList?.get(filter.toIntOrZero()) + ","
                 }
                 return filters.substring(0, filters.length - 1)
             }
