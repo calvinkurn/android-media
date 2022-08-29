@@ -36,10 +36,10 @@ data class Cart(
         val promocode: String = "",
         @SerializedName("promocode_cashback")
         @Expose
-        val promocodeCashback: Int = 0,
+        val promocodeCashback: Long = 0L,
         @SerializedName("promocode_discount")
         @Expose
-        val promocodeDiscount: Int = 0,
+        val promocodeDiscount: Long = 0L,
         @SerializedName("promocode_failure_message")
         @Expose
         val promocodeFailureMessage: String = "",
