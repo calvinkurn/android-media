@@ -28,7 +28,7 @@ import java.text.NumberFormat
 import javax.inject.Inject
 
 
-class CampaignManageProductBulkApplyBottomSheet : BottomSheetUnify() {
+class ProductBulkApplyBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val ARG_BOTOMSHEET_CONFIG = "ARG_BOTOMSHEET_CONFIG"
@@ -42,10 +42,10 @@ class CampaignManageProductBulkApplyBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun newInstance(
             bottomSheetConfigModel: CampaignManageProductBulkApplyBottomSheetConfigUiModel
-        ): CampaignManageProductBulkApplyBottomSheet {
+        ): ProductBulkApplyBottomSheet {
             val args = Bundle()
             args.putParcelable(ARG_BOTOMSHEET_CONFIG, bottomSheetConfigModel)
-            val bottomSheet = CampaignManageProductBulkApplyBottomSheet().apply {
+            val bottomSheet = ProductBulkApplyBottomSheet().apply {
                 arguments = args
             }
             return bottomSheet
