@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         val appLink = etAppLink.text.toString()
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
-        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        else startActivity(Intent(this, ContentProductTagSampleActivity::class.java))
     }
 
     private fun getDefaultAppLink(): String {

@@ -111,6 +111,34 @@ internal class ProductTagCardViewHolder private constructor() {
         }
     }
 
+    internal class ProductWithCheckbox(
+        private val binding: ItemProductTagCardWithCheckboxListBinding,
+        private val onSelected: (ProductUiModel, Int) -> Unit,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: ProductTagCardAdapter.Model.ProductWithCheckbox) {
+            binding.productView.apply {
+                setProductModel(item.product.toProductCard())
+                setOnClickListener { onSelected(item.product, adapterPosition) }
+            }
+        }
+
+        companion object {
+
+            fun create(
+                parent: ViewGroup,
+                onSelected: (ProductUiModel, Int) -> Unit
+            ) = ProductWithCheckbox(
+                binding = ItemProductTagCardWithCheckboxListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+                onSelected = onSelected,
+            )
+        }
+    }
+
     internal class EmptyState(
         private val binding: ItemGlobalSearchEmptyStateListBinding,
     ) : RecyclerView.ViewHolder(binding.root) {

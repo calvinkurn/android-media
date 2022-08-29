@@ -148,7 +148,10 @@ class LastTaggedProductFragment @Inject constructor(
 
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
             val finalProducts = products.map {
-                ProductTagCardAdapter.Model.Product(product = it)
+                ProductTagCardAdapter.Model.ProductWithCheckbox(
+                    product = it,
+                    selectedProduct = emptyList()
+                )
             } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvLastTaggedProduct.isComputingLayout.not())

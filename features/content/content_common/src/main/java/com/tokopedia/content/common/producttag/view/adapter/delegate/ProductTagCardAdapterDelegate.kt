@@ -85,6 +85,31 @@ internal class ProductTagCardAdapterDelegate private constructor() {
         }
     }
 
+    internal class ProductWithCheckbox(
+        private val onSelected: (ProductUiModel, Int) -> Unit,
+    ) : TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.ProductWithCheckbox,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.ProductWithCheckbox>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.ProductWithCheckbox,
+            holder: ProductTagCardViewHolder.ProductWithCheckbox
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.ProductWithCheckbox {
+            return ProductTagCardViewHolder.ProductWithCheckbox.create(
+                parent, onSelected
+            )
+        }
+    }
+
     internal class Loading : TypedAdapterDelegate<
             ProductTagCardAdapter.Model.Loading,
             ProductTagCardAdapter.Model,

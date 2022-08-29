@@ -18,6 +18,7 @@ class ProductTagCardAdapter(
             .addDelegate(ProductTagCardAdapterDelegate.Suggestion())
             .addDelegate(ProductTagCardAdapterDelegate.Ticker())
             .addDelegate(ProductTagCardAdapterDelegate.Product(onSelected))
+            .addDelegate(ProductTagCardAdapterDelegate.ProductWithCheckbox(onSelected))
             .addDelegate(ProductTagCardAdapterDelegate.Loading())
             .addDelegate(ProductTagCardAdapterDelegate.EmptyState())
     }
@@ -59,6 +60,11 @@ class ProductTagCardAdapter(
 
         data class Product(
             val product: ProductUiModel,
+        ) : Model
+
+        data class ProductWithCheckbox(
+            val product: ProductUiModel,
+            val selectedProduct: List<ProductUiModel>,
         ) : Model
 
         object Loading : Model
