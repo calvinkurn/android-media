@@ -14,7 +14,7 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap

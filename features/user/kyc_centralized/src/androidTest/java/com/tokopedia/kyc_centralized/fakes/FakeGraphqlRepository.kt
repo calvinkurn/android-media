@@ -10,7 +10,7 @@ import com.tokopedia.kyc_centralized.test.R
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
 
 class FakeGraphqlRepository : GraphqlRepository {
 

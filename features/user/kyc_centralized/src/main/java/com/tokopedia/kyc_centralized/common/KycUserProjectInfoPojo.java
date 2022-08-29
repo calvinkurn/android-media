@@ -1,4 +1,4 @@
-package com.tokopedia.user_identification_common.domain.pojo;
+package com.tokopedia.kyc_centralized.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

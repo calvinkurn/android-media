@@ -21,7 +21,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.utils.file.FileUtil
 import kotlinx.coroutines.withContext
 import timber.log.Timber

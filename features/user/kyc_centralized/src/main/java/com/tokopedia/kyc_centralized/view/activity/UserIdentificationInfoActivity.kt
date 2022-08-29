@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
-import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant
 
 /**
  * @author by alvinatin on 02/11/18.

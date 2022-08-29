@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 class UserIdentificationViewModel @Inject constructor (

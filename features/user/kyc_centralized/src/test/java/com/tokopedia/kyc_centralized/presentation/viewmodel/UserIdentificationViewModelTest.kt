@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -38,7 +38,8 @@ class UserIdentificationViewModelTest {
 
     @Test
     fun `it should get the user project info`() = runBlockingTest {
-        val expectedReturn = KycUserProjectInfoPojo()
+        val expectedReturn =
+            KycUserProjectInfoPojo()
         val expectedValue = Success(expectedReturn)
         val testProjectId = 0
 

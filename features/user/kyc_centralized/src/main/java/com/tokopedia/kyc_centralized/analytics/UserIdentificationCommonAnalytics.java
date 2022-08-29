@@ -1,8 +1,8 @@
-package com.tokopedia.user_identification_common.analytics;
+package com.tokopedia.kyc_centralized.analytics;
 
-import static com.tokopedia.user_identification_common.KYCConstant.CO_BRAND_PROJECT_ID;
-import static com.tokopedia.user_identification_common.KYCConstant.GO_CICIL_PROJECT_ID;
-import static com.tokopedia.user_identification_common.KYCConstant.HOME_CREDIT_PROJECT_ID;
+import static com.tokopedia.kyc_centralized.common.KYCConstant.CO_BRAND_PROJECT_ID;
+import static com.tokopedia.kyc_centralized.common.KYCConstant.GO_CICIL_PROJECT_ID;
+import static com.tokopedia.kyc_centralized.common.KYCConstant.HOME_CREDIT_PROJECT_ID;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;

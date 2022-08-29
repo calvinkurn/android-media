@@ -218,8 +218,6 @@
 /features/user/onboarding                       		@tokopedia/android-minionkevin-dev
 /features/user/updateinactivephone              		@tokopedia/android-minionkevin-dev
 /features/user/user_identification/             		@tokopedia/android-minionkevin-dev
-/features/user/user_identification_common/      		@tokopedia/android-minionkevin-dev
-/features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
 /features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
 /features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev

@@ -17,8 +17,8 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActiv
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.KycUrl
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 

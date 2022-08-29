@@ -29,8 +29,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.KycUrl
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.utils.file.FileUtil
 import javax.inject.Inject
 

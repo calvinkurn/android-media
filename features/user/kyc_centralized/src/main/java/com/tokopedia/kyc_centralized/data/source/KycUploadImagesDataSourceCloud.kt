@@ -2,9 +2,9 @@ package com.tokopedia.kyc_centralized.data.source
 
 import com.tokopedia.kyc_centralized.data.model.response.KycResponse
 import com.tokopedia.kyc_centralized.data.network.KycUploadApi
-import com.tokopedia.user_identification_common.KYCConstant.Companion.CO_BRAND_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.Companion.GO_CICIL_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.Companion.HOME_CREDIT_PROJECT_ID
+import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.CO_BRAND_PROJECT_ID
+import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.GO_CICIL_PROJECT_ID
+import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.HOME_CREDIT_PROJECT_ID
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject

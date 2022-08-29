@@ -2,7 +2,7 @@ package com.tokopedia.kyc_centralized.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant
 
 /**
  * @author by alvinatin on 26/11/18.

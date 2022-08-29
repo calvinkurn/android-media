@@ -41,8 +41,8 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.KycCommonUrl
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycCommonUrl
 import javax.inject.Inject
 
 /**

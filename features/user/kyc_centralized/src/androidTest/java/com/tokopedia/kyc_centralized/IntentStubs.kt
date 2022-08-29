@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
-import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.utils.image.ImageProcessingUtil
 
 fun stubLiveness() {

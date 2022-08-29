@@ -32,9 +32,9 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFrag
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
-import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
-import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 
