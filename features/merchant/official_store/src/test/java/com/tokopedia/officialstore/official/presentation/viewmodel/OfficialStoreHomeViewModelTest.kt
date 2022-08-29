@@ -968,6 +968,7 @@ class OfficialStoreHomeViewModelTest {
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
+        assertEquals(viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION, title)
     }
 
     @Test
@@ -1012,6 +1013,7 @@ class OfficialStoreHomeViewModelTest {
         viewModel.removeFlashSale()
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is DynamicChannelDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
+        assertEquals(viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION, title)
     }
 
     @Test
@@ -1065,7 +1067,8 @@ class OfficialStoreHomeViewModelTest {
 
         val resultRecomTitle = viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel } as? ProductRecommendationTitleDataModel
         assertNotNull(resultRecomTitle)
-        assertTrue(resultRecomTitle?.title == title)
+        assertEquals(resultRecomTitle?.title, title)
+        assertEquals(viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION, title)
     }
 
     @Test
@@ -1092,5 +1095,27 @@ class OfficialStoreHomeViewModelTest {
             assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel && it.benefit == osBenefits.benefits })
             assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel && it.featuredShop == osFeatured.featuredShops })
         }
+    }
+
+    @Test
+    fun given_get_data_success__when_load_more__should_update_recom_updated_value() {
+        val page = 1
+        val categoryId = "0"
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem()
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadMoreProducts(categoryId, page)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+
+        val recomUpdated = viewModel.recomUpdated
+        assertTrue(recomUpdated.value?.getContentIfNotHandled() == true)
     }
 }
