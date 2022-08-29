@@ -39,22 +39,22 @@ class EditorToolAdapter constructor(
         var isActive = false
 
         stateList?.let {
-            // if auto crop is enable, skip 1st edit state
-            if(isAutoCropped && it.size < 2) return@let
+            it.forEachIndexed { index, editorDetailUiModel ->
+                // if auto crop is enable, skip 1st edit state
+                if(isAutoCropped && index == 0) return@forEachIndexed
 
-            it.forEach {
                 isActive = when(toolModel.id){
-                    EditorToolType.BRIGHTNESS -> it.brightnessValue != null
-                    EditorToolType.CONTRAST -> it.contrastValue != null
-                    EditorToolType.ROTATE -> it.cropRotateValue.isRotate
-                    EditorToolType.WATERMARK -> it.watermarkMode != null
-                    EditorToolType.REMOVE_BACKGROUND -> it.removeBackgroundUrl != null
-                    EditorToolType.CROP -> it.cropRotateValue.isCrop
+                    EditorToolType.BRIGHTNESS -> editorDetailUiModel.brightnessValue != null
+                    EditorToolType.CONTRAST -> editorDetailUiModel.contrastValue != null
+                    EditorToolType.ROTATE -> editorDetailUiModel.cropRotateValue.isRotate
+                    EditorToolType.WATERMARK -> editorDetailUiModel.watermarkMode != null
+                    EditorToolType.REMOVE_BACKGROUND -> editorDetailUiModel.removeBackgroundUrl != null
+                    EditorToolType.CROP -> editorDetailUiModel.cropRotateValue.isCrop
                     else -> false
                 }
 
                 // if found related edit state then stop loop, only need 1 state
-                if(isActive) return@forEach
+                if(isActive) return@forEachIndexed
             }
         }
 
