@@ -11,6 +11,7 @@ import com.tokopedia.content.common.producttag.util.AUTHOR_USER
 import com.tokopedia.content.common.producttag.util.PRODUCT_TAG_SOURCE_RAW
 import com.tokopedia.content.common.producttag.util.SHOP_BADGE
 import com.tokopedia.content.common.producttag.util.extension.combine
+import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.content.common.producttag.util.extension.removeLast
@@ -116,6 +117,8 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private val _myShopSort = MutableStateFlow<List<SortUiModel>>(emptyList())
 
+    private val _selectedProduct = MutableStateFlow<List<ProductUiModel>>(emptyList())
+
     /** Ui State */
     private val _productTagSourceUiState = combine(
         _productTagSourceList, _productTagSourceStack
@@ -195,9 +198,10 @@ class ProductTagViewModel @AssistedInject constructor(
         _globalSearchProductUiState,
         _globalSearchShopUiState,
         _shopProductUiState,
+        _selectedProduct,
     ) { productTagSource, lastTaggedProduct, lastPurchasedProduct,
             myShopProduct, globalSearchProduct, globalSearchShop,
-            shopProduct ->
+            shopProduct, selectedProduct ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
@@ -206,6 +210,7 @@ class ProductTagViewModel @AssistedInject constructor(
             globalSearchProduct = globalSearchProduct,
             globalSearchShop = globalSearchShop,
             shopProduct = shopProduct,
+            selectedProduct = selectedProduct,
         )
     }
 
@@ -355,7 +360,22 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleProductSelected(product: ProductUiModel) {
         viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.ProductSelected(product))
+            if(isMultipleSelectionProduct) {
+                val currSelectedProduct = _selectedProduct.value
+                val newSelectedProduct = if(currSelectedProduct.isProductFound(product)) {
+                    currSelectedProduct.filter { it.id != product.id }
+                }
+                else {
+                    currSelectedProduct.toMutableList().apply {
+                        add(product)
+                    }.toList()
+                }
+
+                _selectedProduct.value = newSelectedProduct
+            }
+            else {
+                _uiEvent.emit(ProductTagUiEvent.ProductSelected(product))
+            }
         }
     }
 

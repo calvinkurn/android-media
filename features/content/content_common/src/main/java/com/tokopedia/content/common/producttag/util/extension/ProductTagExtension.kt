@@ -111,3 +111,7 @@ private fun <T: Any> getVisibleItemsPosition(
 
     return Pair(-1, -1)
 }
+
+fun List<ProductUiModel>.isProductFound(product: ProductUiModel): Boolean {
+    return find { it.id == product.id } != null
+}

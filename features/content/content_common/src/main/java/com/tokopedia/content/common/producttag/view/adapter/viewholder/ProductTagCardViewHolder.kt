@@ -121,6 +121,8 @@ internal class ProductTagCardViewHolder private constructor() {
                 setProductModel(item.product.toProductCard())
                 setOnClickListener { onSelected(item.product, adapterPosition) }
             }
+
+            binding.checkboxProduct.isChecked = item.isSelected
         }
 
         companion object {

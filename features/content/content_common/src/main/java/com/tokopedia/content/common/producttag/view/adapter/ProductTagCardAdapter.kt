@@ -64,7 +64,7 @@ class ProductTagCardAdapter(
 
         data class ProductWithCheckbox(
             val product: ProductUiModel,
-            val selectedProduct: List<ProductUiModel>,
+            val isSelected: Boolean,
         ) : Model
 
         object Loading : Model
