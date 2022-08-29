@@ -8,6 +8,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.utils.date.DateUtil
 
@@ -27,6 +28,7 @@ class MerchantVoucherNewViewHolder(
     private val tvVoucherCode: TextView = itemView.findViewById(R.id.tv_play_voucher_code)
 
     fun bind(item: PlayVoucherUiModel.MerchantVoucherUiModel) {
+        val isPrivate = item.type == MerchantVoucherType.Private
         tvVoucherTitle.text = item.title
         tvVoucherDescription.text = item.description
 
@@ -41,7 +43,12 @@ class MerchantVoucherNewViewHolder(
         tvVoucherCode.text = item.code
 
         ivCopyVoucher.setOnClickListener {
+            if(!isPrivate) return@setOnClickListener
             listener.onCopyItemVoucherClicked(item)
+        }
+        itemView.setOnClickListener {
+            if(isPrivate) return@setOnClickListener
+            listener.onVoucherItemClicked(item)
         }
     }
 
@@ -52,5 +59,6 @@ class MerchantVoucherNewViewHolder(
 
     interface Listener {
         fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
+        fun onVoucherItemClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
     }
 }

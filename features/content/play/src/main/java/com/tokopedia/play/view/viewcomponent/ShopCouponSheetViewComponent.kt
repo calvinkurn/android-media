@@ -43,6 +43,10 @@ class ShopCouponSheetViewComponent(
             override fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
                 listener.onCopyVoucherCodeClicked(this@ShopCouponSheetViewComponent, voucher)
             }
+
+            override fun onVoucherItemClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
+                listener.onVoucherItemClicked(this@ShopCouponSheetViewComponent, voucher)
+            }
         })
 
     private val layoutManagerVoucherList =
@@ -158,6 +162,10 @@ class ShopCouponSheetViewComponent(
         )
 
         fun onCopyVoucherCodeClicked(
+            view: ShopCouponSheetViewComponent,
+            voucher: PlayVoucherUiModel.MerchantVoucherUiModel
+        )
+        fun onVoucherItemClicked(
             view: ShopCouponSheetViewComponent,
             voucher: PlayVoucherUiModel.MerchantVoucherUiModel
         )

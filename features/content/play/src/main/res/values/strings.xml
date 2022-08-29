@@ -38,9 +38,11 @@
     <string name="play_buffer_reason_seller_side">Siarannya sedang berkendala, nih.\nTunggu sebentar, ya!</string>
     <string name="play_buffer_reason_waiting">Live streaming akan segera mulai sesaat lagi, ya!</string>
 
-    <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
+    <string name="play_voucher_code_copied">Kode kupon berhasil disalin. Pakai kuponnya di halaman Keranjang, ya.</string>
+    <string name="play_voucher_public">Kupon toko bisa dipilih di halaman Keranjang atau Pengiriman, ya.</string>
 
     <string name="play_action_ok">Oke</string>
+    <string name="play_action_lihat">Lihat</string>
     <string name="play_out_of_stock">Stok Habis</string>
 
     <!--Pinned Message-->
