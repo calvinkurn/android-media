@@ -47,4 +47,6 @@
     <string name="content_desc_curated_campaign_image">image curated campaign</string>
     <string name="suggestion_ad_text">Ad</string>
     <string name="universal_search_see_more">Lihat Semua</string>
+    <string name="universal_search_toolbar_title">\"%1$s\"</string>
+    <string name="universal_search_toolbar_subtitle">Semua Promo, Produk Pilihan, dsb.</string>
 </resources>

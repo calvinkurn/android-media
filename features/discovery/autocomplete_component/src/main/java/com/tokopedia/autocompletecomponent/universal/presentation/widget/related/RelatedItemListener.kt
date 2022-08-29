@@ -2,4 +2,5 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.relate
 
 interface RelatedItemListener {
     fun onRelatedItemClick(data: RelatedItemDataView)
+    fun onRelatedItemImpressed(data: RelatedItemDataView)
 }

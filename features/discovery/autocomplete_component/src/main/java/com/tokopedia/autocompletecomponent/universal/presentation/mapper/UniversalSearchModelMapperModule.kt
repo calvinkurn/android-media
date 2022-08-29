@@ -8,11 +8,14 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-internal class UniversalSearchModelMapperModule {
+internal class UniversalSearchModelMapperModule(
+    private val dimension90: String = "",
+    private val keyword: String = "",
+) {
 
     @UniversalSearchScope
     @Provides
     fun provideUniversalSearchModelMapper(): Mapper<UniversalSearchModel, UniversalDataView> {
-        return UniversalSearchModelMapper()
+        return UniversalSearchModelMapper(dimension90, keyword)
     }
 }

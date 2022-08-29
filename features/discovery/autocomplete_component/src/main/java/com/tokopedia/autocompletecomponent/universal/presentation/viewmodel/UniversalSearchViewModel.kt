@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -10,11 +11,17 @@ import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearc
 import com.tokopedia.autocompletecomponent.universal.presentation.mapper.UniversalSearchModelMapper
 import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateDataView
+import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
+import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.discovery.common.State.Loading
 import com.tokopedia.discovery.common.State.Success
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -24,8 +31,9 @@ internal class UniversalSearchViewModel(
     baseDispatcher: CoroutineDispatchers,
     private val universalSearchUseCase: UseCase<UniversalSearchModel>,
     private val universalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView>,
-    searchParameter: Map<String, Any> = mapOf(),
-): BaseViewModel(baseDispatcher.io) {
+    searchParameter: Map<String, Any>,
+    context: Context
+): BaseViewModel(baseDispatcher.io), ContextProvider by WeakReferenceContextProvider(context) {
 
     private val searchParameter = searchParameter.toMutableMap()
 
@@ -48,6 +56,7 @@ internal class UniversalSearchViewModel(
     private fun createUniversalSearchParam(): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putAll(searchParameter)
+        requestParams.putChooseAddressParams(createChooseAddressData())
 
         return requestParams
     }
@@ -96,6 +105,16 @@ internal class UniversalSearchViewModel(
 
     private fun createErrorStateDataView(): ErrorStateDataView {
         return ErrorStateDataView()
+    }
+
+    private fun createChooseAddressData(): LocalCacheModel {
+        return context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
     }
 
     fun getUniversalSearchState(): LiveData<State<List<Visitable<*>>>> = universalSearchState

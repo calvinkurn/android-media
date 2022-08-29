@@ -9,8 +9,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchFragmentLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL_SEARCH_SCREEN_NAME
@@ -29,9 +32,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import javax.inject.Named
 
-internal class UniversalSearchFragment: BaseDaggerFragment() {
+internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseAppComponent> {
 
     companion object {
         const val UNIVERSAL_SEARCH_FRAGMENT_TAG = "UNIVERSAL_SEARCH_FRAGMENT"
@@ -73,6 +75,7 @@ internal class UniversalSearchFragment: BaseDaggerFragment() {
     override fun initInjector() {
         DaggerUniversalSearchFragmentComponent
             .builder()
+            .baseAppComponent(component)
             .universalSearchContextModule(UniversalSearchContextModule(activity as Context))
             .build()
             .inject(this)
@@ -169,5 +172,9 @@ internal class UniversalSearchFragment: BaseDaggerFragment() {
 
     private fun updateList(universalSearchState: State<List<Visitable<*>>>) {
         universalSearchAdapter?.updateList(universalSearchState.data ?: listOf())
+    }
+
+    override fun getComponent(): BaseAppComponent {
+        return (activity?.application as BaseMainApplication).baseAppComponent
     }
 }

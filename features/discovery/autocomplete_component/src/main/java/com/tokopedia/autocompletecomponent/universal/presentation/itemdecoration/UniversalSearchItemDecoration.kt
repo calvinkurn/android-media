@@ -16,6 +16,7 @@ class UniversalSearchItemDecoration(
         private const val DIVIDER_HEIGHT_DP = 8
         private const val DIVIDER_MARGIN_TOP_DP = 16
         private const val DIVIDER_MARGIN_BOTTOM_DP = 12
+        private const val FIRST_ITEM_MARGIN_TOP_DP = 12
     }
 
     private var mDivider: Drawable? = null
@@ -26,9 +27,11 @@ class UniversalSearchItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+        val position = parent.getChildAdapterPosition(view)
+
         outRect.set(
             0,
-            0,
+            if (position == 0) FIRST_ITEM_MARGIN_TOP_DP.toPx() else 0,
             0,
             (DIVIDER_HEIGHT_DP + DIVIDER_MARGIN_BOTTOM_DP + DIVIDER_MARGIN_TOP_DP).toPx())
     }

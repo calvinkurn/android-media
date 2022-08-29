@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchRelatedItemLayoutBinding
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
@@ -32,10 +33,16 @@ class RelatedItemViewHolder(
     }
 
     private fun bindImage(data: RelatedItemDataView) {
-        binding?.universalSearchRelatedImage?.loadImageRounded(
-            data.imageUrl,
-            4.toPx().toFloat()
-        )
+        binding?.universalSearchRelatedImage?.let {
+            it.loadImageRounded(
+                data.imageUrl,
+                4.toPx().toFloat()
+            )
+
+            it.addOnImpressionListener(data) {
+                relatedItemListener.onRelatedItemImpressed(data)
+            }
+        }
     }
 
     private fun bindItemClick(data: RelatedItemDataView) {

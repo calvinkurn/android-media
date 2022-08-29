@@ -1,6 +1,8 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL_SEARCH_VIEW_MODEL_FACTORY
@@ -31,12 +33,15 @@ internal class UniversalSearchViewModelFactoryModule(
         @Named(UniversalConstant.UNIVERSAL_SEARCH_USE_CASE)
         universalSearchUseCase: UseCase<UniversalSearchModel>,
         universalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView>,
+        @ApplicationContext
+        context: Context,
     ): ViewModelProvider.Factory {
         return UniversalSearchViewModelFactory(
             baseDispatcher,
             universalSearchUseCase,
             universalSearchModelMapper,
             searchParameter,
+            context
         )
     }
 }

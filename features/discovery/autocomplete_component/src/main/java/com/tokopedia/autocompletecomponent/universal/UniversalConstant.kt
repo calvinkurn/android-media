@@ -9,6 +9,7 @@ object UniversalConstant {
     const val UNIVERSAL_SEARCH_TEMPLATE_DOUBLE_LINE = "double_line"
 
     const val UNIVERSAL_SEARCH_SCREEN_NAME = "Universal search result"
+    const val UNIVERSAL_SEARCH_PAGE = "universal search page"
 
     object GQL {
         const val KEY_PARAM = "param"

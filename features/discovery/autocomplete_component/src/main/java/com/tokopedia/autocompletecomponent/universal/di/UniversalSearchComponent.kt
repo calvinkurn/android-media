@@ -7,7 +7,7 @@ import dagger.Component
 
 @UniversalSearchScope
 @Component(modules = [
-    UniversalSearchViewModelFactoryModule::class
+    UniversalSearchViewModelFactoryModule::class,
 ], dependencies = [BaseAppComponent::class])
 interface UniversalSearchComponent {
 

@@ -11,7 +11,10 @@ import com.tokopedia.autocompletecomponent.universal.presentation.widget.related
 import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
 import com.tokopedia.discovery.common.Mapper
 
-internal class UniversalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView> {
+internal class UniversalSearchModelMapper(
+    private val dimension90: String,
+    private val keyword: String,
+): Mapper<UniversalSearchModel, UniversalDataView> {
     override fun convert(model: UniversalSearchModel): UniversalDataView {
         return UniversalDataView(
             carouselDataView = model.getCarouselDataView(),
@@ -31,7 +34,9 @@ internal class UniversalSearchModelMapper: Mapper<UniversalSearchModel, Universa
                     subtitle = it.subtitle,
                     componentId = it.componentId,
                     trackingOption = it.trackingOption,
-                    product = it.product.toCarouselProductDataView()
+                    product = it.product.toCarouselProductDataView(),
+                    dimension90 = dimension90,
+                    keyword = keyword
                 )
             }
     }
@@ -55,6 +60,8 @@ internal class UniversalSearchModelMapper: Mapper<UniversalSearchModel, Universa
                     city = it.shop.city,
                 ),
                 badge = it.badge.toBadgeDataView(),
+                keyword = keyword,
+                dimension90 = dimension90,
             )
         }
     }
@@ -70,7 +77,9 @@ internal class UniversalSearchModelMapper: Mapper<UniversalSearchModel, Universa
                     subtitle = it.subtitle,
                     componentId = it.componentId,
                     trackingOption = it.trackingOption,
-                    related = it.curated.toRelatedItemDataView()
+                    related = it.curated.toRelatedItemDataView(),
+                    keyword = keyword,
+                    dimension90 = dimension90,
                 )
             }
     }
@@ -86,7 +95,9 @@ internal class UniversalSearchModelMapper: Mapper<UniversalSearchModel, Universa
                     subtitle = it.subtitle,
                     componentId = it.componentId,
                     trackingOption = it.trackingOption,
-                    related = it.curated.toRelatedItemDataView()
+                    related = it.curated.toRelatedItemDataView(),
+                    keyword = keyword,
+                    dimension90 = dimension90,
                 )
             }
     }
@@ -101,6 +112,8 @@ internal class UniversalSearchModelMapper: Mapper<UniversalSearchModel, Universa
                 componentId = it.componentId,
                 trackingOption = it.trackingOption,
                 campaignCode = it.campaignCode,
+                keyword = keyword,
+                dimension90 = dimension90,
             )
         }
     }
