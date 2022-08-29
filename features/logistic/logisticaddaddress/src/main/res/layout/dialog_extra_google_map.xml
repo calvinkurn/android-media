@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_56"
+        android:minHeight="56dp"
         android:text="@string/title_shipping_dest"
         app:typographyType="heading_3"/>
 

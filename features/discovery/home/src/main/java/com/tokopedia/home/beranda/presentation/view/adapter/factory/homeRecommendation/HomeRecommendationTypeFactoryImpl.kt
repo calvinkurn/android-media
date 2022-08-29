@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.*
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
-class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
+class HomeRecommendationTypeFactoryImpl(private val topAdsBannerClickListener: TopAdsBannerClickListener) : HomeRecommendationTypeFactory {
     override fun type(dataModel: HomeRecommendationItemDataModel): Int {
         return HomeRecommendationItemViewHolder.LAYOUT
     }
@@ -35,6 +36,10 @@ class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
         return HomeRecommendationBannerTopAdsViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: HomeRecommendationHeadlineTopAdsDataModel): Int {
+        return HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, viewType: Int): SmartAbstractViewHolder<*> {
         return when (viewType) {
             HomeRecommendationItemViewHolder.LAYOUT -> HomeRecommendationItemViewHolder(parent, cardInteraction = true)
@@ -44,6 +49,7 @@ class HomeRecommendationTypeFactoryImpl : HomeRecommendationTypeFactory {
             EmptyViewHolder.LAYOUT -> HomeRecommendationEmptyViewHolder(parent)
             HomeRecommendationLoadingMoreViewHolder.LAYOUT -> HomeRecommendationLoadingMoreViewHolder(parent)
             HomeRecommendationBannerTopAdsViewHolder.LAYOUT -> HomeRecommendationBannerTopAdsViewHolder(parent)
+            HomeRecommendationHeadlineTopAdsViewHolder.LAYOUT -> HomeRecommendationHeadlineTopAdsViewHolder(parent, topAdsBannerClickListener)
             else -> throw RuntimeException("Home recommendation Layout not supported")
         }
     }

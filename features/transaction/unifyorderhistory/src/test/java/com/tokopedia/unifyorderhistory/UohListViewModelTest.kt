@@ -80,6 +80,8 @@ class UohListViewModelTest {
     @RelaxedMockK
     lateinit var atcUseCase: AddToCartUseCase
 
+    private val testShopId = "123"
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -589,7 +591,9 @@ class UohListViewModelTest {
     @Test
     fun getUohCounterSuccess_shouldReturnSuccess(){
         //given
-        coEvery { getUohPmsCounterUseCase.executeSuspend() }.answers{
+        coEvery {
+            getUohPmsCounterUseCase.executeSuspend(any())
+        }.answers{
             Success(PmsNotification(
                     notifications = Notifications(
                             buyerOrderStatus = BuyerOrderStatus(
@@ -600,7 +604,7 @@ class UohListViewModelTest {
         }
 
         //when
-        uohListViewModel.loadPmsCounter()
+        uohListViewModel.loadPmsCounter(testShopId)
 
         //then
         assert(uohListViewModel.getUohPmsCounterResult.value is Success)
@@ -610,7 +614,9 @@ class UohListViewModelTest {
     fun getUohCounterSuccess_counterShouldBeCorrect(){
         //given
         val counter = 6
-        coEvery { getUohPmsCounterUseCase.executeSuspend() }.answers{
+        coEvery {
+            getUohPmsCounterUseCase.executeSuspend(any())
+        }.answers{
             Success(PmsNotification(
                     notifications = Notifications(
                             buyerOrderStatus = BuyerOrderStatus(
@@ -621,7 +627,7 @@ class UohListViewModelTest {
         }
 
         //when
-        uohListViewModel.loadPmsCounter()
+        uohListViewModel.loadPmsCounter(testShopId)
 
         //then
         val result = uohListViewModel.getUohPmsCounterResult.value as Success<PmsNotification>
@@ -631,10 +637,12 @@ class UohListViewModelTest {
     @Test
     fun getUohCounterFail_shouldReturnFail(){
         //given
-        coEvery { getUohPmsCounterUseCase.executeSuspend() } returns Fail(Exception())
+        coEvery {
+            getUohPmsCounterUseCase.executeSuspend(any())
+        } returns Fail(Exception())
 
         //when
-        uohListViewModel.loadPmsCounter()
+        uohListViewModel.loadPmsCounter(testShopId)
 
         //then
         assert(uohListViewModel.getUohPmsCounterResult.value is Fail)
