@@ -779,7 +779,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
-    private fun redirectToPDP(productId: String) {
+    open fun redirectToPDP(productId: String) {
         context?.let {
             val intent = RouteManager.getIntent(
                     context,

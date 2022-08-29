@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_img_main"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_350"
+        android:layout_height="350dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_ulasan"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -33,7 +33,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_discussion"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -46,7 +46,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_shipping"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -58,7 +58,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_title"
-        android:layout_width="@dimen/dp_350"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:loader_corner_radius="3dp"
@@ -68,7 +68,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_title_2"
-        android:layout_width="@dimen/dp_160"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:loader_corner_radius="3dp"
@@ -78,7 +78,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_title_3"
-        android:layout_width="@dimen/dp_75"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:loader_corner_radius="3dp"
@@ -90,7 +90,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_divider"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="10dp"
         app:loader_corner_radius="3dp"
         app:loader_type="rect"
@@ -140,7 +140,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_social_proof"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:layout_marginTop="16dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
@@ -148,7 +148,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_other"
-        android:layout_width="@dimen/dp_350"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:loader_corner_radius="3dp"
