@@ -16,10 +16,9 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageBell"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="19dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/gami_bell_end_margin"
             app:srcCompat="@drawable/gami_bell_1" />
     </LinearLayout>
 
