@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.R
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.CampaignManageProductBulkApplyBottomSheetConfigUiModel
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.CampaignManageProductBulkApplyBottomSheetResultUiModel
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyUiModel
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyResult
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.DiscountType
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.di.component.DaggerCampaignCommonComponent
 import com.tokopedia.campaign.databinding.CampaignBottomsheetManageProductBulkApplyBinding
@@ -41,7 +41,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
          */
         @JvmStatic
         fun newInstance(
-            bottomSheetConfigModel: CampaignManageProductBulkApplyBottomSheetConfigUiModel
+            bottomSheetConfigModel: ProductBulkApplyUiModel
         ): ProductBulkApplyBottomSheet {
             val args = Bundle()
             args.putParcelable(ARG_BOTOMSHEET_CONFIG, bottomSheetConfigModel)
@@ -54,7 +54,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     private val bottomSheetConfigModel by lazy {
-        arguments?.getParcelable(ARG_BOTOMSHEET_CONFIG) as? CampaignManageProductBulkApplyBottomSheetConfigUiModel
+        arguments?.getParcelable(ARG_BOTOMSHEET_CONFIG) as? ProductBulkApplyUiModel
     }
     private val title by lazy { bottomSheetConfigModel?.bottomSheetTitle.orEmpty() }
     private val isShowTextFieldProductDiscountBottomMessage by lazy {
@@ -88,11 +88,11 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider.get(
-            CampaignManageProductBulkApplyBottomSheetViewModel::class.java
+            ProductBulkApplyBottomSheetViewModel::class.java
         )
     }
 
-    private var onApplyClickListener: (CampaignManageProductBulkApplyBottomSheetResultUiModel) -> Unit =
+    private var onApplyClickListener: (ProductBulkApplyResult) -> Unit =
         {}
 
     init {
@@ -171,7 +171,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
     private fun observeInputProductStockValidation() {
         viewModel.inputProductStockValidation.observe(viewLifecycleOwner) { validationState ->
             when (validationState) {
-                CampaignManageProductBulkApplyBottomSheetViewModel.ValidationState.InvalidStock -> {
+                ProductBulkApplyBottomSheetViewModel.ValidationState.InvalidStock -> {
                     binding?.textQuantityEditorError?.apply {
                         show()
                         text = getString(
@@ -181,7 +181,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
                         )
                     }
                 }
-                CampaignManageProductBulkApplyBottomSheetViewModel.ValidationState.Valid -> {
+                ProductBulkApplyBottomSheetViewModel.ValidationState.Valid -> {
                     binding?.textQuantityEditorError?.apply {
                         hide()
                         text = ""
@@ -200,7 +200,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
     private fun observeInputProductDiscountValidation() {
         viewModel.inputProductDiscountValidation.observe(viewLifecycleOwner) { validationState ->
             when (validationState) {
-                CampaignManageProductBulkApplyBottomSheetViewModel.ValidationState.InvalidDiscountMinimumPrice -> {
+                ProductBulkApplyBottomSheetViewModel.ValidationState.InvalidDiscountMinimumPrice -> {
                     setTextInputLayoutErrorMessage(
                         binding?.textFieldDiscountAmount ?: return@observe,
                         getString(
@@ -209,7 +209,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
                         )
                     )
                 }
-                CampaignManageProductBulkApplyBottomSheetViewModel.ValidationState.InvalidDiscountMaximumPrice -> {
+                ProductBulkApplyBottomSheetViewModel.ValidationState.InvalidDiscountMaximumPrice -> {
                     setTextInputLayoutErrorMessage(
                         binding?.textFieldDiscountAmount ?: return@observe,
                         getString(
@@ -218,7 +218,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
                         )
                     )
                 }
-                CampaignManageProductBulkApplyBottomSheetViewModel.ValidationState.InvalidDiscountPercentage -> {
+                ProductBulkApplyBottomSheetViewModel.ValidationState.InvalidDiscountPercentage -> {
                     setTextInputLayoutErrorMessage(
                         binding?.textFieldDiscountAmount ?: return@observe,
                         getString(
@@ -228,7 +228,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
                         )
                     )
                 }
-                CampaignManageProductBulkApplyBottomSheetViewModel.ValidationState.Valid -> {
+                ProductBulkApplyBottomSheetViewModel.ValidationState.Valid -> {
                     setupProductDiscountTextFieldBottomMessage()
                 }
                 else -> {}
@@ -332,7 +332,7 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
 
     }
 
-    fun setOnApplyClickListener(onApplyClickListener: (CampaignManageProductBulkApplyBottomSheetResultUiModel) -> Unit) {
+    fun setOnApplyClickListener(onApplyClickListener: (ProductBulkApplyResult) -> Unit) {
         this.onApplyClickListener = onApplyClickListener
     }
 

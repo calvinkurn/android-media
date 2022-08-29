@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.CampaignManageProductBulkApplyBottomSheetConfigUiModel
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.CampaignManageProductBulkApplyBottomSheetResultUiModel
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyUiModel
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyResult
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.DiscountType
 import java.util.*
 import javax.inject.Inject
 
-class CampaignManageProductBulkApplyBottomSheetViewModel @Inject constructor(
+class ProductBulkApplyBottomSheetViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -57,8 +57,8 @@ class CampaignManageProductBulkApplyBottomSheetViewModel @Inject constructor(
         this.selectedMaxQuantity = quantity
     }
 
-    fun getCurrentSelection(): CampaignManageProductBulkApplyBottomSheetResultUiModel {
-        return CampaignManageProductBulkApplyBottomSheetResultUiModel(
+    fun getCurrentSelection(): ProductBulkApplyResult {
+        return ProductBulkApplyResult(
             selectedStartDate,
             selectedEndDate,
             selectedDiscountType,
@@ -68,7 +68,7 @@ class CampaignManageProductBulkApplyBottomSheetViewModel @Inject constructor(
     }
 
     fun validateInputProductDiscount(
-        bottomSheetConfigModel: CampaignManageProductBulkApplyBottomSheetConfigUiModel
+        bottomSheetConfigModel: ProductBulkApplyUiModel
     ) {
         if (selectedDiscountType == DiscountType.RUPIAH && selectedDiscountAmount < bottomSheetConfigModel.minimumDiscountPrice) {
             _inputProductDiscountValidation.value = ValidationState.InvalidDiscountMinimumPrice
@@ -87,7 +87,7 @@ class CampaignManageProductBulkApplyBottomSheetViewModel @Inject constructor(
         _inputProductDiscountValidation.value = ValidationState.Valid
     }
 
-    fun validateInputProductStock(bottomSheetConfigModel: CampaignManageProductBulkApplyBottomSheetConfigUiModel) {
+    fun validateInputProductStock(bottomSheetConfigModel: ProductBulkApplyUiModel) {
         if (selectedMaxQuantity !in bottomSheetConfigModel.minimumStock..bottomSheetConfigModel.maximumStock) {
             _inputProductStockValidation.value = ValidationState.InvalidStock
             return

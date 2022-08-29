@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
 import com.tokopedia.campaign.di.module.CampaignCommonModule
 import com.tokopedia.campaign.di.module.CampaignCommonViewModelModule
-import com.tokopedia.campaign.di.scope.CampaignManageProductBulkApplyBottomSheetScope
+import com.tokopedia.campaign.di.scope.CampaignCommonScope
 import dagger.Component
 
-@CampaignManageProductBulkApplyBottomSheetScope
+@CampaignCommonScope
 @Component(
     modules = [
         CampaignCommonModule::class,
