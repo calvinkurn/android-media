@@ -1383,7 +1383,8 @@ class ShopPageTrackingBuyer(
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to atcTrackerModel.productId,
             SHOP_ID to shopId,
-            USER_ID to userId
+            USER_ID to userId,
+            DIMENSION_45 to atcTrackerModel.cartId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
