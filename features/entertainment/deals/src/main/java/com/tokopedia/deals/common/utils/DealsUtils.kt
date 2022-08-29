@@ -15,6 +15,9 @@ object DealsUtils {
 
     private const val RUPIAH_FORMAT = "Rp %s"
     private val locale = Locale("in", "ID")
+    private val timePattern = "d MMM yyyy"
+    private val timeZone = "Asia/Jakarta"
+    private val delimiter = "~"
 
     private const val ENTER_HTML = "<br><br>"
     private const val DOT_HTML = "\u2022"
@@ -28,7 +31,7 @@ object DealsUtils {
 
     fun getExpandableItemText(texts: String): String? {
         return if (texts.isNotEmpty()) {
-            val splitArray = texts.split("~").toTypedArray()
+            val splitArray = texts.split(delimiter).toTypedArray()
             val tncBuffer = StringBuilder()
             for (i in splitArray.indices) {
                 val line = splitArray[i]
@@ -47,8 +50,8 @@ object DealsUtils {
     }
 
     fun convertEpochToString(time: Int): String {
-        val sdf = SimpleDateFormat("d MMM yyyy", Locale("in", "ID", ""))
-        sdf.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+        val sdf = SimpleDateFormat(timePattern, locale)
+        sdf.timeZone = TimeZone.getTimeZone(timeZone)
         val epochTime = time * 1000L
         val date = Date(epochTime)
         return sdf.format(date)
