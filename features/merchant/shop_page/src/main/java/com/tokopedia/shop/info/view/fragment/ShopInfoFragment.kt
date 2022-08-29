@@ -69,6 +69,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         const val RESULT_REPORT_TOASTER = "result_report_toaster"
         const val RESULT_KEY_REPORT_USER = "result_key_report_shop"
         const val RESULT_KEY_PAYLOAD_REPORT_USER = "result_key_payload_report_shop"
+        const val SOURCE_PAGE = "?source=shop_page"
 
         fun createInstance(
             shopId: String? = null,
@@ -115,8 +116,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
     private val userId: String
         get() = shopViewModel?.userId().orEmpty()
-
-    private val _sourcePage = "?source=shop_page"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -224,7 +223,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         }
     }
 
-    private fun showReportStore() {
+    private fun showReportShop() {
         viewReport?.show()
     }
 
@@ -237,10 +236,14 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private fun handlingFailState(e: Throwable) {
         hideProgressGetMessageId()
         if (e is UserNotLoginException) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
+            redirectToLoginPage()
             return
         }
+    }
+
+    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODER_USER_LOGIN){
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent,requestCode)
     }
 
     private fun hideProgressGetMessageId() {
@@ -255,7 +258,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun createUrl(messageId: String): String {
-        return "${TkpdBaseURL.CHAT_REPORT_URL}$messageId$_sourcePage"
+        return "${TkpdBaseURL.CHAT_REPORT_URL}$messageId$SOURCE_PAGE"
     }
 
     private fun routeToWebViewPage(messageId: String) {
@@ -304,7 +307,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun setReportStoreView() {
-        showReportStore()
+        showReportShop()
         viewReport?.setOnClickListener {
             showProgressGetMessageId()
             getMessageIdOnChatExist()

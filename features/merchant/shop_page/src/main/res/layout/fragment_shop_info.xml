@@ -74,10 +74,10 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image_warning"
-                android:layout_width="13dp"
-                android:layout_height="12dp"
+                android:layout_width="14dp"
+                android:layout_height="20dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_warning"
                 app:layout_constraintBottom_toBottomOf="parent"
