@@ -58,7 +58,7 @@ class QuotaMonitoringAdapter() :
             val remainingQuota = vpsPackage.remainingQuota
             val totalQuota = vpsPackage.originalQuota
             val expireDate =
-                if (vpsPackage.packageEndTime.isZero()) {
+                if (vpsPackage.packageEndTime.isZero() || vpsPackage.packageId == "-1") {
                     "Tidak Ada"
                 } else {
                     vpsPackage.packageEndTime.epochToDate().formatTo(DateConstant.DATE)
