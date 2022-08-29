@@ -28,6 +28,7 @@ import java.io.Closeable
 internal class PlayBroProductSetupViewModelRobot(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
+    isEligibleForPin: Boolean = false,
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -37,6 +38,7 @@ internal class PlayBroProductSetupViewModelRobot(
     private val viewModel = PlayBroProductSetupViewModel(
         productSectionList,
         handle,
+        isEligibleForPin,
         channelRepo,
         hydraConfigStore,
         userSession,

@@ -11,19 +11,33 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemFavoriteAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsAdapter
-import com.tokopedia.digital.home.presentation.adapter.viewholder.*
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageCategoryViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualBannersViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualIconsViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardsViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSingleBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageSwipeBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageThreeIconsViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
@@ -34,12 +48,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
 class RechargeHomepageInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+
+    private val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     @get:Rule
     var activityRule: IntentsTestRule<RechargeHomepageActivity> = object : IntentsTestRule<RechargeHomepageActivity>(RechargeHomepageActivity::class.java) {
@@ -80,10 +96,7 @@ class RechargeHomepageInstrumentTest {
         check_3_icons_section()
         check_product_card_custom_banner_section()
 
-        assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
-                hasAllSuccess()
-        )
+        assertThat(cassavaTestRule.validate(SUBHOME_ANALYTIC_VALIDATOR_QUERY), hasAllSuccess())
     }
 
     private fun show_contents_digital_homepage() {
@@ -238,6 +251,7 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(15)
         )
+        Thread.sleep(2000)
         onView(withId(R.id.rv_recharge_product)).check(matches(isDisplayed()))
         Thread.sleep(1000)
         onView(withId(R.id.rv_recharge_product)).perform(

@@ -8,7 +8,10 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductMultipleBinding
-import com.tokopedia.shop.common.widget.bundle.model.*
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -60,9 +63,12 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         }
         itemView.setOnClickListener {
             itemListener?.onMultipleBundleProductClicked(
+                bundleParent.shopId,
+                bundleParent.warehouseId,
                 bundleProductItem,
                 bundleDetail,
                 bundleParent.bundleName,
+                bundleParent.bundleType,
                 bundlePosition,
                 widgetTitle,
                 widgetName,
@@ -85,24 +91,35 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
 
 interface MultipleProductBundleListener {
     fun onMultipleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+            bundleType: String,
             bundlePosition: Int,
             widgetTitle: String,
             widgetName: String,
             productItemPosition: Int
     )
     fun addMultipleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            bundleType: String,
+            bundlePosition: Int,
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     )
     fun impressionProductBundleMultiple(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+            bundleType: String,
             bundlePosition: Int,
     )
 

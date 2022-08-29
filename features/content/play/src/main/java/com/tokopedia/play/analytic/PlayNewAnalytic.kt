@@ -8,6 +8,8 @@ import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
+import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.track.builder.Tracker
 import javax.inject.Inject
 
 /**
@@ -29,4 +31,20 @@ class PlayNewAnalytic @Inject constructor(
         PlayShareExperienceAnalytic by shareExperienceAnalytic,
         PlayCampaignAnalytic by campaignAnalytic,
         PlayInteractiveAnalytic by interactiveAnalytic,
-        PlayTokoNowAnalytic by tokoNowAnalytic
+        PlayTokoNowAnalytic by tokoNowAnalytic {
+
+        fun clickLihatToasterAtcPinnedProductCarousel(
+                channelId: String,
+                channelType: PlayChannelType,
+        ) {
+                Tracker.Builder()
+                        .setEvent(KEY_TRACK_CLICK_CONTENT)
+                        .setEventAction("click - pinned lihat keranjang")
+                        .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+                        .setEventLabel("$channelId - ${channelType.value}")
+                        .setBusinessUnit(VAL_BUSINESS_UNIT)
+                        .setCurrentSite(VAL_CURRENT_SITE)
+                        .build()
+                        .send()
+        }
+}
