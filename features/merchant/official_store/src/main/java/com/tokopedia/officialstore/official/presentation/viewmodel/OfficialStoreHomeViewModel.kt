@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -115,7 +114,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
                       onBannerCloudStartLoad: () -> Unit = {},
                       onBannerCloudStopLoad: () -> Unit = {}) {
         launchCatchError(block = {
-            Log.d("FrenzelDebugOS", "loadFirstData: ")
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
             currentSlugDC = category?.slug ?: ""
