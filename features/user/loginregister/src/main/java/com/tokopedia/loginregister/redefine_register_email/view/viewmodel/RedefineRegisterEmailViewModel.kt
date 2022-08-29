@@ -3,12 +3,15 @@ package com.tokopedia.loginregister.redefine_register_email.view.viewmodel
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.redefine_register_email.domain.GenerateKeyUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 
 class RedefineRegisterEmailViewModel @Inject constructor(
+    private val generateKeyUseCase: GenerateKeyUseCase,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -81,12 +84,21 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     fun submitForm(email: String, password: String, name: String) {
         if (isAllDataValid()) {
             _isRegisteredEmail.value = true
+            generateKey()
         } else {
             validateEmail(email, false)
             validatePassword(password, false)
             validateName(name, false)
             _formState.value = state
         }
+    }
+
+    private fun generateKey() {
+        launchCatchError(coroutineContext, {
+            val response = generateKeyUseCase(Unit)
+        }, {
+
+        })
     }
 
     companion object {
