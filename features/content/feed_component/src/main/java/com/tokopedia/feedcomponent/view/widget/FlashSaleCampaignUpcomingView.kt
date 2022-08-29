@@ -54,6 +54,7 @@ class FlashSaleCampaignUpcomingView @JvmOverloads constructor(
         val imageUrl = "https://images.tokopedia.net/img/feeds/ribbon-overlay-rs.png"
         setRibbonBackground(imageUrl)
         setUpReminderButtonListener()
+//        fstSaleProductTitle.text = feedXCard.campaign.name
 //        setBackground(feedXCard.ribbonImageURL)
     }
 

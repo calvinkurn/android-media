@@ -321,6 +321,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           color
           position
           }
+          __typename
         }
         ribbonImageURL
         campaign {
@@ -341,24 +342,6 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         maximumDiscountPercentage
         maximumDiscountPercentageFmt
         totalProducts
-        cta {
-          text
-          color
-          colorGradient {
-          color
-          position
-          }
-          __typename
-        }
-        ribbonImageURL
-        campaign {
-            id
-            status
-            name
-            shortName
-            startTime
-            endTime
-          }
         products {
           id
           name
