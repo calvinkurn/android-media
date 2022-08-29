@@ -70,8 +70,8 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:visibility="visible"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:layout_below="@id/wishlist_collection_sticky_progress_deletion_widget"/>
 
         </RelativeLayout>

@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -262,6 +263,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
         binding?.run {
             rvWishlistCollection.apply {
+                val margins = (this.layoutParams as RelativeLayout.LayoutParams).apply {
+                    leftMargin = 10
+                    rightMargin = 10
+                }
+                layoutParams = margins
                 layoutManager = glm
                 adapter = collectionAdapter
                 addItemDecoration(WishlistCollectionItemOffsetDecoration(requireContext(), com.tokopedia.abstraction.R.dimen.dp_8))

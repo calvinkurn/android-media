@@ -15,7 +15,7 @@ class WishlistCollectionRecommendationTitleViewHolder(private val binding: Wishl
     
     fun bind(data: WishlistCollectionTypeLayoutData) {
         binding.root.visible()
-        binding.root.setPadding(PADDING_8.toPx(), PADDING_8.toPx(), 0, PADDING_12.toPx())
+        binding.root.setPadding(0, PADDING_8.toPx(), 0, PADDING_12.toPx())
         binding.tvRvTitleWishlistV2.text = data.dataObject as String
     }
 }
