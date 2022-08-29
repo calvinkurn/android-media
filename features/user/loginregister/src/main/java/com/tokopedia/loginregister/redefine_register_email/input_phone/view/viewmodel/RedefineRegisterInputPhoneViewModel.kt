@@ -1,11 +1,11 @@
-package com.tokopedia.loginregister.redefine_register_email.view.viewmodel
+package com.tokopedia.loginregister.redefine_register_email.input_phone.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.loginregister.redefine_register_email.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.redefine_register_email.input_phone.domain.RegisterCheckUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 

@@ -1,11 +1,11 @@
-package com.tokopedia.loginregister.redefine_register_email.domain
+package com.tokopedia.loginregister.redefine_register_email.register_email.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.redefine_register_email.data.GenerateKeyModel
+import com.tokopedia.loginregister.redefine_register_email.register_email.domain.data.GenerateKeyModel
 import javax.inject.Inject
 
 class GenerateKeyUseCase @Inject constructor(

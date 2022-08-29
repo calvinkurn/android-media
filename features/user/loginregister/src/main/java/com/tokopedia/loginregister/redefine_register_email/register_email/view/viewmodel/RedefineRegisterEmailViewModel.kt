@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.viewmodel
+package com.tokopedia.loginregister.redefine_register_email.register_email.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.loginregister.redefine_register_email.domain.GenerateKeyUseCase
+import com.tokopedia.loginregister.redefine_register_email.register_email.domain.GenerateKeyUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 
 class RedefineRegisterEmailViewModel @Inject constructor(
@@ -15,9 +15,9 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private val state = FormState()
-    private val _formState = SingleLiveEvent<FormState>()
-    val formState: LiveData<FormState> get() = _formState
+    private val state = RedefineEmailFormState()
+    private val _formState = SingleLiveEvent<RedefineEmailFormState>()
+    val formState: LiveData<RedefineEmailFormState> get() = _formState
     private val _isRegisteredEmail = SingleLiveEvent<Boolean>()
     val isRegisteredEmail: LiveData<Boolean> get() = _isRegisteredEmail
 

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.fragment
+package com.tokopedia.loginregister.redefine_register_email.register_email.view.fragment
 
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +20,7 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.viewmodel.RedefineRegisterEmailViewModel
+import com.tokopedia.loginregister.redefine_register_email.register_email.view.viewmodel.RedefineRegisterEmailViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -73,13 +73,15 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             binding?.emailExtension?.setExtensions(it, object: EmailExtensionAdapter.ClickListener {
                 override fun onExtensionClick(extension: String, position: Int) {
                     val charEmail: Array<String> = binding?.fieldEmail?.editText?.text.toString().split(
-                        DELIMITER_EMAIL).toTypedArray()
+                        DELIMITER_EMAIL
+                    ).toTypedArray()
                     if (charEmail.isNotEmpty()) {
                         binding?.fieldEmail?.editText?.setText(String.format(STRING_FORMAT_EMAIL, charEmail[0], extension))
                     } else {
                         binding?.fieldEmail?.editText?.setText(String.format(
                             STRING_FORMAT_EMAIL,  binding?.fieldEmail?.editText?.text.toString().replace(
-                            DELIMITER_EMAIL, EMPTY_STRING), extension))
+                            DELIMITER_EMAIL, EMPTY_STRING
+                            ), extension))
                     }
                     binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= CHAR_SPACE }.length)
                     isExtensionSelected = true

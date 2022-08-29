@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.activity
+package com.tokopedia.loginregister.redefine_register_email.register_email.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.redefine_register_email.di.DaggerRedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.fragment.RedefineRegisterEmailFragment
+import com.tokopedia.loginregister.redefine_register_email.register_email.view.fragment.RedefineRegisterEmailFragment
 
 class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<RedefineRegisterEmailComponent> {
 

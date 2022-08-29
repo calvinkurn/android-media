@@ -1,7 +1,6 @@
-package com.tokopedia.loginregister.redefine_register_email.view.fragment
+package com.tokopedia.loginregister.redefine_register_email.input_phone.view.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,13 +20,11 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.viewmodel.RedefineRegisterInputPhoneViewModel
+import com.tokopedia.loginregister.redefine_register_email.input_phone.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 

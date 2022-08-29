@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.data
+package com.tokopedia.loginregister.redefine_register_email.register_email.domain.data
 
 import com.google.gson.annotations.SerializedName
 

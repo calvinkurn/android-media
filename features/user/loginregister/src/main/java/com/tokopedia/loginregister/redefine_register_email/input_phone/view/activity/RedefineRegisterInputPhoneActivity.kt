@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.activity
+package com.tokopedia.loginregister.redefine_register_email.input_phone.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,7 +9,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.ActivityRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefine_register_email.di.DaggerRedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.fragment.RedefineRegisterInputPhoneFragment
+import com.tokopedia.loginregister.redefine_register_email.input_phone.view.fragment.RedefineRegisterInputPhoneFragment
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RedefineRegisterInputPhoneActivity : BaseSimpleActivity(),
