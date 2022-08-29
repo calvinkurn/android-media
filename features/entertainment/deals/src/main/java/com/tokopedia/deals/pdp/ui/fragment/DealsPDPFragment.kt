@@ -1,5 +1,6 @@
 package com.tokopedia.deals.pdp.ui.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
@@ -36,6 +37,7 @@ import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
+import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -67,6 +69,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(DealsPDPViewModel::class.java)
     }
+    private var dealsPDPCallbacks: DealsPDPCallbacks? = null
 
     private var progressBar: LoaderUnify? = null
     private var progressBarLayout: FrameLayout? = null
@@ -101,6 +104,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var clRedeemInstruction: ConstraintLayout? = null
     private var cardCheckout: CardView? = null
     private var btnCheckout: UnifyButton? = null
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        dealsPDPCallbacks = activity as DealsPDPActivity
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productId = arguments?.getString(EXTRA_PRODUCT_ID, "") ?: ""
@@ -289,7 +297,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun showDescription(data: ProductDetailData) {
-        val desc = getExpandableItemText(data.longRichDesc)
+        val desc = DealsUtils.getExpandableItemText(data.longRichDesc)
         if (desc.isNullOrEmpty()) {
             clDescription?.hide()
         } else {
@@ -305,13 +313,16 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }, TIME_LAPSE)
 
             seeMoreButtonDesc?.setOnClickListener {
-                //todo show fragment
+                dealsPDPCallbacks?.onShowMoreDesc(
+                    getString(com.tokopedia.deals.R.string.deals_pdp_show_description),
+                    data.longRichDesc
+                )
             }
         }
     }
 
     private fun showTnc(data: ProductDetailData) {
-        val tnc = getExpandableItemText(data.tnc)
+        val tnc = DealsUtils.getExpandableItemText(data.tnc)
         if (tnc.isNullOrEmpty()) {
             clTnc?.hide()
         } else {
@@ -326,7 +337,10 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 }
             }, TIME_LAPSE)
             seeMoreButtonTnc?.setOnClickListener {
-                //todo show fragment
+                dealsPDPCallbacks?.onShowMoreDesc(
+                    getString(com.tokopedia.deals.R.string.deals_pdp_show_tnc),
+                    data.tnc
+                )
             }
         }
     }
@@ -482,22 +496,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun getExpandableItemText(texts: String): String? {
-        return if (texts.isNotEmpty()) {
-            val splitArray = texts.split("~").toTypedArray()
-            val tncBuffer = StringBuilder()
-            for (i in splitArray.indices) {
-                val line = splitArray[i]
-                if (i < splitArray.size - Int.ONE) tncBuffer.append(" ").append(DOT_HTML).append("  ")
-                    .append(line.trim { it <= ' ' }).append(ENTER_HTML)
-                else tncBuffer.append(" ").append(DOT_HTML).append("  ").append(line.trim { it <= ' ' })
-            }
-            tncBuffer.toString()
-        } else {
-            null
-        }
-    }
-
     private fun openGoogleMaps(context: Context, latLng: String) {
         val gmmIntentUri = Uri.parse("$URI_MAPS$latLng")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -552,8 +550,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
         private const val ZERO_PERCENT = "0%"
         private const val MAX_LINE = 10
         private const val TIME_LAPSE = 100L
-        private const val ENTER_HTML = "<br><br>"
-        private const val DOT_HTML = "\u2022"
         private const val PACKAGE_MAPS = "com.google.android.apps.maps"
         private const val URI_MAPS = "geo:0,0?q="
         private const val SALAM_VALUE = 32768

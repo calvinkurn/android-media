@@ -9,9 +9,11 @@ import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.pdp.di.DaggerDealsPDPComponent
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
+import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
+import com.tokopedia.deals.pdp.ui.fragment.DealsPDPDescFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
 
-class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent> {
+class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent>, DealsPDPCallbacks {
 
     var productId: String? = null
 
@@ -40,6 +42,15 @@ class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent> {
         menu?.clear()
         menuInflater.inflate(R.menu.menu_deals_pdp, menu)
         return true
+    }
+
+    override fun onShowMoreDesc(title: String, text: String) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(com.tokopedia.deals.R.anim.deals_slide_in_up, com.tokopedia.deals.R.anim.deals_slide_in_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_down, com.tokopedia.deals.R.anim.deals_slide_out_up)
+        transaction.add(R.id.parent_view, DealsPDPDescFragment.createInstance(title, text))
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     companion object {
