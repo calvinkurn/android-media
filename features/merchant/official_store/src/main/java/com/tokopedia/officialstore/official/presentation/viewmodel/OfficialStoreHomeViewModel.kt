@@ -208,6 +208,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 }
             } catch (t: Throwable) {
                 onCompleteInvokeData.invoke()
+                _officialStoreError.value = t
             }
         }
     }
