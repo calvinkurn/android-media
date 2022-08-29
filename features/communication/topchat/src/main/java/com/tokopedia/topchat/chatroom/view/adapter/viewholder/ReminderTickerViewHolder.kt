@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
@@ -63,6 +64,7 @@ class ReminderTickerViewHolder(
 
     private fun bindTickerType(element: ReminderTickerUiModel) {
         ticker?.tickerType = getTickerType(element)
+        ticker?.show()
     }
 
     private fun getTickerType(element: ReminderTickerUiModel): Int {

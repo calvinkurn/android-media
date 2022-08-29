@@ -322,7 +322,7 @@ open class TopChatViewModel @Inject constructor(
 
     private fun handleOnMessageWebSocket(response: WebSocketResponse) {
         val incomingChatEvent = topChatRoomWebSocketMessageMapper.parseResponse(response)
-        if (incomingChatEvent.msgId.toString() != roomMetaData.msgId) return
+        if (incomingChatEvent.msgId != roomMetaData.msgId) return
         when (response.code) {
             WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> onReceiveTypingEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> onReceiveEndTypingEvent()
@@ -585,7 +585,6 @@ open class TopChatViewModel @Inject constructor(
                     msgId = roomMetaData.msgId.toLongOrZero()
                 )
                 closeReminderTicker(existingMessageIdParam)
-                isTickerNotShownYet = true
             },
             onError = { }
         )

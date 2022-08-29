@@ -26,7 +26,7 @@ data class ReminderTickerUiModel(
     @SerializedName("urlLabel")
     var urlLabel: String = "",
     @SerializedName("replyId")
-    var replyId: Long = 0,
+    var replyId: String = "",
     @SerializedName("tickerType")
     var tickerType: String = "",
 ) : Visitable<TopChatTypeFactory> {
@@ -46,7 +46,7 @@ data class ReminderTickerUiModel(
                 subText = reminderPojo.subText?: "",
                 url = reminderPojo.url?: "",
                 urlLabel = reminderPojo.urlLabel?: "",
-                replyId = reminderPojo.replyId?: 0,
+                replyId = reminderPojo.replyId?: "",
                 tickerType = reminderPojo.tickerType?: ""
             )
         }

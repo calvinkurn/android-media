@@ -19,7 +19,7 @@ data class TickerReminderPojo (
     var regexMessage: String? = "",
 
     @SerializedName("reply_id")
-    var replyId: Long? = 0,
+    var replyId: String? = "",
 
     @SerializedName("sub_text")
     var subText: String? = "",

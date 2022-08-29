@@ -610,7 +610,10 @@ class TopChatRoomAdapter constructor(
         return if (currentItem == null || currentItem !is MessageUiModel) {
             false
         } else {
-            currentItem.replyId == replyId
+            /**
+             * Check if replyId or localId same as ticker reminder replyId
+             */
+            currentItem.replyId == replyId || currentItem.localId == replyId
         }
     }
 

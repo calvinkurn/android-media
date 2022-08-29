@@ -2998,7 +2998,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         data: ReminderTickerUiModel
     ) {
         if (!data.isEnable) return
-        val eligiblePosition = adapter.findTickerPosition(data.replyId.toString())
+        val eligiblePosition = adapter.findTickerPosition(data.replyId)
         if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
         viewModel.isTickerNotShownYet = false
@@ -3164,6 +3164,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
         viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
+        viewModel.isTickerNotShownYet = true
     }
 
     private fun goToOCC() {

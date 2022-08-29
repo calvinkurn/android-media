@@ -68,7 +68,7 @@ data class ChatSocketPojo(
     @SerializedName("reply_time_nano")
     val replyTime: String = "",
 
-    @SerializedName("general_reminder_ticker")
+    @SerializedName("reminder_ticker")
     var tickerReminder: TickerReminderPojo? = null
 ) {
 
