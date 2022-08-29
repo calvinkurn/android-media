@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
@@ -147,14 +148,17 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    allowedSelfie = it.data.kycProjectInfo.isSelfie
-                    if( it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
-                        it.data.kycProjectInfo.statusName != null &&
-                        it.data.kycProjectInfo.statusName == ""
+                    allowedSelfie = it.data.kycProjectInfo?.isSelfie == true
+                    if( it.data.kycProjectInfo?.status == KYCConstant.STATUS_BLACKLISTED ||
+                        it.data.kycProjectInfo?.statusName != null &&
+                        it.data.kycProjectInfo?.statusName == ""
                     ) {
                         onUserBlacklist()
                     } else {
-                        onSuccessGetUserProjectInfo(view, it.data.kycProjectInfo.status, it.data.kycProjectInfo.reasonList)
+                        onSuccessGetUserProjectInfo(
+                            view,
+                            it.data.kycProjectInfo?.status.orZero(),
+                            it.data.kycProjectInfo?.reasonList.orEmpty())
                     }
                 }
                 is Fail -> { onErrorGetUserProjectInfo(it.throwable) }

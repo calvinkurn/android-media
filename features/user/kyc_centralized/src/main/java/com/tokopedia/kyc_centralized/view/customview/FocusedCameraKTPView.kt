@@ -55,7 +55,7 @@ class FocusedCameraKTPView : View {
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
         mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
-        canvas.drawColor(MethodChecker.getColor(this.context, com.tokopedia.user_identification_common.R.color.kyc_dms_overlay))
+        canvas.drawColor(MethodChecker.getColor(this.context, R.color.kyc_dms_overlay))
         mWhitePaint?.let {
             canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
                     (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),

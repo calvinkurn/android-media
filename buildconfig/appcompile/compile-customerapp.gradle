@@ -267,7 +267,6 @@ includeIfEnabled("features:user:additional_check")
 
 includeIfEnabled("features:user:usercomponents")
 includeIfEnabled("features:user:updateinactivephone")
-//includeIfEnabled("features:user:user_identification_common")
 includeIfEnabled("features:user:kyc_centralized")
 includeIfEnabled("features:user:home_account")
 includeIfEnabled("features:user:seamless_login_common")

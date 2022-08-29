@@ -59,7 +59,7 @@ open class UserIdentificationCommonModule {
     @IntoMap
     @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
     fun provideRawQueryGetKycProjectInfo(@ActivityScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.user_identification_common.R.raw.query_get_kyc_project_info)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.kyc_centralized.R.raw.query_get_kyc_project_info)
 
     @ActivityScope
     @Provides
