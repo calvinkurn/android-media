@@ -24,14 +24,14 @@ class CreateChannelUseCase @Inject constructor(
 
     private val query = """
            mutation createChannel(
-           ${"$$PARAMS_AUTHOR_ID"}: String!, 
-           ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
-           ${"$$PARAMS_STATUS"}: Int!
+               ${"$$PARAMS_AUTHOR_ID"}: String!, 
+               ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
+               ${"$$PARAMS_STATUS"}: Int!
            ){
-              broadcasterCreateChannel(req: {
-                    $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"},
-                    $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
-                    $PARAMS_STATUS: ${"$$PARAMS_STATUS"}
+            broadcasterCreateChannel(req: {
+               $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"},
+               $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
+               $PARAMS_STATUS: ${"$$PARAMS_STATUS"}
               }){
                 channelID
               }
