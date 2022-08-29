@@ -29,16 +29,23 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.di.DaggerUniversalShareBottomSheetComponents
+import com.tokopedia.universal_sharing.di.UniversalShareBottomSheetModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
@@ -59,6 +66,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.Exception
 import kotlin.collections.ArrayList
 
@@ -212,6 +220,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup : Group? = null
     private var bottomBackgroundImage : ImageUnify? = null
+    private var affiliateRegisterMsg: Typography? = null
+    private var affiliateRegisterTitle: Typography? = null
+    private var affiliateRegisterIcon: ImageView? = null
+    private var affiliateRegisterContainer: CardUnify? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -261,6 +273,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var getImageFromMedia = false
     private lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
+    @Inject
+    lateinit var tracker: UniversalSharebottomSheetTracker
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        injectDependency()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -317,6 +336,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun injectDependency() {
+        context?.let { context ->
+            DaggerUniversalShareBottomSheetComponents.builder().universalShareBottomSheetModule(UniversalShareBottomSheetModule(context)).build().inject(this)
+        }
+    }
+
     private fun isAffiliateEnabled(): Boolean{
         if(LinkerManager.getInstance().context != null) {
             val remoteConfig = FirebaseRemoteConfigImpl(LinkerManager.getInstance().context)
@@ -346,7 +371,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
                 }.executeOnBackground()
                 withContext(Dispatchers.Main) {
-                    showAffiliateCommission(generateAffiliateLinkEligibility)
+                    showAffiliateTicker(generateAffiliateLinkEligibility)
                 }
             }
         }, onError = {
@@ -366,25 +391,63 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
-    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
+    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         clearLoader()
         removeHandlerTimeout()
-        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true) {
-            val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
-            if (!TextUtils.isEmpty(commissionMessage)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
+        if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
+            showAffiliateCommission(generateAffiliateLinkEligibility)
+        } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
+            showAffiliateRegister(generateAffiliateLinkEligibility)
+        }
+    }
+
+    private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true
+    }
+
+    private fun isShowAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return generateAffiliateLinkEligibility.banner != null
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
+    }
+
+    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
+        val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
+        if (!TextUtils.isEmpty(commissionMessage)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
                         Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
-                }
-                affiliateCommissionTextView?.visibility = View.VISIBLE
-                return
+            } else {
+                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
+            affiliateCommissionTextView?.visibility = View.VISIBLE
+            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.product?.productID ?: "")
+            return
         }
         affiliateQueryData = null
+    }
+
+    private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        generateAffiliateLinkEligibility.banner?.let { banner ->
+            affiliateRegisterContainer?.visible()
+            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+            affiliateRegisterContainer?.setOnClickListener { _ ->
+                tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+                RouteManager.route(context, banner.ctaLink)
+            }
+            affiliateRegisterIcon?.loadImage(banner.icon)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                affiliateRegisterTitle?.text = Html.fromHtml(banner.title, Html.FROM_HTML_MODE_LEGACY)
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message, Html.FROM_HTML_MODE_LEGACY)
+
+            } else {
+                affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message)            }
+
+
+        }
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
@@ -430,6 +493,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             emailImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
             loaderUnify = findViewById(R.id.loader)
             affiliateCommissionTextView = findViewById(R.id.affilate_commision)
+            affiliateRegisterMsg = findViewById(R.id.tv_description_affiliate)
+            affiliateRegisterTitle = findViewById(R.id.tv_title_affiliate)
+            affiliateRegisterIcon = findViewById(R.id.iv_affiliate)
+            affiliateRegisterContainer = findViewById(R.id.card_register_affiliate)
             setFixedOptionsClickListeners()
 
             setUserVisualData()

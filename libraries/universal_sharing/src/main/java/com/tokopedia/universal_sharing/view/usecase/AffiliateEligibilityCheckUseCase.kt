@@ -22,7 +22,7 @@ class AffiliateEligibilityCheckUseCase constructor(
             .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(GenerateAffiliateLinkEligibility.Response::class.java)
-        if (response.generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true) {
+        if (response.generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == false) {
             return response.generateAffiliateLinkEligibility!!
         } else {
             throw MessageErrorException("Error in affiliate eligibility check")
@@ -42,6 +42,12 @@ class AffiliateEligibilityCheckUseCase constructor(
                         AffiliateEligibility {
                             IsRegistered
                             IsEligible
+                        }
+                        Banner {
+                            Icon
+                            Title
+                            Message
+                            CtaLink
                         }
                         EligibleCommission {
                             IsEligible
