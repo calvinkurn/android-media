@@ -31,7 +31,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Date
 import javax.inject.Inject
-import kotlin.math.min
 
 class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
