@@ -1858,7 +1858,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         val detailCollection =
             "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
-        intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, true)
+        intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, false)
         startActivity(intentCollectionDetail)
     }
 

@@ -19,10 +19,17 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
     override fun graphqlQuery(): String = query
 
     override suspend fun execute(params: GetWishlistCollectionItemsParams): GetWishlistCollectionItemsResponse {
-        return repository.request(GetWishlistCollectionItemsQuery(), params)
+        return repository.request(GetWishlistCollectionItemsQuery(), createVariables(params))
+    }
+
+    private fun createVariables(params: GetWishlistCollectionItemsParams): Map<String, Any> {
+        val variables = mutableMapOf<String, Any>()
+        variables[KEY_PARAMS] = params
+        return variables
     }
 
     companion object {
+        private const val KEY_PARAMS = "params"
         const val query = """
             query GetWishlistCollectionItems(${'$'}params:GetWishlistCollectionItemsParams) {
                  get_wishlist_collection_items(params:${'$'}params){
