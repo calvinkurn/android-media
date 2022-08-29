@@ -685,7 +685,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
+
+        val maximumEndDate = if (selectedVpsPackage.isShopTierBenefit) {
+            viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        } else {
+            selectedVpsPackage.packageEndTime
+        }
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
             TimePickerSelectionMode.END_TIME,
