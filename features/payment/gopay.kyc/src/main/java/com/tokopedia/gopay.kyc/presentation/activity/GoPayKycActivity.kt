@@ -10,8 +10,7 @@ import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.di.DaggerGoPayKycComponent
 import com.tokopedia.gopay.kyc.di.GoPayKycComponent
 import com.tokopedia.gopay.kyc.presentation.fragment.GoPayPlusKycBenefitFragment
-import kotlinx.android.synthetic.main.activity_gopay_ktp_layout.*
-import kotlinx.android.synthetic.main.activity_gopay_kyc_layout.*
+import com.tokopedia.header.HeaderUnify
 
 class GoPayKycActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent> {
 
@@ -35,9 +34,20 @@ class GoPayKycActivity : BaseSimpleActivity(), HasComponent<GoPayKycComponent> {
 
     override fun getLayoutRes() = R.layout.activity_gopay_kyc_layout
     override fun getParentViewResourceID(): Int = R.id.kycFrameLayout
+    override fun getToolbarResourceID() = R.id.kycHeader
     override fun getNewFragment() = GoPayPlusKycBenefitFragment.newInstance()
     override fun getScreenName() = null
     override fun getComponent() = kycComponent
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        updateHeaderTitle()
+    }
+
+    private fun updateHeaderTitle() {
+        val header=findViewById<HeaderUnify>(R.id.kycHeader)
+        header.headerTitle = getString(R.string.kyc_header_title)
+    }
 
     companion object {
         const val IS_EXIT_KYC = "exitFlow"

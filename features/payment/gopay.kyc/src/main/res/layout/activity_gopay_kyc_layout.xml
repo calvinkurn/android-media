@@ -9,8 +9,6 @@
         android:id="@+id/kycHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unify_header_is_show_back_button="true"
-        app:unify_header_title="@string/kyc_header_title"
         />
 
     <androidx.fragment.app.FragmentContainerView
