@@ -84,7 +84,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
 
     private fun checkHasNextPage(feedQuery: FeedQuery): Boolean {
         return try {
-            feedQuery.feed.data[0].meta.isHasNextPage
+            feedQuery.feed.data[0].meta.hasNextPage
         } catch (e: Exception) {
             false
         }
