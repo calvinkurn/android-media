@@ -18,6 +18,8 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_FEED
+import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_PLAY
 import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
@@ -25,6 +27,7 @@ import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSource
 import com.tokopedia.content.common.producttag.view.fragment.*
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
@@ -189,7 +192,6 @@ class ProductTagParentFragment @Inject constructor(
                 }
             }
         }
-
     }
 
     private fun renderSelectedProductTagSource(
@@ -198,12 +200,58 @@ class ProductTagParentFragment @Inject constructor(
     ) {
         if(prevState == currState) return
 
-        updateBreadcrumb(currState.productTagSourceStack)
         updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
+
+        updateActionBar(currState.productTagSourceStack)
+        updateBreadcrumb(currState.productTagSourceStack)
+    }
+
+    private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {
+        binding.groupActionBar.showWithCondition(
+            productTagSourceStack.currentSource != ProductTagSource.Autocomplete
+        )
+    }
+
+    private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
+        if(currStack.isEmpty()) {
+            mListener?.onCloseProductTag() ?: run {
+                requireActivity().finish()
+            }
+            return
+        }
+
+        val selectedSource = currStack.currentSource
+        val (fragment, tag) = getFragmentAndTag(selectedSource)
+        if(currStack.size >= prevStack.size) {
+            childFragmentManager.beginTransaction()
+                .replace(binding.flCcProductTagContainer.id, fragment, tag)
+                .apply {
+                    if(currStack.size > prevStack.size)
+                        addToBackStack(null)
+                }
+                .commit()
+        }
+        else {
+            repeat(prevStack.size - currStack.size) {
+                childFragmentManager.popBackStackImmediate()
+            }
+
+            childFragmentManager.beginTransaction()
+                .replace(binding.flCcProductTagContainer.id, fragment, tag)
+                .commit()
+        }
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
         if(viewModel.isUser) {
+
+            if(productTagSourceStack.currentSource == ProductTagSource.Autocomplete) {
+                showBreadcrumb(false)
+                return
+            }
+
+            showBreadcrumb(true)
+
             /** Update the First Part */
             if(productTagSourceStack.isNotEmpty()) {
                 val firstSource = productTagSourceStack.first()
@@ -246,30 +294,6 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
-        if(currStack.isEmpty()) {
-            mListener?.onCloseProductTag() ?: run {
-                requireActivity().finish()
-            }
-            return
-        }
-
-        val selectedSource = currStack.currentSource
-        val (fragment, tag) = getFragmentAndTag(selectedSource)
-        if(currStack.size >= prevStack.size) {
-            childFragmentManager.beginTransaction()
-                .replace(binding.flCcProductTagContainer.id, fragment, tag)
-                .apply {
-                    if(currStack.size > prevStack.size)
-                        addToBackStack(null)
-                }
-                .commit()
-        }
-        else {
-            childFragmentManager.popBackStack()
-        }
-    }
-
     private fun getFragmentAndTag(productTagSource: ProductTagSource): Pair<BaseProductTagChildFragment, String> {
         val classLoader = requireActivity().classLoader
         return when(productTagSource) {
@@ -278,6 +302,7 @@ class ProductTagParentFragment @Inject constructor(
             ProductTagSource.MyShop -> MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.GlobalSearch -> GlobalSearchFragment.getFragmentPair(childFragmentManager, classLoader)
             ProductTagSource.Shop -> ShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
+            ProductTagSource.Autocomplete -> ContentAutocompleteFragment.getFragmentPair(childFragmentManager, classLoader)
             else -> {
                 if(viewModel.isSeller) MyShopProductFragment.getFragmentPair(childFragmentManager, classLoader)
                 else LastTaggedProductFragment.getFragmentPair(childFragmentManager, classLoader)
@@ -304,6 +329,7 @@ class ProductTagParentFragment @Inject constructor(
                 getStringArgument(EXTRA_SHOP_BADGE),
                 getStringArgument(EXTRA_AUTHOR_ID),
                 getStringArgument(EXTRA_AUTHOR_TYPE),
+                ContentProductTagConfig.mapFromString(getStringArgument(EXTRA_PAGE_SOURCE))
             )
         )
     }
@@ -366,7 +392,7 @@ class ProductTagParentFragment @Inject constructor(
         private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
         private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
         private const val EXTRA_AUTHOR_TYPE = "EXTRA_AUTHOR_TYPE"
-        private const val EXTRA_SOURCE = "source"
+        private const val EXTRA_PAGE_SOURCE = "EXTRA_PAGE_SOURCE"
 
         const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
         const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
@@ -375,9 +401,6 @@ class ProductTagParentFragment @Inject constructor(
         const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
         const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
         const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
-
-        const val SOURCE_FEED = "feed"
-        const val SOURCE_PLAY = "play"
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
@@ -392,7 +415,7 @@ class ProductTagParentFragment @Inject constructor(
             authorType: String,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, SOURCE_FEED)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_FEED)
         }
 
         fun getFragmentWithPlaySource(
@@ -404,7 +427,7 @@ class ProductTagParentFragment @Inject constructor(
             authorType: String,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, SOURCE_PLAY)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_PLAY)
         }
 
         private fun createFragment(
@@ -414,7 +437,7 @@ class ProductTagParentFragment @Inject constructor(
             shopBadge: String,
             authorId: String,
             authorType: String,
-            source: String,
+            pageSource: String,
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
@@ -427,7 +450,7 @@ class ProductTagParentFragment @Inject constructor(
                     putSerializable(EXTRA_SHOP_BADGE, shopBadge)
                     putSerializable(EXTRA_AUTHOR_ID, authorId)
                     putSerializable(EXTRA_AUTHOR_TYPE, authorType)
-                    putString(EXTRA_SOURCE, source)
+                    putString(EXTRA_PAGE_SOURCE, pageSource)
                 }
             }
         }

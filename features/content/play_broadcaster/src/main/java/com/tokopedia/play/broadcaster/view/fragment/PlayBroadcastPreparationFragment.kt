@@ -595,7 +595,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             showMainComponent(false)
 
             binding.formCover.setTitle(parentViewModel.channelTitle)
-            binding.formCover.setShopName(parentViewModel.authorName)
+            binding.formCover.setAuthorName(parentViewModel.authorName)
         }
         else showMainComponent(true)
         binding.formCover.showWithCondition(isShow)

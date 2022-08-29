@@ -384,7 +384,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.GetAccountConfiguration -> handleAccountConfiguration()
+            is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
             is PlayBroadcastAction.SelectAccount -> handleSelectedAccount(event.contentAccount)
 
             /** Game */
@@ -1499,7 +1499,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleAccountConfiguration() {
+    private fun handleGetAccountList() {
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 

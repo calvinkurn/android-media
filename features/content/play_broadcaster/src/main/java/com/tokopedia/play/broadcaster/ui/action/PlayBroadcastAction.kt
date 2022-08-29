@@ -25,7 +25,7 @@ sealed interface PlayBroadcastAction {
 
     data class SetSchedule(val date: Date) : PlayBroadcastAction
     object DeleteSchedule : PlayBroadcastAction
-    object GetAccountConfiguration: PlayBroadcastAction
+    object GetAccountList: PlayBroadcastAction
     data class SelectAccount(val contentAccount: ContentAccountUiModel): PlayBroadcastAction
 
     object ExitLive : PlayBroadcastAction
