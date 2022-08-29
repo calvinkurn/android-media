@@ -32,6 +32,8 @@ class MyShopProductAdapter(
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return if(oldItem is Model.Product && newItem is Model.Product) {
             oldItem.product.id == newItem.product.id
+        } else if(oldItem is Model.ProductWithCheckbox && newItem is Model.ProductWithCheckbox) {
+            oldItem.product.id == newItem.product.id
         } else if(oldItem is Model.Loading && newItem is Model.Loading) false
         else oldItem == newItem
     }
