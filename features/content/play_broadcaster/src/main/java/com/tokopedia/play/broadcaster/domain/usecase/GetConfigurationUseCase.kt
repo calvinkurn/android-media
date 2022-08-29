@@ -51,8 +51,16 @@ class GetConfigurationUseCase @Inject constructor(
         private const val VALUE_WITH_CHANNEL_STATE = true
         const val QUERY_NAME = "GetConfigurationUseCaseQuery"
         const val QUERY_BROADCASTER_GET_AUTHOR_CONFIG = """
-            query BroadcasterGetAuthorConfig(${'$'}authorID: Int64!, ${'$'}authorType: Int!, ${'$'}withChannelState: Boolean) {
-              broadcasterGetAuthorConfig(authorID: ${'$'}authorID, authorType: ${'$'}authorType, withChannelState: ${'$'}withChannelState) {
+            query BroadcasterGetAuthorConfig(
+            ${"$$PARAMS_AUTHOR_ID"}: Int64!, 
+            ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
+            ${"$$PARAMS_WITH_CHANNEL_STATE"}: Boolean
+            ) {
+              broadcasterGetAuthorConfig(
+              $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"}, 
+              $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
+              $PARAMS_WITH_CHANNEL_STATE: ${"$$PARAMS_WITH_CHANNEL_STATE"}
+              ) {
                 streamAllowed
                 config
                 tnc {
