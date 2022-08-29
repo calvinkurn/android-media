@@ -66,7 +66,8 @@ class ProductViewHolder(
             }
         }
 
-        if (binding?.imageStockReminder?.isVisible.orTrue()) {
+        if (binding?.imageStockReminder?.isVisible.orTrue()
+            && !binding?.imageNotifyMeBuyer?.isVisible.orTrue()) {
             listener.onImpressionProductStockReminder()
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
@@ -146,7 +147,6 @@ class ProductViewHolder(
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
 
-
         }
 
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
@@ -178,7 +178,7 @@ class ProductViewHolder(
 
     private fun showNotifyMeBuyer(product: ProductUiModel) {
         binding?.imageNotifyMeBuyer
-            ?.showWithCondition((product.isEmpty() && product.haveNotifyMeOOS))
+            ?.showWithCondition(product.haveNotifyMeOOS)
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
