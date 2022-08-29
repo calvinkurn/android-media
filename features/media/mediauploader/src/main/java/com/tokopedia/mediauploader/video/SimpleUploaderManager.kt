@@ -51,9 +51,6 @@ class SimpleUploaderManager @Inject constructor(
             }
         }
 
-        // clear the current policy
-        policyManager.clear()
-
         return uploader.videoUrl?.let {
             UploadResult.Success(
                 videoUrl = it,

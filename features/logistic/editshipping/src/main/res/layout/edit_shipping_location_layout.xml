@@ -33,7 +33,7 @@
             android:clickable="true"
             android:focusable="false"
             android:textColor="@color/Unify_N700"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
