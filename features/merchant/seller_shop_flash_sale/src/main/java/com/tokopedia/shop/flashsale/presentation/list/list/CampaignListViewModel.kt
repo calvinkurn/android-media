@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID
 import com.tokopedia.shop.flashsale.common.constant.Constant.SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
 import com.tokopedia.shop.flashsale.common.extension.daysDifference
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
@@ -203,6 +204,7 @@ class CampaignListViewModel @Inject constructor(
             totalRemainingQuota += vpsPackage.remainingQuota
             if (vpsPackage.packageEndTime.epochToDate()
                     .daysDifference(Date()) <= SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
+                && vpsPackage.packageId != DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID
             ) {
                 isNearExpirePackageAvailable = true
                 packageNearExpireCount++
