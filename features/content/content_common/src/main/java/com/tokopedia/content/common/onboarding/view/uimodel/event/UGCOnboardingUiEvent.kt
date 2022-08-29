@@ -3,7 +3,7 @@ package com.tokopedia.content.common.onboarding.view.uimodel.event
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-sealed interface FeedUGCOnboardingUiEvent {
+sealed interface UGCOnboardingUiEvent {
 
-    object ShowError : FeedUGCOnboardingUiEvent
+    object ShowError : UGCOnboardingUiEvent
 }

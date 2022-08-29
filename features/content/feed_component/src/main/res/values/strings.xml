@@ -212,6 +212,7 @@
     <string name="feed_fab_create_post">Buat Post</string>
 
     <string name="feed_webview_template">%s?url=%s</string>
+    <string name="feed_post_sebagai">Post sebagai</string>
 
     <!-- Shop Recommendation -->
     <string name="other_shops_based_on_your_recommendation">Toko lain sesuai rekomendasimu</string>

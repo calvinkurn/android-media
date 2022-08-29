@@ -1,9 +1,9 @@
 package com.tokopedia.content.common.onboarding.view.strategy
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.onboarding.domain.repository.FeedUGCOnboardingRepository
-import com.tokopedia.content.common.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
-import com.tokopedia.content.common.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
+import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
 import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,17 +13,17 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-class FeedUGCTncOnboardingStrategy @Inject constructor(
+class UGCTncOnboardingStrategy @Inject constructor(
     dispatcher: CoroutineDispatchers,
-    private val repo: FeedUGCOnboardingRepository,
-): FeedUGCOnboardingStrategy(dispatcher) {
+    private val repo: UGCOnboardingRepository,
+): UGCOnboardingStrategy(dispatcher) {
 
     private val _username = MutableStateFlow("")
     private val _isCheckTnc = MutableStateFlow(false)
     private val _isSubmit = MutableStateFlow(false)
     private val _hasAcceptTnc = MutableStateFlow(false)
 
-    private val _uiEvent = MutableSharedFlow<FeedUGCOnboardingUiEvent>()
+    private val _uiEvent = MutableSharedFlow<UGCOnboardingUiEvent>()
 
     override val uiState: Flow<FeedUGCOnboardingUiState> = combine(
         _username,
@@ -40,7 +40,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
         )
     }
 
-    override val uiEvent: Flow<FeedUGCOnboardingUiEvent>
+    override val uiEvent: Flow<UGCOnboardingUiEvent>
         get() = _uiEvent
 
     override fun handleCheckTnc() {
@@ -54,7 +54,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
 
                 val result = repo.acceptTnc()
                 if(!result) {
-                    _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+                    _uiEvent.emit(UGCOnboardingUiEvent.ShowError)
                 }
 
                 _isSubmit.update { false }
@@ -63,7 +63,7 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
         }) {
             _isSubmit.update { false }
             _hasAcceptTnc.update { false }
-            _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+            _uiEvent.emit(UGCOnboardingUiEvent.ShowError)
         }
     }
 }

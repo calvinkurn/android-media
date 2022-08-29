@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.content.common.databinding.BottomSheetFeedAccountTypeBinding
+import com.tokopedia.content.common.databinding.BottomSheetAccountTypeBinding
 import com.tokopedia.content.common.ui.adapter.FeedAccountTypeAdapter
 import com.tokopedia.content.common.ui.itemdecoration.FeedAccountTypeItemDecoration
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -18,8 +18,8 @@ import com.tokopedia.content.common.R
  */
 class FeedAccountTypeBottomSheet : BottomSheetUnify() {
 
-    private var _binding: BottomSheetFeedAccountTypeBinding? = null
-    private val binding: BottomSheetFeedAccountTypeBinding
+    private var _binding: BottomSheetAccountTypeBinding? = null
+    private val binding: BottomSheetAccountTypeBinding
         get() = _binding!!
 
     private val adapter: FeedAccountTypeAdapter by lazy {
@@ -53,7 +53,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetFeedAccountTypeBinding.inflate(
+        _binding = BottomSheetAccountTypeBinding.inflate(
             LayoutInflater.from(requireContext())
         )
         setChild(binding.root)

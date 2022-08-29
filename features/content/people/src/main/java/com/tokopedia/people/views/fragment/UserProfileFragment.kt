@@ -20,7 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-import com.tokopedia.content.common.onboarding.view.fragment.FeedUGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
@@ -45,7 +45,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
@@ -80,7 +80,6 @@ import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileFragment @Inject constructor(
@@ -218,8 +217,8 @@ class UserProfileFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedUGCOnboardingParentFragment -> {
-                childFragment.setListener(object : FeedUGCOnboardingParentFragment.Listener {
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
                         goToCreatePostPage()
@@ -290,10 +289,10 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
-                        putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
+                        putString(UGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
                     }
                     childFragmentManager.beginTransaction()
-                        .add(FeedUGCOnboardingParentFragment::class.java, bundle, FeedUGCOnboardingParentFragment.TAG)
+                        .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
                         .commit()
                 }
                 else {
@@ -729,7 +728,7 @@ class UserProfileFragment @Inject constructor(
         val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
         intent.putExtra(KEY_APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_MAX_MULTI_SELECT_ALLOWED, KEY_MAX_MULTI_SELECT_ALLOWED_VALUE)
-        intent.putExtra(KEY_TITLE, getString(contentCommonR.string.feed_post_sebagai))
+        intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
         intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
         intent.putExtra(KEY_IS_OPEN_FROM, VALUE_IS_OPEN_FROM_USER_PROFILE)

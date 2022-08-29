@@ -8,7 +8,7 @@
         android:id="@+id/tv_tnc_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/feed_ugc_complete_onboarding_tnc_title"
+        android:text="@string/ugc_complete_onboarding_tnc_title"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold" />
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:text="@string/feed_ugc_onboarding_tnc_1"
+            android:text="@string/ugc_onboarding_tnc_1"
             android:textColor="@color/Unify_NN600"
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:text="@string/feed_ugc_onboarding_tnc_2"
+            android:text="@string/ugc_onboarding_tnc_2"
             android:textColor="@color/Unify_NN600"
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
@@ -80,7 +80,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:text="@string/feed_ugc_onboarding_accept_tnc"
+        android:text="@string/ugc_onboarding_accept_tnc"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/cbx_tnc"

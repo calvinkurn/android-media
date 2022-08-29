@@ -8,16 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
+import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.onboarding.view.strategy.factory.FeedUGCOnboardingStrategyFactory
-import com.tokopedia.content.common.onboarding.view.uimodel.action.FeedUGCOnboardingAction
-import com.tokopedia.content.common.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
+import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
+import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
 import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
-import com.tokopedia.content.common.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
-import com.tokopedia.content.common.onboarding.view.viewmodel.factory.FeedUGCOnboardingViewModelFactory
+import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
+import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
 import com.tokopedia.content.common.util.withCache
-import com.tokopedia.content.common.databinding.BottomsheetFeedUserTncOnboardingBinding
+import com.tokopedia.content.common.databinding.BottomsheetUserTncOnboardingBinding
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collect
@@ -27,16 +27,16 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
-class FeedUserTnCOnboardingBottomSheet @Inject constructor(
-    private val viewModelFactoryCreator: FeedUGCOnboardingViewModelFactory.Creator,
-    private val strategyFactory: FeedUGCOnboardingStrategyFactory,
-): BaseFeedUserOnboardingBottomSheet() {
+class UserTnCOnboardingBottomSheet @Inject constructor(
+    private val viewModelFactoryCreator: UGCOnboardingViewModelFactory.Creator,
+    private val strategyFactory: UGCOnboardingStrategyFactory,
+): BaseUserOnboardingBottomSheet() {
 
-    private var _binding: BottomsheetFeedUserTncOnboardingBinding? = null
-    private val binding: BottomsheetFeedUserTncOnboardingBinding
+    private var _binding: BottomsheetUserTncOnboardingBinding? = null
+    private val binding: BottomsheetUserTncOnboardingBinding
         get() = _binding!!
 
-    private lateinit var viewModel: FeedUGCOnboardingViewModel
+    private lateinit var viewModel: UGCOnboardingViewModel
 
     private val _listener: Listener?
         get() = mListener as? Listener
@@ -50,7 +50,7 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
                 usernameArg,
                 strategyFactory.create(usernameArg),
             )
-        )[FeedUGCOnboardingViewModel::class.java]
+        )[UGCOnboardingViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -58,7 +58,7 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomsheetFeedUserTncOnboardingBinding.inflate(layoutInflater)
+        _binding = BottomsheetUserTncOnboardingBinding.inflate(layoutInflater)
 
         setChild(binding.root)
 
@@ -84,12 +84,12 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
 
     private fun setupListener() {
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
-            viewModel.submitAction(FeedUGCOnboardingAction.CheckTnc)
+            viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
 
         binding.btnContinue.setOnClickListener {
             _listener?.clickNextOnTncOnboarding()
-            viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
+            viewModel.submitAction(UGCOnboardingAction.ClickNext)
         }
     }
 
@@ -103,11 +103,11 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when(event) {
-                    is FeedUGCOnboardingUiEvent.ShowError -> {
+                    is UGCOnboardingUiEvent.ShowError -> {
                         Toaster.toasterCustomBottomHeight = binding.btnContinue.height + offset16
                         Toaster.build(
                             view = binding.root,
-                            text = getString(R.string.feed_ugc_onboarding_unknown_error),
+                            text = getString(R.string.ugc_onboarding_unknown_error),
                             duration = Toaster.LENGTH_SHORT,
                             type = TYPE_ERROR,
                         ).show()
@@ -144,16 +144,16 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): FeedUserTnCOnboardingBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedUserTnCOnboardingBottomSheet
+        ): UserTnCOnboardingBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserTnCOnboardingBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FeedUserTnCOnboardingBottomSheet::class.java.name
-            ) as FeedUserTnCOnboardingBottomSheet
+                UserTnCOnboardingBottomSheet::class.java.name
+            ) as UserTnCOnboardingBottomSheet
         }
     }
 
-    interface Listener : BaseFeedUserOnboardingBottomSheet.Listener {
+    interface Listener : BaseUserOnboardingBottomSheet.Listener {
         fun clickNextOnTncOnboarding()
     }
 

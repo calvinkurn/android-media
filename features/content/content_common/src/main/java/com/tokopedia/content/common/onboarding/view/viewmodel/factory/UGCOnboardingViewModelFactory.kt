@@ -4,8 +4,8 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.tokopedia.content.common.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
-import com.tokopedia.content.common.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
+import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,11 +13,11 @@ import dagger.assisted.AssistedInject
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-class FeedUGCOnboardingViewModelFactory @AssistedInject constructor(
+class UGCOnboardingViewModelFactory @AssistedInject constructor(
     @Assisted owner: SavedStateRegistryOwner,
     @Assisted private val username: String,
-    @Assisted private val onboardingStrategy: FeedUGCOnboardingStrategy,
-    private val feedUGCOnboardingViewModelFactory: FeedUGCOnboardingViewModel.Factory,
+    @Assisted private val onboardingStrategy: UGCOnboardingStrategy,
+    private val UGCOnboardingViewModelFactory: UGCOnboardingViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
     @AssistedFactory
@@ -25,8 +25,8 @@ class FeedUGCOnboardingViewModelFactory @AssistedInject constructor(
         fun create(
             owner: SavedStateRegistryOwner,
             username: String,
-            onboardingStrategy: FeedUGCOnboardingStrategy,
-        ): FeedUGCOnboardingViewModelFactory
+            onboardingStrategy: UGCOnboardingStrategy,
+        ): UGCOnboardingViewModelFactory
     }
 
     override fun <T : ViewModel?> create(
@@ -34,6 +34,6 @@ class FeedUGCOnboardingViewModelFactory @AssistedInject constructor(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return feedUGCOnboardingViewModelFactory.create(username, onboardingStrategy) as T
+        return UGCOnboardingViewModelFactory.create(username, onboardingStrategy) as T
     }
 }

@@ -1,10 +1,10 @@
 package com.tokopedia.content.common.onboarding.view.strategy
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.onboarding.domain.repository.FeedUGCOnboardingRepository
-import com.tokopedia.content.common.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
-import com.tokopedia.content.common.onboarding.view.uimodel.action.FeedUGCOnboardingAction
-import com.tokopedia.content.common.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
+import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
 import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,10 +15,10 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-class FeedUGCCompleteOnboardingStrategy @Inject constructor(
+class UGCCompleteOnboardingStrategy @Inject constructor(
     dispatcher: CoroutineDispatchers,
-    private val repo: FeedUGCOnboardingRepository,
-) : FeedUGCOnboardingStrategy(dispatcher) {
+    private val repo: UGCOnboardingRepository,
+) : UGCOnboardingStrategy(dispatcher) {
 
     private val _username = MutableStateFlow("")
     private val _usernameState = MutableStateFlow<UsernameState>(UsernameState.Unknown)
@@ -26,7 +26,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
     private val _isSubmit = MutableStateFlow(false)
     private val _hasAcceptTnc = MutableStateFlow(false)
 
-    private val _uiEvent = MutableSharedFlow<FeedUGCOnboardingUiEvent>()
+    private val _uiEvent = MutableSharedFlow<UGCOnboardingUiEvent>()
 
     override val uiState: Flow<FeedUGCOnboardingUiState> = combine(
         _username,
@@ -44,14 +44,14 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
         )
     }
 
-    override val uiEvent: Flow<FeedUGCOnboardingUiEvent>
+    override val uiEvent: Flow<UGCOnboardingUiEvent>
         get() = _uiEvent
 
-    override fun submitAction(action: FeedUGCOnboardingAction) {
+    override fun submitAction(action: UGCOnboardingAction) {
         super.submitAction(action)
         when(action) {
-            is FeedUGCOnboardingAction.InputUsername -> handleInputUsername(action.username)
-            FeedUGCOnboardingAction.CheckUsername -> handleCheckUsername()
+            is UGCOnboardingAction.InputUsername -> handleInputUsername(action.username)
+            UGCOnboardingAction.CheckUsername -> handleCheckUsername()
             else -> {}
         }
     }
@@ -61,7 +61,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
             _username
                 .debounce(USERNAME_THROTTLE)
                 .collect {
-                submitAction(FeedUGCOnboardingAction.CheckUsername)
+                submitAction(UGCOnboardingAction.CheckUsername)
             }
         }
     }
@@ -99,14 +99,14 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
 
                 val insertUsernameResult = repo.insertUsername(_username.value)
                 if(!insertUsernameResult) {
-                    _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+                    _uiEvent.emit(UGCOnboardingUiEvent.ShowError)
                     submitFail()
                     return@launchCatchError
                 }
 
                 val acceptTncResult = repo.acceptTnc()
                 if(!acceptTncResult) {
-                    _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+                    _uiEvent.emit(UGCOnboardingUiEvent.ShowError)
                 }
 
                 _isSubmit.update { false }
@@ -114,7 +114,7 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
             }
         }) {
             submitFail()
-            _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
+            _uiEvent.emit(UGCOnboardingUiEvent.ShowError)
         }
     }
 

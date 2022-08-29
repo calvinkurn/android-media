@@ -6,19 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.content.common.databinding.FragmentFeedUgcOnboardingParentBinding
-import com.tokopedia.content.common.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
-import com.tokopedia.content.common.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
-import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
+import com.tokopedia.content.common.databinding.FragmentUgcOnboardingParentBinding
+import com.tokopedia.content.common.onboarding.view.bottomsheet.UserCompleteOnboardingBottomSheet
+import com.tokopedia.content.common.onboarding.view.bottomsheet.UserTnCOnboardingBottomSheet
+import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
 
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
+class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private var mListener: Listener? = null
 
-    private var _binding: FragmentFeedUgcOnboardingParentBinding? = null
+    private var _binding: FragmentUgcOnboardingParentBinding? = null
     private val binding get() = _binding!!
 
     override fun getScreenName() = TAG
@@ -31,7 +31,7 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFeedUgcOnboardingParentBinding.inflate(
+        _binding = FragmentUgcOnboardingParentBinding.inflate(
             inflater, container, false
         )
         return binding.root
@@ -51,9 +51,9 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is FeedUserCompleteOnboardingBottomSheet -> {
-                childFragment.setListener(object : FeedUserCompleteOnboardingBottomSheet.Listener,
-                    BaseFeedUserOnboardingBottomSheet.Listener {
+            is UserCompleteOnboardingBottomSheet -> {
+                childFragment.setListener(object : UserCompleteOnboardingBottomSheet.Listener,
+                    BaseUserOnboardingBottomSheet.Listener {
                     override fun clickNextOnCompleteOnboarding() {
                         mListener?.clickNextOnCompleteOnboarding()
                     }
@@ -63,9 +63,9 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                     }
                 })
             }
-            is FeedUserTnCOnboardingBottomSheet -> {
-                childFragment.setListener(object : FeedUserTnCOnboardingBottomSheet.Listener,
-                        BaseFeedUserOnboardingBottomSheet.Listener {
+            is UserTnCOnboardingBottomSheet -> {
+                childFragment.setListener(object : UserTnCOnboardingBottomSheet.Listener,
+                        BaseUserOnboardingBottomSheet.Listener {
                         override fun clickNextOnTncOnboarding() {
                             mListener?.clickNextOnTncOnboarding()
                         }
@@ -81,7 +81,7 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     private fun showBottomSheet() {
         if(usernameArg.isEmpty()) {
             mListener?.impressCompleteOnboarding()
-            FeedUserCompleteOnboardingBottomSheet.getFragment(
+            UserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
             ).apply {
@@ -90,7 +90,7 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         }
         else {
             mListener?.impressTncOnboarding()
-            FeedUserTnCOnboardingBottomSheet.getFragment(
+            UserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
             ).apply {

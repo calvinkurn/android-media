@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.onboarding.view.fragment.FeedUGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -23,18 +23,18 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
+abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
     protected var mListener: Listener? = null
 
     protected val usernameArg: String
-        get() = arguments?.getString(FeedUGCOnboardingParentFragment.KEY_USERNAME).orEmpty()
+        get() = arguments?.getString(UGCOnboardingParentFragment.KEY_USERNAME).orEmpty()
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
             RouteManager.route(
                 requireContext(),
-                generateWebviewApplink(getString(R.string.feed_ugc_onboarding_privacy_policy_link))
+                generateWebviewApplink(getString(R.string.ugc_onboarding_privacy_policy_link))
             )
         }
 
@@ -48,7 +48,7 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
         override fun onClick(p0: View) {
             RouteManager.route(
                 requireContext(),
-                generateWebviewApplink(getString(R.string.feed_ugc_onboarding_tnc_link))
+                generateWebviewApplink(getString(R.string.ugc_onboarding_tnc_link))
             )
         }
 
@@ -88,15 +88,15 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
     }
 
     private fun generateWebviewApplink(url: String): String {
-        return getString(R.string.feed_webview_template, ApplinkConst.WEBVIEW, url)
+        return getString(R.string.up_webview_template, ApplinkConst.WEBVIEW, url)
     }
 
     protected fun getTncText(): CharSequence {
         val result = SpannableStringBuilder()
 
-        val mainText = getString(R.string.feed_ugc_onboarding_accept_tnc)
-        val privacyPolicy = getString(R.string.feed_ugc_onboarding_accept_tnc_privacy_policy)
-        val terms = getString(R.string.feed_ugc_onboarding_accept_tnc_terms)
+        val mainText = getString(R.string.ugc_onboarding_accept_tnc)
+        val privacyPolicy = getString(R.string.ugc_onboarding_accept_tnc_privacy_policy)
+        val terms = getString(R.string.ugc_onboarding_accept_tnc_terms)
 
         result.append(mainText)
         result.setSpanOnText(privacyPolicy, clickablePolicy, boldSpan, colorSpan)
