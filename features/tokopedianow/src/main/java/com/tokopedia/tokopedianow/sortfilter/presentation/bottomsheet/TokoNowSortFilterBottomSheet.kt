@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokopedianow.R
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSortFilterBinding
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.adapter.SortFilterAdapter
@@ -22,26 +24,38 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TokoNowSortFilterBottomSheet :
-    BottomSheetUnify(),
-    SortFilterViewHolderListener {
+class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
+    SortFilterViewHolderListener,
+    ChipListener {
 
     companion object {
-        private val TAG = TokoNowSortFilterBottomSheet::class.simpleName
         const val LAST_BOUGHT = 1
         const val FREQUENTLY_BOUGHT = 2
+
+        private val TAG = TokoNowSortFilterBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowSortFilterBottomSheet {
             return TokoNowSortFilterBottomSheet()
         }
     }
 
+    var sortValue: Int = FREQUENTLY_BOUGHT
+    var sortFilterItems: List<Visitable<*>> = listOf()
+
     private var binding by autoClearedNullable<BottomsheetTokopedianowSortFilterBinding>()
 
     private var rvSort: RecyclerView? = null
     private var btnApplyFilter: UnifyButton? = null
-    private var sortValue: Int = FREQUENTLY_BOUGHT
-    private var listTitles: List<SortFilterUiModel> = listOf()
+
+    private val adapter by lazy {
+        SortFilterAdapter(
+            SortFilterAdapterTypeFactory(
+                sortFilterListener = this,
+                chipListener = this
+            ),
+            SortFilterDiffer()
+        )
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -54,13 +68,17 @@ class TokoNowSortFilterBottomSheet :
         setupBtnFilter()
     }
 
-    override fun onClickItem(isChecked: Boolean, position: Int, value: Int) {
+    override fun onClickSortItem(isChecked: Boolean, position: Int, value: Int) {
         val newItemList = mutableListOf<SortFilterUiModel>()
-        listTitles.forEachIndexed { index, model ->
+        sortFilterItems.filterIsInstance<SortFilterUiModel>().forEachIndexed { index, model ->
             newItemList.add(model.copy(isChecked = index == position))
         }
         adapter.submitList(newItemList)
         sortValue = value
+    }
+
+    override fun onClickChipItem(chipUiModel: TokoNowChipUiModel) {
+
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -68,31 +86,8 @@ class TokoNowSortFilterBottomSheet :
         activity?.finish()
     }
 
-    fun show(fm: FragmentManager, sortValue: Int) {
+    fun show(fm: FragmentManager) {
         show(fm, TAG)
-        this.sortValue = sortValue
-
-        listTitles = listOf(
-            SortFilterUiModel(
-                titleRes = R.string.tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet,
-                isChecked = sortValue == FREQUENTLY_BOUGHT,
-                isLastItem = false,
-                value = FREQUENTLY_BOUGHT
-            ),
-            SortFilterUiModel(
-                titleRes = R.string.tokopedianow_sort_filter_item_last_bought_bottomsheet,
-                isChecked = sortValue == LAST_BOUGHT,
-                isLastItem = true,
-                value = LAST_BOUGHT
-            )
-        )
-    }
-
-    private val adapter by lazy {
-        SortFilterAdapter(
-            SortFilterAdapterTypeFactory(this),
-            SortFilterDiffer()
-        )
     }
 
     private fun initView() {
@@ -101,7 +96,6 @@ class TokoNowSortFilterBottomSheet :
         isDragable = false
         isHideable = false
         setupItemView()
-        setTitle(getString(R.string.tokopedianow_sort_filter_title_bottomsheet))
     }
 
     private fun setupItemView() {
@@ -117,7 +111,7 @@ class TokoNowSortFilterBottomSheet :
             adapter = this@TokoNowSortFilterBottomSheet.adapter
             itemAnimator = null
         }
-        adapter.submitList(listTitles)
+        adapter.submitList(sortFilterItems)
     }
 
     private fun setupBtnFilter() {

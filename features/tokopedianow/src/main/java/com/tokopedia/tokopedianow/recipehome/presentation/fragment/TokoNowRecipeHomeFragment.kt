@@ -32,7 +32,7 @@ class TokoNowRecipeHomeFragment: BaseTokoNowRecipeListFragment() {
         ))
     }
 
-    override val showHeaderBackground = true
+    override val enableHeaderBackground = true
 
     override val pageName = PAGE_NAME
 

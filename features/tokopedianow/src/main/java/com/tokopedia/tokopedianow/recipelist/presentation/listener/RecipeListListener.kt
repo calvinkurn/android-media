@@ -6,7 +6,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder
 
-class RecipeListener(private val context: Context?): RecipeViewHolder.RecipeItemListener {
+class RecipeListListener(private val context: Context?): RecipeViewHolder.RecipeItemListener {
 
     override fun onClickItem(recipe: RecipeUiModel) {
         goToRecipeDetail(recipe)
