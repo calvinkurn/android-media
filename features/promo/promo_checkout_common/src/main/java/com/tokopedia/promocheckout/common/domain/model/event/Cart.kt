@@ -15,7 +15,7 @@ data class Cart(
         val cartItems: List<CartItem> = emptyList(),
         @SerializedName("cashback_amount")
         @Expose
-        val cashbackAmount: Int = 0,
+        val cashbackAmount: Long = 0L,
         @SerializedName("count")
         @Expose
         val count: Int = 0,

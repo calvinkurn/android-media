@@ -61,7 +61,7 @@ object EventVerifyMapper {
                                         convFee = 0
                                 )
                         ),
-                        totalTaxAmount = 0,
+                        totalTaxAmount = 0L,
                         totalOtherCharges = 0,
                         totalTicketPrice = totalPrice,
                         entityImage = "",

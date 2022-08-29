@@ -27,7 +27,7 @@ data class CheckUmrahPromoCodeData(
         var cashbackWalletAmount : Long = 0L,
         @SerializedName("cashbackAdvocateReferralAmount")
         @Expose
-        var cashbackAdvocateReferralAmount : Int = 0,
+        var cashbackAdvocateReferralAmount : Long = 0L,
         @SerializedName("invoiceDescription")
         @Expose
         var invoiceDescription : String = "",
