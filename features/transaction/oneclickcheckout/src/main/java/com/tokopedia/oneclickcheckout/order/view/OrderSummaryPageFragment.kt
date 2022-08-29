@@ -1518,7 +1518,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 context?.also { ctx ->
                     InsuranceBottomSheet().apply {
                         setDesc(message)
-                        setImage(image)
                     }.show(getString(R.string.title_bottomsheet_insurance),ctx, parentFragmentManager)
                 }
             }

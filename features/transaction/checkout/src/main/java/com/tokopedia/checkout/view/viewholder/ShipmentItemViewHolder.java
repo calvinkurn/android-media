@@ -1988,7 +1988,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void showInsuranceBottomSheet(Context context, String title, String message, int image) {
         InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
         insuranceBottomSheet.setDesc(message);
-        insuranceBottomSheet.setImage(image);
         insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
     }
 
