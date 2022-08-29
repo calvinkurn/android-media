@@ -10,8 +10,8 @@ object SaldoDetailsRollenceUtil {
     }
 
     private fun getShouldShowModalTokoWidget(): Boolean {
-       return !RemoteConfigInstance.getInstance().abTestPlatform.run{
-            getString(RollenceKey.SALDO_MODAL_TOKO_WIDGET) == RollenceKey.SALDO_MODAL_TOKO_WIDGET
+       return RemoteConfigInstance.getInstance().abTestPlatform.run{
+            getString(RollenceKey.SALDO_MODAL_TOKO_WIDGET) != RollenceKey.SALDO_MODAL_TOKO_WIDGET
         }
     }
 }
