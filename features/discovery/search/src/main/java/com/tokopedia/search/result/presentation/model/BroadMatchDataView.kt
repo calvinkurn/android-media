@@ -5,6 +5,8 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 data class BroadMatchDataView(
     val keyword: String = "",
@@ -19,8 +21,10 @@ data class BroadMatchDataView(
     val trackingOption: Int = 0,
     val actualKeyword: String = "",
     val cardButton: CardButton = CardButton(),
+    override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
+    VerticalSeparable,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = actualKeyword,
@@ -33,6 +37,12 @@ data class BroadMatchDataView(
     override fun type(typeFactory: ProductListTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun addTopSeparator(): VerticalSeparable =
+        this.copy(verticalSeparator = VerticalSeparator.Top)
+
+    override fun addBottomSeparator(): VerticalSeparable =
+        this.copy(verticalSeparator = VerticalSeparator.Bottom)
 
     data class CardButton(val title: String = "", val applink: String = "")
 }

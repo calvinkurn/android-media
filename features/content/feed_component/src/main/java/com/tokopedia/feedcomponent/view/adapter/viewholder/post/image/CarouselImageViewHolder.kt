@@ -1,11 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.image
 
 import android.annotation.SuppressLint
-import android.view.GestureDetector
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
@@ -16,27 +12,18 @@ import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
-import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
 import com.tokopedia.feedcomponent.view.widget.PostTagView
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by kenny.hadisaputra on 29/06/22
  */
 @SuppressLint("ClickableViewAccessibility")
-internal class CarouselImageViewHolder(
+class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
@@ -48,10 +35,6 @@ internal class CarouselImageViewHolder(
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
     private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
 
-    private val topAdsCard = itemView.findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-    private val topAdsProductName = itemView.findViewById<Typography>(R.id.top_ads_product_name)
-    private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
-
     private val animationLike = AnimationUtils.loadAnimation(
         itemView.context,
         android.R.anim.fade_in
@@ -61,7 +44,6 @@ internal class CarouselImageViewHolder(
         itemView.context,
         object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
                 listener.onImageClicked(this@CarouselImageViewHolder)
 
                 animateLihatProduct(
@@ -80,11 +62,9 @@ internal class CarouselImageViewHolder(
 
                 if (!dataSource.getFeedXCard().isTopAds) {
                     likeAnim.startAnimation(animationLike)
-                    changeCTABtnColorAsPerWidget(
-                        dataSource.getFeedXCard(),
-                        shouldNotify = true,
-                    )
                 }
+
+                listener.onImageDoubleClicked(this@CarouselImageViewHolder)
 
                 return true
             }
@@ -94,7 +74,7 @@ internal class CarouselImageViewHolder(
             }
 
             override fun onLongPress(e: MotionEvent?) {
-                changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
+                listener.onImageLongClicked(this@CarouselImageViewHolder)
             }
         }
     )
@@ -105,10 +85,6 @@ internal class CarouselImageViewHolder(
 
     private val hideLihatProduct = Runnable {
         animateLihatProduct(false)
-    }
-
-    private val focusTopAds = Runnable {
-        changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
     }
 
     init {
@@ -164,20 +140,13 @@ internal class CarouselImageViewHolder(
             hideLihatProduct,
             FOCUS_SHOW_LIHAT_PRODUK_DELAY + FOCUS_HIDE_LIHAT_PRODUK_DELAY
         )
-        itemView.postDelayed(focusTopAds, FOCUS_TOP_ADS_DELAY)
 
         onPostTagViews { it.resetView() }
     }
 
-    fun changeTopAds(isColorChangedAsPerAsgcWidget: Boolean) {
-        val card = dataSource.getFeedXCard()
-        if (isColorChangedAsPerAsgcWidget) changeCTABtnColorAsPerWidget(card, shouldNotify = false)
-        else changeTopAdsColorToWhite(card)
-    }
-
-    fun removeFocus(resetTopAds: Boolean) {
-        removeAllPendingCallbacks(resetTopAds = resetTopAds)
-        resetUi(resetTopAds = resetTopAds)
+    fun removeFocus() {
+        removeAllPendingCallbacks()
+        resetUi()
     }
 
     fun bind(item: FeedXMedia) {
@@ -186,14 +155,12 @@ internal class CarouselImageViewHolder(
         postImage.setImageUrl(item.mediaUrl)
         llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
 
-        setupTopAds(card, item)
-
         itemView.doOnLayout {
             removeExistingPostTags()
             item.tagging.forEach { tagging ->
                 val tagView = PostTagView(itemView.context, tagging)
                 tagView.bindData(
-                    dynamicPostListener = dataSource.getDynamicPostListener(),
+                    tagBubbleListener  = dataSource.getTagBubbleListener(),
                     products = if (card.isTypeProductHighlight && card.useASGCNewDesign) {
                         card.products
                     } else card.tags,
@@ -207,110 +174,12 @@ internal class CarouselImageViewHolder(
         }
 
         llLihatProduct.setOnClickListener {
-            changeCTABtnColorAsPerWidget(dataSource.getFeedXCard())
             listener.onLihatProductClicked(this, item)
         }
 
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onImpressed(this)
         }
-    }
-
-    private fun setupTopAds(card: FeedXCard, media: FeedXMedia) {
-        topAdsProductName.text = getCTAButtonText(card)
-        topAdsCard.showWithCondition(
-            shouldShow = card.isTypeProductHighlight || card.isTopAds
-        )
-
-        topAdsCard.setOnClickListener {
-            changeCTABtnColorAsPerWidget(card)
-            listener.onTopAdsCardClicked(this, media)
-        }
-        if (!card.isAsgcColorChangedAsPerWidgetColor) changeTopAdsColorToWhite(card)
-        else changeCTABtnColorAsPerWidget(card, shouldNotify = false)
-    }
-
-    private fun getCTAButtonText(card: FeedXCard) =
-         if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
-            itemView.context.getString(R.string.feeds_check_x_products, card.totalProducts)
-        else if (card.isASGCDiscountToko && card.totalProducts > 1)
-            itemView.context.getString(
-                R.string.feeds_asgc_disc_x_products,
-                card.totalProducts,
-                card.maximumDisPercentFmt
-            )
-        else if (card.isASGCDiscountToko && card.totalProducts == 1)
-             itemView.context.getString(
-                 R.string.feeds_asgc_disc_one_products,
-                 card.maximumDisPercentFmt
-             )
-        else itemView.context.getString(R.string.feeds_cek_sekarang)
-
-    private fun changeTopAdsColorToGreen(card: FeedXCard, shouldNotify: Boolean = true) {
-        changeTopAdsColor(
-            primaryColor = MethodChecker.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
-            ),
-            secondaryColor = MethodChecker.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
-            ),
-        )
-    }
-
-    private fun changeTopAdsColorToWhite(card: FeedXCard) {
-        card.isAsgcColorChangedAsPerWidgetColor = false
-
-        changeTopAdsColor(
-            primaryColor = MethodChecker.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN50
-            ),
-            secondaryColor = MethodChecker.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
-            ),
-        )
-    }
-
-    private fun changeTopAdsColorToRed(card: FeedXCard) {
-        changeTopAdsColor(
-            primaryColor = MethodChecker.getColor(
-                itemView.context,
-                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_discount_toko_btn_bg_color
-            ),
-            secondaryColor = MethodChecker.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
-            ),
-        )
-    }
-    private fun changeCTABtnColorAsPerWidget(card: FeedXCard, shouldNotify: Boolean = true) {
-        card.isAsgcColorChangedAsPerWidgetColor = true
-
-        if (shouldNotify) listener.onCTAColorChangedAsPerWidgetColor(this)
-
-        if (card.isASGCDiscountToko)
-            changeTopAdsColorToRed(card)
-        else
-            changeTopAdsColorToGreen(card)
-    }
-
-    private fun changeTopAdsColor(
-        primaryColor: Int,
-        secondaryColor: Int,
-    ) {
-        itemView.removeCallbacks(focusTopAds)
-
-        TransitionManager.beginDelayedTransition(
-            itemView as ViewGroup,
-            BackgroundColorTransition()
-                .addTarget(topAdsCard)
-        )
-        topAdsProductName.setTextColor(secondaryColor)
-        topAdsChevron.setColorFilter(secondaryColor)
-        topAdsCard.setBackgroundColor(primaryColor)
     }
 
     private fun removeExistingPostTags() {
@@ -350,19 +219,16 @@ internal class CarouselImageViewHolder(
     private fun removeAllPendingCallbacks(resetTopAds: Boolean = true) {
         itemView.removeCallbacks(showLihatProduct)
         itemView.removeCallbacks(hideLihatProduct)
-        if (resetTopAds) itemView.removeCallbacks(focusTopAds)
     }
 
     private fun resetUi(resetTopAds: Boolean = true) {
         onPostTagViews { it.hideExpandedViewIfShown() }
         tvLihatProduct.gone()
-        if (resetTopAds) changeTopAdsColorToWhite(dataSource.getFeedXCard())
     }
 
     companion object {
         private const val FOCUS_SHOW_LIHAT_PRODUK_DELAY = 1000L
         private const val FOCUS_HIDE_LIHAT_PRODUK_DELAY = 3000L
-        private const val FOCUS_TOP_ADS_DELAY = 2000L
 
         private const val ANIMATION_LIHAT_PRODUCT_DURATION = 250L
 
@@ -384,8 +250,9 @@ internal class CarouselImageViewHolder(
 
     interface Listener {
         fun onTopAdsCardClicked(viewHolder: CarouselImageViewHolder, media: FeedXMedia)
-        fun onCTAColorChangedAsPerWidgetColor(viewHolder: CarouselImageViewHolder)
         fun onImageClicked(viewHolder: CarouselImageViewHolder)
+        fun onImageDoubleClicked(viewHolder: CarouselImageViewHolder) {}
+        fun onImageLongClicked(viewHolder: CarouselImageViewHolder) {}
         fun onLiked(viewHolder: CarouselImageViewHolder)
         fun onImpressed(viewHolder: CarouselImageViewHolder)
         fun onLihatProductClicked(viewHolder: CarouselImageViewHolder, media: FeedXMedia)

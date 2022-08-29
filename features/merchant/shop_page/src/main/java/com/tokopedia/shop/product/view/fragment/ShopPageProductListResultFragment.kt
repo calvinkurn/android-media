@@ -32,6 +32,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -119,6 +120,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
     lateinit var viewModel: ShopPageProductListResultViewModel
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -296,6 +299,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             (it as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         observeLiveData()
+        initAffiliateCookie()
+    }
+
+    private fun initAffiliateCookie() {
+        viewModel?.initAffiliateCookie(
+            affiliateCookieHelper,
+            shopId.orEmpty()
+        )
     }
 
     private fun initView() {
@@ -648,7 +659,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             }
             val listProductTabWidget = shopProductAdapter.data
             if(listProductTabWidget.isNotEmpty())
-                viewModel.getShopProductDataWithUpdatedQuantity(it, listProductTabWidget.toMutableList())
+                viewModel.getShopProductDataWithUpdatedQuantity(listProductTabWidget.toMutableList())
         })
     }
 
@@ -980,7 +991,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     ) {
         if (isLogin) {
             handleAtcFlow(
-                shopProductUiModel.id.orEmpty(),
                 quantity,
                 shopId.orEmpty(),
                 shopProductUiModel
@@ -993,7 +1003,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel) {
         AtcVariantHelper.goToAtcVariant(
             context = requireContext(),
-            productId = shopProductUiModel.id.orEmpty(),
+            productId = shopProductUiModel.id,
             pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
             shopId = shopId.orEmpty(),
             startActivitResult = this::startActivityForResult,
@@ -1008,7 +1018,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
                 handleAtcFlow(
-                    shopProductUiModel.id.orEmpty(),
                     quantity,
                     shopId.orEmpty(),
                     shopProductUiModel
@@ -1050,13 +1059,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun handleAtcFlow(
-        productId: String,
         quantity: Int,
         shopId: String,
         shopProductUiModel: ShopProductUiModel
     ) {
         viewModel.handleAtcFlow(
-            productId,
             quantity,
             shopId,
             ShopPageConstant.ShopProductCardAtc.CARD_ETALASE,
@@ -1066,13 +1073,26 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
+            val pdpAppLink = getPdpAppLink(productId)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            RouteManager.getIntent(context, pdpAppLink)
         } else {
             null
         }
+    }
+
+    private fun getPdpAppLink(productId: String): String {
+        val basePdpAppLink = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        return createPdpAffiliateLink(basePdpAppLink)
+    }
+
+    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
     private fun onSuccessAddWishlist(productId: String) {

@@ -27,9 +27,11 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -57,7 +59,9 @@ import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
+import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentMerchantPageLayoutBinding
@@ -106,6 +110,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -274,6 +279,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setToolbarBackIconUnify()
         setBackgroundDefaultColor()
         setHeaderBackground()
         setupAppBarLayoutListener()
@@ -323,6 +329,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
+    private fun setToolbarBackIconUnify() {
+        binding?.toolbarMerchantPage?.setBackIconUnify()
+    }
+
     private fun setBackgroundDefaultColor() {
         binding?.toolbarParent?.let {
             it.setBackgroundColor(
@@ -342,7 +352,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 } else {
                     com.tokopedia.tokofood.R.drawable.header_background
                 }
-            binding?.bgMerchantHeader?.setBackgroundResource(backgroundResourceId)
+            binding?.bgMerchantHeader?.setImageResource(backgroundResourceId)
         }
     }
 
@@ -388,6 +398,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun setupCardSticky() {
         binding?.cardUnifySticky?.setOnClickListener {
+            hideKeyboard()
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             val categoryFilter =
                 TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
@@ -630,6 +641,11 @@ class MerchantPageFragment : BaseMultiFragment(),
                     binding?.toolbarParent?.hide()
                     binding?.productListLayout?.hide()
                     showGlobalError(errorType = GlobalError.SERVER_ERROR)
+                    logExceptionToServerLogger(
+                        result.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                    )
                 }
             }
         })
@@ -642,9 +658,28 @@ class MerchantPageFragment : BaseMultiFragment(),
 
                 is Fail -> {
                     validateAddressData()
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE
+                    )
                 }
             }
         })
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.MERCHANT,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     private suspend fun collectCartDataFlow() {
@@ -988,6 +1023,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun showCustomOrderDetailBottomSheet(productUiModel: ProductUiModel, cardPositions: Pair<Int, Int>) {
+        hideKeyboard()
         customOrderDetailBottomSheet?.dismiss()
         val bundle = Bundle().apply {
             putInt(
@@ -1009,6 +1045,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onCarouselItemClicked() {
+        hideKeyboard()
         merchantInfoBottomSheet?.show(childFragmentManager)
     }
 
@@ -1024,6 +1061,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             cardPositions.first,
             merchantId
         )
+        hideKeyboard()
         val bottomSheet = ProductDetailBottomSheet.createInstance(productUiModel)
         bottomSheet.setOnDismissListener { viewModel.isProductDetailBottomSheetVisible = false }
         bottomSheet.setClickListener(this)
@@ -1291,7 +1329,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
-        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        var applicationLink = ApplinkConstInternalUserPlatform.ADD_PHONE
         if (appLink.isNotEmpty()) applicationLink = appLink
         context?.run {
             TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)
@@ -1483,7 +1521,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                     warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(
                         chooseAddressData.tokonow.warehouses
                     ),
-                    serviceType = chooseAddressData.tokonow.serviceType
+                    serviceType = chooseAddressData.tokonow.serviceType,
+                    lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
                 )
             }
         }
@@ -1499,6 +1538,14 @@ class MerchantPageFragment : BaseMultiFragment(),
             }
         binding?.rvProductList?.run {
             setPadding(paddingLeft, paddingTop, paddingRight, bottomPadding)
+        }
+    }
+
+    private fun hideKeyboard() {
+        try {
+            KeyboardHandler.hideSoftKeyboard(activity)
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 

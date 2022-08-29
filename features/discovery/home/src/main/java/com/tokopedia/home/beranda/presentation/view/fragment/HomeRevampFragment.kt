@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -29,7 +28,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.bumptech.glide.Glide
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -92,8 +90,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -104,21 +102,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
-import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK
 import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
 import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.isNewTokopointCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.isNewWalletAppCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.isSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
-import com.tokopedia.home.beranda.presentation.view.helper.setBalanceWidgetCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setChooseAddressCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setNewTokopointCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setNewWalletAppCoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setWalletApp2CoachmarkShown
-import com.tokopedia.home.beranda.presentation.view.helper.setWalletAppCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setSubscriptionCoachmarkShown
 import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
@@ -137,6 +128,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetC
 import com.tokopedia.home.beranda.presentation.view.listener.Lego4AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MixLeftComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MixTopComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.ProductHighlightComponentCallback
@@ -146,7 +138,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListC
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -168,8 +159,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
@@ -200,7 +190,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey.HOME_BEAUTY_FEST
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -225,18 +214,16 @@ import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFr
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
-import kotlinx.coroutines.FlowPreview
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.*
+import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -264,7 +251,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
-        private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
@@ -294,10 +280,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
-        private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light_2.png"
-        private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
-
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val EMPTY_TIME_MILLIS = 0L
@@ -306,7 +288,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val PAGE_NAME_FPI_HOME = "home"
         private const val COACHMARK_FIRST_INDEX = 0
         private const val HOME_HEADER_POSITION = 0
-        private const val TOKOPOINTS_ITEM_POSITION = 1
         private const val VIEW_DEFAULT_HEIGHT = 0f
         private const val STATUS_BAR_DEFAULT_ALPHA = 0f
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
@@ -322,16 +303,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val SPACE_CHAR = "%20"
         private const val QUERY_CHAR_1 = "?"
         private const val QUERY_CHAR_2 = "%3F"
-        private const val SCHEME_PACKAGE = "package"
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
-        const val BEAUTY_FEST_FALSE = 0
-        const val BEAUTY_FEST_TRUE = 1
-        const val BEAUTY_FEST_NOT_SET = -1
-        private var beautyFestEvent = BEAUTY_FEST_NOT_SET
-        private var counterBypassFirstNetworkHomeData = 0
-        private var eligibleBeautyFest = false
         private const val isPageRefresh = true
 
         @JvmStatic
@@ -345,7 +319,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private var questWidgetPosition = -1
-    private var isGopayActivated: Boolean? = null
     private var isNeedToRotateTokopoints: Boolean = true
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
@@ -381,8 +354,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var backgroundViewImage: ImageView
-    private lateinit var loaderHeaderImage: FrameLayout
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
@@ -417,23 +388,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-    private var bottomSheetIsShowing = false
-    private var coachMarkIsShowing = false
-    private var gopayCoachmarkIsShowing = false
-    private var tokopointsCoachmarkIsShowing = false
+    private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmark: CoachMark2? = null
-    private var coachmarkGopay: CoachMark2? = null
-    private var coachmarkTokopoint: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
+    private var coachmarkSubscription: CoachMark2? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
-    private val coachMarkItemGopay = ArrayList<CoachMark2Item>()
-    private val coachMarkItemTokopoints = ArrayList<CoachMark2Item>()
+    private val coachMarkItemSubscription = ArrayList<CoachMark2Item>()
     private val coachMarkItemTokonow = ArrayList<CoachMark2Item>()
     private var scrollPositionY = 0
-    private var positionWidgetGopay = 0
-    private var positionWidgetTokopoints = 0
+    private var positionWidgetSubscription = 0
     private var positionWidgetTokonow = 0
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
@@ -443,16 +408,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var fragmentCurrentCacheState: Boolean = true
     private var fragmentCurrentVisitableCount: Int = -1
     private var fragmentCurrentScrollPosition: Int = -1
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun isEligibleForBeautyFest(): Boolean {
-        return try {
-            getAbTestPlatform().getString(HOME_BEAUTY_FEST, "") == HOME_BEAUTY_FEST && getUserSession().isLoggedIn
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -479,7 +434,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
-        beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         context?.run {
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
@@ -583,11 +537,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else null
     }
 
-    fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
-        val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(key, value).apply()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
@@ -604,9 +553,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
-
-        backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
-        loaderHeaderImage = view.findViewById<FrameLayout>(R.id.loader_header_home)
         homeRecyclerView?.setHasFixedSize(true)
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
 
@@ -634,7 +580,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
 
                         override fun onYposChanged(yOffset: Int) {
-                            backgroundViewImage.y = -(yOffset.toFloat())
                         }
                     }
             ))
@@ -649,6 +594,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             it.setIcon(icons)
         }
         onChooseAddressUpdated()
+        getSearchPlaceHolderHint()
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -664,57 +610,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return view
     }
 
+    private fun getSearchPlaceHolderHint() {
+        if (this::viewModel.isInitialized) {
+            getHomeViewModel().getSearchHint(isFirstInstall())
+        }
+    }
+
     private fun getInboxIcon(): Int {
         return IconList.ID_MESSAGE
     }
 
-    private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
+    private fun ArrayList<CoachMark2Item>.buildSubscriptionCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
         context?.let { currentContext ->
-            isGopayActivated?.let {
-                if (it) {
-                    val ctaButton = getGopayNewBalanceWidgetView()
-                    ctaButton?.let { gopayWidget ->
-                        if (this.isEmpty()) {
-                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
-                            this.add(
-                                CoachMark2Item(
-                                    ctaButton,
-                                    getString(R.string.home_gopay_new_coachmark_title),
-                                    getString(R.string.home_gopay_new_coachmark_description)
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    val gopayWidget = getGopayNewActivateBalanceWidgetView()
-                    gopayWidget?.let { gopayWidget ->
-                        if (this.isEmpty()) {
-                            positionWidgetGopay = gopayWidget.getPositionWidgetVertical()
-                            this.add(
-                                CoachMark2Item(
-                                    gopayWidget,
-                                    getString(R.string.home_gopay_new_active_cta_coachmark_title),
-                                    getString(R.string.home_gopay_new_active_cta_coachmark_description)
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun ArrayList<CoachMark2Item>.buildTokopointNewCoachmark(tokopointsBalanceCoachmark: BalanceCoachmark) {
-        context?.let { currentContext ->
-            val tokopointWidget = getTokopointsNewBalanceWidgetView()
-            tokopointWidget?.let {
+            val subscriptionWidget = getSubscriptionBalanceWidgetView()
+            subscriptionWidget?.let {
                 if (this.isEmpty()) {
-                    positionWidgetTokopoints = it.getPositionWidgetVertical()
+                    positionWidgetSubscription = it.getPositionWidgetVertical()
                     this.add(
                         CoachMark2Item(
-                            tokopointWidget,
-                            tokopointsBalanceCoachmark.title,
-                            tokopointsBalanceCoachmark.description
+                            it,
+                            subscriptionBalanceCoachMark.title.parseAsHtml(),
+                            subscriptionBalanceCoachMark.description.parseAsHtml()
                         )
                     )
                 }
@@ -743,66 +659,33 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark(
-        tokopointsBalanceCoachmark: BalanceCoachmark? = null
+        subscriptionBalanceCoachMark: BalanceCoachmark? = null
     ) {
         context?.let { ctx ->
-            if (!isNewWalletAppCoachmarkShown(ctx)) {
-                showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+            if (!isSubscriptionCoachmarkShown(ctx) && subscriptionBalanceCoachMark != null) {
+                showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark)
+            } else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
             }
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    private fun showGopayEligibleCoachmark(
-        tokopointsBalanceCoachmark: BalanceCoachmark? = null
-    ) {
+    private fun showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
         context?.let {
-            coachMarkItemGopay.buildGopayNewCoachmark()
-            coachmarkGopay?.let { gopayCoachmark ->
-                try {
-                    if (coachMarkItemGopay.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
-                        gopayCoachmark.onDismissListener = {
-                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
-                                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
-                            } else {
-                                showTokonowCoachmark()
-                            }
-                            setNewWalletAppCoachmarkShown(it)
-                        }
-                        gopayCoachmark.showCoachMark(step = coachMarkItemGopay, index = COACHMARK_FIRST_INDEX)
-                        gopayCoachmarkIsShowing = true
-                    }
-                } catch (e: Exception) {
-                    gopayCoachmarkIsShowing = false
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun showTokopointsEligibleCoachmark(
-        tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
-        context?.let {
-            tokopointsBalanceCoachmark?.let { tokopointsBalanceCoachmark ->
-                coachMarkItemTokopoints.buildTokopointNewCoachmark(tokopointsBalanceCoachmark)
-                coachmarkTokopoint?.let { tokopointCoachmark ->
+            subscriptionBalanceCoachMark.let { subscriptionBalanceCoachMark ->
+                coachMarkItemSubscription.buildSubscriptionCoachMark(subscriptionBalanceCoachMark)
+                coachmarkSubscription?.let { subscriptionCoachMark ->
                     try {
-                        if (coachMarkItemTokopoints.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
-                            tokopointCoachmark?.onDismissListener = {
-                                setNewTokopointCoachmarkShown(it)
+                        if (coachMarkItemSubscription.isNotEmpty() && isValidToShowCoachMark() && !subscriptionCoachmarkIsShowing) {
+                            subscriptionCoachMark.onDismissListener = {
+                                setSubscriptionCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
-                            tokopointCoachmark.showCoachMark(step = coachMarkItemTokopoints, index = COACHMARK_FIRST_INDEX)
-                            tokopointsCoachmarkIsShowing = true
+                            subscriptionCoachMark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
+                            subscriptionCoachmarkIsShowing = true
                         }
                     } catch (e: Exception) {
-                        tokopointsCoachmarkIsShowing = false
-                        e.printStackTrace()
+                        subscriptionCoachmarkIsShowing = false
                     }
                 }
             }
@@ -832,96 +715,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun CoachMark2Item.setCoachmarkShownPref() {
-        context?.let { currentContext ->
-            when {
-                this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
-                    setChooseAddressCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
-                    setBalanceWidgetCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.home_gopay_coachmark_title), ignoreCase = true) -> {
-                    setWalletAppCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.home_gopay2_coachmark_title), ignoreCase = true) -> {
-                    setWalletApp2CoachmarkShown(currentContext)
-                }
-            }
-        }
-    }
 
-    private fun getTokopointsNewBalanceWidgetView(): View? {
+    private fun getSubscriptionBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetTokopointsNewView = getBalanceWidgetViewTokoPointsNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return balanceWidgetTokopointsNewView
+            val balanceWidgetSubscriptionView = getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && ((balanceWidgetSubscriptionView?.y
+                    ?: VIEW_DEFAULT_HEIGHT) > VIEW_DEFAULT_HEIGHT)
+            )
+                return balanceWidgetSubscriptionView
         }
         return null
     }
 
-    private fun getGopayBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return gopayView
-        }
-        return null
+    private fun getBalanceWidgetViewSubscriptionOnly(balanceWidgetView: BalanceWidgetView): View? {
+        return balanceWidgetView.getSubscriptionView()
     }
-
-    private fun getGopayNewBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return gopayView
-        }
-        return null
-    }
-
-    private fun getGopayNewActivateBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayActivateNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
-            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return gopayView
-        }
-        return null
-    }
-
-    private fun getBalanceWidgetView(): BalanceWidgetView? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-            if ((balanceWidgetView.getGopayView() != null || balanceWidgetView.getGopayNewView() != null) && balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
-                return balanceWidgetView
-            }
-        }
-        return null
-    }
-
-    private fun getBalanceWidgetViewTokoPointsOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getTokopointsView()
-    }
-
-    private fun getBalanceWidgetViewGopayOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getGopayView()
-    }
-
-    private fun getBalanceWidgetViewGopayNewOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getGopayNewView()
-    }
-
-    private fun getBalanceWidgetViewGopayActivateNewOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getGopayActivateNewView()
-    }
-
-    private fun getBalanceWidgetViewTokoPointsNewOnly(balanceWidgetView: BalanceWidgetView): View? {
-        return balanceWidgetView.getTokopointsNewView()
-    }
-
 
     private fun isValidToShowCoachMark(): Boolean {
         activity?.let {
@@ -984,25 +793,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
     }
 
-    private fun evaluateScrollGopayCoachmark() {
-        coachmarkGopay?.let { gopayCoachmark ->
+    private fun evaluateScrollSubscriptionCoachmark() {
+        coachmarkSubscription?.let { subscriptionCoachmark ->
             context?.let {ctx ->
-                if (scrollPositionY > positionWidgetGopay && gopayCoachmarkIsShowing)
-                    gopayCoachmark.hideCoachMark()
-                else if (!isNewWalletAppCoachmarkShown(ctx)) {
-                    gopayCoachmark.showCoachMark(coachMarkItemGopay)
-                }
-            }
-        }
-    }
-
-    private fun evaluateScrollTokopointsCoachmark() {
-        coachmarkTokopoint?.let { tokopointsCoachmark ->
-            context?.let {ctx ->
-                if (scrollPositionY > positionWidgetTokopoints && tokopointsCoachmarkIsShowing)
-                    tokopointsCoachmark.hideCoachMark()
-                else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && coachMarkItemTokopoints.isNotEmpty()) {
-                    tokopointsCoachmark.showCoachMark(coachMarkItemTokopoints)
+                if (scrollPositionY > positionWidgetSubscription && subscriptionCoachmarkIsShowing)
+                    subscriptionCoachmark.hideCoachMark()
+                else if (!isSubscriptionCoachmarkShown(ctx) && !subscriptionCoachmark.isShowing) {
+                    subscriptionCoachmark.showCoachMark(coachMarkItemSubscription)
                 }
             }
         }
@@ -1013,7 +810,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             context?.let {ctx ->
                 if (scrollPositionY > positionWidgetTokonow && tokonowCoachmarkIsShowing)
                     tokonowCoachmark.hideCoachMark()
-                else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || coachMarkItemTokopoints.isEmpty())) {
+                else if (!isHomeTokonowCoachmarkShown(ctx)) {
                     tokonowCoachmark.showCoachMark(coachMarkItemTokonow)
                 }
             }
@@ -1021,9 +818,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun evaluateShowCoachmark() {
-        evaluateScrollGopayCoachmark()
-        evaluateScrollTokopointsCoachmark()
-        evaluateScrollTokonowCoachmark()
+        if (subscriptionCoachmarkIsShowing) {
+            evaluateScrollSubscriptionCoachmark()
+        } else if (tokonowCoachmarkIsShowing) {
+            evaluateScrollTokonowCoachmark()
+        }
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
@@ -1066,9 +865,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun initCoachmark() {
         context?.let {
-            coachmarkGopay = CoachMark2(it)
-            coachmarkTokopoint = CoachMark2(it)
             coachmarkTokonow = CoachMark2(it)
+            coachmarkSubscription = CoachMark2(it)
         }
     }
 
@@ -1115,13 +913,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if(getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
         }
-        startTokopointRotation()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
-        if(eligibleBeautyFest != isEligibleForBeautyFest()) {
-            beautyFestEvent = BEAUTY_FEST_NOT_SET
-            renderBeautyFestHeader(true)
-        }
         createAndCallSendScreen()
         if (!shouldPausePlay) adapter?.onResumePlayWidget()
         adapter?.onResumeBanner()
@@ -1147,25 +940,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun refreshQuestWidget() {
-
         if(questWidgetPosition != -1 && adapter?.currentList?.any { it is QuestWidgetModel} == true) {
             adapter?.notifyItemChanged(questWidgetPosition)
         }
-
     }
 
-    private fun startTokopointRotation(rotateNow: Boolean = false) {
-        isNeedToRotateTokopoints = true
-        if (rotateNow) {
-            val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-            (view as? HomeHeaderOvoViewHolder)?.let {
-                val balanceWidgetView = getBalanceWidgetView()
-                balanceWidgetView?.startRotationForPosition(TOKOPOINTS_ITEM_POSITION)
-            }
-        }
-    }
-
-    @FlowPreview
     private fun conditionalViewModelRefresh() {
         if (!validateChooseAddressWidget()) {
             getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
@@ -1260,7 +1039,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminder()
         observePlayWidgetReminderEvent()
         observeResetNestedScrolling()
-        observeBeautyFestData()
         observeSearchHint()
     }
 
@@ -1303,22 +1081,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (dynamicChannel.list.isNotEmpty()) {
                     configureHomeFlag(dynamicChannel.homeFlag)
                     setData(dynamicChannel.list, dynamicChannel.isCache)
-                    setBeautyFest(dynamicChannel)
                 }
             }
-        })
-    }
-
-    private fun observeBeautyFestData() {
-        getHomeViewModel().beautyFestLiveData.observe(viewLifecycleOwner, Observer { beautyFestData ->
-            if(beautyFestData == BEAUTY_FEST_NOT_SET) {
-                renderBeautyFestHeader()
-            }
-            else {
-                beautyFestEvent = beautyFestData
-                renderBeautyFestHeader()
-            }
-
         })
     }
 
@@ -1419,110 +1183,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderBeautyFestHeader()
         observeSearchHint()
-    }
-
-    private fun renderBeautyFestHeader(bypassEligibleBeautyFest: Boolean = false) {
-        if(isEligibleForBeautyFest() || bypassEligibleBeautyFest) {
-            eligibleBeautyFest = false
-            when (beautyFestEvent) {
-                BEAUTY_FEST_NOT_SET -> {
-                    renderTopBackgroundBeautyFest(isLoading = true, isBeautyFest =  false)
-                }
-                BEAUTY_FEST_TRUE -> {
-                    eligibleBeautyFest = true
-                    renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  true)
-                }
-                else -> {
-                    renderTopBackgroundBeautyFest(isLoading = false, isBeautyFest =  false)
-                }
-            }
-        }
-        else {
-            eligibleBeautyFest = false
-            renderTopBackground()
-        }
-    }
-
-    private fun renderTopBackground() {
-        context?.let { currentContext ->
-            //gone hide visibility loader cantik fest
-            loaderHeaderImage.gone()
-            backgroundViewImage.visible()
-
-            val backgroundUrl = if (currentContext.isDarkMode()) {
-                BACKGROUND_DARK_1
-            } else {
-                BACKGROUND_LIGHT_1
-            }
-
-            adjustHomeBackgroundHeight()
-
-            Glide.with(currentContext)
-                .load(backgroundUrl)
-                .fitCenter()
-                .dontAnimate()
-                .into(backgroundViewImage)
-        }
-    }
-
-    private fun renderTopBackgroundBeautyFest(isLoading: Boolean, isBeautyFest: Boolean) {
-        context?.let { currentContext ->
-            adjustHomeBackgroundHeight()
-
-            if (isLoading) {
-                //displaying shimmer and hide header
-                loaderHeaderImage.visible()
-                backgroundViewImage.gone()
-            } else {
-                //displaying header and hide shimmer
-                if (isBeautyFest) {
-                    if (currentContext.isDarkMode()) {
-                        //change tint color
-                        backgroundViewImage.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.home_beauty_fest_dark_dms
-                            )
-                        )
-                    } else {
-                        //change tint color
-                        backgroundViewImage.setColorFilter(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.home_beauty_fest_light_dms
-                            )
-                        )
-                    }
-                } else {
-                    backgroundViewImage.clearColorFilter()
-                    val backgroundUrl = if (currentContext.isDarkMode()) {
-                        BACKGROUND_DARK_1
-                    } else {
-                        BACKGROUND_LIGHT_1
-                    }
-
-                    Glide.with(currentContext)
-                        .load(backgroundUrl)
-                        .fitCenter()
-                        .dontAnimate()
-                        .into(backgroundViewImage)
-                }
-                loaderHeaderImage.gone()
-                backgroundViewImage.visible()
-            }
-        }
-    }
-
-    private fun adjustHomeBackgroundHeight() {
-        context?.run {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height =
-                resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-            loaderHeaderImage.layoutParams = layoutParams
-        }
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
@@ -1543,41 +1204,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 scrollPosition = layoutManager?.findLastVisibleItemPosition()
             )
             adapter?.submitList(data)
-            showCoachmarkWithDataValidation(data)
-        }
-    }
-
-    private fun setBeautyFest(dynamicChannel: HomeDynamicChannelModel) {
-        val isEligibleForBeautyFest = isEligibleForBeautyFest()
-        if (isEligibleForBeautyFest && !dynamicChannel.isCache && counterBypassFirstNetworkHomeData > 0) {
-            getHomeViewModel().getBeautyFest(dynamicChannel)
-        } else if (isEligibleForBeautyFest) {
-            beautyFestEvent = BEAUTY_FEST_NOT_SET
-            renderBeautyFestHeader()
-            counterBypassFirstNetworkHomeData++
-        } else if (!isEligibleForBeautyFest) {
-            beautyFestEvent = BEAUTY_FEST_FALSE
-            renderBeautyFestHeader(bypassEligibleBeautyFest = true)
-        }
-    }
-
-    private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
-        (data?.firstOrNull { it is HomeHeaderDataModel } as? HomeHeaderDataModel)?.let {
-            val isBalanceWidgetNotEmpty =
-                it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                    ?: false
-            if (isBalanceWidgetNotEmpty) {
-                val isContainsNewGopayAndTokopoints =
-                    it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints() ?: false
-                isGopayActivated = it.headerDataModel?.homeBalanceModel?.isGopayActive()?:false
-                if (isContainsNewGopayAndTokopoints) {
-                    showCoachMark(
-                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
-                    )
-                }
-            } else {
-                showCoachMark()
-            }
         }
     }
 
@@ -2060,9 +1686,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
-        adapter?.currentList?.let {
-            showCoachmarkWithDataValidation(it)
-        }
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
@@ -2203,17 +1826,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isAdded && activity != null && adapter != null) {
             if (adapter?.itemCount ?: RV_EMPTY_TRESHOLD > RV_EMPTY_TRESHOLD) {
                 showToaster(message, TYPE_ERROR)
-                renderBeautyFestErrorNetwork()
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
-        }
-    }
-
-    private fun renderBeautyFestErrorNetwork() {
-        if(isEligibleForBeautyFest() && beautyFestEvent == BEAUTY_FEST_NOT_SET) {
-            beautyFestEvent = BEAUTY_FEST_FALSE
-            renderBeautyFestHeader()
         }
     }
 
@@ -2329,12 +1944,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
-    override fun onRetryMembership() {
-        getHomeViewModel().onRefreshMembership()
+    override fun onRetryMembership(position: Int, headerTitle: String) {
+        getHomeViewModel().onRefreshMembership(position, headerTitle)
     }
 
-    override fun onRetryWalletApp() {
-        getHomeViewModel().onRefreshWalletApp()
+    override fun onRetryWalletApp(position: Int, headerTitle: String) {
+        getHomeViewModel().onRefreshWalletApp(position, headerTitle)
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {
@@ -2363,30 +1978,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (this::viewModel.isInitialized) {
             resetAutoPlay(isVisibleToUser)
             trackScreen(isVisibleToUser)
-            conditionalViewModelRefresh()
+            if (isVisibleToUser) {
+                conditionalViewModelRefresh()
+            }
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
             )
             adapter?.onResumeSpecialRelease()
             manageCoachmarkOnFragmentVisible(isVisibleToUser)
-            startTokopointRotation(rotateNow = true)
         }
     }
 
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
         when (isVisibleToUser) {
             false -> {
-                if (coachMarkIsShowing) {
-                    coachmark?.dismissCoachMark()
-                }
-                if (gopayCoachmarkIsShowing) {
-                    coachmarkGopay?.dismiss()
-                }
-                if (tokopointsCoachmarkIsShowing) {
-                    coachmarkTokopoint?.dismiss()
-                }
                 if (tokonowCoachmarkIsShowing) {
-                    coachmarkTokonow?.dismissCoachMark()
+                    coachmarkTokonow?.hideCoachMark()
+                }
+                else if (subscriptionCoachmarkIsShowing) {
+                    coachmarkSubscription?.hideCoachMark()
                 }
             }
         }
@@ -2635,37 +2245,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 refreshLayout.setCanChildScrollUp(false)
             }
         })
-    }
-
-    private fun getSnackBar(text: String, duration: Int): Snackbar {
-        if (homeSnackbar != null) {
-            homeSnackbar?.dismiss()
-            homeSnackbar = null
-        }
-        homeSnackbar = Snackbar.make(root, text, duration)
-        return homeSnackbar!!
-    }
-
-    fun showNotAllowedGeolocationSnackbar() {
-        getSnackBar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
-                Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) {
-                    HomePageTracking.eventClickOnAtur()
-                    goToApplicationDetailActivity()
-                }.show()
-    }
-
-    fun showAllowedGeolocationSnackbar() {
-        getSnackBar(getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
-                Snackbar.LENGTH_LONG).show()
-    }
-
-    private fun goToApplicationDetailActivity() {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts(SCHEME_PACKAGE, requireActivity().packageName, null)
-        intent.data = uri
-        activity?.startActivity(intent)
     }
 
     override fun onPromoDragStart() {}
@@ -3044,5 +2623,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun deletePayLaterWidget() {
         getHomeViewModel().deletePayLaterWidget()
+    }
+
+    override fun refreshBalanceWidget() {
+        getHomeViewModel().getBalanceWidgetData()
+    }
+
+    override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
+        val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
+        if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true)
+            coachmarkSubscription?.hideCoachMark()
+        showCoachMark(balanceSubscriptionCoachmark)
     }
 }

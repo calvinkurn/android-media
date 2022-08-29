@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.fragment
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
+import com.tokopedia.search.di.module.FilterControllerModule
 import com.tokopedia.search.di.module.IrisModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
@@ -44,6 +45,8 @@ import dagger.Component
     PaginationModule::class,
     TrackingQueueModule::class,
     ProductListProvidersModule::class,
+    ProductListPresenterModule::class,
+    FilterControllerModule::class,
     ProductListPresenterModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {

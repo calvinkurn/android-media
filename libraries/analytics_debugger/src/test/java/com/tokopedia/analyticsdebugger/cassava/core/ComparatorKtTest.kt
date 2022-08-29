@@ -2,8 +2,8 @@ package com.tokopedia.analyticsdebugger.cassava.core
 
 import com.tokopedia.analyticsdebugger.FileUtils
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.hamcrest.core.Is.`is`
+import org.junit.Assert.*
 import org.junit.Test
 
 class ComparatorKtTest {
@@ -18,7 +18,7 @@ class ComparatorKtTest {
         val result = tes.canValidate(db)
 
         assertFalse(result.isValid)
-        assert(result.errorCause == "Regex \"\\d\" didn't match with \"some value\" in field field")
+        assertTrue(result.errorCause == "Regex \"\\d\" didn't match with \"some value\" in field field")
     }
     @Test
     fun `regular subset should return false with message when key is not found in db`() {
@@ -28,7 +28,29 @@ class ComparatorKtTest {
         val result = tes.canValidate(db)
 
         assertFalse(result.isValid)
-        assert(result.errorCause == "Key \"someOtherField\" not found in GTM Log")
+        assertTrue(result.errorCause == "Key \"someOtherField\" not found in GTM Log")
+    }
+
+    @Test
+    fun `given valid tracker when strictly validated should be valid and having no error message`() {
+        val tes = mapOf<String, Any>("event" to "event name","eventLabel" to ".*", "field" to ".*")
+        val db = mapOf<String, Any>("event" to "event name", "eventLabel" to "event label", "field" to "some value")
+
+        val result = tes.canValidate(db, true)
+
+        assertTrue(result.isValid)
+        assertThat(result.errorCause, `is`(""))
+    }
+
+    @Test
+    fun `given invalid but redundant tracker when strictly validated should give redundant keys`() {
+        val tes = mapOf<String, Any>("event" to "event name","eventLabel" to ".*")
+        val db = mapOf<String, Any>("event" to "event name", "eventLabel" to "event label", "field" to "some value")
+
+        val result = tes.canValidate(db, true)
+
+        assertFalse(result.isValid)
+        assertThat(result.errorCause, `is`("Map size is different. field are recorded but not defined in the query"))
     }
 
     @Test
@@ -39,7 +61,7 @@ class ComparatorKtTest {
         val result = tes.first().canValidate(db.first())
 
         assertTrue(result.isValid)
-        assert(result.errorCause == "")
+        assertTrue(result.errorCause == "")
     }
 
     @Test
@@ -49,7 +71,7 @@ class ComparatorKtTest {
 
         val result = tes.first().canValidate(db.first(), strict = true)
         assertFalse(result.isValid)
-        assert(result.errorCause == "")
+        assertTrue(result.errorCause == "")
     }
 
     @Test

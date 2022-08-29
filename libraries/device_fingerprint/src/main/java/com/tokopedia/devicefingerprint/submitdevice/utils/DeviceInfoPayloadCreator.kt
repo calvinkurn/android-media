@@ -16,7 +16,6 @@ import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
@@ -75,7 +74,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 appVersion = Build.VERSION.RELEASE,
                 isFromPlayStore = isFromPlayStore(),
                 uuid = DeviceInfo.getUUID(context),
-                userId = userSession.userId.toInt(),
+                userId = userSession.userId.toLong(),
                 deviceModel = Build.MODEL,
                 deviceManufacturer = Build.MANUFACTURER,
                 timezone = TimeZone.getDefault().displayName,

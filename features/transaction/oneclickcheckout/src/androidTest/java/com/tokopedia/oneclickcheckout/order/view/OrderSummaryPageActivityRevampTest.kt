@@ -538,7 +538,6 @@ class OrderSummaryPageActivityRevampTest {
         cartInterceptor.customGetOccCartThrowable = IOException()
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertGlobalErrorVisible()

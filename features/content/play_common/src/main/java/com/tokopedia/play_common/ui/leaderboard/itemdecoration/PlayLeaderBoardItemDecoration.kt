@@ -16,16 +16,14 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_leaderboard_winner_separator_height)
+    private val bottomOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl4)
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, unifyR.color.Unify_NN300)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val position = parent.getChildAdapterPosition(view)
-
-        if (position != 0) { outRect.top = dividerHeight
-        } else super.getItemOffsets(outRect, view, parent, state)
+        outRect.bottom = bottomOffset
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

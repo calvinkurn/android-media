@@ -11,6 +11,7 @@ object ShopPageTrackingConstant {
     //event
     const val EVENT_OPEN_SCREEN = "openScreen"
     const val CLICK_SHOP_PAGE = "clickShopPage"
+    const val CLICK_COMMUNICATION = "clickCommunication"
     const val CLICK_SHOP_SETTING = "clickShopSetting"
     const val CLICK_PROFILE = "clickProfile"
     const val VIEW_SHOP_PAGE = "viewShopPage"
@@ -24,6 +25,7 @@ object ShopPageTrackingConstant {
     const val ADD_TO_CART = "addToCart"
     const val CLICK_MEMBERSHIP_EVENT = "click tokomember"
     const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
+    const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
     const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
     const val CLICK_DIGITAL = "clickDigital"
     const val CLICK_PG = "clickPG"
@@ -395,6 +397,14 @@ object ShopPageTrackingConstant {
     //trackerId
     const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
     const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+    const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
+    const val TRACKER_ID_CLOSE_SHARE_BOTTOM_SHEET = "10545"
+    const val TRACKER_ID_CLICK_SHARING_CHANNEL = "10546"
+    const val TRACKER_ID_VIEW_ON_SHARING_CHANNEL = "10547"
+    const val TRACKER_ID_ACCESS_MEDIA_FILES = "10548"
+    const val TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET = "10552"
+    const val TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET = "10553"
+    const val TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL = "10554"
 
 
     //dimension83
@@ -451,5 +461,9 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_ATC_CLICK = "32349"
         const val TRACKER_ID_ATC_CLICK_QUANTITY = "32350"
         const val TRACKER_ID_ATC_CLICK_DELETE = "32352"
+        const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
+        const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+        const val TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET = "25640"
+        const val TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET = "25643"
     }
 }

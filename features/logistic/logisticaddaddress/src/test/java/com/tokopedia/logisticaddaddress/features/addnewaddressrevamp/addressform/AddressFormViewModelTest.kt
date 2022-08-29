@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -83,42 +84,42 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Save Address Data Success`() {
-        coEvery { repo.saveAddress(any()) } returns AddAddressResponse()
+        coEvery { repo.saveAddress(any(), any()) } returns AddAddressResponse()
         addressFormViewModel.saveAddress(saveAddressDataModel)
         verify { saveAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Save Address Data Fail`() {
-        coEvery { repo.saveAddress(any()) } throws defaultThrowable
+        coEvery { repo.saveAddress(any(), any()) } throws defaultThrowable
         addressFormViewModel.saveAddress(saveAddressDataModel)
         verify { saveAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get Address Detail Data Success`() {
-        coEvery { repo.getAddressDetail(any()) } returns KeroGetAddressResponse.Data()
+        coEvery { repo.getAddressDetail(any(), any()) } returns KeroGetAddressResponse.Data()
         addressFormViewModel.getAddressDetail(addressId)
         verify { detailAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Address Detail Data Fail`() {
-        coEvery { repo.getAddressDetail(any()) } throws defaultThrowable
+        coEvery { repo.getAddressDetail(any(), any()) } throws defaultThrowable
         addressFormViewModel.getAddressDetail(addressId)
         verify { detailAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Save Edit Address Data Success`() {
-        coEvery { repo.editAddress(any()) } returns KeroEditAddressResponse.Data()
+        coEvery { repo.editAddress(any(), any()) } returns KeroEditAddressResponse.Data()
         addressFormViewModel.saveEditAddress(saveAddressDataModel)
         verify { editAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Save Edit Address Data Fail`() {
-        coEvery { repo.editAddress(any()) } throws defaultThrowable
+        coEvery { repo.editAddress(any(), any()) } throws defaultThrowable
         addressFormViewModel.saveEditAddress(saveAddressDataModel)
         verify { editAddressObserver.onChanged(match { it is Fail }) }
     }
@@ -137,4 +138,12 @@ class AddressFormViewModelTest {
         verify { pinpointValidationObserver.onChanged(match { it is Fail }) }
     }
 
+    @Test
+    fun `verify when set page source is correctly`() {
+        val source = "source"
+
+        addressFormViewModel.source = source
+
+        Assert.assertEquals(addressFormViewModel.source, source)
+    }
 }

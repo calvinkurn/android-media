@@ -11,6 +11,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
+import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import dagger.Module
 import dagger.Provides
 
@@ -54,4 +56,8 @@ class TestAppModule(private val context: Context) {
         return GraphqlUseCase()
     }
 
+    @Provides
+    fun provideUserSessionDataStore(@ApplicationContext context: Context): UserSessionDataStore {
+        return UserSessionDataStoreClient.getInstance(context)
+    }
 }

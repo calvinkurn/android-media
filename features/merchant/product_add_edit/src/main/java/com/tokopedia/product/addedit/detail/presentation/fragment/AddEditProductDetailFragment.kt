@@ -1580,7 +1580,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
 
         if (GlobalConfig.isSellerApp()) {
-            productPriceVariantTicker?.setOnClickListener {
+            productPriceVariantTicker?.setDescriptionClick {
                 showVariantDetailActivity()
             }
         }

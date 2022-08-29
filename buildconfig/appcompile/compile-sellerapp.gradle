@@ -114,6 +114,7 @@ includeIfEnabled("features:merchant:voucher_creation")
 includeIfEnabled("features:merchant:seller_shop_flash_sale")
 includeIfEnabled("features:merchant:seller_feedback")
 includeIfEnabled("features:merchant:campaign_list")
+includeIfEnabled("features:merchant:campaign_common")
 
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")
@@ -198,7 +199,9 @@ includeIfEnabled("features:user:telephony_masking")
 
 includeIfEnabled("features:category:age_restriction")
 includeIfEnabled("features:category:basemvvm")
+includeIfEnabled("features:category:common_sdk_affiliate_toko")
 includeIfEnabled("features:fintech:merchant_lending_widget")
+includeIfEnabled("features:category:common_sdk_affiliate_toko")
 
 includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")

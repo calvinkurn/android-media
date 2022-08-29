@@ -12,7 +12,11 @@ class GetChatNotificationUseCaseStub @Inject constructor(
 
     var response = NotificationsPojo()
 
-    override fun getChatNotification(onSuccess: (NotificationsPojo) -> Unit, onError: (Throwable) -> Unit) {
+    override fun getChatNotification(
+        shopId: String,
+        onSuccess: (NotificationsPojo) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         onSuccess(response)
     }
 }

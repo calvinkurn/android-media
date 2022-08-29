@@ -636,7 +636,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.name == it } != null)
+        return (originalKeyList.find { (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.data?.name == it } != null)
     }
 
     private fun isExistsOriginal(name: String): Boolean {
@@ -716,23 +716,39 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
+
+    private fun updateBudgetInputTf(value: String, isBidManual: Boolean) {
+        if (isBidManual)
+            budgetInput.textFieldInput.setText(value)
+    }
+
+    private fun updateBudgetRekomendasiTf(value: String, isBidManual: Boolean) {
+        if (isBidManual)
+            budgetInputRekomendasi.textFieldInput.setText(value)
+    }
+
     private fun observeBidSettings() {
+        val isBidManual = !((parentFragment as? BaseEditKeywordFragment)?.isBidAutomatic ?: false)
         sharedViewModel.getBidSettings().observe(viewLifecycleOwner, { list ->
             list.forEach {
                 when {
                     it.bidType.equals(PRODUCT_SEARCH) -> {
-                        budgetInput.textFieldInput.setText(
-                            (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
+                        updateBudgetInputTf(
+                            value = (it.priceBid?.toInt() ?: suggestBidPerClick).toString(),
+                            isBidManual = isBidManual
+                        )
                     }
                     it.bidType.equals(PRODUCT_BROWSE) -> {
-                        budgetInputRekomendasi.textFieldInput.setText(
-                            (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
+                        updateBudgetRekomendasiTf(
+                            value = (it.priceBid?.toInt() ?: suggestBidPerClick).toString(),
+                            isBidManual = isBidManual
+                        )
                     }
                     it.bidType.equals(PRODUCT_AUTO_SEARCH) -> {
-                        budgetInput.textFieldInput.setText(suggestBidPerClick)
+                        updateBudgetInputTf(suggestBidPerClick, isBidManual)
                     }
                     it.bidType.equals(PRODUCT_AUTO_BROWSE) -> {
-                        budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+                        updateBudgetRekomendasiTf(suggestBidPerClick, isBidManual)
                     }
                 }
             }
