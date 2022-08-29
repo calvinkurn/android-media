@@ -1,5 +1,9 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_USER
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -49,10 +53,6 @@ class CreateChannelUseCase @Inject constructor(
         private const val PARAMS_AUTHOR_ID = "authorId"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_STATUS = "status"
-        private const val TYPE_USER = "content-user"
-        private const val TYPE_SHOP = "content-shop"
-        private const val VALUE_TYPE_ID_SHOP = 2
-        private const val VALUE_TYPE_ID_USER = 3
 
         fun createParams(
             authorId: String,
