@@ -134,6 +134,11 @@ data class FeedXCard(
     val isASGCDiscountToko: Boolean
          get() = type == ASGC_DISCOUNT_TOKO
 
+    val isFlashSaleToko: Boolean
+        get() = type == ASGC_FLASH_SALE_TOKO
+    val isRilisanSpl: Boolean
+        get() = type == ASGC_RILISAN_SPECIAL
+
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
@@ -189,6 +194,8 @@ data class FeedXCard(
 
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
+        private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_special"
 
     }
 }

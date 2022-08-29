@@ -79,5 +79,17 @@
         tools:ignore="PxUsage"
         />
 
+    <com.tokopedia.feedcomponent.view.widget.FlashSaleCampaignUpcomingView
+        android:id="@+id/feed_fst"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/post_image"
+        app:layout_constraintEnd_toEndOf="@id/post_image"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 

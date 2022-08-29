@@ -12,9 +12,11 @@ import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
+import com.tokopedia.feedcomponent.view.widget.FlashSaleCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
@@ -33,6 +35,7 @@ class CarouselImageViewHolder(
     private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
+    private val flashSaleViewCard = itemView.findViewById<FlashSaleCampaignUpcomingView>(R.id.feed_fst)
     private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
 
     private val animationLike = AnimationUtils.loadAnimation(
@@ -154,6 +157,7 @@ class CarouselImageViewHolder(
 
         postImage.setImageUrl(item.mediaUrl)
         llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
+        showHideFlashSaleCampaignCard(card)
 
         itemView.doOnLayout {
             removeExistingPostTags()
@@ -180,6 +184,20 @@ class CarouselImageViewHolder(
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onImpressed(this)
         }
+    }
+    private fun showHideFlashSaleCampaignCard(feedXCard: FeedXCard){
+
+// TODO    flashSaleViewCard.setupTimer(feedXCard.campaign.endTime) {
+        flashSaleViewCard.setupTimer("2022-08-29 23:59:00") {
+            // TODO implement ontimer ends
+        }
+        flashSaleViewCard.setData(
+            feedXCard = feedXCard,
+            positionInFeed = dataSource.getPositionInFeed()
+        )
+
+        flashSaleViewCard.showWithCondition(feedXCard.isTypeProductHighlight)
+
     }
 
     private fun removeExistingPostTags() {
