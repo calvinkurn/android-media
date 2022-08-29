@@ -16,7 +16,6 @@ import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
@@ -120,7 +119,6 @@ class MainActivity : AppCompatActivity() {
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this, WishlistCollectionActivity::class.java))
     }
 
     private fun getDefaultAppLink(): String {
