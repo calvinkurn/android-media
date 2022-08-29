@@ -166,6 +166,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shopAdsProductView.hide()
                     shopAdsWithThreeProducts.hide()
                     adsBannerShopCardView?.gone()
+                    list.isNestedScrollingEnabled = false
 
                     if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                         container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
