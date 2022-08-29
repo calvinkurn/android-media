@@ -891,6 +891,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         if (viewModel.hasVariants) {
             productPriceVariantTicker?.isVisible = true
             productPriceLayout?.isVisible = false
+            productPriceSuggestionLayout?.isVisible = false
             productStockField?.isVisible = false
             productSkuField?.isVisible = false
             tvProductStockHeader?.text = getString(R.string.add_product_order_header)
@@ -1209,6 +1210,17 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             val maxLimit = priceSuggestion?.summary?.suggestedPriceMax?.getCurrencyFormatted()
             val priceSuggestionText = getString(R.string.price_suggestion_range, minLimit, maxLimit)
             priceSuggestionRangeView?.text = priceSuggestionText
+
+            // display price suggestion feedback on drafting
+            val productPriceInput = productPriceField?.editText?.editableText.toString().filterDigit()
+            if (productPriceInput.isNotBlank()) {
+                val priceSuggestionRange = viewModel.getProductPriceSuggestionRange(viewModel.isEditing)
+                val isCompetitive = viewModel.isProductPriceCompetitive(productPriceInput.toDoubleOrZero(), priceSuggestionRange)
+                if (isCompetitive) {
+                    priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
+                    priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                }
+            }
         }
         viewModel.addProductPriceSuggestionError.observe(viewLifecycleOwner) {
             productPriceSuggestionLayout?.isVisible = false
@@ -1644,8 +1656,10 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     priceSuggestion
             )
             priceSuggestionBottomSheet?.setShowListener {
+                priceSuggestionBottomSheet?.bottomSheetWrapper?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
                 priceSuggestionBottomSheet?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
             }
+
             priceSuggestionBottomSheet?.setCloseClickListener {
                 ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
                 priceSuggestionBottomSheet?.dismiss()
@@ -1791,8 +1805,20 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         if (productShowCases.contains("")) viewModel.getShopShowCasesUseCase()
     }
 
-    private fun initPriceSuggestion(isEdit:Boolean) {
+    private fun initPriceSuggestion(isEdit: Boolean) {
         if (isEdit) viewModel.getProductPriceRecommendation()
+        else {
+            val categoryId = viewModel.productInputModel.detailInputModel.categoryId
+            val productName = viewModel.productInputModel.detailInputModel.productName
+            val isCategoryIdEmpty = categoryId.isBlank()
+            val isProductNameEmpty = productName.isBlank()
+            if (!isCategoryIdEmpty && !isProductNameEmpty) {
+                viewModel.getAddProductPriceSuggestion(
+                        keyword = productName,
+                        categoryL3 = categoryId
+                )
+            }
+        }
     }
 
     private fun getCategoryRecommendation(productNameInput: String) {

@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/unify_space_4"
+        android:maxLines="2"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="@id/tpg_product_price"
         app:layout_constraintTop_toBottomOf="@id/product_statistic_layout"

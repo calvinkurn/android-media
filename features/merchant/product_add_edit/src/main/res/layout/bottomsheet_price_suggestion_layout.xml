@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tfu_product_price"
@@ -83,7 +83,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/competitive_products_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:background="@color/Unify_NN50"

@@ -101,6 +101,7 @@
     <string name="label_learn_more">Pelajari Selengkapnya</string>
     <string name="label_or">atau</string>
     <string name="label_feedback">Beri Masukan</string>
+    <string name="label_sold_product">Terjual %s</string>
 
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>

@@ -9,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
@@ -88,7 +90,8 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
 
     private fun setupBottomSheet() {
         setTitle(getString(R.string.label_price_recommendation))
-        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        isFullpage = true
+//        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         clearContentPadding = true
     }
 
@@ -104,6 +107,9 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
     }
 
     private fun setupViews(binding: BottomsheetPriceSuggestionLayoutBinding?) {
+
+        binding?.root?.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+
         // setup recyclerview
         adapter = SimilarProductAdapter(this)
         binding?.rvSimilarProducts?.let {
@@ -127,15 +133,15 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
                     // do the validation first
                     listener?.onPriceTextInputChanged(it)
                     binding.tfuProductPrice.editText.let { editText ->
-                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
-                                charSequence.length, count, this)
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start, charSequence.length, count, this)
+                        val updatedPrice = binding.tfuProductPrice.getText().toDoubleOrZero().getCurrencyFormatted()
                         ProductEditMainTracking.sendClickPriceSuggestionPopUpEditPriceEvent(
                                 isEditing = isEditing,
                                 productId = productId,
                                 currentPrice = priceInput,
                                 suggestedPrice = binding.tpgBestPrice.text.toString(),
                                 priceRange = binding.tpgPriceSuggestionRange.text.toString(),
-                                updatedPrice = binding.tfuProductPrice.getText()
+                                updatedPrice = updatedPrice
                         )
                     }
                 }
