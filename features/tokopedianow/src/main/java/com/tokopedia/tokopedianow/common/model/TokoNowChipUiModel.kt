@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChipTypeFact
 
 data class TokoNowChipUiModel(
     val id: String,
+    val parentId: String = "",
     val text: String,
     val imageUrl: String = ""
 ): Visitable<TokoNowChipTypeFactory> {

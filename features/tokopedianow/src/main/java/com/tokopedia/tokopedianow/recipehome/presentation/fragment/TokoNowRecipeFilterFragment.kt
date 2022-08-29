@@ -38,6 +38,7 @@ class TokoNowRecipeFilterFragment : Fragment() {
         // Temporary Hardcode
         val items = listOf(
             TokoNowSectionHeaderUiModel(
+                id = "1",
                 title = "Urutkan",
                 seeAllAppLink = ""
             ),
@@ -45,31 +46,38 @@ class TokoNowRecipeFilterFragment : Fragment() {
                 items = listOf(
                     TokoNowChipUiModel(
                         id = "1",
+                        parentId = "1",
                         text = "Terbaru"
                     ),
                     TokoNowChipUiModel(
                         id = "2",
+                        parentId = "1",
                         text = "Terlama"
                     ),
                     TokoNowChipUiModel(
                         id = "3",
+                        parentId = "1",
                         text = "Porsi Terbanyak"
                     ),
                     TokoNowChipUiModel(
                         id = "4",
+                        parentId = "1",
                         text = "Porsi Paling Sedikit"
                     ),
                     TokoNowChipUiModel(
                         id = "5",
+                        parentId = "1",
                         text = "Waktu Tercepat"
                     ),
                     TokoNowChipUiModel(
                         id = "6",
+                        parentId = "1",
                         text = "Waktu Terlama"
                     )
                 )
             ),
             TokoNowSectionHeaderUiModel(
+                id = "2",
                 title = "Bahan",
                 seeAllAppLink = "tokopedia://now"
             ),
@@ -77,26 +85,31 @@ class TokoNowRecipeFilterFragment : Fragment() {
                 items = listOf(
                     TokoNowChipUiModel(
                         id = "1",
+                        parentId = "2",
                         text = "Daging Sapi",
                         imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg"
                     ),
                     TokoNowChipUiModel(
                         id = "2",
+                        parentId = "2",
                         text = "Daging Ayam",
                         imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg"
                     ),
                     TokoNowChipUiModel(
                         id = "3",
+                        parentId = "2",
                         text = "Kubis",
                         imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg"
                     ),
                     TokoNowChipUiModel(
                         id = "4",
+                        parentId = "2",
                         text = "Kimchi",
                         imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg"
                     ),
                     TokoNowChipUiModel(
                         id = "5",
+                        parentId = "2",
                         text = "Wortel",
                         imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg"
                     )
@@ -107,6 +120,8 @@ class TokoNowRecipeFilterFragment : Fragment() {
         val bottomSheet = TokoNowSortFilterBottomSheet.newInstance().apply {
             setTitle(title)
             sortFilterItems = items
+        }.apply {
+
         }
 
         bottomSheet.show(childFragmentManager)
