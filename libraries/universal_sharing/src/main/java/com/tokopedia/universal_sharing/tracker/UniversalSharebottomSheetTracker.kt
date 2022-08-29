@@ -55,7 +55,7 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     }
 
     private fun generateDefaultTracker(event: String, eventAction: String, isAffiliate: Boolean, productId: String): MutableMap<String, Any> {
-        val data = TrackAppUtils.gtmData(event, VALUE_CATEGORY, eventAction, "$isAffiliate - $productId")
+        val data = TrackAppUtils.gtmData(event, VALUE_CATEGORY, eventAction, "${getTickerType(isAffiliate)} - $productId")
         return data.apply {
             this[EVENT_BUSINESS_UNIT] = "sharingexperience"
             this[EVENT_CURRENT_SITE] = ""
