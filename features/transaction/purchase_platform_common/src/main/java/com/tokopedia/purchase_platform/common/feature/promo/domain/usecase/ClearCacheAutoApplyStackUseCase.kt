@@ -32,13 +32,10 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext pr
                 PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
                 PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
                 PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
-//                // temporary for old compatibility
-//                PARAM_PLACEHOLDER_PROMO_CODE to ArrayList<String>().apply {
-//                    addAll(request.orderData.codes)
-//                    request.orderData.orders.forEach {
-//                        addAll(it.codes)
-//                    }
-//                }
+                // temporary for old compatibility
+                PARAM_PLACEHOLDER_PROMO_CODE to ArrayList<String>().apply {
+                    add("")
+                }
         )
         return this
     }
