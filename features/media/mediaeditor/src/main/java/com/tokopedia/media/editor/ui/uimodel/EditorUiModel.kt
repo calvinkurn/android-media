@@ -12,6 +12,7 @@ class EditorUiModel(
     var removeBackgroundStartState = 0
 
     val isVideo: Boolean = isVideoFormat(originalUrl)
+    var isAutoCropped: Boolean = false
 
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {
@@ -24,5 +25,21 @@ class EditorUiModel(
 
     fun getOriginalUrl(): String {
         return originalUrl
+    }
+
+    fun isShowUndoButton(): Boolean {
+        return (!isVideo && (editList.size - backValue) > if (isAutoCropped)
+            UNDO_LIMIT_AUTO_CROP
+        else
+            UNDO_LIMIT_NON_CROP)
+    }
+
+    fun isShowRedoButton(): Boolean {
+        return (!isVideo && backValue != 0)
+    }
+
+    companion object {
+        private const val UNDO_LIMIT_NON_CROP = 0
+        private const val UNDO_LIMIT_AUTO_CROP = 1
     }
 }

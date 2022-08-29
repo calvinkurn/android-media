@@ -8,6 +8,7 @@ import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorToolAdapter
 import com.tokopedia.media.editor.ui.adapter.EditorToolViewHolder
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel.Companion.create
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.types.EditorToolType
@@ -36,12 +37,13 @@ class ToolsUiComponent constructor(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setupActiveTools(editorStateList: List<EditorDetailUiModel>, backValue: Int = 0) {
-
-        val limit = editorStateList.size - backValue
+    fun setupActiveTools(editorUiModel: EditorUiModel) {
+        val editorStateList = editorUiModel.editList
+        val limit = editorStateList.size - editorUiModel.backValue
         val tempEditorStateList = editorStateList.subList(0, limit)
 
         adapter.stateList = tempEditorStateList
+        adapter.isAutoCropped = editorUiModel.isAutoCropped
         adapter.notifyDataSetChanged()
     }
 

@@ -21,6 +21,14 @@ class EditorToolAdapter constructor(
 ) : RecyclerView.Adapter<EditorToolViewHolder>() {
 
     var stateList: List<EditorDetailUiModel>? = null
+    var isAutoCropped: Boolean = false
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addItem(items: List<ToolUiModel>) {
+        tools.clear()
+        tools.addAll(items)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditorToolViewHolder {
         return EditorToolViewHolder.create(parent, listener)
@@ -30,33 +38,30 @@ class EditorToolAdapter constructor(
         val toolModel = tools[position]
         var isActive = false
 
-        stateList?.forEach {
-            isActive = when(toolModel.id){
-                EditorToolType.BRIGHTNESS -> it.brightnessValue != null
-                EditorToolType.CONTRAST -> it.contrastValue != null
-                EditorToolType.ROTATE -> it.cropRotateValue.isRotate
-                EditorToolType.WATERMARK -> it.watermarkMode != null
-                EditorToolType.REMOVE_BACKGROUND -> it.removeBackgroundUrl != null
-                EditorToolType.CROP -> it.cropRotateValue.isCrop
-                else -> false
-            }
+        stateList?.let {
+            // if auto crop is enable, skip 1st edit state
+            if(isAutoCropped && it.size < 2) return@let
 
-            // if found related edit state then stop loop, only need 1 state
-            if(isActive) return@forEach
+            it.forEach {
+                isActive = when(toolModel.id){
+                    EditorToolType.BRIGHTNESS -> it.brightnessValue != null
+                    EditorToolType.CONTRAST -> it.contrastValue != null
+                    EditorToolType.ROTATE -> it.cropRotateValue.isRotate
+                    EditorToolType.WATERMARK -> it.watermarkMode != null
+                    EditorToolType.REMOVE_BACKGROUND -> it.removeBackgroundUrl != null
+                    EditorToolType.CROP -> it.cropRotateValue.isCrop
+                    else -> false
+                }
+
+                // if found related edit state then stop loop, only need 1 state
+                if(isActive) return@forEach
+            }
         }
 
         holder.bind(toolModel, isActive)
     }
 
     override fun getItemCount() = tools.size
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun addItem(items: List<ToolUiModel>) {
-        tools.clear()
-        tools.addAll(items)
-        notifyDataSetChanged()
-    }
-
 }
 
 class EditorToolViewHolder(

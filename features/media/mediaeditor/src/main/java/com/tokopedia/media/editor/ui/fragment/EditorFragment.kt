@@ -110,6 +110,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         }
 
         val data = listData[currentProcess]
+        data.isAutoCropped = true
         if (isAutoCrop != null && data.editList.size == 0 && !data.isVideo) {
             loadImageWithEmptyTarget(requireContext(),
                 data.getImageUrl(),
@@ -256,8 +257,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         viewModel.getEditState(originalUrl)?.let { editorUiModel ->
             viewBinding?.viewPager?.currentItem = clickedIndex
 
-            renderUndoText(editorUiModel)
-            renderRedoText(editorUiModel)
+            renderUndoButton(editorUiModel)
+            renderRedoButton(editorUiModel)
             renderToolsIconActiveState(editorUiModel)
         }
     }
@@ -276,8 +277,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 targetEditorUiModel.getImageUrl()
             )
 
-            renderUndoText(it)
-            renderRedoText(it)
+            renderUndoButton(it)
+            renderRedoButton(it)
 
             renderToolsIconActiveState(it)
             updateDrawerSelectionItemIcon()
@@ -298,8 +299,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 targetEditorUiModel.getImageUrl()
             )
 
-            renderUndoText(it)
-            renderRedoText(it)
+            renderUndoButton(it)
+            renderRedoButton(it)
 
             renderToolsIconActiveState(it)
             updateDrawerSelectionItemIcon()
@@ -309,19 +310,16 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         }
     }
 
-    private fun renderUndoText(editList: EditorUiModel) {
-        viewBinding?.btnUndo?.showWithCondition(
-            editList.editList.isNotEmpty()
-                    && editList.editList.size > editList.backValue
-        )
+    private fun renderUndoButton(editList: EditorUiModel) {
+        viewBinding?.btnUndo?.showWithCondition(editList.isShowUndoButton())
     }
 
-    private fun renderRedoText(editList: EditorUiModel) {
-        viewBinding?.btnRedo?.showWithCondition(editList.backValue != 0)
+    private fun renderRedoButton(editList: EditorUiModel) {
+        viewBinding?.btnRedo?.showWithCondition(editList.isShowRedoButton())
     }
 
     private fun renderToolsIconActiveState(editorUiModel: EditorUiModel) {
-        editorToolComponent.setupActiveTools(editorUiModel.editList, editorUiModel.backValue)
+        editorToolComponent.setupActiveTools(editorUiModel)
     }
 
     private fun updateDrawerSelectionItemIcon() {
@@ -369,8 +367,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             val editorUiModel = viewModel.getEditState(activeImageUrl)
             if (editorUiModel != null) {
-                renderUndoText(editorUiModel)
-                renderRedoText(editorUiModel)
+                renderUndoButton(editorUiModel)
+                renderRedoButton(editorUiModel)
 
                 renderToolsIconActiveState(editorUiModel)
 
