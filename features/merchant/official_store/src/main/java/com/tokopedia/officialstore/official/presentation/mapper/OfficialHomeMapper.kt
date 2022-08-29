@@ -37,32 +37,21 @@ object OfficialHomeMapper {
         banner: OfficialStoreBanners,
         currentList: List<Visitable<*>>,
         categoryName: String?,
-        isDisableForMappingBanner: Boolean,
         action: (updatedList: MutableList<Visitable<*>>) -> Unit
     ) {
         val newList = mutableListOf<Visitable<*>>()
-        if(isDisableForMappingBanner){
-            currentList.forEach {
-                if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel && it !is OfficialBannerDataModel){
-                    newList.add(it)
-                }
+        val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
+        currentList.forEach {
+            if (it is OfficialBannerDataModel) {
+                newList.add(officialBanner)
             }
-            newList.add(OfficialBannerDataModel(mutableListOf(), categoryName.toEmptyStringIfNull()))
-        } else {
-            val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
-            currentList.forEach {
-                if (it is OfficialBannerDataModel) {
-                    newList.add(officialBanner)
-                }
-                else if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel){
-                    newList.add(it)
-                }
+            else if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel){
+                newList.add(it)
             }
-            val isOfficialBannerDataNotExist = currentList.indexOfFirst { it is OfficialBannerDataModel } == WIDGET_NOT_FOUND
-            if (isOfficialBannerDataNotExist) {
-                // baru to be checked
-                newList.add(BANNER_POSITION, officialBanner)
-            }   
+        }
+        val isOfficialBannerDataNotExist = currentList.indexOfFirst { it is OfficialBannerDataModel } == WIDGET_NOT_FOUND
+        if (isOfficialBannerDataNotExist) {
+            newList.add(BANNER_POSITION, officialBanner)
         }
         action.invoke(newList)
     }

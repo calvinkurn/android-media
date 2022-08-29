@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.presentation.OfficialStoreConfig
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -74,10 +73,4 @@ class OfficialStoreHomeModule {
     @OfficialStoreHomeScope
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = FirebaseRemoteConfigImpl(context)
-
-    @OfficialStoreHomeScope
-    @Provides
-    fun provideOfficialStoreConfig(remoteConfig: RemoteConfig): OfficialStoreConfig {
-        return OfficialStoreConfig(remoteConfig)
-    }
 }

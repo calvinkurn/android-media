@@ -21,7 +21,6 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.officialstore.official.presentation.OfficialStoreConfig
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
@@ -74,7 +73,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
         private val dispatchers: CoroutineDispatchers,
-        private val officialStoreConfig: OfficialStoreConfig,
         private val topAdsAddressHelper: TopAdsAddressHelper,
 ) : BaseViewModel(dispatchers.main) {
 
@@ -201,7 +199,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
                         banner,
                         _officialStoreListVisitable,
                         categoryName,
-                        officialStoreConfig.isEligibleForDisableMappingBanner()
                     ){
                         _officialStoreLiveData.postValue(it, isCache)
                     }
@@ -215,31 +212,27 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private suspend fun getOfficialStoreBenefit() {
         withContext(dispatchers.io) {
-            if(!officialStoreConfig.isEligibleForDisableMappingBenefit()){
-                try {
-                    val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
-                    OfficialHomeMapper.mappingBenefit(benefits, _officialStoreListVisitable){
-                        _officialStoreLiveData.postValue(it)
-                    }
-                } catch (t: Throwable) {
-                    _officialStoreError.postValue(t)
+            try {
+                val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
+                OfficialHomeMapper.mappingBenefit(benefits, _officialStoreListVisitable){
+                    _officialStoreLiveData.postValue(it)
                 }
+            } catch (t: Throwable) {
+                _officialStoreError.postValue(t)
             }
         }
     }
 
     private suspend fun getOfficialStoreFeaturedShop(categoryId: Int, categoryName: String?) {
         withContext(dispatchers.io) {
-            if(!officialStoreConfig.isEligibleForDisableMappingOfficialFeaturedShop()){
-                try {
-                    getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
-                    val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
-                    OfficialHomeMapper.mappingFeaturedShop(featuredShop, _officialStoreListVisitable, categoryName){
-                        _officialStoreLiveData.postValue(it)
-                    }
-                } catch (t: Throwable) {
-                    _officialStoreError.postValue(t)
+            try {
+                getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
+                val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
+                OfficialHomeMapper.mappingFeaturedShop(featuredShop, _officialStoreListVisitable, categoryName){
+                    _officialStoreLiveData.postValue(it)
                 }
+            } catch (t: Throwable) {
+                _officialStoreError.postValue(t)
             }
         }
     }
@@ -292,17 +285,15 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private suspend fun fetchRecomWidgetData(pageName: String, widgetParam: String, channelId: String) {
         try {
-            if(!officialStoreConfig.isEligibleForDisableBestSellerWidget()){
-                val result = getRecommendationUseCaseCoroutine.getData(
-                    GetRecommendationRequestParam(
-                        pageName = pageName,
-                        queryParam = widgetParam
-                    )
+            val result = getRecommendationUseCaseCoroutine.getData(
+                GetRecommendationRequestParam(
+                    pageName = pageName,
+                    queryParam = widgetParam
                 )
-                val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(result.first().copy(channelId = channelId))
-                OfficialHomeMapper.mappingRecomWidget(bestSellerDataModel, _officialStoreListVisitable){
-                    _officialStoreLiveData.postValue(it)
-                }
+            )
+            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(result.first().copy(channelId = channelId))
+            OfficialHomeMapper.mappingRecomWidget(bestSellerDataModel, _officialStoreListVisitable){
+                _officialStoreLiveData.postValue(it)
             }
         } catch (t: Throwable) {
             _officialStoreError.postValue(t)
@@ -311,35 +302,31 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
         launchCatchError(coroutineContext, block={
-            if (!officialStoreConfig.isEligibleForDisableShopWidget()) {
-                getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
-                val data = getDisplayHeadlineAds.executeOnBackground()
-                val updatedFeaturedShop = if (data.isEmpty()) {
-                    isFeaturedShopAllowed = false
-                    featuredShopDataModel.copy(
-                        state = FeaturedShopDataModel.STATE_READY,
-                        page = featuredShopDataModel.page
-                    )
-                } else {
-                    featuredShopDataModel.copy(
-                        channelModel = featuredShopDataModel.channelModel.copy(
-                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                        ),
-                        state = FeaturedShopDataModel.STATE_READY,
-                        page = featuredShopDataModel.page
-                    )
-                }
+            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+            val data = getDisplayHeadlineAds.executeOnBackground()
+            val updatedFeaturedShop = if (data.isEmpty()) {
+                isFeaturedShopAllowed = false
+                featuredShopDataModel.copy(
+                    state = FeaturedShopDataModel.STATE_READY,
+                    page = featuredShopDataModel.page
+                )
+            } else {
+                featuredShopDataModel.copy(
+                    channelModel = featuredShopDataModel.channelModel.copy(
+                        channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                    ),
+                    state = FeaturedShopDataModel.STATE_READY,
+                    page = featuredShopDataModel.page
+                )
+            }
 
-                OfficialHomeMapper.updateFeaturedShop(updatedFeaturedShop, _officialStoreListVisitable){
-                    _officialStoreLiveData.postValue(it)
-                }
+            OfficialHomeMapper.updateFeaturedShop(updatedFeaturedShop, _officialStoreListVisitable){
+                _officialStoreLiveData.postValue(it)
             }
         }){
-            if (!officialStoreConfig.isEligibleForDisableRemoveShopWidget()) {
-                _officialStoreListVisitable.run {
-                    removeAll {
-                        it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id
-                    }
+            _officialStoreListVisitable.run {
+                removeAll {
+                    it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id
                 }
             }
         }
@@ -354,13 +341,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     fun removeRecomWidget(){
-        if (!officialStoreConfig.isEligibleForDisableRemoveBestSellerWidget()) {
-            _officialStoreListVisitable.run {
-                removeAll {
-                    it is BestSellerDataModel
-                }
-                _officialStoreLiveData.postValue(this)
+        _officialStoreListVisitable.run {
+            removeAll {
+                it is BestSellerDataModel
             }
+            _officialStoreLiveData.postValue(this)
         }
     }
 

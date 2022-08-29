@@ -241,29 +241,12 @@ class OfficialHomeMapperTest {
     }
 
     @Test
-    fun `given list official store not contains banner when mapping banner with new banner and remote config true then list official store banner should contains banner`() {
+    fun `given list official store not contains banner when mapping banner with new banner then list official store banner should contains banner`() {
         `given list official store not contains banner`()
         OfficialHomeMapper.mappingBanners(
             OfficialStoreBanners(),
             officialStoreList,
             "",
-            true
-        ) {
-            officialStoreList = it
-        }
-        Assert.assertTrue(
-            officialStoreList.find { it is OfficialBannerDataModel } != null
-        )
-    }
-
-    @Test
-    fun `given list official store not contains banner when mapping banner with new banner and remote config false then list official store banner should contains banner`() {
-        `given list official store not contains banner`()
-        OfficialHomeMapper.mappingBanners(
-            OfficialStoreBanners(),
-            officialStoreList,
-            "",
-            false
         ) {
             officialStoreList = it
         }
@@ -278,14 +261,13 @@ class OfficialHomeMapperTest {
             OfficialStoreBanners(),
             officialStoreList,
             "",
-            true
         ) {
             officialStoreList = it
         }
     }
 
     @Test
-    fun `given list official store banner when mapping banner second time with disable from remote config then banner result value will be not equals with given data`() {
+    fun `given list official store banner when mapping banner second time then banner result value will be not equals with given data`() {
         `mapping banner first time`()
 
         val bannerModel = officialStoreList.find { it is OfficialBannerDataModel } as OfficialBannerDataModel
@@ -299,7 +281,6 @@ class OfficialHomeMapperTest {
             mockOfficialStoreBanners,
             officialStoreList,
             "",
-            false
         ) {
             officialStoreList = it
         }
@@ -309,7 +290,7 @@ class OfficialHomeMapperTest {
     }
 
     @Test
-    fun `given empty list official store show loading when mapping banner with new banner and remote config false then loading will be gone and banner added to the list`() {
+    fun `given empty list official store show loading when mapping banner with new banner then loading will be gone and banner added to the list`() {
         `given empty list official store`()
         officialStoreList.add(OfficialLoadingMoreDataModel())
         val defaultBanner = mutableListOf(
@@ -321,7 +302,6 @@ class OfficialHomeMapperTest {
             ),
             officialStoreList,
             "",
-            false
         ) {
             officialStoreList = it
         }
@@ -334,7 +314,7 @@ class OfficialHomeMapperTest {
     }
 
     @Test
-    fun `given list official store contains banner when mapping banner with new banner and remote config false then list official store banner should replace banner`() {
+    fun `given list official store contains banner when mapping banner with new banner then list official store banner should replace banner`() {
         addDefaultDynamicChannel()
         val defaultBanner = mutableListOf(
             Banner(),
@@ -349,7 +329,6 @@ class OfficialHomeMapperTest {
             ),
             officialStoreList,
             "",
-            false
         ) {
             officialStoreList = it
         }
