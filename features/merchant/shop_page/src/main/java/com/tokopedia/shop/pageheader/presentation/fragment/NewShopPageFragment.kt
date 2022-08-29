@@ -55,6 +55,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
@@ -154,6 +155,7 @@ import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.common.data.model.ShopAffiliateData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
@@ -275,6 +277,8 @@ class NewShopPageFragment :
         private const val PATH_NOTE = "note"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
+        private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
+        private const val QUERY_AFFILIATE_CHANNEL = "channel"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -298,6 +302,8 @@ class NewShopPageFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
     var shopViewModel: NewShopPageViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -309,6 +315,7 @@ class NewShopPageFragment :
     var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
+    private var affiliateData: ShopAffiliateData? = null
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
@@ -1008,6 +1015,7 @@ class NewShopPageFragment :
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
+                    setAffiliateData(this)
                 }
                 handlePlayBroadcastExtra(this@run)
             }
@@ -1038,6 +1046,23 @@ class NewShopPageFragment :
                    permissionListener = this
            )
         }
+        initAffiliateCookie()
+    }
+
+    private fun setAffiliateData(uri: Uri) {
+        affiliateData = ShopAffiliateData(
+            uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
+            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+        )
+    }
+
+    private fun initAffiliateCookie() {
+        shopViewModel?.initAffiliateCookie(
+            affiliateCookieHelper,
+            affiliateData?.affiliateUUId.orEmpty(),
+            affiliateData?.affiliateChannel.orEmpty(),
+            shopId
+        )
     }
 
     private fun inflateViewStub() {
@@ -2999,5 +3024,9 @@ class NewShopPageFragment :
 
     fun updateMiniCartWidget(delay: Long = 0) {
         miniCart?.updateData(delay)
+    }
+
+    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 }

@@ -66,9 +66,6 @@ object DigitalCheckoutTrackingConst {
         const val SITE = "tokopediadigital"
         const val RECHARGE_SITE = "tokopediadigitalRecharge"
 
-        const val NO_PROMO = "no promo"
-        const val PROMO = "no promo"
-
         const val NONE = "none"
         const val CROSSELL_CARD_TYPE = "crossell icon"
 

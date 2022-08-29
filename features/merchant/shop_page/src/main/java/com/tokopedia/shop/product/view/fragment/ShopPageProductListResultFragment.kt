@@ -32,6 +32,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -119,6 +120,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
     lateinit var viewModel: ShopPageProductListResultViewModel
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -172,6 +175,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var srpPageTitle = ""
     private var navSource = ""
     private var isEnableDirectPurchase: Boolean = false
+    private var isFulfillmentFilterActive: Boolean = false
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -296,6 +300,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             (it as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         observeLiveData()
+        initAffiliateCookie()
+    }
+
+    private fun initAffiliateCookie() {
+        viewModel?.initAffiliateCookie(
+            affiliateCookieHelper,
+            shopId.orEmpty()
+        )
     }
 
     private fun initView() {
@@ -567,7 +579,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.shopProductFilterCountLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetShopProductFilterCount(it.data)
+                    onSuccessGetShopProductFilterCount(count = it.data)
                 }
             }
         })
@@ -725,11 +737,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun onSuccessGetShopProductFilterCount(count: Int) {
-        val countText = String.format(
+    private fun onSuccessGetShopProductFilterCount(count: Int = Int.ZERO, isFulfillmentFilterActive: Boolean = false) {
+        val countText = if (isFulfillmentFilterActive) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 count.thousandFormatted()
-        )
+            )
+        }
         sortFilterBottomSheet?.setResultCountText(countText)
     }
 
@@ -774,7 +790,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             isEmptyState = true
             updateScrollListenerState(false)
         } else {
-            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty = false, totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
@@ -1065,13 +1081,26 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
+            val pdpAppLink = getPdpAppLink(productId)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            RouteManager.getIntent(context, pdpAppLink)
         } else {
             null
         }
+    }
+
+    private fun getPdpAppLink(productId: String): String {
+        val basePdpAppLink = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        return createPdpAffiliateLink(basePdpAppLink)
+    }
+
+    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
     private fun onSuccessAddWishlist(productId: String) {
@@ -1611,14 +1640,20 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun getResultCount(mapParameter: Map<String, String>) {
         val tempShopProductFilterParameter = ShopProductFilterParameter()
         tempShopProductFilterParameter.setMapData(mapParameter)
-        viewModel.getFilterResultCount(
+        isFulfillmentFilterActive = mapParameter[IS_FULFILLMENT_KEY] == true.toString()
+        if (isFulfillmentFilterActive) {
+            // if fulfillment filter is active then avoid gql call to get total product
+            onSuccessGetShopProductFilterCount(isFulfillmentFilterActive = isFulfillmentFilterActive)
+        } else {
+            viewModel.getFilterResultCount(
                 shopId.orEmpty(),
                 ShopUtil.getProductPerPage(context),
                 keyword,
                 selectedEtalaseId,
                 tempShopProductFilterParameter,
                 localCacheModel ?: LocalCacheModel()
-        )
+            )
+        }
     }
 
 
