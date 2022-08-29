@@ -6,7 +6,7 @@ import com.tokopedia.analyticsdebugger.cassava.core.NameInference
 import com.tokopedia.analyticsdebugger.cassava.core.TkpdNameInference
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
-import com.tokopedia.analyticsdebugger.database.CassavaDatabase
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
