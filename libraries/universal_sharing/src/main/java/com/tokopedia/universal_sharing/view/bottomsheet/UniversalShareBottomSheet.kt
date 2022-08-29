@@ -441,20 +441,20 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
     }
 
-    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
+    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
         if (!TextUtils.isEmpty(commissionMessage)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
                         Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
-                }
-                affiliateCommissionTextView?.visibility = View.VISIBLE
-            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.product?.productID ?: "")
-            isAffiliateUser = KEY_AFFILIATE_USER
-                return
+            } else {
+                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
+            affiliateCommissionTextView?.visibility = View.VISIBLE
+            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.product?.productID
+                    ?: "")
+            isAffiliateUser = KEY_AFFILIATE_USER
+            return
         }
         affiliateQueryData = null
     }

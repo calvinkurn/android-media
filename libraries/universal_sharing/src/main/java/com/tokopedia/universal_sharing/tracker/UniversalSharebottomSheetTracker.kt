@@ -26,6 +26,8 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
         private const val VALUE_EVENT_VIEW = "view_item"
         private const val VALUE_EVENT_CLICK = "clickCommunication"
         private const val VALUE_CATEGORY = "product detail page"
+        private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
+        private const val VALUE_BUSINESS_UNIT = "sharingexperience"
 
         private const val TICKER_TYPE_AFFILIATE = "is_affiliate"
         private const val TICKER_TYPE_NON_AFFILIATE = "non_affiliate"
@@ -57,8 +59,8 @@ class UniversalSharebottomSheetTracker @Inject constructor(private val userSessi
     private fun generateDefaultTracker(event: String, eventAction: String, isAffiliate: Boolean, productId: String): MutableMap<String, Any> {
         val data = TrackAppUtils.gtmData(event, VALUE_CATEGORY, eventAction, "${getTickerType(isAffiliate)} - $productId")
         return data.apply {
-            this[EVENT_BUSINESS_UNIT] = "sharingexperience"
-            this[EVENT_CURRENT_SITE] = ""
+            this[EVENT_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
+            this[EVENT_CURRENT_SITE] = VALUE_CURRENT_SITE
             this[EVENT_USER_ID] = userSession.userId
         }
     }
