@@ -175,6 +175,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var srpPageTitle = ""
     private var navSource = ""
     private var isEnableDirectPurchase: Boolean = false
+    private var isFulfillmentFilterActive: Boolean = false
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -577,7 +578,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.shopProductFilterCountLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetShopProductFilterCount(it.data)
+                    onSuccessGetShopProductFilterCount(count = it.data)
                 }
             }
         })
@@ -735,11 +736,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun onSuccessGetShopProductFilterCount(count: Int) {
-        val countText = String.format(
+    private fun onSuccessGetShopProductFilterCount(count: Int = Int.ZERO, isFulfillmentFilterActive: Boolean = false) {
+        val countText = if (isFulfillmentFilterActive) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 count.thousandFormatted()
-        )
+            )
+        }
         sortFilterBottomSheet?.setResultCountText(countText)
     }
 
@@ -784,7 +789,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             isEmptyState = true
             updateScrollListenerState(false)
         } else {
-            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty = false, totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
@@ -1632,14 +1637,20 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun getResultCount(mapParameter: Map<String, String>) {
         val tempShopProductFilterParameter = ShopProductFilterParameter()
         tempShopProductFilterParameter.setMapData(mapParameter)
-        viewModel.getFilterResultCount(
+        isFulfillmentFilterActive = mapParameter[IS_FULFILLMENT_KEY] == true.toString()
+        if (isFulfillmentFilterActive) {
+            // if fulfillment filter is active then avoid gql call to get total product
+            onSuccessGetShopProductFilterCount(isFulfillmentFilterActive = isFulfillmentFilterActive)
+        } else {
+            viewModel.getFilterResultCount(
                 shopId.orEmpty(),
                 ShopUtil.getProductPerPage(context),
                 keyword,
                 selectedEtalaseId,
                 tempShopProductFilterParameter,
                 localCacheModel ?: LocalCacheModel()
-        )
+            )
+        }
     }
 
 
