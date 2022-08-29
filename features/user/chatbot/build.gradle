@@ -93,7 +93,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
-
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 }

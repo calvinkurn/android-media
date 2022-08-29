@@ -2,41 +2,25 @@ package com.tokopedia.chatbot.resourceIdGenerator
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.activity.InstrumentationChatbotTestActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
+import com.tokopedia.chatbot.view.fragment.ChatBotCsatFragment
+import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
-import org.junit.Rule
 import org.junit.Test
+
 
 class ChatbotResourceIdGenerator {
 
-//    @get:Rule
-//    var activityRule = object : ActivityTestRule<InstrumentationChatbotTestActivity>(InstrumentationChatbotTestActivity::class.java) {
-//        override fun beforeActivityLaunched() {
-//            super.beforeActivityLaunched()
-//            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
-//            setupTopAdsDetector()
-//        }
-//    }
-
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-
-    @get:Rule
-    var activityCommonRule: ActivityTestRule<InstrumentationChatbotTestActivity> = IntentsTestRule(
-        InstrumentationChatbotTestActivity::class.java,
-        false,
-        false)
 
     private val printConditions = listOf(
         PrintCondition { view ->
@@ -58,11 +42,10 @@ class ChatbotResourceIdGenerator {
         packageName = "com.tokopedia.chatbot"
     )
 
-
     val fileWriter = FileWriter()
 
     @Test
-    fun check() {
+    fun generateIdForChatbotFragment() {
 
         val intent = RouteManager.getIntent(
             targetContext,
@@ -84,6 +67,40 @@ class ChatbotResourceIdGenerator {
 
     }
 
+    @Test
+    fun generateIdForChatbotCsatFragment() {
+        val scenario = launchFragment<ChatBotCsatFragment>(themeResId = R.style.AppTheme)
 
+        scenario.onFragment {
+            var root = it.view?.rootView
+            if (root != null) {
+                val chatbotCsatFragment = viewPrinter.printAsCSV(
+                    view = root.findViewById(R.id.parent_layout)
+                )
+                fileWriter.writeGeneratedViewIds(
+                    fileName = "chatbot_csat_fragment.csv",
+                    text = chatbotCsatFragment
+                )
+            }
+        }
+    }
+
+    @Test
+    fun generateIdForChatbotProvideRatingFragment() {
+        val scenario = launchFragment<ChatBotProvideRatingFragment>(themeResId = R.style.AppTheme)
+
+        scenario.onFragment {
+            var root = it.view?.rootView
+            if (root != null) {
+                val chatbotProvideRatingFragment = viewPrinter.printAsCSV(
+                    view = root.findViewById(R.id.parent_layout)
+                )
+                fileWriter.writeGeneratedViewIds(
+                    fileName = "chatbot_provide_rating_fragment.csv",
+                    text = chatbotProvideRatingFragment
+                )
+            }
+        }
+    }
 
 }
