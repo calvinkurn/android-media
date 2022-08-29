@@ -347,7 +347,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
-        broadcastTimer.destroy()
     }
 
     fun submitAction(event: PlayBroadcastAction) {
@@ -1458,6 +1457,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleBroadcasterPause() {
+        if (isBroadcastStopped) return
         viewModelScope.launchCatchError(block = {
             broadcastTimer.pause()
             updateChannelStatus(PlayChannelStatusType.Pause)
