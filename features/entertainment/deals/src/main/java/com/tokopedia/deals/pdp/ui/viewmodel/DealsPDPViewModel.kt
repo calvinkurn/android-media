@@ -3,8 +3,10 @@ package com.tokopedia.deals.pdp.ui.viewmodel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.pdp.data.DealsProductDetail
+import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
+import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,10 +27,12 @@ import kotlinx.coroutines.withContext
 @FlowPreview
 class DealsPDPViewModel @Inject constructor (
     private val dealsPDPDetailUseCase: DealsPDPDetailUseCase,
+    private val dealsPDPEventContentUseCase: DealsPDPEventContentUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
     private val _inputPDPState = MutableSharedFlow<String>(Int.ONE)
+    private val _inputContentState = MutableSharedFlow<String>(Int.ONE)
 
     val flowPDP: SharedFlow<Result<DealsProductDetail>> =
         _inputPDPState.flatMapConcat {
@@ -43,8 +47,25 @@ class DealsPDPViewModel @Inject constructor (
             replay = Int.ONE
         )
 
-    fun setPDP(productId: String) {
-        _inputPDPState.tryEmit(productId)
+    val flowContent: SharedFlow<Result<DealsProductEventContent>> =
+        _inputContentState.flatMapConcat {
+            flow {
+                emit(getContent(it))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
+    fun setPDP(urlId: String) {
+        _inputPDPState.tryEmit(urlId)
+    }
+
+    fun setContent(productId: String) {
+        _inputContentState.tryEmit(productId)
     }
 
     fun productImagesMapper(productDetail: ProductDetailData): List<String> {
@@ -67,7 +88,16 @@ class DealsPDPViewModel @Inject constructor (
         return Success(pdpDataResponse)
     }
 
+    private suspend fun getContent(productId: String): Result<DealsProductEventContent> {
+        val eventContentResponse = withContext(dispatcher.io) {
+            dealsPDPEventContentUseCase.execute(TYPE_ID, productId)
+        }
+
+        return Success(eventContentResponse)
+    }
+
     companion object {
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
+        private const val TYPE_ID = "4"
     }
 }

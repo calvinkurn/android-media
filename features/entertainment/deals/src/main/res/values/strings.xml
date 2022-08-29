@@ -85,4 +85,5 @@
     <string name="deals_pdp_product_not_started">Masa penjualan produk belum dimulai</string>
     <string name="deals_pdp_product_ended">Masa penjualan produk telah berakhir</string>
     <string name="deals_pdp_cannot_find_application">Cannot find an application to show location</string>
+    <string name="deals_pdp_how_to_redeem_error">Cara untuk redeem voucher belum dapat ditemukan, silakan coba lagi nanti.</string>
 </resources>

@@ -31,13 +31,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
+import com.tokopedia.deals.pdp.data.EventContentInnerData
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
-import com.tokopedia.graphql.util.Const
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -53,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Calendar
+import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
@@ -177,6 +178,20 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
                     is Fail -> {
                         hideLoading()
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowContent.collect {
+                when (it) {
+                    is Success -> {
+                        showRedeemContent(it.data.eventContentById.data)
+                    }
+
+                    is Fail -> {
+                        showErrorRedeem()
                     }
                 }
             }
@@ -321,7 +336,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             if ((data.customText1.toIntSafely() and SALAM_VALUE) <= SALAM_INDICATOR) {
                 showGeneralWebview(REDEEM_URL)
             } else {
-                // todo event content
+                viewModel.setContent(data.id)
             }
         }
     }
@@ -507,8 +522,33 @@ class DealsPDPFragment: BaseDaggerFragment() {
         }
     }
 
-    companion object {
+    private fun showRedeemContent(data: EventContentInnerData) {
+        val valueText = data.sectionDatas.firstOrNull()?.contents?.firstOrNull()?.valueText
+        if (valueText.isNullOrEmpty()) {
+            showErrorRedeem()
+        } else {
+            val pattern = Pattern.compile(SALAM_REGEX_PATTERN)
+            val matcher = pattern.matcher(valueText)
+            if (matcher.find()) {
+                showGeneralWebview(matcher.group(URL_GROUP))
+            }
+        }
+    }
 
+    private fun showErrorRedeem() {
+        context?.let { context ->
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_how_to_redeem_error),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+        }
+    }
+
+    companion object {
         private const val ZERO_PERCENT = "0%"
         private const val MAX_LINE = 10
         private const val TIME_LAPSE = 100L
@@ -519,6 +559,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
         private const val SALAM_VALUE = 32768
         private const val SALAM_INDICATOR = 0
         private const val REDEEM_URL = "https://www.tokopedia.com/help/article/st-1283-tokopedia-food-voucher"
+        private const val SALAM_REGEX_PATTERN = "<a(?:[^>]+)?>(.*?)<\\/a>"
+        private const val URL_GROUP = 1
 
         fun createInstance(productId: String?): DealsPDPFragment {
             val fragment = DealsPDPFragment()
