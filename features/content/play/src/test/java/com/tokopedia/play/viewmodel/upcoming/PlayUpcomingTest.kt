@@ -905,12 +905,12 @@ class PlayUpcomingTest {
         }
 
         robot.use {
-            val (state, events) = robot.recordStateAndEvent {
+            val state = robot.recordState {
                 robot.submitAction(ExpandDescriptionUpcomingAction)
             }
 
             state.description.isExpand.assertTrue()
-            events.last().assertType<PlayUpcomingUiEvent.ExpandDescriptionEvent> { it.isExpanded.assertTrue()  }
+            state.description.isShown.assertTrue()
         }
     }
 
@@ -924,20 +924,54 @@ class PlayUpcomingTest {
 
         robot.use {
             //1 click to expand
-            val (state1, events1) = robot.recordStateAndEvent {
+            val state1 = robot.recordState {
                 robot.submitAction(ExpandDescriptionUpcomingAction)
             }
 
             //2 click to dismiss
-            val (state2, events2) = robot.recordStateAndEvent {
+            val state2 = robot.recordState {
                 robot.submitAction(ExpandDescriptionUpcomingAction)
             }
 
             state1.description.isExpand.assertTrue()
             state2.description.isExpand.assertFalse()
+            state2.description.isShown.assertTrue()
+        }
+    }
 
-            events1.last().assertType<PlayUpcomingUiEvent.ExpandDescriptionEvent> { it.isExpanded.assertTrue()  }
-            events2.last().assertType<PlayUpcomingUiEvent.ExpandDescriptionEvent> { it.isExpanded.assertFalse()  }
+    @Test
+    fun `given initial value of desc isExpand is false, when user tap cover the isShown must be false`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(TapCover)
+            }
+
+            state.description.isShown.assertFalse()
+            state.description.isExpand.assertFalse()
+        }
+    }
+
+    @Test
+    fun `expand description isexpanded tap cover, isExpand value must be false, and isShown is true`() {
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ExpandDescriptionUpcomingAction)
+                robot.submitAction(TapCover)
+            }
+            state.description.isShown.assertTrue()
+            state.description.isExpand.assertFalse()
         }
     }
 }
