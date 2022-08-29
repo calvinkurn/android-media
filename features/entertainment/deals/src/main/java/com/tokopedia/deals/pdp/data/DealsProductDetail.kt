@@ -1,6 +1,8 @@
 package com.tokopedia.deals.pdp.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class DealsProductDetail(
     @SerializedName("event_product_detail_v3")
@@ -337,6 +339,7 @@ data class Group(
     val updatedAt: String = ""
 )
 
+@Parcelize
 data class Outlet(
     @SerializedName("coordinates")
     val coordinates: String = "",
@@ -376,7 +379,7 @@ data class Outlet(
     val state: String = "",
     @SerializedName("updated_at")
     val updatedAt: String = ""
-)
+): Parcelable
 
 data class Package(
     @SerializedName("available")

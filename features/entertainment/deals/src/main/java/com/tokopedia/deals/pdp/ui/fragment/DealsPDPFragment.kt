@@ -10,14 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.Html
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -288,7 +286,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }
 
             tgAllLocation?.setOnClickListener {
-                //todo show all outlets
+                dealsPDPCallbacks?.onShowAllLocation(data.outlets)
             }
 
         } else {
@@ -359,10 +357,10 @@ class DealsPDPFragment: BaseDaggerFragment() {
         context?.let { context ->
             cardCheckout?.show()
             val currentTime = Calendar.getInstance().time
-            if (data.saleStartDate.toIntSafely() > (currentTime.time / 1000)) {
+            if (data.saleStartDate.toIntSafely() > (currentTime.time / TIME_DIVIDER)) {
                 btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_product_not_started)
                 btnCheckout?.setClickable(false)
-            } else if (data.saleEndDate.toIntSafely() < (currentTime.time / 1000)) {
+            } else if (data.saleEndDate.toIntSafely() < (currentTime.time / TIME_DIVIDER)) {
                 btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_product_ended)
                 btnCheckout?.setClickable(false)
             } else {
@@ -557,6 +555,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
         private const val REDEEM_URL = "https://www.tokopedia.com/help/article/st-1283-tokopedia-food-voucher"
         private const val SALAM_REGEX_PATTERN = "<a(?:[^>]+)?>(.*?)<\\/a>"
         private const val URL_GROUP = 1
+        private const val TIME_DIVIDER = 1000
 
         fun createInstance(productId: String?): DealsPDPFragment {
             val fragment = DealsPDPFragment()

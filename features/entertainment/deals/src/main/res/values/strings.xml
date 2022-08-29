@@ -86,4 +86,7 @@
     <string name="deals_pdp_product_ended">Masa penjualan produk telah berakhir</string>
     <string name="deals_pdp_cannot_find_application">Cannot find an application to show location</string>
     <string name="deals_pdp_how_to_redeem_error">Cara untuk redeem voucher belum dapat ditemukan, silakan coba lagi nanti.</string>
+    <string name="deals_pdp_empty_location_list_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
+    <string name="deals_pdp_empty_location_list_text_lower">Silakan lakukan pencarian dengan kata  kunci lain</string>
+    <string name="deals_pdp_search_input_hint_deals_outlets">Cari Lokasi</string>
 </resources>
