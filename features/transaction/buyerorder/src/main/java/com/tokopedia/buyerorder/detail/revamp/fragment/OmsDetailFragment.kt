@@ -53,10 +53,10 @@ import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.EventsViewHolder
+import com.tokopedia.buyerorder.detail.revamp.analytics.OrderDetailsAnalytics
 import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
-import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
@@ -92,7 +92,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var orderAnalytics: OrderListAnalytics
+    lateinit var orderAnalytics: OrderDetailsAnalytics
 
     @Inject
     lateinit var localCacheHandler: LocalCacheHandler
@@ -197,6 +197,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     private fun renderDetailsData(details: OrderDetails){
         hideProgressBar()
         setStatus(details.status)
+
+        orderAnalytics.sendOrderDetailImpression(userSession.userId)
 
         if (details.conditionalInfo.text.isNotEmpty()){
             setConditionalInfo(details.conditionalInfo)
