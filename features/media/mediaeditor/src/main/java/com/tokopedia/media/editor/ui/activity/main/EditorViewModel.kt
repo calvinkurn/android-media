@@ -130,12 +130,12 @@ class EditorViewModel @Inject constructor(
             val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
             val savedFile = saveImageRepository.saveToCache(
                 context, bitmapResult
-            )
+            )?.absolutePath ?: ""
 
             val newEditorDetailUiModel = EditorDetailUiModel(
                 originalUrl = editorDetailUiModel.getOriginalUrl(),
                 editorToolType = EditorToolType.CROP,
-                resultUrl = savedFile?.path ?: "",
+                resultUrl = savedFile,
             )
             newEditorDetailUiModel.cropRotateValue.apply {
                 offsetX = leftMargin

@@ -202,10 +202,11 @@ class DetailEditorFragment @Inject constructor(
 
     // EditorDetailPreviewWidget finish load image
     override fun onLoadComplete() {
-        if (!data.isToolRemoveBackground()){
+        if (!data.isToolRemoveBackground() && !data.isToolWatermark()) {
             readPreviousState(data)
-            if(data.isWatermark()) setWatermarkDrawerItem()
         }
+
+        if (data.isToolWatermark()) setWatermarkDrawerItem()
     }
 
     override fun initObserver() {
@@ -280,8 +281,7 @@ class DetailEditorFragment @Inject constructor(
                 }
                 // ==========
                 EditorToolType.REMOVE_BACKGROUND -> {
-                    initializeRemoveBackground(
-                        data.resultUrl?.let {
+                    initializeRemoveBackground(data.resultUrl?.let {
                             Uri.fromFile(File(it))
                         } ?: uri,
                         this@DetailEditorFragment
@@ -296,7 +296,9 @@ class DetailEditorFragment @Inject constructor(
                 }
                 // ==========
                 EditorToolType.WATERMARK -> {
-                    initializeWatermark(uri, this@DetailEditorFragment)
+                    initializeWatermark(data.resultUrl?.let {
+                        Uri.fromFile(File(it))
+                    } ?: uri, this@DetailEditorFragment)
                     watermarkComponent.setupView()
                 }
                 // ==========

@@ -49,7 +49,7 @@ data class EditorDetailUiModel(
         return editorToolType == EditorToolType.CROP
     }
 
-    fun isWatermark(): Boolean {
+    fun isToolWatermark(): Boolean {
         return editorToolType == EditorToolType.WATERMARK
     }
 }

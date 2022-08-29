@@ -11,12 +11,12 @@ import java.io.File
 
 private const val MEDIA_EDITOR_CACHE_DIR = "Editor-Cache"
 
-fun getEditorSaveFolderDir(): String {
-    return FileUtil.getTokopediaInternalDirectory(ImageProcessingUtil.DEFAULT_DIRECTORY + MEDIA_EDITOR_CACHE_DIR).absolutePath
+fun getEditorSaveFolderPath(): String {
+    return ImageProcessingUtil.DEFAULT_DIRECTORY + MEDIA_EDITOR_CACHE_DIR
 }
 
 fun getUCropTempResultPath(): Uri {
-    val folderPath = getEditorSaveFolderDir()
+    val folderPath = FileUtil.getTokopediaInternalDirectory(getEditorSaveFolderPath()).path
     val dir = File(folderPath)
     if (!dir.exists()) dir.mkdir()
 
