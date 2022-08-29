@@ -75,4 +75,9 @@ object RollenceKey {
 
     // Saldo
     const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval";
+
+    object PdpToolbar {
+        const val key = "pdp_dyn_container"
+        const val transparent = "var_container"
+    }
 }

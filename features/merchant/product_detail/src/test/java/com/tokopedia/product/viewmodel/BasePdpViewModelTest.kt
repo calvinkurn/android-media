@@ -159,7 +159,7 @@ abstract class BasePdpViewModelTest {
         createViewModel()
     }
 
-    private fun createViewModel(): DynamicProductDetailViewModel {
+    fun createViewModel(): DynamicProductDetailViewModel {
         return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
                 { getPdpLayoutUseCase },
                 { getProductInfoP2LoginUseCase },
