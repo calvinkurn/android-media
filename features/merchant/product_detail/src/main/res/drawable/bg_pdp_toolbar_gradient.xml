@@ -4,7 +4,7 @@
 
     <gradient
         android:angle="90"
-        android:startColor="#00000000"
-        android:endColor="#66000000"
+        android:startColor="@color/product_detail_dms_toolbar_gradient_start"
+        android:endColor="@color/product_detail_dms_toolbar_gradient_end"
         android:type="linear" />
 </shape>
