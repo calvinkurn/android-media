@@ -69,8 +69,8 @@ class CoverFormView : ConstraintLayout {
         binding.clCoverFormPreview.setTitle(title)
     }
 
-    fun setAuthorName(shopName: String) {
-        binding.clCoverFormPreview.setShopName(shopName)
+    fun setAuthorName(authorName: String) {
+        binding.clCoverFormPreview.setAuthorName(authorName)
     }
 
     fun setListener(listener: Listener) {
