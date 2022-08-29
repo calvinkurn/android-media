@@ -363,6 +363,9 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            needPrescription = product.ethicalDrug.needPrescription
+            butuhResepText = product.ethicalDrug.text
+            butuhResepIconUrl = product.ethicalDrug.iconUrl
             isSelected = product.isCheckboxState
             productName = product.productName
             productImage = product.productImage.imageSrc100Square

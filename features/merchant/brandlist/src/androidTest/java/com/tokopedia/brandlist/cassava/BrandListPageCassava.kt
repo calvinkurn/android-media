@@ -78,10 +78,10 @@ class BrandListPageCassava {
         }
         doActivityTestByModelClass(dataModelClass = AllBrandGroupHeaderUiModel::class) { holder, position ->
             logTestMessage("Captured is AllBrandGroupHeaderViewHolder")
-//            Espresso.onView(firstView(withId(R.id.chip_alphabet_header))).perform(click())
-            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 4)
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 3)
         }
-        doActivityTestByModelClass(dataModelClass = AllBrandUiModel::class) { holder, position ->
+        waitForData()
+        doActivityTestByModelClass(delayBeforeRender = 5000, dataModelClass = AllBrandUiModel::class) { holder, position ->
             logTestMessage("Captured is AllBrandViewHolder")
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 holder.itemView.performClick()

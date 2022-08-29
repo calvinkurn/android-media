@@ -96,6 +96,14 @@ open class GalleryFragment @Inject constructor(
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        viewModel.loadLocalGalleryBy(
+            AlbumRepository.RECENT_ALBUM_ID
+        )
+    }
+
     override fun onResume() {
         super.onResume()
         binding?.drawerSelector?.setListener(this)
@@ -148,10 +156,6 @@ open class GalleryFragment @Inject constructor(
 
     private fun initView() {
         setupRecyclerView()
-
-        viewModel.loadLocalGalleryBy(
-            AlbumRepository.RECENT_ALBUM_ID
-        )
     }
 
     private fun hasMediaList(isShown: Boolean) {
