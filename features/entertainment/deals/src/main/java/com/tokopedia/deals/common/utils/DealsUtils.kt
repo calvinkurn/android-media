@@ -14,13 +14,13 @@ import java.util.*
 object DealsUtils {
 
     private const val RUPIAH_FORMAT = "Rp %s"
-    private val locale = Locale("in", "ID")
-    private val timePattern = "d MMM yyyy"
-    private val timeZone = "Asia/Jakarta"
-    private val delimiter = "~"
-
+    private const val timePattern = "d MMM yyyy"
+    private const val timeZone = "Asia/Jakarta"
+    private const val delimiter = "~"
     private const val ENTER_HTML = "<br><br>"
     private const val DOT_HTML = "\u2022"
+    private const val TIME_MS = 1000L
+    private val locale = Locale("in", "ID")
 
     fun screenWidthDp() = Resources.getSystem().displayMetrics.run { widthPixels / density }
     fun screenWidthPx() = Resources.getSystem().displayMetrics.widthPixels
@@ -52,7 +52,7 @@ object DealsUtils {
     fun convertEpochToString(time: Int): String {
         val sdf = SimpleDateFormat(timePattern, locale)
         sdf.timeZone = TimeZone.getTimeZone(timeZone)
-        val epochTime = time * 1000L
+        val epochTime = time * TIME_MS
         val date = Date(epochTime)
         return sdf.format(date)
     }
