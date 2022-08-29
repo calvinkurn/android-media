@@ -247,7 +247,7 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(15)
         )
-        Thread.sleep(2000)
+        Thread.sleep(3000)
         onView(withId(R.id.rv_recharge_product)).check(matches(isDisplayed()))
         Thread.sleep(1000)
         onView(withId(R.id.rv_recharge_product)).perform(
