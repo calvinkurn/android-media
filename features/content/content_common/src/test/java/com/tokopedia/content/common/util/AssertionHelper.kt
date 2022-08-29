@@ -74,3 +74,7 @@ fun ProductTagUiEvent.assertEvent(event: ProductTagUiEvent) {
         .assertThat(this)
         .isInstanceOf(event::class.java)
 }
+
+infix fun <T : Any> T.equalTo(expected: T) {
+    this.assertEqualTo(expected)
+}

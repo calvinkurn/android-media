@@ -3,14 +3,18 @@ package com.tokopedia.content.common.viewmodel.producttag
 import com.tokopedia.content.common.model.CommonModelBuilder
 import com.tokopedia.content.common.model.ShopModelBuilder
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.config.FeedProductTagConfig
+import com.tokopedia.content.common.producttag.view.uimodel.config.PlayProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.robot.ProductTagViewModelRobot
 import com.tokopedia.content.common.util.andThen
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.content.common.util.assertEqualTo
+import com.tokopedia.content.common.util.equalTo
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -32,6 +36,8 @@ class ProductTagNavigationViewModelTest {
 
     private val commonModelBuilder = CommonModelBuilder()
     private val shopModelBuilder = ShopModelBuilder()
+    private val feedConfig = FeedProductTagConfig()
+    private val playConfig = PlayProductTagConfig()
 
     private val mockException = commonModelBuilder.buildException()
 
@@ -42,6 +48,7 @@ class ProductTagNavigationViewModelTest {
         val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
             repo = mockRepo,
+            productTagConfig = feedConfig,
         )
 
         /** Setup State */
@@ -75,6 +82,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -95,6 +103,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         /** Setup State */
@@ -122,6 +131,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -140,6 +150,27 @@ class ProductTagNavigationViewModelTest {
     }
 
     @Test
+    fun `open autocomplete page & isFullPageAutocomplete false - add autocomplete source to stack`() {
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+            productTagConfig = playConfig,
+        )
+
+        robot.use {
+            /** Test State */
+            robot.recordState {
+                submitAction(ProductTagAction.OpenAutoCompletePage)
+            }.andThen {
+                productTagSource.productTagSourceStack.size equalTo 2
+                productTagSource.productTagSourceStack.currentSource equalTo ProductTagSource.Autocomplete
+            }
+        }
+    }
+
+    @Test
     fun `when user click suggested product and come back from autocomplete page, it should emit state with appropriate page`() {
         val query = "pokemon"
         val source = ProductTagSource.GlobalSearch
@@ -148,6 +179,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -173,6 +205,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -197,6 +230,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -220,6 +254,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -245,6 +280,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
@@ -264,6 +300,7 @@ class ProductTagNavigationViewModelTest {
             dispatcher = testDispatcher,
             repo = mockRepo,
             sharedPref = mockSharedPref,
+            productTagConfig = feedConfig,
         )
 
         robot.use {
