@@ -66,7 +66,6 @@
     <string name="stfs_placeholder_sold_count"><![CDATA[<b>%d</b>]]> dari %d</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
     <string name="stfs_placeholder_selected_status_count">%d Status</string>
-    <string name="stfs_placeholder_cancellation_reason">Dibatalkan karena %s</string>
     <string name="stfs_placeholder_sold_count_on_campaign_finished">Campaign selesai dengan jumlah produk terjual sebanyak %d%% (%d dari %d)</string>
 
     <!--Campaign Detail Bottomsheet-->
