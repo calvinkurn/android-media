@@ -77,7 +77,6 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usercomponents.common.wrapper.UserComponentsStateResult
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -482,8 +481,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(cartIdDeleted, "111")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
-        Assert.assertTrue(viewModel.deleteCartLiveData.value is UserComponentsStateResult.Fail)
-        Assert.assertNotNull((viewModel.deleteCartLiveData.value as UserComponentsStateResult.Fail).throwable.message, "sukses delete cart")
+        Assert.assertTrue(viewModel.deleteCartLiveData.value is Fail)
+        Assert.assertNotNull((viewModel.deleteCartLiveData.value as Fail).throwable.message, "sukses delete cart")
 
         //after delete cart fail, assert p2 minicart still exist
         Assert.assertNotNull(viewModel.p2Data.value?.miniCart?.get("518076293"))
