@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.revamp.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -886,6 +887,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
     private fun isCoachMarkAlreadyShowed() = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
 
+    @SuppressLint("DeprecatedMethod")
     private fun addCoachMark(){
         val coachMarkItem = CoachMarkItem(
             binding?.bannerDealsOrderDetail?.root,
