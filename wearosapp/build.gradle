@@ -76,6 +76,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.0.4"
     }
+    kotlinOptions{
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
 }
 dependencies {
     implementation rootProject.ext.playServicesDependencies.base
@@ -84,7 +89,7 @@ dependencies {
     implementation 'androidx.wear:wear:1.2.0'
     implementation 'com.google.android.gms:play-services-wearable:17.1.0'
 
-    def lifeCycleVersion = "2.5.0"
+    def lifeCycleVersion = "2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifeCycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifeCycleVersion"
