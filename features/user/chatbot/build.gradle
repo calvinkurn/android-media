@@ -91,12 +91,9 @@ dependencies {
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
-    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
 
-    debugImplementation "androidx.fragment:fragment-testing:1.3.2"
 
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 }

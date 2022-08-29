@@ -1,25 +1,24 @@
-package com.tokopedia.chatbot
+package com.tokopedia.chatbot.resourceIdGenerator
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.activity.InstrumentationChatbotTestActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
-import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
-import io.hansel.pebbletracesdk.presets.UIPresets.findViewById
 import org.junit.Rule
 import org.junit.Test
 
-class ChatbotSampleTest {
+class ChatbotResourceIdGenerator {
 
 //    @get:Rule
 //    var activityRule = object : ActivityTestRule<InstrumentationChatbotTestActivity>(InstrumentationChatbotTestActivity::class.java) {
@@ -61,19 +60,9 @@ class ChatbotSampleTest {
 
 
     val fileWriter = FileWriter()
+
     @Test
     fun check() {
-//        val hierarchyInfo = viewPrinter.printAsCSV(view = findViewById(R.id.main))
-//        val scenario = launchFragment<ChatbotFragment>(
-//            themeResId = R.style.AppTheme,
-//        )
-//
-//        scenario.moveToState(Lifecycle.State.RESUMED)
-//
-//        scenario.onFragment{
-//            val s = findViewById(it, R.id.main)
-//        }
-//
 
         val intent = RouteManager.getIntent(
             targetContext,
