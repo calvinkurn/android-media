@@ -72,7 +72,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.2.0"
+        kotlinCompilerExtensionVersion "1.0.4"
     }
 }
 dependencies {
@@ -101,5 +101,5 @@ dependencies {
     implementation "androidx.wear.compose:compose-material:$wear_version"
     implementation "androidx.wear.compose:compose-foundation:$wear_version"
     implementation "androidx.wear.compose:compose-navigation:$wear_version"
-    implementation "com.github.skydoves:landscapist-glide:1.6.1"
+    implementation "com.github.skydoves:landscapist-glide:1.3.1"
 }
