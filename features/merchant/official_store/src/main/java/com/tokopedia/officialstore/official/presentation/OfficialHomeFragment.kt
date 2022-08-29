@@ -901,6 +901,7 @@ class OfficialHomeFragment :
                 }
             }
         }
+
     }
 
     private fun reloadDataForDifferentAddressSaved() {
