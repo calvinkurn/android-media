@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.mapper
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.MixLeftDataModel
@@ -17,7 +16,13 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
@@ -255,18 +260,15 @@ object OfficialHomeMapper {
                 newList.add(it)
             }
         }
-        Log.d("FrenzelDebugOS", "mappingRecomWidget 1: list size ${newList.size}")
         val isBestSellerWidgetNotExist =
             newList.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
         if (isBestSellerWidgetNotExist) {
-            Log.d("FrenzelDebugOS", "mappingRecomWidget: not exists")
             if (newList.size > RECOM_WIDGET_POSITION) {
                 newList.add(RECOM_WIDGET_POSITION, bestSellerDataModel)
             } else {
                 newList.add(bestSellerDataModel)
             }
         }
-        Log.d("FrenzelDebugOS", "mappingRecomWidget 2: list size ${newList.size}")
         action.invoke(newList)
     }
 
@@ -286,7 +288,6 @@ object OfficialHomeMapper {
                 newList.add(it)
             }
         }
-        Log.d("FrenzelDebugOS", "updateFeaturedShop: list size ${newList.size}")
         action.invoke(newList)
     }
 }
