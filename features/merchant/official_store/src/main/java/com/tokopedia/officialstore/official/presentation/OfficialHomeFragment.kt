@@ -54,6 +54,9 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
@@ -287,7 +290,13 @@ class OfficialHomeFragment :
             if(it.dataList.any { it is OfficialFeaturedShopDataModel }){
                 shopPerformanceMonitoring.stopTrace()
             }
-            if(it.dataList.any { it !is OfficialBannerDataModel && it !is OfficialFeaturedShopDataModel }){
+            if(it.dataList.any {
+                it !is OfficialBannerDataModel &&
+                it !is OfficialFeaturedShopDataModel &&
+                it !is OfficialBenefitDataModel &&
+                it !is OfficialLoadingDataModel &&
+                it !is OfficialLoadingMoreDataModel
+            }){
                 dynamicChannelPerformanceMonitoring.stopTrace()
             }
         }
