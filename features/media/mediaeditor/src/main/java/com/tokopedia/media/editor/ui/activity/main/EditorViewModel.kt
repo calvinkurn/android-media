@@ -9,6 +9,8 @@ import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.types.EditorToolType
 import java.io.File
 import javax.inject.Inject
 
@@ -69,34 +71,6 @@ class EditorViewModel @Inject constructor(
         return _editStateList[urlKey]
     }
 
-    private fun updateEditedItem(originalUrl: String) {
-        _updatedIndexItem.value = getKeyIndex(originalUrl)
-    }
-
-    private fun getKeyIndex(urlKey: String): Int? {
-        var index = -1
-
-        editStateList.values.forEachIndexed { indexItem, item ->
-            val isMatch = item.getOriginalUrl() == urlKey
-            if (isMatch) {
-                index = indexItem
-                return@forEachIndexed
-            }
-        }
-
-        return if (index == -1) null else index
-    }
-
-    fun saveImageCache(
-        context: Context,
-        bitmapParam: Bitmap,
-        filename: String? = null
-    ): File? {
-        return saveImageRepository.saveToCache(
-            context, bitmapParam, filename
-        )
-    }
-
     fun cleanImageCache(){
         saveImageRepository.clearEditorCache()
     }
@@ -120,5 +94,79 @@ class EditorViewModel @Inject constructor(
             return it
         }
         return null
+    }
+
+    fun cropImage(context: Context, sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel, isAutoCrop: ImageRatioType?) {
+        sourceBitmap?.let { it ->
+            val bitmapWidth = sourceBitmap.width
+            val bitmapHeight = sourceBitmap.height
+
+            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
+            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
+            val autoCropRatio = ratioHeight / ratioWidth
+
+            var newWidth = bitmapWidth
+            var newHeight = (bitmapWidth * autoCropRatio).toInt()
+
+            var topMargin = 0
+            var leftMargin = 0
+
+            var scaledTarget = 1f
+
+            if (newHeight <= bitmapHeight && newWidth <= bitmapWidth) {
+                leftMargin = (bitmapWidth - newWidth) / 2
+                topMargin = (bitmapHeight - newHeight) / 2
+            } else if (newHeight > bitmapHeight) {
+                scaledTarget = bitmapHeight.toFloat() / newHeight
+
+                // new value after rescale small
+                newWidth = (newWidth * scaledTarget).toInt()
+                newHeight = (newHeight * scaledTarget).toInt()
+
+                leftMargin = (bitmapWidth - newWidth) / 2
+                topMargin = (bitmapHeight - newHeight) / 2
+            }
+
+            val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
+            val savedFile = saveImageRepository.saveToCache(
+                context, bitmapResult
+            )
+
+            val newEditorDetailUiModel = EditorDetailUiModel(
+                originalUrl = editorDetailUiModel.getOriginalUrl(),
+                editorToolType = EditorToolType.CROP,
+                resultUrl = savedFile?.path ?: "",
+            )
+            newEditorDetailUiModel.cropRotateValue.apply {
+                offsetX = leftMargin
+                offsetY = topMargin
+                imageWidth = newWidth
+                imageHeight = newHeight
+                scaleX = 1f
+                scaleY = 1f
+                isCrop = true
+                this.isAutoCrop = true
+            }
+
+            editorDetailUiModel.editList.add(newEditorDetailUiModel)
+        }
+    }
+
+    private fun updateEditedItem(originalUrl: String) {
+        _updatedIndexItem.value = getKeyIndex(originalUrl)
+    }
+
+    private fun getKeyIndex(urlKey: String): Int? {
+        var index = -1
+
+        editStateList.values.forEachIndexed { indexItem, item ->
+            val isMatch = item.getOriginalUrl() == urlKey
+            if (isMatch) {
+                index = indexItem
+                return@forEachIndexed
+            }
+        }
+
+        return if (index == -1) null else index
     }
 }

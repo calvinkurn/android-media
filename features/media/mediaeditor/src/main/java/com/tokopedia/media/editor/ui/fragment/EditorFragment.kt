@@ -117,7 +117,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 properties = {},
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
-                        cropImage(bitmap, data)
+                        viewModel.cropImage(requireContext(), bitmap, data, isAutoCrop)
                         thumbnailDrawerComponent.refreshItem(
                             currentProcess,
                             viewModel.editStateList.values.toList()
@@ -130,64 +130,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             cropAll(listData, currentProcess + 1)
         }
     }
-
-    private fun cropImage(sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel) {
-        sourceBitmap?.let { it ->
-            val bitmapWidth = sourceBitmap.width
-            val bitmapHeight = sourceBitmap.height
-
-            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
-            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
-            val autoCropRatio = ratioHeight / ratioWidth
-
-            var newWidth = bitmapWidth
-            var newHeight = (bitmapWidth * autoCropRatio).toInt()
-
-            var topMargin = 0
-            var leftMargin = 0
-
-            var scaledTarget = 1f
-
-            if (newHeight <= bitmapHeight && newWidth <= bitmapWidth) {
-                leftMargin = (bitmapWidth - newWidth) / 2
-                topMargin = (bitmapHeight - newHeight) / 2
-            } else if (newHeight > bitmapHeight) {
-                scaledTarget = bitmapHeight.toFloat() / newHeight
-
-                // new value after rescale small
-                newWidth = (newWidth * scaledTarget).toInt()
-                newHeight = (newHeight * scaledTarget).toInt()
-
-                leftMargin = (bitmapWidth - newWidth) / 2
-                topMargin = (bitmapHeight - newHeight) / 2
-            }
-
-            val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
-            val savedFile = viewModel.saveImageCache(
-                requireContext(),
-                bitmapResult
-            )
-
-            val newEditorDetailUiModel = EditorDetailUiModel(
-                originalUrl = editorDetailUiModel.getOriginalUrl(),
-                editorToolType = EditorToolType.CROP,
-                resultUrl = savedFile?.path ?: "",
-            )
-            newEditorDetailUiModel.cropRotateValue.apply {
-                offsetX = leftMargin
-                offsetY = topMargin
-                imageWidth = newWidth
-                imageHeight = newHeight
-                scaleX = 1f
-                scaleY = 1f
-                isCrop = true
-                isAutoCrop = true
-            }
-
-            editorDetailUiModel.editList.add(newEditorDetailUiModel)
-        }
-    }
-
+    
     override fun initObserver() {
         observeEditorParam()
         observeUpdateIndex()
