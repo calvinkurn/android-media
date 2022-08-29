@@ -11,12 +11,12 @@ data class GetSellerCampaignAttributeRequest(
     val year: Int,
     @SerializedName("field")
     val field: Field,
-    @SerializedName("packageID")
+    @SerializedName("package_id")
     val packageId: Long
 ) {
     data class Field(
         @SerializedName("shop_attribute") val shopAttribute: Boolean,
         @SerializedName("campaign_detail") val campaignDetail: Boolean,
-        @SerializedName("vpsAttribute") val vpsAttribute: Boolean
+        @SerializedName("vps_attribute") val vpsAttribute: Boolean
     )
 }
