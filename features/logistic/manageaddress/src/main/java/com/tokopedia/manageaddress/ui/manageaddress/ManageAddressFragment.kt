@@ -2,45 +2,34 @@ package com.tokopedia.manageaddress.ui.manageaddress
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
-import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.fromfriend.FromFriendFragment
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
+import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
-import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
-import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
-import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CART_EXISTING_USER
-import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
-import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -51,11 +40,12 @@ import javax.inject.Inject
  * inside it have MainAddressFragment and FromFriendFragment
  */
 class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
-    FromFriendFragment.Listener {
+    FromFriendFragment.Listener, MainAddressFragment.MainAddressListener {
 
     companion object {
         private const val MAIN_ADDRESS_FRAGMENT_POSITION = 0
         private const val FROM_FRIEND_FRAGMENT_POSITION = 1
+        private const val DELAY_SWIPE_VIEW_PAGER = 50L
 
         fun newInstance(bundle: Bundle): ManageAddressFragment {
             return ManageAddressFragment().apply {
@@ -79,18 +69,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
 
     private var manageAddressListener: ManageAddressListener? = null
 
-    private var isFromCheckoutChangeAddress: Boolean? = false
-
-    private var isLocalization: Boolean? = false
-
-    private var source: String = ""
-
-    var tabAdapter: ManageAddressViewPagerAdapter? = null
+    private var tabAdapter: ManageAddressViewPagerAdapter? = null
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(ManageAddressComponent::class.java).inject(this)
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        when (fragment) {
+            is MainAddressFragment -> fragment.setListener(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,44 +90,87 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initArgument()
+        if (viewModel.isNeedValidateShareAddress) {
+            observerValidateShareAddress()
+            viewModel.doValidateShareAddress()
+        } else {
+            bindView()
+        }
+    }
 
-        initHeader()
-        initViewModel()
+    private fun initArgument() {
+        viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
+        viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
+        viewModel.source = arguments?.getString(PARAM_SOURCE) ?: ""
+    }
 
-        isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
-        isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
-        viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_RECEIVER_USER_ID)
-        viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_SENDER_USER_ID)
-        source = arguments?.getString(PARAM_SOURCE) ?: ""
+    private fun observerValidateShareAddress() {
+        viewModel.validateShareAddressState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ValidateShareAddressState.Success -> bindView()
+                is ValidateShareAddressState.Fail -> onFailedValidateShareAddress()
+                is ValidateShareAddressState.Loading -> showLoading(it.isShowLoading)
+            }
+        })
+    }
+
+    private fun bindView() {
         initSearchView()
-
         initView()
         setSearchView(viewModel.savedQuery)
     }
 
-    private fun initView() {
-        val bundle = Bundle()
-        if (arguments != null && arguments != null) {
-            bundle.putString(EXTRA_QUERY, viewModel.savedQuery)
-            bundle.putAll(arguments)
+    private fun onFailedValidateShareAddress() {
+        if (viewModel.isNeedToShareAddress) {
+            viewModel.receiverUserId = null
+            arguments?.putString(ManageAddressConstant.QUERY_PARAM_RUID, null)
+        } else {
+            arguments?.putBoolean(ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF, true)
         }
+        bindView()
+    }
 
+    private fun showLoading(isShowLoading: Boolean) {
         binding?.apply {
-            tabAdapter = this@ManageAddressFragment?.let { ManageAddressViewPagerAdapter(it, fragmentPage()) }
+            if (isShowLoading) {
+                llMainView.gone()
+                progressBar.visible()
+            } else {
+                llMainView.visible()
+                progressBar.gone()
+            }
+        }
+    }
+
+    private fun initView() {
+        binding?.apply {
+            val fragments = fragmentPage()
+            tabAdapter = this@ManageAddressFragment?.let { ManageAddressViewPagerAdapter(it, fragments) }
             vpManageAddress.adapter = tabAdapter
+            vpManageAddress.offscreenPageLimit = fragments.size
             vpManageAddress.isUserInputEnabled = false
-            if (viewModel.isNeedToShareAddress) {
+            if (viewModel.isFromLCA) {
                 tlManageAddress.gone()
+            } else if (viewModel.isNeedToShareAddress) {
+                tlManageAddress.gone()
+                manageAddressListener?.setToolbarTitle(getString(R.string.title_select_share_address), false)
             } else {
                 tlManageAddress.visible()
                 TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
                     tab.setCustomText(fragmentPage().getOrNull(position)?.first ?: getString(R.string.tablayout_label_main))
                 }
 
-                if (viewModel.isReceiveShareAddress) {
-                    vpManageAddress.currentItem = FROM_FRIEND_FRAGMENT_POSITION
-                }
+                doCheckIsReceiveShareAddress()
             }
+        }
+    }
+
+    private fun doCheckIsReceiveShareAddress() {
+        if (viewModel.isReceiveShareAddress) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding?.vpManageAddress?.currentItem = FROM_FRIEND_FRAGMENT_POSITION
+            }, DELAY_SWIPE_VIEW_PAGER)
         }
     }
 
@@ -171,7 +204,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     }
 
     private fun fragmentPage(): List<Pair<String, Fragment>> {
-        return if (viewModel.isNeedToShareAddress) {
+        return if (viewModel.isFromLCA || viewModel.isNeedToShareAddress) {
             listOf(Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())))
         } else {
             listOf(
@@ -190,60 +223,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
         return bundle
     }
 
-    private fun initHeader() {
-        manageAddressListener?.setAddButtonOnClickListener {
-            if (isLocalization == true) ChooseAddressTracking.onClickButtonTambahAlamat(userSession.userId)
-            openFormAddAddressView()
-        }
-    }
-
-    private fun initViewModel() {
-        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    when (it.data.featureId) {
-                        ANA_REVAMP_FEATURE_ID -> {
-                            goToAddAddress(it.data.eligible)
-                        }
-                    }
-                }
-
-                is Fail -> {
-                    view?.let { view ->
-                        Toaster.build(
-                            view, it.throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
-                        ).show()
-                    }
-                }
-            }
-        })
-    }
-
-    private fun goToAddAddress(eligible: Boolean) {
-        val token = viewModel.token
-        val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
-            SCREEN_NAME_CART_EXISTING_USER
-        } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
-            SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
-        } else {
-            SCREEN_NAME_USER_NEW
-        }
-        if (eligible) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            intent.putExtra(PARAM_SOURCE, source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        } else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        }
-    }
-
-    fun setSearchView(searchKey: String) {
+    private fun setSearchView(searchKey: String) {
         binding?.searchInputView?.searchBarTextField?.setText(searchKey)
     }
 
@@ -269,10 +249,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
         }
     }
 
-    private fun openFormAddAddressView() {
-        viewModel.checkUserEligibilityForAnaRevamp()
-    }
-
     fun setListener(listener: ManageAddressListener) {
         this.manageAddressListener = listener
     }
@@ -280,6 +256,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     interface ManageAddressListener {
         fun setAddButtonOnClickListener(onClick: () -> Unit)
         fun setSearch(query: String, saveAddressDataModel: SaveAddressDataModel?)
+        fun setToolbarTitle(title: String, isBtnAddVisible: Boolean)
     }
 
     fun searchInputVisibility(show: Boolean) {
@@ -290,11 +267,34 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
         }
     }
 
+    override fun removeArgumentsFromNotif() {
+        arguments?.putBoolean(ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF, false)
+    }
+
     override fun onSuccessSaveShareAddress() {
         binding?.vpManageAddress?.currentItem = MAIN_ADDRESS_FRAGMENT_POSITION
         viewModel.savedQuery = ""
         setSearchView(viewModel.savedQuery)
         performSearch(viewModel.savedQuery)
+    }
+
+    override fun updateFromFriendsTabText(count: Int) {
+        binding?.tlManageAddress?.tabLayout?.getTabAt(FROM_FRIEND_FRAGMENT_POSITION)?.apply {
+            customView?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.tab_item_text_id)?.apply {
+                text = if (count > 0) {
+                    getString(R.string.tablayout_label_from_friend_with_value, count.toString())
+                } else {
+                    getString(R.string.tablayout_label_from_friend)
+                }
+                ellipsize = null
+            }
+        }
+    }
+
+    override fun setAddButtonOnClickListener(onClick: () -> Unit) {
+        manageAddressListener?.setAddButtonOnClickListener {
+            onClick()
+        }
     }
 }
 

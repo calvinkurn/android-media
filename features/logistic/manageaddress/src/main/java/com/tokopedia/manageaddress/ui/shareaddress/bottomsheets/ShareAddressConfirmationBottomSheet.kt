@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
@@ -25,15 +26,19 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import com.tokopedia.manageaddress.R
-import com.tokopedia.logisticCommon.domain.request.ShareAddressParam
+import com.tokopedia.logisticCommon.domain.request.ShareAddressToUserParam
+import com.tokopedia.manageaddress.domain.model.shareaddress.SelectShareAddressParam
+import com.tokopedia.media.loader.loadImage
 
 class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     HasComponent<ShareAddressComponent> {
 
     private var binding by autoCleared<BottomsheetShareAddressConfirmationBinding>()
 
-    private var senderAddressId: String = ""
-    private var receiverPhoneNumberOrEmail: String = ""
+    private var senderAddressId: String? = null
+    private var receiverPhoneNumberOrEmail: String? = null
+    private var receiverUserId: String? = null
+    private var source: String = ""
     private var mListener: Listener? = null
 
     @Inject
@@ -64,7 +69,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     private fun initObserver() {
         viewModel.shareAddressResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is ShareAddressBottomSheetState.Success -> mListener?.onSuccessShareAddress()
+                is ShareAddressBottomSheetState.Success -> mListener?.onSuccessConfirmShareAddress(viewModel.isApprove)
                 is ShareAddressBottomSheetState.Fail -> mListener?.onFailedShareAddress(it.errorMessage)
                 is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
             }
@@ -72,7 +77,11 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     }
 
     private fun onLoadingShareAddress(isShowLoading: Boolean) {
-        binding.btnShare.isLoading = isShowLoading
+        if (viewModel.isApprove) {
+            binding.btnShare.isLoading = isShowLoading
+        } else {
+            binding.btnCancel.isLoading = isShowLoading
+        }
     }
 
     override fun onCreateView(
@@ -100,23 +109,61 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
             showCloseIcon = false
             showHeader = false
             setOnDismissListener { dismiss() }
+            imgConfirmation.loadImage(IMAGE_SHARE_ADDRESS)
             txtTermsShareAddress.addLinkText(getString(R.string.share_address_confirmation_tnc_link)) {
-                // Need To Open Webview TNC Page
+                RouteManager.route(requireContext(), PRIVACY_POLICY_URL)
             }
             btnShare.setOnClickListener {
-                viewModel.shareAddress(
-                    ShareAddressParam(
-                        senderUserId = "",
-                        senderAddressId = senderAddressId,
-                        receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail,
-                        initialCheck = false
-                    )
-                )
+                onClickBtnShare()
             }
             btnCancel.setOnClickListener {
-                dismiss()
+                onClickBtnCancel()
             }
         }
+    }
+
+    private fun onClickBtnShare() {
+        viewModel.isApprove = true
+
+        if (isFromNotif()) {
+            viewModel.shareAddressFromNotif(
+                SelectShareAddressParam(
+                    receiverUserId = receiverUserId.orEmpty(),
+                    senderAddressId = senderAddressId.orEmpty(),
+                    approve = true,
+                    source = source
+                )
+            )
+        } else {
+            viewModel.shareAddress(
+                ShareAddressToUserParam(
+                    senderAddressId = senderAddressId.orEmpty(),
+                    receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail.orEmpty(),
+                    initialCheck = false,
+                    source = source
+                )
+            )
+        }
+    }
+
+    private fun onClickBtnCancel() {
+        viewModel.isApprove = false
+
+        if (isFromNotif()) {
+            viewModel.shareAddressFromNotif(
+                SelectShareAddressParam(
+                    receiverUserId = receiverUserId.orEmpty(),
+                    senderAddressId = senderAddressId.orEmpty(),
+                    approve = false
+                )
+            )
+        } else {
+            dismiss()
+        }
+    }
+
+    private fun isFromNotif() : Boolean {
+        return receiverUserId?.isNotBlank() == true
     }
 
     private fun TextView.addLinkText(
@@ -146,23 +193,29 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     }
 
     interface Listener {
-        fun onSuccessShareAddress()
+        fun onSuccessConfirmShareAddress(isApproved: Boolean)
 
         fun onFailedShareAddress(errorMessage: String)
     }
 
     companion object {
         const val TAG_SHARE_ADDRESS_CONFIRMATION = "ShareAddressConfirmationBottomSheet"
+        private const val IMAGE_SHARE_ADDRESS = "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
+        private const val PRIVACY_POLICY_URL = "https://www.tokopedia.com/privacy"
 
         fun newInstance(
             senderAddressId: String?,
             receiverPhoneNumberOrEmail: String?,
+            receiverUserId: String?,
+            source: String?,
             listener: Listener
         ): ShareAddressConfirmationBottomSheet {
             return ShareAddressConfirmationBottomSheet().apply {
                 this.senderAddressId = senderAddressId ?: ""
                 this.receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail ?: ""
                 this.mListener = listener
+                this.receiverUserId = receiverUserId
+                this.source = source ?: ""
             }
         }
     }

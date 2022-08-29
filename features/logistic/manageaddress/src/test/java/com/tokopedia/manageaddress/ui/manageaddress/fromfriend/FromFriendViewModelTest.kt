@@ -3,13 +3,17 @@ package com.tokopedia.manageaddress.ui.manageaddress.fromfriend
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.manageaddress.domain.usecase.DeleteFromFriendAddressUseCase
-import com.tokopedia.manageaddress.domain.usecase.GetAddressSharedListUseCase
-import com.tokopedia.manageaddress.domain.usecase.SaveFromFriendAddressUseCase
-import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressActionState
-import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressListState
+import com.tokopedia.logisticCommon.domain.response.ErrorDefaultAddress
+import com.tokopedia.manageaddress.domain.mapper.SharedAddressMapper
+import com.tokopedia.manageaddress.domain.response.shareaddress.DeleteShareAddressResponse
+import com.tokopedia.manageaddress.domain.response.shareaddress.GetSharedAddressListResponse
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrGetSharedAddressList
+import com.tokopedia.manageaddress.domain.response.shareaddress.SaveShareAddressResponse
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.DeleteFromFriendAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.GetSharedAddressListUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.SaveFromFriendAddressUseCase
+import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressActionState
+import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressListState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -25,12 +29,13 @@ class FromFriendViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getShareAddressUseCase = mockk<GetAddressSharedListUseCase>(relaxed = true)
+    private val getShareAddressUseCase = mockk<GetSharedAddressListUseCase>(relaxed = true)
+    private val shareAddressMapper = mockk<SharedAddressMapper>(relaxed = true)
     private val saveShareAddressUseCase = mockk<SaveFromFriendAddressUseCase>(relaxed = true)
     private val deleteFromFriendAddressUseCase =
         mockk<DeleteFromFriendAddressUseCase>(relaxed = true)
     private val getShareAddressObserver =
-        mockk<Observer<FromFriendAddressListState<AddressListModel>>>(relaxed = true)
+        mockk<Observer<FromFriendAddressListState<KeroAddrGetSharedAddressList?>>>(relaxed = true)
     private val saveShareAddressObserver =
         mockk<Observer<FromFriendAddressActionState>>(relaxed = true)
     private val deleteShareAddressObserver =
@@ -44,6 +49,7 @@ class FromFriendViewModelTest {
     fun setup() {
         viewModel = FromFriendViewModel(
             getShareAddressUseCase,
+            shareAddressMapper,
             saveShareAddressUseCase,
             deleteFromFriendAddressUseCase,
             CoroutineTestDispatchersProvider
@@ -55,16 +61,22 @@ class FromFriendViewModelTest {
 
     @Test
     fun `verify when get share address success`() {
-        val mockResponse = AddressListModel()
+        val source = "notification"
+        val keroAddrGetSharedAddressList = spyk(KeroAddrGetSharedAddressList())
+        val mockResponse = spyk(GetSharedAddressListResponse().apply {
+            keroGetSharedAddressList = keroAddrGetSharedAddressList
+        })
 
         coEvery {
             getShareAddressUseCase.invoke(any())
         } returns mockResponse
 
-        viewModel.onSearchAdrress("")
+        viewModel.source = source
+        viewModel.getFromFriendAddressList()
 
+        Assert.assertEquals(viewModel.source, source)
         verify {
-            getShareAddressObserver.onChanged(FromFriendAddressListState.Success(mockResponse))
+            getShareAddressObserver.onChanged(FromFriendAddressListState.Success(keroAddrGetSharedAddressList))
         }
     }
 
@@ -74,7 +86,7 @@ class FromFriendViewModelTest {
             getShareAddressUseCase.invoke(any())
         } throws mockThrowable
 
-        viewModel.onSearchAdrress("")
+        viewModel.getFromFriendAddressList()
 
         verify {
             getShareAddressObserver.onChanged(
@@ -88,13 +100,11 @@ class FromFriendViewModelTest {
 
     @Test
     fun `verify when save share address is success`() {
-        val mockResponse = spyk(ShareAddressResponse().apply {
-            shareAddressResponse = spyk(
-                ShareAddressResponse.ShareAddressResponse(
-                    isSuccess = true
-                )
-            )
-        })
+        val mockResponse = spyk(SaveShareAddressResponse(
+            data = spyk(SaveShareAddressResponse.KeroAddrSaveSharedAddress(
+                isSuccess = true
+            ))
+        ))
 
         coEvery {
             saveShareAddressUseCase.invoke(any())
@@ -110,14 +120,14 @@ class FromFriendViewModelTest {
     @Test
     fun `verify when save share address not success`() {
         val fakeErrorMessage = "error message"
-        val mockResponse = spyk(ShareAddressResponse().apply {
-            shareAddressResponse = spyk(
-                ShareAddressResponse.ShareAddressResponse(
-                    isSuccess = false,
-                    error = fakeErrorMessage
-                )
-            )
-        })
+        val mockResponse = spyk(SaveShareAddressResponse(
+            data = spyk(SaveShareAddressResponse.KeroAddrSaveSharedAddress(
+                isSuccess = false,
+                error = spyk(ErrorDefaultAddress(
+                    detail = fakeErrorMessage
+                ))
+            ))
+        ))
 
         coEvery {
             saveShareAddressUseCase.invoke(any())
@@ -156,15 +166,12 @@ class FromFriendViewModelTest {
     @Test
     fun `verify when delete share address is success`() {
         val addressList = arrayListOf<RecipientAddressModel>(spyk(), spyk())
-        viewModel.chosenAddrId = 0L
         viewModel.addressList.addAll(addressList)
-        val mockResponse = spyk(ShareAddressResponse().apply {
-            shareAddressResponse = spyk(
-                ShareAddressResponse.ShareAddressResponse(
-                    isSuccess = true
-                )
-            )
-        })
+        val mockResponse = spyk(DeleteShareAddressResponse(
+            data = spyk(DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
+                isSuccess = true
+            ))
+        ))
 
         coEvery {
             deleteFromFriendAddressUseCase.invoke(any())
@@ -182,15 +189,17 @@ class FromFriendViewModelTest {
 
     @Test
     fun `verify when delete share address not success`() {
+        val addressList = arrayListOf<RecipientAddressModel>(spyk(), spyk())
+        viewModel.addressList.addAll(addressList)
         val fakeErrorMessage = "error message"
-        val mockResponse = spyk(ShareAddressResponse().apply {
-            shareAddressResponse = spyk(
-                ShareAddressResponse.ShareAddressResponse(
-                    isSuccess = false,
-                    error = fakeErrorMessage
-                )
-            )
-        })
+        val mockResponse = spyk(DeleteShareAddressResponse(
+            data = spyk(DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
+                isSuccess = false,
+                error = spyk(ErrorDefaultAddress(
+                    detail = fakeErrorMessage
+                ))
+            ))
+        ))
 
         coEvery {
             deleteFromFriendAddressUseCase.invoke(any())
@@ -199,14 +208,7 @@ class FromFriendViewModelTest {
         viewModel.deleteAddress()
         Thread.sleep(3100)
 
-        verify {
-            deleteShareAddressObserver.onChanged(
-                FromFriendAddressActionState.Fail(
-                    null,
-                    fakeErrorMessage
-                )
-            )
-        }
+        Assert.assertEquals(viewModel.addressList.size, addressList.size)
     }
 
     @Test
@@ -260,5 +262,12 @@ class FromFriendViewModelTest {
 
         Assert.assertTrue(viewModel.isAllSelected)
         Assert.assertTrue(viewModel.isNeedUpdateAllList)
+    }
+
+    @Test
+    fun `verify when set share address from notif is correctly`() {
+        viewModel.isShareAddressFromNotif = true
+
+        Assert.assertTrue(viewModel.isShareAddressFromNotif)
     }
 }

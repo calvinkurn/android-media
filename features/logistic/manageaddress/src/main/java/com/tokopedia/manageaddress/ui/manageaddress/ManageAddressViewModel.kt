@@ -9,6 +9,7 @@ import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepo
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -18,8 +19,13 @@ import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
+import com.tokopedia.manageaddress.domain.model.shareaddress.ValidateShareAddressAsReceiverParam
+import com.tokopedia.manageaddress.domain.model.shareaddress.ValidateShareAddressAsSenderParam
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
+import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
@@ -37,13 +43,15 @@ class ManageAddressViewModel @Inject constructor(
     private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
     private val chooseAddressRepo: ChooseAddressRepository,
     private val chooseAddressMapper: ChooseAddressMapper,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
+    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase
 ) : ViewModel() {
 
     companion object {
         const val STATUS_SUCCESS = 1
     }
-    
+
     var token: Token? = null
     var savedQuery: String = ""
     var page: Int = 1
@@ -55,6 +63,11 @@ class ManageAddressViewModel @Inject constructor(
         get() = receiverUserId?.isNotBlank() == true
     val isReceiveShareAddress: Boolean
         get() = senderUserId?.isNotBlank() == true
+    val isNeedValidateShareAddress: Boolean
+        get() = receiverUserId?.isNotBlank() == true || senderUserId?.isNotBlank() == true
+    var source = ""
+    val isFromLCA: Boolean
+        get() = source == ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -80,14 +93,18 @@ class ManageAddressViewModel @Inject constructor(
     val eligibleForAddressFeature: LiveData<Result<EligibleForAddressFeatureModel>>
         get() = _eligibleForAddressFeature
 
+    private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
+    val validateShareAddressState: LiveData<ValidateShareAddressState>
+        get() = _validateShareAddressState
+
     private val compositeSubscription = CompositeSubscription()
 
     fun searchAddress(query: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
             getPeopleAddressUseCase.execute(
-                query, prevState = prevState,
-                localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhiteListChosenAddress
+                query, prevState = prevState, localChosenAddrId = localChosenAddrId,
+                isWhitelistChosenAddress = isWhiteListChosenAddress, excludeSharedAddress = isNeedToShareAddress
             )
                 .subscribe(object : rx.Observer<AddressListModel> {
                     override fun onError(it: Throwable?) {
@@ -112,7 +129,9 @@ class ManageAddressViewModel @Inject constructor(
     fun loadMore(prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
-            getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
+            getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState = prevState,
+                localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress,
+                excludeSharedAddress = isNeedToShareAddress)
                 .subscribe(object : rx.Observer<AddressListModel> {
                     override fun onError(it: Throwable?) {
                         _addressList.value = ManageAddressState.Fail(it, "")
@@ -134,7 +153,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun deletePeopleAddress(id: String) {
         viewModelScope.launchCatchError(block = {
-            val resultDelete = deletePeopleAddressUseCase(id.toInt())
+            val resultDelete = deletePeopleAddressUseCase(id.toLong())
             if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                 resultDelete.response.data.success == STATUS_SUCCESS
             ) {
@@ -228,6 +247,58 @@ class ManageAddressViewModel @Inject constructor(
 
     private val onErrorSetStateChosenAddress = CoroutineExceptionHandler { _, e ->
         _setChosenAddress.value = Fail(e)
+    }
+
+    fun doValidateShareAddress() {
+        if (isNeedToShareAddress) {
+            validateShareAddressAsSender(receiverUserId.orEmpty())
+        } else {
+            validateShareAddressAsReceiver(senderUserId.orEmpty())
+        }
+    }
+
+    private fun validateShareAddressAsReceiver(senderUserId: String) {
+        viewModelScope.launchCatchError(block = {
+            showValidateShareAddressLoadingState(true)
+            val params = ValidateShareAddressAsReceiverParam(
+                senderUserId = senderUserId,
+                source = source
+            )
+            val result = validateShareAddressAsReceiverUseCase(params)
+            _validateShareAddressState.value = if (result.keroValidateShareAddressAsReceiver?.isValid == true) {
+                ValidateShareAddressState.Success
+            } else {
+                ValidateShareAddressState.Fail
+            }
+            showValidateShareAddressLoadingState(false)
+        }, onError = {
+            _validateShareAddressState.value = ValidateShareAddressState.Fail
+            showValidateShareAddressLoadingState(false)
+        })
+    }
+
+    private fun validateShareAddressAsSender(receiverUserId: String) {
+        viewModelScope.launchCatchError(block = {
+            showValidateShareAddressLoadingState(true)
+            val params = ValidateShareAddressAsSenderParam(
+                receiverUserId = receiverUserId,
+                source = source
+            )
+            val result = validateShareAddressAsSenderUseCase(params)
+            _validateShareAddressState.value = if (result.keroValidateShareAddressAsSender?.isValid == true) {
+                ValidateShareAddressState.Success
+            } else {
+                ValidateShareAddressState.Fail
+            }
+            showValidateShareAddressLoadingState(false)
+        }, onError = {
+            _validateShareAddressState.value = ValidateShareAddressState.Fail
+            showValidateShareAddressLoadingState(false)
+        })
+    }
+
+    private fun showValidateShareAddressLoadingState(isShowLoading: Boolean) {
+        _validateShareAddressState.value = ValidateShareAddressState.Loading(isShowLoading)
     }
 
     override fun onCleared() {

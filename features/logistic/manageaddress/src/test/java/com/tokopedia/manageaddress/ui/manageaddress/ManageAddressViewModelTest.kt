@@ -17,8 +17,13 @@ import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.*
+import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsReceiverResponse
+import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsSenderResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
+import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -51,11 +57,13 @@ class ManageAddressViewModelTest {
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> = mockk(relaxed = true)
-
+    private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase = mockk(relaxed = true)
+    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase = mockk(relaxed = true)
 
     private var observerManageAddressState = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
     private var observerManageAddressStateAddressList = mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
     private var observerResultRemovedAddress = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+    private var observerValidateShareAddressState = mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
 
@@ -70,7 +78,9 @@ class ManageAddressViewModelTest {
             setDefaultPeopleAddressUseCase,
             chooseAddressRepo,
             chooseAddressMapper,
-            eligibleForAddressUseCase
+            eligibleForAddressUseCase,
+            validateShareAddressAsReceiverUseCase,
+            validateShareAddressAsSenderUseCase
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
@@ -78,12 +88,13 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.setDefault.observeForever(observerManageAddressState)
         manageAddressViewModel.addressList.observeForever(observerManageAddressStateAddressList)
         manageAddressViewModel.resultRemovedAddress.observeForever(observerResultRemovedAddress)
+        manageAddressViewModel.validateShareAddressState.observeForever(observerValidateShareAddressState)
     }
 
     @Test
     fun `Search Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
+        every { getPeopleAddressUseCase.execute(any(), any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
             assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
         }
 
@@ -95,7 +106,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Search Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.execute(any(), any(), any(), any()) } returns Observable.error(response)
+        every { getPeopleAddressUseCase.execute(any(), any(), any(), any(), any()) } returns Observable.error(response)
 
         manageAddressViewModel.searchAddress("", -1, -1, true)
 
@@ -105,7 +116,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Load More Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.just(response)
+        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any(), any()) } returns Observable.just(response)
             .doOnSubscribe {
                 assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
             }
@@ -118,7 +129,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Load More Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any()) } returns Observable.error(response)
+        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any(), any()) } returns Observable.error(response)
 
         manageAddressViewModel.loadMore(-1, -1, true)
 
@@ -250,16 +261,129 @@ class ManageAddressViewModelTest {
     }
 
     @Test
-    fun `verify when isNeedToShareAddress is true`() {
-        manageAddressViewModel.receiverUserId = "1"
+    fun `verify when validate share address as receiver is success`() {
+        val source = "notification"
+        val mockResponse = spyk(
+            ValidateShareAddressAsReceiverResponse(
+                keroValidateShareAddressAsReceiver = spyk(
+                ValidateShareAddressAsReceiverResponse.ValidateShareAddressData(
+                    isValid = true
+                )
+            ))
+        )
 
-        assertTrue(manageAddressViewModel.isNeedToShareAddress)
+        coEvery {
+            validateShareAddressAsReceiverUseCase.invoke(any())
+        } returns mockResponse
+
+        manageAddressViewModel.source = source
+        manageAddressViewModel.senderUserId = "1"
+        manageAddressViewModel.doValidateShareAddress()
+
+        assertEquals(manageAddressViewModel.source, source)
+        assertTrue(manageAddressViewModel.isReceiveShareAddress)
+        assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success)
+        }
     }
 
     @Test
-    fun `verify when isReceiveShareAddress is true`() {
+    fun `verify when validate share address as receiver success`() {
         manageAddressViewModel.senderUserId = "1"
+        val mockResponse = spyk(
+            ValidateShareAddressAsReceiverResponse(
+                keroValidateShareAddressAsReceiver = spyk(
+                    ValidateShareAddressAsReceiverResponse.ValidateShareAddressData(
+                        isValid = false
+                    )
+                ))
+        )
 
-        assertTrue(manageAddressViewModel.isReceiveShareAddress)
+        coEvery {
+            validateShareAddressAsReceiverUseCase.invoke(any())
+        } returns mockResponse
+
+        manageAddressViewModel.doValidateShareAddress()
+
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Fail)
+        }
+    }
+
+    @Test
+    fun `verify when validate share address as receiver error`() {
+        manageAddressViewModel.senderUserId = "1"
+        coEvery {
+            validateShareAddressAsReceiverUseCase.invoke(any())
+        } throws mockThrowable
+
+        manageAddressViewModel.doValidateShareAddress()
+
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Fail)
+        }
+    }
+
+    @Test
+    fun `verify when validate share address as sender is success`() {
+        manageAddressViewModel.receiverUserId = "1"
+        val mockResponse = spyk(
+            ValidateShareAddressAsSenderResponse(
+                keroValidateShareAddressAsSender = spyk(
+                    ValidateShareAddressAsSenderResponse.ValidateShareAddressData(
+                        isValid = true
+                    )
+                ))
+        )
+
+        coEvery {
+            validateShareAddressAsSenderUseCase.invoke(any())
+        } returns mockResponse
+
+        manageAddressViewModel.doValidateShareAddress()
+
+        assertTrue(manageAddressViewModel.isNeedToShareAddress)
+        assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success)
+        }
+    }
+
+    @Test
+    fun `verify when validate share address as sender success`() {
+        manageAddressViewModel.receiverUserId = "1"
+        val mockResponse = spyk(
+            ValidateShareAddressAsSenderResponse(
+                keroValidateShareAddressAsSender = spyk(
+                    ValidateShareAddressAsSenderResponse.ValidateShareAddressData(
+                        isValid = false
+                    )
+                ))
+        )
+
+        coEvery {
+            validateShareAddressAsSenderUseCase.invoke(any())
+        } returns mockResponse
+
+        manageAddressViewModel.doValidateShareAddress()
+
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Fail)
+        }
+    }
+
+    @Test
+    fun `verify when validate share address as sender error`() {
+        manageAddressViewModel.receiverUserId = "1"
+        coEvery {
+            validateShareAddressAsSenderUseCase.invoke(any())
+        } throws mockThrowable
+
+        manageAddressViewModel.doValidateShareAddress()
+
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Fail)
+        }
     }
 }

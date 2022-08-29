@@ -66,6 +66,7 @@ object KeroLogisticQuery {
               is_corner
               is_state_chosen_address
               radio_button_checked
+              is_shared_address
             }
             token {
               district_recommendation
@@ -353,6 +354,122 @@ object KeroLogisticQuery {
                     longitude
                     result
                     result_text
+                }
+            }
+        }
+    """.trimIndent()
+
+    val kero_send_share_addr_request = """
+        mutation KeroAddrSendShareAddressRequest(${'$'}param: KeroAddrSendShareAddressRequestInput!) {
+            KeroAddrSendShareAddressRequest(input: ${'$'}param) {
+                number_of_request
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val kero_share_addr_to_user_request = """
+        mutation KeroAddrShareAddressToUser(${'$'}param: KeroAddrShareAddressToUserInput!) {
+            KeroAddrShareAddressToUser(input: ${'$'}param) {
+                number_of_request
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val validate_share_address_request_as_receiver = """
+        query KeroAddrValidateShareAddressRequestAsReceiver(${'$'}sender_user_id: SuperInteger!, ${'$'}source: String!) {
+            KeroAddrValidateShareAddressRequestAsReceiver(sender_user_id: ${'$'}sender_user_id, source: ${'$'}source) {
+                is_valid
+                receiver_user_name
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val validate_share_address_request_as_sender = """
+        query KeroAddrValidateShareAddressRequestAsSender(${'$'}receiver_user_id: SuperInteger!, ${'$'}source: String!) {
+            KeroAddrValidateShareAddressRequestAsSender(receiver_user_id: ${'$'}receiver_user_id, source: ${'$'}source) {
+                is_valid
+                receiver_user_name
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val save_share_address = """
+        mutation KeroAddrSaveSharedAddress(${'$'}param: KeroAddrSaveSharedAddressInput!) {
+            KeroAddrSaveSharedAddress(input: ${'$'}param) {
+                is_success
+                message
+                number_address_saved
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val delete_share_address = """
+        mutation KeroAddrDeleteSharedAddress(${'$'}param: KeroAddrDeleteSharedAddressInput!) {
+            KeroAddrDeleteSharedAddress(input: ${'$'}param) {
+                is_success
+                message
+                number_address_deleted
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val select_address_for_share = """
+        mutation KeroAddrSelectAddressForShareAddressRequest(${'$'}param: KeroAddrSelectAddressToShareInput!) {
+            KeroAddrSelectAddressForShareAddressRequest(input: ${'$'}param) {
+                is_success
+                message
+                reply_status
+                kero_addr_error {
+                    code
+                    detail
+                }
+            }
+        }
+    """.trimIndent()
+
+    val get_shared_address_list = """
+        query KeroAddrGetSharedAddressList(${'$'}source: String!) {
+            KeroAddrGetSharedAddressList(source: ${'$'}source) {
+                data {
+                    sender_user_id
+                    receiver_name
+                    addr_name
+                    masked_address_1
+                    masked_address_2
+                    masked_phone
+                    masked_latitude
+                    masked_longitude
+                }
+                number_of_request
+                number_of_displayed
+                message
+                kero_addr_error {
+                    code
+                    detail
                 }
             }
         }

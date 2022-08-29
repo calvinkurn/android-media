@@ -2,6 +2,7 @@ package com.tokopedia.applink.logistic
 
 import android.content.Context
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 
 object DeeplinkMapperLogistic {
@@ -20,5 +21,9 @@ object DeeplinkMapperLogistic {
 
     fun getRegisteredNavigationPod(deepLink: String): String {
         return deepLink.replace(HEADER_TEMPLATE, ApplinkConstInternalLogistic.INTERNAL_LOGISTIC)
+    }
+
+    fun getRegisteredNavigationShareAddress(deepLink: String): String {
+        return deepLink.replace(ApplinkConst.SHARE_ADDRESS, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
     }
 }

@@ -6,27 +6,30 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.request.AddressRequest
-import com.tokopedia.manageaddress.domain.usecase.DeleteFromFriendAddressUseCase
-import com.tokopedia.manageaddress.domain.usecase.GetAddressSharedListUseCase
-import com.tokopedia.manageaddress.domain.usecase.SaveFromFriendAddressUseCase
-import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressActionState
-import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressListState
+import com.tokopedia.manageaddress.domain.mapper.SharedAddressMapper
+import com.tokopedia.manageaddress.domain.model.shareaddress.GetSharedAddressListParam
+import com.tokopedia.manageaddress.domain.model.shareaddress.SenderShareAddressParam
+import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrGetSharedAddressList
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.DeleteFromFriendAddressUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.GetSharedAddressListUseCase
+import com.tokopedia.manageaddress.domain.usecase.shareaddress.SaveFromFriendAddressUseCase
+import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressActionState
+import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressListState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FromFriendViewModel @Inject constructor(
-    private val getFromFriendAdrressListUseCase: GetAddressSharedListUseCase,
+    private val getSharedAddressListUseCase: GetSharedAddressListUseCase,
+    private val sharedAddressMapper: SharedAddressMapper,
     private val saveAddressUseCase: SaveFromFriendAddressUseCase,
     private val deleteAddressUseCase: DeleteFromFriendAddressUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _getFromFriendAddressState =
-        MutableLiveData<FromFriendAddressListState<AddressListModel>>()
-    val getFromFriendAddressState: LiveData<FromFriendAddressListState<AddressListModel>>
+        MutableLiveData<FromFriendAddressListState<KeroAddrGetSharedAddressList?>>()
+    val getFromFriendAddressState: LiveData<FromFriendAddressListState<KeroAddrGetSharedAddressList?>>
         get() = _getFromFriendAddressState
 
     private val _saveAddressState =
@@ -39,7 +42,6 @@ class FromFriendViewModel @Inject constructor(
     val deleteAddressState: LiveData<FromFriendAddressActionState>
         get() = _deleteAddressState
 
-    var chosenAddrId = 0L
     var isCancelDelete = false
     val addressList = mutableListOf<RecipientAddressModel>()
     private val temporaryList = arrayListOf<RecipientAddressModel>()
@@ -48,19 +50,17 @@ class FromFriendViewModel @Inject constructor(
     val isAllSelected: Boolean
         get() = getSelectedAddressList().size == addressList.size
     var isNeedUpdateAllList = true
+    var isShareAddressFromNotif = false
+    var source = ""
 
-    fun onSearchAdrress(searchKey: String) {
-        getFromFriendAddressList(searchKey)
-    }
-
-    private fun getFromFriendAddressList(searchKey: String) {
+    fun getFromFriendAddressList() {
         launchCatchError(block = {
             showGetShareAddressLoading(true)
-            val param = getAddressRequest(searchKey)
-            val result = getFromFriendAdrressListUseCase(param)
+            val response = getSharedAddressListUseCase(source)
+            val result = sharedAddressMapper.call(response)
             updateAddressList(result.listAddress)
-            _getFromFriendAddressState.value = FromFriendAddressListState.Success(result)
             showGetShareAddressLoading(false)
+            _getFromFriendAddressState.value = FromFriendAddressListState.Success(response.keroGetSharedAddressList)
         }, onError = {
             _getFromFriendAddressState.value =
                 FromFriendAddressListState.Fail(it, it.message.orEmpty())
@@ -77,36 +77,26 @@ class FromFriendViewModel @Inject constructor(
         _getFromFriendAddressState.value = FromFriendAddressListState.Loading(isShowLoading)
     }
 
-    private fun getAddressRequest(searchKey: String): AddressRequest {
-        return AddressRequest(
-            searchKey = searchKey,
-            page = FIRST_PAGE,
-            showAddress = true,
-            showCorner = false,
-            limit = GET_FRIEND_ADDRESS_LIMIT,
-            previousState = 0,
-            localStateChosenAddressId = chosenAddrId,
-            whitelistChosenAddress = true
-        )
-    }
-
     fun getSelectedAddressList(): List<RecipientAddressModel> {
         return addressList.filter { it.isSelected }
     }
 
-    private fun getSelectedAddressId(): List<String> {
+    private fun getSenderUserIds(): List<String> {
         return getSelectedAddressList().map { it.id }
     }
 
     fun saveAddress() {
         launchCatchError(block = {
             showSaveAddressLoading(true)
-            val param = getSelectedAddressId()
-            val result = saveAddressUseCase(param.toString())
-            _saveAddressState.value = if (result.shareAddressResponse.isSuccess) {
+            val param = SenderShareAddressParam(
+                senderUserIds = getSenderUserIds(),
+                source = source
+            )
+            val result = saveAddressUseCase(param)
+            _saveAddressState.value = if (result.isSuccess) {
                 FromFriendAddressActionState.Success
             } else {
-                FromFriendAddressActionState.Fail(null, result.shareAddressResponse.error)
+                FromFriendAddressActionState.Fail(null, result.errorMessage)
             }
             showSaveAddressLoading(false)
         }, onError = {
@@ -121,7 +111,10 @@ class FromFriendViewModel @Inject constructor(
 
     fun deleteAddress() = launch {
         isCancelDelete = false
-        val param = getSelectedAddressId()
+        val param = SenderShareAddressParam(
+            senderUserIds = getSenderUserIds(),
+            source = source
+        )
         updateTemporaryList()
         updateAddressList(getUnSelectAddressList().toTypedArray())
         onDeletingAddress(true)
@@ -132,13 +125,13 @@ class FromFriendViewModel @Inject constructor(
         }
 
         launchCatchError(block = {
-            val result = deleteAddressUseCase(param.toString())
-            _deleteAddressState.value = if (result.shareAddressResponse.isSuccess) {
+            val result = deleteAddressUseCase(param)
+            _deleteAddressState.value = if (result.isSuccess) {
                 temporaryList.clear()
                 FromFriendAddressActionState.Success
             } else {
                 updateAddressList(temporaryList)
-                FromFriendAddressActionState.Fail(null, result.shareAddressResponse.error)
+                FromFriendAddressActionState.Fail(null, result.errorMessage)
             }
             onDeletingAddress(false)
         }, onError = {
@@ -185,7 +178,5 @@ class FromFriendViewModel @Inject constructor(
 
     companion object {
         private const val TOAST_SHOWING_TIME = 3000L
-        const val FIRST_PAGE = 1
-        private const val GET_FRIEND_ADDRESS_LIMIT = 10
     }
 }

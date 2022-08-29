@@ -5,37 +5,36 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
-import com.tokopedia.logisticCommon.domain.request.RequestAddressParam
-import com.tokopedia.logisticCommon.domain.request.ShareAddressParam
-import com.tokopedia.logisticCommon.domain.response.ShareAddressResponse
-import com.tokopedia.logisticCommon.domain.usecase.RequestAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.ShareAddressUseCase
+import com.tokopedia.logisticCommon.domain.request.SendShareAddressRequestParam
+import com.tokopedia.logisticCommon.domain.request.ShareAddressToUserParam
+import com.tokopedia.logisticCommon.domain.usecase.SendShareAddressRequestUseCase
+import com.tokopedia.logisticCommon.domain.usecase.ShareAddressToUserUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
 class ShareAddressViewModel @Inject constructor(
-    private val requestAddressUseCase: RequestAddressUseCase,
-    private val shareAddressUseCase: ShareAddressUseCase,
+    private val sendShareAddressRequestUseCase: SendShareAddressRequestUseCase,
+    private val shareAddressToUserUseCase: ShareAddressToUserUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val mutableRequestAddressResponse = MutableLiveData<ShareAddressBottomSheetState<ShareAddressResponse>>()
-    val requestAddressResponse: LiveData<ShareAddressBottomSheetState<ShareAddressResponse>>
+    private val mutableRequestAddressResponse = MutableLiveData<ShareAddressBottomSheetState>()
+    val requestAddressResponse: LiveData<ShareAddressBottomSheetState>
         get() = mutableRequestAddressResponse
 
-    private val mutableCheckShareAddressResponse = MutableLiveData<ShareAddressBottomSheetState<ShareAddressResponse>>()
-    val checkShareAddressResponse: LiveData<ShareAddressBottomSheetState<ShareAddressResponse>>
+    private val mutableCheckShareAddressResponse = MutableLiveData<ShareAddressBottomSheetState>()
+    val checkShareAddressResponse: LiveData<ShareAddressBottomSheetState>
         get() = mutableCheckShareAddressResponse
 
-    fun requestShareAddress(param: RequestAddressParam) {
+    fun requestShareAddress(param: SendShareAddressRequestParam) {
         launchCatchError(block = {
             showRequestAddressLoadingState(true)
-            val result = requestAddressUseCase(param)
+            val result = sendShareAddressRequestUseCase(param)
             showRequestAddressLoadingState(false)
-            mutableRequestAddressResponse.value = if (result.shareAddressResponse.isSuccess) {
-                ShareAddressBottomSheetState.Success(result)
+            mutableRequestAddressResponse.value = if (result.isSuccess) {
+                ShareAddressBottomSheetState.Success
             } else {
-                ShareAddressBottomSheetState.Fail(result.shareAddressResponse.error)
+                ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
             showRequestAddressLoadingState(false)
@@ -47,15 +46,15 @@ class ShareAddressViewModel @Inject constructor(
         mutableRequestAddressResponse.value = ShareAddressBottomSheetState.Loading(isShowLoading)
     }
 
-    fun checkShareAddress(param: ShareAddressParam) {
+    fun checkShareAddress(param: ShareAddressToUserParam) {
         launchCatchError(block = {
             showShareAddressLoadingState(true)
-            val result = shareAddressUseCase(param)
+            val result = shareAddressToUserUseCase(param)
             showShareAddressLoadingState(false)
-            mutableCheckShareAddressResponse.value = if (result.shareAddressResponse.isSuccess) {
-                ShareAddressBottomSheetState.Success(result)
+            mutableCheckShareAddressResponse.value = if (result.isSuccessInitialCheck) {
+                ShareAddressBottomSheetState.Success
             } else {
-                ShareAddressBottomSheetState.Fail(result.shareAddressResponse.error)
+                ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
             showShareAddressLoadingState(false)

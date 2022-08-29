@@ -23,5 +23,7 @@ data class AddressRequest(
     val previousState: Int? = null,
     @SuppressLint("Invalid Data Type")
     @SerializedName("local_state_chosen_address_id")
-    val localStateChosenAddressId: Long? = null
+    val localStateChosenAddressId: Long? = null,
+    @SerializedName("exclude_shared_address")
+    val excludeSharedAddress: Boolean = true
 )

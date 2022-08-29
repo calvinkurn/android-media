@@ -11,14 +11,14 @@ import javax.inject.Inject
 class DeletePeopleAddressUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Int, DeletePeopleAddressGqlResponse>(dispatcher.io) {
+) : CoroutineUseCase<Long, DeletePeopleAddressGqlResponse>(dispatcher.io) {
 
     override fun graphqlQuery() = QUERY
 
-    override suspend fun execute(params: Int): DeletePeopleAddressGqlResponse =
+    override suspend fun execute(params: Long): DeletePeopleAddressGqlResponse =
         repository.request(graphqlQuery(), createParams(params))
 
-    private fun createParams(params: Int): Map<String, Any> = mapOf(PARAM_KEY to params)
+    private fun createParams(params: Long): Map<String, Any> = mapOf(PARAM_KEY to params)
 
     companion object {
         private const val PARAM_KEY = "inputAddressId"

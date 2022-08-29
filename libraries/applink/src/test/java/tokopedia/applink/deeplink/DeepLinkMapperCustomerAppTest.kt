@@ -29,7 +29,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 199
+        const val SIZE_MAPPER = 200
     }
 
     override fun setup() {
@@ -1280,6 +1280,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check pod appLink then should return tokopedia internal proof of delivery in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/pod/123456?image_id=22222"
         val appLink = UriUtil.buildUri(ApplinkConst.ORDER_POD, "123456?image_id=22222")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check share address appLink then should return tokopedia internal logistic manage address in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalLogistic.MANAGE_ADDRESS
+        val appLink = UriUtil.buildUri(ApplinkConst.SHARE_ADDRESS)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

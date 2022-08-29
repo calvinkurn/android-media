@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.domain.model.shareaddress
+package com.tokopedia.manageaddress.ui.uimodel
 
 sealed class FromFriendAddressActionState {
     object Success: FromFriendAddressActionState()

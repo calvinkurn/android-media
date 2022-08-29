@@ -25,9 +25,8 @@ import com.tokopedia.logisticCommon.databinding.BottomsheetShareAddressBinding
 import com.tokopedia.logisticCommon.di.DaggerRequestShareAddressComponent
 import com.tokopedia.logisticCommon.di.RequestShareAddressComponent
 import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
-import com.tokopedia.logisticCommon.domain.request.RequestAddressParam
-import com.tokopedia.logisticCommon.domain.request.ShareAddressParam
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.logisticCommon.domain.request.SendShareAddressRequestParam
+import com.tokopedia.logisticCommon.domain.request.ShareAddressToUserParam
 import javax.inject.Inject
 
 class ShareAddressBottomSheet : BottomSheetUnify(),
@@ -35,9 +34,6 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
 
     private var binding by autoCleared<BottomsheetShareAddressBinding>()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,6 +46,7 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     private var senderAddressId: String? = null
     private var mShareAddressListener: ShareAddressListener? = null
     private var mRequestAddressListener: RequestAddressListener? = null
+    private var source: String = ""
 
     override fun getComponent(): RequestShareAddressComponent {
         return DaggerRequestShareAddressComponent.builder()
@@ -173,18 +170,18 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
 
         if (isRequestAddress) {
             viewModel.requestShareAddress(
-                RequestAddressParam(
-                    receiverUserId = userSession.userId,
-                    senderPhoneNumberOrEmail = phoneNumberOrEmail
+                SendShareAddressRequestParam(
+                    senderPhoneNumberOrEmail = phoneNumberOrEmail,
+                    source = source
                 )
             )
         } else {
             viewModel.checkShareAddress(
-                ShareAddressParam(
-                    senderUserId = userSession.userId,
+                ShareAddressToUserParam(
                     senderAddressId = senderAddressId ?: "",
                     receiverPhoneNumberOrEmail = phoneNumberOrEmail,
-                    initialCheck = true
+                    initialCheck = true,
+                    source = source
                 )
             )
         }
@@ -299,13 +296,15 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
             isRequestAddress: Boolean,
             senderAddressId: String? = null,
             shareAddressListener: ShareAddressListener? = null,
-            requestAddressListener: RequestAddressListener? = null
+            requestAddressListener: RequestAddressListener? = null,
+            source: String?
         ): ShareAddressBottomSheet {
             return ShareAddressBottomSheet().apply {
                 this.isRequestAddress = isRequestAddress
                 this.senderAddressId = senderAddressId
                 this.mShareAddressListener = shareAddressListener
                 this.mRequestAddressListener = requestAddressListener
+                this.source = source ?: ""
             }
         }
     }

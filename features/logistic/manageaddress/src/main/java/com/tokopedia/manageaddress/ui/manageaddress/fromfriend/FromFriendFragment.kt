@@ -8,21 +8,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet
 import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet.Companion.TAG_SHARE_ADDRESS
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressActionState
-import com.tokopedia.manageaddress.domain.model.shareaddress.FromFriendAddressListState
+import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressActionState
+import com.tokopedia.manageaddress.ui.uimodel.FromFriendAddressListState
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.FragmentFromFriendBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -68,17 +69,18 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setChosenAddrId()
+        initArguments()
         initCbAllAddress()
         initRequestAddressView()
         initRecyclerView()
         initObserver()
         initButtonClickListener()
-        doSearchAddressList()
+        loadAddressList()
     }
 
-    private fun setChosenAddrId() {
-        viewModel.chosenAddrId = getChosenAddrId()
+    private fun initArguments() {
+        viewModel.isShareAddressFromNotif = arguments?.getBoolean(ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF, false) ?: false
+        viewModel.source = arguments?.getString(PARAM_SOURCE, "") ?: ""
     }
 
     private fun initCbAllAddress() {
@@ -109,7 +111,11 @@ class FromFriendFragment : BaseDaggerFragment(),
     private fun initObserver() {
         viewModel.getFromFriendAddressState.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is FromFriendAddressListState.Success -> onSuccessGetList()
+                is FromFriendAddressListState.Success -> {
+                    showTotalAddressTicker(it.data?.message)
+                    onSuccessGetList()
+                    updateTabText(it.data?.numberOfRequest)
+                }
                 is FromFriendAddressListState.Fail -> onFailedGetList(it.throwable)
                 is FromFriendAddressListState.Loading -> onLoadingGetList(it.isShowLoading)
             }
@@ -133,16 +139,53 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun refreshListAndButton() {
+        showCbAllAddress()
         refreshList()
         updateButton()
     }
 
-    private fun onSuccessGetList() {
-        binding?.apply {
-            svAddressList.visible()
-            globalError.gone()
+    private fun showCbAllAddress() {
+        binding?.cbAllAddress?.isVisible = viewModel.isHaveAddressList
+    }
+
+    private fun showTotalAddressTicker(message: String?) {
+        binding?.totalAddressTicker?.apply {
+            if (!message.isNullOrBlank()) {
+                visible()
+                setTextDescription(message)
+            } else {
+                gone()
+            }
         }
+    }
+
+    private fun updateTabText(numberOfRequest: Int?) {
+        mListener?.updateFromFriendsTabText(numberOfRequest ?: 0)
+    }
+
+    private fun onSuccessGetList() {
+        updateAddressView()
         refreshList()
+    }
+
+    private fun updateAddressView() {
+        binding?.apply {
+            groupCardAndList.visible()
+            if (viewModel.isShareAddressFromNotif && viewModel.addressList.isEmpty()) {
+                groupBottomView.gone()
+                globalError.apply {
+                    visible()
+                    setType(GlobalError.MAINTENANCE)
+                    errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
+                    errorIllustration.adjustViewBounds = true
+                    errorTitle.text = getString(R.string.title_already_saved_share_address)
+                    errorDescription.text = getString(R.string.description_already_saved_share_address)
+                }
+            } else {
+                globalError.gone()
+                groupBottomView.visible()
+            }
+        }
     }
 
     private fun onFailedGetList(throwable: Throwable?) {
@@ -160,7 +203,10 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     private fun onSuccessSaveAddress() {
         showToaster(getString(R.string.succes_save_share_address))
-        mListener?.onSuccessSaveShareAddress()
+        mListener?.apply {
+            removeArgumentsFromNotif()
+            onSuccessSaveShareAddress()
+        }
     }
 
     private fun onLoadingSaveAddress(isLoading: Boolean) {
@@ -168,7 +214,11 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessDeleteAddress() {
-        doSearchAddressList()
+        if (viewModel.isShareAddressFromNotif) {
+            viewModel.isShareAddressFromNotif = false
+            mListener?.removeArgumentsFromNotif()
+        }
+        loadAddressList()
     }
 
     private fun onFailedDeleteAddress(errorMessage: String) {
@@ -236,11 +286,12 @@ class FromFriendFragment : BaseDaggerFragment(),
             globalError.setType(type)
             globalError.setActionClickListener {
                 context?.let {
-                    doSearchAddressList()
+                    loadAddressList()
                 }
             }
-            svAddressList.gone()
+            groupCardAndList.gone()
             globalError.visible()
+            groupBottomView.gone()
         }
     }
 
@@ -276,24 +327,8 @@ class FromFriendFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun doSearchAddressList() {
-        if(arguments != null) {
-            val searchQuery = requireArguments().getString(ManageAddressConstant.EXTRA_QUERY, "")
-            viewModel.onSearchAdrress(searchQuery)
-        }
-    }
-
-    private fun getChosenAddrId(): Long {
-        val localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
-        var chosenAddrId: Long = 0
-        localChosenAddr?.address_id?.let { localAddrId ->
-            if (localAddrId.isNotEmpty()) {
-                localChosenAddr.address_id.toLong().let { id ->
-                    chosenAddrId = id
-                }
-            }
-        }
-        return chosenAddrId
+    private fun loadAddressList() {
+        viewModel.getFromFriendAddressList()
     }
 
     override fun onCheckedChangeListener(index: Int, isChecked: Boolean) {
@@ -321,16 +356,23 @@ class FromFriendFragment : BaseDaggerFragment(),
 
         bottomSheetRequestAddress = ShareAddressBottomSheet.newInstance(
             isRequestAddress = true,
-            requestAddressListener = requestAddressListener
+            requestAddressListener = requestAddressListener,
+            source = viewModel.source
         )
         bottomSheetRequestAddress?.show(parentFragmentManager, TAG_SHARE_ADDRESS)
     }
 
     interface Listener {
+        fun updateFromFriendsTabText(count: Int)
+
         fun onSuccessSaveShareAddress()
+
+        fun removeArgumentsFromNotif()
     }
 
     companion object {
+        private const val IMAGE_SHARE_ADDRESS = "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
+
         fun newInstance(bundle: Bundle, listener: Listener): FromFriendFragment {
             return FromFriendFragment().apply {
                 arguments = bundle

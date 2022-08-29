@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -118,7 +119,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     var isFromEditChosenAddress: Boolean? = null
     private var isFromDeleteAddress: Boolean? = false
     private var isStayOnPageState: Boolean? = false
-    private var source: String = ""
+    private var mainAddressListener: MainAddressListener? = null
 
     override fun getScreenName(): String = ""
 
@@ -134,10 +135,10 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initArguments()
+        initAddAddressBtnListener()
         initView()
         initAdapter()
         initSearch()
-
         observerListAddress()
         observerSetDefault()
         observerGetChosenAddress()
@@ -155,9 +156,16 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
         viewModel.savedQuery = arguments?.getString(ManageAddressConstant.EXTRA_QUERY) ?: ""
-        viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_RECEIVER_USER_ID)
-        viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_SENDER_USER_ID)
-        source = arguments?.getString(ApplinkConstInternalLogistic.PARAM_SOURCE) ?: ""
+        viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
+        viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
+        viewModel.source = arguments?.getString(ApplinkConstInternalLogistic.PARAM_SOURCE) ?: ""
+    }
+
+    private fun initAddAddressBtnListener() {
+        mainAddressListener?.setAddButtonOnClickListener {
+            if (isLocalization == true) ChooseAddressTracking.onClickButtonTambahAlamat(userSession.userId)
+            openFormAddressView(null)
+        }
     }
 
     private fun initAdapter() {
@@ -455,6 +463,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
             intent.putExtra(KERO_TOKEN, token)
             intent.putExtra(EXTRA_REF, screenName)
+            intent.putExtra(PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
@@ -467,7 +476,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
         if (eligibleForEditRevamp) {
             val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
-            intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, source)
+            intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         } else {
             val token = viewModel.token
@@ -722,7 +731,10 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                 }
             } else if (viewModel.isNeedToShareAddress) {
                 addressData?.apply {
-                    showShareAddressBottomSheet(id)
+                    showShareAddressConfirmationBottomSheet(
+                        senderAddressId = id,
+                        receiverUserId = viewModel.receiverUserId
+                    )
                 }
             } else {
                 addressData?.let { viewModel.setStateChosenAddress(it) }
@@ -807,13 +819,18 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         val shareAddressListener = object : ShareAddressBottomSheet.ShareAddressListener {
             override fun onClickShareAddress(receiverPhoneNumberOrEmail: String) {
                 bottomSheetShareAddress?.dismiss()
-                showShareAddressConfirmationBottomSheet(receiverPhoneNumberOrEmail, senderAddressId)
+                showShareAddressConfirmationBottomSheet(
+                    senderAddressId = senderAddressId,
+                    receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail
+                )
             }
         }
 
         bottomSheetShareAddress = ShareAddressBottomSheet.newInstance(
             isRequestAddress = false,
-            shareAddressListener = shareAddressListener
+            shareAddressListener = shareAddressListener,
+            source = viewModel.source,
+            senderAddressId = senderAddressId
         )
         bottomSheetShareAddress?.show(
             parentFragmentManager,
@@ -823,11 +840,14 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
 
     private fun showShareAddressConfirmationBottomSheet(
         senderAddressId: String,
-        receiverPhoneNumberOrEmail: String
+        receiverPhoneNumberOrEmail: String? = null,
+        receiverUserId: String? = null,
     ) {
         bottomSheetConfirmationShareAddress = ShareAddressConfirmationBottomSheet.newInstance(
             senderAddressId = senderAddressId,
             receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail,
+            receiverUserId = receiverUserId,
+            source = viewModel.source,
             listener = this
         )
         bottomSheetConfirmationShareAddress?.show(
@@ -836,9 +856,12 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         )
     }
 
-    override fun onSuccessShareAddress() {
+    override fun onSuccessConfirmShareAddress(isApproved: Boolean) {
         bottomSheetConfirmationShareAddress?.dismiss()
-        showToaster(getString(R.string.success_share_address))
+
+        if (isApproved) {
+            showToaster(getString(R.string.success_share_address))
+        }
     }
 
     override fun onFailedShareAddress(errorMessage: String) {
@@ -850,5 +873,13 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, toastType).show()
         }
+    }
+
+    fun setListener(listener: MainAddressListener) {
+        this.mainAddressListener = listener
+    }
+
+    interface MainAddressListener {
+        fun setAddButtonOnClickListener(onClick: () -> Unit)
     }
 }

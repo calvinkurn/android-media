@@ -1,12 +1,12 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
@@ -15,7 +15,6 @@ import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragment
-import com.tokopedia.manageaddress.util.ManageAddressConstant.QUERY_RECEIVER_USER_ID
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
 
@@ -48,20 +47,12 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
             }
 
             bundle.putAll(intent.extras)
-
-            if (isNeedToShareAddress(intent)) {
-                binding?.tvTitle?.text = getString(R.string.title_select_share_address)
-                binding?.btnAdd?.gone()
-            }
         }
+
         supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance(bundle)).commit()
         binding?.btnBack?.setOnClickListener {
             onBackPressed()
         }
-    }
-
-    private fun isNeedToShareAddress(intent: Intent): Boolean {
-        return intent.hasExtra(QUERY_RECEIVER_USER_ID)
     }
 
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
@@ -73,6 +64,17 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     override fun setSearch(query: String, saveAddressDataModel: SaveAddressDataModel?) {
         val mainAddressFragment = getMainAddressFragment()
         mainAddressFragment?.performSearch(query, saveAddressDataModel)
+    }
+
+    override fun setToolbarTitle(title: String, isBtnAddVisible: Boolean) {
+        binding?.tvTitle?.text = title
+        binding?.btnAdd?.apply {
+            if (isBtnAddVisible) {
+                visible()
+            } else {
+                gone()
+            }
+        }
     }
 
     override fun onBackPressed() {
