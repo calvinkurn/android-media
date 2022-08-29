@@ -41,10 +41,10 @@ class RedefineRegisterEmailViewModel @Inject constructor(
             password.isEmpty() -> {
                 R.string.error_field_required
             }
-            RegisterUtil.isTooShortLength(password) -> {
+            RegisterUtil.isPasswordTooShortLength(password) -> {
                 R.string.error_minimal_password
             }
-            RegisterUtil.isExceedMaximumLength(password) -> {
+            RegisterUtil.isPasswordExceedMaximumLength(password) -> {
                 R.string.error_maximal_password
             }
             else -> {
@@ -78,7 +78,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     }
 
     private fun isDataValid(stringResource: Int): Boolean {
-        return stringResource == NOTHING_RESOURCE && stringResource != RESOURCE_NOT_CHANGED
+        return stringResource == NOTHING_RESOURCE
     }
 
     fun submitForm(email: String, password: String, name: String) {

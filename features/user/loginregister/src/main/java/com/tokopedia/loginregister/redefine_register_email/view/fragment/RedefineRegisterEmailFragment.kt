@@ -19,7 +19,7 @@ import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
-import com.tokopedia.loginregister.redefine_register_email.di.RegisterEmailComponent
+import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.view.viewmodel.RedefineRegisterEmailViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.view.binding.viewBinding
@@ -109,23 +109,17 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun editorChangesListener() {
         binding?.fieldEmail?.editText?.afterTextChanged {
-            viewModel.validateEmail(
-                binding?.fieldEmail?.editText?.text.toString()
-            )
+            viewModel.validateEmail(it)
 
             setUpEmailExtension(it)
         }
 
         binding?.fieldPassword?.editText?.afterTextChanged {
-            viewModel.validatePassword(
-                binding?.fieldPassword?.editText?.text.toString()
-            )
+            viewModel.validatePassword(it)
         }
 
         binding?.fieldName?.editText?.afterTextChanged {
-            viewModel.validateName(
-                binding?.fieldName?.editText?.text.toString()
-            )
+            viewModel.validateName(it)
         }
 
         binding?.fieldName?.editText?.setOnEditorActionListener { _, actionId, _ ->
@@ -229,7 +223,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
-        getComponent(RegisterEmailComponent::class.java).inject(this)
+        getComponent(RedefineRegisterEmailComponent::class.java).inject(this)
     }
 
     companion object {

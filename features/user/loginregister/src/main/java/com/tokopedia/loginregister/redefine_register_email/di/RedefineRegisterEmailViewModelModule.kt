@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.loginregister.redefine_register_email.view.viewmodel.RedefineRegisterEmailViewModel
+import com.tokopedia.loginregister.redefine_register_email.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class RegisterEmailViewModelModule {
+abstract class RedefineRegisterEmailViewModelModule {
 
     @Binds
     @ActivityScope
@@ -20,6 +21,11 @@ abstract class RegisterEmailViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(RedefineRegisterEmailViewModel::class)
-    internal abstract fun bindRegisterEmailViewModel(viewModel: RedefineRegisterEmailViewModel): ViewModel
+    internal abstract fun bindRedefineRegisterEmailViewModel(viewModel: RedefineRegisterEmailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RedefineRegisterInputPhoneViewModel::class)
+    internal abstract fun bindRedefineInputPhoneViewModel(viewModel: RedefineRegisterInputPhoneViewModel): ViewModel
 
 }
