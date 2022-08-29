@@ -725,15 +725,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     totalItem = voucherCodes.size
 
                     val indicator = ImageView(context).apply {
-                        setPadding(
-                            5,
-                            0,
-                            5,
-                            0
-                        )
+                        setPadding(PADDING_5, PADDING_0, PADDING_5, PADDING_0)
                     }
 
-                    if (index == 0) {
+                    if (index == FIRST_INDEX) {
                         indicator.setImageResource(R.drawable.ic_indicator_selected)
                     } else {
                         indicator.setImageResource(R.drawable.ic_indicator_unselected)
@@ -743,8 +738,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     itemIndicator.addView(indicator)
                 }
 
-               tvLabelCount.showWithCondition(voucherCodes.size > 1)
-               itemIndicator.showWithCondition(voucherCodes.size > 1)
+                val isVoucherCodesNotEmpty = voucherCodes.size > 1
+
+               tvLabelCount.showWithCondition(isVoucherCodesNotEmpty)
+               itemIndicator.showWithCondition(isVoucherCodesNotEmpty)
             }
 
             tvLabelCount.text = getString(R.string.deals_voucher_label_count, 1, totalItem)
@@ -898,7 +895,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         val coachMark = CoachMarkBuilder().build()
         Handler(Looper.getMainLooper()).postDelayed({
-            coachMark.show(activity, "", listCoachMark)
+            coachMark.show(activity, TAG_COACHMARK, listCoachMark)
         }, DELAY_COACH_MARK_START)
 
         localCacheHandler.apply {
@@ -1050,11 +1047,14 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_QRCODE = "qrcode"
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val KEY_DEAL = "Deal"
+        private const val PADDING_5 = 5
+        private const val PADDING_0 = 0
         private const val SHAPE_STROKE_2 = 2
         private const val SHAPE_CORNER_RADIUS_4 = 4f
         private const val SHAPE_CORNER_RADIUS_9 = 9f
         private const val TOTAL_SIZE_2 = 2
         private const val TOTAL_SIZE_1 = 1
+        private const val FIRST_INDEX = 0
         private const val DELAY_COACH_MARK_START = 500L
         private const val KEY_TEXT = "text"
         private const val ENCODER = "UTF-8"
@@ -1069,6 +1069,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val DEFAULT_MESSAGE_ERROR = "Something Error"
         private const val TAG_DEALS_QR = "qr_deals"
         private const val TAG_EVENTS_QR = "qr_events"
+        private const val TAG_COACHMARK = "coachmark"
         const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(
