@@ -567,7 +567,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.shopProductFilterCountLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetShopProductFilterCount(it.data, isFulfillmentFilterActive)
+                    onSuccessGetShopProductFilterCount(count = it.data)
                 }
             }
         })
@@ -725,7 +725,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun onSuccessGetShopProductFilterCount(count: Int, isFulfillmentFilterActive: Boolean) {
+    private fun onSuccessGetShopProductFilterCount(count: Int = Int.ZERO, isFulfillmentFilterActive: Boolean = false) {
         val countText = if (isFulfillmentFilterActive) {
             getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
         } else {
@@ -1614,14 +1614,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val tempShopProductFilterParameter = ShopProductFilterParameter()
         tempShopProductFilterParameter.setMapData(mapParameter)
         isFulfillmentFilterActive = mapParameter[IS_FULFILLMENT_KEY] == true.toString()
-        viewModel.getFilterResultCount(
+        if (isFulfillmentFilterActive) {
+            // if fulfillment filter is active then avoid gql call to get total product
+            onSuccessGetShopProductFilterCount(isFulfillmentFilterActive = isFulfillmentFilterActive)
+        } else {
+            viewModel.getFilterResultCount(
                 shopId.orEmpty(),
                 ShopUtil.getProductPerPage(context),
                 keyword,
                 selectedEtalaseId,
                 tempShopProductFilterParameter,
                 localCacheModel ?: LocalCacheModel()
-        )
+            )
+        }
     }
 
 

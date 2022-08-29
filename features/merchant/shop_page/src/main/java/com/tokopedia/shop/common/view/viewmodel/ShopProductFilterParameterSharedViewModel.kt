@@ -19,6 +19,10 @@ class ShopProductFilterParameterSharedViewModel : ViewModel() {
     }
 
     fun setFulfillmentFilterActiveStatus(mapParameter: Map<String, String>) {
-        isFulfillmentFilterActive = mapParameter[IS_FULFILLMENT_KEY] == true.toString()
+        isFulfillmentFilterActive = if (mapParameter.containsKey(IS_FULFILLMENT_KEY)) {
+            mapParameter[IS_FULFILLMENT_KEY] == true.toString()
+        } else {
+            false
+        }
     }
 }
