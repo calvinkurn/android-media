@@ -1,22 +1,16 @@
 package com.tokopedia.buyerorder.detail.revamp.widget
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.HexValidator
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.databinding.RedeemVoucherDealsLayoutBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 
 /**
  * created by @bayazidnasir on 25/8/2022
@@ -80,11 +74,9 @@ class RedeemVoucherView : LinearLayout {
         binding.redeemBtnDeals.setOnClickListener {
             if (actionButton.label.equals(KEY_RETRY, true)) {
                 retryCount++
-                binding.loadingViewRetry.visible()
-                binding.redeemBtnDeals.gone()
+                binding.redeemBtnDeals.isLoading = true
             } else {
-                binding.loadingViewRetry.gone()
-                binding.redeemBtnDeals.visible()
+                binding.redeemBtnDeals.isLoading = false
             }
 
             onTapActionDeals?.invoke(binding.redeemBtnDeals, item, retryCount)
@@ -95,8 +87,7 @@ class RedeemVoucherView : LinearLayout {
     }
 
     private fun renderRedeemButton(actionButton: ActionButton){
-        binding.loadingViewRetry.gone()
-        binding.redeemBtnDeals.visible()
+        binding.redeemBtnDeals.isLoading = false
         binding.redeemBtnDeals.text = actionButton.label
         if (actionButton.header.isNotEmpty()){
             val header = actionButton.headerObject
@@ -118,21 +109,6 @@ class RedeemVoucherView : LinearLayout {
                 binding.voucherCodeTitleDeals.text = context.getString(R.string.event_ticket_voucher_number)
             }
         }
-
-        val shape = binding.redeemBtnDeals.background as GradientDrawable
-        if (HexValidator.validate(actionButton.actionColor.background)) {
-            shape.setColor(Color.parseColor(actionButton.actionColor.background))
-        } else {
-            shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-        }
-
-        if (HexValidator.validate(actionButton.actionColor.border)) {
-            shape.setStroke(STROKE_WIDTH, Color.parseColor(actionButton.actionColor.border))
-        } else {
-            shape.setStroke(ZERO_STROKE_WIDTH, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-        }
-
-        shape.cornerRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
     }
 
     private fun renderRetryButton(actionButton: ActionButton){
@@ -141,36 +117,10 @@ class RedeemVoucherView : LinearLayout {
             if (actionButton.header.isNotEmpty() && actionButton.headerObject.itemLabel.isNotEmpty()) {
                 binding.voucherCodeTitleDeals.text = actionButton.headerObject.itemLabel
             }
-
-            val shape = GradientDrawable().apply {
-                if (HexValidator.validate(actionButton.actionColor.background)) {
-                    setColor(Color.parseColor(actionButton.actionColor.background))
-                } else {
-                    setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                }
-
-                if (HexValidator.validate(actionButton.actionColor.border)) {
-                    setStroke(STROKE_WIDTH, Color.parseColor(actionButton.actionColor.border))
-                } else {
-                    setStroke(ZERO_STROKE_WIDTH, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                }
-
-                cornerRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
-            }
-
-            if (HexValidator.validate(actionButton.actionColor.textColor)) {
-                binding.redeemBtnDeals.setTextColor(Color.parseColor(actionButton.actionColor.textColor))
-            } else {
-                binding.redeemBtnDeals.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-            }
-
-            binding.redeemBtnDeals.background = shape
         } else {
             if (actionButton.control.equals(KEY_REFRESH, true)) {
                 with(binding){
                     voucherCodeTitleDeals.text = context.getString(R.string.tkpdtransaction_oms_retry_text)
-                    redeemBtnDeals.background = MethodChecker.getDrawable(context, R.drawable.bg_rounded_grey_label_buyer)
-                    redeemBtnDeals.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                     redeemBtnDeals.isEnabled = false
                     redeemBtnDeals.postDelayed({
                         retryCount = 0
@@ -194,8 +144,6 @@ class RedeemVoucherView : LinearLayout {
         const val KEY_REFRESH = "refresh"
         const val KEY_RETRY = "Cek Ulang"
         const val E_VOUCHER_FORMAT = "%s %s"
-        const val STROKE_WIDTH = 1
-        const val ZERO_STROKE_WIDTH = 0
         const val DELAY_TIME = 30000L
     }
 }
