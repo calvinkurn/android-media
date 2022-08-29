@@ -8,7 +8,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -24,11 +23,7 @@ import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
-import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
-import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_ADS_COUNT
-import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_DIMENS
-import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_SOURCE
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.util.WishlistV2Utils.convertWishlistV2IntoWishlistUiModel
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
@@ -163,51 +158,9 @@ class WishlistV2ViewModel @Inject constructor(
                         productIds = productIds,
                         pageName = pageName)
         )
-        )
         return WishlistV2RecommendationDataModel(WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
             recommendation.recommendationItemList, recommendation.title
         )
-    }
-
-    suspend fun getTopAdsData(): TopAdsImageViewModel?  {
-        return try {
-            topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap("",
-                WISHLIST_TOPADS_SOURCE, "", WISHLIST_TOPADS_ADS_COUNT, WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
-        } catch (e: Exception) {
-            Timber.d(e)
-            return null
-        }
-    fun convertRecommendationIntoProductDataModel(data: List<RecommendationItem>): List<ProductCardModel> {
-        return data.map { element ->
-            ProductCardModel(
-                slashedPrice = element.slashedPrice,
-                productName = element.name,
-                formattedPrice = element.price,
-                productImageUrl = element.imageUrl,
-                isTopAds = element.isTopAds,
-                discountPercentage = element.discountPercentage,
-                reviewCount = element.countReview,
-                ratingCount = element.rating,
-                shopLocation = element.location,
-                isWishlistVisible = true,
-                isWishlisted = element.isWishlist,
-                shopBadgeList = element.badgesUrl.map {
-                    ProductCardModel.ShopBadge(imageUrl = it)
-                },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    isActive = element.isFreeOngkirActive,
-                    imageUrl = element.freeOngkirImageUrl
-                ),
-                labelGroupList = element.labelGroupList.map { recommendationLabel ->
-                    ProductCardModel.LabelGroup(
-                        position = recommendationLabel.position,
-                        title = recommendationLabel.title,
-                        type = recommendationLabel.type,
-                        imageUrl = recommendationLabel.imageUrl
-                    )
-                }
-            )
-        }
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel? {
