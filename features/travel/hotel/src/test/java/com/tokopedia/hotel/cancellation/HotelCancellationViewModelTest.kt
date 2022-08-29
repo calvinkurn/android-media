@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.cancellation.data.HotelCancellationError
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
@@ -67,6 +68,26 @@ class HotelCancellationViewModelTest {
         //then
         assert(hotelCancellationViewModel.cancellationData.value is Success)
         assert((hotelCancellationViewModel.cancellationData.value as Success<HotelCancellationModel>).data.cancelCartId == "123")
+    }
+
+    @Test
+    fun getCancellationData_isFromCloudWithActionButton_souldFailed() {
+        //given
+        val dummyCancellationData = HotelCancellationModel.Response(HotelCancellationModel.CancellationDataAndMeta(content = HotelCancellationError.Content(
+            listOf(HotelCancellationError.ActionButton()))))
+        val graphqlSuccessResponse = GraphqlResponse(
+            mapOf<Type, Any>(HotelCancellationModel.Response::class.java to dummyCancellationData),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+        coEvery {
+            multiRequestGraphqlUseCase.executeOnBackground()
+        } returns graphqlSuccessResponse
+
+        //when
+        hotelCancellationViewModel.getCancellationData("")
+
+        //then
+        assert(hotelCancellationViewModel.cancellationData.value is Fail)
     }
 
     @Test

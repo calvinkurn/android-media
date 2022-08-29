@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderBoardItemDecoration
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
@@ -26,6 +27,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.view_play_interactive_leaderboard.view.*
 
 
 /**
@@ -39,19 +41,37 @@ class PlayInteractiveLeaderboardViewComponent(
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
     private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
     private val llPlaceholder: LinearLayout = findViewById(R.id.ll_leaderboard_placeholder)
+    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val ivSheetClose: ImageView = findViewById(R.id.iv_sheet_close)
     private val btnRefreshError: UnifyButton = findViewById(R.id.btn_action_leaderboard_error)
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
+    private val bottomSheetBehavior = try {
+        BottomSheetBehavior.from(rootView)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
-    private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
+    private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener {
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
-            listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
+            listener.onChatWinnerButtonClicked(
+                this@PlayInteractiveLeaderboardViewComponent,
+                winner,
+                position
+            )
+        }
+
+        override fun onChoiceItemClicked(item: QuizChoicesUiModel) {
+            listener.onChoiceItemClicked(item)
         }
 
         override fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel) {
-            listener.onLeaderBoardImpressed(this@PlayInteractiveLeaderboardViewComponent, leaderboard)
+            listener.onLeaderBoardImpressed(
+                this@PlayInteractiveLeaderboardViewComponent,
+                leaderboard
+            )
         }
     })
+
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             if (itemCount > 0) layoutManager.scrollToPositionWithOffset(0, 0)
@@ -63,15 +83,14 @@ class PlayInteractiveLeaderboardViewComponent(
     private val layoutManager = LinearLayoutManager(rvLeaderboard.context)
 
     init {
-        findViewById<TextView>(R.id.tv_sheet_title)
-            .setText(R.string.play_interactive_leaderboard_title)
+        tvSheetTitle.setText(R.string.play_interactive_leaderboard_title)
 
-        findViewById<ImageView>(R.id.iv_sheet_close)
-            .setOnClickListener {
-                listener.onCloseButtonClicked(this)
-            }
+        ivSheetClose.setOnClickListener {
+            listener.onCloseButtonClicked(this)
+        }
 
         rvLeaderboard.apply {
+            addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
             adapter = leaderboardAdapter
             layoutManager = layoutManager
         }
@@ -87,11 +106,16 @@ class PlayInteractiveLeaderboardViewComponent(
         }
 
         registerAdapterObserver()
-        rvLeaderboard.addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
 
         btnRefreshError.rootView.addOnImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)
         }
+    }
+
+    fun clearTopPadding(){
+        rootView.updatePadding(
+            top = 0
+        )
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
@@ -115,6 +139,10 @@ class PlayInteractiveLeaderboardViewComponent(
         llPlaceholder.show()
     }
 
+    fun addItemTouchListener(listener: RecyclerView.OnItemTouchListener) {
+        rvLeaderboard.addOnItemTouchListener(listener)
+    }
+
     fun showWithHeight(height: Int) {
         if (rootView.height != height) {
             val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
@@ -125,17 +153,25 @@ class PlayInteractiveLeaderboardViewComponent(
         show()
     }
 
+    fun setTitle(title:String) {
+        tvSheetTitle.text = title
+    }
+
     private fun showBtnLoader(shouldShow: Boolean){
         btnRefreshError.isLoading = shouldShow
         btnRefreshError.isClickable = !shouldShow
     }
 
     override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        } else super.show()
     }
 
     override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        if (bottomSheetBehavior != null) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        } else super.hide()
     }
 
     private fun registerAdapterObserver() {
@@ -165,10 +201,10 @@ class PlayInteractiveLeaderboardViewComponent(
         fun onChatWinnerButtonClicked(
             view: PlayInteractiveLeaderboardViewComponent,
             winner: PlayWinnerUiModel,
-            position: Int
-        ) {
-        }
+            position: Int,
+        ){}
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
+        fun onChoiceItemClicked(item: QuizChoicesUiModel) {}
         fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent)
         fun onLeaderBoardImpressed(view: PlayInteractiveLeaderboardViewComponent, leaderboard: PlayLeaderboardUiModel)
     }

@@ -12,7 +12,7 @@ class BrizziInquiryLogResponse(
 class BrizziInquiryLog(
         @SerializedName("inquiry_id")
         @Expose
-        val inquiryId: Int = 0,
+        val inquiryId: String = "0",
         @SerializedName("status")
         @Expose
         val status: String = "",

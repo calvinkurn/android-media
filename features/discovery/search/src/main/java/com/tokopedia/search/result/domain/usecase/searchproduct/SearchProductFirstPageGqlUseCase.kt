@@ -225,6 +225,7 @@ class SearchProductFirstPageGqlUseCase(
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
                         title
+                        chip_name
                         options {
                             name
                             key
@@ -270,6 +271,9 @@ class SearchProductFirstPageGqlUseCase(
                         see_all_applink
                         see_all_url
                         show_topads
+                        tracking_option
+                        component_id
+                        info
                         list {
                             category_name
                             name
@@ -281,6 +285,7 @@ class SearchProductFirstPageGqlUseCase(
                             strikethrough
                             background_url
                             logo_url
+                            component_id
                         }
                     }
                 }
@@ -298,6 +303,7 @@ class SearchProductFirstPageGqlUseCase(
                         tracking_option
                         options {
                             title
+                            subtitle
                             url
                             applink
                             banner_image_url
@@ -348,6 +354,10 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 customvideo_url
                             }
+                            card_button {
+                                title
+                                applink
+                            }
                         }
                     }
                 }
@@ -388,12 +398,15 @@ class SearchProductFirstPageGqlUseCase(
                   title
                   description
                   category_id_l2
+                  applink
                   filters {
                     title
                     key
                     name
                     value
                   }
+                  tracking_option
+                  component_id
                 }
               }
             }"""

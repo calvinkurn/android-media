@@ -398,7 +398,7 @@ class PlayLiveInitialInteractiveTest {
         val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Quiz"
         val model = InteractiveUiModel.Quiz(
-            status = InteractiveUiModel.Quiz.Status.Finished,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(5000L.millisFromNow()),
             title = title,
             id = "1",
             waitingDuration = 1500L,
@@ -433,7 +433,6 @@ class PlayLiveInitialInteractiveTest {
                 createPage(mockChannelData)
                 focusPage(mockChannelData)
             }
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Quiz>()
             val event = it.recordEvent {
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
                 socketFlow.emit(
@@ -445,14 +444,7 @@ class PlayLiveInitialInteractiveTest {
                     )
                 )
             }
-            event.last().assertEqualTo(
-                ShowWinningDialogEvent(
-                    PlayUserWinnerStatusSocketResponse.imageUrl,
-                    PlayUserWinnerStatusSocketResponse.winnerTitle,
-                    PlayUserWinnerStatusSocketResponse.winnerText,
-                    model,
-                )
-            )
+            event.last().assertInstanceOf<ShowWinningDialogEvent>()
         }
     }
     @Test
@@ -467,7 +459,7 @@ class PlayLiveInitialInteractiveTest {
         val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Quiz"
         val model = InteractiveUiModel.Quiz(
-            status = InteractiveUiModel.Quiz.Status.Finished,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(5000L.millisFromNow()),
             title = title,
             id = "1",
             waitingDuration = 1500L,

@@ -261,6 +261,7 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
+    <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
 
 
@@ -387,11 +388,20 @@
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
 
+    <string name="title_feed_content_creation">Feed Content Creation</string>
     <string name="title_image_picker_insta_df">Media Picker</string>
     <string name="title_feed_create_post">Create Post</string>
+    <string name="title_feed_people">People</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="title_dynamic_libraries">Libraries</string>
+
+    <!-- TokoFood -->
+    <string name="title_tokofood" translatable="false">TokoFood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
 </resources>

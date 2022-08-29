@@ -9,7 +9,8 @@ import android.util.Base64
 import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.loginregister.login.data.SignResult
-import com.tokopedia.loginregister.login.di.LoginComponentBuilder
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -30,7 +31,6 @@ import kotlin.coroutines.CoroutineContext
 @Deprecated("move into workmanager")
 class RegisterPushNotifService : JobIntentServiceX(), CoroutineScope {
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -71,7 +71,7 @@ class RegisterPushNotifService : JobIntentServiceX(), CoroutineScope {
 
     private fun initInjector() {
         application?.let {
-            LoginComponentBuilder.getComponent(it).inject(this)
+            ActivityComponentFactory.instance.createLoginComponent(it).inject(this)
         }
     }
 

@@ -11,9 +11,9 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
-import com.tokopedia.otp.verification.domain.data.TAG_AUTO_READ
+import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
+import com.tokopedia.otp.verification.data.TAG_AUTO_READ
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.track.TrackApp

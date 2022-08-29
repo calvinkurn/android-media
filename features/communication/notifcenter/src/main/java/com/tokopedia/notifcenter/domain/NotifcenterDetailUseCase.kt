@@ -268,6 +268,8 @@ open class NotifcenterDetailUseCase @Inject constructor(
             				product_id
             				name
             				url
+                            android_url
+                            ios_url
             				image_url
             				department_id
             				min_order
@@ -281,6 +283,7 @@ open class NotifcenterDetailUseCase @Inject constructor(
             				is_preorder
             				rating
             				count_review
+                            warehouse_id
             				labels {
             					title
             					color
@@ -402,6 +405,8 @@ open class NotifcenterDetailUseCase @Inject constructor(
             				product_id
             				name
             				url
+                            android_url
+                            ios_url
             				image_url
             				department_id
             				min_order
@@ -415,6 +420,7 @@ open class NotifcenterDetailUseCase @Inject constructor(
             				is_preorder
             				rating
             				count_review
+                            warehouse_id
             				labels {
             					title
             					color

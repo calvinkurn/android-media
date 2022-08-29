@@ -15,7 +15,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewHolder
@@ -104,7 +103,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = when (holder) {
-                is ProductCardItemViewHolder -> false
                 is CalendarWidgetItemViewHolder -> false
                 is ShimmerCalendarViewHolder -> false
                 is ShopBannerInfiniteItemViewHolder -> false

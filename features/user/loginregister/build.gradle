@@ -11,6 +11,9 @@ android{
         aidl true
         viewBinding true
     }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
 }
 
 buildscript {
@@ -32,6 +35,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -41,6 +45,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
@@ -49,6 +54,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.playServicesDependencies.location
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
@@ -73,52 +79,41 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.gojekSSO
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.workManager
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
-    implementation rootProject.ext.miscDependencies.dagger
 
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     kapt rootProject.ext.miscDependencies.parceler
 
     // UI Test
-    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
-    androidTestImplementation rootProject.ext.testDependencies.kotlinMockito2
-    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMock
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
-
 }
 
 project.ext {

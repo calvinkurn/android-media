@@ -162,4 +162,7 @@ public interface LinkerConstants {
 
     String DISCOVERY_PATH = "/discovery/";
 
+    String QUERY_INITIATOR = "?";
+    String QUERY_PARAM_SEGREGATOR = "&";
+
 }

@@ -40,6 +40,8 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -71,7 +73,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
@@ -129,6 +131,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
+    private var userAddressData: LocalCacheModel? = null
+    private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getCountDeletionProgress()
     }
@@ -261,6 +265,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.showDeleteProgress) {
                             if (!hitCountDeletion) {
                                 hitCountDeletion = true
+                                isOnProgressDeleteWishlist = true
                                 getCountDeletionProgress()
                             }
                             hideTotalLabel()
@@ -403,6 +408,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun getBaseAppComponent(): BaseAppComponent {
         return (activity?.application as BaseMainApplication).baseAppComponent
+    }
+
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private fun prepareLayout() {
@@ -589,6 +600,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun loadWishlistV2() {
+        fetchUserLatestAddressData()
+        userAddressData?.let { address ->
+            paramWishlistV2.wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                districtId = address.district_id,
+                cityId = address.city_id,
+                latitude = address.lat,
+                longitude = address.long,
+                postalCode = address.postal_code,
+                addressId = address.address_id)
+        }
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout(),
             paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION
@@ -702,7 +723,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     override fun onResume() {
         super.onResume()
-        setRefreshing()
+        checkProgressDeletion()
+    }
+
+    private fun checkProgressDeletion() {
+        if (isOnProgressDeleteWishlist) {
+            getCountDeletionProgress()
+        }
     }
 
     private fun stopProgressDeletionHandler() {
@@ -748,6 +775,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        isOnProgressDeleteWishlist = false
         stopProgressDeletionHandler()
         wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
         if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
@@ -960,7 +988,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
                 filterBottomSheet.dismiss()
                 paramWishlistV2.sortFilters.removeAll { it.name == name }
-                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                paramWishlistV2.sortFilters.add(
+                    WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 doRefresh()
                 hitAnalyticsFilterOptionSelected(name, label)
@@ -1004,7 +1033,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onSaveCheckboxSelection() {
                 if (listOptionIdSelected.isNotEmpty()) {
                     paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
-                    paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                    paramWishlistV2.sortFilters.add(
+                        WishlistV2Params.WishlistSortFilterParam(
                             name = nameSelected, selected = listOptionIdSelected as ArrayList<String>))
                 }
 
@@ -1204,15 +1234,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     override fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
         WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
-            startActivity(intent)
-        }
-    }
-
-    override fun onProductRecommItemClicked(productId: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-            startActivity(intent)
+            if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.route(it, wishlistItem.url)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                startActivity(intent)
+            }
         }
     }
 
@@ -1259,7 +1286,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -1268,6 +1295,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     recommendationItem.name,
                     recommendationItem.imageUrl
             )
+        }
+        activity?.let {
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 
@@ -1285,7 +1321,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -1296,8 +1332,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             )
         }
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
-            startActivity(intent)
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 
@@ -1309,7 +1350,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val listOptionIdSelected = mutableListOf<String>()
         listOptionIdSelected.add(OPTION_ID_SORT_OLDEST)
             paramWishlistV2.sortFilters.clear()
-            paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+            paramWishlistV2.sortFilters.add(
+                WishlistV2Params.WishlistSortFilterParam(
                 name = FILTER_SORT, selected = listOptionIdSelected as ArrayList<String>))
 
         doRefresh()

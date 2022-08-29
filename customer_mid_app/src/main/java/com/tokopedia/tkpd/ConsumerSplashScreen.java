@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -48,7 +47,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    public static final String GOOGLE_ANALYTICS_DEFERRED_DEEPLINK_PREFERENCE= "google.analytics.deferred.deeplink.prefs";
+    public static final String GOOGLE_ANALYTICS_DEFERRED_DEEPLINK_PREFERENCE = "google.analytics.deferred.deeplink.prefs";
     public static final String GOOGLE_DDL_DEEPLINK_KEY = "deeplink";
     public static final String TYPE_KEY = "type";
     public static final String GOOGLE_DDL_KEY = "GOOGLE_DDL";
@@ -69,13 +68,14 @@ public class ConsumerSplashScreen extends SplashScreen {
         setUpGoogleDeeplinkListener();
     }
 
-    private void setUpGoogleDeeplinkListener(){
+    private void setUpGoogleDeeplinkListener() {
         preferences = getSharedPreferences(GOOGLE_ANALYTICS_DEFERRED_DEEPLINK_PREFERENCE, MODE_PRIVATE);
         deepLinkListener = (sharedPreferences, key) -> {
             if (GOOGLE_DDL_DEEPLINK_KEY.equals(key)) {
                 String deeplink = sharedPreferences.getString(key, null);
                 navigateToDeeplink(deeplink);
-            } };
+            }
+        };
     }
 
     @Override
@@ -85,10 +85,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         initiateBranchAndInstallReferrerFlow();
     }
 
-    private void initiateBranchAndInstallReferrerFlow(){
-        if(LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())){
+    private void initiateBranchAndInstallReferrerFlow() {
+        if (LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
             LinkerManager.getInstance().setDelayedSessionInitFlag();
-        }else {
+        } else {
             getBranchDefferedDeeplink();
         }
         checkInstallReferrerInitialised();
@@ -101,8 +101,8 @@ public class ConsumerSplashScreen extends SplashScreen {
         deepLinkListener = null;
     }
 
-    private void navigateToDeeplink(String deeplink){
-        if(!TextUtils.isEmpty(deeplink)) {
+    private void navigateToDeeplink(String deeplink) {
+        if (!TextUtils.isEmpty(deeplink)) {
             Intent intent = new Intent();
             String tokopediaDeeplink = deeplink;
             if (URLUtil.isNetworkUrl(deeplink)) {
@@ -127,7 +127,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    public InstallReferrerInterface getInstallReferrerInterface(){
+    public InstallReferrerInterface getInstallReferrerInterface() {
         return new InstallReferrerInterface() {
             @Override
             public void installReferrerDataRetrived(@NonNull String installReferrerData) {
@@ -143,7 +143,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         if (!installRefInitialised) {
             localCacheHandler.applyEditor();
             InstallReferral installReferral = new InstallReferral();
-            if(LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
+            if (LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
                 installReferral.setInstallReferrerInterface(getInstallReferrerInterface());
             }
             installReferral.initilizeInstallReferral(this);
@@ -169,8 +169,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void initializationNewRelic() {
-        boolean isEnableInitNrInAct =
-                remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+        boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
         if (isEnableInitNrInAct) {
             NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
         }
@@ -248,7 +247,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
                 LogManager logManager = LogManager.instance;
-                if (logManager!= null) {
+                if (logManager != null) {
                     logManager.refreshConfig();
                 }
             }

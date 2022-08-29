@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.usecase.discoveryPageUseCase
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.USER_ADDRESS_KEY
+import com.tokopedia.discovery2.Constant.QueryParamConstants.QUERY_PARAMS_KEY
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
@@ -26,6 +28,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
         localCacheModel?.let {
             paramMap[USER_ADDRESS_KEY] = it
         }
+        paramMap[QUERY_PARAMS_KEY] = Utils.addQueryParamMap(queryParameterMap)
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
 
         return mapDiscoveryResponseToPageData(

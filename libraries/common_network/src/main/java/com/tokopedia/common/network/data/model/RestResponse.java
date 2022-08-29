@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import java.lang.reflect.Type;
 
+import okhttp3.Headers;
+
 public class RestResponse {
     private final Object result;
     private final boolean isCached;
@@ -11,11 +13,19 @@ public class RestResponse {
     private String errorBody;
     private boolean isError;
     private Type type;
+    private Headers headers;
 
     public RestResponse(@NonNull Object result, int code, boolean isCached) {
         this.result = result;
         this.isCached = isCached;
         this.code = code;
+    }
+
+    public RestResponse(@NonNull Object result, int code, Headers headers, boolean isCached) {
+        this.result = result;
+        this.isCached = isCached;
+        this.code = code;
+        this.headers = headers;
     }
 
     /**
@@ -63,5 +73,9 @@ public class RestResponse {
 
     public int getCode() {
         return code;
+    }
+
+    public Headers getHeaders() {
+        return headers;
     }
 }

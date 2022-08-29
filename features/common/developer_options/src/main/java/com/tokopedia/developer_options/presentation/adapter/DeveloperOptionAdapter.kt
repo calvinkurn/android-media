@@ -26,6 +26,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
         const val KEYWORD_RESET_ONBOARDING = "Reset OnBoarding"
         const val KEYWORD_FORCE_CRASH = "Force Crash"
+        const val KEYWORD_FORCE_LOGOUT = "Force Logout"
         const val KEYWORD_SEND_FIREBASE_EXCEPTION = "Send Firebase Exception"
         const val KEYWORD_OPEN_SCREEN_RECORDER = "Open Screen Recorder"
         const val KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION = "Enable Network Log on Notification"
@@ -83,6 +84,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
+        const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
     }
 
     /**
@@ -99,6 +101,7 @@ class DeveloperOptionAdapter(
             KEYWORD_NON_SYSTEM_APPS)
         ),
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
+        ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
@@ -168,7 +171,10 @@ class DeveloperOptionAdapter(
         PlayWebSocketSseLoggingUiModel(listOf(
             KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
             KEYWORD_VIEW_SSE_LOGGING
-        ))
+        )),
+        ConvertResourceIdUiModel(
+            listOf(KEYWORD_CONVERT_RESOURCE_ID)
+        )
     )
 
     init {

@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -80,7 +82,6 @@ import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitial
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -115,7 +116,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(),
+class RegisterInitialFragment : BaseDaggerFragment(),
     PartialRegisterInputView.PartialRegisterInputViewListener,
     RegisterInitialRouter{
 
@@ -150,7 +151,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
 
-    @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -168,11 +168,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
-    val registerInitialViewModel by lazy {
-        viewModelProvider.get(RegisterInitialViewModel::class.java)
+    private val registerInitialViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(RegisterInitialViewModel::class.java)
     }
 
     @Inject
@@ -1204,6 +1201,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             }
 
+            TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
+
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
             it.finish()
             saveFirstInstallTime()
@@ -1218,7 +1217,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
     private fun isFromAtc(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     private fun onGoToChangeName() {
-        registerInitialRouter.goToChangeName(this)
+        registerInitialRouter.goToChangeName(this, validateToken)
     }
 
     private fun onGoToForbiddenPage() {
@@ -1417,7 +1416,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(),
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
                 }
             }
 

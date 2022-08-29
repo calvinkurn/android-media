@@ -1,4 +1,7 @@
 <resources>
     <string name="picker_toolbar_main_title">Pilih Media</string>
     <string name="picker_toolbar_continue">Lanjut</string>
+
+    <string name="picker_video_duration_max_limit_sec">detik</string>
+    <string name="picker_video_duration_max_limit_min">menit</string>
 </resources>

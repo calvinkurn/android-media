@@ -1,30 +1,26 @@
 package com.tokopedia.sellerhome.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.domain.gqlquery.GqlGetShopInfoById
 import com.tokopedia.sellerhome.domain.model.GetShopClosedInfoResponse
 import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetShopInfoByIdGqlQuery", GetShopInfoByIdUseCase.QUERY)
 class GetShopInfoByIdUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetShopClosedInfoResponse>(gqlRepository) {
-
-    companion object {
-        private const val PARAM_SHOP_ID = "shopID"
-        private const val ERROR_MESSAGE = "Failed to get shop closed info"
-    }
 
     init {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(GqlGetShopInfoById)
+        setGraphqlQuery(GetShopInfoByIdGqlQuery())
         setTypeClass(GetShopClosedInfoResponse::class.java)
     }
 
@@ -44,5 +40,35 @@ class GetShopInfoByIdUseCase @Inject constructor(
             !errorMessage.isNullOrBlank() -> throw MessageErrorException(errorMessage)
             else -> throw MessageErrorException(ERROR_MESSAGE)
         }
+    }
+
+    companion object {
+        const val QUERY = """
+            query shopInfoByID(${'$'}shopID: Int!) {
+              shopInfoByID(input: {shopIDs: [${'$'}shopID], fields: ["core","closed_info","shop-snippet","status"]}) {
+                result {
+                  shopCore{
+                    url
+                  }
+                  closedInfo {
+                    detail {
+                      startDate
+                      endDate
+                      status
+                    }
+                  }
+                  statusInfo {
+                    shopStatus
+                  }
+                  shopSnippetURL
+                }
+                error {
+                  message
+                }
+              }
+            }
+        """
+        private const val PARAM_SHOP_ID = "shopID"
+        private const val ERROR_MESSAGE = "Failed to get shop closed info"
     }
 }

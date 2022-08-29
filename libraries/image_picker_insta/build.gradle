@@ -44,6 +44,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.miscDependencies.cameraView
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
@@ -59,4 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+     implementation rootProject.ext.unifyDependencies.icons
 }

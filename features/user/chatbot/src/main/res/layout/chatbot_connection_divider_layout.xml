@@ -13,10 +13,10 @@
         android:layout_marginLeft="@dimen/unify_space_16"
         android:background="@color/Unify_N150"
         app:layout_constraintBottom_toBottomOf="@+id/chatbot_tv_divider_message"
+        app:layout_constraintEnd_toStartOf="@+id/chatbot_tv_divider_message"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline2"
-        app:layout_constraintEnd_toStartOf="@+id/chatbot_tv_divider_message"/>
+        app:layout_constraintTop_toBottomOf="@+id/guideline2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chatbot_tv_divider_message"
@@ -27,10 +27,12 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginRight="@dimen/unify_space_16"
         android:gravity="center"
-        tools:text="Agen kami fasfsafsadcddcdcdxcvxvxfvxfgfdsgsgweweggwgedcd"
         app:layout_constraintEnd_toStartOf="@+id/view_right"
         app:layout_constraintStart_toEndOf="@+id/view_left"
-        app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline2"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        tools:text="Agen kami fasfsafsadcddcdcdxcvxvxfvxfgfdsgsgweweggwgedcd" />
 
     <View
         android:id="@+id/view_right"
@@ -55,9 +57,7 @@
         android:textColor="@color/Unify_G400"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chatbot_tv_divider_message"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline3"
-       />
+        app:layout_constraintTop_toBottomOf="@+id/chatbot_tv_divider_message" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

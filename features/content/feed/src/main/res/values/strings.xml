@@ -109,6 +109,8 @@ dari Feed.</string>
 
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
+    <!-- Unfollow -->
+    <string name="feed_unfollow_error_message">Oops, tidak bisa unfollow toko</string>
 
     <!--Toaster -->
     <string name="feed_go_to_cart">Lihat Keranjang</string>
@@ -126,13 +128,13 @@ dari Feed.</string>
   
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
-    <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_post_successful_toaster">Yay, post kamu berhasil di-upload!</string>
 
     <!--Floating Action Button-->
+    <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
-    <string name="feed_detail_page_header">Semua Barang Terbaru</string>
+    <string name="feed_detail_page_header">Dalam Post Ini</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
 

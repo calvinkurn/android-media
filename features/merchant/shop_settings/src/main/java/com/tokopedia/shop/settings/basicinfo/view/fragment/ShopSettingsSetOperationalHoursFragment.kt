@@ -83,6 +83,8 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         private const val MIN_OPEN_HOUR = 0
         private const val MIN_OPEN_MINUTE = 0
         private const val MAX_CLOSE_HOUR = 23
+        private const val ADDITIONAL_MINUTE_FOR_ENDTIME = 5
+        private const val TWO_DIGIT_TIME_THRESHOLD = 10
         private const val MAX_CLOSE_MINUTE = 59
         private const val DEFAULT_OPERATIONAL_HOURS_RANGE = 9
         private const val DEFAULT_TIME_PICKER_MINUTE_INTERVAL = 5
@@ -338,9 +340,9 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                             currentSelectedEndTime = opsHour.endTime
                         }
 
-                        opsHourAccordion?.addGroup(accordionOpsHourItem)?.accordionSubtitle?.setTextColor(
-                                resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                        )
+                        context?.apply {
+                            opsHourAccordion?.addGroup(accordionOpsHourItem)?.accordionSubtitle?.setTextColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+                        }
                     }
                 }
                 setAllAccordionsItemViewCustomHeight()
@@ -432,7 +434,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                                 RouteManager.route(context, String.format(
                                         WEBVIEW_APPLINK_FORMAT,
                                         ApplinkConst.WEBVIEW,
-                                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
                                 ))
                             }
 
@@ -457,7 +459,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                                 RouteManager.route(context, String.format(
                                         WEBVIEW_APPLINK_FORMAT,
                                         ApplinkConst.WEBVIEW,
-                                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
                                 ))
                             }
 
@@ -722,7 +724,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set minimum end time +1 hour from start time
                         set(Calendar.HOUR_OF_DAY, startTimeHour)
-                        set(Calendar.MINUTE, startTimeMinute + 5)
+                        set(Calendar.MINUTE, startTimeMinute + ADDITIONAL_MINUTE_FOR_ENDTIME)
                     },
                     defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set default selected end time same with minimum
@@ -813,7 +815,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     MAX_CLOSE_HOUR
                 }
 
-                val autoSelectedEndTimeString = if (nineHourAfterSelectedStartTime < 10) {
+                val autoSelectedEndTimeString = if (nineHourAfterSelectedStartTime < TWO_DIGIT_TIME_THRESHOLD) {
                     "0${autoSelectedEndTime}"
                 } else {
                     autoSelectedEndTime.toString()

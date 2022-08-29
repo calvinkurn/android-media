@@ -49,7 +49,7 @@ data class WebSocketCsatResponse(
 	val toBuyer: Boolean? = null,
 
 	@SerializedName("msg_id")
-	val msgId: Int? = null,
+	val msgId: Long? = null,
 
 	@SerializedName("is_bot")
 	val isBot: Boolean? = null
@@ -69,7 +69,7 @@ data class WebSocketCsatResponse(
 			parcel.readValue(Int::class.java.classLoader) as? Int,
 			parcel.readString(),
 			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-			parcel.readValue(Int::class.java.classLoader) as? Int,
+			parcel.readValue(Long::class.java.classLoader) as? Long,
 			parcel.readValue(Boolean::class.java.classLoader) as? Boolean) {
 	}
 

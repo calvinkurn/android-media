@@ -1,5 +1,6 @@
 package com.tokopedia.shopdiscount.manage.presentation.list
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.*
+import com.tokopedia.shopdiscount.utils.layoutmanager.NonPredictiveLinearLayoutManager
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.Toaster
@@ -585,7 +587,13 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView
+        return if (activity == null) {
+            binding?.recyclerView
+        } else {
+            binding?.recyclerView?.apply {
+                layoutManager = NonPredictiveLinearLayoutManager(requireActivity())
+            }
+        }
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
@@ -658,30 +666,33 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-    private fun showEmptyState(discountStatusId : Int) {
-        val title = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_paused_discount_title)
-        } else {
-            getString(R.string.sd_no_discount_title)
+    private fun showEmptyState(discountStatusId: Int) {
+        guardFragmentIsAttached {
+            val title = if (discountStatusId == DiscountStatus.PAUSED) {
+                getString(R.string.sd_no_paused_discount_title)
+            } else {
+                getString(R.string.sd_no_discount_title)
+            }
+
+            val description = if (discountStatusId == DiscountStatus.PAUSED) {
+                getString(R.string.sd_no_paused_discount_description)
+            } else {
+                getString(R.string.sd_no_discount_description)
+            }
+
+            binding?.tpgTotalProduct?.gone()
+            binding?.tpgMultiSelect?.gone()
+            binding?.tpgCancelMultiSelect?.gone()
+            binding?.searchBar?.gone()
+            binding?.recyclerView?.gone()
+
+            binding?.emptyState?.visible()
+            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+            binding?.emptyState?.setTitle(title)
+            binding?.emptyState?.setDescription(description)
         }
-
-        val description = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_paused_discount_description)
-        } else {
-            getString(R.string.sd_no_discount_description)
-        }
-
-        binding?.tpgTotalProduct?.gone()
-        binding?.tpgMultiSelect?.gone()
-        binding?.tpgCancelMultiSelect?.gone()
-        binding?.searchBar?.gone()
-        binding?.recyclerView?.gone()
-
-        binding?.emptyState?.visible()
-        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-        binding?.emptyState?.setTitle(title)
-        binding?.emptyState?.setDescription(description)
     }
+
 
     private fun hideEmptyState() {
         binding?.emptyState?.gone()
@@ -708,6 +719,12 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         CoroutineScope(Dispatchers.Main).launch {
             delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
             block()
+        }
+    }
+
+    private fun guardFragmentIsAttached(operation : Context.() -> Unit) {
+        if (isAdded && context != null) {
+            operation(requireContext())
         }
     }
 }

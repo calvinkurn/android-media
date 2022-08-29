@@ -70,6 +70,8 @@ class AtcVariantActivity : BaseSimpleActivity() {
                     .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
             paramsData.extParams = intent
                     .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
+            paramsData.showQtyEditor = intent
+                    .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
         }
 
         super.onCreate(savedInstanceState)
@@ -87,7 +89,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
     }
 
     private fun observeData() {
-        sharedViewModel.activityResult.observe(this, {
+        sharedViewModel.activityResult.observe(this) {
             val cacheManager = SaveInstanceCacheManager(this, true)
             val resultIntent = Intent().apply {
                 putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
@@ -95,7 +97,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
             cacheManager.put(PDP_PARCEL_KEY_RESULT, it)
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
-        })
+        }
     }
 
     private fun adjustOrientation() {

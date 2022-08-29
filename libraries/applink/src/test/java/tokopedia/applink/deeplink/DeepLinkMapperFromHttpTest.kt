@@ -2,7 +2,9 @@ package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -615,5 +617,23 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of play room with starting time then should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${DeepLinkUrlConstant.CONTENT.PLAY_CHANNEL_ID}?start_time=60000"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.CONTENT.PLAY_WITH_START_TIME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of recommendation with id then should be redirected to discovery page with id`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=3190804069"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of recommendation with id and param then should be redirected to discovery page with id and param`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${ApplinkConsInternalHome.AUTHORITY_DISCOVERY}/${ApplinkConsInternalHome.PATH_REKOMENDASI}?recomProdId=2137719991&msrc=product-feed&utm_source=facebook&utm_medium=ocpm&utm_campaign=alon-smda-DPO-WIB-SER-18-55-MF-AUTO-180-SMDA-NWB-PG-11110000-0020-alon-smda&ref=fbdpa"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.RECOMMENDATION.RECOMMENDATION_WITH_ID_AND_QUERY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check link url of searching something on now page should be equal to the actual`() {
+        val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.SEARCH}?q=jj%20royal"
+        assertEqualsDeepLinkMapper(DeepLinkUrlConstant.TOKOPEDIANOW_SEARCH_LINK_URL, expectedDeepLink)
     }
 }

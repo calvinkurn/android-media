@@ -113,6 +113,10 @@ class ProductManageFilterTab(
                 val title = context.getString(tab.titleId, tab.count)
 
                 val filter = SortFilterItem(title)
+                if (tab.isSelected)  {
+                    toggleFilterTab(filter, tab)
+                    tab.isSelected = false
+                }
                 filter.listener = { toggleFilterTab(filter, tab) }
 
                 filter

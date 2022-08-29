@@ -8,9 +8,12 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 interface PlayViewerTagItemRepository {
 
-    suspend fun getTagItem(channelId: String): TagItemUiModel
+    suspend fun getTagItem(channelId: String, warehouseId: String): TagItemUiModel
 
-    suspend fun getVariant(product: PlayProductUiModel.Product): VariantUiModel
+    suspend fun getVariant(
+        product: PlayProductUiModel.Product,
+        isProductFeatured: Boolean,
+    ): VariantUiModel
 
     suspend fun selectVariantOption(
         variant: VariantUiModel,

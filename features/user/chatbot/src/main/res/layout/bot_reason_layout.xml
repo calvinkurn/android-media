@@ -19,20 +19,25 @@
         android:textColor="@color/Unify_N700"
         app:typographyType="display_2"
         app:typographyWeight="bold"
+        android:text="@string/cb_bot_reason_text"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/cb_bot_reason_text" />
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:backgroundTint="@color/grey_350"
+        android:gravity="bottom"
         android:hint="@string/cb_bot_other_reason_text_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,14 +49,15 @@
         android:id="@+id/warning_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
-        android:textSize="@dimen/sp_chatbot_11"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/minimum_30_character"
+        android:textSize="@dimen/sp_11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_state"
-        android:text="@string/minimum_30_character" />
+        app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

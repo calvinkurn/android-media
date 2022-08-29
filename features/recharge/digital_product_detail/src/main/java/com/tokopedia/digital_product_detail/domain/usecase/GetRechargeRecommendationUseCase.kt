@@ -30,11 +30,16 @@ class GetRechargeRecommendationUseCase @Inject constructor(
         }
     }
 
-    fun createParams(clientNumbers: List<String>, dgCategoryIds: List<Int>, dgOperatorIds: List<Int>) {
+    fun createParams(
+        clientNumbers: List<String>,
+        dgCategoryIds: List<Int>,
+        dgOperatorIds: List<Int>,
+        channelName: String,
+    ) {
         params = RequestParams.create().apply {
             putObject(
                 KEY_DIGI_PERSO_INPUT, DigiPersoRequestParam(
-                    channelName = CHANNEL_NAME,
+                    channelName = channelName,
                     clientNumbers = clientNumbers,
                     dgCategoryIDs = dgCategoryIds,
                     pgCategoryIDs = emptyList(),
@@ -46,7 +51,6 @@ class GetRechargeRecommendationUseCase @Inject constructor(
 
     companion object {
         private const val KEY_DIGI_PERSO_INPUT = "input"
-        private const val CHANNEL_NAME = "recharge_pdp_last_trx_client_number"
         private const val QUERY = """
         query digiPersoGetPersonalizedItems(${'$'}input: DigiPersoGetPersonalizedItemsRequest!) {
           digiPersoGetPersonalizedItems(input: ${'$'}input) {
@@ -64,6 +68,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
               webLink
               label1
               label2
+              label3
               price
               slashedPrice
               discount

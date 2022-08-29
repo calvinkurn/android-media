@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import java.io.Serializable
 import javax.inject.Inject
 
 @GqlQuery(
@@ -59,7 +60,7 @@ class ProductrevGetPostSubmitBottomSheetUseCase @Inject constructor(
         val mediasTotal: Int,
         val isInboxEmpty: Boolean,
         val incentiveAmount: Int
-    ) {
+    ): Serializable {
         fun toRequestParamMap(): Map<String, Any> {
             return mapOf(
                 PARAM_FEEDBACK_ID to feedbackId,

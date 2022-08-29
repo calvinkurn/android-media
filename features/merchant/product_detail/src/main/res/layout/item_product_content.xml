@@ -24,7 +24,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:visibility="visible" />
 
     <com.tokopedia.product.detail.view.widget.CampaignRibbon
@@ -55,7 +56,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/campaign_ribbon"
-        app:typographyType="heading_1"
+        app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Rp.500000000000000000000000" />
 
@@ -109,9 +110,9 @@
             android:layout_marginRight="4dp"
             android:background="@drawable/bg_product_detail_cashback"
             android:paddingLeft="4dp"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingTop="3dp"
             android:paddingRight="4dp"
-            android:paddingBottom="@dimen/dp_3"
+            android:paddingBottom="3dp"
             android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:typographyType="small"
@@ -128,9 +129,9 @@
             android:layout_marginRight="4dp"
             android:background="@drawable/bg_discount_label"
             android:paddingLeft="4dp"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingTop="3dp"
             android:paddingRight="4dp"
-            android:paddingBottom="@dimen/dp_3"
+            android:paddingBottom="3dp"
             android:textColor="@color/Unify_Y500"
             android:visibility="gone"
             app:typographyType="small"
@@ -145,7 +146,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="Rp300.000"
             tools:visibility="visible" />
 
@@ -163,7 +164,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_main_price"
         app:layout_constraintTop_toBottomOf="@+id/discount_container"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
         tools:text="Simple Minimalistic Ergonomic White Chair" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -177,7 +178,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_main_price"
         app:layout_constraintTop_toBottomOf="@+id/product_name"
-        app:typographyType="body_3"
+        app:typographyType="paragraph_3"
         tools:text="Stok tinggal 20, beli sekarang!"
         tools:visibility="visible" />
 

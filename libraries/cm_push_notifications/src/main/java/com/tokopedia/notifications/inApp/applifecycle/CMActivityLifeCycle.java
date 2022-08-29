@@ -1,14 +1,16 @@
 package com.tokopedia.notifications.inApp.applifecycle;
 
+import static com.tokopedia.notifications.common.CMRemoteConfigKey.NOTIFICATION_TRAY_CLEAR_V1;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
-import com.tokopedia.notifications.inApp.applifecycle.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,9 +57,13 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     @Override
     public void onActivityStarted(@NotNull Activity activity) {
         try {
+            Context context = activity.getApplicationContext();
+            CMRemoteConfigUtils remoteConfig = new CMRemoteConfigUtils(context);
+            boolean willNotificationTrayClear = remoteConfig.getBooleanRemoteConfig(
+                    NOTIFICATION_TRAY_CLEAR_V1, false);
             lifecycleHandler.onActivityStartedInternal(activity);
-            if (cancelManager.isCancellable(activity)) {
-                cancelManager.clearNotifications(activity.getApplicationContext());
+            if (cancelManager.isCancellable(activity) && willNotificationTrayClear) {
+                cancelManager.clearNotifications(context);
             }
         } catch (Exception e) {
             Timber.e(e);

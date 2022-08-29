@@ -48,7 +48,6 @@ import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerfeedback.SellerFeedbackScreenshot;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -129,7 +128,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
-        TokoPatch.init(this);
 
         Loader.init(this);
         setEmbraceUserId();

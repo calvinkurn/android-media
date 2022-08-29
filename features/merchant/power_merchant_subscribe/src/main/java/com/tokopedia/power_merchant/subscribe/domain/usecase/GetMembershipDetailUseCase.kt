@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.domain.usecase
 
 import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -10,6 +11,7 @@ import com.tokopedia.power_merchant.subscribe.view.model.MembershipDetailUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GetMembershipDetailGqlQuery", GetMembershipDetailUseCase.QUERY)
 class GetMembershipDetailUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository,
     private val membershipDetailMapper: MembershipDetailMapper
@@ -17,7 +19,7 @@ class GetMembershipDetailUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): MembershipDetailUiModel {
         val gqlRequest = GraphqlRequest(
-            BENEFIT_PACKAGE_QUERY,
+            GetMembershipDetailGqlQuery(),
             MembershipDetailResponse::class.java, params.parameters
         )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest))
@@ -40,10 +42,7 @@ class GetMembershipDetailUseCase @Inject constructor(
     }
 
     companion object {
-        private const val SHOP_ID_PARAM = "shopId"
-        private const val SHOP_ID_STR_PARAM = "shopIdStr"
-
-        val BENEFIT_PACKAGE_QUERY = """
+        const val QUERY = """
             query MembershipDetail(${'$'}shopId: Int!, ${'$'}shopIdStr: String!) {
               shopLevel(input: {shopID: "${'$'}shopId", source: "android", lang: "id"}) {
                 result {
@@ -72,6 +71,8 @@ class GetMembershipDetailUseCase @Inject constructor(
                 }
               }
             }
-        """.trim()
+        """
+        private const val SHOP_ID_PARAM = "shopId"
+        private const val SHOP_ID_STR_PARAM = "shopIdStr"
     }
 }

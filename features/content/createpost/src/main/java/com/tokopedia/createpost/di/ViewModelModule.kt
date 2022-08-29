@@ -19,5 +19,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CreateContentPostViewModel::class)
     internal abstract fun bindsPaymentListViewModel(viewModel: CreateContentPostViewModel): ViewModel
-
 }

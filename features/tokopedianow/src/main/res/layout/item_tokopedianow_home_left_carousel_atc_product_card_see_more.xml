@@ -44,7 +44,8 @@
             app:layout_constraintStart_toStartOf="@+id/banner_mix_arrow"
             app:layout_constraintTop_toBottomOf="@+id/banner_mix_arrow"
             app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="heading_6" />
+            app:typographyType="display_3"
+            app:typographyWeight="bold"/>
 
         <ImageView
             android:id="@+id/banner_mix_arrow"

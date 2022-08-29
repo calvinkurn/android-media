@@ -109,6 +109,10 @@ data class ShopInfo(
         @SerializedName("epharmacyInfo")
         @Expose
         val epharmacyInfo: EPharmacyInfo = EPharmacyInfo(),
+
+        @SerializedName("shopMultilocation")
+        @Expose
+        val shopMultilocation: ProductShopMultilocation = ProductShopMultilocation()
 ) {
     fun isShopInfoNotEmpty():Boolean {
         return shopCore.shopID.isNotEmpty()
@@ -194,7 +198,11 @@ data class ShopInfo(
 
         @SerializedName("isIdle")
         @Expose
-        val isIdle: Boolean = false
+        val isIdle: Boolean = false,
+
+        @SerializedName("tickerType")
+        @Expose
+        val tickerType: String = ""
     )
 
     data class FavoriteData(

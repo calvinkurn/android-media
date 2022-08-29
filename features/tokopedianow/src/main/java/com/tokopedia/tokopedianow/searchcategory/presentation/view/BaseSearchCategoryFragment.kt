@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.view
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -29,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -84,6 +86,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouse
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -131,7 +134,6 @@ abstract class BaseSearchCategoryFragment:
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val REQUEST_CODE_LOGIN = 69
-        private const val QUERY_PARAM_SERVICE_TYPE_NOW20M = "?service_type=20m"
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
         const val DEFAULT_POSITION = 0
     }
@@ -528,6 +530,7 @@ abstract class BaseSearchCategoryFragment:
         )
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
         getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
+        getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -817,6 +820,9 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
+
+        if (isLoadingVisible) return
+        showOnBoardingBottomSheet()
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
@@ -1060,7 +1066,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW20M)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
     }
 
     override fun onClickSwitcherTo2H() {
@@ -1083,8 +1089,8 @@ abstract class BaseSearchCategoryFragment:
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
 
-                    //Show bottomsheet or toaster
-                    showBottomSheetOrToaster(
+                    //Show toaster
+                    showOnBoardingToaster(
                         data = result.data
                     )
 
@@ -1095,6 +1101,8 @@ abstract class BaseSearchCategoryFragment:
             is Fail -> { /* do nothing */ }
         }
     }
+
+    protected abstract fun showDialogAgeRestriction(querySafeModel: QuerySafeModel)
 
     private fun updateLocalCacheModel(data: SetUserPreference.SetUserPreferenceData, context: Context) {
         ChooseAddressUtils.updateTokoNowData(
@@ -1111,7 +1119,7 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    private fun showBottomSheetOrToaster(data: SetUserPreference.SetUserPreferenceData) {
+    private fun showOnBoardingToaster(data: SetUserPreference.SetUserPreferenceData) {
         /*
            Note :
            - Toaster will be shown when switching service type to 2 hours
@@ -1119,11 +1127,16 @@ abstract class BaseSearchCategoryFragment:
          */
 
         val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (!data.warehouseId.toLongOrZero().isZero() && !needToShowOnBoardBottomSheet) {
+            showSwitcherToaster(data.serviceType)
+        }
+    }
+
+    private fun showOnBoardingBottomSheet() {
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
         if (needToShowOnBoardBottomSheet) {
             show20mOnBoardBottomSheet()
-        } else if (!data.warehouseId.toLongOrZero().isZero()) {
-            showSwitcherToaster(data.serviceType)
-        } else { /* do nothing */ }
+        }
     }
 
     private fun show20mOnBoardBottomSheet() {
@@ -1165,4 +1178,18 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected abstract fun sendOOCOpenScreenTracking(isTracked: Boolean)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
+
+            override fun onVerificationSuccess(message: String?) {}
+
+            override fun onLoginPreverified() {}
+
+        })
+    }
 }

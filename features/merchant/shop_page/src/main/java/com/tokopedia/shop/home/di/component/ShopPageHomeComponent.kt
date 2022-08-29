@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.di.component
 
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -15,6 +16,7 @@ import dagger.Component
 @Component(modules = [ShopPageHomeModule::class], dependencies = [ShopComponent::class])
 interface ShopPageHomeComponent {
     fun inject(fragment: ShopPageHomeFragment?)
+    fun inject(fragment: ShopPageCampaignFragment?)
     fun inject(bottomSheet: ShopHomeNplCampaignTncBottomSheet?)
     fun inject(bottomSheet: ShopHomeFlashSaleTncBottomSheet?)
 }

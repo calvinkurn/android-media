@@ -133,4 +133,11 @@ class ReviewMediaPlayerControllerViewModelTest: ReviewMediaPlayerControllerViewM
         viewModel.updateGetDetailedReviewMediaResult(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia)
         Assert.assertEquals(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.mediaCount.toInt(), viewModel.uiState.first().totalMedia)
     }
+
+    @Test
+    fun `updateVideoDurationMillis should update videoDurationMillis value`() = runBlockingTest {
+        val newVideoDurationMillis = 10000L
+        viewModel.updateVideoDurationMillis(newVideoDurationMillis)
+        Assert.assertEquals(newVideoDurationMillis, viewModel.uiState.first().videoDurationMillis)
+    }
 }

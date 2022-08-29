@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
@@ -51,6 +50,7 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
@@ -75,7 +75,8 @@ class PlayVideoFragment @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
-        private val pipSessionStorage: PiPSessionStorage
+        private val pipSessionStorage: PiPSessionStorage,
+        private val playLog: PlayLog
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -201,7 +202,7 @@ class PlayVideoFragment @Inject constructor(
     private lateinit var containerVideo: RoundedConstraintLayout
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -219,7 +220,10 @@ class PlayVideoFragment @Inject constructor(
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
-            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            playParentViewModel =
+                ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(
+                    PlayParentViewModel::class.java
+                )
         }
     }
 
@@ -239,9 +243,9 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAnalytic()
         initView(view)
         setupView()
+        initAnalytic()
         setupObserve()
     }
 
@@ -308,7 +312,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog)
     }
 
     private fun initView(view: View) {
@@ -357,6 +361,8 @@ class PlayVideoFragment @Inject constructor(
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
+
+            videoAnalyticHelper.setVideoData(playViewModel.channelId, meta.videoPlayer)
         }
     }
 
@@ -501,7 +507,6 @@ class PlayVideoFragment @Inject constructor(
             videoLoadingView.showCasting()
             return
         }
-
         when (state) {
             PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)

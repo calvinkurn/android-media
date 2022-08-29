@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
@@ -13,10 +14,16 @@ import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,13 +41,29 @@ class CalculationTest {
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     private val updateCartUseCase: UpdateCartUseCase = mockk()
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase = mockk()
+    private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase = mockk()
+    private val addToCartBundleUseCase: AddToCartBundleUseCase = mockk()
+    private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, addToCartOccMultiUseCase, miniCartListUiModelMapper, miniCartChatListUiModelMapper)
+        viewModel = MiniCartViewModel(
+            dispatcher,
+            getMiniCartListSimplifiedUseCase,
+            getMiniCartListUseCase,
+            deleteCartUseCase,
+            undoDeleteCartUseCase,
+            updateCartUseCase,
+            getProductBundleRecomUseCase,
+            addToCartBundleUseCase,
+            addToCartOccMultiUseCase,
+            miniCartListUiModelMapper,
+            miniCartChatListUiModelMapper,
+            userSession
+        )
     }
 
     @Test
@@ -118,9 +141,11 @@ class CalculationTest {
         val expectedTotalProductCount = 11
         val productId = "2148476278"
         val bundleId = "36012"
+        val bundleGroupId = "bid:36012-pid:2148476278-pid1:2148476278"
         val productUiModel = MiniCartProductUiModel(
             productId = productId,
             bundleId = bundleId,
+            bundleGroupId = bundleGroupId,
             isBundlingItem = true
         )
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
@@ -142,9 +167,11 @@ class CalculationTest {
         val expectedTotalProductCount = 31
         val productId = "2148476278"
         val bundleId = "36012"
+        val bundleGroupId = "bid:36012-pid:2148476278-pid1:2148476278"
         val productUiModel = MiniCartProductUiModel(
             productId = productId,
             bundleId = bundleId,
+            bundleGroupId = bundleGroupId,
             isBundlingItem = true
         )
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleVariantSimplifiedSuccessAllAvailable()

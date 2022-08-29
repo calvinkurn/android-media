@@ -1,14 +1,16 @@
 package com.tokopedia.mediauploader.image.data.params
 
+import android.annotation.SuppressLint
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.util.fileBody
 import java.io.File
 
+@SuppressLint("ParamFieldAnnotation")
 data class ImageUploadParam(
-    var hostUrl: String,
     var sourceId: String,
+    var timeOut: String,
+    var hostUrl: String,
     var file: File,
-    var timeOut: String
 ) {
 
     fun hasNoParams(): Boolean {

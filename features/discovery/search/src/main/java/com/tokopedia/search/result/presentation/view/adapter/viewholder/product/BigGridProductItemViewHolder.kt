@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardBigGridBinding
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -30,7 +31,11 @@ class BigGridProductItemViewHolder(
         val productCardView = binding?.productCardView ?: return
 
         val productCardModel =
-            productItemData.toProductCardModel(productItemData.imageUrl700, true)
+            productItemData.toProductCardModel(
+                productItemData.imageUrl700,
+                true,
+                ProductCardModel.ProductListType.CONTROL
+            )
         this.productCardModel = productCardModel
         registerLifecycleObserver(productCardModel)
 

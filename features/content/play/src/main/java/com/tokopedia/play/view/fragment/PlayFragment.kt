@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -38,6 +39,7 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.*
@@ -65,7 +67,8 @@ import javax.inject.Inject
 class PlayFragment @Inject constructor(
     viewModelFactory: PlayViewModel.Factory,
     private val pageMonitoring: PlayPltPerformanceCallback,
-    private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic,
+    private val newAnalytic: PlayNewAnalytic,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -102,7 +105,7 @@ class PlayFragment @Inject constructor(
     private val keyboardWatcher = KeyboardWatcher()
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
@@ -231,6 +234,10 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
     }
 
+    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
+        fragmentBottomSheetView.openVariantBottomSheet(action, product)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
@@ -258,11 +265,13 @@ class PlayFragment @Inject constructor(
     }
 
     fun setResultBeforeFinish() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val totalView = playViewModel.totalView
-            if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
-        })
+        if(playViewModel.isTotalViewLoaded) {
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                val totalView = playViewModel.totalView
+                if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+                if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            })
+        }
     }
 
     fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
@@ -310,6 +319,7 @@ class PlayFragment @Inject constructor(
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
             playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
+            newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }

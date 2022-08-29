@@ -7,6 +7,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoInstance
+import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalSignalFragment
 import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFragment
 
 /**
@@ -33,7 +34,12 @@ class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoComp
         digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER)
                 ?: ""
         val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA) ?: ""
-        return DigitalTelcoPostpaidFragment.newInstance(digitalTelcoExtraParam, rechargeProductFromSlice)
+
+        return if (digitalTelcoExtraParam.menuId == MENU_ID_SIGNAL) {
+            DigitalSignalFragment.newInstance(digitalTelcoExtraParam)
+        } else {
+            DigitalTelcoPostpaidFragment.newInstance(digitalTelcoExtraParam, rechargeProductFromSlice)
+        }
     }
 
     override fun getComponent(): DigitalTelcoComponent {
@@ -42,5 +48,9 @@ class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoComp
 
     override fun sendTrackingDotsMenuTelco(userId: String) {
         topupAnalytics.eventClickDotsMenuTelco(categoryId, userId)
+    }
+
+    companion object {
+        private const val MENU_ID_SIGNAL = "327"
     }
 }

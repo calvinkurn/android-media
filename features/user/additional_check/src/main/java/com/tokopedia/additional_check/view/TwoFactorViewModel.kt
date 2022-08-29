@@ -2,7 +2,6 @@ package com.tokopedia.additional_check.view
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
@@ -11,7 +10,6 @@ import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.encryption.security.AeadEncryptor
-import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -75,7 +73,7 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
     }
 
     fun refreshUserSession(onSuccess: (Boolean) -> Unit) {
-        if(userSession.name.isEmpty() && job == null) {
+        if(job == null) {
             job = launchCatchError(block = {
                 val profile = getSimpleProfileUseCase(Unit).data
 

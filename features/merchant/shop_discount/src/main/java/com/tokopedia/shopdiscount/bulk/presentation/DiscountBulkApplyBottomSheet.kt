@@ -66,7 +66,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             mode: Mode = Mode.BULK_APPLY,
             bulkUpdateDefaultStartDate: Date? = null,
             bulkUpdateDefaultEndDate: Date? = null,
-            @DiscountStatus discountStatusId: Int
+            discountStatusId: Int
         ): DiscountBulkApplyBottomSheet {
             val args = Bundle()
             args.putString(BUNDLE_KEY_TITLE, bottomSheetTitle)
@@ -281,7 +281,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         isUsingVps: Boolean
     ) {
         when {
-            mode == Mode.BULK_APPLY && isUsingVps -> handleAppearanceForBulkApplyModeWithVps(benefit.expiredAt)
+            isUsingVps -> handleAppearanceForBulkApplyModeWithVps(benefit.expiredAt)
             mode == Mode.BULK_APPLY -> handleAppearanceForBulkApplyMode()
             mode == Mode.BULK_UPDATE -> handleAppearanceForBulkUpdateMode()
         }

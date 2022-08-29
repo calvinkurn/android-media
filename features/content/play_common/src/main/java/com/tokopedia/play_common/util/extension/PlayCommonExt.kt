@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.text.SpannableStringBuilder
+import android.text.SpannedString
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -330,6 +331,12 @@ fun View.showKeyboard() {
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
+fun EditText.showKeyboard(isShow: Boolean) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    else imm.hideSoftInputFromWindow(this.windowToken, 0)
+}
+
 data class CachedState<T>(val prevValue: T? = null, val value: T) {
 
     fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {
@@ -357,6 +364,7 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
+@Deprecated("Use MutableStateFlow.update")
 fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
 }
@@ -364,4 +372,12 @@ fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
 fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
     val value = this.value ?: return
     this.value = value.fn()
+}
+
+fun Boolean.switch() : Boolean = !this
+
+inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit): SpannedString {
+    val builder = SpannableStringBuilder()
+    builder.builderAction()
+    return SpannedString(builder)
 }

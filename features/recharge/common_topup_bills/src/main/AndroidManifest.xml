@@ -35,12 +35,12 @@
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name="com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity"
+            android:name="com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name="com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity"
+            android:name="com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.WhiteUnify"

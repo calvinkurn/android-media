@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.common.topupbills.favorite.view.viewmodel.TopupBillsFavNumberViewModel
+import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFavNumberViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import dagger.Binds

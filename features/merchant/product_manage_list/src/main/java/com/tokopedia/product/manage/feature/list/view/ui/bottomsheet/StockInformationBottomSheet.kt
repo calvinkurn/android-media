@@ -20,8 +20,6 @@ class StockInformationBottomSheet(
         private val TAG: String = StockInformationBottomSheet::class.java.simpleName
     }
 
-
-
     private var binding by autoClearedNullable<BottomSheetProductManageStockInformationBinding>()
 
     override fun onCreateView(

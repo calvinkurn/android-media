@@ -56,18 +56,18 @@ class UpgradePmProWidget(
                 element.nextMonthlyRefreshDate
             )
 
-            val eligibleForUpdateProAdvance =
-                element.shopGrade == PMConstant.ShopGrade.PM
-                        && shopInfo.shopScore > scoreShowTickerEligible
-                        && shopLevel == PMConstant.ShopLevel.TWO
-            val eligibleForUpdateProExpert =
-                element.shopGrade == PMConstant.ShopGrade.PM
-                        && shopInfo.shopScore > scoreShowTickerEligible
-                        && shopLevel == PMConstant.ShopLevel.THREE
-            val eligibleForUpdateProUltimate =
-                element.shopGrade == PMConstant.ShopGrade.PM
-                        && shopInfo.shopScore > scoreShowTickerEligible
-                        && shopLevel == PMConstant.ShopLevel.FOUR
+            val eligibleForUpdateProAdvance = element.shopGrade == PMConstant.ShopGrade.PM
+                    && shopInfo.shopScore > scoreShowTickerEligible
+                    && shopLevel == PMConstant.ShopLevel.TWO
+                    && shopInfo.isEligiblePmPro
+            val eligibleForUpdateProExpert = element.shopGrade == PMConstant.ShopGrade.PM
+                    && shopInfo.shopScore > scoreShowTickerEligible
+                    && shopLevel == PMConstant.ShopLevel.THREE
+                    && shopInfo.isEligiblePmPro
+            val eligibleForUpdateProUltimate = element.shopGrade == PMConstant.ShopGrade.PM
+                    && shopInfo.shopScore > scoreShowTickerEligible
+                    && shopLevel == PMConstant.ShopLevel.FOUR
+                    && shopInfo.isEligiblePmPro
 
             when {
                 eligibleForUpdateProAdvance -> {
@@ -113,7 +113,7 @@ class UpgradePmProWidget(
             powerMerchantTracking.sendEventClickCTAPmUpgradeLearnMore(shopScore)
             RouteManager.route(root.context, Constant.Url.POWER_MERCHANT_PRO_EDU)
         }
-        ctaPmUpgradeLearnMore.addOnImpressionListener(element.impressHolder){
+        ctaPmUpgradeLearnMore.addOnImpressionListener(element.impressHolder) {
             powerMerchantTracking.sendEventImpressUpliftPmPro(shopScore)
         }
     }

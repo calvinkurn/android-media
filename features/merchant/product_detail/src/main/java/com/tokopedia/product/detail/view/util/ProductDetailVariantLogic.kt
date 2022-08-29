@@ -44,9 +44,7 @@ object ProductDetailVariantLogic {
                 VariantConstant.STATE_UNSELECTED
             }
 
-            val isFlashSale = if (isSelected && isBuyable) productVariant.children.firstOrNull { it.productId == productId }?.isFlashSale
-                    ?: false else productVariant.isSelectedChildHasFlashSale(i.id
-                    ?: "")
+            val isFlashSale = productVariant.isSelectedChildHasFlashSale(i.id ?: "")
 
             listOfVariantLevelOne.add(VariantOptionWithAttribute(
                     variantName = i.value.orEmpty(),

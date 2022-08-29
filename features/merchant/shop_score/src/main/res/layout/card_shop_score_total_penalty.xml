@@ -17,7 +17,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="@string/example_content_penalty" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +53,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_5" />
+            app:typographyType="display_2"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCountTotalPenalty"
@@ -94,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tvTotalPointDeductions"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvTotalPointDeductions"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTotalPointDeductions"

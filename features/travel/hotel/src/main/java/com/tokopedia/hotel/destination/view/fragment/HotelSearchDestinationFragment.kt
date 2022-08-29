@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelDestinationSearch
 import com.tokopedia.hotel.databinding.FragmentHotelSearchDestinationBinding
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
@@ -115,7 +115,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     }
 
     fun onSearchQueryChange(keyword: String) {
-        destinationViewModel.getHotelSearchDestination(HotelGqlQuery.DESTINATION_SEARCH, keyword)
+        destinationViewModel.getHotelSearchDestination(QueryHotelDestinationSearch(), keyword)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {

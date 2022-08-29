@@ -22,10 +22,9 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.*
-import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMessageViewHolder
-import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageViewHolder
-import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.RightChatMessageViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.*
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -43,7 +42,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatOptionListListener: ChatOptionListListener,
                                   private val csatOptionListListener: CsatOptionListListener,
                                   private val actionButtonClickListener: StickyActionButtonClickListener,
-                                  private val userSession: UserSessionInterface) :
+                                  private val userSession: UserSessionInterface,
+                                  private val replyBubbleListener: ReplyBubbleAreaMessage.Listener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -70,8 +70,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             chatbotAdapterListener: ChatbotAdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
-            CustomChatbotMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
-            CustomChatbotMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
+            CustomChatbotMessageViewHolder.TYPE_LEFT -> LeftChatMessageUnifyViewHolder.LAYOUT
+            CustomChatbotMessageViewHolder.TYPE_RIGHT -> RightChatMessageUnifyViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -80,7 +80,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     private fun createViewHolder(parent: View, type: Int, chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*> {
         return when (type) {
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
+            LeftChatMessageUnifyViewHolder.LAYOUT -> LeftChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener,replyBubbleListener,userSession)
             CsatOptionListViewHolder.LAYOUT -> CsatOptionListViewHolder(parent, csatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             QuickReplyViewHolder.LAYOUT -> QuickReplyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
@@ -99,6 +99,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return StickyActionButtonViewHolder.LAYOUT
     }
 
+    override fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int {
+        return AttachedInvoiceSentViewHolder.LAYOUT
+    }
+
     override fun type(chatSepratorViewModel: ChatSepratorViewModel): Int {
         return ChatbotLiveChatSeparatorViewHolder.LAYOUT
     }
@@ -113,10 +117,6 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     override fun type(csatOptionsViewModel: CsatOptionsViewModel): Int {
         return CsatOptionListViewHolder.LAYOUT
-    }
-
-    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
-        return AttachedInvoiceSentViewHolder.LAYOUT
     }
 
     override fun type(attachInvoiceSelectionViewModel: AttachInvoiceSelectionViewModel): Int {
@@ -139,6 +139,11 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return ChatbotFallbackAttachmentViewHolder.LAYOUT
     }
 
+    //This case will never run
+    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
+        return ATTACH_INVOICE_CHAT_COMMON
+    }
+
     override fun type(typingViewModel: TypingChatModel): Int {
         return ChatBotTypingChatViewHolder.LAYOUT
     }
@@ -146,7 +151,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
-            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
+            RightChatMessageUnifyViewHolder.LAYOUT -> RightChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, replyBubbleListener, userSession)
             ConnectionDividerViewHolder.LAYOUT -> ConnectionDividerViewHolder(parent)
             ChatbotLiveChatSeparatorViewHolder.LAYOUT -> ChatbotLiveChatSeparatorViewHolder(parent)
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)
@@ -155,6 +160,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    companion object {
+        const val ATTACH_INVOICE_CHAT_COMMON = -1
     }
 
 }

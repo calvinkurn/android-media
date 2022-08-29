@@ -111,6 +111,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             eligible
             badge_url
           }
+          free_shipping_general {
+            bo_name
+            bo_type
+            badge_url
+          }
           preorder {
             is_preorder
             duration
@@ -189,6 +194,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             product_price
             category_id
             category
+            last_level_category
+            category_identifier
             wholesale_price {
               qty_min_fmt
               qty_max_fmt
@@ -223,6 +230,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
             free_shipping_extra {
               eligible
+            }
+            free_shipping_general {
+              bo_name
+              bo_type
+              badge_url
             }
             product_preorder {
               duration_day
@@ -343,6 +355,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           city_name
           province_id
           province_name
+          country
           phone
           longitude
           latitude
@@ -476,6 +489,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 error_message_unavailable_tenure
                 selected_tenure
             }
+          }
+          payment_fee_detail {
+            fee
+            show_slashed
+            show_tooltip
+            slashed_fee
+            title
+            tooltip_info
+            type
           }
         }
         shipment {

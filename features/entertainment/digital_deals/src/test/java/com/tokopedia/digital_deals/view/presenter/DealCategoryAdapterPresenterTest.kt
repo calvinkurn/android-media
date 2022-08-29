@@ -46,6 +46,7 @@ class DealCategoryAdapterPresenterTest {
             DataResponse<LikeUpdateResult>().apply {
                 data = LikeUpdateResult().apply {
                     isLiked = false
+                    productId = "1"
                 }
             },
             200,
@@ -90,6 +91,7 @@ class DealCategoryAdapterPresenterTest {
             DataResponse<LikeUpdateResult>().apply {
                 data = LikeUpdateResult().apply {
                     isLiked = true
+                    productId = "1"
                 }
             },
             200,

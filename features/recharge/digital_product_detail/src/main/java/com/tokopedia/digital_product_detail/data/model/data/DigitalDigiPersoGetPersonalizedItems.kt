@@ -35,6 +35,8 @@ data class PersoRecommendationItem(
     val label1: String,
     @SerializedName("label2")
     val label2: String,
+    @SerializedName("label3")
+    val label3: String,
     @SerializedName("price")
     val price: String,
     @SerializedName("discount")

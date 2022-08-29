@@ -1,6 +1,6 @@
 package com.tokopedia.profilecompletion.changebiousername.data
 
-import com.google.gson.annotations.Expose
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class UsernameValidationData(
@@ -14,6 +14,7 @@ data class UsernameValidationResponse(
 )
 
 data class UsernameValidation(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("isValid")
     val isValid: Boolean = false,
 

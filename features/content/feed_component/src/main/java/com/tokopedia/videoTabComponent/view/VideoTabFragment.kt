@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
@@ -99,6 +100,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     @Inject
     lateinit var playWidgetPreference: PlayWidgetPreference
 
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
     override fun getScreenName(): String {
         return "VideoTabFragment"
     }
@@ -120,6 +124,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     private fun initVar() {
         requireActivity().clearTabMenuPosition()
+
+        playWidgetAnalyticsListenerImp.setOnClickChannelCard { channelId, position ->
+            playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
+        }
+
         playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@VideoTabFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
@@ -208,6 +217,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
+        feedFloatingButtonManager.setInitialData(parentFragment)
         setupView(view)
         playWidgetCoordinator.onResume()
     }
@@ -218,9 +228,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             rvWidget?.addOnScrollListener(it)
             it.resetState()
         }
+        rvWidget?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         swipeToRefresh?.setOnRefreshListener(this)
 
         setAdapter()
+        rvWidget?.let { feedFloatingButtonManager.setDelayForExpandFab(it.recyclerView) }
     }
 
     private fun setAdapter() {
@@ -229,9 +241,6 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 playWidgetCoordinator,
                 this@VideoTabFragment,
                 requireActivity(),
-                clickListener = { channelId, position ->
-                    playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
-                }
             ).also {
                 setAdapter(it)
             }
@@ -421,6 +430,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         val videoPageParams = VideoPageParams(cursor = "" , sourceId = item.sourceId, sourceType = item.sourceType, group = item.group)
         playFeedVideoTabViewModel.getPlayData(isClickFromTabMenu = true, videoPageParams = videoPageParams)
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvWidget?.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
     }
 
     override fun onDestroy() {

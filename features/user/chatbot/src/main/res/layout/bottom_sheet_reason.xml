@@ -26,13 +26,14 @@
                 android:clickable="true"
                 android:contentDescription="@string/close"
                 android:focusable="true"
-                android:padding="@dimen/unify_space_16"
-                app:srcCompat="@drawable/ic_close_default" />
+                android:padding="16dp"
+                app:srcCompat="@drawable/ic_close_default" />/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:text="@string/title_reason_bottom_sheet"
@@ -45,7 +46,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_chatbot_1"
+            android:layout_height="1dp"
             android:background="@color/Unify_N100" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -53,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_reason" />
-
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

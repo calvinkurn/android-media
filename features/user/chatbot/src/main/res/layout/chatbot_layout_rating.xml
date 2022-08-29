@@ -29,7 +29,9 @@
         app:typographyType="display_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/divider" />
+        app:layout_constraintTop_toTopOf="@+id/divider"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
 
     <ImageView
         android:id="@+id/btn_inactive_1"
@@ -41,7 +43,6 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:gravity="center"
-        app:srcCompat="@drawable/rating_inactive_1"
         android:text="@string/chatbot_no"
         android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/unify_font_14"
@@ -49,7 +50,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title"
+        app:srcCompat="@drawable/rating_inactive_1"
+        android:contentDescription="btn_inactive_1" />
 
     <ImageView
         android:id="@+id/btn_inactive_2"
@@ -59,7 +62,6 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:gravity="center"
-        app:srcCompat="@drawable/rating_inactive_2"
         android:text="@string/chatbot_no"
         android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/unify_font_14"
@@ -67,7 +69,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_1"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_3"
-        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title"
+        app:srcCompat="@drawable/rating_inactive_2"
+        android:contentDescription="btn_inactive_2" />
 
     <ImageView
         android:id="@+id/btn_inactive_3"
@@ -77,7 +81,6 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:gravity="center"
-        app:srcCompat="@drawable/rating_inactive_3"
         android:text="@string/chatbot_no"
         android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/unify_font_14"
@@ -85,7 +88,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_2"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_4"
-        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title"
+        app:srcCompat="@drawable/rating_inactive_3"
+        android:contentDescription="btn_inactive_3" />
 
     <ImageView
         android:id="@+id/btn_inactive_4"
@@ -95,7 +100,6 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:gravity="center"
-        app:srcCompat="@drawable/rating_inactive_4"
         android:text="@string/chatbot_no"
         android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/unify_font_14"
@@ -103,7 +107,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_3"
         app:layout_constraintRight_toLeftOf="@+id/btn_inactive_5"
-        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title"
+        app:srcCompat="@drawable/rating_inactive_4"
+        android:contentDescription="btn_inactive_4" />
 
     <ImageView
         android:id="@+id/btn_inactive_5"
@@ -115,7 +121,6 @@
         android:layout_marginRight="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:gravity="center"
-        app:srcCompat="@drawable/rating_inactive_5"
         android:text="@string/chatbot_no"
         android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/unify_font_14"
@@ -124,6 +129,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_inactive_4"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_help_title" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_help_title"
+        app:srcCompat="@drawable/rating_inactive_5"
+        android:contentDescription="btn_inactive_5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

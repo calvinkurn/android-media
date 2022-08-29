@@ -17,8 +17,17 @@ buildscript {
 }
 
 android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
     buildFeatures {
         viewBinding true
+    }
+
+    testOptions {
+        animationsDisabled = true
     }
 }
 
@@ -30,46 +39,65 @@ kapt {
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    implementation rootProject.ext.networkDependencies.okHttp
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     // Test
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    testImplementation rootProject.ext.testDependencies.junit
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    androidTestImplementation rootProject.ext.networkDependencies.loggingInterceptor
+    androidTestImplementation rootProject.ext.networkDependencies.retrofit
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {
-    artifactId = 'user-components'
+    artifactId = 'usercomponents'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.3"
+    versionName = "0.0.1"
     artifactName ="usercomponents-release"
 }
 
