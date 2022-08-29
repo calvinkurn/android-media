@@ -34,7 +34,4 @@ sealed class PlayUpcomingUiEvent {
      * Other
      */
     data class CopyToClipboardEvent(val content: String) : PlayUpcomingUiEvent()
-
-    data class ExpandDescriptionEvent(val isExpanded: Boolean): PlayUpcomingUiEvent()
-    data class TapCoverEvent (val isShown: Boolean): PlayUpcomingUiEvent()
 }

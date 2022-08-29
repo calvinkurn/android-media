@@ -160,8 +160,11 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun renderDescription(prevState: DescriptionUiState?, state: DescriptionUiState){
-        if(prevState?.isExpand == state.isExpand) return
-        description.setupExpand(state.isExpand)
+        if(prevState?.isExpand != state.isExpand) {
+            description.setupExpand(state.isExpand)
+            binding.vOverlay.showWithCondition(state.isExpand)
+        }
+        if(prevState?.isShown != state.isShown) description.rootView.showWithCondition(state.isShown)
     }
 
     private fun setupObserver() {
@@ -225,12 +228,6 @@ class PlayUpcomingFragment @Inject constructor(
                         )
                     }
                     is PlayUpcomingUiEvent.ShowError -> toaster.showError(event.error)
-                    is PlayUpcomingUiEvent.ExpandDescriptionEvent -> {
-                        binding.vOverlay.showWithCondition(event.isExpanded)
-                    }
-                    is PlayUpcomingUiEvent.TapCoverEvent -> {
-                        description.rootView.showWithCondition(event.isShown)
-                    }
                 }
             }
         }
