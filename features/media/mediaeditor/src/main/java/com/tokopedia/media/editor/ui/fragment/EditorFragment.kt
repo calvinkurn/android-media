@@ -266,47 +266,39 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     override fun getScreenName() = SCREEN_NAME
 
     private fun backState() {
-        val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
-        targetEditorUiModel?.let {
-            val imageEditStateCount = it.editList.size
-            if (it.backValue >= imageEditStateCount) return@let
-
-            it.backValue++
+        viewModel.undoState(activeImageUrl)?.apply {
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
-                targetEditorUiModel.getImageUrl()
+                this.getImageUrl()
             )
 
-            renderUndoButton(it)
-            renderRedoButton(it)
+            renderUndoButton(this)
+            renderRedoButton(this)
 
-            renderToolsIconActiveState(it)
+            renderToolsIconActiveState(this)
             updateDrawerSelectionItemIcon()
 
-            val undoIndex = (it.editList.size - it.backValue)
-            renderStateChangeToast(TOAST_UNDO, it.editList[undoIndex].editorToolType)
+            renderStateChangeToast(
+                TOAST_UNDO,
+                this.editList[this.getUndoStartIndex()].editorToolType
+            )
         }
     }
 
     private fun forwardState() {
-        val targetEditorUiModel = viewModel.getEditState(activeImageUrl)
-        targetEditorUiModel?.let {
-            if (it.backValue == 0) return@let
-
-            it.backValue--
+        viewModel.redoState(activeImageUrl)?.apply {
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
-                targetEditorUiModel.getImageUrl()
+                this.getImageUrl()
             )
 
-            renderUndoButton(it)
-            renderRedoButton(it)
+            renderUndoButton(this)
+            renderRedoButton(this)
 
-            renderToolsIconActiveState(it)
+            renderToolsIconActiveState(this)
             updateDrawerSelectionItemIcon()
 
-            val redoIndex = (it.editList.size - 1) - it.backValue
-            renderStateChangeToast(TOAST_REDO, it.editList[redoIndex].editorToolType)
+            renderStateChangeToast(TOAST_REDO, this.editList[this.getRedoStartIndex()].editorToolType)
         }
     }
 

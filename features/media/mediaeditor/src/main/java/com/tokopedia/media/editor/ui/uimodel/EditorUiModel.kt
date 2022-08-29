@@ -38,6 +38,14 @@ class EditorUiModel(
         return (!isVideo && backValue != 0)
     }
 
+    fun getUndoStartIndex(): Int{
+        return editList.size - backValue
+    }
+
+    fun getRedoStartIndex(): Int{
+        return (editList.size - 1) - backValue
+    }
+
     companion object {
         private const val UNDO_LIMIT_NON_CROP = 0
         private const val UNDO_LIMIT_AUTO_CROP = 1
