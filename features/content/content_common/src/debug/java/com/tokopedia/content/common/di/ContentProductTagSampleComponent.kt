@@ -13,6 +13,7 @@ import dagger.Component
 @Component(
     modules = [
         ContentProductTagSampleModule::class,
+        ContentProductTagSampleBindModule::class,
         ContentCreationProductTagBindModule::class,
         ContentCreationProductTagModule::class,
     ],

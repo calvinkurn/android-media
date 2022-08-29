@@ -23,9 +23,6 @@ abstract class ContentCreationProductTagBindModule {
 
     /** Fragment */
     @Binds
-    abstract fun bindFragmentFactory(fragmentFactory: ProductTagFragmentFactory): FragmentFactory
-
-    @Binds
     @IntoMap
     @FragmentKey(ProductTagParentFragment::class)
     abstract fun bindProductTagParentFragment(fragment: ProductTagParentFragment): Fragment
