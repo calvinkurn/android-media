@@ -1,4 +1,4 @@
- package com.tokopedia.kol.feature.postdetail.view.datamodel
+package com.tokopedia.kol.feature.postdetail.view.datamodel
 
 data class WishlistContentModel(
     val rowNumber: Int,
