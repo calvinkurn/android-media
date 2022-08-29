@@ -744,7 +744,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(newFeedClickedReceiver);
+        if (newFeedClickedReceiver != null) {
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(newFeedClickedReceiver);
+        }
         if (presenter != null)
             presenter.get().onDestroy();
     }
