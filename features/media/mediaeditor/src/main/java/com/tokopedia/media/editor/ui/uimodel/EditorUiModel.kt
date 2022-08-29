@@ -28,10 +28,14 @@ class EditorUiModel(
     }
 
     fun isShowUndoButton(): Boolean {
-        return (!isVideo && (editList.size - backValue) > if (isAutoCropped)
-            UNDO_LIMIT_AUTO_CROP
-        else
-            UNDO_LIMIT_NON_CROP)
+        return if (backValue >= UNDO_MAX_LIMIT) {
+            false
+        } else {
+            !isVideo && (editList.size - backValue) > if (isAutoCropped)
+                UNDO_LIMIT_AUTO_CROP
+            else
+                UNDO_LIMIT_NON_CROP
+        }
     }
 
     fun isShowRedoButton(): Boolean {
@@ -49,5 +53,7 @@ class EditorUiModel(
     companion object {
         private const val UNDO_LIMIT_NON_CROP = 0
         private const val UNDO_LIMIT_AUTO_CROP = 1
+
+        private const val UNDO_MAX_LIMIT = 5
     }
 }
