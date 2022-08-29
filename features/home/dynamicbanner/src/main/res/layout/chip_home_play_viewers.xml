@@ -21,7 +21,7 @@
     android:gravity="center">
 
     <ImageView
-        android:layout_width="@dimen/dp_18"
+        android:layout_width="18dp"
         android:layout_height="17dp"
         android:contentDescription="@string/content_desc_play_widget"
         app:srcCompat="@drawable/ic_chip_home_play_viewers"/>

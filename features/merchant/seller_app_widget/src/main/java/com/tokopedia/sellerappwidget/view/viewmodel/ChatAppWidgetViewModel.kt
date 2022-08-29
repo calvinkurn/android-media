@@ -16,9 +16,9 @@ class ChatAppWidgetViewModel(
         private val dispatchers: CoroutineDispatchers
 ) : BaseAppWidgetVM<AppWidgetView<ChatUiModel>>(dispatchers) {
 
-    fun getChatList() {
+    fun getChatList(shopId: String) {
         launchCatchError(block = {
-            getChatUseCase.params = GetChatUseCase.creteParams()
+            getChatUseCase.params = GetChatUseCase.creteParams(shopId)
             val result = withContext(dispatchers.io) {
                 return@withContext getChatUseCase.executeOnBackground()
             }
