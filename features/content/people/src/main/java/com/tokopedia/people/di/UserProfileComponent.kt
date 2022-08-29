@@ -5,7 +5,7 @@ import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
 import com.tokopedia.feedcomponent.di.FeedFragmentFactoryModule
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity
-import com.tokopedia.feedcomponent.onboarding.di.FeedUGCOnboardingModule
+import com.tokopedia.content.common.onboarding.di.FeedUGCOnboardingModule
 import dagger.Component
 
 @UserProfileScope

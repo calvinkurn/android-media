@@ -81,6 +81,7 @@ import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
 import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 
 
 /**
@@ -639,7 +640,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                                 intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
                                     MAX_MULTI_SELECT_ALLOWED_VALUE)
                                 intent.putExtra(TITLE,
-                                    getString(feedComponentR.string.feed_post_sebagai))
+                                    getString(contentCommonR.string.feed_post_sebagai))
                                 val name: String = MethodChecker.fromHtml(authors.first().name).toString()
                                 intent.putExtra(SUB_TITLE, name)
                                 intent.putExtra(TOOLBAR_ICON_URL,
