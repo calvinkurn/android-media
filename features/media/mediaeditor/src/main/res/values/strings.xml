@@ -42,5 +42,5 @@
 
     <!-- Header text -->
     <string name="editor_main_header_title_text">Edit Media</string>
-    <string name="editor_main_header_action_text">Edit Media</string>
+    <string name="editor_main_header_action_text">Upload</string>
 </resources>
