@@ -39,7 +39,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
     }
 
     override fun getNewFragment(): Fragment {
-        return getSwitchFragment()
+        return getSwitchedFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +67,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
 
     }
 
-    private fun getSwitchFragment(): Fragment {
+    private fun getSwitchedFragment(): Fragment {
         return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_BUYER_ORDER_DETAIL)) {
             NewOMSFragment.getInstance(
                 orderId ?: "",
@@ -103,7 +103,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
 
                 if (formattedCategory.isNotEmpty()){
                     supportFragmentManager.beginTransaction()
-                        .add(com.tokopedia.abstraction.R.id.parent_view, getSwitchFragment())
+                        .add(com.tokopedia.abstraction.R.id.parent_view, getSwitchedFragment())
                         .commit()
                 }
             }
