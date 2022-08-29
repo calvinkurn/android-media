@@ -389,6 +389,7 @@ public interface ApplinkConst {
     String CATEGORY_HOST = "category";
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
+    String EPHARMACY = "tokopedia://epharmacy";
     String AFFILIATE_TOKO = "tokopedia://affiliate";
     String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
     String QRSCAN = "tokopedia://scanqr";
