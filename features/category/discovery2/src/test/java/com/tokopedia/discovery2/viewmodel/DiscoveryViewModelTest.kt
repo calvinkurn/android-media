@@ -15,6 +15,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.customtopchatdatamodel.ChatExistingChat
 import com.tokopedia.discovery2.data.customtopchatdatamodel.CustomChatResponse
@@ -470,6 +471,26 @@ class DiscoveryViewModelTest {
         viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
 
         verify(inverse = true) { RouteManager.route(any(),any()) }
+    }
+
+    @Test
+    fun `test for DiscoverySamePage being opened if no recomProdId present`(){
+        viewModel.checkForSamePageOpened(mutableMapOf())
+        verify(inverse = true) { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
+    }
+
+    @Test
+    fun `test for DiscoverySamePage being opened if recomProdId present and data mismatch`(){
+        val map : MutableMap<String, String?> = mutableMapOf()
+        map[DiscoveryActivity.RECOM_PRODUCT_ID] = "123"
+        val mockResp: DiscoveryResponse = mockk()
+        every { discoveryDataUseCase.getDiscoResponseIfPresent(any()) } returns mockResp
+        val map2: MutableMap<String, String?> = mutableMapOf()
+        map2[DiscoveryActivity.RECOM_PRODUCT_ID] = "101"
+        every { mockResp.queryParamMap } returns map2
+        viewModel.checkForSamePageOpened(map)
+        verify { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
+        verify { discoveryDataUseCase.clearPage(any()) }
     }
 
     @After

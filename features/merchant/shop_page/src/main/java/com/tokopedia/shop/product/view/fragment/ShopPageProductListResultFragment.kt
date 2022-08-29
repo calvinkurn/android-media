@@ -347,7 +347,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopInfo?.let {
             viewModel.getShopFilterData(
                     it,
-                    isMyShop
+                    isMyShop,
+                    isNeedToReloadData
             )
         } ?: viewModel.getShop(shopId.orEmpty(), isRefresh = isNeedToReloadData)
     }
@@ -614,7 +615,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
-        shopPageTracking?.onClickProductAtcButton(
+        shopPageTracking?.onClickProductAtcDirectPurchaseButton(
             atcTrackerModel,
             shopId.orEmpty(),
             customDimensionShopPage.shopType.orEmpty(),
@@ -1031,13 +1032,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopProductUiModel: ShopProductUiModel,
         position: Int,
     ) {
-        shopPageTracking?.onImpressionProductAtcButton(
-            shopProductUiModel,
-            ShopPageConstant.ShopProductCardAtc.CARD_ETALASE,
-            position,
-            shopId.orEmpty(),
-            userId
-        )
+        if (isEnableDirectPurchase) {
+            shopPageTracking?.onImpressionProductAtcDirectPurchaseButton(
+                shopProductUiModel,
+                ShopPageConstant.ShopProductCardAtc.CARD_ETALASE,
+                position,
+                shopId.orEmpty(),
+                userId
+            )
+        }
     }
 
     private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {

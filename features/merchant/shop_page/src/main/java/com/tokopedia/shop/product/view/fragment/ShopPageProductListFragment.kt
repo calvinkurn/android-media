@@ -33,7 +33,6 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
@@ -623,13 +622,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductUiModel: ShopProductUiModel,
         position: Int
     ) {
-        shopPageTracking?.onImpressionProductAtcButton(
-            shopProductUiModel,
-            ShopPageConstant.ShopProductCardAtc.CARD_PRODUCT,
-            position,
-            shopId,
-            userId
-        )
+        if(isEnableDirectPurchase) {
+            shopPageTracking?.onImpressionProductAtcDirectPurchaseButton(
+                shopProductUiModel,
+                ShopPageConstant.ShopProductCardAtc.CARD_PRODUCT,
+                position,
+                shopId,
+                userId
+            )
+        }
     }
 
     private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
@@ -1197,7 +1198,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
-        shopPageTracking?.onClickProductAtcButton(
+        shopPageTracking?.onClickProductAtcDirectPurchaseButton(
             atcTrackerModel,
             shopId,
             customDimensionShopPage.shopType.orEmpty(),

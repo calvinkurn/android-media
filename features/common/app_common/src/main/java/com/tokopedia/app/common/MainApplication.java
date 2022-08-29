@@ -1,11 +1,10 @@
 package com.tokopedia.app.common;
 
-import android.os.Build;
-
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics;
 import com.tokopedia.app.common.di.CommonAppComponent;
 import com.tokopedia.app.common.di.DaggerCommonAppComponent;
 import com.tokopedia.config.GlobalConfig;
@@ -77,6 +76,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
         super.onCreate();
         userSession = new UserSession(this);
         initCrashlytics();
+        initAnalyticUserId();
 
         daggerBuilder = DaggerCommonAppComponent.builder()
                 .baseAppComponent((MainApplication.this).getBaseAppComponent());
@@ -142,6 +142,19 @@ public abstract class MainApplication extends CoreNetworkApplication {
             };
             Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext(), true);
         }
+    }
+
+    public void initAnalyticUserId() {
+        WeaveInterface crashlyticsAnalyticsUserIdWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                String userId = userSession.getUserId();
+                TkpdFirebaseAnalytics.getInstance(MainApplication.this).setUserId(userId);
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(crashlyticsAnalyticsUserIdWeave);
     }
 
     public CommonAppComponent getApplicationComponent() {

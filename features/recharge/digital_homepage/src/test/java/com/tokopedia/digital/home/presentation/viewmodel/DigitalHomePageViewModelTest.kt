@@ -1,18 +1,17 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -27,11 +26,8 @@ class DigitalHomePageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val mapParams = mapOf<String, String>()
+    private val mapParams = mapOf<String, GqlQueryInterface>()
     lateinit var gqlResponseFail: GraphqlResponse
-
-    @MockK
-    lateinit var graphqlRepository: GraphqlRepository
 
     @RelaxedMockK
     lateinit var digitalHomePageUseCase: DigitalHomePageUseCase

@@ -273,8 +273,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        val file = media.file?: return 0
-        return VideoDurationRetriever.get(applicationContext, file)
+        return VideoDurationRetriever.get(applicationContext, media.file)
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {
@@ -296,7 +295,9 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (!param.get().isIncludeVideoFile()) return false
+        if (!param.get().isIncludeVideoFile()) {
+            return super.dispatchTouchEvent(ev)
+        }
 
         container.cameraFragment()?.run {
             val cameraFragment = this
