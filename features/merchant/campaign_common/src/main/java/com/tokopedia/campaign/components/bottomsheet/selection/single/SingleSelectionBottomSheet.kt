@@ -22,20 +22,14 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         private const val ITEM_DIVIDER_INSET = 16
 
         @JvmStatic
-        fun newInstance(selectedItemId: String, items: ArrayList<SingleSelectionItem>): SingleSelectionBottomSheet {
+        fun newInstance(selectedItemId: String, items: List<SingleSelectionItem>): SingleSelectionBottomSheet {
             return SingleSelectionBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SELECTED_ITEM_ID, selectedItemId)
-                    putParcelableArrayList(BUNDLE_KEY_SINGLE_SELECTION_ITEMS, items)
+                    putParcelableArrayList(BUNDLE_KEY_SINGLE_SELECTION_ITEMS, ArrayList(items))
                 }
             }
         }
-
-        @JvmStatic
-        fun newInstance(
-            selectedItemIds: List<String>,
-            items: List<SingleSelectionItem>
-        ): SingleSelectionBottomSheet = newInstance(ArrayList(selectedItemIds), ArrayList(items))
     }
 
     data class Config(val recyclerView: RecyclerView, val button: UnifyButton)
