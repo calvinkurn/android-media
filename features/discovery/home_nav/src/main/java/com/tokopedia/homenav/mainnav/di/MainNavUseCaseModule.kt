@@ -83,9 +83,12 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) : GetShopInfoUseCase {
+    fun provideShopInfoUseCase(
+        graphqlRepository: GraphqlRepository,
+        userSession: UserSessionInterface
+    ) : GetShopInfoUseCase {
         val useCase = GraphqlUseCase<ShopData>(graphqlRepository)
-        return GetShopInfoUseCase(useCase)
+        return GetShopInfoUseCase(useCase, userSession)
     }
 
     @MainNavScope

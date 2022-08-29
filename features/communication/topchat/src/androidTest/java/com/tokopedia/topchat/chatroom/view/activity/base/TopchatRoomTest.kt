@@ -266,6 +266,8 @@ abstract class TopchatRoomTest {
     protected open fun setupResponse() {
         firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
         firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
+        firstPageChatBroadcastAsBuyer = getChatUseCase.defaultBroadCastChatWithBuyerResponse
+
         chatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
@@ -277,10 +279,6 @@ abstract class TopchatRoomTest {
         stickerListAsBuyer = AndroidFileUtil.parse(
             "success_chat_bundle_sticker.json",
             StickerResponse::class.java
-        )
-        firstPageChatBroadcastAsBuyer = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
         )
         getShopFollowingStatus = AndroidFileUtil.parse(
             "success_get_shop_following_status.json",

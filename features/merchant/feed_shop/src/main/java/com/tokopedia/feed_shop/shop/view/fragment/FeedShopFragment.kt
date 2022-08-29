@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -83,6 +84,7 @@ import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -178,6 +180,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         //region Kol Comment Param
         private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
         //endregion
+
+        private const val PDP_APP_LINK_HOST = "product"
 
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
@@ -669,7 +673,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             shopId: String,
             mediaType: String,
             isTopads: Boolean,
-            playChannelId: String
+            playChannelId: String,
+            weblink: String,
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -696,10 +701,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int, mediaType: String) {
+    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+
     }
 
-    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+    override fun sendWatchVODTracker(
+        feedXCard: FeedXCard,
+        playChannelId: String,
+        rowNumber: Int,
+        time: Long
+    ) {
 
     }
     override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
@@ -714,8 +725,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onPostTagItemBSImpression(activityId: String, postTagItemList: List<FeedXProduct>, type: String, shopId: String, isFollowed: Boolean, mediaType: String) {
-    }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
@@ -944,13 +953,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
     }
 
-    override fun onBottomSheetMenuClicked(
-        item: ProductPostTagViewModelNew,
-        context: Context,
-        shopId: String
-    ) {
-    }
-
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
     }
 
@@ -1008,15 +1010,37 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun onGoToLink(url: String) {
+        val updatedUrl = checkShouldAppendPdpAppLinkAffiliate(url)
         if (RouteManager.isSupportApplink(activity, url)) {
-            RouteManager.route(activity, url)
+            RouteManager.route(activity, updatedUrl)
         } else {
             RouteManager.route(
                     activity,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, updatedUrl)
             )
         }
     }
+
+    private fun checkShouldAppendPdpAppLinkAffiliate(url: String): String {
+        val uri = Uri.parse(url)
+        return if (uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME) {
+            when (uri.host) {
+                PDP_APP_LINK_HOST -> {
+                    createAffiliateLink(url)
+                }
+                else -> {
+                    url
+                }
+            }
+        } else {
+            url
+        }
+    }
+
+    private fun createAffiliateLink(basePdpAppLink: String): String {
+        return (activity as? ShopPageSharedListener)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
+    }
+
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
         return context?.let{

@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
@@ -98,7 +99,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false
+            context?.resources?.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false
         )
         progressbar = view.findViewById(R.id.progressbar)
         txtGroupName = view.findViewById(R.id.group_name)
@@ -157,8 +158,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             validation1 = false
             actionEnable()
             txtGroupName?.setMessage(error)
-            if (error == resources.getString(R.string.topads_edit_duplicate_group_name_error_wrong))
-                txtGroupName?.setMessage(resources.getString(R.string.topads_edit_duplicate_group_name_error))
+            if (error == context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error_wrong))
+                txtGroupName?.setMessage(context?.resources?.getString(R.string.topads_edit_duplicate_group_name_error) ?: "")
             else
                 txtGroupName?.setMessage(error)
         }
@@ -174,6 +175,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         toggle?.setOnCheckedChangeListener { _, _ ->
             if (toggle?.isChecked == true) {
                 dailyBudget?.visibility = View.VISIBLE
+                checkErrorsDailyBudgetTF(getCurrentDailyBudget().toDouble())
             } else {
                 dailyBudget?.visibility = View.GONE
                 validation3 = true
@@ -192,54 +194,61 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         setDailyBudgetWatcher()
     }
 
+    private fun updateValidation3IfDailyBudgetTFVisible(state: Boolean) = dailyBudget?.let {
+        if(!it.isVisible) return@let
+        validation3 = false
+    }
+
     private fun setDailyBudgetWatcher() {
         dailyBudget?.textFieldInput?.let {
             it.addTextChangedListener(object : NumberTextWatcher(it, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    when {
-                        number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
-                            dailyBudget?.setError(true)
-                            dailyBudget?.setMessage(
-                                String.format(
-                                    getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
-                                    Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
-                                )
-                            )
-                            validation3 = false
-                            actionEnable()
-                        }
-                        number < currentBudget && currentAutoBidState.isEmpty() -> {
-                            dailyBudget?.setError(true)
-                            dailyBudget?.setMessage(
-                                String.format(
-                                    getString(com.tokopedia.topads.common.R.string.topads_common_minimum_daily_budget),
-                                    currentBudget
-                                )
-                            )
-                            validation3 = false
-                            actionEnable()
-                        }
-                        number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
-                            dailyBudget?.setError(true)
-                            dailyBudget?.setMessage(
-                                String.format(
-                                    getString(com.tokopedia.topads.common.R.string.topads_common_maximum_daily_budget),
-                                    MAXIMUM_LIMIT
-                                )
-                            )
-                            validation3 = false
-                            actionEnable()
-                        }
-                        else -> {
-                            validation3 = true
-                            dailyBudget?.setError(false)
-                            dailyBudget?.setMessage("")
-                            actionEnable()
-                        }
-                    }
+                    checkErrorsDailyBudgetTF(number)
                 }
             })
+        }
+    }
+
+    private fun checkErrorsDailyBudgetTF(number : Double) = when {
+        number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
+            dailyBudget?.setError(true)
+            dailyBudget?.setMessage(
+                String.format(
+                    getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
+                    Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
+                )
+            )
+            updateValidation3IfDailyBudgetTFVisible(false)
+            actionEnable()
+        }
+        number < currentBudget && currentAutoBidState.isEmpty() -> {
+            dailyBudget?.setError(true)
+            dailyBudget?.setMessage(
+                String.format(
+                    getString(com.tokopedia.topads.common.R.string.topads_common_minimum_daily_budget),
+                    currentBudget
+                )
+            )
+            updateValidation3IfDailyBudgetTFVisible(false)
+            actionEnable()
+        }
+        number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
+            dailyBudget?.setError(true)
+            dailyBudget?.setMessage(
+                String.format(
+                    getString(com.tokopedia.topads.common.R.string.topads_common_maximum_daily_budget),
+                    MAXIMUM_LIMIT
+                )
+            )
+            updateValidation3IfDailyBudgetTFVisible(false)
+            actionEnable()
+        }
+        else -> {
+            validation3 = true
+            dailyBudget?.setError(false)
+            dailyBudget?.setMessage("")
+            actionEnable()
         }
     }
 

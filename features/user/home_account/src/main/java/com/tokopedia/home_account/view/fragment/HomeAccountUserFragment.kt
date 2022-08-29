@@ -328,7 +328,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         if(isLinked) {
             LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(
                     ApplinkConstInternalGlobal.PARAM_LD,
                     LinkAccountWebviewFragment.BACK_BTN_APPLINK
@@ -1254,7 +1254,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 }
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
-                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
+                RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
@@ -1648,7 +1648,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun gotoChangeName(profile: ProfileDataView) {
         val intent = RouteManager.getIntent(
             requireContext(),
-            ApplinkConstInternalGlobal.CHANGE_NAME,
+            ApplinkConstInternalUserPlatform.CHANGE_NAME,
             profile.name,
             ""
         )
