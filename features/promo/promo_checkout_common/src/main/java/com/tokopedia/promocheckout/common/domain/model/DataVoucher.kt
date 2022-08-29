@@ -16,7 +16,7 @@ class DataVoucher {
     var discountAmount: String = ""
     @SerializedName("cashback_amount")
     @Expose
-    var cashbackAmount: Int = 0
+    var cashbackAmount: Long = 0L
     @SerializedName("saldo_amount")
     @Expose
     var saldoAmount: Int = 0
