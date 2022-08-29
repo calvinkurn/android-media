@@ -509,7 +509,7 @@ class CampaignInformationViewModel @Inject constructor(
             .filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
             .sortedBy { vpsPackage -> vpsPackage.packageEndTime }
         val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
-        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> vpsPackage.remainingQuota == EMPTY_QUOTA }
+        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit && vpsPackage.remainingQuota == EMPTY_QUOTA }
         return nonEmptyVpsPackages + shopTierBenefit + emptyVpsPackages
     }
 
