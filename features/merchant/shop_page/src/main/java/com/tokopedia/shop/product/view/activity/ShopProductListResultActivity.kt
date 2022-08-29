@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isNumeric
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
@@ -45,6 +47,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     private var sort: String? = null
     private var attribution: String? = null
     private var isNeedToReloadData = false
+    private var isNeedToGetShopIdFromDomain = false
     private var shopInfo: ShopInfo? = null
     private var shopPageTracking: OldShopPageTrackingBuyer? = null
     private var editTextSearch: EditText? = null
@@ -110,6 +113,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         } else {
             "0"
         }
+        isNeedToGetShopIdFromDomain = !shopId?.isNumeric().orFalse()
     }
 
     private fun getEtalaseIdFromUri(data: Uri?, pathSegments: List<String>) {
@@ -141,7 +145,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     override fun getNewFragment(): Fragment? {
-        return createInstance(shopId.orEmpty(), shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection)
+        return createInstance(shopId.orEmpty(), shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData, sourceRedirection, isNeedToGetShopIdFromDomain)
     }
 
     override fun getComponent(): ShopComponent? {

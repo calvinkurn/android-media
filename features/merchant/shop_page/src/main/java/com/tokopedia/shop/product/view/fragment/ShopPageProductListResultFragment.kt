@@ -147,6 +147,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var attribution: String? = null
     private var selectedEtalaseList: ArrayList<ShopEtalaseItemDataModel>? = null
     private var isNeedToReloadData: Boolean = false
+    private var isNeedToGetShopIdFromDomain: Boolean = false
     private var recyclerView: RecyclerView? = null
     private var shopInfo: ShopInfo? = null
     private var selectedEtalaseId: String = ""
@@ -260,6 +261,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
                 isNeedToReloadData = it.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
+                isNeedToGetShopIdFromDomain = it.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_GET_SHOP_ID_FROM_DOMAIN, false)
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -361,7 +363,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     it,
                     isMyShop
             )
-        } ?: viewModel.getShop(shopId.orEmpty(), isRefresh = isNeedToReloadData)
+        } ?: run {
+            if (isNeedToGetShopIdFromDomain) {
+                viewModel.getShop(shopId = "", shopDomain = shopId.orEmpty(), isRefresh = isNeedToReloadData)
+            } else {
+                viewModel.getShop(shopId = shopId.orEmpty(), isRefresh = isNeedToReloadData)
+            }
+        }
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -1543,7 +1551,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                            sort: String?,
                            attribution: String?,
                            isNeedToReloadData: Boolean? = false,
-                           sourceRedirection: String? = ""
+                           sourceRedirection: String? = "",
+                           isNeedToGetShopIdFromDomain: Boolean = false
         ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
@@ -1555,6 +1564,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
                         ?: false)
                 putString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection.orEmpty())
+                putBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_GET_SHOP_ID_FROM_DOMAIN, isNeedToGetShopIdFromDomain)
             }
         }
     }
