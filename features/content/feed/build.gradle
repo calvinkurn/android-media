@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 android {
     testOptions {
@@ -27,6 +28,9 @@ android {
         } else {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 

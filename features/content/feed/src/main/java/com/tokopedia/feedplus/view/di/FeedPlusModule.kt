@@ -13,12 +13,10 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedAuthInterceptor
-import com.tokopedia.feedplus.data.api.FeedUrl
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -27,6 +25,7 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -131,7 +130,7 @@ class FeedPlusModule {
     @Provides
     fun provideWsRetrofitDomain(okHttpClient: OkHttpClient,
                                 retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(FeedUrl.BASE_DOMAIN)
+        return retrofitBuilder.baseUrl(TokopediaUrl.getInstance().WS)
                 .client(okHttpClient)
                 .build()
     }
