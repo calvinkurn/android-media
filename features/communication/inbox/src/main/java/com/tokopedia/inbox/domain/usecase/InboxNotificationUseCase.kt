@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topchat.chatlist.domain.pojo.param.NotificationParam
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
@@ -18,13 +19,16 @@ open class InboxNotificationUseCase @Inject constructor(
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getNotification(
+            shopId: String,
             onSuccess: (Notifications) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(
                 block = {
+                    val param = getParams(shopId)
                     val response = gqlUseCase.apply {
                         setTypeClass(InboxNotificationResponse::class.java)
+                        setRequestParams(param)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     onSuccess(response.notifications)
@@ -35,9 +39,15 @@ open class InboxNotificationUseCase @Inject constructor(
         )
     }
 
+    private fun getParams(shopId: String): Map<String, Any?> {
+        return mapOf(
+            PARAM_INPUT to NotificationParam(shopId)
+        )
+    }
+
     private val query = """
-        query notifications_inbox_counter {
-          notifications{
+        query notifications_inbox_counter($$PARAM_INPUT: NotificationRequest) {
+          notifications(input: $$PARAM_INPUT){
             total_cart
             chat{
               unreads
@@ -70,4 +80,8 @@ open class InboxNotificationUseCase @Inject constructor(
           }
         }
     """.trimIndent()
+
+    companion object {
+        private const val PARAM_INPUT = "input"
+    }
 }
