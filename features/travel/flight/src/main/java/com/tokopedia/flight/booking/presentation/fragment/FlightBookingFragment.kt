@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -1214,7 +1215,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         startActivityForResult(
             RouteManager.getIntent(
                 context,
-                ApplinkConstInternalGlobal.ADD_PHONE
+                ApplinkConstInternalUserPlatform.ADD_PHONE
             ), REQUEST_CODE_OTP
         )
     }

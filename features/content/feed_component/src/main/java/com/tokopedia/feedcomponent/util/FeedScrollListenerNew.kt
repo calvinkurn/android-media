@@ -3,11 +3,13 @@ package com.tokopedia.feedcomponent.util
 import android.content.Context
 import android.graphics.Rect
 import android.net.wifi.WifiManager
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
@@ -30,6 +32,10 @@ object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
     private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
+    private const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
+    private const val IMAGE_ASGC_CTA_IMPRESSED = "image_asgc_cta_impressed"
+    private const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
+
     private const val CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD = 50
     private const val TYPE_VIDEO = "video"
     private const val TYPE_LONG_VIDEO = "long-video"
@@ -40,32 +46,64 @@ object FeedScrollListenerNew {
             val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
             for (i in firstPosition..lastPosition) {
                 val item = getCardViewModel(list, i)
+                val card = getFeedXCard(list, i)
                 val topadsItem = getTopadsCardViewModel(list,i)
-                if (isVideoCard(list, i) && isWifiEnabled(recyclerView.context)) {
-                    if (item != null) {
-                        getVideoModelScrollListener(layoutManager, recyclerView, i, item)
-                    }
-                } else if (isImageCard(list, i)) {
-                    if (item != null) {
-                        getImagePostScrollListener(layoutManager, recyclerView, i, item)
-                    }
-                } else if (isVODCard(list, i) && isWifiEnabled(recyclerView.context)){
-                    if (item != null) {
-                        getVODModelScrollListener(layoutManager, recyclerView, i, item)
-                    }
-                }else if (isLongVideoCard(list, i) && isWifiEnabled(recyclerView.context)){
-                    if (item != null) {
-                        getVODModelScrollListener(layoutManager, recyclerView, i, item)
-                    }
-                }
-                else if (isTopadsImageCard(list, i)) {
-                    if (topadsItem != null) {
-                        getImagePostScrollListener(layoutManager, recyclerView, i, topadsItem, true)
+                card?.let {
+                    if (isVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                        if (item != null) {
+                            getVideoModelScrollListener(layoutManager, recyclerView, i, item)
+                        }
+                    } else if (isImageCard(card)) {
+                        if (item != null) {
+                            getImagePostScrollListener(layoutManager, recyclerView, i, item)
+                        }
+                    } else if (isVODCard(card) && isWifiEnabled(recyclerView.context)) {
+                        if (item != null) {
+                            getVODModelScrollListener(layoutManager, recyclerView, i, item)
+                        }
+                    } else if (isLongVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                        if (item != null) {
+                            getVODModelScrollListener(layoutManager, recyclerView, i, item)
+                        }
+                    } else if (isTopadsImageCard(list, i)) {
+                        if (topadsItem != null) {
+                            getImagePostScrollListener(
+                                layoutManager,
+                                recyclerView,
+                                i,
+                                topadsItem
+                            )
+                        }
                     }
                 }
             }
         }
     }
+    fun  onCDPScrolled(recyclerView: RecyclerView, list: List<FeedXCard>) {
+        if (canAutoplayVideo(recyclerView)) {
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+            val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+            val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+            for (i in firstPosition..lastPosition) {
+                val card = getCDPCardViewModel(list, i)
+                val media = getFeedXCardMedia(list,i)
+
+                if (card != null && media != null) {
+                    if (isVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                            getVideoModelScrollListener(layoutManager, recyclerView, i, media, true)
+                    } else if (isImageCard(card)) {
+                            getImagePostScrollListener(layoutManager, recyclerView, i, media, true)
+                    } else if (isVODCard(card) && isWifiEnabled(recyclerView.context)) {
+                            getVODModelScrollListener(layoutManager, recyclerView, i, media, true)
+                    } else if (isLongVideoCard(card) && isWifiEnabled(recyclerView.context)) {
+                            getVODModelScrollListener(layoutManager, recyclerView, i, media, true)
+                    }
+                }
+
+            }
+        }
+    }
+
 
     @Suppress("MagicNumber")
     private fun getImagePostScrollListener(
@@ -73,7 +111,7 @@ object FeedScrollListenerNew {
         recyclerView: RecyclerView,
         i: Int,
         item: FeedXMedia,
-        isTopads:Boolean = false
+        isCDPScroll: Boolean = false
     ) {
         val rvRect = recyclerView.globalVisibleRect
         val currentView = layoutManager?.findViewByPosition(i) ?: return
@@ -94,6 +132,14 @@ object FeedScrollListenerNew {
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
             if (isStateChanged && item.isImageImpressedFirst) {
                     item.isImageImpressedFirst = false
+                if (isCDPScroll) {
+                    val impressPayload = Bundle().apply {
+                        putBoolean(IMAGE_ITEM_IMPRESSED, true)
+                    }
+                    Objects.requireNonNull(recyclerView.adapter)
+                        .notifyItemChanged(i, impressPayload)
+                }
+                else
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, PAYLOAD_POST_TOPADS_VISIBLE)
             }
@@ -108,8 +154,16 @@ object FeedScrollListenerNew {
         if (ctaRect.top >= rvRect.top &&
             ctaRect.bottom <= rvRect.bottom &&
                 ctaVisiblePercent > CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD / 100f) {
-            Objects.requireNonNull(recyclerView.adapter)
-                .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_CTA_VISIBLE)
+            if (isCDPScroll) {
+                val impressCTAPayload = Bundle().apply {
+                    putBoolean(IMAGE_ASGC_CTA_IMPRESSED, true)
+                }
+                Objects.requireNonNull(recyclerView.adapter)
+                    .notifyItemChanged(i, impressCTAPayload)
+            } else {
+                Objects.requireNonNull(recyclerView.adapter)
+                    .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_CTA_VISIBLE)
+            }
         }
     }
 
@@ -117,7 +171,8 @@ object FeedScrollListenerNew {
         layoutManager: LinearLayoutManager?,
         recyclerView: RecyclerView,
         i: Int,
-        item: FeedXMedia
+        item: FeedXMedia,
+        isCDPScroll: Boolean = false
     ) {
         val rvRect = Rect()
         recyclerView.getGlobalVisibleRect(rvRect)
@@ -149,6 +204,14 @@ object FeedScrollListenerNew {
 
             if (isStateChanged && item.isImageImpressedFirst) {
                 item.isImageImpressedFirst = false
+                if (isCDPScroll) {
+                    val impressPayload = Bundle().apply {
+                        putBoolean(IMAGE_ITEM_IMPRESSED, true)
+                    }
+                    Objects.requireNonNull(recyclerView.adapter)
+                        .notifyItemChanged(i, impressPayload)
+                }
+                else
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
             }
@@ -159,7 +222,8 @@ object FeedScrollListenerNew {
             layoutManager: LinearLayoutManager?,
             recyclerView: RecyclerView,
             i: Int,
-            item: FeedXMedia
+            item: FeedXMedia,
+            isCDPScroll: Boolean = false
     ) {
         val rvRect = Rect()
         recyclerView.getGlobalVisibleRect(rvRect)
@@ -191,46 +255,72 @@ object FeedScrollListenerNew {
 
             if (isStateChanged && item.isImageImpressedFirst) {
                 item.isImageImpressedFirst = false
+                if (isCDPScroll) {
+                    val impressPayload = Bundle().apply {
+                        putBoolean(VOD_ITEM_IMPRESSED, true)
+                    }
+                    Objects.requireNonNull(recyclerView.adapter)
+                        .notifyItemChanged(i, impressPayload)
+                }
+                else
                 Objects.requireNonNull(recyclerView.adapter)
                         .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VOD)
             }
         }
     }
 
+    private fun getFeedXCard(list: List<Visitable<*>>, position: Int): FeedXCard? {
+        return if (list.size > position && list[position] is DynamicPostUiModel)
+            (list[position] as DynamicPostUiModel).feedXCard
+        else
+            null
+    }
+    private fun getFeedXCardMedia(list: List<FeedXCard>, position: Int): FeedXMedia? {
+        return if (list.size > position) {
+            val card = (list[position])
+            card.media[card.lastCarouselIndex]
+        } else
+            null
+    }
 
-    private fun isVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
-        return (list.size > position && list[position] is DynamicPostUiModel
-                && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+    private fun isVideoCard(card: FeedXCard): Boolean {
+        return (card.typename == TYPE_FEED_X_CARD_POST
+                && card.media.isNotEmpty() && (card.media.find {
             it.type == TYPE_VIDEO
         } != null))
     }
-    private fun isVODCard(list: List<Visitable<*>>, position: Int): Boolean {
-        return (list.size > position && list[position] is DynamicPostUiModel
-                && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_PLAY
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty())
+
+    private fun isVODCard(card: FeedXCard): Boolean {
+        return (card.typename == TYPE_FEED_X_CARD_PLAY
+                && card.media.isNotEmpty())
     }
-    private fun isLongVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
-        return (list.size > position && list[position] is DynamicPostUiModel
-                && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+
+    private fun isLongVideoCard(card: FeedXCard): Boolean {
+        return (card.typename == TYPE_FEED_X_CARD_POST
+                && card.media.isNotEmpty() && (card.media.find {
             it.type == TYPE_LONG_VIDEO
         } != null))
     }
 
-
-    private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
-        return (list.size > position && list[position] is DynamicPostUiModel &&
-                ((list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST || (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+    private fun isImageCard(card: FeedXCard): Boolean {
+        return (card.typename == TYPE_FEED_X_CARD_POST || card.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
+                && card.media.isNotEmpty() && (card.media.find {
             it.type == TYPE_IMAGE
-        } != null))
+        } != null)
     }
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
             val feedXCard = (list[position] as DynamicPostUiModel).feedXCard
             return feedXCard.media[feedXCard.lastCarouselIndex]
+        } catch (e: Exception) {
+            e.localizedMessage
+        }
+        return null
+    }
+    private fun getCDPCardViewModel(list: List<FeedXCard>, position: Int): FeedXCard? {
+        try {
+            return (list[position])
         } catch (e: Exception) {
             e.localizedMessage
         }

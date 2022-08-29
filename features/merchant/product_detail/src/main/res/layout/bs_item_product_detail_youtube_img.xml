@@ -8,8 +8,8 @@
 
     <com.tokopedia.product.detail.common.data.views.ProductRoundedImageView
         android:id="@+id/img_youtube_item"
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="180dp"
+        android:layout_height="90dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />

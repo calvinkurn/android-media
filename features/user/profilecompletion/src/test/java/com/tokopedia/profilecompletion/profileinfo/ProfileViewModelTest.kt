@@ -7,9 +7,9 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.profileinfo.data.*
 import com.tokopedia.profilecompletion.profileinfo.usecase.*
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureData
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureInnerData
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureResponse
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureData
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureInnerData
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
