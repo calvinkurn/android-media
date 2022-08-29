@@ -632,9 +632,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun initialVar() {
         saldoDetailViewModel.isSeller = isSellerEnabled
-        context?.let { ctx->
+        context?.resources?.let { res ->
             totalBalanceTitle!!.text =
-                ctx.resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
+                res.getString(R.string.total_saldo_text)
         }
         buyerSaldoBalanceRL!!.show()
         sellerSaldoBalanceRL!!.show()
@@ -842,23 +842,19 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
-        if (SaldoDetailsRollenceUtil.shouldShowModalTokoWidget()) {
-            if (response != null && response.isEligible) {
-                statusWithDrawLock = response.status
-                when (statusWithDrawLock) {
-                    MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
-                    MCL_STATUS_BLOCK1 -> {
-                        showTicker()
-                        showMerchantCreditLineWidget(response)
-                    }
-                    MCL_STATUS_BLOCK3 -> {
-                        showTicker()
-                        hideMerchantCreditLineFragment()
-                    }
-                    else -> showMerchantCreditLineWidget(response)
+        if (SaldoDetailsRollenceUtil.shouldShowModalTokoWidget() && response != null && response.isEligible) {
+            statusWithDrawLock = response.status
+            when (statusWithDrawLock) {
+                MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
+                MCL_STATUS_BLOCK1 -> {
+                    showTicker()
+                    showMerchantCreditLineWidget(response)
                 }
-            } else {
-                hideMerchantCreditLineFragment()
+                MCL_STATUS_BLOCK3 -> {
+                    showTicker()
+                    hideMerchantCreditLineFragment()
+                }
+                else -> showMerchantCreditLineWidget(response)
             }
         } else {
             hideMerchantCreditLineFragment()
