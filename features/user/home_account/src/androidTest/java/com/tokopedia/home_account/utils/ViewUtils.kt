@@ -135,16 +135,17 @@ object ViewUtils {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         val matcher: Matcher<RecyclerView.ViewHolder> = withSettingItemViewHolder(title)
 
-        Espresso.onView(allOf(
+        ViewActionUtils.waitOnView(
+            allOf(
                 isDescendantOfA(allOf(
-                        withId(R.id.home_account_expandable_layout_container),
-                        hasDescendant(allOf(
-                                withText(settingType),
-                        )),
+                    withId(R.id.home_account_expandable_layout_container),
+                    hasDescendant(allOf(
+                        withText(settingType),
+                    )),
                 )),
                 withId(R.id.home_account_expandable_layout_rv)
-
-        )).perform(scrollToHolder(matcher), actionOnHolderItem(matcher, click()))
+            )
+        ).perform(scrollToHolder(matcher), actionOnHolderItem(matcher, click()))
     }
 
     fun clickSettingMoreView(settingType: String) {
