@@ -12,7 +12,7 @@
     <com.tokopedia.unifyprinciples.Typography style="@style/TextView.Title.Bold"
         android:text="@string/shop_info_label_statistic"
         app:typographyWeight="bold"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="50dp"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"/>
@@ -20,7 +20,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_64"
+        android:minHeight="64dp"
         android:orientation="horizontal"
         android:id="@+id/labelViewReview"
         android:gravity="center_vertical"
@@ -78,7 +78,7 @@
     <com.tokopedia.shop_widget.common.customview.ShopPageLabelView
         android:id="@+id/labelViewDiscussion"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         app:shop_lv_content="@string/see_label"
         app:shop_lv_title="@string/shop_info_title_tab_discussion"
         app:shop_lv_title_text_size="14sp"
@@ -98,7 +98,7 @@
     <com.tokopedia.shop_widget.common.customview.ShopPageLabelView
         android:id="@+id/labelViewProcessOrder"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         app:shop_lv_content="@string/see_label"
@@ -116,7 +116,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
@@ -157,7 +157,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="16dp"

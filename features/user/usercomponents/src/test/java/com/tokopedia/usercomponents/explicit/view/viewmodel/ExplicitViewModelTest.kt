@@ -2,8 +2,10 @@ package com.tokopedia.usercomponents.explicit.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
@@ -28,13 +30,38 @@ class ExplicitViewModelTest {
     private val getQuestionUseCase = mockk<GetQuestionUseCase>(relaxed = true)
     private val saveAnswerUseCase = mockk<SaveAnswerUseCase>(relaxed = true)
     private val updateStateUseCase = mockk<UpdateStateUseCase>(relaxed = true)
+    private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: ExplicitViewModel
 
     @Before
     fun setUp() {
-        viewModel = ExplicitViewModel(getQuestionUseCase, saveAnswerUseCase, updateStateUseCase, dispatcherProviderTest)
+        viewModel = ExplicitViewModel(getQuestionUseCase, saveAnswerUseCase, updateStateUseCase, userSessionInterface, dispatcherProviderTest)
+    }
+
+    @Test
+    fun `get status is logged in then return authorized`() {
+        val isLoggedIn = true
+
+        coEvery {
+            userSessionInterface.isLoggedIn
+        } returns isLoggedIn
+
+        val result = viewModel.isLoggedIn()
+        assertTrue(result)
+    }
+
+    @Test
+    fun `get status is logged in then return unauthorized`() {
+        val isLoggedIn = false
+
+        coEvery {
+            userSessionInterface.isLoggedIn
+        } returns isLoggedIn
+
+        val result = viewModel.isLoggedIn()
+        assertTrue(!result)
     }
 
     @Test
@@ -48,7 +75,7 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.getExplicitContent(templateName)
 
-        val result = viewModel.explicitContent.value
+        val result = viewModel.explicitContent.getOrAwaitValue()
         assertEquals(Success(expected), result)
     }
 
@@ -80,7 +107,7 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.getExplicitContent(templateName)
 
-        val result = viewModel.explicitContent.value
+        val result = viewModel.explicitContent.getOrAwaitValue()
         assertEquals(Success(expected), result)
     }
 
@@ -106,7 +133,7 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.getExplicitContent(templateName)
 
-        val result = viewModel.explicitContent.value
+        val result = viewModel.explicitContent.getOrAwaitValue()
         assertEquals(Success(expected), result)
     }
 
@@ -128,7 +155,7 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.getExplicitContent(templateName)
 
-        val result = viewModel.explicitContent.value
+        val result = viewModel.explicitContent.getOrAwaitValue()
         assertEquals(Success(expected), result)
     }
 
@@ -146,7 +173,7 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.getExplicitContent(templateName)
 
-        val result = viewModel.explicitContent.value
+        val result = viewModel.explicitContent.getOrAwaitValue()
         assertEquals(Success(expected), result)
     }
 
@@ -160,7 +187,7 @@ class ExplicitViewModelTest {
         } throws data
         viewModel.getExplicitContent(templateName)
 
-        val result = viewModel.explicitContent.value
+        val result = viewModel.explicitContent.getOrAwaitValue()
         assertTrue(result is Fail)
     }
 
@@ -168,8 +195,7 @@ class ExplicitViewModelTest {
     fun `user click positive button and app send answer then response success`() {
         val answer = true
         val data = AnswerDataModel()
-        val message = data.explicitprofileSaveMultiAnswers.message
-        val expected = Success(message)
+        val expected = Success(Pair(OptionsItem(), data.explicitprofileSaveMultiAnswers.message))
         val param = InputParam()
 
         coEvery {
@@ -177,7 +203,7 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.sendAnswer(answer)
 
-        val result = viewModel.statusSaveAnswer.value
+        val result = viewModel.statusSaveAnswer.getOrAwaitValue()
         assertEquals(expected, result)
     }
 
@@ -192,7 +218,7 @@ class ExplicitViewModelTest {
         } throws data
         viewModel.sendAnswer(answer)
 
-        val result = viewModel.statusSaveAnswer.value
+        val result = viewModel.statusSaveAnswer.getOrAwaitValue()
         assertTrue(result is Fail)
     }
 
@@ -200,16 +226,15 @@ class ExplicitViewModelTest {
     fun `user click negative button and app send answer then response success`() {
         val answer = false
         val data = AnswerDataModel()
-        val message = data.explicitprofileSaveMultiAnswers.message
         val param = InputParam()
-        val expected = Success(message)
+        val expected = Success(Pair(OptionsItem(), data.explicitprofileSaveMultiAnswers.message))
 
         coEvery {
             saveAnswerUseCase(param)
         } returns data
         viewModel.sendAnswer(answer)
 
-        val result = viewModel.statusSaveAnswer.value
+        val result = viewModel.statusSaveAnswer.getOrAwaitValue()
         assertEquals(expected, result)
     }
 
@@ -224,7 +249,7 @@ class ExplicitViewModelTest {
         } throws data
         viewModel.sendAnswer(answer)
 
-        val result = viewModel.statusSaveAnswer.value
+        val result = viewModel.statusSaveAnswer.getOrAwaitValue()
         assertTrue(result is Fail)
     }
 
@@ -265,8 +290,8 @@ class ExplicitViewModelTest {
         } throws data
         viewModel.updateState()
 
-        val result = viewModel.statusUpdateState.value
-        assertTrue(false == result)
+        val result = viewModel.statusUpdateState.getOrAwaitValue()
+        assertTrue(!result)
     }
 
     @Test
@@ -279,8 +304,8 @@ class ExplicitViewModelTest {
         } returns data
         viewModel.updateState()
 
-        val result = viewModel.statusUpdateState.value
-        assertTrue(true == result)
+        val result = viewModel.statusUpdateState.getOrAwaitValue()
+        assertTrue(result)
     }
 
 }
