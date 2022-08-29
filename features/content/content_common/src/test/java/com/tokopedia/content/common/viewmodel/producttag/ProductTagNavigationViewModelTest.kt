@@ -7,8 +7,6 @@ import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.content.common.producttag.view.uimodel.config.FeedProductTagConfig
-import com.tokopedia.content.common.producttag.view.uimodel.config.PlayProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.robot.ProductTagViewModelRobot
 import com.tokopedia.content.common.util.andThen
