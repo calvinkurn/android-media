@@ -25,15 +25,15 @@
     <string name="gopay_kyc_ktp_right_text">Benar</string>
     <string name="gopay_kyc_ktp_wrong">Salah</string>
 
-    <string name="gopay_kyc_limit_balance_title_text">Batas Saldo</string>
+    <string name="gopay_kyc_limit_balance_title_text">Batas \nSaldo</string>
     <string name="gopay_kyc_limit_balance_gopay_text">Rp2.000.000</string>
     <string name="gopay_kyc_limit_balance_gopay_plus_text">Rp20.000.000</string>
-    <string name="gopay_kyc_limit_transaction_per_month_title_text">Batas Transaksi per Bulan</string>
+    <string name="gopay_kyc_limit_transaction_per_month_title_text">Batas \nTransaksi \nper Bulan</string>
     <string name="gopay_kyc_limit_transaction_per_month_gopay_text">Rp20.000.000</string>
     <string name="gopay_kyc_limit_transaction_per_month_gopay_plus_text">Rp40.000.000</string>
-    <string name="gopay_kyc_transfer_to_fellow_gopay_title_text">Transfer ke Sesama GoPay</string>
-    <string name="gopay_kyc_transfer_to_bank_title_text">Transfer ke bank</string>
-    <string name="gopay_kyc_guarantee_balance_return_title_text">Jaminan Saldo Kembali</string>
+    <string name="gopay_kyc_transfer_to_fellow_gopay_title_text">Transfer ke \nSesama \nGoPay</string>
+    <string name="gopay_kyc_transfer_to_bank_title_text">Transfer ke \nBank</string>
+    <string name="gopay_kyc_guarantee_balance_return_title_text">Jaminan \nSaldo \nKembali</string>
 
 
     <string name="gopay_ktp_instruction_1">Gunakan e-KTP asli bukan hasil fotokopi.</string>

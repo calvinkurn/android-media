@@ -21,11 +21,10 @@ class GoPayBenefitItemViewHolder(itemView: View): AbstractViewHolder<GoPayPlusBe
     private val goPayItemBenefitPlusTextView = itemView.findViewById<Typography>(R.id.goPayPlusBenefit)
 
     private val goPayPlusItemBenefitBlueTickImageView = itemView.findViewById<ImageUnify>(R.id.goPayPlusBenefitImage)
+    private val goPayItemBenefitCancelImageView = itemView.findViewById<ImageUnify>(R.id.goPayBenefitCancelImage)
 
     private val goPayBenefitParentView = itemView.findViewById<ConstraintLayout>(R.id.goKycBenefitParentView)
     private val goPayPlusItemBenefitLL = itemView.findViewById<LinearLayoutCompat>(R.id.goPayPlusBenefitLL)
-    private val goPayItemBenefitLL = itemView.findViewById<LinearLayoutCompat>(R.id.goPayBenefitLL)
-
 
     private val divider=itemView.findViewById<View>(R.id.divider)
     private val verticalLineView=itemView.findViewById<View>(R.id.verticalLineView)
@@ -46,7 +45,7 @@ class GoPayBenefitItemViewHolder(itemView: View): AbstractViewHolder<GoPayPlusBe
         if (model.benefitGopay.isNotEmpty())
             goPayItemBenefitTextView.text = model.benefitGopay
         else {
-            goPayItemBenefitLL.visibility=View.VISIBLE
+            goPayItemBenefitCancelImageView.visibility=View.VISIBLE
             goPayItemBenefitTextView.visibility = View.GONE
         }
 

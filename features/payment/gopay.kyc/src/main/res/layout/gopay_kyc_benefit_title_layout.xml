@@ -13,6 +13,8 @@
         android:layout_weight="1"
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_gopay_white_icon"
+        android:paddingHorizontal="@dimen/go_pay_kyc_dp_30"
+        android:paddingVertical="@dimen/go_pay_kyc_dp_11"
         />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -20,7 +22,7 @@
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:paddingHorizontal="@dimen/go_pay_kyc_dp_26"
+        android:paddingHorizontal="@dimen/go_pay_kyc_dp_30"
         android:paddingVertical="@dimen/go_pay_kyc_dp_11"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_gopay_black_icon"
@@ -38,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:paddingHorizontal="@dimen/go_pay_kyc_dp_26"
+            android:paddingHorizontal="@dimen/go_pay_kyc_dp_30"
             android:paddingVertical="@dimen/go_pay_kyc_dp_11"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_gopay_white_icon"

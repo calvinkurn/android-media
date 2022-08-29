@@ -28,18 +28,24 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:paddingStart="@dimen/go_pay_kyc_dp_12"
-            android:paddingEnd="@dimen/go_pay_kyc_dp_31"
-            android:paddingVertical="@dimen/go_pay_kyc_dp_12"
+            android:paddingHorizontal="@dimen/go_pay_kyc_dp_12"
+            android:paddingVertical="@dimen/go_pay_kyc_dp_8"
             android:textColor="@color/Unify_NN950"
             app:typographyType="display_3"
             tools:text="Batas Saldo"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/goPayBenefit"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/goPayBenefitLL"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/goPayBenefit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/go_pay_kyc_dp_8"
             android:paddingVertical="@dimen/go_pay_kyc_dp_8"
             tools:text="Rp1.00.00"
@@ -48,15 +54,6 @@
             android:layout_gravity="center"
             android:textAlignment="center"
             />
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/goPayBenefitLL"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:visibility="gone"
-        android:orientation="horizontal">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/goPayBenefitCancelImage"
@@ -67,6 +64,7 @@
             app:unify_image_corner_radius="0"
             app:unify_image_type="circle"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -81,8 +79,8 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/goPayPlusBenefit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/go_pay_kyc_dp_8"
                 android:paddingVertical="@dimen/go_pay_kyc_dp_8"
                 tools:text="Rp1.00.00"
