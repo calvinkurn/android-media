@@ -41,7 +41,7 @@ class CampaignManageProductBulkApplyBottomSheetViewModel @Inject constructor(
     private var selectedStartDate: Date? = null
     private var selectedEndDate: Date? = null
     private var selectedDiscountType = DiscountType.RUPIAH
-    private var selectedDiscountAmount = 0
+    private var selectedDiscountAmount = 0L
     private var selectedMaxQuantity = 0
 
     fun onDiscountTypeChanged(discountType: DiscountType) {
@@ -49,7 +49,7 @@ class CampaignManageProductBulkApplyBottomSheetViewModel @Inject constructor(
         _discountType.value = discountType
     }
 
-    fun onDiscountAmountChanged(discountAmount: Int) {
+    fun onDiscountAmountChanged(discountAmount: Long) {
         this.selectedDiscountAmount = discountAmount
     }
 

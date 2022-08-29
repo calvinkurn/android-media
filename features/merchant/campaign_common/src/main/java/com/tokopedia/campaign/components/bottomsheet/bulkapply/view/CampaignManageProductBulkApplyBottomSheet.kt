@@ -255,7 +255,7 @@ class CampaignManageProductBulkApplyBottomSheet : BottomSheetUnify() {
                 binding?.textFieldDiscountAmount?.editText?.filters =
                     arrayOf(InputFilter.LengthFilter(DISCOUNT_PERCENTAGE_MAX_DIGIT))
             }
-            viewModel.onDiscountAmountChanged(Int.ZERO)
+            viewModel.onDiscountAmountChanged(Int.ZERO.toLong())
         }
     }
 

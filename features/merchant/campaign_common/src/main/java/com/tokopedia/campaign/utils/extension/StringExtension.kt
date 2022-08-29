@@ -15,11 +15,3 @@ fun String.toDate(inputFormat: String, timeZone: TimeZone = TimeZone.getDefault(
         Date()
     }
 }
-
-fun String.digitsOnly() : Int {
-    return try {
-        this.filter { it.isDigit() }.toInt()
-    } catch (e: Exception) {
-        0
-    }
-}

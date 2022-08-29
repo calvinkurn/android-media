@@ -6,6 +6,6 @@ data class CampaignManageProductBulkApplyBottomSheetResultUiModel(
     val startDate: Date? = null,
     val endDate: Date? = null,
     val discountType : DiscountType = DiscountType.RUPIAH,
-    val discountAmount: Int  = 0,
+    val discountAmount: Long  = 0,
     val stock: Int =  0
 )

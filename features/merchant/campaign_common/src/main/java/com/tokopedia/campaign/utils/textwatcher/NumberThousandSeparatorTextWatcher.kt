@@ -3,13 +3,13 @@ package com.tokopedia.campaign.utils.textwatcher
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import com.tokopedia.campaign.utils.extension.digitsOnly
+import com.tokopedia.kotlin.extensions.view.digitsOnly
 import java.text.DecimalFormat
 
 class NumberThousandSeparatorTextWatcher(
     private val view: EditText,
     private val decimalFormatter: DecimalFormat,
-    private val afterTextChangedAction: (Int, String) -> Unit
+    private val afterTextChangedAction: (Long, String) -> Unit
 ) : TextWatcher {
 
     var isForceTextChanged = false
