@@ -290,7 +290,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun getConfiguration() {
         startNetworkMonitoring()
-        viewModel.submitAction(PlayBroadcastAction.GetAccountConfiguration)
+        viewModel.submitAction(PlayBroadcastAction.GetAccountList)
     }
 
     private fun populateSavedState(savedInstanceState: Bundle) {
