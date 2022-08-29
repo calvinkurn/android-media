@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentQuotaMonitoringBinding
+import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailFragment
@@ -80,19 +81,16 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
                     displayPackages(results.data)
                 }
                 is Fail -> {
-
+                    binding?.btnLearnQuota showError results.throwable
                 }
             }
         }
     }
 
     private fun displayPackages(vpsPackage: List<VpsPackage>) {
-        var remainingQuota = 0
-        var totalQuota = 0
-        vpsPackage.forEach { vpsPackage ->
-            remainingQuota += vpsPackage.remainingQuota
-            totalQuota += vpsPackage.originalQuota
-        }
+        val packageAvailability = viewModel.getPackageAvailability(vpsPackage)
+        val remainingQuota = packageAvailability.remainingQuota
+        val totalQuota = packageAvailability.totalQuota
         binding?.apply {
             header.apply {
                 navigationIcon = getIconUnifyDrawable(context, IconUnify.CLOSE)

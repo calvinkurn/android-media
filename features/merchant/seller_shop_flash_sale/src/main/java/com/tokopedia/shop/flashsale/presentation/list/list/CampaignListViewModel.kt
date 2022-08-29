@@ -5,11 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.Constant.SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
+import com.tokopedia.shop.flashsale.common.extension.daysDifference
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
+import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.PackageAvailability
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
@@ -20,12 +25,12 @@ import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBan
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
-import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class CampaignListViewModel @Inject constructor(
@@ -184,6 +189,31 @@ class CampaignListViewModel @Inject constructor(
             onError = { error ->
                 _vpsPackages.postValue(Fail(error))
             }
+        )
+    }
+
+    fun getPackageAvailability(packages: List<VpsPackage>): PackageAvailability {
+        var totalQuota = Constant.ZERO
+        var totalRemainingQuota = Constant.ZERO
+        var isNearExpirePackageAvailable = false
+        var packageNearExpireCount = Constant.ZERO
+
+        packages.forEach { vpsPackage ->
+            totalQuota += vpsPackage.originalQuota
+            totalRemainingQuota += vpsPackage.remainingQuota
+            if (vpsPackage.packageEndTime.epochToDate()
+                    .daysDifference(Date()) <= SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
+            ) {
+                isNearExpirePackageAvailable = true
+                packageNearExpireCount++
+            }
+        }
+
+        return PackageAvailability(
+            totalQuota = totalQuota,
+            remainingQuota = totalRemainingQuota,
+            isNearExpirePackageAvailable = isNearExpirePackageAvailable,
+            packageNearExpire = packageNearExpireCount
         )
     }
 

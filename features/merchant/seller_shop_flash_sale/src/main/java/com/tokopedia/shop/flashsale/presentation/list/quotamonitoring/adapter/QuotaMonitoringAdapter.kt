@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemQuotaMonitoringBinding
+import com.tokopedia.shop.flashsale.common.constant.Constant
+import com.tokopedia.shop.flashsale.common.constant.Constant.KEANGGOTAAN_VPS_PACKAGE_ID
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.formatTo
@@ -43,12 +45,13 @@ class QuotaMonitoringAdapter() :
 
     fun clearAll() {
         vpsPackages.clear()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(Constant.FIRST_PAGE, vpsPackages.size)
     }
 
     fun submit(newPackages: List<VpsPackage>) {
+        val oldItemsSize = vpsPackages.size
         vpsPackages.addAll(newPackages)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(oldItemsSize, vpsPackages.size)
     }
 
     class QuotaMonitoringListViewHolder(private val binding: SsfsItemQuotaMonitoringBinding) :
@@ -58,8 +61,8 @@ class QuotaMonitoringAdapter() :
             val remainingQuota = vpsPackage.remainingQuota
             val totalQuota = vpsPackage.originalQuota
             val expireDate =
-                if (vpsPackage.packageEndTime.isZero() || vpsPackage.packageId == "-1") {
-                    "Tidak Ada"
+                if (vpsPackage.packageEndTime.isZero() || vpsPackage.packageId == KEANGGOTAAN_VPS_PACKAGE_ID) {
+                    itemView.context.getString(R.string.stfs_nothing_label)
                 } else {
                     vpsPackage.packageEndTime.epochToDate().formatTo(DateConstant.DATE)
                 }

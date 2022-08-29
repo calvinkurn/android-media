@@ -10,3 +10,10 @@ data class VpsPackage(
     val packageName: String,
     val packageStartTime: Long
 )
+
+data class PackageAvailability(
+    val totalQuota: Int,
+    val remainingQuota: Int,
+    val isNearExpirePackageAvailable: Boolean,
+    val packageNearExpire: Int
+)

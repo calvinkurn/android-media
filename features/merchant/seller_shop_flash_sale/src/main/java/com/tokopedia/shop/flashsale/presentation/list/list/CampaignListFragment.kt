@@ -74,7 +74,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val PAGE_SIZE = 10
         private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
-        private const val SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE = 3
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
         private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS: Long = 3_000
         private const val SHOP_DECORATION_ARTICLE_URL = "https://seller.tokopedia.com/dekorasi-toko"
@@ -488,22 +487,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun displayVpsPackages(packages: List<VpsPackage>) {
-        var totalQuota = ZERO
-        var totalRemainingQuota = ZERO
+        val packageAvailability = viewModel.getPackageAvailability(packages)
+        val totalQuota = packageAvailability.totalQuota
+        val totalRemainingQuota = packageAvailability.remainingQuota
         val totalQuotaSource = packages.count()
-        var isNearExpirePackageAvailable = false
-        var packageNearExpireCount = ZERO
-
-        packages.forEach { vpsPackage ->
-            totalQuota += vpsPackage.originalQuota
-            totalRemainingQuota += vpsPackage.remainingQuota
-            if (vpsPackage.packageEndTime.epochToDate()
-                    .daysDifference(Date()) <= SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
-            ) {
-                isNearExpirePackageAvailable = true
-                packageNearExpireCount++
-            }
-        }
+        val isNearExpirePackageAvailable = packageAvailability.isNearExpirePackageAvailable
+        val packageNearExpireCount = packageAvailability.packageNearExpire
 
         binding?.run {
             if (isNearExpirePackageAvailable) {
