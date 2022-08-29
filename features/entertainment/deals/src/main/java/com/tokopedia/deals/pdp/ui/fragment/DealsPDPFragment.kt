@@ -1,8 +1,11 @@
 package com.tokopedia.deals.pdp.ui.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.Html
@@ -13,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,6 +28,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
@@ -41,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -253,7 +259,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }
 
             tgViewMap?.setOnClickListener {
-                //todo goto maps
+                context?.let {
+                    openGoogleMaps(it, outlet.coordinates)
+                }
             }
 
             tgAllLocation?.setOnClickListener {
@@ -310,7 +318,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun showRedeemInstruction(data: ProductDetailData) {
         clRedeemInstruction?.setOnClickListener {
-            //todo redeem instruction
+            if ((data.customText1.toIntSafely() and SALAM_VALUE) <= SALAM_INDICATOR) {
+                showGeneralWebview(REDEEM_URL)
+            } else {
+                // todo event content
+            }
         }
     }
 
@@ -471,6 +483,30 @@ class DealsPDPFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun openGoogleMaps(context: Context, latLng: String) {
+        val gmmIntentUri = Uri.parse("$URI_MAPS$latLng")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        mapIntent.setPackage(PACKAGE_MAPS)
+        if (mapIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(mapIntent)
+        } else {
+            view?.let { view ->
+                Toaster.build(
+                    view,
+                    context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_cannot_find_application),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+                ).show()
+            }
+        }
+    }
+
+    private fun showGeneralWebview(url: String) {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, url)
+        }
+    }
+
     companion object {
 
         private const val ZERO_PERCENT = "0%"
@@ -478,6 +514,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
         private const val TIME_LAPSE = 100L
         private const val ENTER_HTML = "<br><br>"
         private const val DOT_HTML = "\u2022"
+        private const val PACKAGE_MAPS = "com.google.android.apps.maps"
+        private const val URI_MAPS = "geo:0,0?q="
+        private const val SALAM_VALUE = 32768
+        private const val SALAM_INDICATOR = 0
+        private const val REDEEM_URL = "https://www.tokopedia.com/help/article/st-1283-tokopedia-food-voucher"
 
         fun createInstance(productId: String?): DealsPDPFragment {
             val fragment = DealsPDPFragment()
