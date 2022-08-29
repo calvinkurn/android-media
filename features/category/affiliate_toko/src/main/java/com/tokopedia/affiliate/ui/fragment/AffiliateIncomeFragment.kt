@@ -79,6 +79,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     private var walletOnHold = true
 
     companion object {
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
         private const val WALLET_STATUS_HOLD = "WALLET_STATUS_HOLD"
         fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateIncomeFragment().apply {
@@ -179,15 +180,17 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
             onGetValidateUserData(validateUserdata)
         }
         affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
-            sendTickerImpression(
-                announcementData.getAffiliateAnnouncementV2?.data?.type,
-                announcementData.getAffiliateAnnouncementV2?.data?.id
-            )
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
-                announcementData,
-                activity,
-                source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
-            )
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                sendTickerImpression(
+                    announcementData.getAffiliateAnnouncementV2?.data?.type,
+                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                )
+                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                    announcementData,
+                    activity,
+                    source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
+                )
+            }
         }
     }
 
