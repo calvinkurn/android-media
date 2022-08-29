@@ -148,4 +148,10 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val REDEFINE_REGISTER_EMAIL = "$NEW_INTERNAL_USER/redefine-register-email"
 
+    /**
+     * com.tokopedia.loginregister.register_email.view.activity.RedefineRegisterInputPhoneActivity
+     * @Applink : tokopedia-android-internal://user/redefine-register-input-phone
+     **/
+    const val REDEFINE_REGISTER_INPUT_PHONE = "$NEW_INTERNAL_USER/redefine-register-input-phone"
+
 }

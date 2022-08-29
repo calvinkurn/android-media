@@ -8,8 +8,8 @@ import com.tokopedia.sessioncommon.util.PasswordUtils
  * Created by nisie on 1/27/17.
  */
 object RegisterUtil {
-    private const val MAX_PHONE_NUMBER = 13
-    private const val MIN_PHONE_NUMBER = 6
+    private const val MAX_PHONE_NUMBER = 15
+    private const val MIN_PHONE_NUMBER = 8
     private const val MAX_NAME = 35
     private const val MIN_NAME = 3
 
@@ -40,8 +40,11 @@ object RegisterUtil {
         return false
     }
 
-    fun isTooShortLength(password: String): Boolean = password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH
-    fun isExceedMaximumLength(password: String): Boolean = password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH
+    fun isPhoneTooShortLength(phone: String): Boolean = phone.length < MIN_PHONE_NUMBER
+    fun isPhoneExceedMaximumLength(phone: String): Boolean = phone.length > MAX_PHONE_NUMBER
+
+    fun isPasswordTooShortLength(password: String): Boolean = password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH
+    fun isPasswordExceedMaximumLength(password: String): Boolean = password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH
 
     fun isCanRegister(name: String, email: String, password: String): Boolean {
         var isValid = true

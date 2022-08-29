@@ -66,6 +66,25 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".redefine_register_email.view.activity.RedefineRegisterInputPhoneActivity"
+            android:label="@string/register_email_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_redefine_register_input_phone"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".registerinitial.view.activity.RegisterEmailActivity"
             android:label="@string/title_activity_register_2"
             android:launchMode="singleTask"
