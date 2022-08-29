@@ -31,6 +31,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Date
 import javax.inject.Inject
+import kotlin.math.min
 
 class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
@@ -185,9 +186,11 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
         val calendar = binding?.unifyCalendar?.calendarPickerView
 
-        val initializer = calendar?.init(minimumDate, maximumDate, legends)
+        val normalizedMinDate = normalizeMinimumDate()
+        val initializer = calendar?.init(normalizedMinDate, maximumDate, legends)
         initializer?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-        if (selectedDate.after(minimumDate)) {
+
+        if (selectedDate.after(minimumDate) && selectedDate.before(maximumDate)) {
             initializer?.withSelectedDate(selectedDate)
         }
 
@@ -274,6 +277,15 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
                 String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
             binding?.tpgErrorMessage?.text = emptyQuotaWording
             binding?.tpgErrorMessage?.visible()
+        }
+    }
+
+    //A workaround to prevent force close issue since unify calendar not support minimumDate bigger than maximumDate
+    private fun normalizeMinimumDate() : Date {
+        return if (minimumDate.after(maximumDate)) {
+            maximumDate
+        } else {
+            minimumDate
         }
     }
 }
