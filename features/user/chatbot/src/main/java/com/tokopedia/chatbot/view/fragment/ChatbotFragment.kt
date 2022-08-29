@@ -245,7 +245,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
+        if (activity != null && (activity as Activity).application != null && context != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .chatbotModule(context?.let { ChatbotModule(it) })
@@ -253,6 +253,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             chatbotComponent.inject(this)
             presenter.attachView(this)
+     //       ChatbotInjector.get(requireContext()).inject(this)
+       //     presenter.attachView(this)
         }
     }
 
