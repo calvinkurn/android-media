@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
@@ -87,6 +89,10 @@ class CampaignInformationViewModel @Inject constructor(
     private val _vpsPackages = MutableLiveData<Result<List<VpsPackageUiModel>>>()
     val vpsPackages: LiveData<Result<List<VpsPackageUiModel>>>
         get() = _vpsPackages
+
+    private val _emptyQuotaVpsPackage = MutableLiveData<Result<VpsPackageUiModel>>()
+    val emptyQuotaVpsPackage: LiveData<Result<VpsPackageUiModel>>
+        get() = _emptyQuotaVpsPackage
 
     private var vpsPackage : VpsPackageUiModel? = null
 
@@ -319,7 +325,7 @@ class CampaignInformationViewModel @Inject constructor(
                 val campaignDetail = campaignDetailDeferred.await()
                 val vpsPackages = vpsPackagesDeferred.await()
 
-                val updatedVpsPackage = applySelectionRule(campaignDetail.packageInfo.packageId, vpsPackages)
+                val updatedVpsPackage = formatToUiModel(campaignDetail.packageInfo.packageId, vpsPackages)
                 val sortedVpsPackages = applySortRule(updatedVpsPackage)
 
                 relatedCampaigns = campaignDetail.relatedCampaigns
@@ -463,7 +469,7 @@ class CampaignInformationViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val result = getSellerCampaignPackageListUseCase.execute()
-                val vpsPackages = applySelectionRule(selectedPackageId, result)
+                val vpsPackages = formatToUiModel(selectedPackageId, result)
                 val sortedVpsPackages = applySortRule(vpsPackages)
                 _vpsPackages.postValue(Success(sortedVpsPackages))
             },
@@ -474,7 +480,7 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    private fun applySelectionRule(
+    private fun formatToUiModel(
         selectedPackageId: Long,
         vpsPackages: List<VpsPackage>
     ): List<VpsPackageUiModel> {
@@ -484,10 +490,10 @@ class CampaignInformationViewModel @Inject constructor(
                     vpsPackage.remainingQuota,
                     vpsPackage.currentQuota,
                     vpsPackage.originalQuota,
-                    vpsPackage.packageEndTime.epochToDate(),
+                    vpsPackage.packageEndTime.epochToDate().removeTimeZone(),
                     vpsPackage.packageId.toLongOrZero(),
                     vpsPackage.packageName,
-                    vpsPackage.packageStartTime.epochToDate(),
+                    vpsPackage.packageStartTime.epochToDate().removeTimeZone(),
                     vpsPackage.isSelected(selectedPackageId),
                     vpsPackage.isDisabled,
                     vpsPackage.isShopTierBenefit()
@@ -496,10 +502,12 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     private fun applySortRule(vpsPackages: List<VpsPackageUiModel>) : List<VpsPackageUiModel> {
+        val nonEmptyVpsPackages = vpsPackages
+            .filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
+            .sortedBy { vpsPackage -> vpsPackage.packageEndTime }
         val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
-        val nonEmptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
         val emptyVpsPackages = vpsPackages.filter { vpsPackage -> vpsPackage.remainingQuota == EMPTY_QUOTA }
-        return shopTierBenefit + nonEmptyVpsPackages + emptyVpsPackages
+        return nonEmptyVpsPackages + shopTierBenefit + emptyVpsPackages
     }
 
     private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
@@ -508,10 +516,6 @@ class CampaignInformationViewModel @Inject constructor(
 
     private fun VpsPackage.isShopTierBenefit() : Boolean {
         return packageId.toLongOrZero() == SHOP_TIER_BENEFIT_PACKAGE_ID
-    }
-
-    fun findNearestExpiredVpsPackage(vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
-        return vpsPackages.minByOrNull { it.packageEndTime.time }
     }
 
     fun setSelectedVpsPackage(vpsPackage: VpsPackageUiModel) {
@@ -563,4 +567,22 @@ class CampaignInformationViewModel @Inject constructor(
         }
     }
 
+    fun recheckLatestSelectedVpsPackageQuota() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val vpsPackages = getSellerCampaignPackageListUseCase.execute()
+                val currentlySelectedVpsPackageId = vpsPackage?.packageId.orZero()
+                val updatedVpsPackage = formatToUiModel(currentlySelectedVpsPackageId, vpsPackages)
+                val sortedVpsPackages = applySortRule(updatedVpsPackage)
+                this.storedVpsPackages = sortedVpsPackages
+
+                val matchedVpsPackage = sortedVpsPackages.find { vpsPackage -> vpsPackage.packageId == currentlySelectedVpsPackageId } ?: return@launchCatchError
+                _emptyQuotaVpsPackage.postValue(Success(matchedVpsPackage))
+            },
+            onError = { error ->
+                _emptyQuotaVpsPackage.postValue(Fail(error))
+            }
+        )
+    }
 }
