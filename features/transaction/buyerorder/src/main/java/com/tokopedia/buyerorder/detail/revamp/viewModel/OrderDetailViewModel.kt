@@ -5,14 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.SendEventEmail
-import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
-import com.tokopedia.buyerorder.detail.domain.DigiPersoUseCase
 import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
 import com.tokopedia.buyerorder.detail.domain.RevampActionButtonUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
@@ -36,7 +33,6 @@ import javax.inject.Inject
 
 class OrderDetailViewModel @Inject constructor(
     private val omsDetailUseCase: Lazy<OmsDetailUseCase>,
-    private val digiPersoUseCase: Lazy<DigiPersoUseCase>,
     private val actionButtonUseCase: Lazy<RevampActionButtonUseCase>,
     private val eventNotificationUseCase: Lazy<SendEventNotificationUseCase>,
     dispatcher: CoroutineDispatcher,
@@ -45,10 +41,6 @@ class OrderDetailViewModel @Inject constructor(
     private val _omsDetail = MutableLiveData<Result<DetailsData>>()
     val omsDetail: LiveData<Result<DetailsData>>
         get() = _omsDetail
-
-    private val _digiPerso = MutableLiveData<Result<RecommendationDigiPersoResponse>>()
-    val digiPerso: LiveData<Result<RecommendationDigiPersoResponse>>
-        get() = _digiPerso
 
     private val _actionButton = MutableLiveData<ActionButtonEventWrapper>()
     val actionButton: LiveData<ActionButtonEventWrapper>
@@ -74,19 +66,6 @@ class OrderDetailViewModel @Inject constructor(
             },
             onError = {
                 _omsDetail.postValue(Fail(it))
-            }
-        )
-    }
-
-    fun requestDigiPerso(){
-        launchCatchError(
-            block = {
-                digiPersoUseCase.get().createParams()
-                val result = digiPersoUseCase.get().executeOnBackground()
-                _digiPerso.postValue(Success(result))
-            },
-            onError = {
-                _digiPerso.postValue(Fail(it))
             }
         )
     }
@@ -140,14 +119,6 @@ class OrderDetailViewModel @Inject constructor(
                 }
             })
         }
-    }
-
-    fun getOrderCategoryName(): String{
-        return orderDetails?.let { OrderListAnalyticsUtils.getCategoryName(it) } ?: ""
-    }
-
-    fun getOrderProductName(): String{
-        return orderDetails?.let { OrderListAnalyticsUtils.getProductName(it) } ?: ""
     }
 
     private companion object {

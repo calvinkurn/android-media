@@ -149,7 +149,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 it.get(KEY_ORDER_CATEGORY).toString(),
                 it.get(KEY_UPSTREAM).toString()
             )
-            viewModel.requestDigiPerso()
         }
     }
 
