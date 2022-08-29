@@ -52,6 +52,8 @@ class DealsOMPViewHolder(
         private const val KEY_POPUP = "popup"
         private const val STROKE_WIDTH = 1
         private const val ZERO_MARGIN = 0
+        private const val DATE_FORMAT = " dd MMM yyyy hh:mm"
+        private const val DELIMITERS = ","
     }
 
     override fun bind(element: ItemsDealsOMP) {
@@ -103,7 +105,7 @@ class DealsOMPViewHolder(
         item.actionButtons.forEachIndexed { index, actionButton ->
             when (actionButton.control) {
                 KEY_VOUCHER_CODE -> {
-                    val codes = actionButton.body.body.split(",")
+                    val codes = actionButton.body.body.split(DELIMITERS)
 
                     if (codes.isEmpty()){
                         return@forEachIndexed
@@ -214,7 +216,7 @@ class DealsOMPViewHolder(
 
     private fun getTimeMillis(date: String): String{
         return try {
-            val dateFormat = SimpleDateFormat(" dd MMM yyyy hh:mm", Locale.ROOT)
+            val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ROOT)
             val dateMillis = Date(TimeUnit.SECONDS.toMillis(date.toLongOrZero()))
             dateFormat.format(dateMillis)
         } catch (e: Exception) {
