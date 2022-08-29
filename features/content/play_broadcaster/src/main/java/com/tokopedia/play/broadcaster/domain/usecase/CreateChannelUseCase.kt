@@ -54,7 +54,7 @@ class CreateChannelUseCase @Inject constructor(
 
     companion object {
 
-        private const val PARAMS_AUTHOR_ID = "authorId"
+        private const val PARAMS_AUTHOR_ID = "authorID"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_STATUS = "status"
 
