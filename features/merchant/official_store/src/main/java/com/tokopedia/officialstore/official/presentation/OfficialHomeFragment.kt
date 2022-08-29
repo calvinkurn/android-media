@@ -89,10 +89,8 @@ class OfficialHomeFragment :
         const val BUNDLE_CATEGORY = "category_os"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
-        private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
-        private const val PERFORMANCE_OS_PAGE_NAME = "OS"
         private const val POS_1 = 1
         private const val POS_10 = 10
         private const val DELAY_200L = 200L
