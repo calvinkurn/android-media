@@ -101,9 +101,18 @@ class HomeQuestWidgetViewHolder(
         binding?.container?.apply {
             setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
             setOnClickListener {
-                RouteManager.route(itemView.context, if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_DETAIL_STAGING_APPLINK + id else  QUEST_DETAIL_PRODUCTION_APPLINK + id)
+                goToQuestWebPage(id)
+                listener?.onClickQuestWidgetCard()
             }
         }
+    }
+
+    private fun goToQuestWebPage(id: String) {
+        val appLink = if (TokopediaUrl.getInstance().TYPE == Env.STAGING)
+            QUEST_DETAIL_STAGING_APPLINK + id
+        else
+            QUEST_DETAIL_PRODUCTION_APPLINK + id
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun hideShimmering() {

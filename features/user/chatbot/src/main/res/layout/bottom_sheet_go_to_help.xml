@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2"
+        android:text="@string/chatbot_migration_bottomsheet_title" />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_view_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chatcommon_40dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:card_type="border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                app:srcCompat="@drawable/ic_warning">
+
+            </com.tokopedia.unifycomponents.ImageUnify>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/unify_space_12"
+                app:typographyType="body_2"
+                tools:text="@string/chatbot_migration_subtitle">
+
+            </com.tokopedia.unifyprinciples.Typography>
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:scaleType="fitXY"
+        app:imageDpiSupportType="singleDpi"
+        app:completeUrl="@string/chatbot_deferred_image_contactus_migration"
+        app:layout_constraintTop_toBottomOf="@id/card_view_subtitle"
+        app:unify_image_corner_radius="8"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_list_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toBottomOf="@id/image"
+        app:typographyType="display_1"
+        android:text="@string/chatbot_migration_list_header" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_list"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/text_list_header"
+        tools:listitem="@layout/listitem_contact_us_migration" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_tokopedia_care"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/chatbot_migration_button_text"
+        app:layout_constraintTop_toBottomOf="@id/content_list"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@ object Constants {
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
-    const val GROUP_STRATEGY = "groupStrategy"
+    const val IS_BID_AUTOMATIC = "auto_bid"
     const val SELECTED_KEYWORD = "selectKeywords"
     const val RESTORED_DATA = "restoreData"
     const val CURRENTLIST = "currentKeywords"

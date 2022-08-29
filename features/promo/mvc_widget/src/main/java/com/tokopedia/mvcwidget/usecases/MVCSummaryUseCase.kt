@@ -1,7 +1,9 @@
 package com.tokopedia.mvcwidget.usecases
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.GqlUseCaseWrapper
+import com.tokopedia.mvcwidget.TOKOPOINTS_CATALOG_MVC_SUMMARY_QUERY
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import javax.inject.Inject
 
 @GqlQuery("TpMvcSummaryQuery", TOKOPOINTS_CATALOG_MVC_SUMMARY_QUERY)

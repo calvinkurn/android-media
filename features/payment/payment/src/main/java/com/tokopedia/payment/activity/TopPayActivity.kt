@@ -34,9 +34,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.network.authentication.*
-import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.PaymentLoggingClient
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
@@ -45,6 +45,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.authentication.*
+import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.R
@@ -55,7 +57,10 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.utils.*
+import com.tokopedia.payment.utils.Constant
+import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
+import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
+import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -186,7 +191,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun initVar() {
-        webChromeWebviewClient = CommonWebViewClient(this, progressBar)
+        webChromeWebviewClient = if (isPaymentJSLoggingEnabled())
+                PaymentLoggingClient(this, progressBar)
+        else CommonWebViewClient(this, progressBar)
+    }
+
+    private fun isPaymentJSLoggingEnabled(): Boolean {
+        return remoteConfig.getBoolean(PaymentConstant.KEY_ENABLE_JS_LOGGIN, false).or(false)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -519,7 +530,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         fun gotoLinkAccount() {
             showFullLoading()
             reloadUrl = scroogeWebView?.url ?: ""
-            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
@@ -630,6 +641,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
 
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
+
+                if(urlFinal.isNotEmpty() && urlFinal.contains(LINK_ATOM_GOPAY))
+                {
+                    view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPaymentWithoutAuth(urlFinal))
+                    return true
+                }
+
                 if (urlFinal.isNotEmpty()) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
                     return true
@@ -805,7 +823,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         return generateWebviewHeaders(uri.path ?: "", uri.query ?: "")
     }
 
-    private fun generateWebviewHeaders(path: String, strParam: String): Map<String, String> {
+    fun getGeneratedOverrideRedirectHeaderUrlPaymentWithoutAuth(originUrl: String): MutableMap<String, String> {
+        val uri = Uri.parse(originUrl)
+        val headerMap = generateWebviewHeaders(uri.path ?: "", uri.query ?: "")
+        headerMap.remove(HEADER_AUTHORIZATION)
+        return headerMap
+    }
+
+    private fun generateWebviewHeaders(path: String, strParam: String): MutableMap<String, String> {
         val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
         header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
         header[HEADER_TKPD_SESSION_ID] = getRegistrationIdWithTemp()
@@ -859,6 +884,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val IMAGE_COMPRESS_QUALITY = 60
 
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
+        private const val LINK_ATOM_GOPAY = "afi.gopaylater.co.id"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"

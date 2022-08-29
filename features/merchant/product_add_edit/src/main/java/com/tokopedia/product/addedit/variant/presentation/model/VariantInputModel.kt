@@ -1,8 +1,18 @@
 package com.tokopedia.product.addedit.variant.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
 import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
+
+enum class VariantStockStatus{
+        ALL_EMPTY,
+        ALL_AVAILABLE,
+        PARTIALLY_AVAILABLE
+}
 
 @Parcelize
 data class VariantInputModel(
@@ -10,7 +20,31 @@ data class VariantInputModel(
         var selections: List<SelectionInputModel> = listOf(),
         var sizecharts: PictureVariantInputModel = PictureVariantInputModel(),
         var isRemoteDataHasVariant: Boolean = false // used for removing variant
-) : Parcelable
+) : Parcelable {
+        fun hasVariant() = products.isNotEmpty()
+
+        fun getPrimaryVariantData(
+                defaultIfNotfound: ProductVariantInputModel = ProductVariantInputModel()
+        ) = products.find { it.isPrimary } ?: defaultIfNotfound
+
+        fun getLowestPrice() = products.minByOrNull { it.price }?.price
+
+        fun getHighestPrice() = products.maxByOrNull { it.price }?.price
+
+        fun getTotalStock(): Int = products.sumOf { it.stock.orZero() }
+
+        fun getStockStatus(): VariantStockStatus {
+                return when {
+                    products.all { it.stock.orZero().isMoreThanZero() } -> VariantStockStatus.ALL_AVAILABLE
+                    products.all { it.stock.orZero().isZero() } -> VariantStockStatus.ALL_EMPTY
+                    else -> VariantStockStatus.PARTIALLY_AVAILABLE
+                }
+        }
+
+        fun getImageUrl(colorVariantLevel: Int, index: Int) = products.find {
+                it.combination.getOrNull(colorVariantLevel) == index
+        }?.pictures?.firstOrNull()
+}
 
 @Parcelize
 data class ProductVariantInputModel(
@@ -20,8 +54,10 @@ data class ProductVariantInputModel(
         var price: BigInteger = 0.toBigInteger(),
         var sku: String = "",
         var status: String = "",
-        var stock: Int = 0,
-        var isPrimary: Boolean = false
+        var stock: Int? = null,
+        var isPrimary: Boolean = false,
+        var weight: Int? = null,
+        var weightUnit: String = UNIT_GRAM_STRING
 ) : Parcelable
 
 @Parcelize

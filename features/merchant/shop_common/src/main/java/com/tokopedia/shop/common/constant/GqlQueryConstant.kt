@@ -80,6 +80,12 @@ object GqlQueryConstant {
             "                fax\n" +
             "            }\n" +
             "            shopHomeType\n" +
+            "            isGoApotik\n" +
+            "            epharmacyInfo{\n" +
+            "                siaNumber\n" +
+            "                sipaNumber\n" +
+            "                apj\n" +
+            "            }\n" +
             "        }"
 
     const val SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING = "result {\n" +
@@ -152,10 +158,20 @@ object GqlQueryConstant {
             "                        shopStatus\n" +
             "                        statusMessage\n" +
             "                        statusTitle\n" +
+            "                        tickerType\n" +
             "                    }\n" +
             "                }"
 
     const val SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING = "result {\n" +
+            "                    closedInfo {\n" +
+            "                       detail {\n" +
+            "                           startDate\n" +
+            "                           endDate\n" +
+            "                           status\n" +
+            "                       }\n" +
+            "                       closedNote\n" +
+            "                       until\n" +
+            "                    }" +
             "                    goldOS {\n" +
             "                       badge\n" +
             "                       isGold\n" +
@@ -210,6 +226,24 @@ object GqlQueryConstant {
             "                 alreadyFavorited\n" +
             "             }\n" +
             "         }"
+
+    const val SHOP_CLOSE_DETAIL_INFO_QUERY_STRING = "result {\n" +
+            "      statusInfo {\n" +
+            "        shopStatus\n" +
+            "      }\n" +
+            "      closedInfo {\n" +
+            "        detail {\n" +
+            "          startDate\n" +
+            "          endDate\n" +
+            "          openDate\n" +
+            "          status\n" +
+            "          startDateUTC\n" +
+            "          endDateUTC\n" +
+            "          openDateUTC\n" +
+            "        }\n" +
+            "        until\n" +
+            "      }\n" +
+            "    }"
 
     private const val SHOP_INFO_BASE_QUERY_STRING = "query %1s(\$shopIds: [Int!]!, \$fields: [String!]!, \$shopDomain: String, \$source: String){\n" +
             "    shopInfoByID(input: {\n" +

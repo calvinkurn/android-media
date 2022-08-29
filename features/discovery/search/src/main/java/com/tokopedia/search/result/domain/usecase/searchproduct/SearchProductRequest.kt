@@ -68,10 +68,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 additionalParams
                 keywordProcess
                 componentId
+                meta {
+                    productListType
+                    isPostProcessing
+                }
             }
             data {
                 isQuerySafe
                 autocompleteApplink
+                backendFilters
                 redirection {
                     redirectApplink
                 }
@@ -87,6 +92,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     text
                     applink
                     imageUrl
+                    componentId
+                    trackingOption
                 }
                 related {
                     relatedKeyword
@@ -200,6 +207,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     }
                     wishlist
                     applink
+                    customVideoURL
                 }
                 violation {
                     headerText
@@ -285,6 +293,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         title
                         url
                     }
+                    customvideo_url
                 }
                 shop{
                     id
@@ -334,6 +343,8 @@ private const val HEADLINE_ADS_QUERY = """
                 headline {
                     template_id
                     name
+                    widget_title
+                    widget_image_url 
                     image {
                         full_url
                         full_ecs

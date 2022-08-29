@@ -4,77 +4,208 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.Space
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.utils.ViewId
+import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.renderLabelBestSeller
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.video_widget.VideoPlayerController
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.video_widget.VideoPlayerView
+import kotlin.LazyThreadSafetyMode.NONE
 
-class ProductCardGridView: BaseCustomView, IProductCardView {
+class ProductCardGridView : BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
+    private val video: VideoPlayerController by lazy {
+        VideoPlayerController(this, R.id.videoProduct, R.id.productCardImage)
+    }
+    private val cardViewProductCard: CardUnify2? by lazy(NONE) {
+        findViewById(R.id.cardViewProductCard)
+    }
+    private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.constraintLayoutProductCard)
+    }
+    private val outOfStockOverlay: View? by lazy(NONE) {
+        findViewById(R.id.outOfStockOverlay)
+    }
+    private val labelProductStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelProductStatus)
+    }
+    private val textTopAds: Typography? by lazy(NONE) {
+        findViewById(R.id.textTopAds)
+    }
+    private val imageVideoIdentifier: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageVideoIdentifier)
+    }
+    private val progressBarStock: ProgressBarUnify? by lazy(NONE) {
+        findViewById(R.id.progressBarStock)
+    }
+    private val textViewStockLabel: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewStockLabel)
+    }
+    private val imageThreeDots: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageThreeDots)
+    }
+    private val buttonSimilarProduct: UnifyButton? by lazy(NONE) {
+        findViewById(ViewStubId(R.id.buttonSeeSimilarProductStub), ViewId(R.id.buttonSeeSimilarProduct))
+    }
+    private val labelCampaignBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelCampaignBackground)
+    }
+    private val textViewLabelCampaign: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewLabelCampaign)
+    }
+    private val labelBestSeller: Typography? by lazy(NONE) {
+        findViewById(R.id.labelBestSeller)
+    }
+    private val textCategorySide: Typography? by lazy(NONE) {
+        findViewById(R.id.textCategorySide)
+    }
+    private val textCategoryBottom: Typography? by lazy(NONE) {
+        findViewById(R.id.textCategoryBottom)
+    }
+    private val imageProduct: ImageView? by lazy(NONE) {
+        findViewById(R.id.productCardImage)
+    }
+    private val mediaAnchorProduct: Space? by lazy(NONE) {
+        findViewById(R.id.mediaAnchorProduct)
+    }
+    private val videoProduct: VideoPlayerView? by lazy(NONE) {
+        findViewById(R.id.videoProduct)
+    }
+    private val buttonAddVariant: UnifyButton? by lazy(NONE) {
+        findViewById(ViewStubId(R.id.buttonAddVariantStub), ViewId(R.id.buttonAddVariant))
+    }
+    private val buttonNotify: UnifyButton? by lazy(NONE) {
+        findViewById(ViewStubId(R.id.buttonNotifyStub), ViewId(R.id.buttonNotify))
+    }
+    private val buttonThreeDotsWishlist: FrameLayout? by lazy(NONE) {
+        findViewById(R.id.buttonThreeDotsWishlist)
+    }
+    private val buttonAddToCartWishlist: UnifyButton? by lazy(NONE) {
+        findViewById(
+            ViewStubId(R.id.buttonAddToCartWishlistStub),
+            ViewId(R.id.buttonAddToCartWishlist))
+    }
+    private val buttonSeeSimilarProductWishlist: UnifyButton? by lazy(NONE) {
+        findViewById(
+            ViewStubId(R.id.buttonSeeSimilarProductWishlistStub),
+            ViewId(R.id.buttonSeeSimilarProductWishlist))
+    }
+    private val imageShopBadge: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageShopBadge)
+    }
+    private val imageFreeOngkirPromo: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageFreeOngkirPromo)
+    }
+    private val remoteConfig : RemoteConfig by lazy(NONE) {
+        FirebaseRemoteConfigImpl(context)
+    }
+    private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
+        findViewById(R.id.productCardFooterLayoutContainer)
+    }
+    private val labelRepositionBackground: ImageView by lazy(NONE) {
+        findViewById(R.id.labelRepositionBackground)
+    }
+    private val labelReposition: Typography by lazy(NONE) {
+        findViewById(R.id.labelReposition)
+    }
+    private var isUsingViewStub = false
 
-    constructor(context: Context): super(context) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
-        init()
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initWithAttrs(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
+        initWithAttrs(attrs)
     }
 
     private fun init() {
         View.inflate(context, R.layout.product_card_grid_layout, this)
+
+        val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
+        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+
+        productCardFooterLayoutContainer.addView(footerView)
+    }
+
+    private fun initWithAttrs(attrs: AttributeSet?) {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+
+        try {
+            isUsingViewStub = typedArray.getBoolean(R.styleable.ProductCardView_useViewStub, false)
+        } finally {
+            typedArray.recycle()
+        }
+
+        View.inflate(context, R.layout.product_card_grid_layout, this)
+
+        val footerView =
+            if (isUsingViewStub)
+                View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
+            else
+                View.inflate(context, R.layout.product_card_footer_layout, null)
+
+        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+
+        productCardFooterLayoutContainer.addView(footerView)
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
+        productCardModel.fashionStrategy.setupImageRatio(
+            constraintLayoutProductCard,
+            imageProduct,
+            mediaAnchorProduct,
+            videoProduct,
+        )
+
         val isShowCampaign = productCardModel.isShowLabelCampaign()
         renderLabelCampaign(
-                isShowCampaign,
-                labelCampaignBackground,
-                textViewLabelCampaign,
-                productCardModel
+            isShowCampaign,
+            labelCampaignBackground,
+            textViewLabelCampaign,
+            productCardModel,
         )
 
-        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(
-            isShowBestSeller,
-            labelBestSeller,
-            productCardModel
-        )
+        productCardModel.fashionStrategy.renderLabelBestSeller(labelBestSeller, productCardModel)
 
-        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
-        renderLabelBestSellerCategorySide(
-            isShowCategorySide,
+        productCardModel.fashionStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
-            productCardModel
+            productCardModel,
         )
 
-        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
-        renderLabelBestSellerCategoryBottom(
-            isShowCategoryBottom,
+        productCardModel.fashionStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
-            productCardModel
+            productCardModel,
         )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
@@ -83,13 +214,15 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
+        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
+
         renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots?.shouldShowWithAction(productCardModel.hasThreeDots) {
+        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
             constraintLayoutProductCard?.post {
                 imageThreeDots?.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
@@ -101,6 +234,18 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
 
         cartExtension.setProductModel(productCardModel)
+        video.setVideoURL(productCardModel.customVideoURL)
+
+        cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
+            && productCardModel.cardInteraction){
+            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        } else CardUnify2.ANIMATE_OVERLAY
+
+        productCardModel.fashionStrategy.renderLabelReposition(
+            labelRepositionBackground,
+            labelReposition,
+            productCardModel,
+        )
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -120,7 +265,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) {
-        val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
         buttonSimilarProduct?.setOnClickListener(similarProductClickListener)
     }
 
@@ -163,6 +307,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
         cartExtension.clear()
+        video.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
@@ -171,4 +316,21 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getShopBadgeView(): View? = imageShopBadge
 
+    override fun getProductImageView(): ImageView? {
+        return imageProduct
+    }
+
+    override fun getVideoPlayerController(): VideoPlayerController {
+        return video
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        super.setOnClickListener(l)
+        cardViewProductCard?.setOnClickListener(l)
+    }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        super.setOnLongClickListener(l)
+        cardViewProductCard?.setOnLongClickListener(l)
+    }
 }

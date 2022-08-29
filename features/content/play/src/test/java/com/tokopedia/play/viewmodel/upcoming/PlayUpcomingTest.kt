@@ -13,7 +13,6 @@ import com.tokopedia.play.fake.FakePlayShareExperience
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
-import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.*
@@ -21,6 +20,7 @@ import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -161,7 +161,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickRemindMe(any()) }
 
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Reminded)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Reminded)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -205,7 +205,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickRemindMe(any()) }
 
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -236,7 +236,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify */
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Loading)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Loading)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.OpenPageEvent::requestCode)
         }
     }
@@ -273,7 +273,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
 
             events.assertNotEmpty()
-            events.last().isEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
+            events.last().assertEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
         }
     }
 
@@ -281,11 +281,11 @@ class PlayUpcomingTest {
      * Click Partner Name
      */
     @Test
-    fun `given a upcoming channel, when user click partner name and partner is shop, then it should emit open page event`() {
+    fun `given a upcoming channel, when user click partner name should emit open page event`() {
         /** Mock */
+        val mockApplink = "tokopedia://shop/1111"
         val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
-            ApplinkConst.SHOP,
-            listOf(mockChannelData.partnerInfo.id.toString())
+            mockApplink
         )
 
         coEvery { mockPlayNewAnalytic.clickShop(any(), any(), any()) } returns Unit
@@ -303,23 +303,23 @@ class PlayUpcomingTest {
         robot.use {
             /** Test */
             val events = robot.recordEvent {
-                robot.submitAction(ClickPartnerNameUpcomingAction)
+                robot.submitAction(ClickPartnerNameUpcomingAction(appLink = mockApplink))
             }
 
             /** Verify **/
             verify { mockPlayNewAnalytic.clickShop(any(), any(), any()) }
 
             events.assertNotEmpty()
-            events.last().isEqualTo(mockEvent)
+            events.last().assertEqualTo(mockEvent)
         }
     }
 
     @Test
     fun `given a upcoming channel, when user click partner name and partner is buyer, then it should emit open page event`() {
         /** Mock */
+        val mockApplink = "tokopedia://play/1266"
         val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
-            ApplinkConst.PROFILE,
-            listOf(mockChannelDataWithBuyerPartner.partnerInfo.id.toString())
+            mockApplink
         )
 
         /** Prepare */
@@ -335,12 +335,12 @@ class PlayUpcomingTest {
         robot.use {
             /** Test */
             val events = robot.recordEvent {
-                robot.submitAction(ClickPartnerNameUpcomingAction)
+                robot.submitAction(ClickPartnerNameUpcomingAction(appLink = mockApplink))
             }
 
             /** Verify **/
             events.assertNotEmpty()
-            events.last().isEqualTo(mockEvent)
+            events.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -405,12 +405,12 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.Followable(true))
+            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Followed))
         }
     }
 
     @Test
-    fun `given a upcoming channel, when partner is not shop, then the partner state should be not followable`() {
+    fun `given a upcoming channel, when partner is buyer, then the partner state should be followable`() {
         /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
@@ -427,7 +427,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.NotFollowable)
+            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed))
         }
     }
 
@@ -546,7 +546,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Refresh)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Refresh)
 
             events.assertNotEmpty()
             events.last().isEqualToIgnoringFields(
@@ -580,7 +580,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.WatchNow)
             fakePlayChannelSSE.isConnectionOpen().assertFalse()
         }
     }
@@ -605,7 +605,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.WatchNow)
             fakePlayChannelSSE.isConnectionOpen().assertFalse()
         }
     }
@@ -630,7 +630,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -655,7 +655,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -688,7 +688,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -718,7 +718,7 @@ class PlayUpcomingTest {
                 submitAction(CopyLinkUpcomingAction)
             }
 
-            event[0].isEqualTo(mockCopyEvent)
+            event[0].assertEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
@@ -753,7 +753,7 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -784,7 +784,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify */
-            event[0].isEqualTo(mockCopyEvent)
+            event[0].assertEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
@@ -818,7 +818,6 @@ class PlayUpcomingTest {
     fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
         /** Prepare */
         every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any(), any()) } returns Unit
-        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = PlayUpcomingUiEvent.OpenSharingOptionEvent(
@@ -844,9 +843,8 @@ class PlayUpcomingTest {
 
             /** Verify */
             verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType) }
-            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
-            event.last().isEqualTo(mockEvent)
+            event.last().assertEqualTo(mockEvent)
         }
     }
 
@@ -883,8 +881,8 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockEvent)
+            event[0].assertEqualTo(mockCloseBottomSheet)
+            event[1].assertEqualTo(mockEvent)
         }
     }
 
@@ -918,8 +916,8 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockErrorGenerateLink)
+            event[0].assertEqualTo(mockCloseBottomSheet)
+            event[1].assertEqualTo(mockErrorGenerateLink)
         }
     }
 

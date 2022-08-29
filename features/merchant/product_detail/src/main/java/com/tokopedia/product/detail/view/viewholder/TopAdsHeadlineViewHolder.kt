@@ -10,6 +10,9 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
@@ -94,7 +97,8 @@ class TopAdsHeadlineViewHolder(
         topadsHeadlineUiModel?.run {
             if (cpmModel != null) {
                 showHeadlineView(cpmModel!!)
-            } else {
+            } else if (!isHeadlineDataFetched) {
+                isHeadlineDataFetched = true
                 fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
             }
         }
@@ -111,11 +115,16 @@ class TopAdsHeadlineViewHolder(
                 }
             }
         }
-        cpmModel.data?.let {
-            if(it.size > 0){
-                titleView.show()
-            } else {
+        handlingHeadlineTitle(cpmModel.data)
+    }
+
+    private fun handlingHeadlineTitle(data: List<CpmData>?) {
+        data?.let {
+            val cpmLayout = it.firstOrNull()?.cpm?.layout
+            if (cpmLayout != null && (cpmLayout == LAYOUT_6 || cpmLayout == LAYOUT_5)) {
                 titleView.hide()
+            } else {
+                titleView.show()
             }
         }
     }

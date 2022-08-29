@@ -32,9 +32,9 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("error")
     @Expose
     private ErrorRatesDetailData error;
-    @SerializedName("promo_stacking")
+    @SerializedName("promo_stackings")
     @Expose
-    private PromoStacking promoStacking;
+    private List<PromoStacking> listPromoStacking;
     @SerializedName("pre_order")
     @Expose
     private PreOrder preOrder;
@@ -120,14 +120,6 @@ public class RatesDetailData implements Parcelable {
         this.error = error;
     }
 
-    public PromoStacking getPromoStacking() {
-        return promoStacking;
-    }
-
-    public void setPromoStacking(PromoStacking promoStacking) {
-        this.promoStacking = promoStacking;
-    }
-
     public InfoRatesDetailData getInfo() { return info; }
 
     public void setInfo(InfoRatesDetailData info) { this.info = info; }
@@ -138,5 +130,13 @@ public class RatesDetailData implements Parcelable {
 
     public void setPreOrder(PreOrder preOrder) {
         this.preOrder = preOrder;
+    }
+
+    public List<PromoStacking> getListPromoStacking() {
+        return listPromoStacking;
+    }
+
+    public void setListPromoStacking(List<PromoStacking> listPromoStacking) {
+        this.listPromoStacking = listPromoStacking;
     }
 }

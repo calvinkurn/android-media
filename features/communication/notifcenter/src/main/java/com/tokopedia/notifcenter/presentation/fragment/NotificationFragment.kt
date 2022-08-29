@@ -25,12 +25,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
@@ -63,17 +65,28 @@ import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationL
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
+import com.tokopedia.notifcenter.util.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -92,6 +105,13 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     @Inject
     lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val topAdsHeadlineViewModel by lazy {
+        ViewModelProvider(this)[TopAdsHeadlineViewModel::class.java]
+    }
 
     var remoteConfig: RemoteConfig? = null
 
@@ -255,6 +275,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun onDestroyView() {
         super.onDestroyView()
         trackIfUserScrollToBottom()
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     private fun trackIfUserScrollToBottom() {
@@ -383,7 +404,23 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private fun renderRecomList(recoms: RecommendationDataModel) {
         hideLoading()
         rvAdapter?.addRecomProducts(recoms.item)
+        loadShopAds()
         updateScrollListenerState(recoms)
+    }
+
+    private fun loadShopAds() {
+        if(rvAdapter == null || rvAdapter?.shopAdsWidgetAdded == true) return
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(
+            NotificationTopAdsHeadlineHelper.getParams(userSession.userId), {
+                rvAdapter?.addShopAds(it)
+            }, {
+                ServerLogger.log(
+                    Priority.P1,
+                    NotificationFragment::class.java.simpleName,
+                    mapOf(ERROR to SHOPADS_LOAD_FAIL_ERROR)
+                )
+            }
+        )
     }
 
     private fun updateScrollListenerState(recoms: RecommendationDataModel) {
@@ -434,6 +471,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun onSwipeRefresh() {
         viewModel.cancelAllUseCase()
         containerListener?.refreshNotificationCounter()
+        rvAdapter?.shopAdsWidgetAdded = false
         super.onSwipeRefresh()
     }
 
@@ -540,11 +578,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
-                product.shop.id.toString(),
+                product.shop.id,
                 product.shop.isTokonow
             )
         } else {
-            doBuyAndAtc(notification, product) {
+            doBuyAndAtc(product) {
                 analytic.trackSuccessDoBuyAndAtc(
                     notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
                 )
@@ -557,11 +595,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
-                product.shop.id.toString(),
+                product.shop.id,
                 product.shop.isTokonow
             )
         } else {
-            doBuyAndAtc(notification, product) {
+            doBuyAndAtc(product) {
                 analytic.trackSuccessDoBuyAndAtc(
                     notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
                 )
@@ -583,7 +621,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     private fun doBuyAndAtc(
-        notification: NotificationUiModel,
         product: ProductData,
         onSuccess: (response: DataModel) -> Unit = {}
     ) {
@@ -591,23 +628,20 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         viewModel.addProductToCart(buyParam, {
             onSuccess(it)
         }, { msg ->
-            showErrorMessage(msg)
+            msg?.let {
+                showErrorMessage(it)
+            }
         })
     }
 
-    private fun getAtcBuyParam(product: ProductData): RequestParams {
-        val addToCartRequestParams = AddToCartRequestParams(
+    private fun getAtcBuyParam(product: ProductData): AddToCartRequestParams {
+        return AddToCartRequestParams(
             productId = product.productId.toLongOrZero(),
             shopId = product.shop.id.toInt(),
             quantity = product.minOrder,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER,
+            warehouseId = product.warehouseId.toIntSafely()
         )
-        return RequestParams.create().apply {
-            putObject(
-                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-                addToCartRequestParams
-            )
-        }
     }
 
     private fun showAtcVariantHelper(
@@ -656,20 +690,47 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         product: ProductData,
         position: Int
     ) {
-        viewModel.addWishListNormal(product.productId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    showErrorMessage(errorMessage ?: "")
-                    rvAdapter?.updateFailedAddToWishlist(notification, product, position)
-                }
+        context?.let { context ->
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+                viewModel.doAddToWishlistV2(product.productId,
+                    object : WishlistV2ActionListener {
+                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                            val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                            }
+                            rvAdapter?.updateFailedAddToWishlist(notification, product, position)
+                        }
 
-                override fun onSuccessAddWishlist(productId: String?) {
-                    showMessage(R.string.title_success_add_to_wishlist)
-                }
+                        override fun onSuccessAddWishlist(
+                            result: AddToWishlistV2Response.Data.WishlistAddV2,
+                            productId: String
+                        ) {
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
 
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-            })
+                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                        override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
+                    })
+            } else {
+                viewModel.addWishListNormal(product.productId,
+                    object : WishListActionListener {
+                        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                            showErrorMessage(errorMessage ?: "")
+                            rvAdapter?.updateFailedAddToWishlist(notification, product, position)
+                        }
+
+                        override fun onSuccessAddWishlist(productId: String?) {
+                            showMessage(R.string.title_success_add_to_wishlist)
+                        }
+
+                        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                        override fun onSuccessRemoveWishlist(productId: String?) {}
+                    })
+            }
+        }
     }
 
     override fun goToWishlist() {
@@ -685,12 +746,14 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         analytic.trackProductImpression(notification, product, position)
     }
 
-    override fun trackProductClick(
+    override fun onProductClicked(
         notification: NotificationUiModel,
         product: ProductData,
         position: Int
     ) {
         analytic.trackProductClick(notification, product, position)
+        val intent = RouteManager.getIntent(context, product.androidUrl)
+        startActivity(intent)
     }
 
     override fun trackBumpReminder() {
@@ -778,6 +841,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     companion object {
         private const val REQUEST_CHECKOUT = 0
+        private const val SHOPADS_LOAD_FAIL_ERROR = "Failed to load Shopads in NotifCenter"
+        private const val ERROR = "error"
     }
 
 }

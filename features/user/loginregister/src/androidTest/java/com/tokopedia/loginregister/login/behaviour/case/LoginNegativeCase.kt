@@ -1,17 +1,20 @@
 package com.tokopedia.loginregister.login.behaviour.case
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.*
+import com.tokopedia.test.application.annotations.UiTest
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.Test
 
+@UiTest
 class LoginNegativeCase: LoginBase() {
 
     @Test
@@ -47,9 +50,8 @@ class LoginNegativeCase: LoginBase() {
     /* Disable button "Selanjutnya" when input text length is too long for phone number */
     fun phoneNumberTooLong() {
         val errorMsg = "Phone too long"
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
@@ -62,9 +64,8 @@ class LoginNegativeCase: LoginBase() {
     /* Got error from backend during register check */
     fun registerCheckError_BE() {
         val errorMsg = "got errors from be"
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(errors = arrayListOf(errorMsg))
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+        val data = RegisterCheckPojo(RegisterCheckData(errors = arrayListOf(errorMsg)))
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
             inputEmailOrPhone("12345678901234567")
@@ -76,7 +77,7 @@ class LoginNegativeCase: LoginBase() {
     @Test
     /* Show snackbar if discover providers is empty */
     fun forbiddenPage_discoverEmpty() {
-        isDefaultDiscover = false
+        fakeRepo.discoverConfig = Config.Error
         runTest {
             isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
         }
@@ -122,10 +123,7 @@ class LoginNegativeCase: LoginBase() {
             clickSubmit()
         }
 
-        onView(ViewMatchers.withSubstring(errorMsg))
-            .check(matches(withEffectiveVisibility(
-                ViewMatchers.Visibility.VISIBLE
-            )))
+        onView(allOf(withText(containsString(errorMsg)), isDisplayed()))
     }
 
     @Test

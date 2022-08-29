@@ -44,7 +44,7 @@ object RetrieveQuestData{
         var questData = QuestData()
         response?.questWidgetList?.let { widgetData ->
             val configList = ArrayList<Config>()
-            widgetData.questWidgetList.forEach { questWidgetListItem ->
+            widgetData.questWidgetList?.forEach { questWidgetListItem ->
                 configList.add(convertStringToConfig(questWidgetListItem.config))
             }
             questData = QuestData(configList, response)

@@ -6,11 +6,11 @@ import android.view.View
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,7 +39,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     }
 
     private var photoCount: Typography? = null
-    private var basicInfo: ReviewBasicInfoWidget? = null
+    private var basicInfo: ProductReviewBasicInfoWidget? = null
     private var reviewText: Typography? = null
     private var likeCount: Typography? = null
     private var likeButton: IconUnify? = null
@@ -125,7 +125,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     }
 
     fun setBasicInfoListener(listener: ReviewBasicInfoListener) {
-        basicInfo?.setListener(listener)
+        basicInfo?.setListeners(listener, null)
     }
 
     fun setCredibilityData(isProductReview: Boolean, isAnonymous: Boolean, userId: String, feedbackId: String) {

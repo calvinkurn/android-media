@@ -3,13 +3,14 @@ package com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewhold
 import android.view.View
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ProductViewHolderStub(
     itemView: View?,
-    listener: ProductViewListener,
+    listener: PartialProductItemViewHolder.ProductViewListener,
     navigator: BuyerOrderDetailNavigator
 ) : ProductViewHolder(itemView, listener, navigator) {
 

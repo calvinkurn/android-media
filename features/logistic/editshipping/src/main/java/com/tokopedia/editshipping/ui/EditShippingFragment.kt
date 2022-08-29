@@ -6,7 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,8 +23,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
+import com.tokopedia.editshipping.data.preference.GocarInstanCoachMarkSharePref
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -48,13 +57,8 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -78,6 +82,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private var userSession: UserSessionInterface? = null
     private var bottomSheetValidation: BottomSheetUnify? = null
     private var mapMode = 0
+    private var cacheManager: SaveInstanceCacheManager? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.fragment_shop_shipping, container, false)
@@ -96,7 +101,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         if (arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             editShippingPresenter?.setSavedInstance(arguments)
         } else {
-            editShippingPresenter?.setSavedInstance(savedInstanceState)
+            context?.let {
+                cacheManager = SaveInstanceCacheManager(it, savedInstanceState)
+                editShippingPresenter?.setSavedInstance(cacheManager)
+            }
         }
     }
 
@@ -427,8 +435,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         val resultCode = availability.isGooglePlayServicesAvailable(activity)
         if (ConnectionResult.SUCCESS == resultCode) {
             val locationPass = LocationPass()
-            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty()!!
-                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty()!!) {
+            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false
+                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false) {
                 locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
                 locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
                 locationPass.generatedAddress = addressLayout?.googleMapAddressString
@@ -461,14 +469,32 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         
     }
 
+    override fun showCoachmarkGocarInstan(view: View) {
+        val sharedPref = GocarInstanCoachMarkSharePref(requireContext())
+        if (sharedPref.getCoachMarkState() == true) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(requireContext())
+            coachMarkItem.add(
+                CoachMark2Item(
+                    view,
+                    getString(R.string.gocar_instan_title_coachmark),
+                    getString(R.string.gocar_instan_description_coachmark)
+                )
+            )
+            coachMark.showCoachMark(coachMarkItem, null)
+            sharedPref.setCoachMarkState(false)
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        cacheManager?.onSave(outState)
         if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
             editShippingPresenter?.saveOpenShopModel()
-            outState?.putParcelable(CURRENT_OPEN_SHOP_MODEL,
+            cacheManager?.put(CURRENT_OPEN_SHOP_MODEL,
                     editShippingPresenter?.openShopModel)
         } else {
-            outState?.putParcelable(CURRENT_COURIER_MODEL,
+            cacheManager?.put(CURRENT_COURIER_MODEL,
                     editShippingPresenter?.shopModel)
         }
     }

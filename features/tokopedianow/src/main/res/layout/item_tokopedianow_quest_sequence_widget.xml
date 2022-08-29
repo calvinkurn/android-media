@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_see_all"
         app:layout_constraintBottom_toBottomOf="@id/tv_see_all"
+        android:visibility="gone"
         tools:text="Kategori di TokoNOW!" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,10 +29,13 @@
         android:gravity="center_horizontal"
         android:text="@string/tokopedianow_see_all"
         android:textColor="@color/Unify_G500"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/rvQuest"
-        app:typographyType="heading_5" />
+        app:typographyType="display_2"
+        app:typographyWeight="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvQuest"

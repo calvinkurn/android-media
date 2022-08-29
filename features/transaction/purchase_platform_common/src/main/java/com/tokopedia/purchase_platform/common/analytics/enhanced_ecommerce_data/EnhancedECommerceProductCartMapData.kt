@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
 
-import java.util.*
-
 /**
  * @author anggaprasetiyo on 05/06/18.
  */
@@ -75,14 +73,17 @@ class EnhancedECommerceProductCartMapData {
 
     fun setShopId(shopId: String?) {
         Product[KEY_SHOP_ID] = if (!shopId.isNullOrBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_SHOP_ID_DIMENSION] = if (!shopId.isNullOrBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setShopType(shopType: String?) {
         Product[KEY_SHOP_TYPE] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
+        Product[KEY_SHOP_TYPE_DIMENSION] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
     }
 
     fun setShopName(shopName: String?) {
         Product[KEY_SHOP_NAME] = if (!shopName.isNullOrBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_SHOP_NAME_DIMENSION] = if (!shopName.isNullOrBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setCategoryId(categoryId: String?) {
@@ -190,6 +191,10 @@ class EnhancedECommerceProductCartMapData {
         else Product[KEY_DIMENSION118] = bundleId
     }
 
+    fun setBoAffordability(boAffordabilityValue: String) {
+        Product[KEY_BO_AFFORDABILITY] = boAffordabilityValue
+    }
+
     companion object {
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
@@ -198,9 +203,12 @@ class EnhancedECommerceProductCartMapData {
         const val KEY_CAT = "category"
         private const val KEY_VARIANT = "variant"
         private const val KEY_QTY = "quantity"
-        private const val KEY_SHOP_ID = "dimension79"
-        private const val KEY_SHOP_TYPE = "dimension81"
-        private const val KEY_SHOP_NAME = "dimension80"
+        private const val KEY_SHOP_ID = "shop_id"
+        private const val KEY_SHOP_ID_DIMENSION = "dimension79"
+        private const val KEY_SHOP_TYPE = "shop_type"
+        private const val KEY_SHOP_TYPE_DIMENSION = "dimension81"
+        private const val KEY_SHOP_NAME = "shop_name"
+        private const val KEY_SHOP_NAME_DIMENSION = "dimension80"
         private const val KEY_CATEGORY_ID = "dimension82"
         private const val KEY_CART_ID = "dimension45"
         private const val KEY_POS = "position"
@@ -227,7 +235,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_COURIER = "dimension14"
         private const val KEY_SHIPPING_PRICE = "dimension12"
         private const val KEY_COD_FLAG = "dimension10"
-        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension57"
+        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension67"
         private const val KEY_IS_FULFILLMENT = "dimension58"
         private const val KEY_PICTURE = "picture"
         private const val KEY_URL = "url"
@@ -235,6 +243,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_PAGE_SOURCE = "dimension90"
         private const val KEY_DIMENSION117 = "dimension117"
         private const val KEY_DIMENSION118 = "dimension118"
+        private const val KEY_BO_AFFORDABILITY = "dimension119"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

@@ -1,20 +1,6 @@
 package com.tokopedia.common.topupbills.utils
 
 object CommonTopupBillsGqlMutation {
-    val favoriteNumber = """
-        mutation favouriteNumber(${'$'}categoryID: Int!){
-          recharge_favorite_number(categoryID:${'$'}categoryID) {
-            list {
-              client_number
-              label
-              product_id
-              operator_id
-              category_id
-            }
-          }
-        }
-    """.trimIndent()
-
     val rechargeExpressCheckout = """
         mutation rechargeExpressCheckout(${'$'}cart: RechargeInputExCheckout!) {
           rechargeExpressCheckout(cart:${'$'}cart) {

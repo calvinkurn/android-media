@@ -6,6 +6,7 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.TrackerId
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import javax.inject.Inject
 
@@ -126,7 +127,9 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         )
         dataLayer[Key.E_COMMERCE] = ee
         dataLayer[ExtraKey.USER_ID] = userId
-        dataLayer[ExtraKey.PAYMENT_TYPE] = paymentType
+        dataLayer[ExtraKey.PAYMENT_METHOD] = paymentType
+        dataLayer[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -135,18 +138,24 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
             userId: String,
             paymentId: String,
             paymentType: String,
+            tenureType: String,
             ee: Map<String, Any>
     ) {
         val dataLayer = getGtmData(
                 EventName.CHECKOUT,
                 EventCategory.ORDER_SUMMARY,
                 if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
-                "success"
+                "success - $paymentType - $tenureType"
         )
         dataLayer[Key.E_COMMERCE] = ee
         dataLayer[Key.PAYMENT_ID] = paymentId
         dataLayer[ExtraKey.USER_ID] = userId
-        dataLayer[ExtraKey.PAYMENT_TYPE] = paymentType
+        dataLayer[ExtraKey.PAYMENT_METHOD] = paymentType
+        dataLayer[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        if (!isButtonPilihPembayaran) {
+            dataLayer[ExtraKey.TRACKER_ID] = TrackerId.CLICK_BAYAR_OCC
+        }
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -503,6 +512,79 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         )
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewPaymentMethod(paymentType: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PAYMENT_METHOD,
+                paymentType
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewTenureOption(tenureType: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_TENURE_OPTION,
+                tenureType
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickTenureOptionsBottomSheet() {
+        val gtmData = getGtmData(
+                EventName.CLICK_PP,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TENURE_OPTIONS_BOTTOMSHEET,
+                ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewAddOnsWidget(productId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ADD_ONS_WIDGET,
+                productId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickAddOnsDetail(productId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_PP,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_ADD_ONS_DETAIL,
+                productId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewGoToPlusBadge() {
+        val gtmData = getGtmData(
+                EventName.VIEW_PP_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_GOTOPLUS_TICKER,
+                ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = TrackerId.VIEW_GOTOPLUS_TICKER_OCC
         sendGeneralEvent(gtmData)
     }
 

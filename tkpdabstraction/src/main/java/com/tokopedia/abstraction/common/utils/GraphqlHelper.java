@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
  * Created by nabillasabbaha on 3/28/18.
  */
 
+@Deprecated
 public class GraphqlHelper {
     public static String QUERY = "query";
     public static String VARIABLES = "variables";

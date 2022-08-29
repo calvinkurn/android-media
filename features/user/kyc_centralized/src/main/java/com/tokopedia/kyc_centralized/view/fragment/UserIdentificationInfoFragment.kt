@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -28,16 +27,18 @@ import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -57,15 +58,20 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var mainView: View? = null
     private var button: UnifyButton? = null
     private var clReason: ConstraintLayout? = null
-    private var reasonOne: TextView? = null
-    private var reasonTwo: TextView? = null
-    private var iconOne: View? = null
-    private var iconTwo: View? = null
+    private var reasonOne: Typography? = null
+    private var reasonTwo: Typography? = null
+    private var reasonThree: Typography? = null
+    private var reasonFour: Typography? = null
+    private var iconOne: ImageUnify? = null
+    private var iconTwo: ImageUnify? = null
+    private var iconThree: ImageUnify? = null
+    private var iconFour: ImageUnify? = null
     private var isSourceSeller = false
     private var analytics: UserIdentificationAnalytics? = null
     private var statusCode = 0
     private var projectId = -1
-    private var callback: String? = null
+    private var kycType = ""
+    private var redirectUrl: String? = null
     private var kycBenefitLayout: View? = null
     private var defaultStatusBarColor = 0
     private var allowedSelfie = false
@@ -87,7 +93,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (arguments != null) {
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
             projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID)?: KYCConstant.KYC_PROJECT_ID
-            callback = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
+            redirectUrl = arguments?.getString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         }
         if (isSourceSeller) {
             goToFormActivity()
@@ -98,10 +105,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-        daggerUserIdentificationComponent.inject(this)
+        ActivityComponentFactory.instance
+            .createActivityComponent(activity as Activity)
+            .inject(this)
     }
 
     private fun initView(parentView: View) {
@@ -116,21 +122,25 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         clReason = parentView.findViewById(R.id.cl_reason)
         reasonOne = parentView.findViewById(R.id.txt_reason_1)
         reasonTwo = parentView.findViewById(R.id.txt_reason_2)
+        reasonThree = parentView.findViewById(R.id.txt_reason_3)
+        reasonFour = parentView.findViewById(R.id.txt_reason_4)
         iconOne = parentView.findViewById(R.id.ic_x_1)
         iconTwo = parentView.findViewById(R.id.ic_x_2)
+        iconThree = parentView.findViewById(R.id.ic_x_3)
+        iconFour = parentView.findViewById(R.id.ic_x_4)
         kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
         containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserver(view)
+
         if (projectId != KYCConstant.STATUS_DEFAULT) {
-            statusInfo
+            getStatusInfo()
         } else {
             toggleNotFoundView(true)
         }
-
-        initObserver(view)
     }
 
     private fun initObserver(view: View) {
@@ -138,8 +148,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             when(it) {
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo.isSelfie
-                    if(it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
-                            it.data.kycProjectInfo.statusName != null && it.data.kycProjectInfo.statusName == "") {
+                    if( it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
+                        it.data.kycProjectInfo.statusName != null &&
+                        it.data.kycProjectInfo.statusName == ""
+                    ) {
                         onUserBlacklist()
                     } else {
                         onSuccessGetUserProjectInfo(view, it.data.kycProjectInfo.status, it.data.kycProjectInfo.reasonList)
@@ -150,11 +162,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         })
     }
 
-    private val statusInfo: Unit
-        get() {
-            showLoading()
-            viewModel.getUserProjectInfo(projectId)
-        }
+    private fun getStatusInfo() {
+        showLoading()
+        viewModel.getUserProjectInfo(projectId)
+    }
 
     private fun onUserBlacklist() {
         hideLoading()
@@ -185,7 +196,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (context != null) {
             hideLoading()
             val error = ErrorHandler.getErrorMessage(context, throwable)
-            NetworkErrorHelper.showEmptyState(context, mainView, error) { statusInfo }
+            NetworkErrorHelper.showEmptyState(context, mainView, error) {
+                getStatusInfo()
+            }
         }
     }
 
@@ -216,6 +229,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             activity?.onBackPressed()
         }, onCheckedChanged = {
             analytics?.eventClickKycTnc(it)
+        }, onTncClicked = {
+            analytics?.eventClickTermsSuccessPage()
         })
         analytics?.eventViewOnKYCOnBoarding()
     }
@@ -224,12 +239,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         image?.loadImage(KycUrl.ICON_SUCCESS_VERIFY)
         title?.setText(R.string.kyc_verified_title)
         text?.setText(R.string.kyc_verified_text)
-        if (callback == null) {
+        if (redirectUrl == null) {
             button?.setText(R.string.kyc_verified_button)
             button?.setOnClickListener(onGoToTermsButton())
         } else {
             button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(callback))
+            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
         button?.buttonVariant = FILLED
         button?.buttonType = MAIN
@@ -241,12 +256,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         image?.loadImage(KycUrl.ICON_WAITING)
         title?.setText(R.string.kyc_pending_title)
         text?.setText(R.string.kyc_pending_text)
-        if (callback == null) {
+        if (redirectUrl == null) {
             button?.setText(R.string.kyc_pending_button)
             button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
         } else {
             button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(callback))
+            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
         button?.buttonVariant = GHOST
         button?.visibility = View.VISIBLE
@@ -270,17 +285,72 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showRejectedReason(reasons: List<String>) {
-        clReason?.visibility = View.VISIBLE
-        reasonOne?.visibility = View.VISIBLE
-        iconOne?.visibility = View.VISIBLE
-        reasonOne?.text = reasons[0]
-        if (reasons.size > 1) {
-            reasonTwo?.visibility = View.VISIBLE
-            iconTwo?.visibility = View.VISIBLE
-            reasonTwo?.text = reasons[1]
-        } else {
-            reasonTwo?.visibility = View.GONE
-            iconTwo?.visibility = View.GONE
+        when(reasons.size) {
+            REJECTED_REASON_SIZE_ONE -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[REJECTED_REASON_ONE]
+                }?.show()
+
+                clReason?.show()
+            }
+            REJECTED_REASON_SIZE_TWO -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[REJECTED_REASON_ONE]
+                }?.show()
+
+                iconTwo?.show()
+                reasonTwo?.apply {
+                    text = reasons[REJECTED_REASON_TWO]
+                }?.show()
+
+                clReason?.show()
+            }
+            REJECTED_REASON_SIZE_THREE -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[REJECTED_REASON_ONE]
+                }?.show()
+
+                iconTwo?.show()
+                reasonTwo?.apply {
+                    text = reasons[REJECTED_REASON_TWO]
+                }?.show()
+
+                iconThree?.show()
+                reasonThree?.apply {
+                    text = reasons[REJECTED_REASON_THREE]
+                }?.show()
+
+                clReason?.show()
+            }
+            REJECTED_REASON_SIZE_FOUR -> {
+                iconOne?.show()
+                reasonOne?.apply {
+                    text = reasons[REJECTED_REASON_ONE]
+                }?.show()
+
+                iconTwo?.show()
+                reasonTwo?.apply {
+                    text = reasons[REJECTED_REASON_TWO]
+                }?.show()
+
+                iconThree?.show()
+                reasonThree?.apply {
+                    text = reasons[REJECTED_REASON_THREE]
+                }?.show()
+
+                iconFour?.show()
+                reasonFour?.apply {
+                    text = reasons[REJECTED_REASON_FOUR]
+                }?.show()
+
+                clReason?.show()
+            }
+            else -> {
+                clReason?.hide()
+            }
         }
     }
 
@@ -350,7 +420,13 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun goToFormActivity() {
         if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
+            val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
+                    projectId.toString(),
+                    redirectUrl
+            )
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
             intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }
@@ -358,7 +434,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
-            statusInfo
+            getStatusInfo()
             NetworkErrorHelper.showGreenSnackbar(activity, getString(R.string.text_notification_success_upload))
             analytics?.eventViewSuccessSnackbarPendingPage()
         } else if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
@@ -385,15 +461,25 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
+        private const val REJECTED_REASON_ONE = 0
+        private const val REJECTED_REASON_TWO = 1
+        private const val REJECTED_REASON_THREE = 2
+        private const val REJECTED_REASON_FOUR = 3
+        private const val REJECTED_REASON_SIZE_ONE = 1
+        private const val REJECTED_REASON_SIZE_TWO = 2
+        private const val REJECTED_REASON_SIZE_THREE = 3
+        private const val REJECTED_REASON_SIZE_FOUR = 4
+
         const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
-        fun createInstance(isSourceSeller: Boolean, projectid: Int, callback: String?): UserIdentificationInfoFragment {
-            val fragment = UserIdentificationInfoFragment()
-            val args = Bundle()
-            args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
-            args.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
-            args.putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK, callback)
-            fragment.arguments = args
-            return fragment
+        fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", redirectUrl: String?): UserIdentificationInfoFragment {
+            return UserIdentificationInfoFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
+                    putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
+                    putString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                }
+            }
         }
     }
 }

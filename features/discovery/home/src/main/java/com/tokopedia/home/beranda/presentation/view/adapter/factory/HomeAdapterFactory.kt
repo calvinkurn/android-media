@@ -9,24 +9,137 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeFeedsListener
 import com.tokopedia.home.beranda.listener.HomeReviewListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateAtfModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelThreeModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelTwoModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateIconModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeLoadingMoreModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeTopAdsBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.InspirationHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringIconDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeInitialShimmerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerImageViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CMHomeWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconSectionViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconTwoRowsSectionViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.EmptyBannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeLoadingMoreViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ProductOrganicChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.ReviewViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.SpotlightViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TopadsBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.DynamicChannelLoadingViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.DynamicChannelRetryViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ErrorStateChannelOneViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ErrorStateChannelThreeViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ErrorStateChannelTwoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ErrorStateIconViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.HomeAtfErrorViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringIconViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.listener.*
-import com.tokopedia.home_component.viewholders.*
-import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
+import com.tokopedia.home_component.listener.CategoryNavigationListener
+import com.tokopedia.home_component.listener.CategoryWidgetV2Listener
+import com.tokopedia.home_component.listener.CueWidgetCategoryListener
+import com.tokopedia.home_component.listener.DynamicIconComponentListener
+import com.tokopedia.home_component.listener.DynamicLegoBannerListener
+import com.tokopedia.home_component.listener.FeaturedShopListener
+import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.Lego4AutoBannerListener
+import com.tokopedia.home_component.listener.Lego6AutoBannerListener
+import com.tokopedia.home_component.listener.MerchantVoucherComponentListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.listener.ProductHighlightListener
+import com.tokopedia.home_component.listener.RecommendationListCarouselListener
+import com.tokopedia.home_component.listener.ReminderWidgetListener
+import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
+import com.tokopedia.home_component.listener.VpsWidgetListener
+import com.tokopedia.home_component.listener.MissionWidgetComponentListener
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
+import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
+import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
+import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
+import com.tokopedia.home_component.viewholders.CueWidgetCategoryViewHolder
+import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHolder
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
+import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
+import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
+import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
+import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
+import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
+import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
+import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
+import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
+import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
+import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
+import com.tokopedia.home_component.visitable.CueCategoryDataModel
+import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
+import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.Lego4AutoDataModel
+import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.home_component.visitable.QuestWidgetModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
+import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -39,7 +152,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerVi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import java.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -67,8 +179,15 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val legoSixAutoListener: Lego6AutoBannerListener,
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
-                         private val cmHomeWidgetCallback: CMHomeWidgetCallback
-) :
+                         private val cmHomeWidgetCallback: CMHomeWidgetCallback,
+                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener,
+                         private val vpsWidgetListener: VpsWidgetListener,
+                         private val categoryWidgetV2Listener: CategoryWidgetV2Listener,
+                         private val missionWidgetComponentListener: MissionWidgetComponentListener
+                         ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
         RechargeComponentTypeFactory {
@@ -114,12 +233,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return if(dynamicIconSectionDataModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
-    override fun type(headerDataModel: HeaderDataModel): Int {
-        return if (headerDataModel.isUserLogin)
-            OvoViewHolder.LAYOUT
-        else OvoViewHolder.NON_LOGIN_LAYOUT
-    }
-
     override fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int {
         return HomeRecommendationFeedViewHolder.LAYOUT
     }
@@ -163,6 +276,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     }
 
     //Home-Component
+    override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
+        return CategoryWidgetV2ViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
@@ -281,8 +398,32 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CampaignWidgetViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
+    override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
+        return SpecialReleaseViewHolder.LAYOUT
+    }
+
     override fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int {
         return CMHomeWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int {
+        return HomePayLaterWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(cueCategoryDataModel: CueCategoryDataModel): Int {
+        return CueWidgetCategoryViewHolder.LAYOUT
+    }
+
+    override fun type(vpsDataModel: VpsDataModel): Int {
+        return VpsWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int {
+        return MissionWidgetViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -345,58 +486,62 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
+            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener, cardInteraction = true)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
-            OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
-            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
+            HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener, cardInteraction = true)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
-            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
+            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener, cardInteraction = true)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
-            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
+            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener, cardInteraction = true)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
-            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener)
-            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
+            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, categoryWidgetV2Listener,  cardInteraction = true)
+            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener,  cardInteraction = true)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
                     homeComponentListener,
-                    productHighlightListener
+                    productHighlightListener,
+                    cardInteraction = true
             )
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(
                             view,
                             legoListener,
                             homeComponentListener,
-                            parentRecycledViewPool
+                            parentRecycledViewPool,
+                            cardInteraction = true
                     )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(
                             view,
                             recommendationListCarouselListener,
-                            parentRecycledViewPool
+                            parentRecycledViewPool,
+                            cardInteraction = true
                     )
             MixLeftComponentViewHolder.LAYOUT -> viewHolder =
                     MixLeftComponentViewHolder(
                             view,
                             mixLeftComponentListener,
                             homeComponentListener,
-                            parentRecycledViewPool
+                            parentRecycledViewPool,
+                            cardInteraction = true
                     )
             MixTopComponentViewHolder.LAYOUT -> viewHolder =
                     MixTopComponentViewHolder(
                             view,
                             homeComponentListener,
-                            mixTopComponentListener
+                            mixTopComponentListener,
+                            cardInteraction = true
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
-                    ReminderWidgetViewHolder(view,reminderWidgetListener)
+                    ReminderWidgetViewHolder(view,reminderWidgetListener, cardInteraction = true)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
@@ -409,7 +554,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             FeaturedShopViewHolder.LAYOUT -> viewHolder = FeaturedShopViewHolder(
                     view,
                     featuredShopListener,
-                    homeComponentListener
+                    homeComponentListener,
+                    cardInteraction = true
             )
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> {
@@ -425,7 +571,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                 RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
-                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener, cardInteraction = true)
             DynamicIconViewHolder.LAYOUT -> viewHolder =
                 DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
@@ -453,12 +599,26 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 view,
                 homeComponentListener,
                 campaignWidgetComponentListener,
-                parentRecycledViewPool
+                parentRecycledViewPool,
+                cardInteraction = true
+            )
+            MerchantVoucherViewHolder.LAYOUT -> viewHolder =
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener, cardInteraction = true)
+            SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
+                view,
+                homeComponentListener,
+                specialReleaseComponentListener,
+                cardInteraction = true
             )
             CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
                 view,
                 cmHomeWidgetCallback
             )
+            HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
+                view, homePayLaterWidgetListener)
+            CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
+            VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+            MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

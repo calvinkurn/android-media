@@ -65,6 +65,8 @@ object ConstantTransactionAnalytics {
         const val VIEW_ORDER_IRIS = "viewOrderIris"
         const val CLICK_ORDER = "clickOrder"
         const val VIEW_ITEM = "view_item"
+        const val CLICK_PP = "clickPP"
+        const val VIEW_PP_IRIS = "viewPPIris"
     }
 
     object EventCategory {
@@ -318,6 +320,9 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_TOASTER_MESSAGE = "view error toaster message"
         const val VIEW_TOP_UP_GOPAY_BUTTON = "view top up gopay button"
         const val CLICK_TOP_UP_GOPAY_BUTTON = "click top up gopay button"
+        const val VIEW_PAYMENT_METHOD = "view payment method"
+        const val VIEW_TENURE_OPTION = "view tenure option"
+        const val CLICK_TENURE_OPTIONS_BOTTOMSHEET = "click tenure options bottomsheet"
 
         // OCC PP
         const val PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression"
@@ -364,6 +369,20 @@ object ConstantTransactionAnalytics {
         // Cart Bundling
         const val CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package"
         const val CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card"
+
+        // Cart Bo Affordability
+        const val CLICK_ARROW_IN_BO_TICKER_TO_REACH_SHOP_PAGE = "click arrow in BO Ticker to reach shop page"
+        const val VIEW_BO_TICKER_WORDING = "view BO Ticker wording"
+
+        // Gifting
+        const val VIEW_ADD_ONS_WIDGET = "view add ons widget"
+        const val CLICK_ADD_ONS_DETAIL = "click add ons detail"
+        const val CLICK_SIMPAN_ON_ADD_ONS_BOTTOMSHEET = "click simpan on add ons bottomsheet"
+
+        // Gotoplus
+        const val VIEW_GOTOPLUS_TICKER = "view gotoplus ticker"
+        const val VIEW_GOTOPLUS_UPSELL_TICKER = "view gotoplus upsell ticker"
+        const val CLICK_GOTOPLUS_UPSELL_TICKER = "click gotoplus upsell ticker"
     }
 
     object EventLabel {
@@ -403,17 +422,27 @@ object ConstantTransactionAnalytics {
         const val ELIGIBLE_PROMO = "eligible promo"
         const val BLACKLIST_ERROR = "blacklist error"
         const val PHONE_VERIFICATION_MESSAGE = "phone verification message"
+
+        // Cart Bo Affordability
+        const val BO_FULFILL = "fulfill"
+        const val BO_UNFULFILL = "unfulfill"
+
+        // Gifting
+        const val ADD_ON_CHECKED = "add on checked"
+        const val ADD_ON_NOT_CHECKED = "add on not checked"
     }
 
     object ExtraKey {
         const val USER_ID = "userId"
         const val CART_ID = "cartId"
         const val PROMO_CODE = "promoCode"
-        const val PAYMENT_TYPE = "paymentType"
+        const val PAYMENT_METHOD = "paymentMethod"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
         const val PAGE_TYPE = "pageType"
         const val PAGE_PATH = "pagePath"
+        const val PROMO_FLAG = "promoFlag"
+        const val TRACKER_ID = "trackerId"
     }
 
     object ScreenName {
@@ -437,5 +466,14 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
         const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
+    }
+
+    object TrackerId {
+        const val VIEW_GOTOPLUS_TICKER_CART = "33464"
+        const val VIEW_GOTOPLUS_TICKER_COURIER_SELECTION = "33465"
+        const val VIEW_GOTOPLUS_UPSELL_TICKER = "33466"
+        const val CLICK_GOTOPLUS_UPSELL_TICKER = "33467"
+        const val VIEW_GOTOPLUS_TICKER_OCC = "33468"
+        const val CLICK_BAYAR_OCC = "15570"
     }
 }

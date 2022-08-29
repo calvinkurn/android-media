@@ -50,6 +50,8 @@ public class GraphqlClient {
     private static Context applicationContext;
     private static Function function;
 
+    public static String moduleName = "tkpd";
+
     private GraphqlClient() {
 
     }
@@ -104,7 +106,8 @@ public class GraphqlClient {
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
                 authenticator,
                 new StringResponseConverter(),
-                new GsonBuilder()
+                new GsonBuilder(),
+                context
         );
         sFingerprintManager = new FingerprintManager(userSession);
         sGraphqlDatabase = GraphqlDatabase.getInstance(context);
@@ -148,7 +151,8 @@ public class GraphqlClient {
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
                 new TkpdAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new StringResponseConverter(),
-                new GsonBuilder());
+                new GsonBuilder(),
+                context);
     }
 
     @NotNull
@@ -156,7 +160,6 @@ public class GraphqlClient {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
-        tkpdOkHttpBuilder.addInterceptor(new GraphqlEmbraceInterceptor());
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));

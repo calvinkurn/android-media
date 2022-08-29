@@ -74,7 +74,6 @@ class BrandlistPageMapper {
                 adapter: BrandlistPageAdapter?
         ) {
             val totalBrands: Int = allBrand.brands.size
-
             if (!isLoadMore && totalBrands == 0) {
                 adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllbrandNotFoundUiModel())
                 adapter?.notifyItemChanged(ALL_BRAND_POSITION, AllbrandNotFoundUiModel())

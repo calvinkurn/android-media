@@ -1,8 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -152,6 +151,18 @@ class LoaderFragment : BaseDaggerFragment() {
         lottieAnimationView.gone()
         tvWaitForMinute.hide()
         tvProcessingPayment.hide()
+        triggerHaptics()
+    }
+
+    private fun triggerHaptics() {
+        try {
+            val vibrationService = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrationService.vibrate(VibrationEffect.createOneShot(VIBRATION_MILLIS, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrationService.vibrate(VIBRATION_MILLIS)
+            }
+        } catch(ignore: Exception) { }
     }
 
     private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
@@ -173,6 +184,7 @@ class LoaderFragment : BaseDaggerFragment() {
     companion object {
         const val RPC_ERROR_STR = "rpc error:"
         const val DELAY_MILLIS = 2000L
+        const val VIBRATION_MILLIS = 150L
         const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle

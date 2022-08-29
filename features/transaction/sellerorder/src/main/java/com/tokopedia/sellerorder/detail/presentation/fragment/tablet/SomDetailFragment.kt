@@ -17,6 +17,8 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippi
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
@@ -72,6 +74,13 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun handleReschedulePickupResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            shouldRefreshOrderList = true
+            loadDetail()
+        }
+    }
+
     override fun onGoToOrderDetailButtonClicked() {
         shouldRefreshOrderList = true
         super.onGoToOrderDetailButtonClicked()
@@ -103,12 +112,15 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun renderDetail() {
+    override fun renderDetail(
+        somDetail: SomDetailOrder.Data.GetSomDetail?,
+        somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?
+    ) {
         if (shouldPassInvoice) {
             shouldPassInvoice = false
             orderDetailListener?.onShouldPassInvoice(detailResponse?.invoice.orEmpty())
         }
-        super.renderDetail()
+        super.renderDetail(somDetail, somDynamicPriceResponse)
     }
 
     override fun onSuccessAcceptOrder() {

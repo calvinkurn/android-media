@@ -20,14 +20,17 @@
     <string name="path_sellerhome_som_cacellation_request" translatable="false">/sellerhome-som-cancellation-request</string>
     <string name="path_sellerhome_other_settings" translatable="false">/sellerhome-othersettings</string>
     <string name="path_centralized_promo" translatable="false">/centralized-promo</string>
-    <string name="path_centralized_promo_first_voucher" translatable="false">/first-voucher-centralized-promo</string>
+    <string name="path_centralized_promo_first_time" translatable="false">/first-time-centralized-promo</string>
     <string name="path_menu_setting" translatable="false">/menu-setting</string>
     <string name="path_seller_seamless_choose_acc" translatable="false">/login-seamless-choose-account</string>
     <string name="path_create_voucher" translatable="false">/create-voucher</string>
+    <string name="path_create_voucher_product" translatable="false">/create-voucher-product/.*\\/</string>
     <string name="path_voucher_list" translatable="false">/voucher-list</string>
     <string name="path_voucher_list_active" translatable="false">/voucher-list/active</string>
     <string name="path_voucher_list_history" translatable="false">/voucher-list/history</string>
     <string name="path_voucher_detail" translatable="false">/voucher-detail</string>
+    <string name="path_voucher_product_detail" translatable="false">/voucher-product-detail/.*\\/</string>
+    <string name="path_voucher_product_list" translatable="false">/voucher-product-list/.*\\/</string>
     <string name="path_campaign_list" translatable="false">/campaign-list</string>
     <string name="path_seller_menu" translatable="false">/seller-menu</string>
     <string name="path_seller_settings" translatable="false">/seller-settings</string>
@@ -35,4 +38,11 @@
     <string name="path_seller_feedback" translatable="false">/seller-feedback</string>
     <string name="path_review_reminder" translatable="false">/review-reminder</string>
     <string name="path_admin_restriction" translatable="false">/admin-restriction</string>
+    <string name="path_tokomember" translatable="false">/tokomember</string>
+    <string name="path_seller_shop_flash_sale" translatable="false">/shop-flash-sale/.*\\/</string>
+    <string name="path_shop_discount" translatable="false">/shop-discount</string>
+    <string name="path_shop_discount_manage_discount" translatable="false">/shop-discount/manage-discount</string>
+    <string name="path_shop_discount_manage_product_discount" translatable="false">/shop-discount/manage-discount/product</string>
+    <string name="path_shop_discount_manage_product_variant_discount" translatable="false">/shop-discount/manage-discount/product/variant</string>
+    <string name="path_shop_discount_manage_product_discount_multi_loc" translatable="false">/shop-discount/manage-discount/product/multi-loc</string>
 </resources>

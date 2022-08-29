@@ -10,32 +10,37 @@ import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DiscoveryResponse
-import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.analytics.EMPTY_STRING
+import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 const val SHIMMER_ITEMS_LIST_SIZE = 10
+const val COMPONENTS_PER_PAGE = 10
 var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
                                    queryParameterMap: MutableMap<String, String?>,
-                                   userAddressData: LocalCacheModel?,isLoggedIn:Boolean): DiscoveryPageData {
+                                   userAddressData: LocalCacheModel?,isLoggedIn:Boolean,shouldHideSingleProdCard:Boolean): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn,shouldHideSingleProdCard)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -52,9 +57,13 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
-                              private val queryParameterMap: Map<String, String?>,
-                              private val localCacheModel: LocalCacheModel?,private val isLoggedIn: Boolean) {
+class DiscoveryPageDataMapper(
+    private val pageInfo: PageInfo,
+    private val queryParameterMap: Map<String, String?>,
+    private val localCacheModel: LocalCacheModel?,
+    private val isLoggedIn: Boolean,
+    private val shouldHideSingleProdCard: Boolean
+) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoComponentListFromResponse(filterSaleTimer(components))
@@ -118,13 +127,20 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
-            ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
+            ComponentNames.ProductCardSprintSale.componentName -> {
+                addRecomQueryProdID(component)
+                listComponents.addAll(parseProductVerticalList(component))
+            }
+            ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
+            ComponentNames.ShopCardInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
+                addRecomQueryProdID(component)
                 updateCarouselWithCart(component)
                 listComponents.add(component)
             }
             ComponentNames.Section.componentName ->{
+                saveSectionPosition(component.pageEndPoint, component.sectionId, component.position)
                 listComponents.addAll(parseSectionComponent(component))
             }
             ComponentNames.QuickCoupon.componentName -> {
@@ -155,7 +171,8 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                                 ComponentNames.CalendarWidgetItem.componentName,
                                 component.properties,
                                 component.creativeName,
-                                parentComponentPosition = component.position
+                                parentComponentPosition = component.position,
+                                parentSectionId = component.parentSectionId
                             )
                         )
                     }
@@ -168,7 +185,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             }
 
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
+            ComponentNames.TripleBanner.componentName, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
             ComponentNames.BannerTimer.componentName -> {
                 if (addBannerTimerComp(component)) {
@@ -183,9 +200,33 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 if(isLoggedIn)
                 listComponents.addAll(setupMerchantVoucherList(component))
             }
+            ComponentNames.ProductCardSingle.componentName -> {
+                if (!shouldHideSingleProdCard) {
+                    addRecomQueryProdID(component)
+                    listComponents.add(component)
+                }
+            }
+            ComponentNames.ExplicitWidget.componentName -> {
+                addPageInfoToExplicitWidget(component)
+                listComponents.add(component)
+            }
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun addRecomQueryProdID(component: ComponentsItem) {
+        if (!queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty())
+            component.recomQueryProdId = queryParameterMap[RECOM_PRODUCT_ID]
+    }
+
+    private fun saveSectionPosition(pageEndPoint: String, sectionId: String, position: Int) {
+        if (getSectionPositionMap(pageEndPoint) == null) {
+            setSectionPositionMap(mutableMapOf(), pageEndPoint)
+        }
+        getSectionPositionMap(pageEndPoint)?.let {
+            it.put(sectionId, position)
+        }
     }
 
     private fun addAutoPlayController(component: ComponentsItem) {
@@ -215,12 +256,16 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             component.properties  = Properties()
         }
         component.properties?.template = Constant.ProductTemplate.LIST
-        component.componentsPerPage = 10
+        component.componentsPerPage = COMPONENTS_PER_PAGE
         return parseProductVerticalList(component,false)
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
         return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
+    }
+
+    private fun addPageInfoToExplicitWidget(component: ComponentsItem){
+        component.pageType = pageInfo.type ?: EMPTY_STRING
     }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
@@ -350,8 +395,14 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-
-            listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+            when(component.errorState){
+                NetworkErrorState ->{
+                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListNetworkErrorLoad.componentName, queryParameterMap))
+                }
+                else -> {
+                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+                }
+            }
         } else {
             if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0 && !component.verticalProductFailState) {
                 listComponents.add(component.copy().apply {
@@ -411,18 +462,18 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         }
     }
 
-    private fun updateWithCart(list: List<ComponentsItem>, map: Map<String, MiniCartItem>?) : Boolean {
+    private fun updateWithCart(list: List<ComponentsItem>, map: Map<MiniCartItemKey, MiniCartItem>?) : Boolean {
         var shouldRefresh = false
         if (map == null) return shouldRefresh
         list.forEach { item ->
             item.data?.firstOrNull()?.let { dataItem ->
-                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
-                    map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
+                    map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
                         if(updateQuantity(quantity, item))
                             shouldRefresh = true
                     }
-                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
-                    map[dataItem.productId]?.quantity?.let { quantity ->
+                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
+                    map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
                         if(updateQuantity(quantity, item))
                             shouldRefresh = true
                     }
@@ -483,16 +534,30 @@ fun setComponent(componentId: String, pageName: String, componentsItem: Componen
     }
 }
 
-fun getCartData(pageName: String):MutableMap<String,MiniCartItem>?{
+fun getCartData(pageName: String):Map<MiniCartItemKey, MiniCartItem>?{
     discoveryPageData[pageName]?.let {
         return it.cartMap
     }
     return null
 }
-fun setCartData(cartMap:MutableMap<String,MiniCartItem>,pageName: String){
+
+fun setCartData(cartMap:Map<MiniCartItemKey, MiniCartItem>, pageName: String){
     discoveryPageData[pageName]?.let {
         it.cartMap = cartMap
     }
+}
+
+fun setSectionPositionMap(map: MutableMap<String, Int>, pageName: String) {
+    discoveryPageData[pageName]?.let {
+        it.sectionMap = map
+    }
+}
+
+fun getSectionPositionMap(pageName: String):MutableMap<String, Int>?{
+    discoveryPageData[pageName]?.let {
+        return it.sectionMap
+    }
+    return null
 }
 
 fun updateComponentsQueryParams(categoryId: String) {

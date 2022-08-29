@@ -70,6 +70,8 @@
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_buyerorder">Daftar Transaksi</string>
+    <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
+    <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
     <!--Snapshot-->
     <string name="title_snapshot">Riwayat Detail Produk</string>
@@ -96,8 +98,17 @@
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
 
+    <!-- Shop Widget -->
+    <string name="title_shop_widget">Shop Widget</string>
+
+    <!-- Shop Page Review Tab -->
+    <string name="shop_review_tab">Shop Page Review Tab</string>
+
     <!-- Shop Page Showcase Tab -->
     <string name="shop_showcase_tab">Shop Page Showcase Tab</string>
+
+    <!-- Feed Shop -->
+    <string name="title_feed_shop">Feed Shop</string>
 
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
@@ -130,7 +141,8 @@
     <string name="title_create_review">Create Review</string>
     <string name="title_review_reminder">Review Reminder</string>
     <string name="title_review_credibility">Review Credibility</string>
-  
+    <string name="title_review_media_gallery">Foto &amp; Video Pembeli</string>
+
     <!-- Inactive Phone -->
     <string name="title_update_inactive_phone">Inactive Phone</string>
 
@@ -149,5 +161,14 @@
 
     <!-- Buyer Order Request Cancel -->
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
+
+    <!-- Shop Flash Sale -->
+    <string name="title_shop_flash_sale">Flash Sale Toko</string>
+
+<!--    Tokomember seller dashboard-->
+    <string name="title_tokomember" translatable="false">Tokomember</string>
 
 </resources>

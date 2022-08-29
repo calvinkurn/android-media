@@ -13,6 +13,8 @@ object DigitalCheckoutTrackingConst {
         const val PRODUCT_CLICK = "productClick"
         const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
         const val VIEW_CHECKOUT_IRIS = "viewCheckoutIris"
+        const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+        const val CLICK_DIGITAL = "clickDigital"
     }
 
     object Category {
@@ -40,6 +42,10 @@ object DigitalCheckoutTrackingConst {
 
         const val IMPRESSION_CROSSELL_ICON = "impression crossell icon"
         const val IMPRESSION_AUTODEBIT = "view tick box auto debit"
+
+        const val SUBSCRIPTION_CLICK_INFO_BUTTON = "click on info button"
+        const val SUBSCRIPTION_CLICK_CLOSE_MORE_INFO = "click x info bottom sheet"
+        const val SUBSCRIPTION_VIEW_MORE_INFO_BOTTOM_SHEET = "view info bottom sheet"
     }
 
     object Label {
@@ -59,9 +65,6 @@ object DigitalCheckoutTrackingConst {
         const val RECHARGE_BU = "recharge"
         const val SITE = "tokopediadigital"
         const val RECHARGE_SITE = "tokopediadigitalRecharge"
-
-        const val NO_PROMO = "no promo"
-        const val PROMO = "no promo"
 
         const val NONE = "none"
         const val CROSSELL_CARD_TYPE = "crossell icon"

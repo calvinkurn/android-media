@@ -1,10 +1,19 @@
 package com.tokopedia.tokopedianow.home.domain.query
 
-internal object GetRepurchaseWidget {
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-    val QUERY = """
-        query TokonowRepurchaseWidget(${'$'}warehouseID: String!, ${'$'}queryParam: String!) {
-            TokonowRepurchaseWidget(warehouseID:${'$'}warehouseID, queryParam:${'$'}queryParam) {
+internal object GetRepurchaseWidget: GqlQueryInterface {
+
+    private const val OPERATION_NAME = "TokonowRepurchaseWidget"
+
+    override fun getOperationNameList(): List<String> {
+        return listOf(OPERATION_NAME)
+    }
+
+    override fun getQuery(): String {
+        return """
+        query $OPERATION_NAME(${'$'}warehouseID: String!, ${'$'}queryParam: String!) {
+            $OPERATION_NAME(warehouseID:${'$'}warehouseID, queryParam:${'$'}queryParam) {
                 header {
                     process_time
                     messages
@@ -48,5 +57,10 @@ internal object GetRepurchaseWidget {
                 }
             }
        }
-    """.trimIndent()
+       """.trimIndent()
+    }
+
+    override fun getTopOperationName(): String {
+        return OPERATION_NAME
+    }
 }

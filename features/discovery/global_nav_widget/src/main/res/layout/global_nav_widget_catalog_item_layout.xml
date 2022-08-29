@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="144dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/globalNavCatalogIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/globalNavCatalogTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_6"
+            android:layout_marginLeft="@dimen/unify_space_4"
+            android:layout_marginRight="@dimen/unify_space_12"
+            app:layout_constraintLeft_toRightOf="@id/globalNavCatalogIcon"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/globalNavCatalogIcon"
+            app:layout_constraintBottom_toBottomOf="@id/globalNavCatalogIcon"
+            />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/globalNavCatalogDescriptionBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="globalNavCatalogIcon, globalNavCatalogTitle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/globalNavCatalogDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintTop_toBottomOf="@id/globalNavCatalogDescriptionBarrier"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_3"
+            android:maxLines="3"
+            android:ellipsize="end"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

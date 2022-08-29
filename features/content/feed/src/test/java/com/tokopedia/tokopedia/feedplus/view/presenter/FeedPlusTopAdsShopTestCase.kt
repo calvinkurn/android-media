@@ -41,10 +41,23 @@ class FeedPlusTopAdsShopTestCase {
         sendTopAdsUseCase = mockk(relaxed = true)
         feedViewModel = spyk(
             FeedViewModel(
-                baseDispatcher, mockk(), mockk(),
-                mockk(), mockk(), mockk(),
-                mockk(), mockk(), trackAffiliateClickUseCase,
-                mockk(), sendTopAdsUseCase, mockk(), mockk(), mockk(), mockk(), mockk(),mockk(), mockk()
+                baseDispatcher = baseDispatcher,
+                userSession = mockk(),
+                doFavoriteShopUseCase = mockk(),
+                followKolPostGqlUseCase =  mockk(),
+                likeKolPostUseCase = mockk(),
+                atcUseCase = mockk(),
+                trackAffiliateClickUseCase = trackAffiliateClickUseCase,
+                deletePostUseCase = mockk(),
+                sendTopAdsUseCase = sendTopAdsUseCase,
+                playWidgetTools = mockk(),
+                getDynamicFeedNewUseCase = mockk(),
+                getWhitelistNewUseCase = mockk(),
+                sendReportUseCase = mockk(),
+                addWishListUseCase = mockk(),
+                addToWishlistV2UseCase = mockk(),
+                trackVisitChannelBroadcasterUseCase = mockk(),
+                feedXTrackViewerUseCase = mockk()
             )
         )
     }

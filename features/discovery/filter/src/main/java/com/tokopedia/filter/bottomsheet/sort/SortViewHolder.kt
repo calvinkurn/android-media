@@ -9,9 +9,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.helper.ChipSpacingItemDecoration
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
+import com.tokopedia.filter.databinding.SortFilterBottomSheetChipsLayoutBinding
+import com.tokopedia.filter.databinding.SortFilterBottomSheetSortViewHolderBinding
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_sort_view_holder.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class SortViewHolder(
         itemView: View,
@@ -21,6 +22,7 @@ internal class SortViewHolder(
     companion object {
         val LAYOUT = R.layout.sort_filter_bottom_sheet_sort_view_holder
     }
+    private var binding: SortFilterBottomSheetSortViewHolderBinding? by viewBinding()
 
     private val layoutManager = ChipsLayoutManager
             .newBuilder(itemView.context)
@@ -34,7 +36,7 @@ internal class SortViewHolder(
     )
 
     init {
-        itemView.sortItemRecyclerView?.let {
+        binding?.sortItemRecyclerView?.let {
             it.layoutManager = layoutManager
             it.isNestedScrollingEnabled = false
             it.addItemDecorationIfNotExists(spacingItemDecoration)
@@ -42,7 +44,7 @@ internal class SortViewHolder(
     }
 
     override fun bind(element: SortViewModel) {
-        itemView.sortItemRecyclerView?.swapAdapter(SortItemAdapter(element.sortItemViewModelList, sortViewListener), false)
+        binding?.sortItemRecyclerView?.swapAdapter(SortItemAdapter(element.sortItemViewModelList, sortViewListener), false)
     }
 
     private class SortItemAdapter(
@@ -66,15 +68,17 @@ internal class SortViewHolder(
             itemView: View,
             private val sortViewListener: SortViewListener
     ): RecyclerView.ViewHolder(itemView) {
+        private var binding: SortFilterBottomSheetChipsLayoutBinding? by viewBinding()
 
         fun bind(sortItemViewModel: SortItemViewModel) {
-            itemView.sortFilterChipsUnify?.chipText = sortItemViewModel.sort.name
-            itemView.sortFilterChipsUnify?.chipType = ChipsUnify.TYPE_NORMAL
-            itemView.sortFilterChipsUnify?.chipSize = ChipsUnify.SIZE_MEDIUM
-            itemView.sortFilterChipsUnify?.chipType =
+            val binding = binding?: return
+            binding.sortFilterChipsUnify.chipText = sortItemViewModel.sort.name
+            binding.sortFilterChipsUnify.chipType = ChipsUnify.TYPE_NORMAL
+            binding.sortFilterChipsUnify.chipSize = ChipsUnify.SIZE_MEDIUM
+            binding.sortFilterChipsUnify.chipType =
                     if (sortItemViewModel.isSelected) ChipsUnify.TYPE_SELECTED
                     else ChipsUnify.TYPE_NORMAL
-            itemView.sortFilterChipsUnify?.setOnClickListener {
+            binding.sortFilterChipsUnify.setOnClickListener {
                 sortViewListener.onSortItemClick(sortItemViewModel)
             }
         }

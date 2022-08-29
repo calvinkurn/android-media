@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="shc_load_failed">Gagal memuat</string>
+    <string name="shc_load_failed">Muat ulang</string>
     <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
     <string name="shc_failed_to_retry">Muat Ulang</string>
     <string name="shc_empty_state_title">Belum ada informasi untukmu</string>
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
-    <string name="shc_max_progress">/100</string>
     <string name="shc_table_widget_on_empty_message">Oops, belum ada data yang dapat \nditampilkan saat ini.</string>
     <string name="shc_current_period">Periode ini</string>
     <string name="shc_last_period">Periode sebelumnya</string>
     <string name="shc_select_category">Pilih Kategori</string>
+    <string name="shc_select_analysis">Pilih analisis</string>
     <string name="shc_select_statistic_data">Pilih data statistik</string>
     <string name="shc_apply_btn">Terapkan</string>
     <string name="shc_data_empty_state_title">Belum ada data hari ini</string>
@@ -27,7 +27,33 @@
     <string name="shc_content_desc_image_table_empty">image table empty</string>
     <string name="shc_content_desc_image_pie_chart_empty">pie chart empty</string>
     <string name="shc_content_desc_image_carousel_empty">carousel empty</string>
-    <string name="mission_selling_tokopedia">Misi berjualan Tokopedia</string>
-    <string name="shc_title_progress_milestone_widget">Kemajuan</string>
     <string name="shc_close_mission">Tutup Misi</string>
+    <string name="shc_select_date">Pilih Tanggal</string>
+    <string name="shc_select_same_month_only_info">Hanya bisa memilih tanggal di bulan yang sama.</string>
+    <string name="shc_today_fmt">Hari Ini (%1$s 00:00 - %2$s)</string>
+    <string name="shc_last_7_days_fmt">7 Hari Terakhir (%1$s)</string>
+    <string name="shc_last_30_days_fmt">30 Hari Terakhir (%1$s)</string>
+    <string name="shc_per_day_fmt">Per Hari (%1$s)</string>
+    <string name="shc_per_week_fmt">Per Minggu (%1$s)</string>
+    <string name="shc_per_month_fmt">Per Bulan (%1$s)</string>
+    <string name="shc_custom">Custom (%1$s)</string>
+    <string name="shc_show">Tampilkan</string>
+    <string name="shc_start_from">Mulai dari</string>
+    <string name="shc_until">Sampai dengan</string>
+    <string name="shc_date">Tanggal</string>
+    <string name="shc_per_day">Per Hari</string>
+    <string name="shc_per_week">Per Minggu</string>
+    <string name="shc_per_month">Per Bulan</string>
+    <string name="shc_custom_lbl">Custom</string>
+    <string name="shc_month">Bulan</string>
+    <string name="shc_change_date_range">Ubah Rentang Waktu</string>
+    <string name="shc_calendar_date_range">(%1$s - %2$s)</string>
+    <string name="shc_calendar_empty_state">Temukan event menarik di minggu-minggu selanjutnya, ya!</string>
+    <string name="shc_last_updated_same_day">Update terakhir hari ini, %1$s</string>
+    <string name="shc_last_updated_yesterday">Update terakhir kemarin"</string>
+    <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
+    <string name="shc_last_updated">Update terakhir: %1$s</string>
+    <string name="shc_new">Baru</string>
+    <string name="shc_no_access">Tidak ada akses</string>
+    <string name="shc_no_access_state_message">Oops, kamu tidak punya izin untuk melihat konten ini</string>
 </resources>

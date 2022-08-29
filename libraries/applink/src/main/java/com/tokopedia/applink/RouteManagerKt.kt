@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import java.lang.Exception
 
 
@@ -114,6 +115,10 @@ object RouteManagerKt {
             }
             DeepLinkChecker.SALDO_DEPOSIT -> {
                 return RouteManager.route(activity, ApplinkConst.SALDO)
+            }
+            DeepLinkChecker.SNAPSHOT -> {
+                val snapShotOrderAppLink = DeeplinkMapperOrder.mapSnapShotAppLinkFromHttp(url)
+                return RouteManager.route(activity, snapShotOrderAppLink)
             }
         }
         return false

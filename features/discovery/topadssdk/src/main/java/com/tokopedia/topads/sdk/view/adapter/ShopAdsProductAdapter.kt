@@ -5,17 +5,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.CONST_5
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel.ShopProductModelItem
+import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductListener) : RecyclerView.Adapter<ShopAdsProductAdapter.ShopAdsProductViewHolder>() {
+class ShopAdsProductAdapter(
+    private val shopAdsProductListener: ShopAdsProductListener,
+    private val followButtonClickListener:FollowButtonClickListener?
+) : RecyclerView.Adapter<ShopAdsProductAdapter.ShopAdsProductViewHolder>() {
+
 
     private val shopAdsProductItemList = arrayListOf<ShopProductModelItem>()
 
@@ -33,7 +40,9 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
         private val productShopName = itemView.findViewById<Typography>(R.id.productShopName)
         private val shopProductReviews = itemView.findViewById<LinearLayout>(R.id.shopProductReviews)
         private val reviewCount = itemView.findViewById<Typography>(R.id.reviewCount)
-        private val shopProductRoot = itemView.findViewById<CardView>(R.id.shopProductRoot)
+        private val locationIcon = itemView.findViewById<ImageView>(R.id.locationIcon)
+        private val locationName = itemView.findViewById<Typography>(R.id.locationName)
+        private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModelItem) {
@@ -42,21 +51,53 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
             productLogoShop.loadImageCircle(shopProductModelItem.shopIcon)
             loadBadge(shopProductModelItem)
             productShopName.text = shopProductModelItem.shopName
-            setRating(shopProductModelItem.ratingAverage, shopProductModelItem.ratingCount)
+            setLocation(shopProductModelItem.location)
             shopProductModelItem.impressHolder?.let { impressHolder ->
-                shopProductRoot.addOnImpressionListener(impressHolder) {
+                itemView.addOnImpressionListener(impressHolder) {
                     shopAdsProductListener.onItemImpressed(shopProductModelItem.position)
                 }
             }
 
-            shopProductRoot.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
+            itemView.setOnClickListener { shopAdsProductListener.onItemClicked(shopProductModelItem.position) }
+            setFollowButton(shopProductModelItem.layoutType, shopProductModelItem)
 
+        }
+
+        private fun setFollowButton(
+            layoutType: Int?,
+            shopProductModelItem: ShopProductModelItem
+        ) {
+            if (layoutType == LAYOUT_5) {
+                buttonFollow.hide()
+            } else {
+                if (!shopProductModelItem.isFollowed) {
+                    buttonFollow.buttonVariant = UnifyButton.Variant.GHOST
+                    buttonFollow.text = itemView.context.getString(R.string.topads_follow)
+                } else {
+                    buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
+                    buttonFollow.text = itemView.context.getString(R.string.topads_followed)
+                }
+                buttonFollow.setOnClickListener {
+                    buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
+                    buttonFollow.text = itemView.context.getString(R.string.topads_followed)
+                    followButtonClickListener?.onItemClicked(shopProductModelItem)
+                }
+                buttonFollow.show()
+            }
+        }
+
+        private fun setLocation(location: String) {
+            if (location.isNotEmpty()) {
+                locationIcon.show()
+                locationName.text = location
+                locationName.show()
+            }
         }
 
         private fun setRating(rating: String, countReview: String) {
             val ratingData = rating.toFloatOrZero().toInt()
-            if (ratingData in 1..5) {
-                for (r in 0 until ratingData) {
+            if (ratingData in Int.ONE..CONST_5) {
+                for (r in Int.ZERO until ratingData) {
                     shopProductReviews.show()
                     (shopProductReviews.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
                 }

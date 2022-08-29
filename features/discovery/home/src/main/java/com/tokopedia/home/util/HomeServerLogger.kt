@@ -1,13 +1,17 @@
 package com.tokopedia.home.util
 
 import android.util.Log
+import androidx.fragment.app.Fragment
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
 import okhttp3.internal.http2.ConnectionShutdownException
 import org.apache.commons.lang3.exception.ExceptionUtils
+import org.json.JSONObject
 import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
@@ -15,13 +19,30 @@ import java.net.UnknownHostException
 object HomeServerLogger {
 
     private const val HOME_STATUS_ERROR_TAG = "HOME_STATUS"
+    private const val HOME_EMBRACE_KEY = "Home"
+    private const val HOME_EMBRACE_BREADCRUMB_FORMAT = "%s, %s, %s"
+    private const val HOME_EMBRACE_KEY_FRAGMENT = "HomeFragment"
+    private const val HOME_EMBRACE_KEY_IS_LOGIN = "IsLogin"
+    private const val HOME_EMBRACE_KEY_IS_CACHE = "IsCache"
+    private const val HOME_EMBRACE_VISITABLE_LIST_COUNT = "VisitableCount"
+    private const val HOME_EMBRACE_SCROLL_POSITION = "ScrollPosition"
+
+    private const val HOME_EMBRACE_FRAGMENT_VISIBLE = "Visible"
+    private const val HOME_EMBRACE_FRAGMENT_NOT_VISIBLE = "Not Visible"
+
+    private const val HOME_EMBRACE_TRUE = "true"
+    private const val HOME_EMBRACE_FALSE = "false"
+    private const val HOME_EMBRACE_VISIBLE_FRAGMENT_FORMAT = "currentFragment: %s"
+
     const val TYPE_CANCELLED_INIT_FLOW = "revamp_cancelled_init_flow"
     const val TYPE_REVAMP_ERROR_INIT_FLOW = "revamp_error_init_flow"
     const val TYPE_REVAMP_ERROR_REFRESH = "revamp_error_refresh"
     const val TYPE_REVAMP_EMPTY_UPDATE = "revamp_empty_update"
     const val TYPE_WALLET_APP_ERROR = "wallet_app_error"
+    const val TYPE_BALANCE_WIDGET_ERROR = "balance_widget_error"
     const val TYPE_WALLET_BALANCE_EMPTY = "wallet_balance_empty"
     const val TYPE_WALLET_POINTS_EMPTY = "wallet_points_empty"
+    const val TYPE_SUBSCRIPTION_ERROR = "balance_widget_subscription_error"
     const val TYPE_RECOM_SET_ADAPTER_ERROR = "recom_set_adapter_error"
     const val TYPE_ERROR_SUBMIT_WALLET = "wallet_app_error_submit"
     const val TYPE_ERROR_ON_LAYOUT_CHILDREN_BALANCE = "error_on_layout_children_balance_adapter"
@@ -106,6 +127,66 @@ object HomeServerLogger {
     ) {
         if (type == null || throwable == null || isExceptionExcluded(throwable)) return
         timberLogWarning(type, ExceptionUtils.getStackTrace(throwable), reason, data)
+    }
+
+    fun sendEmbraceBreadCrumb(
+        fragment: Fragment? = null,
+        isLoggedIn: Boolean? = null,
+        isCache: Boolean? = null,
+        visitableListCount: Int? = null,
+        scrollPosition: Int? = null
+    ) {
+        try {
+            val embraceJsonData = JSONObject()
+            var currentVisibleFragment = ""
+
+            fragment?.let {
+                if (it.isVisible) {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_VISIBLE)
+                } else {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_FRAGMENT, HOME_EMBRACE_FRAGMENT_NOT_VISIBLE)
+                }
+
+                (it.activity as? MainParentStateListener)?.let { it ->
+                    currentVisibleFragment = it.currentVisibleFragment()
+                }
+            }
+
+            isLoggedIn?.let {
+                if (isLoggedIn) {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_TRUE)
+                } else {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_LOGIN, HOME_EMBRACE_FALSE)
+                }
+            }
+
+            isCache?.let {
+                if (isCache) {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_TRUE)
+                } else {
+                    embraceJsonData.put(HOME_EMBRACE_KEY_IS_CACHE, HOME_EMBRACE_FALSE)
+                }
+            }
+
+            visitableListCount?.let {
+                embraceJsonData.put(HOME_EMBRACE_VISITABLE_LIST_COUNT, it)
+            }
+
+            scrollPosition?.let {
+                embraceJsonData.put(HOME_EMBRACE_SCROLL_POSITION, it)
+            }
+
+            EmbraceMonitoring.logBreadcrumb(
+                String.format(
+                    HOME_EMBRACE_BREADCRUMB_FORMAT,
+                    HOME_EMBRACE_KEY,
+                    String.format(HOME_EMBRACE_VISIBLE_FRAGMENT_FORMAT, currentVisibleFragment),
+                    embraceJsonData
+                )
+            )
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun isExceptionExcluded(throwable: Throwable): Boolean {

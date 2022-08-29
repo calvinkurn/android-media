@@ -133,6 +133,8 @@ class GetProductUseCase @Inject constructor(
                         price
                         sku
                         stock
+                        weight
+                        weightUnit
                         pictures {
                           picID
                           description

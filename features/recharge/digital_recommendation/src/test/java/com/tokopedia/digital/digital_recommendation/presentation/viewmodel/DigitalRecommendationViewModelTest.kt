@@ -2,7 +2,12 @@ package com.tokopedia.digital.digital_recommendation.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
-import com.tokopedia.digital.digital_recommendation.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemUnifyModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.*
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,6 +36,78 @@ class DigitalRecommendationViewModelTest {
     private val dispatcher = CoroutineTestDispatchersProvider
 
     private lateinit var viewmodel: DigitalRecommendationViewModel
+
+    private companion object{
+        const val ASSERT_DELTA = 0.0
+    }
+
+    private val mockDigitalRecommendationItem = arrayListOf(
+        DigitalRecommendationItemUnifyModel(
+            unify = DigitalUnifyModel(
+                id = "12091092",
+                mediaUrl = "dummy media url",
+                mediaType = "dummy media url type",
+                mediaTitle = "dummy media title",
+                iconUrl = "dummy icon url",
+                iconBackgroundColor = "dummy background color",
+                campaign = DigitalCardCampaignModel(
+                    text = "dummy text campaign",
+                    textColor = "dummy textColor campaign",
+                    backgroundUrl = "dummy backgroundColor campaign"
+                ),
+                productInfoLeft = DigitalCardInfoModel(
+                    text = "dummy text product info left",
+                    textColor = "dummy textColor product info left"
+                ),
+                productInfoRight = DigitalCardInfoModel(
+                    text = "dummy text product info right",
+                    textColor = "dummy textColor product info right"
+                ),
+                title = "dummy title",
+                rating = DigitalCardRatingModel(
+                    ratingType = "dummy rating type",
+                    rating = 4.5,
+                    review = "dummy review"
+                ),
+                specialInfo = DigitalCardInfoModel(
+                    text = "dummy special info text",
+                    textColor = "dummy special info textColor"
+                ),
+                priceData = DigitalCardPriceModel(
+                    price = "Rp 200.000",
+                    discountLabelType = Label.HIGHLIGHT_DARK_GREEN,
+                    discountLabel = "dummy discountlabel",
+                    discountType = "dummy discount type",
+                    slashedPrice = "dummy slashedPrice",
+                    pricePrefix = "dummy pricePrefix",
+                    priceSuffix = "dummy priceSuffix"
+                ),
+                cashback = "dummy cahsback",
+                subtitle = "dummy subtitle",
+                soldPercentage = DigitalCardSoldPercentageModel(
+                    showPercentage = true,
+                    value = 80,
+                    label = "dummy label soldPercentage",
+                    labelColor = "dummy labelColor"
+                ),
+                actionButton = DigitalCardActionModel(
+                    text = "dummy text action button",
+                    applink = "dummy applink",
+                    buttonType = "dummy button type"
+                )
+            ),
+            tracking = DigitalRecommendationTrackingModel(
+                "dummy typename",
+                "dummy business unit",
+                "dummy category id",
+                "dummy category name",
+                "dummy item label",
+                "dummy item type",
+                "dummy operator id",
+                "dummy product id"
+            )
+        )
+    )
 
     @Before
     fun setUp() {
@@ -61,28 +138,7 @@ class DigitalRecommendationViewModelTest {
         } returns Success(DigitalRecommendationModel(
                 userType = "non login",
                 title = "",
-                items = arrayListOf(
-                        DigitalRecommendationItemModel(
-                                "someurl.com",
-                                "dummy category",
-                                "dummy product",
-                                "tokopedia-test://dummy-applink",
-                                DigitalRecommendationTrackingModel(
-                                        "dummy typename",
-                                        "dummy business unit",
-                                        "dummy category id",
-                                        "dummy category name",
-                                        "dummy item label",
-                                        "dummy item type",
-                                        "dummy operator id",
-                                        "dummy product id"
-                                ),
-                                DigitalRecommendationType.CATEGORY,
-                                "Rp10.000",
-                                "Rp100.000",
-                                "90%"
-                        )
-                )
+                items = mockDigitalRecommendationItem
         ))
 
         // when
@@ -94,21 +150,55 @@ class DigitalRecommendationViewModelTest {
         val successValue = (value as Success).data
         assertEquals(successValue.items.size, 1)
         val dataIndexZero = successValue.items[0]
-        assertEquals(dataIndexZero.iconUrl, "someurl.com")
-        assertEquals(dataIndexZero.categoryName, "dummy category")
-        assertEquals(dataIndexZero.productName, "dummy product")
-        assertEquals(dataIndexZero.applink, "tokopedia-test://dummy-applink")
-        assertEquals(dataIndexZero.price, "Rp10.000")
-        assertEquals(dataIndexZero.beforePrice, "Rp100.000")
-        assertEquals(dataIndexZero.discountTag, "90%")
-        assertEquals(dataIndexZero.tracking.typeName, "dummy typename")
-        assertEquals(dataIndexZero.tracking.businessUnit, "dummy business unit")
-        assertEquals(dataIndexZero.tracking.categoryId, "dummy category id")
-        assertEquals(dataIndexZero.tracking.categoryName, "dummy category name")
-        assertEquals(dataIndexZero.tracking.itemLabel, "dummy item label")
-        assertEquals(dataIndexZero.tracking.itemType, "dummy item type")
-        assertEquals(dataIndexZero.tracking.operatorId, "dummy operator id")
-        assertEquals(dataIndexZero.tracking.productId, "dummy product id")
+        val expectedDataIndexZero = mockDigitalRecommendationItem[0]
+        with(dataIndexZero.unify){
+            assertEquals(expectedDataIndexZero.unify.id, id)
+            assertEquals(expectedDataIndexZero.unify.mediaUrl, mediaUrl)
+            assertEquals(expectedDataIndexZero.unify.mediaType, mediaType)
+            assertEquals(expectedDataIndexZero.unify.mediaTitle, mediaTitle)
+            assertEquals(expectedDataIndexZero.unify.iconUrl, iconUrl)
+            assertEquals(expectedDataIndexZero.unify.iconBackgroundColor, iconBackgroundColor)
+            assertEquals(expectedDataIndexZero.unify.campaign.text, campaign.text)
+            assertEquals(expectedDataIndexZero.unify.campaign.textColor, campaign.textColor)
+            assertEquals(expectedDataIndexZero.unify.campaign.backgroundUrl, campaign.backgroundUrl)
+            assertEquals(expectedDataIndexZero.unify.productInfoLeft.text, productInfoLeft.text)
+            assertEquals(expectedDataIndexZero.unify.productInfoLeft.textColor, productInfoLeft.textColor)
+            assertEquals(expectedDataIndexZero.unify.productInfoRight.text, productInfoRight.text)
+            assertEquals(expectedDataIndexZero.unify.productInfoRight.textColor, productInfoRight.textColor)
+            assertEquals(expectedDataIndexZero.unify.title, title)
+            assertEquals(expectedDataIndexZero.unify.rating.ratingType, rating.ratingType)
+            assertEquals(expectedDataIndexZero.unify.rating.rating, rating.rating, ASSERT_DELTA)
+            assertEquals(expectedDataIndexZero.unify.rating.review, rating.review)
+            assertEquals(expectedDataIndexZero.unify.specialInfo.textColor, specialInfo.textColor)
+            assertEquals(expectedDataIndexZero.unify.specialInfo.text, specialInfo.text)
+            assertEquals(expectedDataIndexZero.unify.priceData.price, priceData.price)
+            assertEquals(expectedDataIndexZero.unify.priceData.discountLabelType, priceData.discountLabelType)
+            assertEquals(expectedDataIndexZero.unify.priceData.discountLabel, priceData.discountLabel)
+            assertEquals(expectedDataIndexZero.unify.priceData.discountType, priceData.discountType)
+            assertEquals(expectedDataIndexZero.unify.priceData.slashedPrice, priceData.slashedPrice)
+            assertEquals(expectedDataIndexZero.unify.priceData.pricePrefix, priceData.pricePrefix)
+            assertEquals(expectedDataIndexZero.unify.priceData.priceSuffix, priceData.priceSuffix)
+            assertEquals(expectedDataIndexZero.unify.cashback, cashback)
+            assertEquals(expectedDataIndexZero.unify.subtitle, subtitle)
+            assertEquals(expectedDataIndexZero.unify.soldPercentage.showPercentage, soldPercentage.showPercentage)
+            assertEquals(expectedDataIndexZero.unify.soldPercentage.value, soldPercentage.value)
+            assertEquals(expectedDataIndexZero.unify.soldPercentage.label, soldPercentage.label)
+            assertEquals(expectedDataIndexZero.unify.soldPercentage.labelColor, soldPercentage.labelColor)
+            assertEquals(expectedDataIndexZero.unify.actionButton.buttonType, actionButton.buttonType)
+            assertEquals(expectedDataIndexZero.unify.actionButton.applink, actionButton.applink)
+            assertEquals(expectedDataIndexZero.unify.actionButton.text, actionButton.text)
+        }
+
+        with(dataIndexZero.tracking){
+            assertEquals(expectedDataIndexZero.tracking.typeName, typeName)
+            assertEquals(expectedDataIndexZero.tracking.businessUnit, businessUnit)
+            assertEquals(expectedDataIndexZero.tracking.categoryId, categoryId)
+            assertEquals(expectedDataIndexZero.tracking.categoryName, categoryName)
+            assertEquals(expectedDataIndexZero.tracking.itemLabel, itemLabel)
+            assertEquals(expectedDataIndexZero.tracking.itemType, itemType)
+            assertEquals(expectedDataIndexZero.tracking.operatorId, operatorId)
+            assertEquals(expectedDataIndexZero.tracking.productId, productId)
+        }
     }
 
     @Test

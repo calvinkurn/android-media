@@ -41,11 +41,10 @@ import com.tokopedia.officialstore.category.presentation.widget.OfficialCategori
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.databinding.FragmentOfficialHomeBinding
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.isRunningTest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -69,6 +68,7 @@ class OfficialHomeContainerFragment
         const val KEY_CATEGORY = "key_category"
         const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
         const val PARAM_HOME = "home"
+        private const val FORMAT_APPLINK_SEARCHBAR = "%s&hint=%s"
     }
 
     private var binding: FragmentOfficialHomeBinding? by viewBinding()
@@ -87,7 +87,6 @@ class OfficialHomeContainerFragment
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
-    private var useNewInbox = false
     private var chooseAddressView: OSChooseAddressWidgetView? = null
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
@@ -140,7 +139,6 @@ class OfficialHomeContainerFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        initInboxAbTest()
         init(view)
         observeOfficialCategoriesData()
         fetchOSCategory()
@@ -183,9 +181,7 @@ class OfficialHomeContainerFragment
     // from: GlobalNav, to show notification maintoolbar
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         mainToolbar?.run {
-            if (!useNewInbox) {
-                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            }
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -358,18 +354,8 @@ class OfficialHomeContainerFragment
         return tabItemDataList
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun init(view: View) {
@@ -378,6 +364,10 @@ class OfficialHomeContainerFragment
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
+        if (!isRunningTest()) {
+            loadingCategoryLayout?.visible()
+            binding?.viewContentLoading?.containerLoadingContent?.visible()
+        }
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
@@ -427,7 +417,10 @@ class OfficialHomeContainerFragment
             setIcon(getToolbarIcons())
             setupSearchbar(
                     hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+                    applink = FORMAT_APPLINK_SEARCHBAR.format(
+                        ApplinkConstant.OFFICIAL_SEARCHBAR,
+                        getString(R.string.os_query_search)
+                    )
             )
             show()
         }
@@ -444,9 +437,7 @@ class OfficialHomeContainerFragment
             mainToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             statusBar?.visibility = View.GONE
         }
-        if (!useNewInbox) {
-            icons.addIcon(IconList.ID_NOTIFICATION) {}
-        }
+        icons.addIcon(IconList.ID_NOTIFICATION) {}
         icons.apply {
             addIcon(IconList.ID_CART) {}
             addIcon(IconList.ID_NAV_GLOBAL) {}
@@ -503,14 +494,18 @@ class OfficialHomeContainerFragment
 
     private fun isAddressDataChanged(): Boolean {
         var isAddressChanged = false
-        chooseAddressData.toLocalCacheModel().let {
-            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
-        }
+        context?.let { context ->
+            chooseAddressData.toLocalCacheModel().let {
+                isAddressChanged =
+                    ChooseAddressUtils.isLocalizingAddressHasUpdated(context, it)
+            }
 
-        if (isAddressChanged) {
-            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-            chooseAddressData = OSChooseAddressData(isActive = true)
+            if (isAddressChanged) {
+                val localChooseAddressData =
+                    ChooseAddressUtils.getLocalizingAddressData(context)
+                chooseAddressData = OSChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
+            }
         }
         return isAddressChanged
     }

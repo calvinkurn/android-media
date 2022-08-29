@@ -328,20 +328,24 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
     public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap) {
         if (mainBitmap == null || mainBitmap.isRecycled()) return;
-        Subscription subscription = Observable.just(BitmapFactory.decodeResource(
-                getView().getContext().getResources(),
-                R.drawable.watermark_logo_tokopedia
-        )).flatMap((Func1<Bitmap, Observable<Bitmap[]>>) tokopediaLogoBitmap -> {
+        Bitmap watermarkLogo = getWatermarkLogo();
+        Subscription subscription = Observable.just(watermarkLogo).map(bitmap -> {
+            if (bitmap.isRecycled()) {
+                return getWatermarkLogo();
+            } else {
+                return watermarkLogo;
+            }
+        }).flatMap((Func1<Bitmap, Observable<Bitmap[]>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap
-            Bitmap[] watermark = WatermarkBuilder
+
+            return Observable.just(WatermarkBuilder
                     .create(getView().getContext(), mainBitmap)
                     .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
-                    .getOutputImages();
-            tokopediaLogoBitmap.recycle();
-            return Observable.just(watermark);
+                    .getOutputImages());
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmaps -> {
+                    watermarkLogo.recycle();
                     getView().onSuccessGetWatermarkImage(bitmaps);
                 });
 
@@ -492,5 +496,12 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
+    }
+
+    private Bitmap getWatermarkLogo() {
+        return BitmapFactory.decodeResource(
+                getView().getContext().getResources(),
+                R.drawable.watermark_logo_tokopedia
+        );
     }
 }

@@ -5,18 +5,16 @@
             android:shape="rectangle">
             <gradient
                 android:startColor="@color/warm_grey"
-                android:endColor="@color/tkpd_bg_color_grery"
+                android:endColor="@color/Unify_NN50"
                 android:type="linear"
                 android:angle="270">
             </gradient>
-
         </shape>
     </item>
-
     <item android:bottom="1dp">
         <shape>
-            <solid android:color="@color/white" />
-            <corners android:radius="1dp" />
+            <solid android:color="@color/white"/>
+            <corners android:radius="1dp"/>
         </shape>
     </item>
 </layer-list>

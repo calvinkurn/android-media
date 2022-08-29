@@ -65,7 +65,7 @@ class StatisticActivityViewModelTest {
 
     @Test
     fun `should success when checking user white list status`() = runBlocking {
-        val whiteListName = "statistic-operational"
+        val whiteListName = "statistic-traffic-apps"
         val params = getMockParams(whiteListName)
         val result = true
 
@@ -95,7 +95,7 @@ class StatisticActivityViewModelTest {
 
     @Test
     fun `should return throwable when when checking user white list status `() = runBlocking {
-        val whiteListName = "statistic-operational"
+        val whiteListName = "statistic-traffic-apps"
         val params = getMockParams(whiteListName)
 
         coEvery {

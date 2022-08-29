@@ -1,7 +1,5 @@
 package com.tokopedia.sellerapp;
 
-import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,12 +9,13 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
-import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.keys.Keys;
@@ -138,7 +137,7 @@ public class SplashScreenActivity extends SplashScreen {
                 .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING);
         Intent intent;
         if (isAutoLoginSeamless) {
-            intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
+            intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
@@ -150,7 +149,7 @@ public class SplashScreenActivity extends SplashScreen {
             }
             intent.putExtras(b);
         } else if (hasOnboarding) {
-            intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
+            intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SEAMLESS_LOGIN);
         } else {
             intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
         }
@@ -159,7 +158,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        Intent intent = RouteManager.getIntent(context, LANDING_SHOP_CREATION);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;

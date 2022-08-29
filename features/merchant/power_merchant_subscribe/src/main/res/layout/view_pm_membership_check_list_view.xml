@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Kamu sudah jadi Power Merchant. Selanjutnya, penuhi target PM PRO, yuk!" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmMembershipChecklist1"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPmMembershipChecklistShopScore"
+        tools:src="@drawable/ic_pm_not_checked" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistShopScore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgPmMembershipChecklist1"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipChecklistTitle"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Skor Toko:" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistShopScoreDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvPmMembershipChecklistShopScore"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipChecklistShopScore"
+        app:typographyType="small"
+        android:textColor="@color/Unify_NN600"
+        tools:text="Batas min. skor 70" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmMembershipChecklist2"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPmMembershipChecklistOrder"
+        tools:src="@drawable/ic_pm_not_checked" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistOrder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgPmMembershipChecklist2"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipChecklistShopScoreDescription"
+        app:layout_goneMarginTop="2dp"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Pesanan Selesai:" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistOrderDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvPmMembershipChecklistShopScore"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipChecklistOrder"
+        app:typographyType="small"
+        android:textColor="@color/Unify_NN600"
+        tools:text="Min. 3 dalam 30 hari terakhir" />
+
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmMembershipChecklist3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPmMembershipChecklistNetIncome"
+        tools:src="@drawable/ic_pm_not_checked" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistNetIncome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgPmMembershipChecklist3"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipChecklistOrderDescription"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Pesanan Selesai:" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmMembershipChecklistNetIncomeDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvPmMembershipChecklistShopScore"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmMembershipChecklistNetIncome"
+        app:typographyType="small"
+        tools:text="Min. 3 dalam 30 hari terakhir" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,178 @@
+{
+  "type": "cart",
+  "id": "17211378-3-a1df777f3a63ba6d6f8d82b8e60f905b",
+  "attributes": {
+    "user_id": 17211378,
+    "client_number": "111122223333",
+    "title": "Detail Pembayaran",
+    "category_name": "Listrik PLN",
+    "operator_name": "Tagihan Listrik",
+    "icon": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+    "price": "Rp2.700",
+    "price_plain": 2700,
+    "instant_checkout": false,
+    "need_otp": false,
+    "sms_state": "",
+    "voucher_autocode": "",
+    "user_input_price": null,
+    "main_info": [
+      {
+        "label": "ID Pelanggan",
+        "value": "111122223333"
+      },
+      {
+        "label": "Nama",
+        "value": "Tokope*** Use* Defau**"
+      },
+      {
+        "label": "Total Bayar",
+        "value": "Rp2.700"
+      }
+    ],
+    "additional_info": [
+      {
+        "title": "Detail Tagihan",
+        "detail": [
+          {
+            "label": "Admin Bank",
+            "value": "Rp2.500"
+          },
+          {
+            "label": "Total Lembar Tagihan",
+            "value": "0 Bulan"
+          }
+        ]
+      }
+    ],
+    "enable_voucher": true,
+    "is_coupon_active": 1,
+    "autoapply": {
+      "success": false,
+      "Message": {
+        "state": "",
+        "color": "",
+        "text": ""
+      },
+      "code": "",
+      "is_coupon": 0,
+      "discount_amount": 0,
+      "discount_price": "Rp0",
+      "discount_amount_label": "",
+      "discounted_amount": 2700,
+      "discounted_price": "Rp2.700",
+      "discounted_amount_label": "Diskon Voucher",
+      "title_description": "",
+      "promo_code_id": 0,
+      "promo_id": 0,
+      "message_success": ""
+    },
+    "default_promo_dialog_tab": "voucher",
+    "cross_selling_type": 2,
+    "cross_selling_config": {
+      "is_skipable": true,
+      "is_checked": false,
+      "wording": {
+        "header_title": "Checkout",
+        "body_title": "Aktifkan auto debit untuk tagihan ini",
+        "body_content_before": "Pantang telat bayar tagihan dengan fitur langganan. Lebih cepat dan hemat waktu loh.",
+        "body_content_after": "Kamu harus memasukkan OVO PIN untuk mulai auto debit tagihan ini pada 3 Maret 2022",
+        "cta_button_text": "Bayar"
+      },
+      "wording_is_subscribed": {
+        "header_title": "Checkout",
+        "body_title": "",
+        "body_content_before": "",
+        "body_content_after": "",
+        "cta_button_text": "Bayar"
+      }
+    },
+    "pop_up": null,
+    "fintech_product": [
+      {
+        "transaction_type": "purchase-protection",
+        "tier_id": 2965,
+        "opt_in": false,
+        "check_box_disabled": false,
+        "allow_ovo_points": true,
+        "fintech_amount": 3250,
+        "fintech_partner_amount": 3250,
+        "info": {
+          "title": "Proteksi Tagihan PLN",
+          "subtitle": "Dapatkan kompensasi perlindungan rumah hingga 6jt jika terjadi kebakaran atau pencurian",
+          "link_text": "Pelajari",
+          "link_url": "https://www.tokopedia.com/asuransi/proteksi/tagihan/",
+          "tooltip_text": "",
+          "icon_url": "",
+          "desktop_icon_url": "",
+          "client_number": "",
+          "quota_id": 0,
+          "pct_tokopedia_subsidy": 0,
+          "pct_external_subsidy": 0,
+          "checked_subtitle": "Dapatkan kompensasi perlindungan rumah hingga 6jt jika terjadi kebakaran atau pencurian",
+          "client_number_type": ""
+        },
+        "service_id": 1,
+        "metadata": "",
+        "operator_name": "",
+        "category_id": 0,
+        "operator_id": 0
+      },
+      {
+        "id": 146,
+        "transaction_type": "Donasi",
+        "tier_id": 146,
+        "opt_in": true,
+        "check_box_disabled": false,
+        "allow_ovo_points": false,
+        "fintech_amount": 5000,
+        "fintech_partner_amount": 0,
+        "info": {
+          "title": "Bantu penyaluran alat kesehatan dengan berdonasi Rp 5.000",
+          "subtitle": "",
+          "link_text": "",
+          "link_url": "",
+          "tooltip_text": "Donasi akan disalurkan dalam bentuk alat kesehatan berupa masker dan sanitizer untuk membantu keluarga (prasejahtera) agar terlindung dari penyebaran COVID-19 bersama BenihBaik.com",
+          "icon_url": "",
+          "desktop_icon_url": "",
+          "client_number": "",
+          "quota_id": 0,
+          "pct_tokopedia_subsidy": 0,
+          "pct_external_subsidy": 0,
+          "checked_subtitle": "",
+          "client_number_type": ""
+        },
+        "service_id": 5,
+        "metadata": "{}",
+        "operator_name": "",
+        "category_id": 0,
+        "operator_id": 0
+      }
+    ],
+    "atc_source": "",
+    "admin_fee": "Rp2.500",
+    "admin_fee_plain": 2500,
+    "back_url": "",
+    "promo_service_id": "819380128012836",
+    "admin_fee_included": false
+  },
+  "relationships": {
+    "category": {
+      "data": {
+        "type": "category",
+        "id": "3"
+      }
+    },
+    "operator": {
+      "data": {
+        "type": "operator",
+        "id": "18"
+      }
+    },
+    "product": {
+      "data": {
+        "type": "product",
+        "id": "291"
+      }
+    }
+  }
+}

@@ -5,8 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
@@ -35,8 +33,6 @@ class ShopOperationalViewHolder(
         itemView?.findViewById(R.id.error_state_sah_new_other_shop_hour)
     private val titleTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_hour_title)
-    private val shopOperationalIcon: IconUnify? =
-        itemView?.findViewById(R.id.ic_sah_new_other_shop_hour)
     private val descTextView: Typography? =
         itemView?.findViewById(R.id.tv_sah_new_other_shop_hour_desc)
 
@@ -50,7 +46,6 @@ class ShopOperationalViewHolder(
 
     private fun setSuccessOperationalHour(shopOperational: ShopOperationalData) {
         setOperationalHourTitle(shopOperational)
-        setOperationalHourIcon(shopOperational)
 
         shopOperational.timeDescriptionRes?.let { timeRes ->
             descTextView?.text = getString(timeRes)
@@ -73,23 +68,12 @@ class ShopOperationalViewHolder(
     private fun setOperationalHourTitle(shopOperational: ShopOperationalData) {
         val titleText =
             when {
-                shopOperational.isShopOpen -> getString(R.string.sah_new_other_operational_shop_open)
-                shopOperational.isShopClosed -> getString(R.string.sah_new_other_operational_shop_off_hour)
+                shopOperational.isShopOpen && !shopOperational.isWeeklyOperationalClosed -> getString(R.string.sah_new_other_operational_shop_open)
+                shopOperational.isWeeklyOperationalClosed -> getString(R.string.sah_new_other_operational_shop_weekly_closed)
+                shopOperational.isShopClosed -> getString(R.string.sah_new_other_operational_shop_closed)
                 else -> getString(R.string.sah_new_other_operational_shop_closed)
             }
         titleTextView?.text = titleText
-    }
-
-    private fun setOperationalHourIcon(shopOperational: ShopOperationalData) {
-        shopOperationalIcon?.run {
-            setImage(
-                newIconId = shopOperational.operationalIconType,
-                newLightEnable = MethodChecker.getColor(
-                    context,
-                    shopOperational.operationalIconColorRes
-                )
-            )
-        }
     }
 
     private fun setLoadingOperationalHour() {

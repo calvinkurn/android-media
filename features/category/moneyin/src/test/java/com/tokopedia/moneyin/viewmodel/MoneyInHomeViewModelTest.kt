@@ -1,6 +1,7 @@
 package com.tokopedia.moneyin.viewmodel
 
 import android.content.Intent
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
@@ -11,6 +12,7 @@ import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.moneyin.MoneyinConstants
 import com.tokopedia.moneyin.usecase.CheckMoneyInUseCase
+import com.tokopedia.moneyin.viewcontrollers.ContextInterface
 import com.tokopedia.moneyin.viewmodel.MoneyInHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -137,8 +139,10 @@ class MoneyInHomeViewModelTest {
 
     @Test
     fun `setDiagnoseResult is Success and Eligible`() {
+        val displayName = "android"
         every { response?.deviceDiagInputRepsponse?.isEligible } returns true
 
+        tradeInHomeViewModel.homeResultData.value?.deviceDisplayName = displayName
         tradeInHomeViewModel.setDiagnoseResult(response, deviceDiagnostics)
 
         assertEquals(tradeInHomeViewModel.homeResultData.value?.priceStatus, HomeResult.PriceState.DIAGNOSED_VALID)
@@ -293,6 +297,18 @@ class MoneyInHomeViewModelTest {
     }
 
     @Test
+    fun onErrorIMEI() {
+        val jsonObject = JSONObject("{\"message\":\"Error tradein\"}")
+
+        tradeInHomeViewModel.imei = "1221212121"
+
+        tradeInHomeViewModel.onError(jsonObject)
+
+        assertEquals(tradeInHomeViewModel.imeiResponseLiveData.value , "Error tradein")
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
+    }
+
+    @Test
     fun onErrorException() {
         val jsonObject = JSONObject("{\"message\":1}")
 
@@ -316,6 +332,28 @@ class MoneyInHomeViewModelTest {
     }
 
     /**************************** getMaxPrice() *******************************************/
+
+    /**************************** setDeviceId() *******************************************/
+
+    @Test
+    fun setDeviceId() {
+        val id = "12212112"
+        tradeInHomeViewModel.setDeviceId(id)
+
+        assertEquals(tradeInHomeViewModel.tradeInParams.deviceId, id)
+    }
+
+    /**************************** setDeviceId() *******************************************/
+
+    /**************************** setContextInterface() *******************************************/
+
+    @Test
+    fun setContextInterface() {
+        val contextInterface : ContextInterface = mockk()
+        tradeInHomeViewModel.setContextInterface(contextInterface)
+    }
+
+    /**************************** setContextInterface() *******************************************/
 
 }
 

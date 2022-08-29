@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+
+    <ImageView
+        android:id="@+id/setting"
+        android:layout_width="12dp"
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/ic_topchat_plus_green"
+        android:contentDescription="setting" />
+
+    <androidx.legacy.widget.Space
+        android:layout_width="10dp"
+        android:layout_height="10dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/add_template_chat"
+        android:textColor="@color/Unify_G400"
+        app:typographyType="display_2"
+         />
+
+</LinearLayout>

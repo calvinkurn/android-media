@@ -75,11 +75,11 @@ data class RechargeGetCart(
 
         @SerializedName("main_info")
         @Expose
-        val mainnInfo: List<Attribute> = listOf(),
+        val mainnInfo: List<Attribute> = emptyList(),
 
         @SerializedName("additional_info")
         @Expose
-        val additionalInfo: List<AdditionalInfo> = listOf(),
+        val additionalInfo: List<AdditionalInfo> = emptyList(),
 
         @SerializedName("enable_voucher")
         @Expose
@@ -103,7 +103,7 @@ data class RechargeGetCart(
 
         @SerializedName("fintech_products")
         @Expose
-        val fintechProduct: List<FintechProduct> = listOf<FintechProduct>(),
+        val fintechProduct: List<FintechProduct> = emptyList(),
 
         @SerializedName("atc_source")
         @Expose
@@ -115,7 +115,19 @@ data class RechargeGetCart(
 
         @SerializedName("admin_fee")
         @Expose
-        val adminFee: Double = 0.0
+        val adminFee: Double = 0.0,
+
+        @SerializedName("admin_fee_included")
+        @Expose
+        val isAdminFeeIncluded : Boolean= false,
+
+        @SerializedName("channel_id")
+        @Expose
+        val channelId: String = "",
+
+        @SerializedName("collection_point_id")
+        @Expose
+        val collectionPointId: String = "",
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")
@@ -156,7 +168,7 @@ data class RechargeGetCart(
 
             @SerializedName("detail")
             @Expose
-            val detail: List<Attribute> = listOf()
+            val detail: List<Attribute> = emptyList()
     )
     data class Attribute(
             @SerializedName("label")

@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewhelper
 import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 /**
  * Created By @ilhamsuaib on 29/09/20
@@ -13,7 +14,7 @@ class SellerHomeLayoutManager(
 ) : GridLayoutManager(context, spanCount) {
 
     companion object {
-        private const val DEFAULT_SCROLL_DISTANCE = 0
+        private val DEFAULT_SCROLL_DISTANCE = Int.ZERO
     }
 
     private var scrollVerticallyCallback: () -> Unit = {}

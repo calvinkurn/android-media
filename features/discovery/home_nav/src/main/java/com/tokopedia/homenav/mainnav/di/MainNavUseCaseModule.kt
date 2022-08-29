@@ -1,25 +1,28 @@
 package com.tokopedia.homenav.mainnav.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
 import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
+import com.tokopedia.homenav.mainnav.data.pojo.favoriteshop.FavoriteShopData
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
+import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.data.pojo.wishlist.WishlistData
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -80,9 +83,12 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
-    fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) : GetShopInfoUseCase {
+    fun provideShopInfoUseCase(
+        graphqlRepository: GraphqlRepository,
+        userSession: UserSessionInterface
+    ) : GetShopInfoUseCase {
         val useCase = GraphqlUseCase<ShopData>(graphqlRepository)
-        return GetShopInfoUseCase(useCase)
+        return GetShopInfoUseCase(useCase, userSession)
     }
 
     @MainNavScope
@@ -140,6 +146,39 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetAffiliateUserUseCase(graphqlRepository: GraphqlRepository): GetAffiliateUserUseCase{
+        return GetAffiliateUserUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetTokopediaPlusUseCase(graphqlRepository: GraphqlRepository, dispatcher: CoroutineDispatchers): TokopediaPlusUseCase{
+        return TokopediaPlusUseCase(graphqlRepository, dispatcher)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetReviewProductUseCase(graphqlRepository: GraphqlRepository): GetReviewProductUseCase{
+        val useCase = GraphqlUseCase<ReviewProduct>(graphqlRepository)
+        return GetReviewProductUseCase(useCase)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetWishlistUseCase(graphqlRepository: GraphqlRepository): GetWishlistNavUseCase{
+        val useCase = GraphqlUseCase<WishlistData>(graphqlRepository)
+        return GetWishlistNavUseCase(useCase)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetFavoriteShopUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface): GetFavoriteShopsNavUseCase{
+        val useCase = GraphqlUseCase<FavoriteShopData>(graphqlRepository)
+        return GetFavoriteShopsNavUseCase(useCase, userSession)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
@@ -148,7 +187,9 @@ class MainNavUseCaseModule {
             getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
             getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
-            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
+            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase,
+            getAffiliateUserUseCase: GetAffiliateUserUseCase,
+            getTokopediaPlusUseCase: TokopediaPlusUseCase
     ): GetProfileDataUseCase {
         return GetProfileDataUseCase(
                 accountHeaderMapper = accountHeaderMapper,
@@ -158,7 +199,9 @@ class MainNavUseCaseModule {
                 getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
                 getWalletEligibilityUseCase = getWalletEligibilityUseCase,
-                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+                getAffiliateUserUseCase = getAffiliateUserUseCase,
+                getTokopediaPlusUseCase = getTokopediaPlusUseCase
         )
     }
     @MainNavScope
@@ -168,16 +211,14 @@ class MainNavUseCaseModule {
             userInfoUseCase: GetUserInfoUseCase,
             getUserMembershipUseCase: GetUserMembershipUseCase,
             getShopInfoUseCase: GetShopInfoUseCase,
-            userSession: UserSessionInterface,
-            @ApplicationContext context: Context
+            getAffiliateUserUseCase: GetAffiliateUserUseCase
     ): GetProfileDataCacheUseCase {
         return GetProfileDataCacheUseCase(
                 accountHeaderMapper = accountHeaderMapper,
                 getUserInfoUseCase = userInfoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getShopInfoUseCase = getShopInfoUseCase,
-                userSession = userSession,
-                context = context
+                getAffiliateUserUseCase = getAffiliateUserUseCase
         )
     }
 }

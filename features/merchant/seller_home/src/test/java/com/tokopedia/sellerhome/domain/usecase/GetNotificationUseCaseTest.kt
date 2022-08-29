@@ -1,15 +1,17 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.utils.TestHelper
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -36,9 +38,14 @@ class GetNotificationUseCaseTest {
     @RelaxedMockK
     lateinit var gqlRepository: GraphqlRepository
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     private val getNotificationUseCase by lazy {
-        GetNotificationUseCase(gqlRepository, NotificationMapper())
+        GetNotificationUseCase(gqlRepository, NotificationMapper(), userSession)
     }
+
+    private val testShopId = "123"
 
     @Before
     fun setUp() {
@@ -52,6 +59,10 @@ class GetNotificationUseCaseTest {
         coEvery {
             gqlRepository.response(any(), any())
         } returns successResponse
+
+        every {
+            userSession.shopId
+        } returns testShopId
 
         val actualNotification = getNotificationUseCase.executeOnBackground()
 
@@ -70,8 +81,12 @@ class GetNotificationUseCaseTest {
             gqlRepository.response(any(), any())
         } returns errorResponse
 
+        every {
+            userSession.shopId
+        } returns testShopId
+
         expectedException.expect(MessageErrorException::class.java)
-        val actualNotification: NotificationUiModel? = getNotificationUseCase.executeOnBackground()
+        val actualNotification: NotificationUiModel = getNotificationUseCase.executeOnBackground()
 
         coVerify {
             gqlRepository.response(any(), any())

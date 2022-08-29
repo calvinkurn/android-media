@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig.isInboxUnified
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -43,7 +42,7 @@ class ReviewInboxContainerViewModel @Inject constructor(
 
     private fun updateCounters(tabCount: Result<ProductrevReviewTabCount>): MutableList<ReviewInboxTabs> {
         val result = mutableListOf<ReviewInboxTabs>()
-        if(tabCount is Success && !isInboxUnified()) {
+        if(tabCount is Success) {
             with(tabCount.data.count) {
                 result.add(ReviewInboxTabs.ReviewInboxPending(this.toString()))
             }
@@ -51,7 +50,7 @@ class ReviewInboxContainerViewModel @Inject constructor(
             result.add(ReviewInboxTabs.ReviewInboxPending())
         }
         result.add(ReviewInboxTabs.ReviewInboxHistory)
-        if(isShopOwner() && !isInboxUnified()) {
+        if(isShopOwner()) {
             result.add(ReviewInboxTabs.ReviewInboxSeller)
         }
         return result

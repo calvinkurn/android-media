@@ -174,4 +174,15 @@ class ParamUtilsTest {
                 )
         ) shouldBe mapOf(SearchApiConst.OFFICIAL to true.toString())
     }
+
+    @Test
+    fun `Is Post Processing`() {
+        isPostProcessingFilter(mapOf(SearchApiConst.IS_FULFILLMENT to "true")) shouldBe true
+
+        isPostProcessingFilter(mapOf(SearchApiConst.GIFTING to "true")) shouldBe true
+
+        isPostProcessingFilter(mapOf(SearchApiConst.NAVSOURCE to "tokocabang")) shouldBe true
+
+        isPostProcessingFilter(mapOf()) shouldBe false
+    }
 }

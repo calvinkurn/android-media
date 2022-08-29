@@ -6,9 +6,10 @@ import android.widget.TextView
 import com.tokopedia.home.R
 
 class SizeMiddleBusinessViewHolder (
-        itemView: View,
-        listener: BusinessUnitItemViewListener
-) : SizeSmallBusinessViewHolder(itemView, listener) {
+    itemView: View,
+    listener: BusinessUnitItemViewListener,
+    cardInteraction: Boolean = false
+) : SizeSmallBusinessViewHolder(itemView, listener, cardInteraction) {
 
     companion object {
         val LAYOUT: Int = R.layout.layout_template_mid_business

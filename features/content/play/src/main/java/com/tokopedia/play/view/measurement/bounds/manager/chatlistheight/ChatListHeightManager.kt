@@ -9,17 +9,16 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 interface ChatListHeightManager {
 
     suspend fun invalidateHeightNonChatMode(
-            videoOrientation: VideoOrientation,
-            videoPlayer: PlayVideoPlayerUiModel,
-            forceInvalidate: Boolean,
-            hasProductFeatured: Boolean,
-            hasPinnedVoucher: Boolean
+        videoOrientation: VideoOrientation,
+        videoPlayer: PlayVideoPlayerUiModel,
+        forceInvalidate: Boolean,
+        hasProductFeatured: Boolean
     )
 
     suspend fun invalidateHeightChatMode(
-            videoOrientation: VideoOrientation,
-            videoPlayer: PlayVideoPlayerUiModel,
-            maxTopPosition: Int,
-            hasQuickReply: Boolean
+        videoOrientation: VideoOrientation,
+        videoPlayer: PlayVideoPlayerUiModel,
+        maxTopPosition: Int,
+        hasQuickReply: Boolean
     )
 }

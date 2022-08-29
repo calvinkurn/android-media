@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.Navigation
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -25,8 +26,13 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
 
-    protected fun createExpectedMandatoryTokonowQueryParams(page: Int): Map<String, String> =
-            createPaginationQueryParams(page) + createMandatoryTokonowQueryParams()
+    protected fun createExpectedMandatoryTokonowQueryParams(
+        page: Int,
+        localCacheModel: LocalCacheModel = dummyChooseAddressData
+    ): Map<String, String> {
+        return createPaginationQueryParams(page) +
+            createMandatoryTokonowQueryParams(localCacheModel)
+    }
 
     protected fun createPaginationQueryParams(page: Int) = mapOf(
             SearchApiConst.PAGE to page.toString(),
@@ -34,7 +40,8 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     )
 
     protected fun `Then assert request params map`(
-            mandatoryParams: Map<String, String>
+            mandatoryParams: Map<String, String>,
+            localCacheModel: LocalCacheModel = dummyChooseAddressData
     ) {
         val useCaseRequestParams = requestParams.parameters
         val queryParams = useCaseRequestParams[TOKONOW_QUERY_PARAMS] as Map<String, Any>
@@ -47,7 +54,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         )
 
         assertThat(useCaseRequestParams[CATEGORY_ID], shouldBe(defaultCategoryL1))
-        assertThat(useCaseRequestParams[WAREHOUSE_ID], shouldBe(dummyChooseAddressData.warehouse_id))
+        assertThat(useCaseRequestParams[WAREHOUSE_ID], shouldBe(localCacheModel.warehouse_id))
     }
 
     private fun `Then assert request params map contains query param map`(

@@ -38,7 +38,7 @@ class Bubble(
         val timePassed = time - startTime
         val timePassedPercentage = timePassed.toFloat() / DURATION
 
-        if (timePassedPercentage > 1) return true
+        if(yPos <= 0) return true
 
         scale = when {
             timePassedPercentage < 0.2 -> {

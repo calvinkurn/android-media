@@ -15,4 +15,5 @@
     <dimen name="tokopedianow_repurchase_empty_state_no_history_image_height">210dp</dimen>
     <dimen name="tokopedianow_usp_illustration_height">32dp</dimen>
     <dimen name="tokopedianow_usp_illustration_width">32dp</dimen>
+    <dimen name="tokopedianow_switcher_coachmark_left_margin">55dp</dimen>
 </resources>

@@ -6,15 +6,13 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity
-            android:name="com.tokopedia.createpost.view.activity.CreatePostLandingActivity"
-            android:exported="true" />
+
         <activity
             android:name="com.tokopedia.createpost.view.activity.CreatePostActivity"
             android:label="@string/cp_title_create_post"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>
@@ -53,14 +51,15 @@
             android:name="com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity"
             android:label="@string/cp_title_edit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.tokopedia.createpost.view.plist.ShopProductListActivity"
+            android:name="com.tokopedia.createpost.view.activity.ProductTagActivity"
             android:label="@string/cp_title_edit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
+            android:launchMode="singleTask"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -73,13 +72,57 @@
                     android:pathPattern="@string/applink_cp_productpickerfromshop"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_content"
+                    android:pathPattern="@string/applink_cp_creation_product_search"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_content"
+                    android:pathPattern="@string/applink_cp_creation_shop_search"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.tokopedia.createpost.producttag.view.activity.FeedAutoCompleteActivity"
+            android:label="@string/cp_title_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:launchMode="singleTask"
+            android:exported="false"
+            >
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_content"
+                    android:pathPattern="@string/applink_cp_feed_autocomplete"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.tokopedia.createpost.view.activity.CreatePostActivityNew"
             android:label="@string/cp_title_create_post"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="false">
             <intent-filter>

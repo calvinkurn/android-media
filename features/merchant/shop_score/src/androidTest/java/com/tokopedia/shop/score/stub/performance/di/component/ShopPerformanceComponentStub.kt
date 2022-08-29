@@ -1,7 +1,7 @@
 package com.tokopedia.shop.score.stub.performance.di.component
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shop.score.common.ShopScorePrefManager
@@ -27,7 +27,7 @@ interface ShopPerformanceComponentStub: ShopPerformanceComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun getShopInfoPeriodUseCaseStub(): GetShopInfoPeriodUseCase
+    fun getShopInfoPeriodUseCaseStub(): GetShopCreatedInfoUseCase
 
     fun getShopPerformanceUseCaseStub(): GetShopPerformanceUseCase
 

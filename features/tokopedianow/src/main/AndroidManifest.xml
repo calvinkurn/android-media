@@ -24,7 +24,6 @@
             android:name="com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

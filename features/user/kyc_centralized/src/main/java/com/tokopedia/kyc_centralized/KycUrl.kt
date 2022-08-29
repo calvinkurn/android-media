@@ -10,7 +10,7 @@ object KycUrl {
     const val ICON_NOT_VERIFIED = "https://ecs7.tokopedia.net/android/others/account_verification_landing_page.png"
     const val ICON_WAITING = "https://ecs7.tokopedia.net/android/others/account_verification_processing_document.png"
     const val ICON_SUCCESS_VERIFY = "https://ecs7.tokopedia.net/img/android/others/account_verification_verified.png"
-    const val ICON_FAIL_VERIFY = "https://ecs7.tokopedia.net/img/android/others/account_verification_failed_page.png"
+    const val ICON_FAIL_VERIFY = "https://images.tokopedia.net/img/android/user/kyc/kyc_rejected.png"
 
     private const val KYC_BASE_URL = "https://accounts.tokopedia.com/"
     private const val KYC_BASE_URL_STAGING = "https://accounts-staging.tokopedia.com/"
@@ -23,6 +23,8 @@ object KycUrl {
     const val KYC_BENEFIT_POWER_MERCHANT = "https://images.tokopedia.net/img/android/user/kyc_benefit_power_merchant.png"
     const val KYC_BENEFIT_SHIELD = "https://images.tokopedia.net/img/android/user/kyc_benefit_shield_star.png"
     const val KYC_BENEFIT_CART = "https://images.tokopedia.net/img/android/user/kyc_centralized/kyc_benefit_cart.png"
+
+    const val KYC_TYPE_KTP_WITH_SELFIE = "ktpWithSelfie"
 
     fun getKYCBaseUrl(): String {
         return when (TokopediaUrl.getInstance().TYPE) {

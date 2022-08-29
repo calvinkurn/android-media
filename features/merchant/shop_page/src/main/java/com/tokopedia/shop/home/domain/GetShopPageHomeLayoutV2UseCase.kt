@@ -54,6 +54,29 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     isShowEtalaseName
                   }
                   data {
+                    ... on BundleWidget {
+                      bundleGroupID
+                      bundleName
+                      bundleDetails {
+                        bundleID
+                        originalPrice
+                        displayPrice
+                        displayPriceRaw
+                        discountPercentage
+                        isPO
+                        isProductsHaveVariant
+                        preorderInfo
+                        savingAmountWording
+                        minOrder
+                        minOrderWording
+                      }
+                      bundleProducts {
+                        productID
+                        productName
+                        imageUrl
+                        appLink
+                      }
+                    }
                     ... on DisplayWidget {
                       imageUrl
                       videoUrl
@@ -95,6 +118,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         url
                       }
                       minimumOrder
+                      maximumOrder
+                      stock
+                      childIDs
+                      parentID
                     }
                     ... on PromoWidget {
                       voucherID
@@ -176,6 +203,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           title
                           url
                         }
+                        minimumOrder
+                        maximumOrder
+                        childIDs
+                        parentID
                       }
                       backgroundGradientColor {
                         firstColor

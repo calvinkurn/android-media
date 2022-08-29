@@ -39,7 +39,6 @@ class BarChartViewHolder(
         ShcBarChartWidgetBinding.bind(itemView)
     }
     private val emptyStateBinding by lazy { binding.shcBarChartEmptyState }
-    private val errorStateBinding by lazy { binding.shcBarChartErrorState }
     private val loadingStateBinding by lazy { binding.shcBarChartLoadingState }
 
     private var showAnimation: ValueAnimator? = null
@@ -67,7 +66,7 @@ class BarChartViewHolder(
         val data = element.data
 
         when {
-            data == null -> setOnLoading()
+            data == null || element.showLoadingState -> setOnLoading()
             data.error.isNotBlank() -> {
                 setonError(element)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
@@ -79,10 +78,11 @@ class BarChartViewHolder(
     private fun setOnLoading() {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.visible()
-            errorStateBinding.commonWidgetErrorState.gone()
+            shcBarChartErrorState.gone()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
+            luvShcBarChart.gone()
             emptyStateBinding.shcBarChartEmptyState.gone()
         }
     }
@@ -90,22 +90,21 @@ class BarChartViewHolder(
     private fun setonError(element: BarChartWidgetUiModel) {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.gone()
-            errorStateBinding.commonWidgetErrorState.visible()
+            shcBarChartErrorState.visible()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
+            luvShcBarChart.gone()
             emptyStateBinding.shcBarChartEmptyState.gone()
-
-            ImageHandler.loadImageWithId(
-                errorStateBinding.imgWidgetOnError,
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            )
+            shcBarChartErrorState.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
         }
     }
 
     private fun setOnSuccess(element: BarChartWidgetUiModel) {
         loadingStateBinding.shimmerWidgetCommon.gone()
-        errorStateBinding.commonWidgetErrorState.gone()
+        binding.shcBarChartErrorState.gone()
 
         showEmptyState = showEmpty(element)
 
@@ -118,6 +117,7 @@ class BarChartViewHolder(
                 } else {
                     animateHideEmptyState()
                 }
+                setupLastUpdatedInfo(element)
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
@@ -128,7 +128,34 @@ class BarChartViewHolder(
             }
         } else {
             animateHideEmptyState()
+            setupLastUpdatedInfo(element)
         }
+
+        setBottomGuideLineVisibility()
+    }
+
+    private fun setBottomGuideLineVisibility() {
+        with(binding) {
+            horLineShcBarChartBtm.isVisible = luvShcBarChart.isVisible
+                    || btnShcBarChartMore.isVisible
+        }
+    }
+
+    private fun setupLastUpdatedInfo(element: BarChartWidgetUiModel) {
+        binding.luvShcBarChart.run {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: BarChartWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun setTagNotification(tag: String) {
@@ -269,14 +296,25 @@ class BarChartViewHolder(
             val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcBarChartMore.visibility = ctaVisibility
-            btnShcBarChartNext.visibility = ctaVisibility
             btnShcBarChartMore.text = element.ctaText
 
             if (isCtaVisible) {
+                val iconColor = root.context.getResColor(
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+                val iconWidth = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconHeight = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                btnShcBarChartMore.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
                 btnShcBarChartMore.setOnClickListener {
-                    onSeeMoreClicked(element)
-                }
-                btnShcBarChartNext.setOnClickListener {
                     onSeeMoreClicked(element)
                 }
             }

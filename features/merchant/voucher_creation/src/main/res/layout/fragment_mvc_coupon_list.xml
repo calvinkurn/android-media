@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarMvc"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:elevation="@dimen/layout_lvl0"
+        app:elevation="@dimen/layout_lvl0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/toolbarMvcList"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@color/transparent"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:subtitleTextAppearance="?subtitleTextAppearance"
+                app:titleTextAppearance="?titleTextAppearance"
+                app:unify_header_is_show_shadow="false" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/mvcTickerBc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="visible"
+                app:descriptionText="@string/mvc_broadcast_chat_announcement"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbarMvcList"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:id="@+id/searchBarMvc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/mvc_dimen_6dp"
+                android:layout_marginHorizontal="@dimen/layout_lvl2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mvcTickerBc"
+                app:layout_scrollFlags="scroll|snap"
+                app:search_bar_clearable="false"
+                app:search_bar_placeholder="@string/mvc_find_shop_voucher"
+                app:search_bar_show_icon="false" />
+
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/sf_voucher_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/mvc_dimen_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
+                app:sort_filter_relationship="AND"
+                app:sort_filter_type="advanced" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerMvcList"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mvc_divider_height"
+        app:layout_constraintTop_toBottomOf="@id/appBarMvc"
+        app:layout_constraintBottom_toTopOf="@id/swipeMvcList"/>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/geEmptyData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:globalerrors_type="SERVER_ERROR"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dividerMvcList" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loadingList"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dividerMvcList" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:unifyEmptyStateTitle="Kupon yang kamu cari nggak ditemukan"
+        app:unifyEmptyStateDescription="Coba ulangi pencarian dengan kata kunci atau filter lain, ya."
+        app:unifyEmptyStateImageUrl="https://ecs7.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateType="section"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerMvcList" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeMvcList"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerMvcList">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVoucherList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_mvc_coupon_list" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

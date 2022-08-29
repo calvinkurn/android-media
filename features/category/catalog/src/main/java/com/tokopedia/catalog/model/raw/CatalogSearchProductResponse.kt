@@ -24,7 +24,7 @@ data class CatalogSearchProductResponse(
 
             @SerializedName("data")
             @Expose
-            val data: SearchProductData = SearchProductData()
+            var data: SearchProductData = SearchProductData()
     )
 
     data class SearchProductHeader(

@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="heading_3"
+            app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography

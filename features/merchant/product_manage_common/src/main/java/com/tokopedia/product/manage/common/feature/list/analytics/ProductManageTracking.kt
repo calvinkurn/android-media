@@ -114,10 +114,6 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_TOPADS_DETAIL, label)
     }
 
-    fun eventSettingsCashback(label: String) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_CASHBACK, label)
-    }
-
     fun eventSettingsFeatured(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_FEATURED, label)
     }
@@ -148,14 +144,6 @@ object ProductManageTracking {
 
     fun eventFeaturedProductPopUpMore() {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_MORE, "")
-    }
-
-    fun eventCashbackSettingsSave(label: String) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS, label)
-    }
-
-    fun eventCashbackSettingsPopUp() {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS_POP_UP, "")
     }
 
     fun eventDeleteProduct(label: String) {
@@ -238,26 +226,6 @@ object ProductManageTracking {
     fun eventOthersFilterName(filterName: String) {
         val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_OTHERS_FILTER_NAME} - $filterName"
         eventProductManage(action, "")
-    }
-
-    fun eventClickBackOnPromotionPage(shopId: String) {
-        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_ON_PROMOTION_PAGE
-        eventEditProduct(action, shopId)
-    }
-
-    fun eventClickCashbackValue(value: Int, shopId: String) {
-        val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_CASHBACK_VALUE} $value%"
-        eventEditProduct(action, shopId)
-    }
-
-    fun eventClickNoCashbackValue(shopId: String) {
-        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_NO_CASHBACK_VALUE
-        eventEditProduct(action, shopId)
-    }
-
-    fun eventClickSavePromotion(shopId: String) {
-        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_SAVE_PROMOTION
-        eventEditProduct(action, shopId)
     }
 
     fun eventClickEditPriceVariant() {
@@ -376,6 +344,22 @@ object ProductManageTracking {
 
     fun eventClickPreviewVariantProduct() {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT, "")
+    }
+
+    fun eventClickCreateProductCoupon(shopId: String) {
+        val eventMap =
+            EventTracking(
+                ProductManageDataLayer.EVENT_NAME_CLICK_PG,
+                ProductManageDataLayer.EVENT_CATEGORY_PRODUCT_LIST_PAGE,
+                ProductManageDataLayer.EVENT_ACTION_CLICK_CREATE_PRODUCT_COUPON,
+                ""
+            ).dataTracking.plus(mapOf(
+                ProductManageDataLayer.CURRENT_SITE to ProductManageDataLayer.TOKOPEDIA_SELLER,
+                ProductManageDataLayer.SHOP_ID to shopId,
+                ProductManageDataLayer.BUSINESS_UNIT to ProductManageDataLayer.PHYSICAL_GOODS
+            ))
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     fun sendScreen(screenName: String) {

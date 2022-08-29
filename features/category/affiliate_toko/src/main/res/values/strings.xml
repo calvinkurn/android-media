@@ -37,6 +37,7 @@
     <string name="affiliate_how_to_get_link_3">3. Produk akan ditemukan jika link benar</string>
     <string name="affiliate_how_to_get_link_4">4. Dapatkan link affiliate dengan klik tombol Promosikan</string>
     <string name="affiliate_link_generated_succesfully">Link affiliate untuk di %s tersalin dan siap dipromosikan.</string>
+    <string name="affiliate_link_empty_error">Link gagal disalin karena ada kendala pada sistem.</string>
     <string name="affiliate_product_count">%s Produk</string>
     <string name="affiliate_product_inactive">Link produk tidak aktif</string>
     <string name="affiliate_product_inactive_text">Sementara link produk ini tidak bisa dipromosikan, karena tidak memenuhi syarat untuk Affiliate.</string>
@@ -99,7 +100,7 @@
     <string name="affiliate_link">Link</string>
     <string name="affiliate_internet_error">Wah, internet putus. Cek paket data atau WiFi-mu.</string>
     <string name="terms_and_condition_upper">Syarat &amp; Ketentuan</string>
-    <string name="affilite_filter_ticker_description">Selain data hari ini, Performa Affiliate akan di-update setiap 24:00 - 09:00 WIB.</string>
+    <string name="affilite_filter_ticker_description">Selain data hari ini, Performa Affiliate akan di–update setiap 24:00 – 09:00 WIB.</string>
     <string name="affiliate_saldo">Saldo Affiliate</string>
     <string name="affiliate_tarik_saldo">Tarik Saldo</string>
     <string name="affiliate_transaction_history">Riwayat Transaksi</string>
@@ -130,4 +131,14 @@
     <string name="affiliate_coacher_desc1">Promosikan link produk pilihanmu di sosmed. Jika ada yang beli, kamu bisa cek komisimu di sini!</string>
     <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
     <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
+    <string name="terkhir_text">update terakhir</string>
+   <string name="affiliate_income_blacklisted_ticker_desc">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
+    <string name="affiliate_blacklisted_ticker_title">Saldo Affiliate sedang dioptimalisasi ⚙️</string>
+    <string name="affiliate_withdrwal_title_terms">Produk yang Dikunjungi</string>
+    <string name="affiliate_traffic_hari_ini_ticker">Komisi kunjungan akan masuk pada H+1 dan tidak akan muncul pada filter “Hari Ini”.</string>
+    <string name="affiliate_lihat_detail">Lihat Detail</string>
+    <string name="performa_affiliate">Performa Affiliate</string>
+    <string name="content_desc_buttonPromotion">button promosikan</string>
+    <string name="content_desc_imageLocation">image shop location</string>
+    <string name="ganti_link">Ganti Link</string>
 </resources>

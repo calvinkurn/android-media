@@ -20,6 +20,8 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
         service_order
         status
         is_promo
+        ui_rates_hidden
+        selected_shipper_product_id
         range_price {
           min_price
           max_price
@@ -179,6 +181,58 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           chosen_courier
           ticker_courier
           bottom_sheet_description
+        }
+        free_shipping_metadata {
+          sent_shipper_partner
+          benefit_class
+          shipping_subsidy
+        }
+      }
+      promo_stackings {
+        is_promo
+        promo_code
+        title
+        shipper_id
+        shipper_product_id
+        shipper_name
+        shipper_desc
+        promo_detail
+        benefit_desc
+        point_change
+        user_point
+        promo_tnc_html
+        shipper_disable_text
+        service_id
+        is_applied
+        image_url
+        discounted_rate
+        shipping_rate
+        benefit_amount
+        disabled
+        hide_shipper_name
+        cod {
+          is_cod_available
+          cod_text
+          cod_price
+          formatted_price
+          tnc_text
+          tnc_link
+        }
+        eta {
+          text_eta
+          error_code
+        }
+        is_bebas_ongkir_extra
+        texts {
+          bottom_sheet
+          chosen_courier
+          ticker_courier
+          bottom_sheet_description
+        }
+        free_shipping_metadata {
+          sent_shipper_partner
+          benefit_class
+          shipping_subsidy
         }
       }
       pre_order {

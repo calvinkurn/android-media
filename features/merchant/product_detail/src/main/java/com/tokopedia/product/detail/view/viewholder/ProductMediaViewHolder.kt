@@ -18,20 +18,25 @@ class ProductMediaViewHolder(private val view: View,
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
-
-    private val binding = ItemDynamicProductMediaBinding.bind(view).also { measureScreenHeight(it) }
+    private val binding = ItemDynamicProductMediaBinding.bind(view)
 
     override fun bind(element: ProductMediaDataModel) {
         with(binding) {
-            viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.setup(element.listOfMedia, listener, getComponentTrackData(element))
 
-            if (element.shouldRenderImageVariant) {
-                viewMediaPager.updateImage(element.listOfMedia, listener)
-                element.shouldRenderImageVariant = false
-            }
+            val scrollPosition = element.getScrollPosition()
 
-            element.shouldRefreshViewPagger = false
+            viewMediaPager.setup(
+                media = element.listOfMedia,
+                listener = listener,
+                componentTrackDataModel = getComponentTrackData(element),
+                initialScrollPosition = scrollPosition,
+                shouldAnimateLabel = element.shouldAnimateLabel,
+                containerType = element.containerType
+            )
+
+            element.shouldAnimateLabel = false
+            element.shouldUpdateImage = false
+
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
@@ -45,20 +50,17 @@ class ProductMediaViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                binding.viewMediaPager.updateImage(element.listOfMedia, listener)
-                element.shouldRenderImageVariant = false
+            ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
+                binding.viewMediaPager.scrollToPosition(
+                        element.indexOfSelectedVariantOptionId(),
+                        true
+                )
             }
         }
     }
 
-    fun detachView(){
+    fun detachView() {
         listener.getProductVideoCoordinator()?.onPause()
-    }
-
-    private fun measureScreenHeight(binding: ItemDynamicProductMediaBinding) {
-        val screenWidth = view.resources.displayMetrics.widthPixels
-        binding.viewMediaPager.layoutParams.height = screenWidth
     }
 
     private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(element?.type

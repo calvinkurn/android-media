@@ -1,0 +1,1862 @@
+[
+  {
+    "data": {
+      "paylater_getSimulationV3": {
+        "data": [
+          {
+            "tenure": 1,
+            "text": "30 Hari/Akhir Bulan",
+            "small_text": "Tambah Rp164.467",
+            "sections": [
+              {
+                "title": "",
+                "is_collapsible": false,
+                "detail": [
+                  {
+                    "gateway_detail": {
+                      "id": 4,
+                      "name": "BRI Ceria",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pembayaran dengan BRI Ceria khusus untuk nasabah BRI \u0026 memiliki akun di aplikasi Ceria"
+                        ],
+                        "steps": [
+                          "Download aplikasi Ceria dan daftar dengan nomor HP-mu.",
+                          "Masukkan kode verifikasi dan buat PIN. Setelah berhasil, kamu bisa tekan \u003cb\u003eAjukan Limit Sekarang\u003c/b\u003e.",
+                          "Masukkan nomor kartu ATM BRI kamu yang aktif.",
+                          "Upload foto KTP dan isi formulir pengajuan, lalu klik \u003cb\u003eKirim\u003c/b\u003e.",
+                          "Kamu akan menerima e-mail pengajuan, klik Verifikasi pada email tersebut. Setelah berhasil, kamu akan \u003cb\u003emendapat limit\u003c/b\u003e.",
+                          "Limit sudah bisa digunakan di Tokopedia! Pilih barang yang ingin dibeli dan pilih BRI Ceria di halaman pembayaran.",
+                          "Pilih lama cicilan dan klik Lanjutkan. Kamu akan diminta memasukkan kode verifikasi. Transaksimu akan terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 6164467.45,
+                    "installment_per_month_ceil": 6164467,
+                    "tenure": 1,
+                    "subheader": "Jatuh tempo pertama 39 hari lagi (26 Mar 2022)",
+                    "recommended": {
+                      "flag": true,
+                      "text": "Paling Hemat",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eTotal Tagihan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.166.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo",
+                          "value": "26 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tenure": 12,
+            "text": "Cicil 12x",
+            "small_text": "Mulai Rp596.548",
+            "sections": [
+              {
+                "title": "",
+                "is_collapsible": false,
+                "detail": [
+                  {
+                    "gateway_detail": {
+                      "id": 4,
+                      "name": "BRI Ceria",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pembayaran dengan BRI Ceria khusus untuk nasabah BRI \u0026 memiliki akun di aplikasi Ceria"
+                        ],
+                        "steps": [
+                          "Download aplikasi Ceria dan daftar dengan nomor HP-mu.",
+                          "Masukkan kode verifikasi dan buat PIN. Setelah berhasil, kamu bisa tekan \u003cb\u003eAjukan Limit Sekarang\u003c/b\u003e.",
+                          "Masukkan nomor kartu ATM BRI kamu yang aktif.",
+                          "Upload foto KTP dan isi formulir pengajuan, lalu klik \u003cb\u003eKirim\u003c/b\u003e.",
+                          "Kamu akan menerima e-mail pengajuan, klik Verifikasi pada email tersebut. Setelah berhasil, kamu akan \u003cb\u003emendapat limit\u003c/b\u003e.",
+                          "Limit sudah bisa digunakan di Tokopedia! Pilih barang yang ingin dibeli dan pilih BRI Ceria di halaman pembayaran.",
+                          "Pilih lama cicilan dan klik Lanjutkan. Kamu akan diminta memasukkan kode verifikasi. Transaksimu akan terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 596548.27,
+                    "installment_per_month_ceil": 596548,
+                    "tenure": 12,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": true,
+                      "text": "Paling Hemat",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (1.46% per bulan)",
+                          "value": "+Rp1.068.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp7.160.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 12x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp596.548\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "26 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "26 Feb 2023",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 2,
+                      "name": "Kredivo",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Pilih barang yang ingin dibeli, dan pilih metode pembayaran \u003cb\u003eKredivo\u003c/b\u003e di halaman Pembayaran.",
+                          "Bebas pilih bayar dalam 30 hari atau cicilan (min. transaksi Rp1 juta). Klik Lanjut.",
+                          "Di halaman Kredivo, kamu bisa klik menu \u003cb\u003eVoucher Untukmu\u003c/b\u003e untuk menggunakan promo.",
+                          "Masukkan kode verifikasi lalu klik \u003cb\u003eBayar\u003c/b\u003e."
+                        ]
+                      }
+                    },
+                    "installment_per_month": 665989.9,
+                    "installment_per_month_ceil": 665990,
+                    "tenure": 12,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Daftar",
+                      "android_url": "https://staging.tokopedia.com/kredivo",
+                      "web_url": "https://staging.tokopedia.com/kredivo",
+                      "cta_type": 1,
+                      "button_color": "filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.6% per bulan)",
+                          "value": "+Rp1.901.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp7.993.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 12x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp665.990\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Feb 2023",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 3,
+                      "name": "Home Credit",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Belanja dengan min. transaksi min. Rp1 Juta dan maks. Rp 10 Juta",
+                          "Di halaman pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan plih \u003cb\u003eHome Credit\u003c/b\u003e.",
+                          "Pilih durasi cicilan, dan klik Lanjut",
+                          "Isi formulir pengajuan. Tunggu 30 menit untuk persetujuan, setelah itu lakukan tanda tangan digital.",
+                          "Tunggu proses verifikasi selama maks. 2x24 jam.",
+                          "Barang akan otomatis terbayar setelah pengajuanmu terverifikasi!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 690610.1,
+                    "installment_per_month_ceil": 690610,
+                    "tenure": 12,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.99% per bulan)",
+                          "value": "+Rp2.189.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp99.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp8.288.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 12x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp690.610\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Feb 2023",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 1,
+                      "name": "Indodana",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/indodanalogo.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/indodanalogo.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pastikan kamu telah terdaftar di aplikasi Indodana dan telah mendapatkan limit untuk belanja."
+                        ],
+                        "steps": [
+                          "Pilih barang yang ingin dibeli, bebas pilih bayar dalam 30 hari atau cicilan (min. transaksi Rp 500 ribu).",
+                          "Di halaman Pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan pilih \u003cb\u003eIndodana\u003c/b\u003e",
+                          "Pilih durasi cicilan, dan klik Lanjut.",
+                          "Di halaman Indodana, masukkan nomor HP dan PIN yang terdaftar di akun Indodana-mu. Lalu, klik Bayar.",
+                          "Barangmu akan otomatis terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 700746.23,
+                    "installment_per_month_ceil": 700746,
+                    "tenure": 12,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-indodana?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-indodana?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (3% per bulan)",
+                          "value": "+Rp2.226.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp183.055",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp8.410.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 12x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp700.746\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Feb 2023",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tenure": 9,
+            "text": "Cicil 9x",
+            "small_text": "Mulai Rp765.753",
+            "sections": [
+              {
+                "title": "",
+                "is_collapsible": false,
+                "detail": [
+                  {
+                    "gateway_detail": {
+                      "id": 4,
+                      "name": "BRI Ceria",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pembayaran dengan BRI Ceria khusus untuk nasabah BRI \u0026 memiliki akun di aplikasi Ceria"
+                        ],
+                        "steps": [
+                          "Download aplikasi Ceria dan daftar dengan nomor HP-mu.",
+                          "Masukkan kode verifikasi dan buat PIN. Setelah berhasil, kamu bisa tekan \u003cb\u003eAjukan Limit Sekarang\u003c/b\u003e.",
+                          "Masukkan nomor kartu ATM BRI kamu yang aktif.",
+                          "Upload foto KTP dan isi formulir pengajuan, lalu klik \u003cb\u003eKirim\u003c/b\u003e.",
+                          "Kamu akan menerima e-mail pengajuan, klik Verifikasi pada email tersebut. Setelah berhasil, kamu akan \u003cb\u003emendapat limit\u003c/b\u003e.",
+                          "Limit sudah bisa digunakan di Tokopedia! Pilih barang yang ingin dibeli dan pilih BRI Ceria di halaman pembayaran.",
+                          "Pilih lama cicilan dan klik Lanjutkan. Kamu akan diminta memasukkan kode verifikasi. Transaksimu akan terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 765753.02,
+                    "installment_per_month_ceil": 765753,
+                    "tenure": 9,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": true,
+                      "text": "Paling Hemat",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (1.46% per bulan)",
+                          "value": "+Rp801.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp6.893.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 9x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp765.753\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "26 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "26 Nov 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 3,
+                      "name": "Home Credit",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Belanja dengan min. transaksi min. Rp1 Juta dan maks. Rp 10 Juta",
+                          "Di halaman pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan plih \u003cb\u003eHome Credit\u003c/b\u003e.",
+                          "Pilih durasi cicilan, dan klik Lanjut",
+                          "Isi formulir pengajuan. Tunggu 30 menit untuk persetujuan, setelah itu lakukan tanda tangan digital.",
+                          "Tunggu proses verifikasi selama maks. 2x24 jam.",
+                          "Barang akan otomatis terbayar setelah pengajuanmu terverifikasi!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 860026.77,
+                    "installment_per_month_ceil": 860027,
+                    "tenure": 9,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.99% per bulan)",
+                          "value": "+Rp1.642.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp99.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp7.741.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 9x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp860.027\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Nov 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tenure": 6,
+            "text": "Cicil 6x",
+            "small_text": "Mulai Rp1.104.163",
+            "sections": [
+              {
+                "title": "",
+                "is_collapsible": false,
+                "detail": [
+                  {
+                    "gateway_detail": {
+                      "id": 4,
+                      "name": "BRI Ceria",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pembayaran dengan BRI Ceria khusus untuk nasabah BRI \u0026 memiliki akun di aplikasi Ceria"
+                        ],
+                        "steps": [
+                          "Download aplikasi Ceria dan daftar dengan nomor HP-mu.",
+                          "Masukkan kode verifikasi dan buat PIN. Setelah berhasil, kamu bisa tekan \u003cb\u003eAjukan Limit Sekarang\u003c/b\u003e.",
+                          "Masukkan nomor kartu ATM BRI kamu yang aktif.",
+                          "Upload foto KTP dan isi formulir pengajuan, lalu klik \u003cb\u003eKirim\u003c/b\u003e.",
+                          "Kamu akan menerima e-mail pengajuan, klik Verifikasi pada email tersebut. Setelah berhasil, kamu akan \u003cb\u003emendapat limit\u003c/b\u003e.",
+                          "Limit sudah bisa digunakan di Tokopedia! Pilih barang yang ingin dibeli dan pilih BRI Ceria di halaman pembayaran.",
+                          "Pilih lama cicilan dan klik Lanjutkan. Kamu akan diminta memasukkan kode verifikasi. Transaksimu akan terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 1104162.52,
+                    "installment_per_month_ceil": 1104163,
+                    "tenure": 6,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": true,
+                      "text": "Paling Hemat",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (1.46% per bulan)",
+                          "value": "+Rp534.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp6.626.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 6x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp1.104.163\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "26 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "26 Agu 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 2,
+                      "name": "Kredivo",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Pilih barang yang ingin dibeli, dan pilih metode pembayaran \u003cb\u003eKredivo\u003c/b\u003e di halaman Pembayaran.",
+                          "Bebas pilih bayar dalam 30 hari atau cicilan (min. transaksi Rp1 juta). Klik Lanjut.",
+                          "Di halaman Kredivo, kamu bisa klik menu \u003cb\u003eVoucher Untukmu\u003c/b\u003e untuk menggunakan promo.",
+                          "Masukkan kode verifikasi lalu klik \u003cb\u003eBayar\u003c/b\u003e."
+                        ]
+                      }
+                    },
+                    "installment_per_month": 1173604.15,
+                    "installment_per_month_ceil": 1173604,
+                    "tenure": 6,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Daftar",
+                      "android_url": "https://staging.tokopedia.com/kredivo",
+                      "web_url": "https://staging.tokopedia.com/kredivo",
+                      "cta_type": 1,
+                      "button_color": "filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.6% per bulan)",
+                          "value": "+Rp951.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp7.043.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 6x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp1.173.604\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Agu 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 3,
+                      "name": "Home Credit",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Belanja dengan min. transaksi min. Rp1 Juta dan maks. Rp 10 Juta",
+                          "Di halaman pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan plih \u003cb\u003eHome Credit\u003c/b\u003e.",
+                          "Pilih durasi cicilan, dan klik Lanjut",
+                          "Isi formulir pengajuan. Tunggu 30 menit untuk persetujuan, setelah itu lakukan tanda tangan digital.",
+                          "Tunggu proses verifikasi selama maks. 2x24 jam.",
+                          "Barang akan otomatis terbayar setelah pengajuanmu terverifikasi!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 1198860.1,
+                    "installment_per_month_ceil": 1198860,
+                    "tenure": 6,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.99% per bulan)",
+                          "value": "+Rp1.095.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp99.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp7.194.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 6x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp1.198.860\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Agu 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 1,
+                      "name": "Indodana",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/indodanalogo.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/indodanalogo.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pastikan kamu telah terdaftar di aplikasi Indodana dan telah mendapatkan limit untuk belanja."
+                        ],
+                        "steps": [
+                          "Pilih barang yang ingin dibeli, bebas pilih bayar dalam 30 hari atau cicilan (min. transaksi Rp 500 ribu).",
+                          "Di halaman Pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan pilih \u003cb\u003eIndodana\u003c/b\u003e",
+                          "Pilih durasi cicilan, dan klik Lanjut.",
+                          "Di halaman Indodana, masukkan nomor HP dan PIN yang terdaftar di akun Indodana-mu. Lalu, klik Bayar.",
+                          "Barangmu akan otomatis terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 1216000.82,
+                    "installment_per_month_ceil": 1216001,
+                    "tenure": 6,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-indodana?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-indodana?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (3% per bulan)",
+                          "value": "+Rp1.113.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp183.055",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp7.297.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 6x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp1.216.001\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Agu 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tenure": 3,
+            "text": "Cicil 3x",
+            "small_text": "Mulai Rp2.119.391",
+            "sections": [
+              {
+                "title": "",
+                "is_collapsible": false,
+                "detail": [
+                  {
+                    "gateway_detail": {
+                      "id": 4,
+                      "name": "BRI Ceria",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pembayaran dengan BRI Ceria khusus untuk nasabah BRI \u0026 memiliki akun di aplikasi Ceria"
+                        ],
+                        "steps": [
+                          "Download aplikasi Ceria dan daftar dengan nomor HP-mu.",
+                          "Masukkan kode verifikasi dan buat PIN. Setelah berhasil, kamu bisa tekan \u003cb\u003eAjukan Limit Sekarang\u003c/b\u003e.",
+                          "Masukkan nomor kartu ATM BRI kamu yang aktif.",
+                          "Upload foto KTP dan isi formulir pengajuan, lalu klik \u003cb\u003eKirim\u003c/b\u003e.",
+                          "Kamu akan menerima e-mail pengajuan, klik Verifikasi pada email tersebut. Setelah berhasil, kamu akan \u003cb\u003emendapat limit\u003c/b\u003e.",
+                          "Limit sudah bisa digunakan di Tokopedia! Pilih barang yang ingin dibeli dan pilih BRI Ceria di halaman pembayaran.",
+                          "Pilih lama cicilan dan klik Lanjutkan. Kamu akan diminta memasukkan kode verifikasi. Transaksimu akan terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 2119391.02,
+                    "installment_per_month_ceil": 2119391,
+                    "tenure": 3,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": true,
+                      "text": "Paling Hemat",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-bri-ceria?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (1.46% per bulan)",
+                          "value": "+Rp267.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp6.359.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 3x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp2.119.391\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "26 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "26 Mei 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 2,
+                      "name": "Kredivo",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Pilih barang yang ingin dibeli, dan pilih metode pembayaran \u003cb\u003eKredivo\u003c/b\u003e di halaman Pembayaran.",
+                          "Bebas pilih bayar dalam 30 hari atau cicilan (min. transaksi Rp1 juta). Klik Lanjut.",
+                          "Di halaman Kredivo, kamu bisa klik menu \u003cb\u003eVoucher Untukmu\u003c/b\u003e untuk menggunakan promo.",
+                          "Masukkan kode verifikasi lalu klik \u003cb\u003eBayar\u003c/b\u003e."
+                        ]
+                      }
+                    },
+                    "installment_per_month": 2188832.65,
+                    "installment_per_month_ceil": 2188833,
+                    "tenure": 3,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Daftar",
+                      "android_url": "https://staging.tokopedia.com/kredivo",
+                      "web_url": "https://staging.tokopedia.com/kredivo",
+                      "cta_type": 1,
+                      "button_color": "filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.6% per bulan)",
+                          "value": "+Rp476.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp91.371",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp6.568.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 3x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp2.188.833\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Mei 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 3,
+                      "name": "Home Credit",
+                      "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/hci/hci.png",
+                      "how_to_use": {
+                        "notes": [],
+                        "steps": [
+                          "Belanja dengan min. transaksi min. Rp1 Juta dan maks. Rp 10 Juta",
+                          "Di halaman pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan plih \u003cb\u003eHome Credit\u003c/b\u003e.",
+                          "Pilih durasi cicilan, dan klik Lanjut",
+                          "Isi formulir pengajuan. Tunggu 30 menit untuk persetujuan, setelah itu lakukan tanda tangan digital.",
+                          "Tunggu proses verifikasi selama maks. 2x24 jam.",
+                          "Barang akan otomatis terbayar setelah pengajuanmu terverifikasi!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 2215360.1,
+                    "installment_per_month_ceil": 2215360,
+                    "tenure": 3,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-hci?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (2.99% per bulan)",
+                          "value": "+Rp548.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp99.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp6.647.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 3x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp2.215.360\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Mei 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "gateway_detail": {
+                      "id": 1,
+                      "name": "Indodana",
+                      "img_light_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/indodanalogo.png",
+                      "img_dark_url": "https://images.tokopedia.net/img/assets-fintech-frontend/pdp/indodanalogo.png",
+                      "how_to_use": {
+                        "notes": [
+                          "Pastikan kamu telah terdaftar di aplikasi Indodana dan telah mendapatkan limit untuk belanja."
+                        ],
+                        "steps": [
+                          "Pilih barang yang ingin dibeli, bebas pilih bayar dalam 30 hari atau cicilan (min. transaksi Rp 500 ribu).",
+                          "Di halaman Pembayaran, pilih \u003cb\u003ePaylater \u0026 Cicilan\u003c/b\u003e dan pilih \u003cb\u003eIndodana\u003c/b\u003e",
+                          "Pilih durasi cicilan, dan klik Lanjut.",
+                          "Di halaman Indodana, masukkan nomor HP dan PIN yang terdaftar di akun Indodana-mu. Lalu, klik Bayar.",
+                          "Barangmu akan otomatis terbayar!"
+                        ]
+                      }
+                    },
+                    "installment_per_month": 2246509.98,
+                    "installment_per_month_ceil": 2246510,
+                    "tenure": 3,
+                    "subheader": "",
+                    "recommended": {
+                      "flag": false,
+                      "text": "Rekomendasi",
+                      "color": "blue"
+                    },
+                    "benefits": [
+                      "Bunga 3,1% per bulan",
+                      "Limit hingga Rp25.000.000"
+                    ],
+                    "user_state": "ELIGIBLE",
+                    "user_balance_amt": "10000000.00",
+                    "tenure_header": "Bayar 5 hari lagi",
+                    "disable": {
+                      "status": false,
+                      "header": "",
+                      "description": ""
+                    },
+                    "cta": {
+                      "name": "Cara Pakai",
+                      "android_url": "https://www.tokopedia.com/discovery/finansial-indodana?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "web_url": "https://www.tokopedia.com/discovery/finansial-indodana?utm_campaign\u0026utm_source\u003dios\u0026utm_medium\u003dShare\u0026_branch_match_id\u003d924876793103915502",
+                      "cta_type": 4,
+                      "button_color": "non-filled",
+                      "bottom_sheet": {
+                        "show": false,
+                        "image": "",
+                        "title": "",
+                        "description": "",
+                        "button_text": ""
+                      },
+                      "icon_url": ""
+                    },
+                    "installment_details": {
+                      "header": "Rincian pembayaran",
+                      "content": [
+                        {
+                          "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp6.000.000\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Bunga (3% per bulan)",
+                          "value": "+Rp557.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Biaya Layanan",
+                          "value": "+Rp183.055",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "Total Tagihan",
+                          "value": "Rp6.741.000",
+                          "type": 1
+                        },
+                        {
+                          "title": "Lama Pembayaran",
+                          "value": "Cicil 3x",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                          "value": "\u003cb\u003eRp2.246.510\u003c/b\u003e",
+                          "type": 1
+                        },
+                        {
+                          "title": "Jatuh Tempo Pertama",
+                          "value": "17 Mar 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "Perkiraan Jatuh Tempo Terakhir",
+                          "value": "17 Mei 2022",
+                          "type": 1
+                        },
+                        {
+                          "title": "",
+                          "value": "",
+                          "type": 2
+                        },
+                        {
+                          "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                          "value": "",
+                          "type": 4
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

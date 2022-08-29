@@ -3,6 +3,7 @@ package com.tokopedia.sessioncommon.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.query.GenerateKeyQuery
 import com.tokopedia.usecase.RequestParams
@@ -20,10 +21,14 @@ open class GeneratePublicKeyUseCase(private val graphqlUseCase: GraphqlUseCase<G
         graphqlUseCase.setGraphqlQuery(GenerateKeyQuery.generateKeyQuery)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(GenerateKeyPojo::class.java)
+        setParams()
+    }
+
+    fun setParams(module: String = SessionConstants.GenerateKeyModule.PASSWORD.value) {
+        params.putString(PARAM_MODULE, module)
     }
 
     override suspend fun executeOnBackground(): GenerateKeyPojo {
-        params.putString(PARAM_MODULE, "pwd")
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()

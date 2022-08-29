@@ -21,7 +21,7 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
 import androidx.test.espresso.Espresso.pressBackUnconditionally
@@ -44,7 +44,7 @@ class VoucherGameListActivityTest{
     fun setUp(){
         Intents.init()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponseWithCheck {
+        setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_VOUCHER_DETAIL,
                     InstrumentationMockHelper.getRawString(targetContext, R.raw.mock_response_recharge_catalog_menu_detail),

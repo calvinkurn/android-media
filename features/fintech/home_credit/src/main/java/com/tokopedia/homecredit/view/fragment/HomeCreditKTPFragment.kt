@@ -4,8 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,9 @@ import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.applink.Constants
 import com.tokopedia.homecredit.utils.Utils.isFrontCameraAvailable
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.CardUnify
+
 
 class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
     override fun onCreateView(
@@ -54,7 +59,16 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
         cameraView?.facing = Facing.BACK
         cameraView?.zoom = 0f
         cameraOverlayImage = view.findViewById(R.id.img_cutout)
+        val cardBorderCamera = view.findViewById<CardUnify>(R.id.cardBorderCamera)
         setCameraOverlayValue(cameraOverlayImage)
+        setMarginInCamView(cardBorderCamera)
+    }
+
+    private fun setMarginInCamView(cardBorderCamera: View) {
+        val height = Resources.getSystem().displayMetrics.heightPixels
+        val calculatedTopMargin = (MARGIN_FIGMA_TOP*height)/SCREEN_FIGMA_HEIGHT
+        val calculatedBottomMargin = (MARGIN_FIGMA_BOTTOM*height)/SCREEN_FIGMA_HEIGHT
+        cardBorderCamera.setMargin(LEFT_MARGIN,calculatedTopMargin,RIGHT_MARGIN,calculatedBottomMargin)
     }
 
     private fun setCameraOverlayValue(cameraOverlayImage: ImageView?) {
@@ -91,6 +105,11 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
 
     companion object {
         @SuppressLint("MissingPermission")
+        const val MARGIN_FIGMA_TOP = 152
+        const val SCREEN_FIGMA_HEIGHT = 640
+        const val MARGIN_FIGMA_BOTTOM = 122
+        const val LEFT_MARGIN = 16
+        const val RIGHT_MARGIN = 16
         @RequiresPermission(Manifest.permission.CAMERA)
         fun createInstance(): Fragment {
             return HomeCreditKTPFragment()

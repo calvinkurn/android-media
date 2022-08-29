@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.di.module
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import dagger.Module
@@ -25,4 +26,8 @@ class InactivePhoneModule {
     fun provideApiClient(): InactivePhoneApiClient<InactivePhoneApi> {
         return InactivePhoneApiClient(InactivePhoneApi::class.java)
     }
+
+    @ActivityScope
+    @Provides
+    fun provideInputOldPhoneNumberAnalytics() = InputOldPhoneNumberAnalytics()
 }

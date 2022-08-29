@@ -79,6 +79,42 @@ class DigitalAnalytics {
         ))
     }
 
+    fun eventSubscriptionMoreInfoClicked(userId: String, categoryName: String, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_DIGITAL,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.SUBSCRIPTION_CLICK_INFO_BUTTON,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+            DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        ))
+    }
+
+    fun eventSubscriptionViewMoreInfoBottomSheet(userId: String, categoryName: String, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.VIEW_DIGITAL_IRIS,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.SUBSCRIPTION_VIEW_MORE_INFO_BOTTOM_SHEET,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+            DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        ))
+    }
+
+    fun eventSubscriptionMoreInfoCloseClicked(userId: String, categoryName: String, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_DIGITAL,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.SUBSCRIPTION_CLICK_CLOSE_MORE_INFO,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+            DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        ))
+    }
+
     fun eventTebusMurahImpression(fintechProduct: FintechProduct, categoryName: String, position: Int, userId: String) {
 
         val fintechProductList: MutableList<Any> = ArrayList()
@@ -187,9 +223,11 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
 
-        val label = String.format("%s - %s",
+        val label = String.format("%s - %s - %s - %s",
                 cartDigitalInfoData.attributes.categoryName.toLowerCase(),
-                cartDigitalInfoData.attributes.operatorName.toLowerCase()
+                cartDigitalInfoData.attributes.operatorName.toLowerCase(),
+                cartDigitalInfoData.channelId,
+                cartDigitalInfoData.attributes.autoApplyVoucher.code
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -216,14 +254,12 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName, categoryId))
 
-        var label = String.format("%s - %s - ",
-                cartDataInfo.attributes.categoryName.toLowerCase(),
-                cartDataInfo.attributes.operatorName.toLowerCase())
-        label += if (TextUtils.isEmpty(voucherCode)) {
-            DigitalCheckoutTrackingConst.Value.NO_PROMO
-        } else {
-            DigitalCheckoutTrackingConst.Value.PROMO
-        }
+        var label = String.format("%s - %s - %s - %s",
+            cartDataInfo.attributes.categoryName.toLowerCase(),
+            cartDataInfo.attributes.operatorName.toLowerCase(),
+            cartDataInfo.channelId,
+            voucherCode,
+        )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(

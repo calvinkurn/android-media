@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:paddingRight="16dp"
         android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_N700_96"
@@ -30,7 +30,7 @@
         android:singleLine="true"
         tools:visibility="visible" />
 
-    <com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+    <com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
         android:id="@+id/youtube_home_shop_page"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -43,13 +43,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderVideoYoutube"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -95,7 +97,7 @@
         android:id="@+id/tvYoutubeNotFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginTop="13dp"
         android:text="@string/video_not_found"
         android:textColor="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@+id/ivVideoNotFound"

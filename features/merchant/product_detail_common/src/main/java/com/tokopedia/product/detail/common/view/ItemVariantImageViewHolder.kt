@@ -39,6 +39,12 @@ class ItemVariantImageViewHolder(val view: View,
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
         setViewListener(element, VariantConstant.IGNORE_STATE)
+        if (listener.shouldHideTextHabis()) {
+            overlayVariantImgContainer.text = ""
+        } else {
+            overlayVariantImgContainer.text = context.getString(R.string.atc_variant_empty)
+        }
+
         val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY
                 && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
         renderFlashSale(shouldShowFlashSale, element.flashSale)

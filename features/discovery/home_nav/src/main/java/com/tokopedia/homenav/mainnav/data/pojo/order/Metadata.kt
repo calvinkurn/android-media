@@ -12,5 +12,8 @@ data class Metadata(
         val products: List<Product>? = listOf(),
         @SerializedName("status")
         @Expose
-        val status: Status? = Status()
+        val status: Status? = Status(),
+        @SerializedName("queryParams")
+        @Expose
+        val queryParams: String? = ""
 )

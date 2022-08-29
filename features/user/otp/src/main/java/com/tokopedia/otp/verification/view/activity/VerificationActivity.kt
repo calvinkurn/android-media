@@ -6,12 +6,13 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
 import com.tokopedia.otp.verification.view.fragment.inactivephone.InactivePhoneEmailVerificationFragment
@@ -28,7 +29,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 2019-10-20.
  * ade.hadian@tokopedia.com
  *
- * For navigate: use [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.COTP]
+ * For navigate: use [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.COTP]
  * please pass :
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_MSISDN]
@@ -69,6 +70,12 @@ open class VerificationActivity : BaseOtpActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(savedInstanceState != null && savedInstanceState.containsKey(OtpConstant.OTP_DATA_EXTRA)) {
+            val oldOtpData = savedInstanceState.getParcelable<OtpData>(OtpConstant.OTP_DATA_EXTRA)
+            if(oldOtpData != null) {
+                otpData = oldOtpData
+            }
+        }
         KeyboardHandler.hideSoftKeyboard(this)
     }
 
@@ -205,7 +212,7 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     open fun goToSilentVerificationpage(modeListData: ModeListData) {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SILENT_VERIFICAITON)
         val bundle = createBundle(modeListData)
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         intent.putExtras(bundle)
@@ -219,6 +226,11 @@ open class VerificationActivity : BaseOtpActivity() {
         }
         val fragment = VerificationMethodFragment.createInstance(bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
     }
 
     companion object {

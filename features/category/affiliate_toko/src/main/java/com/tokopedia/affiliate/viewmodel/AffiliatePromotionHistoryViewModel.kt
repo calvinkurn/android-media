@@ -20,7 +20,7 @@ class AffiliatePromotionHistoryViewModel@Inject constructor(
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<Throwable>()
-    private val pageLimit = 8
+    private val pageLimit = 10
 
     fun getAffiliatePerformance(page : Int) {
         shimmerVisibility.value = true

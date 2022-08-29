@@ -31,16 +31,22 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
-import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.smartbills.data.RechargeBillsModel
+import com.tokopedia.smartbills.data.RechargeListSmartBills
+import com.tokopedia.smartbills.data.RechargeSBMDeleteBillRequest
+import com.tokopedia.smartbills.data.RechargeStatementMonths
+import com.tokopedia.smartbills.data.Section
+import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
+import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
@@ -52,6 +58,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsCatalogBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsDeleteBottomSheet
+import com.tokopedia.smartbills.presentation.widget.SmartBillsHighlightCategoryWidget
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.smartbills.util.DividerSBMItemDecoration
@@ -80,8 +87,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     SmartBillsActivity.SbmActivityListener,
     SmartBillsToolTipBottomSheet.Listener,
     SmartBillsAccordionViewHolder.SBMAccordionListener,
-        SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
-        SmartBillsCatalogBottomSheet.CatalogCallback
+    SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
+    SmartBillsCatalogBottomSheet.CatalogCallback,
+    SmartBillsHighlightCategoryWidget.SmartBillsHighlightCategoryListener
 {
 
     @Inject
@@ -148,9 +156,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                                         it.month,
                                         it.year,
                                         SOURCE
-                                ),
-                                swipeToRefresh?.isRefreshing ?: false
+                                )
                         )
+                        viewModel.getHightlightCategory()
                     }
                     if (ongoingMonth == null) {
                         showGlobalError(getDataErrorException())
@@ -236,7 +244,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                     } else { // Else, show error message in affected items
-                        smartBillsAnalytics.clickPayFailed(listBills.size, adapter.checkedDataList.size)
+                        smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
 
                         checkout_loading_view.hide()
                         view?.let { v ->
@@ -261,7 +269,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 }
                 is Fail -> {
-                    smartBillsAnalytics.clickPayFailed(listBills.size, adapter.checkedDataList.size)
+                    smartBillsAnalytics.clickPayFailed(adapter.checkedDataList, listBills.size)
 
                     checkout_loading_view.hide()
                     var throwable = it.throwable
@@ -321,6 +329,23 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
+                }
+            }
+        }
+
+        viewLifecycleOwner.observe(viewModel.highlightCategory) {
+            when(it){
+                is Success -> {
+                    if (viewModel.isHighlightNotEmpty(it.data)){
+                        smartBillsAnalytics.viewHighlightWidget(it.data.title)
+                        showHighlightCategory(it.data)
+                    } else {
+                        hideHighlightCategory()
+                    }
+                }
+
+                is Fail -> {
+                    hideHighlightCategory()
                 }
             }
         }
@@ -477,6 +502,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onSwipeRefresh() {
         toggleAllItems(false)
         updateCheckAll()
+        hideHighlightCategory()
         super.onSwipeRefresh()
     }
 
@@ -543,10 +569,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
             // Do not trigger event if bill is auto-ticked
-            if (!autoTick) smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
+            if (!autoTick) smartBillsAnalytics.clickTickBill(item, listBills.indexOf(item))
             totalPrice += item.amount.toInt()
         } else {
-            smartBillsAnalytics.clickUntickBill(item)
+            smartBillsAnalytics.clickUntickBill(item, listBills.indexOf(item))
             totalPrice -= item.amount.toInt()
         }
         updateCheckoutView()
@@ -578,7 +604,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
-        if (triggerTracking) smartBillsAnalytics.clickAllBills(value)
+        if (triggerTracking) smartBillsAnalytics.clickAllBills(value, listBills)
         adapter.toggleAllItems(value, listBills)
 
         totalPrice = if (value) maximumPrice else 0
@@ -634,7 +660,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet) {
-        smartBillsAnalytics.clickBillDetail(bill)
+        smartBillsAnalytics.clickBillDetail(bill, listBills.indexOf(bill))
 
         fragmentManager?.run {
             bottomSheet.setTitle(getString(R.string.smart_bills_item_detail_bottomsheet_title))
@@ -664,15 +690,17 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private fun showDeleteDialog(bill: RechargeBills){
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(resources.getString(R.string.smart_bills_delete_dialog_title))
-                setDescription(resources.getString(R.string.smart_bills_delete_dialog_desc))
-                setPrimaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_yes))
-                setSecondaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_no))
+                setTitle(it.resources.getString(R.string.smart_bills_delete_dialog_title))
+                setDescription(it.resources.getString(R.string.smart_bills_delete_dialog_desc))
+                setPrimaryCTAText(it.resources.getString(R.string.smart_bills_delete_dialog_yes))
+                setSecondaryCTAText(it.resources.getString(R.string.smart_bills_delete_dialog_no))
 
                 setPrimaryCTAClickListener{
                     smartBillsAnalytics.clickConfirmHapusTagihan()
                     dismiss()
-                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)))
+                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(
+                        RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)
+                    ))
                 }
 
                 setSecondaryCTAClickListener{
@@ -822,6 +850,50 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun hideProgressBar(){
         sbm_progress_bar.hide()
+    }
+
+    private fun showHighlightCategory(uiModel: HighlightCategoryUiModel) {
+        setHeightSpace(isLowHeight = false)
+        highlight_category.showHighlightCategory()
+        highlight_category.renderHighlightCategory(this, uiModel)
+    }
+
+    private fun hideHighlightCategory() {
+        setHeightSpace(isLowHeight = true)
+        highlight_category.hideHighlightCategory()
+    }
+
+    private fun setHeightSpace(isLowHeight: Boolean) {
+        val resource = if (isLowHeight) {
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+        } else {
+            R.dimen.smart_bills_view_separator
+        }
+        val params: ViewGroup.LayoutParams = view_spacer_sbm.layoutParams
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        params.height = context?.resources?.getDimensionPixelSize(
+            resource
+        ).orZero()
+        view_spacer_sbm.layoutParams = params
+    }
+
+    override fun onClickCloseHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+        smartBillsAnalytics.closeHighlightWidget(uiModel.title)
+        setHeightSpace(true)
+        viewModel.closeHighlight(
+            viewModel.createParamCloseRecom(
+                uiModel.uuId,
+                uiModel.contentId
+            )
+        )
+    }
+
+    override fun onClickHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
+        smartBillsAnalytics.clickHighlightWidget(uiModel.title)
+        context?.let {
+            val intent = RouteManager.getIntent(it, uiModel.applink)
+            startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
+        }
     }
 
     companion object {

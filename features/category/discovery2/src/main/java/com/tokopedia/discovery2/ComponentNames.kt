@@ -41,6 +41,7 @@ enum class ComponentNames(val componentName: String) {
     QuickCoupon("quick_coupon"),
     BannerCarousel("banner_carousel"),
     BannerCarouselItemView("banner_carousel_item"),
+    BannerCarouselShimmer("banner_carousel_shimmer"),
     BottomNavigation("bottom_navigation"),
 
     // Product Card Revamp
@@ -62,6 +63,13 @@ enum class ComponentNames(val componentName: String) {
     ProductListEmptyState("product_list_empty_state"),
     SaleEndState("sale_end_state"),
 
+//    Product Card Single
+    ProductCardSingle("product_card_single"),
+    ProductCardSingleItem("product_card_single_item"),
+
+//    Empty Item for MixLeft
+    MixLeftEmptyItem("mix_left_empty_item"),
+
     //Quick Filter
     QuickFilter("chips_filter_v2"),
 
@@ -81,6 +89,7 @@ enum class ComponentNames(val componentName: String) {
 
     CarouselErrorLoad("carousel_error_load"),
     ProductListErrorLoad("product_list_error_load"),
+    ProductListNetworkErrorLoad("product_list_network_error_load"),
 
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
@@ -88,12 +97,19 @@ enum class ComponentNames(val componentName: String) {
     //Topads Headline View
     TopadsHeadlineView("topads"),
 
+    //Rilisan Spesial View
+    ShopCardView("shop_card"),
+    //Rilisan Spesial ItemView
+    ShopCardItemView("shop_card_item"),
+
     MerchantVoucherCarousel("merchant_voucher_carousel"),
     MerchantVoucherList("merchant_voucher_list"),
     MerchantVoucherListItem("merchant_voucher_list_item"),
     MerchantVoucherCarouselItem("merchant_voucher_carousel_item"),
 
     Section("section"),
+    AnchorTabs("anchor_tabs"),
+    AnchorTabsItem("anchor_tabs_item"),
 
     //Calendar Widget
     CalendarWidgetCarousel("calendar"),
@@ -101,6 +117,16 @@ enum class ComponentNames(val componentName: String) {
     CalendarWidgetItem("calendar_item"),
     ShimmerCalendarWidget("shimmer_calendar_widget"),
 
-    TopQuestWidget("top_quest")
+    TopQuestWidget("top_quest"),
 
+    //my coupon
+    MyCoupon("my_coupon"),
+    MyCouponItem("my_coupon_item"),
+
+    BannerInfinite("banner_infinite"),
+    BannerInfiniteItem("banner_infinite_item"),
+
+    ShopCardInfinite("shop_card_infinite"),
+
+    ExplicitWidget("explicit_widget")
 }

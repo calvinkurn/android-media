@@ -26,6 +26,9 @@ data class PersonalizedItems(
         @field:SerializedName("mediaURL")
         val mediaURL: String = "",
 
+        @field:SerializedName("mediaURLType")
+        val mediaUrlType: String = "",
+
         @field:SerializedName("option1")
         val option1: String = "",
 
@@ -59,6 +62,69 @@ data class RecommendationItem(
         @field:SerializedName("backgroundColor")
         val backgroundColor: String = "",
 
+        @field:SerializedName("campaignLabelText")
+        val campaignLabelText: String = "",
+
+        @field:SerializedName("campaignLabelTextColor")
+        val campaignLabelTextColor: String = "",
+
+        @field:SerializedName("campaignLabelBackgroundURL")
+        val campaignLabelBackgroundUrl: String = "",
+
+        @field:SerializedName("productInfo1")
+        val productInfo1: ProductInfo = ProductInfo(),
+
+        @field:SerializedName("productInfo2")
+        val productInfo2: ProductInfo = ProductInfo(),
+
+        @field:SerializedName("ratingType")
+        val ratingType: String = "",
+
+        @field:SerializedName("rating")
+        val rating: Double = 0.0,
+
+        @field:SerializedName("review")
+        val review: String = "",
+
+        @field:SerializedName("soldPercentageValue")
+        val soldPercentageValue: Int = 0,
+
+        @field:SerializedName("soldPercentageLabel")
+        val soldPercentageLabel: String = "",
+
+        @field:SerializedName("soldPercentageLabelColor")
+        val soldPercentageLabelColor: String = "",
+
+        @field:SerializedName("showSoldPercentage")
+        val showSoldPercentage: Boolean = false,
+
+        @field:SerializedName("slashedPrice")
+        val slashedPrice: String = "",
+
+        @field:SerializedName("discount")
+        val discount: String = "",
+
+        @field:SerializedName("cashback")
+        val cashback: String = "",
+
+        @field:SerializedName("specialDiscount")
+        val specialDiscount: String = "",
+
+        @field:SerializedName("price")
+        val price: String = "",
+
+        @field:SerializedName("pricePrefix")
+        val pricePrefix: String = "",
+
+        @field:SerializedName("priceSuffix")
+        val priceSuffix: String = "",
+
+        @field:SerializedName("specialInfoText")
+        val specialInfoText: String = "",
+
+        @field:SerializedName("specialInfoColor")
+        val specialInfoColor: String = "",
+
         @field:SerializedName("id")
         val id: String = "",
 
@@ -80,6 +146,12 @@ data class RecommendationItem(
         @field:SerializedName("mediaUrlType")
         val mediaUrlType: String = "",
 
+        @field:SerializedName("mediaURLTitle")
+        val mediaUrlTitle: String = "",
+
+        @field:SerializedName("iconURL")
+        val iconURL: String = "",
+
         @field:SerializedName("subtitle")
         val subtitle: String = "",
 
@@ -93,12 +165,21 @@ data class RecommendationItem(
         val trackingData: TrackingData = TrackingData(),
 
         @field:SerializedName("webLink")
-        val webLink: String = ""
+        val webLink: String = "",
+
+        @field:SerializedName("textLink")
+        val textLink: String = "",
+
+        @field:SerializedName("textLinkColor")
+        val textLinkColor: String = ""
 )
 
 data class TrackingData(
         @field:SerializedName("__typename")
         val __typename: String = "",
+
+        @field:SerializedName("pricePlain")
+        val pricePlain: String = "",
 
         @field:SerializedName("businessUnit")
         val businessUnit: String = "",
@@ -125,4 +206,12 @@ data class TrackingData(
 data class UserTrackingData(
         @field:SerializedName("userType")
         val userType: String = ""
+)
+
+data class ProductInfo(
+        @field:SerializedName("text")
+        val text: String = "",
+
+        @field:SerializedName("color")
+        val color: String = ""
 )

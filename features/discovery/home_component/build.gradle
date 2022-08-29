@@ -58,7 +58,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.traceroute
 
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -72,9 +71,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
-
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     androidTestImplementation (projectOrAar(rootProject.ext.libraries.core_legacy))
 

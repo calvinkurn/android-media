@@ -23,7 +23,7 @@ object MacroArgs {
         return when(compilationMode) {
             compilationNone -> CompilationMode.None()
             compilationInterpreted -> CompilationMode.Interpreted
-            compilationSpeed -> CompilationMode.Speed
+            compilationSpeed -> CompilationMode.DEFAULT
             else -> CompilationMode.None()
         }
     }

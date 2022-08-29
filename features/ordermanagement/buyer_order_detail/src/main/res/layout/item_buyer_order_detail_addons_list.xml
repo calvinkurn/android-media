@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootAddonContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivBomDetailAddonsDash"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_dash_divider" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivBomDetailAddonsThumbnail"
+        android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
+        android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@id/addonMessageBarrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsDash" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tvBomDetailAddonsPriceQuantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintTop_toTopOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="heading_6"
+        tools:text="Jordan 1 Mid Royal (2020) - Original Hoops Malaysia" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsPriceQuantity"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvBomDetailAddonsName"
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsName"
+        app:typographyType="body_3"
+        tools:text="2 x Rp 2.000.000" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/addonMessageBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintStart_toStartOf="@id/ivBomDetailAddonsThumbnail"
+        app:constraint_referenced_ids="tvBomDetailAddonsToLabel, tvBomDetailAddonsToValue, tvBomDetailAddonsFromLabel, tvBomDetailAddonsFromValue, tvBomDetailAddonsMessageValue, tvBomDetailAddonsReadMoreMessage"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsToLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:text="@string/order_addons_to_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintTop_toBottomOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintBottom_toTopOf="@id/tvBomDetailAddonsFromLabel"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsFromLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:text="@string/order_addons_from_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="@id/ivBomDetailAddonsThumbnail"
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsToLabel"
+        app:layout_constraintBottom_toTopOf="@id/tvBomDetailAddonsMessageValue"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsToValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tvBomDetailAddonsToLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guidelineAddonsMessage"
+        app:layout_constraintTop_toTopOf="@id/tvBomDetailAddonsToLabel"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="@string/order_addons_to_value" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsFromValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tvBomDetailAddonsFromLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guidelineAddonsMessage"
+        app:layout_constraintTop_toTopOf="@id/tvBomDetailAddonsFromLabel"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="@string/order_addons_from_value" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineAddonsMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.11" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsMessageValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvBomDetailAddonsFromLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsFromLabel"
+        app:typographyType="body_3"
+        tools:text="Selamat hari lebaran. Mohon maaf lahir dan batin. Stay safe and see you soon. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec arcu velit. Duis dui elit, convallis quis mattis id, vestibulum at erat. Vestibulum pretium tempor conv." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBomDetailAddonsReadMoreMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@id/tvBomDetailAddonsMessageValue"
+        app:layout_constraintStart_toStartOf="@id/tvBomDetailAddonsMessageValue"
+        app:layout_constraintTop_toBottomOf="@id/tvBomDetailAddonsMessageValue"
+        app:typographyType="body_3"
+        tools:text="@string/order_addons_read_more" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

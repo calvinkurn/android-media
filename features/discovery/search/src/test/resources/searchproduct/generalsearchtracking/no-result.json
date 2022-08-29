@@ -10,6 +10,7 @@
       "defaultView": 1
     },
     "data": {
+      "backendFilters": "fcity=123,234#456&official=true",
       "suggestion": {
         "suggestion": "",
         "text": "",

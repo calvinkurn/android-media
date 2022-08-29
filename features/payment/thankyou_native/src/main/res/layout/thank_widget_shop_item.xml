@@ -34,6 +34,21 @@
         tools:text="Product Name" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGoFooVariantDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toEndOf="@+id/ivProductBundle"
+        app:layout_constraintEnd_toEndOf="@+id/tvInvoiceShopItemName"
+        app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemName"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Product Variant"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemNameTotalPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +67,7 @@
         android:gravity="start"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemName"
+        app:layout_constraintTop_toBottomOf="@+id/tvGoFooVariantDescription"
         app:typographyType="body_3"
         tools:text="1 X RP1000021" />
 

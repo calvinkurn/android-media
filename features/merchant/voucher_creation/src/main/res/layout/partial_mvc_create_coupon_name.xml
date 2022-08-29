@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuFillCouponName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:text_field_label="Nama Kupon"
+        app:text_field_counter="@integer/create_voucher_name_max_length"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuFillCouponCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:visibility="gone"
+        app:text_field_placeholder="Kode Kupon"
+        app:text_field_counter="10"
+        app:text_field_label="Kode Kupon"
+        app:text_field_message="Gunakan kode yang mudah diingat"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerErrorCouponValidation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:visibility="gone"
+        app:descriptionText="Nama kupon tidak boleh mengandung kata-kata Kejar Diskon, Flash Sale, FlashSale, Toped, Tokopedia, Tkpd, Shopee, Bukalapak, BL, Lazada, Kata-kata kasar, atau unsur SARA"
+        app:closeButtonVisibility="visible"
+        app:tickerType="error"
+        app:tickerShapeType="loose"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

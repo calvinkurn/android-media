@@ -30,14 +30,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/reviewPendingEmpty"
-        layout="@layout/partial_review_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
         android:id="@+id/reviewPendingLoading"
         layout="@layout/partial_review_pending_loading"
         android:layout_width="match_parent"

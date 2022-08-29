@@ -13,6 +13,8 @@ open class EmailVerificationFragment : VerificationFragment() {
         sendOtp()
     }
 
+    override fun getCountDownTimer(): Int = COUNTDOWN_LENGTH_EMAIL
+
     override fun setFooterText(spannable: Spannable?) {
         context?.let {
             val spannableChild: Spannable
@@ -31,6 +33,7 @@ open class EmailVerificationFragment : VerificationFragment() {
     }
 
     companion object {
+        private const val COUNTDOWN_LENGTH_EMAIL = 60
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = EmailVerificationFragment()

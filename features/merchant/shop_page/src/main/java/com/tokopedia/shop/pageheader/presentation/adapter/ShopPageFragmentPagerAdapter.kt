@@ -1,47 +1,150 @@
 package com.tokopedia.shop.pageheader.presentation.adapter
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
+import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
+import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
+import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
-        ctx: Context?,
+        private val ctx: Context?,
         fragment: Fragment
 ) : FragmentStateAdapter(fragment) {
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val ctxRef = WeakReference(ctx)
 
+    companion object {
+        @ColorRes
+        private val ICON_COLOR_LIGHT_ENABLE = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        @ColorRes
+        private val ICON_COLOR_LIGHT = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+    }
+
     fun getTabView(position: Int, selectedPosition: Int): View = ShopPageTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
-        val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
-        shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(position, position == selectedPosition))
+        val shopPageTabViewIcon: IconUnify = this.shopPageTabViewIcon
+        setTabIcon(shopPageTabViewIcon, position, position == selectedPosition)
     }.root
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.let {
             ShopPageTabViewBinding.bind(it).apply {
-                val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
-                shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
+                val shopPageTabViewIcon: IconUnify = this.shopPageTabViewIcon
+                setTabIcon(shopPageTabViewIcon, tab.position, isActive)
             }
         }
     }
 
-    private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
-        val tabIconActiveSrc = listShopPageTabModel[position].tabIconActive
-        val tabIconInactiveSrc = listShopPageTabModel[position].tabIconInactive
-        if (isActive) {
-            MethodChecker.getDrawable(this, tabIconActiveSrc.takeIf { it != -1 }
-                    ?: tabIconInactiveSrc)
+    fun getDynamicTabView(position: Int, selectedPosition: Int): View = ShopPageDynamicTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
+        setDynamicTabIcon(this, position, position == selectedPosition)
+    }.root
+
+    fun handleSelectedDynamicTab(tab: TabLayout.Tab, isActive: Boolean) {
+        tab.customView?.let {
+            ShopPageDynamicTabViewBinding.bind(it).apply {
+                setDynamicTabIcon(this, tab.position, isActive)
+            }
+        }
+    }
+
+    private fun getTabIconDrawable(position: Int, isActive: Boolean): Int? = ctxRef.get()?.run {
+        return if (isActive) {
+            listShopPageTabModel[position].tabIconActive
         } else {
-            MethodChecker.getDrawable(this, tabIconInactiveSrc)
+            listShopPageTabModel[position].tabIconInactive
+        }
+    }
+
+    private fun setTabIcon(tabIconUnify: IconUnify, position: Int, isActive: Boolean) {
+        ctx?.let {
+            tabIconUnify.apply {
+                if (isActive) {
+                    val iconId = getTabIconDrawable(position, true)
+                    val iconColor = ContextCompat.getColor(it, ICON_COLOR_LIGHT_ENABLE)
+                    setImage(newIconId = iconId, newLightEnable = iconColor)
+                    isEnabled = true
+                } else {
+                    val iconId = getTabIconDrawable(position, false)
+                    val iconColor = ContextCompat.getColor(it, ICON_COLOR_LIGHT)
+                    setImage(newIconId = iconId, newLightEnable = iconColor)
+                }
+            }
+        }
+    }
+
+    private fun setDynamicTabIcon(binding: ShopPageDynamicTabViewBinding, position: Int, isActive: Boolean) {
+        binding.shopPageDynamicTabViewIcon.hide()
+        binding.shopPageDynamicTabLottieView.hide()
+        ctx?.let {
+            val iconDataJsonString: String = if (isActive) {
+                listShopPageTabModel.getOrNull(position)?.iconActiveUrl.orEmpty()
+            } else {
+                listShopPageTabModel.getOrNull(position)?.iconUrl.orEmpty()
+            }
+            val iconUrl = getIconUrlFromJsonString(iconDataJsonString)
+            when {
+                iconUrl.isUrlPng() -> {
+                    binding.shopPageDynamicTabViewIcon.apply {
+                        show()
+                        setImageUrl(iconUrl)
+                        isEnabled = true
+                    }
+                }
+                iconUrl.isUrlJson() -> {
+                    binding.shopPageDynamicTabLottieView.apply {
+                        show()
+                        setupLottieAnimation(iconUrl, this)
+                        isEnabled = true
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun getIconUrlFromJsonString(iconDataJsonString: String): String {
+        return try {
+            CommonUtil.fromJson<ShopTabIconUrlModel>(
+                iconDataJsonString,
+                ShopTabIconUrlModel::class.java
+            ).run {
+                if (ctx?.isDarkMode() == true) {
+                    darkModeUrl
+                } else {
+                    lightModeUrl
+                }
+            }
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    private fun setupLottieAnimation(lottieIconUrl: String, lottieIcon: LottieAnimationView) {
+        ctx?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, lottieIconUrl)
+            lottieCompositionLottieTask.addListener { result ->
+                lottieIcon.setComposition(result)
+                lottieIcon.visibility = View.VISIBLE
+                lottieIcon.playAnimation()
+                lottieIcon.repeatCount = LottieDrawable.INFINITE
+            }
         }
     }
 

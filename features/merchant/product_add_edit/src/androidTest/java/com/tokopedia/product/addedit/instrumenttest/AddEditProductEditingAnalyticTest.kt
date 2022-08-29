@@ -54,11 +54,7 @@ class AddEditProductEditingAnalyticTest {
         private const val PRODUCT_PREVIEW_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/edit/product_preview_page_click_back.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_image.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_variant.json"
-        private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_PROMOTION = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_promotion.json"
         private const val PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS = "tracker/merchant/product_add_edit/edit/product_preview_page_click_change_status.json"
-
-        private const val PRODUCT_PROMOTION_PAGE_CLICK_BACK = "tracker/merchant/product_add_edit/edit/product_promotion_page_click_back.json"
-        private const val PRODUCT_PROMOTION_PAGE_CLICK_SAVE = "tracker/merchant/product_add_edit/edit/product_promotion_page_click_save.json"
     }
 
     @get:Rule
@@ -99,7 +95,7 @@ class AddEditProductEditingAnalyticTest {
         testEditDetail()
         testEditDescription()
         testEditShipment()
-        performClick(R.id.tv_done)
+        performClick(com.tokopedia.header.R.id.actionTextID)
 
         //stepper
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_DETAIL)
@@ -124,19 +120,13 @@ class AddEditProductEditingAnalyticTest {
     fun testEditProductJourney2() {
         testEditPhoto()
         testEditVariant()
-        testEditPromotion()
         testEditProductStatus()
 
         //stepper
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_BACK)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_IMAGE)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_VARIANT)
-        doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_PROMOTION)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_CHANGE_STATUS)
-
-        //promotion
-        doAnalyticDebuggerTest(PRODUCT_PROMOTION_PAGE_CLICK_BACK)
-        doAnalyticDebuggerTest(PRODUCT_PROMOTION_PAGE_CLICK_SAVE)
 
         activityRule.activity.finish()
     }
@@ -148,6 +138,7 @@ class AddEditProductEditingAnalyticTest {
         performScrollAndClick(R.id.su_wholesale)
         performScrollAndClick(R.id.switch_preorder)
         performReplaceText(R.id.tfu_duration, "2")
+        performReplaceText(R.id.tfu_available_stock, "1000")
         performScrollAndClick(R.id.btn_submit)
     }
 
@@ -177,12 +168,6 @@ class AddEditProductEditingAnalyticTest {
         performPressBack()
         performDialogSecondaryClick()
         Thread.sleep(500)
-    }
-
-    private fun testEditPromotion() {
-        performScrollAndClick(R.id.tv_edit_product_promotion)
-        performClick(com.tokopedia.product.manage.R.id.submitCashbackButton)
-        performPressBack()
     }
 
     private fun testEditProductStatus() {

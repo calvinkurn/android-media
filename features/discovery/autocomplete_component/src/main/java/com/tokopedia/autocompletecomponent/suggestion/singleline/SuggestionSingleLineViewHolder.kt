@@ -10,13 +10,17 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteSingleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_autocomplete_single_line_item.view.*
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class SuggestionSingleLineViewHolder(
@@ -28,6 +32,7 @@ class SuggestionSingleLineViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_single_line_item
     }
+    private var binding: LayoutAutocompleteSingleLineItemBinding? by viewBinding()
 
     override fun bind(item: SuggestionSingleLineDataDataView) {
         bindIconImage(item.data)
@@ -37,31 +42,46 @@ class SuggestionSingleLineViewHolder(
     }
 
     private fun bindIconImage(item: BaseSuggestionDataView){
-        itemView.iconImage?.let {
-            ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
+        binding?.iconImage?.let {
+            if (item.isCircleImage()) {
+                it.loadImageCircle(item.imageUrl)
+            } else {
+                it.loadImageRounded(
+                    item.imageUrl,
+                    itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius),
+                    properties = { setErrorDrawable(R.drawable.autocomplete_ic_time) }
+                )
+            }
         }
     }
 
     private fun bindTextTitle(item: BaseSuggestionDataView){
-        val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
-        if (startIndex == -1) {
-            itemView.singleLineTitle?.text = item.title
+        val binding = binding ?: return
+        val highlightedTitle = SpannableString(item.title)
+        if(item.isBoldAllText()){
+            binding.singleLineTitle.setWeight(Typography.BOLD)
         } else {
-            val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(
-                StyleSpan(Typeface.BOLD),
-                0,
-                startIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            highlightedTitle.safeSetSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex + item.searchTerm.length,
-                highlightedTitle.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            itemView.singleLineTitle?.text = highlightedTitle
+            val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
+            if (startIndex == -1) {
+                binding.singleLineTitle.setWeight(Typography.BOLD)
+            }
+            else {
+                binding.singleLineTitle.setWeight(Typography.REGULAR)
+                highlightedTitle.safeSetSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    startIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                highlightedTitle.safeSetSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex + item.searchTerm.length,
+                    highlightedTitle.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
+        binding.singleLineTitle.text = highlightedTitle
     }
 
     private fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {
@@ -71,9 +91,9 @@ class SuggestionSingleLineViewHolder(
     }
 
     private fun bindShortcutButton(item: BaseSuggestionDataView){
-        itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
+        binding?.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
             ImageHandler.loadImage2(
-                itemView.actionShortcutButton,
+                binding?.actionShortcutButton,
                 item.shortcutImage,
                 R.drawable.autocomplete_ic_copy_to_search_bar
             )
@@ -81,15 +101,15 @@ class SuggestionSingleLineViewHolder(
     }
 
     private fun bindListener(item: BaseSuggestionDataView){
-        itemView.autocompleteSingleLineItem?.setOnClickListener {
+        binding?.autocompleteSingleLineItem?.setOnClickListener {
             listener.onItemClicked(item)
         }
 
-        itemView.actionShortcutButton?.setOnClickListener {
+        binding?.actionShortcutButton?.setOnClickListener {
             listener.copyTextToSearchView(item.title)
         }
 
-        itemView.autocompleteSingleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
+        binding?.autocompleteSingleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
             override fun onViewHint() {
                 listener.onItemImpressed(item)
             }

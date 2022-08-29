@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -29,8 +28,10 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -40,17 +41,26 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
+import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.iconunify.IconUnifyHelperKt;
 import com.tokopedia.promogamification.common.CoreGamificationEventTracking;
 import com.tokopedia.promogamification.common.R;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
+import com.tokopedia.promogamification.common.constants.TrackerConstants;
 import com.tokopedia.promogamification.common.di.CommonGamificationComponent;
 import com.tokopedia.promogamification.common.di.CommonGamificationComponentInstance;
+import com.tokopedia.promogamification.common.floating.FloatingEggTracker;
 import com.tokopedia.promogamification.common.floating.data.entity.FloatingCtaEntity;
 import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingButtonEntity;
+import com.tokopedia.promogamification.common.floating.data.entity.GamiFloatingClickData;
 import com.tokopedia.promogamification.common.floating.listener.OnDragTouchListener;
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract;
 import com.tokopedia.promogamification.common.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.user.session.UserSession;
+
 import javax.inject.Inject;
 import dagger.Lazy;
 import timber.log.Timber;
@@ -59,6 +69,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by hendry on 28/03/18.
@@ -84,6 +95,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private View vgRoot;
     private View vgFloatingEgg;
     private ImageView ivFloatingEgg;
+    private ImageUnify ivClose;
     private TextView tvFloatingCounter;
     private TextView tvFloatingTimer;
 
@@ -101,7 +113,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
-    private ImageView minimizeButtonLeft;
+    private AppCompatImageView minimizeButtonLeft;
     private float newAngleOfMinimizeBtn = 180;
     private float oldAngleOfMinimizeBtn = 0;
     private boolean isMinimized;
@@ -111,6 +123,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     long timeRemainingSeconds;
     boolean isShowTime = false;
     int screenHeight = 0;
+    private int tokenId;
+    private String tokenName;
+    private UserSession userSession;
+    private Boolean isPermanent;
+    private FloatingEggTracker floatingEggTracker;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -126,10 +143,24 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingCounter = view.findViewById(R.id.tv_floating_counter);
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
+        ivClose = view.findViewById(R.id.ivClose);
         vgFloatingEgg.setVisibility(View.GONE);
 
+
+        userSession = new UserSession(getContext());
+        floatingEggTracker = new FloatingEggTracker(userSession);
+
+        initMinimizeIcon();
         prepareScreenHeight();
         return view;
+    }
+
+    private void initMinimizeIcon(){
+        try {
+            minimizeButtonLeft.setImageResource(com.tokopedia.promogamification.common.R.drawable.gami_core_minimize_button);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     private void prepareScreenHeight(){
@@ -145,18 +176,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
             shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
                     vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
-            if (isRight)
-                isMinimized = false;
-            else
-                isMinimized = true;
+            isMinimized = !isRight;
         } else {
             shiftEggTowardsLeftOrRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(),
                     vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
-            if (isRight)
-                isMinimized = true;
-            else
-                isMinimized = false;
+            isMinimized = isRight;
         }
+        // hide tracker
+        floatingEggTracker.trackingEggHide(tokenId, tokenName, isMinimized);
     }
 
     private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
@@ -297,12 +324,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             @Override
             public void onGlobalLayout() {
                 onInflateRoot();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    vgRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
+                vgRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
     }
@@ -349,7 +371,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
                 layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
-                Resources r = getResources();
+                Resources r = getContext().getResources();
                 int bottomPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                         initialEggMarginBottom, r.getDisplayMetrics());
                 int rightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -457,6 +479,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onSuccessGetToken(GamiFloatingButtonEntity tokenData) {
         sumTokenString = tokenData.getSumTokenStr();
+        tokenId = tokenData.getId();
+        tokenName = tokenData.getName();
 
         FloatingCtaEntity tokenFloating = tokenData.getCta();
         final String pageUrl = tokenFloating.getUrl();
@@ -468,19 +492,25 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         needHideFloatingToken = TextUtils.isEmpty(imageUrl);
 
+        isPermanent = tokenData.getPermanent();
+
         if (needHideFloatingToken) {
             hideFLoatingEgg();
         } else {
             showFloatingEgg();
-            trackingEggImpression(tokenData.getId(), tokenData.getName());
+            floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
         }
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                if(!tokenData.getPermanent()) {
+                    floatingEggPresenter.get().clickCloseButton(tokenData.getId());
+                }
+
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), appLink, pageUrl, null);
-                trackingEggClick(tokenData.getId(), tokenData.getName());
+                floatingEggTracker.trackingEggClick(tokenData.getId(), tokenData.getName());
             }
         });
 
@@ -515,7 +545,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             if (counterBackground instanceof GradientDrawable) {
                 GradientDrawable drawable = ((GradientDrawable) counterBackground);
                 if (HexValidator.validate(tokenData.getTimerFontColor())) {
-                    drawable.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_2), Color.parseColor(tokenData.getTimerFontColor()));
+                    drawable.setStroke(getContext().getResources().getDimensionPixelOffset(com.tokopedia.promogamification.common.R.dimen.gami_core_floating_egg_dp_2), Color.parseColor(tokenData.getTimerFontColor()));
                 }
                 if (HexValidator.validate(tokenData.getTimerBGColor())) {
                     drawable.setColor(Color.parseColor(tokenData.getTimerBGColor()));
@@ -527,10 +557,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         }
 
-
-        if (!TextUtils.isEmpty(imageUrl)) {
+        if (!TextUtils.isEmpty(imageUrl) && !(requireActivity()).isFinishing()) {
+            try {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asGif()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -545,7 +575,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             }
                         });
             } else {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asBitmap()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -562,7 +592,37 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             }
                         });
             }
+            } catch (Exception e) {
+                Timber.e(e);
+            }
         }
+        ivClose.setOnClickListener(view -> {
+            floatingEggPresenter.get().clickCloseButton(tokenData.getId());
+            floatingEggTracker.trackingEggClickCLose(tokenId, tokenName);
+        });
+
+        if(!isPermanent){
+            ivClose.setVisibility(View.VISIBLE);
+            minimizeButtonLeft.setVisibility(View.GONE);
+            ivClose.setImageDrawable(IconUnifyHelperKt.getIconUnifyDrawable(getContext(), IconUnify.CLEAR_SMALL, com.tokopedia.unifyprinciples.R.color.Unify_NN500));
+        }
+        else{
+            minimizeButtonLeft.setVisibility(View.VISIBLE);
+            ivClose.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public void onSuccessClickClose(GamiFloatingClickData gamiFloatingClickData) {
+        if (gamiFloatingClickData.getResultStatus().getCode().equals("200")){
+            floatingEggPresenter.get().getGetTokenTokopoints();
+        }
+    }
+
+    @Override
+    public void onErrorClickClose(Throwable throwable) {
+
     }
 
     private void setMinimizeBehaviourHyperParameters(boolean isCurrentlyMinimized, boolean wasOnRightEarlier, float startXPos, float startAngle) {
@@ -667,14 +727,12 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             int targetX = rootWidth - vgFloatingEgg.getWidth();
             if (isMinimized)
                 targetX = rootWidth - minimizeButtonLeft.getWidth();
-            AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
 
             PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(View.X, xEgg, targetX);
             PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, SCALE_ON_DOWN, SCALE_NORMAL);
             PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            rotateRightAnimatorSet.setDuration(SHORT_ANIMATION_DURATION);
 
             if (!isRight) {
                 if (isMinimized) {
@@ -689,7 +747,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
             saveCoordPreference(targetX, yEgg);
         } else {
-            AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
             int target = 0;
             if (isMinimized)
                 target = minimizeButtonLeft.getWidth() - vgFloatingEgg.getWidth();
@@ -701,7 +758,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, SCALE_ON_DOWN, SCALE_NORMAL);
             ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhX, pvhScaleX, pvhScaleY);
             objectAnimator.setInterpolator(new FastOutSlowInInterpolator());
-            rotateRightAnimatorSet.setDuration(SHORT_ANIMATION_DURATION);
 
             if (isRight) {
                 if (isMinimized) {
@@ -745,21 +801,59 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void trackingEggImpression(int idToken, String name) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        Map<String, Object> map = TrackAppUtils.gtmData(
                 CoreGamificationEventTracking.Event.VIEW_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.IMPRESSION_LUCKY_EGG,
                 idToken + "_" + name);
 
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
     private void trackingEggClick(int idToken, String name) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        Map<String, Object> map = TrackAppUtils.gtmData(
                 CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
                 CoreGamificationEventTracking.Action.CLICK_LUCKY_EGG,
-                idToken + "_" + name
-        );
+                idToken + "_" + name);
+
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+    }
+
+    private void trackingEggClickCLose(int idToken, String name) {
+        Map<String, Object> map = TrackAppUtils.gtmData(
+                CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Action.CLICK_CLOSE_LUCKY_EGG,
+                idToken + "_" + name);
+
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+    }
+
+    private void trackingEggHide(int idToken, String name, boolean isMinimized) {
+        String label = "_hide";
+        if(!isMinimized){
+            label = "_show";
+        }
+        Map<String, Object> map = TrackAppUtils.gtmData(
+                CoreGamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Category.CLICK_LUCKY_EGG,
+                CoreGamificationEventTracking.Action.HIDE_LUCKY_EGG,
+                idToken + "_" + name + label);
+
+        map.put(TrackerConstants.BUSINESS_UNIT_KEY, TrackerConstants.BUSINESS_UNIT_VALUE);
+        map.put(TrackerConstants.CURRENT_SITE_KEY, TrackerConstants.CURRENT_SITE_VALUE);
+        map.put(TrackerConstants.USER_ID_KEY, userSession.getUserId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
     public View getEgg() {

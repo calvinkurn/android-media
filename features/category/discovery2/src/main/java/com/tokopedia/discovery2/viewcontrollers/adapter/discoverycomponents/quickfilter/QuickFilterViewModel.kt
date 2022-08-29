@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -37,9 +38,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
     private var selectedSort: HashMap<String, String> = HashMap()
-    private val quickFilterOptionList: ArrayList<Option> = ArrayList()
+    private val quickFilterList: ArrayList<Filter> = ArrayList()
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
-    private val quickFiltersLiveData: MutableLiveData<ArrayList<Option>> = MutableLiveData()
+    private val quickFiltersLiveData: MutableLiveData<ArrayList<Filter>> = MutableLiveData()
     private val _filterCountLiveData: MutableLiveData<Int> = MutableLiveData()
     private val sortKeySet: MutableSet<String> = HashSet()
     private val productCountMutableLiveData = MutableLiveData<String?>()
@@ -70,13 +71,13 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     private fun addFilterOptions(filters: ArrayList<Filter>) {
-        quickFilterOptionList.clear()
+        quickFilterList.clear()
         for (item in filters) {
             if (!item.options.isNullOrEmpty()) {
-                quickFilterOptionList.addAll(item.options)
+                quickFilterList.add(item)
             }
         }
-        quickFiltersLiveData.value = quickFilterOptionList
+        quickFiltersLiveData.value = quickFilterList
     }
 
     fun getTargetComponent(): ComponentsItem? {
@@ -119,7 +120,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             var componentID = components.id
             if(components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty())
                 componentID = components.dynamicOriginalId!!
-            dynamicFilterModel.value = filterRepository.getFilterData(componentID, mutableMapOf(), components.pageEndPoint)
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(components.userAddressData))
+            dynamicFilterModel.value = filterRepository.getFilterData(componentID, queryParameterMap, components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
             Timber.e(it)
@@ -165,8 +168,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun clearQuickFilters(){
-        for (option in quickFilterOptionList)
-            components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
+        for (filter in quickFilterList)
+            for (option in filter.options)
+                components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
         applyFilterToSearchParameter(components.filterController.getParameter())
         reloadData()
     }
@@ -176,6 +180,27 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
         } else {
             components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
+        }
+        applyFilterToSearchParameter(components.filterController.getParameter())
+        setSelectedSort(components.filterController.getParameter())
+        reloadData()
+    }
+
+    fun onDropDownFilterSelected(options : List<Option>) {
+        for(option in options) {
+            if (option.inputState.toBoolean()) {
+                components.filterController.setFilter(
+                    option,
+                    isFilterApplied = true,
+                    isCleanUpExistingFilterWithSameKey = false
+                )
+            } else {
+                components.filterController.setFilter(
+                    option,
+                    isFilterApplied = false,
+                    isCleanUpExistingFilterWithSameKey = false
+                )
+            }
         }
         applyFilterToSearchParameter(components.filterController.getParameter())
         setSelectedSort(components.filterController.getParameter())
@@ -231,9 +256,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             (components.searchParameter.contains(it) && components.searchParameter.get(it) != DEFAULT_SORT_ID && components.searchParameter.get(it).isNotEmpty())
         }
         _filterCountLiveData.value = if (list.isNullOrEmpty()) {
-            components.filterController.filterViewStateSet.size
+            components.filterController.getFilterCount()
         } else {
-            components.filterController.filterViewStateSet.size + 1
+            components.filterController.getFilterCount() + 1
         }
     }
 

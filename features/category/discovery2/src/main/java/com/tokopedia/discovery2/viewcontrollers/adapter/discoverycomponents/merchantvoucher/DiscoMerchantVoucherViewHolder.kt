@@ -58,6 +58,7 @@ class DiscoMerchantVoucherViewHolder(itemView: View, val fragment: Fragment) :
                         (fragment as DiscoveryFragment).startMVCTransparentActivity(
                             discoMerchantVoucherViewModel.position,
                             discoMerchantVoucherViewModel.getShopID(),
+                            discoMerchantVoucherViewModel.getProductId(),
                             it.hashCode()
                         )
                     },

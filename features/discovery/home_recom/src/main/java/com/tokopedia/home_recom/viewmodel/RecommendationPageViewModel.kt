@@ -14,6 +14,11 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCPMDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
+import com.tokopedia.home_recom.util.RecomServerLogger
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_BE_ERROR
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_GENERAL_ERROR
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING
+import com.tokopedia.home_recom.util.RecomServerLogger.TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED
 import com.tokopedia.home_recom.util.RecommendationRollenceController
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.util.mapDataModel
@@ -22,19 +27,28 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import rx.Subscriber
 import java.util.concurrent.TimeoutException
@@ -56,20 +70,22 @@ open class RecommendationPageViewModel @Inject constructor(
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
-        private val dispatcher: RecommendationDispatcher
+        private val dispatcher: RecommendationDispatcher,
+        private val remoteConfig: RemoteConfig,
+        private val topAdsAddressHelper: TopAdsAddressHelper
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
-        const val PARAM_TXSC = "txsc"
-        const val PARAM_JOB_TIMEOUT = 1000L
+        const val PARAM_JOB_TIMEOUT_DEFAULT = 5000L
         const val PARAM_SUCCESS_200 = 200
         const val PARAM_SUCCESS_300 = 300
-        const val POS_PRODUCT_ANCHOR = 0
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
@@ -117,7 +133,7 @@ open class RecommendationPageViewModel @Inject constructor(
                 if (eligibleToShowHeadlineCPM(queryParam)) {
                     val newParams = HEADLINE_PARAM_RECOM + userSessionInterface.userId
                     val topadsHeadlineResult = asyncCatchError(dispatcher.getIODispatcher(), block = {
-                        getTopAdsHeadlineUseCase.setParams(newParams)
+                        getTopAdsHeadlineUseCase.setParams(newParams, topAdsAddressHelper.getAddressData())
                         getTopAdsHeadlineUseCase.executeOnBackground()
                     }) {
                         throw it
@@ -180,7 +196,18 @@ open class RecommendationPageViewModel @Inject constructor(
             queryParam: String) {
         launchCatchError(coroutineContext, block = {
             var adsStatus = TopadsIsAdsQuery()
-            val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+            val timeout = remoteConfig.getLong(
+                GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
+                PARAM_JOB_TIMEOUT_DEFAULT
+            )
+
+            RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING,
+                productId = productId,
+                queryParam = queryParam
+            )
+
+            val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
                         productId = productId,
                         productKey = "",
@@ -189,7 +216,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         pageName = ""
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-                val dataList = recommendationListLiveData.value as MutableList
+                val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
@@ -204,15 +231,28 @@ open class RecommendationPageViewModel @Inject constructor(
 
                         _recommendationListLiveData.postValue(dataList)
                     }
+                } else {
+                    RecomServerLogger.logServer(
+                        tag = TOPADS_RECOM_PAGE_BE_ERROR,
+                        reason = "Error code $errorCode",
+                        productId = productId,
+                        queryParam = queryParam
+                    )
                 }
             }
+            if (job == null) RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_TIMEOUT_EXCEEDED,
+                productId = productId,
+                queryParam = queryParam
+            )
         }) {
-            it.printStackTrace()
+            RecomServerLogger.logServer(
+                tag = TOPADS_RECOM_PAGE_GENERAL_ERROR,
+                throwable = it,
+                productId = productId,
+                queryParam = queryParam
+            )
         }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
     }
 
     /**
@@ -241,24 +281,40 @@ open class RecommendationPageViewModel @Inject constructor(
                 }
             })
         } else {
-            addWishListUseCase.createObservable(productId, userSessionInterface.userId, object: WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    // do nothing
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    // do nothing
-                }
-            })
+            doAddToWishlist(productId, callback)
         }
+    }
+
+    fun addWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+        launch(dispatcher.getMainDispatcher()) {
+            addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
+    }
+
+    private fun doAddToWishlist(productId: String, callback: (Boolean, Throwable?) -> Unit) {
+        addWishListUseCase.createObservable(productId, userSessionInterface.userId, object: WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                callback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                callback.invoke(true, null)
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                // do nothing
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                // do nothing
+            }
+        })
     }
 
     /**
@@ -266,7 +322,8 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param productId id of product want to remove wishlist
      */
     fun removeWishlist(productId: String, wishlistCallback: (Boolean, Throwable?) -> Unit){
-        removeWishListUseCase.createObservable(productId, userSessionInterface.userId, object: WishListActionListener{
+        removeWishListUseCase.createObservable(productId, userSessionInterface.userId, object:
+            WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
             }
@@ -283,6 +340,18 @@ open class RecommendationPageViewModel @Inject constructor(
                 wishlistCallback.invoke(true, null)
             }
         })
+    }
+
+    fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
+        launch(dispatcher.getMainDispatcher()) {
+            deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+            val result = withContext(dispatcher.getIODispatcher()) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                actionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                actionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
     }
 
     fun onAddToCart(productInfoDataModel: ProductInfoDataModel){
@@ -306,7 +375,6 @@ open class RecommendationPageViewModel @Inject constructor(
                         }
 
                         override fun onError(e: Throwable) {
-                            e.printStackTrace()
                             _addToCartLiveData.postValue(Response.error(e))
                         }
 
@@ -341,7 +409,6 @@ open class RecommendationPageViewModel @Inject constructor(
                         override fun onCompleted() {}
 
                         override fun onError(e: Throwable) {
-                            e.printStackTrace()
                             _buyNowLiveData.postValue(Response.error(e))
                         }
 

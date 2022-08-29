@@ -7,9 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -23,6 +21,7 @@ import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.setDescriptionClick
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
@@ -100,6 +99,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         observeProductInputModel()
         observeAnnotationCategoryData()
         observeErrorMessage()
+        observeValidateSpecificationInputModelResult()
     }
 
     private fun setupViews(view: View) {
@@ -120,7 +120,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         }
 
         tickerSpecification?.setHtmlDescription(htmlDescription)
-        tickerSpecification?.setOnClickListener {
+        tickerSpecification?.setDescriptionClick {
             newUserSpecificationBottomSheet.show(childFragmentManager)
         }
 
@@ -130,13 +130,28 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
+        viewModel.productInputModel.observe(viewLifecycleOwner, {
             viewModel.getSpecifications(it.detailInputModel.categoryId)
         })
     }
 
+    private fun observeValidateSpecificationInputModelResult() {
+        viewModel.validateSpecificationInputModelResult.observe(viewLifecycleOwner) { result ->
+            val validationSuccess = result.first
+            val validatedSelectedList = result.second
+
+            if (validationSuccess) {
+                val specificationList = specificationValueAdapter?.getDataSelectedList()
+                viewModel.updateProductInputModelSpecifications(specificationList.orEmpty())
+                submitInputData()
+            } else {
+                specificationValueAdapter?.setDataSelected(validatedSelectedList)
+            }
+        }
+    }
+
     private fun observeErrorMessage() {
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
+        viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
             view?.apply {
                 Toaster.build(this, errorMessage, type = Toaster.TYPE_ERROR).show()
             }
@@ -144,7 +159,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     }
 
     private fun observeAnnotationCategoryData() {
-        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer {
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, {
             val itemSelected = viewModel.getItemSelected(it)
             setupSpecificationAdapter(it, itemSelected)
             loaderSpecification?.gone()
@@ -169,7 +184,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     }
 
     private fun setupSpecificationAdapter(annotationCategoryData: List<AnnotationCategoryData>, itemSelected: List<SpecificationInputModel>) {
-        specificationValueAdapter = SpecificationValueAdapter(fragmentManager)
+        specificationValueAdapter = SpecificationValueAdapter(childFragmentManager)
         rvSpecification?.adapter = specificationValueAdapter
         setRecyclerViewToVertical(rvSpecification)
         specificationValueAdapter?.setData(annotationCategoryData, itemSelected)
@@ -182,19 +197,20 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     private fun setupSubmitButton() {
         btnSpecification?.setOnClickListener {
             specificationValueAdapter?.apply {
-                val specificationList = specificationValueAdapter?.getDataSelectedList()
-                viewModel.updateProductInputModelSpecifications(specificationList.orEmpty())
+                viewModel.validateSpecificationInputModel(getDataSelectedList())
             }
-
-            viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID).orEmpty()
-                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
-
-                val intent = Intent().putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-                activity?.setResult(Activity.RESULT_OK, intent)
-            }
-            activity?.finish()
         }
+    }
+
+    private fun submitInputData() {
+        viewModel.productInputModel.value?.apply {
+            val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID).orEmpty()
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+            val intent = Intent().putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+            activity?.setResult(Activity.RESULT_OK, intent)
+        }
+        activity?.finish()
     }
 
     private fun setRecyclerViewToVertical(recyclerView: RecyclerView?) {

@@ -10,7 +10,7 @@
             android:name=".view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -27,11 +27,26 @@
             android:name=".profilerecommendation.view.activity.FollowRecomActivity"
             android:label="@string/recommendation_for_you"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".view.activity.FeedOnboardingActivity"
             android:label="@string/title_feed_onboarding"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.PlayVideoLiveListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="@string/host_feed_play_live_detail"
+                android:scheme="@string/internal_scheme" />
+        </intent-filter>
+        </activity>
     </application>
 </manifest>

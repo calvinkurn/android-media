@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -27,10 +28,12 @@ import org.junit.Test
 /**
  * Created by fwidjaja on 06/11/20.
  */
+@CassavaTest
 class UohListTrackingTest {
 
     companion object {
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
+        private const val KEY_ATC = "add_to_cart_multi"
     }
 
     @get:Rule
@@ -46,6 +49,8 @@ class UohListTrackingTest {
         setupGraphqlMockResponse {
             addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context,
                     R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(KEY_ATC, InstrumentationMockHelper.getRawString(context,
+                    R.raw.add_to_cart_multi_success_response), MockModelConfig.FIND_BY_CONTAINS)
         }
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()

@@ -12,7 +12,7 @@
         android:id="@+id/group_sah_new_other_shop_hour_success"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tv_sah_new_other_shop_hour_title, ic_sah_new_other_shop_hour, tv_sah_new_other_shop_hour_desc"
+        app:constraint_referenced_ids="tv_sah_new_other_shop_hour_title, tv_sah_new_other_shop_hour_desc"
         tools:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -29,27 +29,12 @@
         app:typographyType="body_3"
         tools:text="@string/sah_new_other_shop_open"/>
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_sah_new_other_shop_hour"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_hour_desc"
-        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_hour_desc"
-        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_hour_desc"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:icon_name="RELOAD_24H"
-        tools:icon_color_light_enable="@color/Unify_GN500"/>
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_shop_hour_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintStart_toEndOf="@id/ic_sah_new_other_shop_hour"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_sah_new_other_shop_hour_title"
         app:layout_constraintBottom_toBottomOf="parent"

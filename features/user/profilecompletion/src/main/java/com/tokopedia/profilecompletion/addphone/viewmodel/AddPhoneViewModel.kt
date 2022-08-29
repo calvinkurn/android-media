@@ -11,16 +11,18 @@ import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_PHONE
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddPhoneViewModel @Inject constructor(
-        private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
-        private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
-        private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
+    private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
+    private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
+    private val rawQueries: Map<String, String>,
+    dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _addPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
     val addPhoneResponse: LiveData<Result<AddPhoneResult>>
@@ -30,25 +32,26 @@ class AddPhoneViewModel @Inject constructor(
     val userValidateResponse: LiveData<Result<UserValidatePojo>>
         get() = _userValidateResponse
 
-    fun mutateAddPhone(msisdn: String) {
+    fun mutateAddPhone(msisdn: String, validateToken: String) {
         rawQueries[ProfileCompletionQueryConstant.MUTATION_ADD_PHONE]?.let { query ->
             val params = mapOf(
-                    PARAM_PHONE to msisdn)
+                PARAM_PHONE to msisdn,
+                PARAM_VALIDATE_TOKEN to validateToken
+            )
 
             addPhoneGraphQlUseCase.setTypeClass(AddPhonePojo::class.java)
             addPhoneGraphQlUseCase.setRequestParams(params)
             addPhoneGraphQlUseCase.setGraphqlQuery(query)
 
             addPhoneGraphQlUseCase.execute(
-                    onSuccessMutateAddPhone(msisdn),
-                    onErrorMutateAddPhone()
+                onSuccessMutateAddPhone(msisdn),
+                onErrorMutateAddPhone()
             )
         }
     }
 
     private fun onErrorMutateAddPhone(): (Throwable) -> Unit {
         return {
-            it.printStackTrace()
             _addPhoneResponse.value = Fail(it)
         }
     }
@@ -79,15 +82,14 @@ class AddPhoneViewModel @Inject constructor(
             userValidateGraphQlUseCase.setGraphqlQuery(query)
 
             userValidateGraphQlUseCase.execute(
-                    onSuccessUserValidatePojo(),
-                    onErrorUserValidatePojo()
+                onSuccessUserValidatePojo(),
+                onErrorUserValidatePojo()
             )
         }
     }
 
     private fun onErrorUserValidatePojo(): (Throwable) -> Unit {
         return {
-            it.printStackTrace()
             _userValidateResponse.postValue(Fail(it))
         }
     }
@@ -100,7 +102,8 @@ class AddPhoneViewModel @Inject constructor(
             when {
                 isValid -> _userValidateResponse.value = Success(it)
                 errorMessage.isNotEmpty() -> _userValidateResponse.postValue(
-                        Fail(MessageErrorException(errorMessage)))
+                    Fail(MessageErrorException(errorMessage))
+                )
                 else -> _userValidateResponse.postValue(Fail(RuntimeException()))
             }
         }

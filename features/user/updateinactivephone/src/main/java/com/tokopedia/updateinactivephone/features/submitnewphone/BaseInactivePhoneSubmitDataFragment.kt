@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.MINIMUM_PHONE_NUMBER
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneDataUploadBinding
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
@@ -19,6 +20,7 @@ import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
 import com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.io.File
 import javax.inject.Inject
 
 abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
@@ -73,6 +75,8 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     }
 
     open fun gotoSuccessPage(source: String) {
+        removeFiles()
+
         activity?.let {
             val intent = InactivePhoneSuccessPageActivity.createIntent(it, source, inactivePhoneUserDataModel)
             startActivity(intent)
@@ -87,7 +91,7 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
                 viewBinding?.textPhoneNumber?.error = getString(R.string.text_form_error_empty)
                 return false
             }
-            phoneNumber.length < 9 -> {
+            phoneNumber.length < MINIMUM_PHONE_NUMBER -> {
                 viewBinding?.textPhoneNumber?.error = getString(R.string.text_form_error_min_9_digit)
                 return false
             }
@@ -116,5 +120,17 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
 
     open fun hideLoading() {
         viewBinding?.loader?.hide()
+    }
+
+    fun removeFiles() {
+        val inactivePhoneDirectory = context?.let {
+            InactivePhoneConstant.getInternalDirectory(it)
+        }?.let { File(it) }
+
+        if (inactivePhoneDirectory?.exists() == true) {
+            inactivePhoneDirectory.list()?.forEach {
+                File(inactivePhoneDirectory, it).delete()
+            }
+        }
     }
 }

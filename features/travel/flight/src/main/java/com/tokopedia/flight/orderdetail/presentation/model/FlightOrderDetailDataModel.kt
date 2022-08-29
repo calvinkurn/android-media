@@ -8,11 +8,11 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FlightOrderDetailDataModel(
-        val omsId: Int,
+        val omsId: String,
         val createTime: String,
         val status: Int,
         val statusString: String,
-        val id: Int,
+        val id: String,
         val invoiceId: String,
         val contactName: String,
         val email: String,

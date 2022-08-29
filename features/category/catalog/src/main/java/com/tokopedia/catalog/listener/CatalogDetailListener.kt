@@ -1,57 +1,74 @@
 package com.tokopedia.catalog.listener
 
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
+import com.tokopedia.catalog.model.raw.*
 
 interface CatalogDetailListener {
 
     /**
      * CatalogInfoViewHolder
      */
-    fun onViewMoreDescriptionClick()
+    fun onViewMoreDescriptionClick(){}
 
     /**
      * CatalogImageViewHolder
      */
-    fun onProductImageClick(catalogImage : CatalogImage, position: Int)
+    fun onProductImageClick(catalogImage : CatalogImage, position: Int){}
 
     /**
      * CatalogSpecificationsContainerViewHolder
      */
-    fun onViewMoreSpecificationsClick()
+    fun onViewMoreSpecificationsClick(topModel : TopSpecificationsComponentData?){}
 
     /**
      * CatalogProductsContainerViewHolder
      */
-    fun hideFloatingLayout()
+    fun hideFloatingLayout(){}
 
-    fun showFloatingLayout()
+    fun showFloatingLayout(){}
 
     /**
      * CatalogVideoViewHolder
      */
-    fun playVideo(catalogVideo : VideoComponentData, position : Int)
+    fun playVideo(catalogVideo : VideoComponentData, position : Int){}
 
     /**
      * CatalogComparisionContainerViewHolder
      */
-    fun comparisionCatalogClicked(comparisionCatalogId : String)
+    fun comparisonCatalogClicked(comparisonCatalogId : String){}
+
+    fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?){}
+
+    fun changeComparison(comparedCatalogId: String){}
 
     /**
      * CatalogReviewContainerViewHolder
      */
-    fun readMoreReviewsClicked(catalogId : String)
+    fun readMoreReviewsClicked(catalogId : String){}
 
     /**
      * CatalogReviewViewHolder
      */
     fun onReviewImageClicked(position: Int, items : ArrayList<CatalogImage>, reviewId : String,
-                             isFromBottomSheet : Boolean = true)
+                             isFromBottomSheet : Boolean = true){}
 
-    val childsFragmentManager: FragmentManager?
+    fun onCatalogForYouClick(adapterPosition : Int , catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 
-    val windowHeight: Int
+    fun onCatalogForYouImpressed(model : CatalogForYouModel , adapterPosition: Int){}
+
+    fun getChildsFragmentManager() : FragmentManager? {
+        return null
+    }
+
+    fun getWindowHeight() : Int { return 0 }
+
+    fun sendWidgetImpressionEvent(widgetImpressionActionName : String, widgetImpressionItemName: String, adapterPosition: Int) {}
+
+    fun sendWidgetTrackEvent(actionName: String) { }
+
+    fun setLastDetachedItemPosition(adapterPosition: Int) {}
+
+    fun setLastAttachItemPosition(adapterPosition: Int) {}
 
 }

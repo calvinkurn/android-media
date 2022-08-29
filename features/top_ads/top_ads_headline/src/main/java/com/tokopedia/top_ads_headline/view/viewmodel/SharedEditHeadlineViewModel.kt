@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.top_ads_headline.Constants.EDIT_HEADLINE_PAGE
 import com.tokopedia.top_ads_headline.Constants.HEADLINE
 import com.tokopedia.top_ads_headline.Constants.STATUS_INACTIVE
@@ -18,13 +16,10 @@ import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import kotlinx.coroutines.launch
-import rx.Subscriber
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 private const val TYPE_BANNER = "banner"
@@ -64,29 +59,20 @@ class SharedEditHeadlineViewModel @Inject constructor(
     }
 
     fun getHeadlineAdId(groupId: Int, shopId: Int, onError: (message: String) -> Unit) {
-        viewModelScope.launch {
-            val requestParams = topAdsGetGroupProductUseCase.setParams(groupId, 0, "", "", null, "", "", TYPE_BANNER)
-            topAdsGetGroupProductUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-                override fun onCompleted() {
-                }
+        viewModelScope.launchCatchError(block = {
+            val requestParams = topAdsGetGroupProductUseCase.setParams(
+                groupId, 0, "", "", null, "", "", TYPE_BANNER)
 
-                override fun onError(e: Throwable?) {
-                    e?.printStackTrace()
-                }
+            val nonGroupResponse =
+                topAdsGetGroupProductUseCase.execute(requestParams).topadsDashboardGroupProducts
 
-                override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                    val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                    val restResponse: RestResponse? = typeResponse[token]
-                    val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                    val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                    if (nonGroupResponse.data.isNotEmpty()) {
-                        adId = nonGroupResponse.data.first().adId
-                        getHeadlineAdDetail(nonGroupResponse.data.first().adId, shopId.toString(), onError)
-                    }
-                }
-            })
-
-        }
+            if (nonGroupResponse.data.isNotEmpty()) {
+                adId = nonGroupResponse.data.first().adId
+                getHeadlineAdDetail(nonGroupResponse.data.first().adId, shopId.toString(), onError)
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     private fun getHeadlineAdDetail(adId: String, shopId: String, onError: (message: String) -> Unit) {

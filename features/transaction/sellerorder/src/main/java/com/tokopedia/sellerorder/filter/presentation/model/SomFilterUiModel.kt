@@ -2,9 +2,8 @@ package com.tokopedia.sellerorder.filter.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.sellerorder.filter.presentation.adapter.TypeFactorySomFilterAdapter
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class SomFilterUiModel(
         var nameFilter: String = "",
         var somFilterData: List<SomFilterChipsUiModel> = listOf(),

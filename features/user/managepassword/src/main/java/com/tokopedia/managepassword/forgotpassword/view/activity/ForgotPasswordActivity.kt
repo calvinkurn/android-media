@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.managepassword.ManagePasswordWebViewActivity
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
 import com.tokopedia.managepassword.common.ManagePasswordConstant.PARAM_AUTO_FILL
@@ -29,11 +30,11 @@ import javax.inject.Inject
  * @team : @minion-kevin
  *
  * For navigating to this class
- * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.FORGOT_PASSWORD]
+ * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD]
  * @params
  * required : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL]
- * optional : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_AUTO_RESET]
- * optional : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_REMOVE_FOOTER]
+ * optional : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_AUTO_RESET]
+ * optional : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REMOVE_FOOTER]
  */
 
 class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordComponent> {
@@ -101,9 +102,9 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         uri.path?.contains(CLEAR_CACHE_PREFIX) == true
 
     private fun gotoLogout() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.LOGOUT)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, true)
         startActivityForResult(intent, REQUEST_CODE_LOGOUT)
     }
 

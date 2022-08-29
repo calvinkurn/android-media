@@ -1,8 +1,6 @@
 package com.tokopedia.logisticorder.uimodel
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticorder.domain.response.*
 import kotlinx.parcelize.Parcelize
 
 data class TrackingPageModel(
@@ -13,7 +11,8 @@ data class TrackingPageModel(
 data class TrackingDataModel(
     var trackOrder: TrackOrderModel = TrackOrderModel(),
     var page: PageModel = PageModel(),
-    var tipping: TippingModel = TippingModel()
+    var tipping: TippingModel = TippingModel(),
+    var lastDriver: LastDriverModel = LastDriverModel()
 ) : Parcelable
 
 @Parcelize
@@ -45,7 +44,8 @@ data class DetailModel(
 
 @Parcelize
 data class ProofModel(
-    var imageId: String = ""
+    var imageId: String = "",
+    var description: String = ""
 ) : Parcelable
 
 @Parcelize
@@ -84,7 +84,16 @@ data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
     var statusSubtitle: String = "",
-    var lastDriver: LastDriverModel = LastDriverModel()
+    var tippingLastDriver: TippingLastDriverModel = TippingLastDriverModel()
+) : Parcelable
+
+@Parcelize
+data class TippingLastDriverModel(
+    var photo: String = "",
+    var name: String = "",
+    var phone: String = "",
+    var licenseNumber: String = "",
+    var isChanged: Boolean = false
 ) : Parcelable
 
 @Parcelize

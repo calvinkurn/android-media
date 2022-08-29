@@ -2,12 +2,14 @@ package com.tokopedia.product.info.util
 
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.CUSTOM_INFO_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.GUIDELINE_DETAIL_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.HEADER_DETAIL_KEY
@@ -48,6 +50,13 @@ object ProductDetailInfoMapper {
                     if (shopNotes.error.isEmpty() && shopNotes.shopNotesData.isNotEmpty()) {
                         listOfComponent.add(ProductDetailInfoExpandableListDataModel(index, it.title, responseData.dataShopNotes.shopNotesData, it.isShowable))
                     }
+                }
+                CUSTOM_INFO_KEY -> {
+                    listOfComponent.add(ProductDetailInfoCardDataModel(
+                            index,
+                            it.title,
+                            it.icon,
+                            it.applink))
                 }
                 else -> {
                     if (it.value.isNotEmpty()) {

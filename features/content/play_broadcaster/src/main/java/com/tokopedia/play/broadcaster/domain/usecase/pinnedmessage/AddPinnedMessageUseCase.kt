@@ -20,7 +20,7 @@ class AddPinnedMessageUseCase @Inject constructor(
 ) : RetryableGraphqlUseCase<AddPinnedMessageResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     init {
-        setGraphqlQuery(AddPinnedMessageUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(AddPinnedMessageUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
             .Builder(CacheType.ALWAYS_CLOUD).build())

@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -36,8 +38,8 @@ import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 
 /**
  * @author by milhamj on 19/07/18.
@@ -52,12 +54,14 @@ class ContentExploreFragment :
 
         const val PARAM_CATEGORY_ID = "category_id"
         private const val DEFAULT_CATEGORY = "0"
+        private const val SOURCE = "source"
         private const val PEFORMANCE_EXPLORE = "mp_explore"
         private const val CATEGORY_POSITION_NONE = -1
 
         private const val IMAGE_SPAN_COUNT = 3
         private const val IMAGE_SPAN_SINGLE = 1
         private const val LOAD_MORE_THRESHOLD = 2
+        private const val EXPLORE_TAB = "explore_tab"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -82,6 +86,8 @@ class ContentExploreFragment :
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var analytics: ContentExploreAnalytics
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private lateinit var exploreCategoryRv: RecyclerView
     private lateinit var exploreImageRv: RecyclerView
@@ -168,28 +174,31 @@ class ContentExploreFragment :
                 }
             }
         }
+        exploreImageRv.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         exploreImageRv.layoutManager = gridLayoutManager
         exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager))
         val typeFactory = ExploreImageTypeFactoryImpl(this)
         imageAdapter.setTypeFactory(typeFactory)
         exploreImageRv.adapter = imageAdapter
+        feedFloatingButtonManager.setDelayForExpandFab(exploreImageRv)
     }
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = Integer.valueOf(arguments!!.getString(
+            categoryId = Integer.valueOf(requireArguments().getString(
                     PARAM_CATEGORY_ID,
                     DEFAULT_CATEGORY)
             )
             presenter.updateCategoryId(categoryId)
         }
+
+        feedFloatingButtonManager.setInitialData(parentFragment)
     }
 
     private fun loadData() {
         if (userVisibleHint && isAdded && activity != null && ::presenter.isInitialized) {
             if (!hasLoadedOnce) {
                 performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE)
-                Embrace.getInstance().startEvent(PEFORMANCE_EXPLORE, null, false)
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
@@ -200,6 +209,12 @@ class ContentExploreFragment :
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        exploreImageRv.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
     }
 
     override fun onSuccessGetExploreData(exploreViewModel: ExploreViewModel, clearData: Boolean) {
@@ -326,11 +341,13 @@ class ContentExploreFragment :
     }
 
     override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConst.CONTENT_DETAIL,
-                postId.toString()
-        )
+        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId.toString())
+        val finaAppLink = Uri.parse(contentAppLink)
+                .buildUpon()
+                .appendQueryParameter(SOURCE, EXPLORE_TAB)
+                .build().toString()
+
+        RouteManager.route(requireContext(), finaAppLink)
         analytics.eventTrackExploreItem(name, postId, recomId)
     }
 
@@ -392,7 +409,6 @@ class ContentExploreFragment :
     override fun stopTrace() {
         if (::performanceMonitoring.isInitialized && !isTraceStopped) {
             performanceMonitoring.stopTrace()
-            Embrace.getInstance().endEvent(PEFORMANCE_EXPLORE)
             isTraceStopped = true
         }
     }

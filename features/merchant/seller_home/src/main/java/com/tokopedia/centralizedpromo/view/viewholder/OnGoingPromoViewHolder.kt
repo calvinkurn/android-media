@@ -12,7 +12,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_on_going_promo
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemOnGoingPromoBinding
 
-class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiModel>(view) {
+class OnGoingPromoViewHolder(
+    view: View?
+) : AbstractViewHolder<OnGoingPromoUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_on_going_promo
@@ -27,7 +29,6 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
             tvOnGoingPromoTitle.text = element.title
             tvOnGoingPromoStatus.text = element.status.text
             tvOnGoingPromoCount.text = element.status.count.toString()
-            tvSeePastPromotion.text = element.footer.text
         }
 
         initListeners(element)
@@ -38,58 +39,42 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
             tvOnGoingPromoTitle.setOnClickListener {
                 onStatusClicked(
                     element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
+                    element.title
+                )
+            }
+            ivCaret.setOnClickListener {
+                onStatusClicked(
+                    element.status.url,
+                    element.title
                 )
             }
             tvOnGoingPromoStatus.setOnClickListener {
-                onStatusClicked(
-                    element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
-                )
+                onFooterClicked(element.footer.url, element.title)
             }
             tvOnGoingPromoCount.setOnClickListener {
-                onStatusClicked(
-                    element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
-                )
+                onFooterClicked(element.footer.url, element.title)
             }
-            tvSeePastPromotion.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
-            }
-            ivCaret.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
-            }
+
             root.addOnImpressionListener(element.impressHolder) {
                 CentralizedPromoTracking.sendImpressionOnGoingPromoStatus(
-                    widgetName = element.title,
-                    value = element.status.count,
-                    state = element.status.text
+                    widgetName = element.title
                 )
             }
         }
     }
 
-    private fun onStatusClicked(appLink: String, title: String, value: Int, state: String) {
+    private fun onStatusClicked(appLink: String, title: String) {
         if (openApplink(appLink)) {
             CentralizedPromoTracking.sendClickOnGoingPromoStatus(
-                widgetName = title,
-                value = value,
-                state = state
+                widgetName = title
             )
         }
     }
 
-    private fun onFooterClicked(applink: String, title: String, footerText: String) {
+    private fun onFooterClicked(applink: String, title: String) {
         if (openApplink(applink)) {
             CentralizedPromoTracking.sendClickOnGoingPromoFooter(
-                widgetName = title,
-                footerText = footerText
+                widgetName = title
             )
         }
     }

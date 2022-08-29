@@ -3,13 +3,15 @@ package com.tokopedia.filter.common.helper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import timber.log.Timber
 
 fun String.toMapParam(): Map<String, String> {
     if (this.isEmpty()) return mapOf()
 
     return split("&")
-            .associateTo(HashMap()) { it.createKeyValuePair() }
-            .apply { remove("") }
+        .associateTo(HashMap()) { it.createKeyValuePair() }
+        .apply { remove("") }
 }
 
 private fun String.createKeyValuePair(): Pair<String, String> {
@@ -22,7 +24,7 @@ private fun String.createKeyValuePair(): Pair<String, String> {
 private const val NON_FILTER_SRP_PREFIX = "srp_"
 private const val NON_FILTER_USER_PREFIX = "user_"
 private const val NON_FILTER_EXCLUDE_PREFIX = OptionHelper.EXCLUDE_PREFIX
-val nonFilterParameterKeyList = setOf(
+private val nonFilterParameterKeyList = setOf(
     SearchApiConst.Q,
     SearchApiConst.RF,
     SearchApiConst.ACTIVE_TAB,
@@ -39,8 +41,18 @@ val nonFilterParameterKeyList = setOf(
     SearchApiConst.UNIQUE_ID,
     SearchApiConst.START,
     SearchApiConst.USER_ID,
+    SearchApiConst.SHOP_ID,
     SearchApiConst.TYPO,
     SearchApiConst.PAGE,
+    SearchApiConst.ROWS,
+    SearchApiConst.FROM,
+    SearchApiConst.DEVICE,
+    SearchApiConst.PAGE_SOURCE,
+)
+private val postProcessingFilter = mapOf(
+    SearchApiConst.IS_FULFILLMENT to "true",
+    SearchApiConst.GIFTING to "true",
+    SearchApiConst.NAVSOURCE to SearchApiConst.DEFAULT_VALUE_OF_NAVSOURCE_TOKOCABANG,
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
@@ -68,10 +80,21 @@ private fun MutableMap<String, Any>.createAndCountSortFilterParameter(count: (In
             continue
         }
 
-        count(entry.value.toString().split(OptionHelper.OPTION_SEPARATOR).size)
+        count(getOptionCount(entry))
     }
 
     return this
+}
+
+private fun getOptionCount(mapEntry: Map.Entry<String, Any>): Int {
+    return try {
+        val optionValue = mapEntry.value.toString()
+        val optionList = optionValue.split(OptionHelper.OPTION_SEPARATOR)
+        optionList.size
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        0
+    }
 }
 
 private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
@@ -80,20 +103,20 @@ private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
 
 fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
     return nonFilterParameterKeyList.contains(key)
-            || key.matchesWithNonFilterPrefix()
+        || key.matchesWithNonFilterPrefix()
 }
 
 private fun String?.matchesWithNonFilterPrefix(): Boolean {
     this ?: return false
 
     return startsWith(NON_FILTER_SRP_PREFIX)
-            || startsWith(NON_FILTER_USER_PREFIX)
-            || startsWith(NON_FILTER_EXCLUDE_PREFIX)
+        || startsWith(NON_FILTER_USER_PREFIX)
+        || startsWith(NON_FILTER_EXCLUDE_PREFIX)
 }
 
 private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
     return (key == SearchApiConst.PMIN && value.toString() == "0")
-            || (key == SearchApiConst.PMAX && value.toString() == "0")
+        || (key == SearchApiConst.PMAX && value.toString() == "0")
 }
 
 private fun Map<String, Any>.hasMinAndMaxPriceFilter(): Boolean {
@@ -119,8 +142,8 @@ fun isSortHasDefaultValue(mapParameter: Map<String, Any>): Boolean {
 
 fun getSortFilterParamsString(mapParameter: Map<String?, Any?>): String {
     val sortAndFilterParameter = mapParameter
-            .removeWithNonFilterPrefix()
-            .minus(nonFilterParameterKeyList)
+        .removeWithNonFilterPrefix()
+        .minus(nonFilterParameterKeyList)
 
     return UrlParamUtils.generateUrlParamString(sortAndFilterParameter)
 }
@@ -131,6 +154,11 @@ private fun <T> Map<String?, T?>.removeWithNonFilterPrefix(): Map<String?, T?> =
 @Suppress("UNCHECKED_CAST")
 fun getFilterParams(mapParameter: Map<String?, String?>): Map<String?, String?> {
     return mapParameter
-            .removeWithNonFilterPrefix()
-            .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
+        .removeWithNonFilterPrefix()
+        .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
 }
+
+fun isPostProcessingFilter(searchParameter: Map<String, Any>): Boolean =
+   searchParameter
+        .filter { postProcessingFilter[it.key] == it.value }
+        .isNotEmpty()

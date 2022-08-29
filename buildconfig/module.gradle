@@ -28,7 +28,7 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
-        checkDependencies true
+        checkDependencies false
         htmlReport false
         warningsAsErrors false
         abortOnError false
@@ -91,7 +91,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
     implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.mockitorCore

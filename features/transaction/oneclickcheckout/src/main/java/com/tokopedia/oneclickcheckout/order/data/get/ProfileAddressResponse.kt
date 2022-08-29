@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 
 class Address(
         @SuppressLint("Invalid Data Type")
@@ -28,6 +29,8 @@ class Address(
         val provinceId: Long = 0,
         @SerializedName("province_name")
         val provinceName: String = "",
+        @SerializedName("country")
+        val country: String = "",
         @SerializedName("phone")
         val phone: String = "",
         @SerializedName("longitude")
@@ -47,8 +50,14 @@ class Address(
 )
 
 class AddressTokoNow(
+        @SerializedName("is_modified")
+        val isModified: Boolean = false,
         @SerializedName("shop_id")
         val shopId: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String = ""
+        val warehouseId: String = "",
+        @SerializedName("warehouses")
+        val warehouses: List<Warehouse> = emptyList(),
+        @SerializedName("service_type")
+        val serviceType: String = ""
 )

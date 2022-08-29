@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.helper.MissionWidgetHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -29,13 +30,16 @@ import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.usecase.missionwidget.GetMissionWidget
+import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
@@ -74,19 +78,23 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
         private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         private val homeChooseAddressRepository: HomeChooseAddressRepository,
-        private val userSessionInterface: UserSessionInterface
+        private val userSessionInterface: UserSessionInterface,
+        private val homeMissionWidgetRepository: HomeMissionWidgetRepository
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
+    private var currentHeaderDataModel: HomeHeaderDataModel? = null
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
         private const val MINIMUM_DC_TO_SHOW_RECOM = 3
+        private const val DEFAULT_TOPADS_TDN_PAGE = "0"
     }
     val gson = Gson()
     var cachedHomeData: HomeData? = null
 
     var localHomeRecommendationFeedDataModel: HomeRecommendationFeedDataModel? = null
+    private var topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
@@ -101,7 +109,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
         var isCacheDc = true
-
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
@@ -139,6 +146,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
         val homeDynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
+                topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
+
                 val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
                         homeData = it,
                         isCache = isCacheDc
@@ -159,10 +168,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
-                    updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
-
-                    emit(dynamicChannelPlainResponse)
+                    if(currentHeaderDataModel==null){
+                        currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+                    }
+                    currentHeaderDataModel?.let {
+                        updateHeaderData(it, dynamicChannelPlainResponse)
+                        emit(dynamicChannelPlainResponse)
+                    }
                 }
 
                 if (isCacheDc) {
@@ -178,8 +190,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                             CarouselPlayWidgetDataModel,
-                            PlayWidgetUiModel>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
-                        visitableFound.copy(widgetUiModel = data)
+                            PlayWidgetState>(widgetRepository = homePlayRepository) { visitableFound, data, position ->
+                        visitableFound.copy(widgetState = data)
                     }
 
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
@@ -207,6 +219,31 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         )
                     }
 
+                    dynamicChannelPlainResponse.getWidgetDataIfExistHandleError<
+                            MissionWidgetListDataModel,
+                            HomeMissionWidgetData.HomeMissionWidget>(
+                        widgetRepository = homeMissionWidgetRepository,
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    GetMissionWidget.BANNER_LOCATION_PARAM,
+                                    homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                                )
+                            }
+                        },
+                        handleOnFailed = { visitableFound ->
+                            visitableFound.copy(status = MissionWidgetListDataModel.STATUS_ERROR)
+                        },
+                        mapToWidgetData = { visitableFound, data, _ ->
+                            val resultList =
+                                MissionWidgetHelper.convertMissionWidgetDataList(data.getHomeMissionWidget.missions)
+                            visitableFound.copy(
+                                missionWidgetList = resultList,
+                                status = MissionWidgetListDataModel.STATUS_SUCCESS
+                            )
+                        }
+                    )
+
                     dynamicChannelPlainResponse.getWidgetDataIfExist<
                             FeaturedShopDataModel,
                             List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>(
@@ -233,6 +270,28 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             HomeTopAdsBannerDataModel,
                             ArrayList<TopAdsImageViewModel>>(
                         widgetRepository = homeTopadsImageRepository,
+                        iterateList = true,
+                        onWidgetExist = { size ->
+                            val currentPage = topadsTdnPage
+                            currentPage.toIntOrNull()?.let {
+                                val nextPage = ((it+1) + size)
+                                dynamicChannelPlainResponse.topadsPage = nextPage.toString()
+                            }
+                            emit(dynamicChannelPlainResponse)
+                        },
+                        bundleParam = {
+                            val currentPage = topadsTdnPage
+                            currentPage.toIntOrNull()?.let {
+                                val nextPage = (it + 1)
+                                topadsTdnPage = nextPage.toString()
+                            }
+                            Bundle().apply {
+                                putString(
+                                    HomeTopadsImageRepository.Companion.TOP_ADS_PAGE,
+                                    topadsTdnPage
+                                )
+                            }
+                        },
                         deleteWidgetWhen = {
                             it?.isEmpty() == true
                         }
@@ -241,7 +300,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         if (data.isNotEmpty()) {
                             newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
                         }
-                        dynamicChannelPlainResponse.topadsNextPageToken = newTopAdsModel.topAdsImageViewModel?.nextPageToken?:""
                         newTopAdsModel
                     }
 
@@ -412,7 +470,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 val recomWidget = recomData.first().copy(
                         recommendationFilterChips = recomFilterList
                 )
-                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget)
+                val dataModel = bestSellerMapper.mappingRecommendationWidget(recomWidget, cardInteraction = true)
 
                 homeDataModel.updateWidgetModel(
                         visitable = dataModel.copy(
@@ -448,25 +506,51 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExist(
             bundleParam: (T) -> Bundle = { Bundle() },
+            iterateList: Boolean = false,
             widgetRepository: HomeRepository<K>,
             predicate: (T?) -> Boolean = {true},
             deleteWidgetWhen:(K?) -> Boolean = {false},
+            onWidgetExist: (Int) -> Unit = {},
             mapToWidgetData: (T, K, Int) -> T
     ): HomeDynamicChannelModel {
         try {
-            findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
-                val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
-                if (!deleteWidgetWhen.invoke(data)) {
-                    this.updateWidgetModel(
+            if (!iterateList) {
+                findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
+                    onWidgetExist.invoke(1)
+                    val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                    if (!deleteWidgetWhen.invoke(data)) {
+                        this.updateWidgetModel(
                             visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
                             visitableToChange = visitableFound,
                             position = visitablePosition
-                    ) {}
-                } else {
-                    this.deleteWidgetModel(
+                        ) {}
+                    } else {
+                        this.deleteWidgetModel(
                             visitable = visitableFound,
                             position = visitablePosition
-                    ) {}
+                        ) {}
+                    }
+                }
+            } else {
+                findWidgetList<T>(this, predicate) { indexedValueList ->
+                    onWidgetExist.invoke(indexedValueList.size)
+                    indexedValueList.forEach {
+                        val visitableFound = it.value
+                        val visitablePosition = it.index
+                        val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                        if (!deleteWidgetWhen.invoke(data)) {
+                            this.updateWidgetModel(
+                                visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
+                                visitableToChange = visitableFound,
+                                position = visitablePosition
+                            ) {}
+                        } else {
+                            this.deleteWidgetModel(
+                                visitable = visitableFound,
+                                position = visitablePosition
+                            ) {}
+                        }
+                    }
                 }
             }
             return this
@@ -478,6 +562,58 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ) {}
             }
             HomeServerLogger.warning_home_repository_error(e, T::class.java.simpleName, K::class.java.simpleName)
+        }
+        return this
+    }
+
+    private suspend inline fun <reified T: Visitable<*>, reified K> HomeDynamicChannelModel.getWidgetDataIfExistHandleError(
+            bundleParam: (T) -> Bundle = { Bundle() },
+            widgetRepository: HomeRepository<K>,
+            predicate: (T?) -> Boolean = {true},
+            deleteWidgetWhen:(K?) -> Boolean = {false},
+            onWidgetExist: (Int) -> Unit = {},
+            mapToWidgetData: (T, K, Int) -> T,
+            handleOnFailed: (T) -> T
+    ): HomeDynamicChannelModel {
+        findWidgetList<T>(this, predicate) { indexedValueList ->
+            onWidgetExist.invoke(indexedValueList.size)
+            indexedValueList.forEach {
+                val visitableFound = it.value
+                val visitablePosition = it.index
+                try {
+                    val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                    if (!deleteWidgetWhen.invoke(data)) {
+                        this.updateWidgetModel(
+                            visitable = mapToWidgetData.invoke(
+                                visitableFound,
+                                data,
+                                visitablePosition
+                            ),
+                            visitableToChange = visitableFound,
+                            position = visitablePosition
+                        ) {
+                            //no-op
+                        }
+                    } else {
+                        this.deleteWidgetModel(
+                            visitable = visitableFound,
+                            position = visitablePosition
+                        ) {
+                            //no-op
+                        }
+                    }
+                } catch (e: Exception) {
+                    this.updateWidgetModel(
+                        visitable = handleOnFailed.invoke(
+                            visitableFound
+                        ),
+                        visitableToChange = visitableFound,
+                        position = visitablePosition
+                    ) {
+                        //no-op
+                    }
+                }
+            }
         }
         return this
     }
@@ -495,29 +631,54 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
+    private inline fun <reified T> findWidgetList(
+        homeDataModel: HomeDynamicChannelModel,
+        predicate: (T?) -> Boolean = {true},
+        actionOnFound: (List<IndexedValue<T>>
+        ) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
+        }
+        actionOnFound.invoke(listFound)
+    }
+
     /**
      * Home repository flow:
      *
      * 1. Provide initial HomeData
      * 2. Get above the fold skeleton
      *    2.1 Get home flag response
-     * 3. Save immediately to produce shimmering for ATF data
-     * 4. Get above the fold content
-     * 5. Submit current data to database, to trigger HomeViewModel flow
-     *      if there is no cache, then submit immediately
-     *      if cache exist, don't submit to database because it will trigger jumpy experience
-     * 6. Get dynamic channel data
-     *    6.1. If channel cache is empty, proceed to channel pagination
-     *    6.2. If channel cache is not empty, proceed to full channel request
-     *      if there is token and cache is not exist
-     *      if cache is exist
-     * 7. Submit current data to database, to trigger HomeViewModel flow
-     *    7.1 Emit error pagination only when atf is empty
-     *      Because there is no content that we can show, we showing error page
+     * 3. Get above the fold content
+     * 4. Get dynamic channel data
+     *    4.1. If remote config pagination enabled, proceed with pagination
+     *      4.1.1 If get dynamic channel with page = 1 succeed, then save token to homeData
+     *      4.1.2 If get dynamic channel with page = 1 failed, then emit error
+     *              Because there is no content that we can show, we showing error page
+     *      4.1.3 If channel cache is not empty, proceed to full channel request
+     *              - if there is token and cache is not exist
+     *              - if cache is exist
+     *      4.1.4. If full channel request is success
+     *              Then submit current data to database, to trigger HomeViewModel flow
+     *              Because there is no content that we can show, we showing error page
+     *      4.1.5 If full channel request is failed
+     *              Then emit error pagination
+     *              Because there is no content that we can show, we showing error page
+     *    4.2. If remote config pagination disabled, proceed with no pagination
+     *      4.2.1 If full dynamic channel request succeed
+     *              Then submit current data to database, to trigger HomeViewModel flow
+     *      4.2.2 If full dynamic channel request failed
+     *              Then emit error pagination
+     *              Because there is no content that we can show, we showing error page
      */
     fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
-
             /**
              * Remote config to disable pagination by request with param 0
              */
@@ -529,6 +690,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
+            currentHeaderDataModel = null
 
             /**
              * 1. Provide initial HomeData
@@ -562,7 +724,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
              */
             try {
                 launch {
-                    val homeFlagResponse = homeFlagRepository.getRemoteData()
+                    val homeFlagResponse = homeFlagRepository.getCachedData()
                     homeFlagResponse.homeFlag.let {
                         homeData.homeFlag = homeFlagResponse.homeFlag
                     }
@@ -572,7 +734,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 4. Get above the fold content
+             * 3. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
                 var nonTickerResponseFinished = false
@@ -619,7 +781,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS
                                         } else {
-                                            atfData.status = AtfKey.STATUS_ERROR
+                                            atfData.status = AtfKey.STATUS_EMPTY
                                         }
                                     }
                                     homeData.atfData?.isProcessingAtf = false
@@ -708,113 +870,177 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 6. Get dynamic channel data
+             * 4. Get dynamic channel data
              */
-            val dynamicChannelResponseValue = try {
-                val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
-                        Bundle().apply {
-                            putInt(
-                                    HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION
+            paginationRemoteConfigCondition(
+                remoteConfigPaginationEnabled = {
+                    /**
+                     * 4.1. If remote config pagination enabled, proceed with pagination
+                     */
+                    if (!isCacheExistForProcess) {
+                        val dynamicChannelResponseValue = try {
+                            val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
+                                Bundle().apply {
+                                    putInt(
+                                        HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION
+                                    )
+                                    putString(
+                                        HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
+                                            ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                                    )
+                                }
                             )
-                            putString(
-                                    HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
-                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
-                            )
+                            dynamicChannelResponse
+                        } catch (e: Exception) {
+                            if (!isAtfSuccess && !isCacheExistForProcess) {
+                                null
+                            } else {
+                                HomeChannelData()
+                            }
                         }
-                )
-                dynamicChannelResponse
-            } catch (e: Exception) {
-                if (!isAtfSuccess && !isCacheExistForProcess) {
-                    null
-                } else {
-                    HomeChannelData()
-                }
-            }
 
-            /**
-             * 6.1. If channel cache is empty, proceed to channel pagination
-             */
-            if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
-                val extractPair = extractToken(dynamicChannelResponseValue)
+                        if (dynamicChannelResponseValue != null) {
+                            /**
+                             * 4.1.1 If get dynamic channel with page = 1 succeed, then save token to homeData
+                             */
+                            val extractPair = extractToken(dynamicChannelResponseValue)
 
-                homeData.let {
-                    val combinedChannel = combineChannelWith(it.dynamicHomeChannel, extractPair.second.dynamicHomeChannel)
-                    it.dynamicHomeChannel = combinedChannel
-                    it.token = extractPair.first
-                    it.dynamicHomeChannel.channels.forEach { channel ->
-                        channel.timestamp = currentTimeMillisString
-                    }
-                    currentToken = it.token
-                }
+                            homeData.let {
+                                val combinedChannel = combineChannelWith(it.dynamicHomeChannel, extractPair.second.dynamicHomeChannel)
+                                it.dynamicHomeChannel = combinedChannel
+                                it.token = extractPair.first
+                                it.dynamicHomeChannel.channels.forEach { channel ->
+                                    channel.timestamp = currentTimeMillisString
+                                }
+                                currentToken = it.token
+                            }
 
-                homeData.isProcessingDynamicChannel = false
-                if (isAtfSuccess) {
-                    saveToDatabase(homeData, true)
-                } else {
-                    saveToDatabase(homeData, false)
-                }
-            } else if (dynamicChannelResponseValue == null) {
-
-                /**
-                 * 7.1 Emit error pagination only when atf is empty
-                 * Because there is no content that we can show, we showing error page
-                 */
-                if (!isCacheExistForProcess &&
-                        (homeData.atfData == null ||
-                                (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
-                                homeData.atfData?.dataList?.isEmpty() == true)) {
-                    emit(Result.errorGeneral(Throwable(),null))
-                } else {
-                    emit(Result.error(Throwable(), null))
-                }
-                saveToDatabase(homeData)
-            }
-
-            /**
-             * 6.2. If channel cache is not empty, proceed to full channel request
-             * - if there is token and cache is not exist
-             * - if cache is exist
-             *
-             */
-            if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
-                    isCacheExistForProcess) {
-                try {
-                    homeData = processFullPageDynamicChannel(
-                            homeDataResponse = homeData)
-                            ?: HomeData()
-                    homeData.dynamicHomeChannel.channels.forEach {
-                        it.timestamp = currentTimeMillisString
-                    }
-                    homeData.let {
-                        emit(Result.success(null))
-
-                        /**
-                         * 7. Submit current data to database, to trigger HomeViewModel flow
-                         */
-                        homeData.isProcessingDynamicChannel = false
-                        if (isAtfSuccess) {
-                            saveToDatabase(it, true)
+                            homeData.isProcessingDynamicChannel = false
+                            if (isAtfSuccess) {
+                                saveToDatabase(homeData, true)
+                            } else {
+                                saveToDatabase(homeData, false)
+                            }
                         } else {
-                            saveToDatabase(it, false)
+                            /**
+                             * 4.1.2 If get dynamic channel with page = 1 failed, then emit error
+                             * Because there is no content that we can show, we showing error page
+                             */
+                            if (!isCacheExistForProcess &&
+                                (homeData.atfData == null ||
+                                        (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
+                                        homeData.atfData?.dataList?.isEmpty() == true)) {
+                                emit(Result.errorGeneral(Throwable(),null))
+                            } else {
+                                emit(Result.error(Throwable(), null))
+                            }
+                            saveToDatabase(homeData)
                         }
                     }
-                } catch (e: Exception) {
 
                     /**
-                     * 7.1 Emit error pagination only when atf is empty
-                     * Because there is no content that we can show, we showing error page
+                     * 4.1.3 If channel cache is not empty, proceed to full channel request
+                     * - if there is token and cache is not exist
+                     * - if cache is exist
+                     *
                      */
-                    if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
-                        emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
+                    if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
+                        isCacheExistForProcess) {
+                        try {
+                            homeData = processFullPageDynamicChannel(homeDataResponse = homeData)
+                                ?: HomeData()
+                            homeData.dynamicHomeChannel.channels.forEach {
+                                it.timestamp = currentTimeMillisString
+                            }
+                            homeData.let {
+                                emit(Result.success(null))
+
+                                /**
+                                 * 4.1.4. If full channel request is success
+                                 * Then submit current data to database, to trigger HomeViewModel flow
+                                 */
+                                homeData.isProcessingDynamicChannel = false
+                                if (isAtfSuccess) {
+                                    saveToDatabase(it, true)
+                                } else {
+                                    saveToDatabase(it, false)
+                                }
+                            }
+                        } catch (e: Exception) {
+
+                            /**
+                             * 4.1.5 If full channel request is failed
+                             * Then emit error pagination
+                             * Because there is no content that we can show, we showing error page
+                             */
+                            if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                                emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
+                            }
+                            cacheCondition(
+                                isCacheExistForProcess,
+                                isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                }
+                            )
+                        }
                     }
-                    cacheCondition(
+                },
+                remoteConfigPaginationDisabled = {
+                    /**
+                     * 4.2. If remote config pagination disabled, proceed with no pagination
+                     */
+                    try {
+                        homeData = processFullPageDynamicChannel(
+                            homeDataResponse = homeData)
+                            ?: HomeData()
+                        homeData.dynamicHomeChannel.channels.forEach {
+                            it.timestamp = currentTimeMillisString
+                        }
+                        homeData.let {
+                            emit(Result.success(null))
+
+                            /**
+                             * 4.2.1 If full dynamic channel request succeed
+                             * Then submit current data to database, to trigger HomeViewModel flow
+                             */
+                            it.isProcessingDynamicChannel = false
+                            if (isAtfSuccess) {
+                                saveToDatabase(it, true)
+                            } else {
+                                saveToDatabase(it, false)
+                            }
+                        }
+                    } catch (e: Exception) {
+
+                        /**
+                         * 4.2.2 If full dynamic channel request failed
+                         * Then emit error pagination
+                         * Because there is no content that we can show, we showing error page
+                         */
+                        if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                            emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
+                        }
+                        cacheCondition(
                             isCacheExistForProcess,
                             isCacheEmptyAction = {
                                 saveToDatabase(homeData)
                             }
-                    )
+                        )
+                    }
                 }
-            }
+            )
+        }
+    }
+
+    private suspend fun paginationRemoteConfigCondition(
+        remoteConfigPaginationDisabled: suspend () -> Unit,
+        remoteConfigPaginationEnabled: suspend () -> Unit
+    ) {
+        val disablePagination = remoteConfig.getBoolean(RemoteConfigKey.HOME_REMOVE_PAGINATION, true)
+        if (disablePagination) {
+            remoteConfigPaginationDisabled.invoke()
+        } else {
+            remoteConfigPaginationEnabled.invoke()
         }
     }
 

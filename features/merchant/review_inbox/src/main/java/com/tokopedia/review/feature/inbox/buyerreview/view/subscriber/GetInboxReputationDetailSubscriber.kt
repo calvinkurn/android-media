@@ -2,28 +2,29 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationItemDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBadgeDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationDataDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeCustomerDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeSellerDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ImageAttachmentDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationDetailDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewItemDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.VideoAttachmentDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReputationBadgeUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import rx.Subscriber
 
 /**
@@ -48,17 +49,10 @@ open class GetInboxReputationDetailSubscriber constructor(
     override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
         viewListener.finishLoading()
         viewListener.onSuccessGetInboxDetail(
-            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationDomain).list.getOrNull(
+            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationResponse).list.getOrNull(
                 0
             ) ?: InboxReputationItemUiModel(),
             mappingToListItemViewModel(inboxReputationDetailDomain.reviewDomain)
-        )
-    }
-
-    private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain): ReputationBadgeUiModel {
-        return ReputationBadgeUiModel(
-            reputationBadge.level,
-            reputationBadge.set
         )
     }
 
@@ -74,22 +68,23 @@ open class GetInboxReputationDetailSubscriber constructor(
     private fun convertToInboxReputationDetailItemViewModel(
         reviewDomain: ReviewDomain, itemDomain: ReviewItemDomain
     ): Visitable<*> {
+        val reviewMediaThumbnail = convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.reviewId)
         return InboxReputationDetailItemUiModel(
             reviewDomain.reputationId,
-            itemDomain.productData.productId.toString(),
+            itemDomain.productData.productId,
             itemDomain.productData.productName,
             itemDomain.productData.productImageUrl,
             itemDomain.productData.productImageUrl,
-            itemDomain.reviewData.reviewId.toString(),
+            itemDomain.reviewData.reviewId,
             reviewDomain.userData.fullName,
             if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1)) itemDomain.reviewData
                 .reviewCreateTime.dateTimeFmt1 else itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1,
-            convertToImageAttachmentViewModel(itemDomain.reviewData.reviewImageUrl),
+            reviewMediaThumbnail,
+            convertToPreloadedDetailedReviewMedia(reviewMediaThumbnail),
             itemDomain.reviewData.reviewMessage,
             itemDomain.reviewData.reviewRating,
             itemDomain.isReviewHasReviewed,
             itemDomain.isReviewIsEditable,
-            itemDomain.isReviewIsSkippable,
             itemDomain.isReviewIsSkipped,
             reviewDomain.shopData.shopId,
             viewListener.tab,
@@ -121,57 +116,87 @@ open class GetInboxReputationDetailSubscriber constructor(
         )
     }
 
-    private fun convertToImageAttachmentViewModel(reviewImageUrl: List<ImageAttachmentDomain>): List<ImageAttachmentUiModel> {
-        return reviewImageUrl.map {
-            ImageAttachmentUiModel(
-                it.attachmentId,
-                it.description,
-                it.uriThumbnail,
-                it.uriLarge
+    private fun convertToReviewMediaThumbnail(
+        imageAttachments: List<ImageAttachmentDomain>,
+        videoAttachments: List<VideoAttachmentDomain>,
+        reviewId: String
+    ): ReviewMediaThumbnailUiModel {
+        val thumbnails = videoAttachments.map { videoAttachment ->
+            ReviewMediaVideoThumbnailUiModel(
+                ReviewMediaVideoThumbnailUiState.Showing(
+                    attachmentID = videoAttachment.attachmentId,
+                    reviewID = reviewId,
+                    url = videoAttachment.videoUrl
+                )
             )
-        }
+        }.plus(
+            imageAttachments.map { imageAttachments ->
+                ReviewMediaImageThumbnailUiModel(
+                    ReviewMediaImageThumbnailUiState.Showing(
+                        attachmentID = imageAttachments.attachmentId,
+                        reviewID = reviewId,
+                        thumbnailUrl = imageAttachments.uriThumbnail,
+                        fullSizeUrl = imageAttachments.uriLarge
+                    )
+                )
+            }
+        )
+        return ReviewMediaThumbnailUiModel(thumbnails)
     }
 
-    protected fun convertToReputationViewModel(inboxReputationDomain: InboxReputationDomain): InboxReputationUiModel {
-        return InboxReputationUiModel(
-            convertToInboxReputationList(inboxReputationDomain.inboxReputation),
-            inboxReputationDomain.paging.isHasNext
+    private fun convertToPreloadedDetailedReviewMedia(
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
+    ): ProductrevGetReviewMedia {
+        return ProductrevGetReviewMedia(
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
+            detail = Detail(
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCountFmt = reviewMediaThumbnailUiModel.generateMediaCount().toString(),
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
+            )
         )
     }
 
-    private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain>): List<InboxReputationItemUiModel> {
-        return inboxReputationDomain.map {
+    protected fun convertToReputationViewModel(inboxReputationResponse: InboxReputationResponseWrapper.Data.Response): InboxReputationUiModel {
+        return InboxReputationUiModel(
+            convertToInboxReputationList(inboxReputationResponse.reputationList),
+            inboxReputationResponse.hasNext
+        )
+    }
+
+    private fun convertToInboxReputationList(reputationList: List<InboxReputationResponseWrapper.Data.Response.Reputation>): List<InboxReputationItemUiModel> {
+        return reputationList.map {
             InboxReputationItemUiModel(
-                it.reputationId.toString(),
-                it.revieweeData.revieweeName,
+                it.reputationIdStr,
+                it.revieweeData.name,
                 it.orderData.createTimeFmt,
-                it.revieweeData.revieweePicture,
+                it.revieweeData.picture,
                 it.reputationData.lockingDeadlineDays.toString(),
                 it.orderData.invoiceRefNum,
                 convertToReputationViewModel(it.reputationData),
-                it.revieweeData.revieweeRoleId,
-                convertToBuyerReputationViewModel(it.revieweeData.revieweeBadgeCustomer),
-                convertToSellerReputationViewModel(it.revieweeData.revieweeBadgeSeller),
-                it.shopId,
-                it.userId
+                it.revieweeData.roleId,
+                convertToBuyerReputationViewModel(it.revieweeData.buyerBadge),
+                convertToSellerReputationViewModel(it.revieweeData.shopBadge),
+                it.shopIdStr,
+                it.userIdStr
             )
         }
     }
 
-    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain): RevieweeBadgeSellerUiModel {
+    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: InboxReputationResponseWrapper.Data.Response.Reputation.RevieweeData.ShopBadge): RevieweeBadgeSellerUiModel {
         return RevieweeBadgeSellerUiModel(
             revieweeBadgeSeller.tooltip,
             revieweeBadgeSeller.reputationScore,
             revieweeBadgeSeller.score,
             revieweeBadgeSeller.minBadgeScore,
             revieweeBadgeSeller.reputationBadgeUrl,
-            convertToReputationBadgeViewModel(revieweeBadgeSeller.reputationBadge),
             revieweeBadgeSeller.isFavorited
         )
     }
 
     private fun convertToBuyerReputationViewModel(
-        revieweeBadgeCustomer: RevieweeBadgeCustomerDomain
+        revieweeBadgeCustomer: InboxReputationResponseWrapper.Data.Response.Reputation.RevieweeData.BuyerBadge
     ): RevieweeBadgeCustomerUiModel {
         return RevieweeBadgeCustomerUiModel(
             revieweeBadgeCustomer.positive,
@@ -182,11 +207,11 @@ open class GetInboxReputationDetailSubscriber constructor(
         )
     }
 
-    private fun convertToReputationViewModel(reputationData: ReputationDataDomain): ReputationDataUiModel {
+    private fun convertToReputationViewModel(reputationData: InboxReputationResponseWrapper.Data.Response.Reputation.ReputationData): ReputationDataUiModel {
         return ReputationDataUiModel(
             reputationData.revieweeScore,
             reputationData.revieweeScoreStatus,
-            reputationData.isShowRevieweeScore,
+            reputationData.showRevieweeScore,
             reputationData.reviewerScore,
             reputationData.reviewerScoreStatus,
             reputationData.isEditable,
@@ -194,9 +219,9 @@ open class GetInboxReputationDetailSubscriber constructor(
             reputationData.isLocked,
             reputationData.isAutoScored,
             reputationData.isCompleted,
-            reputationData.isShowLockingDeadline,
+            reputationData.showLockingDeadline,
             reputationData.lockingDeadlineDays,
-            reputationData.isShowBookmark,
+            reputationData.showBookmark,
             reputationData.actionMessage
         )
     }

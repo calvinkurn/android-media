@@ -9,7 +9,8 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_SOURCE
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
-import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layout.view.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 13/4/20.
@@ -19,7 +20,10 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
 
     var items: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val keywordName : Typography = view.findViewById(R.id.keyword_name)
+        val checkBox : CheckboxUnify = view.findViewById(R.id.checkBox)
+    }
 
     fun getSelectedList(): List<GetKeywordResponse.KeywordsItem> {
         val selected: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
@@ -42,14 +46,14 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.view.checkBox.setOnCheckedChangeListener(null)
-        holder.view.checkBox.isChecked = items[holder.adapterPosition].isChecked
-        holder.view.keyword_name.text = items[holder.adapterPosition].tag
+        holder.checkBox.setOnCheckedChangeListener(null)
+        holder.checkBox.isChecked = items[holder.adapterPosition].isChecked
+        holder.keywordName.text = items[holder.adapterPosition].tag
 
         holder.view.setOnClickListener {
-            holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
+            holder.checkBox.isChecked = !holder.checkBox.isChecked
         }
-        holder.view.checkBox.setOnCheckedChangeListener { _, isChecked ->
+        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             items[holder.adapterPosition].isChecked = isChecked
             onCheck.invoke()
         }

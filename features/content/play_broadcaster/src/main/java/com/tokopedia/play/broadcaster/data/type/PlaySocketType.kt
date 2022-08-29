@@ -14,10 +14,11 @@ enum class PlaySocketEnum(val value: String) {
     NewMetric("GENERAL_BULK_EVENT_NOTIF"),
     LiveStats("REPORT_CHANNEL"),
     LiveDuration("LIVE_DURATION"),
-    ProductTag("PRODUCT_TAG"),
+    ProductTag("PRODUCT_TAG_UPDATE"),
     Banned("MODERATE"),
     Chat("MESG"),
     Freeze("FREEZE"),
     ChannelInteractive("CHANNEL_INTERACTIVE"),
+    ChannelQuiz("CHANNEL_QUIZ"),
     PinnedMessage("PINNED_MESSAGE"),
 }

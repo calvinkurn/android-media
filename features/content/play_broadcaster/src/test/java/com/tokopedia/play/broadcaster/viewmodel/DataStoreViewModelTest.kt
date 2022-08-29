@@ -21,7 +21,6 @@ class DataStoreViewModelTest {
 
     private val dispatcherProvider = CoroutineTestDispatchers
 
-    private lateinit var productDataStore: ProductDataStore
     private lateinit var coverDataStore: CoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var titleDataStore: TitleDataStore
@@ -33,13 +32,12 @@ class DataStoreViewModelTest {
 
     @Before
     fun setUp() {
-        productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
         coverDataStore = CoverDataStoreImpl(dispatcherProvider, mockk(), mockk())
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
         interactiveDataStore = InteractiveDataStoreImpl()
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
+        mockSetupDataStore = MockSetupDataStore(coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
         viewModel = DataStoreViewModel(mockSetupDataStore)
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -15,6 +16,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
+import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
+import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import java.util.*
 
 class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
@@ -25,8 +28,12 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
    private var mLayoutManager: LinearLayoutManager? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return adapterTypeFactory.createViewHolder(view, viewType)
+        return try {
+            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+            adapterTypeFactory.createViewHolder(view, viewType)
+        } catch (e: Exception) {
+            EmptyBlankViewHolder(parent)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -100,6 +107,25 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(positions.isNotEmpty()){
             currentSelected = positions.first()
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
+        }
+    }
+
+    fun onResumeSpecialRelease() {
+        if(itemCount > 0){
+            for (i in 0..(mRecyclerView?.childCount?:0)) {
+                val childView = mRecyclerView?.getChildAt(i)
+                childView?.let {
+                    val holder = mRecyclerView?.getChildViewHolder(childView)
+                    holder?.let {
+                        if (it is SpecialReleaseViewHolder) {
+                            val viewholderPosition = it.adapterPosition
+                            notifyItemChanged(viewholderPosition, Bundle().apply {
+                                putBoolean(SpecialReleaseDataModel.SPECIAL_RELEASE_TIMER_BIND, true)
+                            })
+                        }
+                    }
+                }
+            }
         }
     }
 

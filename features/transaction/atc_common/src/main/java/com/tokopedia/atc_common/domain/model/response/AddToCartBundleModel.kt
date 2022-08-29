@@ -38,6 +38,7 @@ data class AddToCartBundleDataModel(
 )
 
 data class ProductDataModel(
+        var cartId: String = "",
         var customerId: String = "",
         var notes: String = "",
         var productId: String = "",

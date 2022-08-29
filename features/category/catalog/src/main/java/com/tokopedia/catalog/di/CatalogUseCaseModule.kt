@@ -4,16 +4,25 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.catalog.repository.CatalogAllReviewRepository
+import com.tokopedia.catalog.repository.CatalogComparisonProductRepository
 import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
 import com.tokopedia.catalog.usecase.detail.CatalogAllReviewUseCase
+import com.tokopedia.catalog.usecase.detail.CatalogComparisonProductUseCase
 import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
-import com.tokopedia.catalog.usecase.listing.*
+import com.tokopedia.catalog.usecase.listing.CatalogCategoryProductUseCase
+import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
+import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
+import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class CatalogUseCaseModule {
@@ -46,6 +55,12 @@ class CatalogUseCaseModule {
     @Provides
     fun provideCatalogAllReviewRepository(): CatalogAllReviewRepository {
         return CatalogAllReviewRepository()
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogComparisonProductRepository(): CatalogComparisonProductRepository {
+        return CatalogComparisonProductRepository()
     }
 
     @CatalogScope
@@ -95,8 +110,29 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
+    fun addWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @CatalogScope
+    @Provides
+    fun deleteWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
+    }
+
+    @CatalogScope
+    @Provides
     fun getCatalogAllReviewUseCase(catalogAllReviewRepository: CatalogAllReviewRepository): CatalogAllReviewUseCase {
         return CatalogAllReviewUseCase(catalogAllReviewRepository)
     }
 
+    @CatalogScope
+    @Provides
+    fun getCatalogComparisonProductUseCase(catalogComparisonProductRepository: CatalogComparisonProductRepository): CatalogComparisonProductUseCase {
+        return CatalogComparisonProductUseCase(catalogComparisonProductRepository)
+    }
+
+    @CatalogScope
+    @Provides
+    fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

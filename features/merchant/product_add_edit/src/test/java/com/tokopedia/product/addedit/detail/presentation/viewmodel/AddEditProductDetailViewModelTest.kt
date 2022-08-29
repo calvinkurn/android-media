@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
@@ -14,7 +15,7 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_WHOLESALE_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -28,6 +29,7 @@ import com.tokopedia.product.addedit.specification.domain.model.AnnotationCatego
 import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
 import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
@@ -35,6 +37,10 @@ import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse.GetIMSMeta
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse.GetIMSMeta.Data
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -51,9 +57,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import java.io.IOException
-import java.lang.Exception
 import kotlin.reflect.KFunction0
+import kotlin.reflect.KFunction1
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -88,6 +95,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getProductTitleValidationUseCase: GetProductTitleValidationUseCase
+
+    @RelaxedMockK
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -153,6 +163,7 @@ class AddEditProductDetailViewModelTest {
                 validateProductUseCase, validateProductNameUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
                 productPriceSuggestionSuggestedPriceGetUseCase,
                 priceSuggestionSuggestedPriceGetByKeywordUseCase, getProductTitleValidationUseCase,
+                getMaxStockThresholdUseCase,
                 userSession)
     }
 
@@ -559,6 +570,21 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductWholeSaleQuasdsaoleSaleQuantityInput`() {
+        val stringResErrorMessage = "Jasd"
+
+        val errorMessage = runValidationAndProvideMessage(
+            provider::getWholeSaleMaxErrorMessage,
+            MAX_WHOLESALE_QUANTITY,
+            stringResErrorMessage
+        ) {
+            viewModel.validateProductWholeSaleQuantityInput(MAX_WHOLESALE_QUANTITY.toString(), "", "5")
+        }
+
+        Assert.assertTrue(errorMessage == stringResErrorMessage)
+    }
+
+    @Test
     fun `validateProductWholeSalePriceInput should valid when wholeSalePriceInput is more than zero and productPriceInput also previousInput is blank`() {
         val errorMessage = viewModel.validateProductWholeSalePriceInput("500", "", "")
 
@@ -689,15 +715,146 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductStockInput should invalid when productStockInput is greater than max stock limit`() {
-        val stringResErrorMessage = "Stok melebihi batas maks. 999.999"
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and getting an error`() {
+        /*
+         * Init Data:
+         * 1. stringResErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current more than expectedMaxStockThreshold for this test case
+         */
+        val stringResErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "200000"
 
-        runValidationAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, stringResErrorMessage) {
-            viewModel.validateProductStockInput("${MAX_PRODUCT_STOCK_LIMIT + 1}")
-        }
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = GetIMSMeta(
+                data = Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
 
+        // create stub
+        every {
+            provider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns stringResErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        viewModel.validateProductStockInput(stockInput)
+
+        // wait until isProductStockInputError gets the value
         val isError = viewModel.isProductStockInputError.getOrAwaitValue()
-        Assert.assertTrue(isError && viewModel.productStockMessage.isNotBlank() && viewModel.productStockMessage == stringResErrorMessage)
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Error and the error message is not blank
+         * 3. Error message equals to the actual one
+         */
+        Assert.assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        Assert.assertTrue(isError && viewModel.productStockMessage.isNotBlank())
+        Assert.assertEquals(stringResErrorMessage, viewModel.productStockMessage)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. stringResErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock less than expectedMaxStockThreshold for this test case
+         */
+        val stringResErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "212"
+
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = GetIMSMeta(
+                data = Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
+
+        // create stub
+        every {
+            provider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns stringResErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        viewModel.validateProductStockInput(stockInput)
+
+        // wait until isProductStockInputError gets the value
+        val isError = viewModel.isProductStockInputError.getOrAwaitValue()
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one.
+         * 2. Not error and the error message is blank
+         */
+        Assert.assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        Assert.assertTrue(!isError && viewModel.productStockMessage.isBlank())
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should fail in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. stringResErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock more than expectedMaxStockThreshold for this test case
+         */
+        val stringResErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold: String? = null
+        val stockInput = "200000"
+
+        // throw a throwable
+        coEvery {
+            getMaxStockThresholdUseCase.execute(anyString())
+        } throws Throwable()
+
+        // create stub
+        every {
+            provider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns stringResErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        viewModel.validateProductStockInput(stockInput)
+
+        // wait until isProductStockInputError gets the value
+        val isError = viewModel.isProductStockInputError.getOrAwaitValue()
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one.
+         * 2. Not error and the error message is blank
+         */
+        Assert.assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        Assert.assertTrue(!isError && viewModel.productStockMessage.isBlank())
     }
 
     @Test
@@ -884,6 +1041,24 @@ class AddEditProductDetailViewModelTest {
 
         val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
         Assert.assertTrue((result as Success).data == errorMessage)
+    }
+
+    @Test
+    fun `validateProductNameInputFromNetwork should invalid when Error throws`() = coroutineTestRule.runBlockingTest {
+        val errorMessage = "Error Message"
+
+        coEvery {
+            validateProductNameUseCase.executeOnBackground()
+        } throws MessageErrorException(errorMessage)
+
+        viewModel.validateProductNameInputFromNetwork("book")
+
+        coVerify {
+            validateProductNameUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
+        Assert.assertTrue((result as Fail).throwable.message == errorMessage)
     }
 
     @Test
@@ -1121,14 +1296,14 @@ class AddEditProductDetailViewModelTest {
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", true, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", true, ""),
+                                Values("1", "Seedap", false, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa",
                         data = listOf(
-                                Values(1, "Soto", false, ""),
-                                Values(1, "Bawang", true, ""))
+                                Values("1", "Soto", false, ""),
+                                Values("1", "Bawang", true, ""))
                 )
         )
 
@@ -1149,7 +1324,10 @@ class AddEditProductDetailViewModelTest {
 
         if (result is Success) {
             viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationList = viewModel.selectedSpecificationList.getOrAwaitValue()
             val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie", specificationList[0].data)
+            Assert.assertEquals("Bawang", specificationList[1].data)
             Assert.assertEquals("Indomie, Bawang", specificationText)
         }
     }
@@ -1160,38 +1338,38 @@ class AddEditProductDetailViewModelTest {
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", true, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", true, ""),
+                                Values("1", "Seedap", false, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa1",
                         data = listOf(
-                                Values(1, "Soto1", false, ""),
-                                Values(1, "Bawang1", true, ""))
+                                Values("1", "Soto1", false, ""),
+                                Values("1", "Bawang1", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa2",
                         data = listOf(
-                                Values(1, "Soto2", false, ""),
-                                Values(1, "Bawang2", true, ""))
+                                Values("1", "Soto2", false, ""),
+                                Values("1", "Bawang2", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa3",
                         data = listOf(
-                                Values(1, "Soto3", false, ""),
-                                Values(1, "Bawang3", true, ""))
+                                Values("1", "Soto3", false, ""),
+                                Values("1", "Bawang3", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa4",
                         data = listOf(
-                                Values(1, "Soto4", false, ""),
-                                Values(1, "Bawang4", true, ""))
+                                Values("1", "Soto4", false, ""),
+                                Values("1", "Bawang4", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa5",
                         data = listOf(
-                                Values(1, "Soto5", false, ""),
-                                Values(1, "Bawang5", true, ""))
+                                Values("1", "Soto5", false, ""),
+                                Values("1", "Bawang5", true, ""))
                 )
         )
 
@@ -1242,8 +1420,8 @@ class AddEditProductDetailViewModelTest {
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", false, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", false, ""),
+                                Values("1", "Seedap", false, ""))
                 )
         )
         viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
@@ -1427,9 +1605,46 @@ class AddEditProductDetailViewModelTest {
     fun `when removeKeywords from product name input, should generate clean product name`() {
         val blacklistedWords = listOf("shopee", "lazada")
         val result = viewModel.removeKeywords("shopee lazada   samsung", blacklistedWords)
-        val result2 = viewModel.removeKeywords("shopee lazada   samsung", blacklistedWords)
 
         assertEquals("samsung", result)
+    }
+
+    @Test
+    fun `when updateHasRequiredSpecification updated with SIGNAL_STATUS_VARIANT, should update hasRequiredSpecification`() {
+        val annotationData = listOf(AnnotationCategoryData(
+            variant = SIGNAL_STATUS_VARIANT
+        ))
+        viewModel.updateHasRequiredSpecification(annotationData)
+        val result = viewModel.hasRequiredSpecification.getOrAwaitValue()
+
+        assertTrue(result)
+    }
+
+    @Test
+    fun `when updateHasRequiredSpecification without SIGNAL_STATUS_VARIANT, should update hasRequiredSpecification`() {
+        val annotationData = listOf(AnnotationCategoryData())
+        viewModel.updateHasRequiredSpecification(annotationData)
+        val result = viewModel.hasRequiredSpecification.getOrAwaitValue()
+
+        assertFalse(result)
+    }
+
+    @Test
+    fun `when validateSelectedSpecificationList, should return valid result`() {
+        val annotationData = listOf(AnnotationCategoryData(
+            variant = SIGNAL_STATUS_VARIANT
+        ))
+        val selectedSpec = listOf(SpecificationInputModel(
+            specificationVariant = SIGNAL_STATUS_VARIANT
+        ))
+
+        val resultEmptyState = viewModel.validateSelectedSpecificationList()
+        viewModel.updateHasRequiredSpecification(annotationData)
+        viewModel.updateSelectedSpecification(selectedSpec)
+        val resultFilledState = viewModel.validateSelectedSpecificationList()
+
+        assertTrue(resultEmptyState)
+        assertTrue(resultFilledState)
     }
 
     @Test
@@ -1449,25 +1664,18 @@ class AddEditProductDetailViewModelTest {
         isValid = viewModel.callPrivateFunc("isInputValid") as Boolean
         Assert.assertTrue(isValid)
 
-        viewModel.shouldUpdateVariant = true
         viewModel.isDrafting = true
         viewModel.isReloadingShowCase = true
-        assert(viewModel.shouldUpdateVariant)
         assert(viewModel.isDrafting)
         assert(viewModel.isReloadingShowCase)
 
-        viewModel.shouldUpdateVariant = false
         viewModel.isDrafting = false
         viewModel.isReloadingShowCase = false
-        assertFalse(viewModel.shouldUpdateVariant)
         assertFalse(viewModel.isDrafting)
         assertFalse(viewModel.isReloadingShowCase)
 
         viewModel.productPhotoPaths = mutableListOf("sss")
         assert(viewModel.productPhotoPaths[0] == "sss")
-
-        viewModel.specificationList = mutableListOf(SpecificationInputModel(id="123"))
-        assert(viewModel.specificationList[0].id == "123")
 
         viewModel.productInputModel = ProductInputModel(productId = 11L)
         assert(viewModel.productInputModel.productId == 11L)
@@ -1499,12 +1707,6 @@ class AddEditProductDetailViewModelTest {
         runValidationAndProvideMessage(provider::getProductNameTips, null) {
             viewModel.validateProductNameInput("toped")
         }
-        runValidationAndProvideMessage(provider::getEmptyProductPriceErrorMessage, null) {
-            viewModel.validateProductPriceInput("")
-        }
-        runValidationAndProvideMessage(provider::getMinLimitProductPriceErrorMessage, null) {
-            viewModel.validateProductPriceInput("-9999")
-        }
 
         runValidationAndProvideMessage(provider::getEmptyWholeSaleQuantityErrorMessage, null) {
             viewModel.validateProductWholeSaleQuantityInput("", "", "")
@@ -1534,17 +1736,6 @@ class AddEditProductDetailViewModelTest {
         runValidationAndProvideMessage(provider::getPrevInputWholeSalePriceErrorMessage, null) {
             viewModel.validateProductWholeSalePriceInput("-1", "10", "1")
         }
-
-        runValidationAndProvideMessage(provider::getEmptyProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput("")
-        }
-        runValidationAndProvideMessage(provider::getEmptyProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput("-9999")
-        }
-        runValidationAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput((MAX_PRODUCT_STOCK_LIMIT + 1).toString())
-        }
-
         runValidationAndProvideMessage(provider::getEmptyOrderQuantityErrorMessage, null) {
             viewModel.validateProductMinOrderInput("", "")
         }
@@ -1589,7 +1780,6 @@ class AddEditProductDetailViewModelTest {
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
-
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(
@@ -1656,6 +1846,18 @@ class AddEditProductDetailViewModelTest {
         every { provider() } returns value
         val result = funcToCall.invoke()
         verify { provider() }
+        return result
+    }
+
+    private fun <T: Any> runValidationAndProvideMessage(
+        provider: KFunction1<Int, String>,
+        arg: Int,
+        value: String,
+        funcToCall: () -> T
+    ): T {
+        every { provider(arg) } returns value
+        val result = funcToCall.invoke()
+        verify { provider(arg) }
         return result
     }
 

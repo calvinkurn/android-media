@@ -16,12 +16,11 @@ import com.tokopedia.shop.score.stub.common.util.ShopPerformanceComponentStubIns
 import com.tokopedia.shop.score.stub.common.util.ShopScorePrefManagerStub
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
-import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailUseCaseStub
 import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreCommonMapperStub
 import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreMapperStub
 import com.tokopedia.shop.score.stub.performance.domain.response.ShopInfoPeriodResponseStub
 import com.tokopedia.shop.score.stub.performance.domain.response.ShopScoreResponseStub
-import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopInfoPeriodUseCaseStub
+import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopCreatedInfoUseCaseStub
 import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopPerformanceUseCaseStub
 import com.tokopedia.shop.score.stub.performance.presentation.activity.ShopPerformanceActivityStub
 import com.tokopedia.unifycomponents.R
@@ -40,7 +39,7 @@ abstract class BaseShopScoreTest {
     protected lateinit var applicationContext: Context
     protected lateinit var userSessionStub: UserSessionStub
     protected lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
-    protected lateinit var getShopInfoPeriodUseCaseStub: GetShopInfoPeriodUseCaseStub
+    protected lateinit var getShopInfoPeriodUseCaseStub: GetShopCreatedInfoUseCaseStub
     protected lateinit var getShopPerformanceUseCaseStub: GetShopPerformanceUseCaseStub
     protected lateinit var shopScorePrefManagerStub: ShopScorePrefManagerStub
     protected lateinit var shopScoreMapperStub: ShopScoreMapperStub
@@ -121,7 +120,7 @@ abstract class BaseShopScoreTest {
         getShopPerformanceUseCaseStub =
             getShopPerformanceComponentStub.getShopPerformanceUseCaseStub() as GetShopPerformanceUseCaseStub
         getShopInfoPeriodUseCaseStub =
-            getShopPerformanceComponentStub.getShopInfoPeriodUseCaseStub() as GetShopInfoPeriodUseCaseStub
+            getShopPerformanceComponentStub.getShopInfoPeriodUseCaseStub() as GetShopCreatedInfoUseCaseStub
         shopScoreCommonMapperStub =
             getShopPerformanceComponentStub.shopScoreCommonMapper() as ShopScoreCommonMapperStub
         shopScoreMapperStub =

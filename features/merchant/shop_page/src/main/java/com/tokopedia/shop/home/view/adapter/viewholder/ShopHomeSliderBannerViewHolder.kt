@@ -13,7 +13,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
 import com.tokopedia.shop.databinding.ViewmodelSliderBannerBinding
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
-import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -27,7 +27,6 @@ import java.util.*
 
 class ShopHomeSliderBannerViewHolder(
         view: View?,
-        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
@@ -83,6 +82,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, 0 , indicatorWrapper.paddingRight, 0)
             indicatorWrapper.setMargin(0, 4.toPx(), 0, 0)
         }
     }
@@ -125,11 +125,6 @@ class ShopHomeSliderBannerViewHolder(
         textViewTitle?.apply {
             if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
-                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
-                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
-                    }
-                }
             } else {
                 text = shopHomeDisplayWidgetUiModel.header.title
                 show()

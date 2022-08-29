@@ -1,6 +1,12 @@
 <resources>
 
+    <!-- general -->
+    <string name="colored_asterisk"><![CDATA[<font color=\'#D6001C\'>&#160;*</font>]]></string>
+    <string name="label_asterisk">&#160;*</string>
+    <string name="action_continue">Lanjut</string>
+
     <!-- add edit product screen name -->
+    <string name="product_add_edit_preview">Informasi Produk</string>
     <string name="product_add_edit_detail">Detail Produk</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>
@@ -19,12 +25,23 @@
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
+    <string name="label_dialog_title_activate_variant_status">Aktifkan status produk?</string>
+    <string name="label_dialog_desc_activate_variant_status_all_available">Status dari semua varian produk ini akan berubah menjadi aktif.</string>
+    <string name="label_dialog_desc_activate_variant_status_all_empty">Stok produk kosong. Update stok dulu, ya.</string>
+    <string name="label_dialog_desc_activate_variant_status_all_empty_mainapp">Stok produk kosong, ubah stok produk bervarian melalui Daftar Produk atau melalui Tokopedia Seller.</string>
+    <string name="title_dialog_desc_activate_variant_status_all_empty_mainapp">Status produkmu tidak bisa diaktifkan</string>
+    <string name="label_dialog_desc_activate_variant_status_partially_available">Status semua varian produk ini akan berubah menjadi aktif. Varian dengan stok 0 akan tetap tidak aktif.</string>
+    <string name="label_coachmark_out_of_stock">Stok produkmu kosong. Update stok agar produkmu bisa dicari pembeli, ya.</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
     <string name="action_add">Tambah</string>
-    <string name="action_done">Selesai</string>
     <string name="action_save">Simpan</string>
+    <string name="action_learn">Pelajari Selengkapnya</string>
     <string name="action_oke">Oke</string>
+    <string name="action_activate_variant_status">Ya, Aktifkan</string>
+    <string name="action_activate_variant_status_stock_empty">Update Stok</string>
+    <string name="action_cancel_activate_variant_status">Batal</string>
+    <string name="error_weight_not_filled">Isi detail pengiriman dulu, ya.</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>
@@ -62,13 +79,9 @@
     <string name="detail_label_product_price">Harga produk</string>
     <string name="label_add_product_price_tips">Tentukan harga sesuai pasaran produkmu</string>
     <string name="label_prefix_rupiah">Rp </string>
-    <string name="label_change_price_dialog_title">Ganti harga utama \?</string>
-    <string name="label_change_price_dialog_message">Semua harga varian akan mengikuti harga utama jika harga diganti.</string>
-    <string name="action_change_price">Ya, Ganti</string>
     <string name="action_cancel">Batal</string>
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
-    <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
@@ -78,6 +91,8 @@
     <string name="label_price_recommendation_price_description">Rekomendasi ini untuk &lt;b>“%1s”&lt;/b> </string>
     <string name="label_price_recommendation_apply">Terapkan</string>
     <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
+    <string name="text_has_variant_price_ticker">Harga, stok, dan SKU bisa kamu atur di <![CDATA[<b><font color=\'#42b549\'><a href=”###”>halaman varian</a></font></b>]]> karena produk ini punya varian.</string>
+    <string name="text_has_variant_price_ticker_mainapp">Download aplikasi Tokopedia Seller untuk mengatur harga, stok, dan SKU varian produk.</string>
     <string-array name="array_price_recommendation_content_titles">
         <item>Didapat dari analisis sistem Tokopedia pada produk serupa di Tokopedia</item>
         <item>Harga yang ditampilkan adalah harga paling kompetitif</item>
@@ -91,11 +106,6 @@
         <item>Tenang, kamu akan tetap bisa memasang harga produk yang kamu inginkan, kok.</item>
     </string-array>
 
-    <!-- add edit product price bottomsheet   -->
-    <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing-masing di aplikasi Tokopedia Seller atau ubah semua secara sekaligus dengan mengisi harga di bawah</string>
-    <string name="action_bulk_edit_price">Ganti</string>
-    <string name="product_price_edit_bottom_sheet_title">Tetapkan harga produkmu</string>
-
     <!-- add edit product wholesale -->
     <string name="add_product_wholesale_header">Grosir</string>
     <string name="label_minimum_quantity">Jumlah minimal</string>
@@ -104,6 +114,7 @@
     <string name="action_add_new_wholesale_price">Tambah grosir</string>
     <string name="error_empty_wholesale_quantity">Jumlah minimal tidak boleh kosong</string>
     <string name="error_zero_wholesale_quantity">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_zero_wholesale_max_quantity">Maks. %d</string>
     <string name="error_wholesale_quantity_less_min_order">Jumlah harus lebih > dari min. pemesanan</string>
     <string name="error_wholesale_quantity_must_bigger_than_previous_input">Jumlah harus lebih > dari sebelumnya</string>
     <string name="error_empty_wholesale_price">Harga grosir tidak boleh kosong</string>
@@ -117,11 +128,12 @@
 
     <!-- add edit product stock -->
     <string name="add_product_stock_header">Stok</string>
+    <string name="add_product_order_header">Pemesanan</string>
     <string name="label_available_stock">Stok tersedia</string>
     <string name="label_minimum_order">Minimum pemesanan</string>
     <string name="error_empty_product_stock">Stok tidak boleh kosong</string>
     <string name="error_minimum_stock_quantity">Stok minimal %d</string>
-    <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
+    <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. %s</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
     <string name="error_minimum_order_exceed_max_limit">Min. Beli harus diisi antara 1 &#8211; 10.000.</string>
@@ -145,14 +157,8 @@
 
     <!-- add edit product sku -->
     <string name="label_sku">SKU (Stock Keeping Unit)</string>
-    <string name="product_sku_description">SKU (Stock Keeping Unit)</string>
     <string name="label_add_product_sku_tips">Gunakan kode unik SKU jika kamu ingin bisa melacak produk dengan mudah</string>
     <string name="error_product_sku_space_exist">SKU produk tidak boleh mengandung spasi</string>
-
-    <string name="label_asterisk">&#160;*</string>
-    <string name="action_continue">Lanjut</string>
-    <string name="product_label_catalog">Katalog</string>
-    <string name="primary">Utama</string>
 
     <!-- add edit product showcase -->
     <string name="label_product_showcase">Etalase</string>
@@ -163,10 +169,7 @@
 
     <!--Description-->
     <string name="title_gifting_description_bottom_sheet">Tips deskripsi Paket Lebaran</string>
-    <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="label_product_name">Nama produk</string>
-    <string name="label_product_price">Harga</string>
-    <string name="label_product_stock">Stok</string>
     <string name="label_description_title">Tulis deskripsi produk kamu</string>
     <string name="label_description_placeholder">Deskripsi Produk</string>
     <string name="label_add_product_description_tips">Tips buat deskripsi produk yang jelas</string>
@@ -209,7 +212,6 @@
     <string name="message_tooltip_variant_tips_2">Lengkapi tipe varianmu. Semakin lengkap, semakin banyak pilihan untuk membeli.</string>
     <string name="message_tooltip_variant_tips_3">Pastikan isi detail varianmu seperti harga dan stok.</string>
     <string name="message_tooltip_variant_tips_4">Klik ‘Terapkan’.</string>
-    <string name="error_cannot_get_variants">Tidak bisa mendapatkan data variant</string>
 
     <!--Shipment-->
     <string name="title_shipment_required">Wajib</string>
@@ -222,14 +224,11 @@
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
     <string name="label_shipment_required">Kamu <b>mewajibkan</b> pembeli untuk mengaktifkan asuransi pengiriman</string>
     <string name="label_shipment_optional">Kamu <b>memberikan opsi</b> kepada pembeli untuk mengaktifkan asuransi pengiriman</string>
-    <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'>Selengkapnya</font>.]]></string>
+    <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'><a href=”###”>Selengkapnya</a></font>.]]></string>
     <string name="label_shipment_weight_ticker">Perhatikan dengan baik berat produk agar tidak terjadi selisih data dengan pihak kurir.</string>
     <string name="label_shipment_bottom_sheet">Jika terjadi kerusakan / kehilangan saat pengiriman, penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir, hanya kompensasi senilai <b>maks. 10x ongkir.</b></string>
-    <string name="label_unit">Satuan</string>
     <string name="label_weight">Berat</string>
-    <string name="label_weight_gram">Gram</string>
-    <string name="label_weight_kilogram">Kilogram</string>
-    <string name="error_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="label_weight_gram_lowercase">gram</string>
     <string name="action_end_button">Selesai</string>
     <string name="action_shipment_dismiss">Mengerti</string>
     <string name="text_shipment_on_demand">Kurir akan menjemput pesanan di alamatmu untuk dianter ke pembeli.</string>
@@ -273,15 +272,10 @@
     <string name="label_draft_product_add_product">Tambah Produk</string>
     <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
 
-    <!-- set cash back -->
-    <string name="product_edit_set_cashback_success">Pengaturan Cashback untuk produk ini berhasil</string>
-    <string name="product_edit_set_cashback_error">Gagal mengatur cashback untuk produk ini. Coba lagi, ya.</string>
-
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
 
     <!-- image picker -->
-    <string name="choose_image">Pilih Gambar</string>
     <string name="error_image_under_x_resolution">Minimum file foto harus %1$dx%2$d piksel</string>
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
 
@@ -295,7 +289,6 @@
     <string name="action_variant_add_button_nodata">Tambah %1$s</string>
     <string name="action_variant_delete">Hapus</string>
     <string name="action_clear_sizechart">Hapus</string>
-    <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
     <string name="action_pick_main_variant">Pilih Varian Utama</string>
     <string name="action_confirm_cancellation">Ya, Batal</string>
@@ -325,12 +318,12 @@
     <string name="label_add_sku">Tambah SKU</string>
     <string name="label_optional">(Opsional)</string>
     <string name="label_variant_list">Daftar Varian</string>
-    <string name="label_variant_price">Harga</string>
-    <string name="label_variant_stock">Stok</string>
-    <string name="label_variant_sku">SKU</string>
-    <string name="label_variant_sku_long">SKU (Stock Keeping Unit)</string>
-    <string name="label_rupiah">Rp</string>
+    <string name="label_variant_price">Harga*</string>
+    <string name="label_variant_stock">Stok*</string>
+    <string name="label_variant_weight">Berat*</string>
+    <string name="label_variant_sku">SKU (Stock Keeping Unit)</string>
     <string name="label_variant_multiple_price">Harga</string>
+    <string name="label_variant_multiple_weight">Berat</string>
     <string name="label_variant_multiple_stock">Stok</string>
     <string name="label_variant_multiple_sku">SKU (Stock Keeping Unit)</string>
     <string name="label_variant_multiple_select_all">Semua</string>
@@ -375,6 +368,8 @@
     <string name="error_used_variant_name">Nama sudah digunakan. Coba nama lain, ya.</string>
     <string name="error_min_char_variant_name">Minimum 3 karakter, ya.</string>
     <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>
+    <string name="title_wpv_intro_coachmark">Atur berat per varian, yuk!</string>
+    <string name="message_wpv_intro_coachmark">Sekarang kamu bisa atur berat tiap varian.</string>
 
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
@@ -401,16 +396,24 @@
     <string name="label_product_specification">Spesifikasi</string>
     <string name="label_product_specification_tips">Tambah keterangan secara rinci supaya produkmu makin mudah dikenali pembeli.</string>
     <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
-    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><b>di sini</b></font>.]]></string>
+    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><a href=”###”><b>di sini</b></a></font>.]]></string>
     <string name="label_specification_subtitle">Spesifikasi yang lengkap dapat bantu pembeli memilih produk sesuai kebutuhannya.</string>
     <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
     <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
     <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
+    <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'><a href=”###”><b>Pelajari Selengkapnya</b></a></font>.]]></string>
+    <string name="label_specification_signal_status_required">Isi status sinyal pada spesifikasi produkmu, ya.</string>
+    <string name="label_specification_signal_status_bottomsheet">Apa saja status sinyal?</string>
+    <string name="label_specification_signal_status_tips1"><![CDATA[<b>Sinyal Aktif</b><br/>]]>Perangkat elektronik yang bisa terhubung ke jaringan operator di Indonesia. <![CDATA[<b>Jika terjadi kendala</b>]]>, pembelimu bisa mengajukan refund atau retur melalui Tokopedia Care.</string>
+    <string name="label_specification_signal_status_tips2"><![CDATA[<b>Sinyal Belum Aktif</b><br/>]]>Perangkat elektronik yang belum dipastikan bisa terhubung ke jaringan operator di Indonesia. Pastikan kamu sudah mengingatkan calon pembeli.</string>
     <string name="action_specification_save">Simpan</string>
+    <string name="action_specification_learn">Pelajari Selengkapnya</string>
     <string name="action_specification_add">Tambah</string>
     <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
+    <string name="error_specification_signal_status_empty">Status sinyal wajib diisi, ya.</string>
+    <string name="error_specification_signal_status_empty_red"><![CDATA[<font color=\'#D6001C\'>Status sinyal belum terisi.</font>.]]></string>
 
     <!-- Product Limitation -->
     <string name="label_product_limitation_start_date">10 Mei 2021</string>
@@ -429,13 +432,15 @@
     <string name="title_product_limitation_item_usepromotion">Pasang iklan dan promosi untuk tingkatkan penjualan</string>
     <string name="label_product_limitation_item_usepromotion">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
     <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga %1$d produk</string>
-    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
-    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><a href=”###”><b>Selengkapnya</b></a></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><a href=”###”><b>Selengkapnya</b></a></font>.]]></string>
     <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
     <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
     <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
     <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
     <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
+    <string name="title_product_limitation_add_product_rules_nodata">Aturan jumlah produk yang dapat ditambahkan</string>
+    <string name="title_product_limitation_bottomsheet_info_nodata">Kamu bisa menambahkan produk di tokomu  maksimal hingga %1d produk. Jumlah maksimal produk didasarkan oleh tipe seller.</string>
 
     <!-- Title Validation -->
     <string name="title_product_title_validation_bottomsheet">Tips menamakan produk</string>
@@ -464,7 +469,6 @@
     <string name="content_desc_tfu_available_stock">input stok</string>
     <string name="content_desc_tfu_minimum_order">input minimum pemesanan</string>
     <string name="content_desc_tfu_sku">input sku</string>
-    <string name="content_desc_tv_submit_text">button lanjut</string>
     <string name="content_desc_textFieldDescription">input deskripsi produk</string>
     <string name="content_desc_btnNext">button lanjut</string>
     <string name="content_desc_btn_end">button selesai</string>
@@ -475,7 +479,6 @@
     <string name="content_desc_switch_preorder">button switch preorder</string>
     <string name="content_desc_tvEditVariant">text ubah varian</string>
     <string name="content_desc_tvAddVariant">text tambah varian</string>
-    <string name="content_desc_chipsVariantTypeName">text tipe varian</string>
     <string name="content_desc_linkAddVariantValueLevel1">text tambah tipe varian 1</string>
     <string name="content_desc_linkAddVariantValueLevel2">text tambah tipe varian 2</string>
     <string name="content_desc_tv_start_add_edit_product_variant">text tambah varian</string>
@@ -499,5 +502,15 @@
     <string name="cpl_custom_on_demand_button">Ubah</string>
     <string name="cpl_custom_agen">Antar ke Kantor Agen</string>
     <string name="cpl_custom_agen_button">Ubah</string>
+
+    <!-- IMS validation error message -->
+    <string name="error_empty_price">Harga wajib diisi</string>
+    <string name="error_minimum_price">Min. Rp%d</string>
+    <string name="error_empty_stock">Stok wajib diisi</string>
+    <string name="error_minimum_stock">Min. %d</string>
+    <string name="error_max_stock">Maks. %s</string>
+    <string name="error_empty_weight">Berat wajib diisi</string>
+    <string name="error_minimum_weight">Min.%d g</string>
+    <string name="error_max_weight">Maks. %s g</string>
 
 </resources>

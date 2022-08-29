@@ -31,14 +31,17 @@ class AffiliateStaggeredPromotionCardItemVH(itemView: View, private val promotio
             buttonType = UnifyButton.Type.MAIN
             buttonVariant = UnifyButton.Variant.GHOST
             text = context.getString(R.string.affiliate_promo)
+            var commission = ""
+            element?.product?.commission?.amount?.let {
+                commission = it.toString()
+            }
             setOnClickListener {
                 promotionClickInterface?.onPromotionClick( element?.product?.productID ?: "",
-                        element?.product?.shopID ?: "",
                         element?.product?.title ?: "",
                         element?.product?.image?.androidURL ?:"",
                         element?.product?.cardUrl?.desktopURL ?: "",
-                        "",
-                         adapterPosition
+                         adapterPosition,
+                         commission
                 )
             }
             if(element?.product?.isLinkGenerationAllowed == false){

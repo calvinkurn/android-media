@@ -3,8 +3,10 @@ package com.tokopedia.promocheckoutmarketplace.journey.analytics
 import com.tokopedia.promocheckoutmarketplace.BasePromoCheckoutMarketplaceAnalyticsTest
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
+import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Test
 
+@CassavaTest
 class PromoOccAnalyticsTest : BasePromoCheckoutMarketplaceAnalyticsTest() {
 
     override fun getAnalyticsValidatorQueryFileName(): String {

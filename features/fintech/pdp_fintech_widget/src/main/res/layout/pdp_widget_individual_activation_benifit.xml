@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/greenTickActivationPage"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_ticker_action_close_12dp" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/activationGopayBenefit"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/greenTickActivationPage"
+        app:layout_constraintTop_toTopOf="@+id/greenTickActivationPage"
+        app:typographyType="body_2"
+        tools:text="Pengajuanmu akan diverifikasi selama maks. 24 jam. Setelah disetujui, kamu bisa langsung gunakan untuk belanja!" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,13 +3,14 @@ package com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
 import java.lang.reflect.Type
 
 class FakeTopAdsRestRepository : RestRepository {
 
     var isError = false
-    var response = TopAdsmageViewResponse(null, null, null)
+    var response = DataResponse<TopAdsBannerResponse>()
 
     override suspend fun getResponse(request: RestRequest): RestResponse {
         if (isError) {

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/catalog_for_you_container_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:orientation="vertical"
+        >
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/catalog_for_you_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:text="@string/catalog_masih_belum"
+            app:typographyType="heading_4"
+            android:textColor="@color/Unify_N700_96"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/catalog_for_you_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:text="@string/catalog_lainnya_disini"
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_96"
+            />
+
+        <com.tokopedia.catalog.model.util.OrientationAwareRecyclerView
+            android:id="@+id/catalog_for_you_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            tools:listitem="@layout/item_catalog_for_you"
+            tools:itemCount="2"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

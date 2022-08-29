@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/uii_simple_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -26,73 +26,71 @@
                 app:layout_constraintBottom_toTopOf="@id/uii_simple_title"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="main_image"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/uii_simple_title"
-                app:typographyType="heading_2"
-                app:typographyWeight="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
+                android:text="@string/uii_simple_title"
                 android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/fontSize_lvl6"
+                android:textAlignment="center"
                 app:layout_constraintBottom_toTopOf="@id/uii_simple_desc"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/uii_simple_main_image"
-                android:text="@string/uii_simple_title" />
+                app:typographyType="heading_2"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/uii_simple_desc"
-                app:typographyType="body_2"
-                app:typographyWeight="reguler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl3"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/useridentification_6sp"
+                android:text="@string/uii_simple_desc"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/uii_simple_title"
-                android:text="@string/uii_simple_desc" />
+                app:typographyType="body_2"
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/uii_simple_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl6"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/spacing_lvl5"
-                app:layout_goneMarginTop="@dimen/spacing_lvl5"
                 android:layout_marginLeft="@dimen/useridentification_35dp"
+                android:layout_marginTop="@dimen/spacing_lvl5"
                 android:layout_marginRight="@dimen/useridentification_35dp"
+                android:gravity="center"
+                android:text="@string/uii_simple_button"
                 app:layout_constraintTop_toBottomOf="@id/uii_simple_desc"
-                android:text="@string/uii_simple_button"/>
+                app:layout_goneMarginTop="@dimen/spacing_lvl5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include layout="@layout/layout_kyc_benefit"
+        <include
             android:id="@+id/layout_benefit"
+            layout="@layout/layout_kyc_benefit"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="match_parent"
             android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

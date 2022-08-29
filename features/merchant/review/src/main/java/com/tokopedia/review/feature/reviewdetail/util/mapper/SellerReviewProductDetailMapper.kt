@@ -16,6 +16,13 @@ import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -86,18 +93,31 @@ object SellerReviewProductDetailMapper {
     ): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
         productFeedbackDataPerProduct?.list?.map {
-            val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
-            it.attachments.map { attachment ->
-                mapAttachment.add(
-                    FeedbackUiModel.Attachment(
-                        thumbnailURL = attachment.thumbnailURL,
-                        fullSizeURL = attachment.fullSizeURL
+            val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
+                mediaThumbnails = it.videoAttachments.map { videoAttachment ->
+                    ReviewMediaVideoThumbnailUiModel(
+                        uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                            attachmentID = videoAttachment.attachmentID.orEmpty(),
+                            reviewID = it.feedbackID,
+                            url = videoAttachment.videoUrl.orEmpty()
+                        )
                     )
+                }.plus(
+                    it.imageAttachments.map { imageAttachment ->
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                attachmentID = imageAttachment.attachmentID.orEmpty(),
+                                reviewID = it.feedbackID,
+                                thumbnailUrl = imageAttachment.thumbnailURL.orEmpty(),
+                                fullSizeUrl = imageAttachment.fullSizeURL.orEmpty()
+                            )
+                        )
+                    }
                 )
-            }
+            )
             feedbackListUiModel.add(
                 FeedbackUiModel(
-                    attachments = mapAttachment,
+                    reviewMediaThumbnail = mappedReviewMediaThumbnail,
                     autoReply = it.autoReply,
                     feedbackID = it.feedbackID,
                     rating = it.rating,
@@ -234,18 +254,6 @@ object SellerReviewProductDetailMapper {
         return updatedData
     }
 
-    fun mapToItemImageSlider(attachmentList: List<FeedbackUiModel.Attachment>?): Pair<List<String>, List<String>> {
-        val imageSlider = arrayListOf<String>()
-        val thumbnailSlider = arrayListOf<String>()
-
-        attachmentList?.map {
-            thumbnailSlider.add(it.thumbnailURL.orEmpty())
-            imageSlider.add(it.fullSizeURL.orEmpty())
-        }
-
-        return Pair(thumbnailSlider, imageSlider)
-    }
-
     fun mapToItemSortTopic(): List<SortItemUiModel> {
         val data = ReviewConstants.mapSortReviewDetail()
         val list = arrayListOf<SortItemUiModel>()
@@ -261,4 +269,17 @@ object SellerReviewProductDetailMapper {
         return list
     }
 
+    fun mapReviewMediaData(
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
+    ): ProductrevGetReviewMedia {
+        return ProductrevGetReviewMedia(
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
+            detail = Detail(
+                reviewDetail = listOf(),
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
+            )
+        )
+    }
 }

@@ -2,16 +2,16 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
-import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
-import com.tokopedia.centralizedpromo.domain.usecase.*
+import com.tokopedia.centralizedpromo.domain.model.FilterTab
+import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoList
+import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoListData
+import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoListPage
+import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetPromotionUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
-import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,28 +35,13 @@ class CentralizedPromoViewModelTest {
     lateinit var context: Context
 
     @RelaxedMockK
-    lateinit var resourcesProvider: CentralizedPromoResourceProvider
-
-    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
     lateinit var getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase
 
     @RelaxedMockK
-    lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
-
-    @RelaxedMockK
-    lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
-
-    @RelaxedMockK
-    lateinit var checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase
-
-    @RelaxedMockK
-    lateinit var sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase
-
-    @RelaxedMockK
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    lateinit var getPromotionUseCase: GetPromotionUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -68,10 +53,14 @@ class CentralizedPromoViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        mockkObject(PromoCreationStaticData)
         mockkObject(CentralizedPromoTracking)
 
-        CentralizedPromoViewModel::class.declaredMemberProperties.filter { it.name in arrayOf("startDate", "endDate") }.forEach {
+        CentralizedPromoViewModel::class.declaredMemberProperties.filter {
+            it.name in arrayOf(
+                "startDate",
+                "endDate"
+            )
+        }.forEach {
             it.isAccessible = true
             it.get(viewModel)
         }
@@ -98,16 +87,11 @@ class CentralizedPromoViewModelTest {
         } returns "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli"
     }
 
-    private val viewModel : CentralizedPromoViewModel by lazy {
+    private val viewModel: CentralizedPromoViewModel by lazy {
         CentralizedPromoViewModel(
-            resourcesProvider,
             userSession,
             getOnGoingPromotionUseCase,
-            getChatBlastSellerMetadataUseCase,
-            voucherCashbackEligibleUseCase,
-            checkNonTopAdsUserUseCase,
-            sellerHomeGetWhiteListedUserUseCase,
-            remoteConfig,
+            getPromotionUseCase,
             coroutineTestRule.dispatchers
         )
     }
@@ -115,29 +99,29 @@ class CentralizedPromoViewModelTest {
     @Test
     fun `Success get layout data for on going promotion`() = runBlocking {
         val successResult = OnGoingPromoListUiModel(
-                title = "Track your promotion",
-                items = listOf(
-                        OnGoingPromoUiModel(
-                                title = "Flash Sale",
-                                status = Status(
-                                        text = "Terdaftar",
-                                        count = 56,
-                                        url = "sellerapp://flashsale/management"
-                                ),
-                                footer = Footer(
-                                        text = "Lihat Semua",
-                                        url = "sellerapp://flashsale/management"
-                                )
-                        )
-                ),
-                errorMessage = ""
+            title = "Track your promotion",
+            items = listOf(
+                OnGoingPromoUiModel(
+                    title = "Flash Sale",
+                    status = Status(
+                        text = "Terdaftar",
+                        count = 56,
+                        url = "sellerapp://flashsale/management"
+                    ),
+                    footer = Footer(
+                        text = "Lihat Semua",
+                        url = "sellerapp://flashsale/management"
+                    )
+                )
+            ),
+            errorMessage = ""
         )
 
         coEvery {
             getOnGoingPromotionUseCase.executeOnBackground()
         } returns successResult
 
-        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
+        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO, tabId = "0")
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -155,7 +139,7 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase.executeOnBackground()
         } throws MessageErrorException("")
 
-        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
+        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO, tabId = "0")
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -168,202 +152,58 @@ class CentralizedPromoViewModelTest {
     }
 
     @Test
-    fun `Success get layout data for promo creation with free broadcast chat quota`() = runBlocking {
+    fun `Success get layout data for promotion list`() = runBlocking {
 
-        coEvery {
-            getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } returns ChatBlastSellerMetadataUiModel(200, 2)
-
-        coEvery {
-            voucherCashbackEligibleUseCase.execute(any())
-        } returns false
-
-        coEvery {
-            checkNonTopAdsUserUseCase.execute(any())
-        } returns true
-
-        coEvery {
-            sellerHomeGetWhiteListedUserUseCase.executeQuery()
-        } returns true
-
-        coEvery {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns true
-
-        every {
-            resourcesProvider.composeBroadcastChatFreeQuotaLabel(any())
-        } returns String.format("%d kuota gratis", 200)
-
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            getChatBlastSellerMetadataUseCase.executeOnBackground()
-        }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-
-        assert(result != null && result is Success &&
-                result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra == "200 kuota gratis")
-    }
-
-    @Test
-    fun `Success get layout data for promo creation with no broadcast chat quota`() = runBlocking {
-        coEvery {
-            getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } returns ChatBlastSellerMetadataUiModel(200, 0)
-
-        coEvery {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns false
-
-        coEvery {
-            voucherCashbackEligibleUseCase.execute(any())
-        } returns true
-
-        coEvery {
-            checkNonTopAdsUserUseCase.execute(any())
-        } returns true
-
-        coEvery {
-            sellerHomeGetWhiteListedUserUseCase.executeQuery()
-        } returns true
-
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-
-        assert(result != null && result is Success &&
-                result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
-    }
-
-    @Test
-    fun `Success get layout data for promo creation with no broadcast chat quota and undefined promo type`() = runBlocking {
-        coEvery {
-            getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } returns ChatBlastSellerMetadataUiModel(0, 1)
-
-        coEvery {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns false
-
-        coEvery {
-            voucherCashbackEligibleUseCase.execute(any())
-        } returns true
-
-        coEvery {
-            checkNonTopAdsUserUseCase.execute(any())
-        } returns true
-
-        coEvery {
-            sellerHomeGetWhiteListedUserUseCase.executeQuery()
-        } returns true
-
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-
-        assert(result != null && result is Success &&
-                result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
-    }
-
-    @Test
-    fun `When isNonTopAdsUser false, topads applink should go straight to the dashboard`() = runBlocking {
-        coEvery {
-            getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } returns ChatBlastSellerMetadataUiModel(0, 1)
-
-        coEvery {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns false
-
-        coEvery {
-            voucherCashbackEligibleUseCase.execute(any())
-        } returns true
-
-        coEvery {
-            checkNonTopAdsUserUseCase.execute(any())
-        } returns false
-
-        coEvery {
-            sellerHomeGetWhiteListedUserUseCase.executeQuery()
-        } returns true
-
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify(exactly = 0) {
-            sellerHomeGetWhiteListedUserUseCase.executeQuery()
-        }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-
-        assert(result != null && result is Success &&
-                result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[0].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+        val successResult = MerchantPromotionGetPromoList(
+            data = MerchantPromotionGetPromoListData(
+                filterTab = listOf(
+                    FilterTab(
+                        id = "6",
+                        name = "Tingkatkan kunjungan pembeli"
+                    ),
+                    FilterTab(
+                        id = "7",
+                        name = "Tambah Jumlah Pesanan Baru"
+                    )
+                ),
+                pages = listOf(
+                    MerchantPromotionGetPromoListPage(
+                        pageId = "63",
+                        pageName = "Kupon Produk",
+                        pageNameSuffix = "(Baru)",
+                        iconImage = "https://images.tokopedia.net/img/promo-page/icon-kupon-product.png",
+                        notAvailableText = "",
+                        headerText = "Atur diskon khusus ke produk produk tertentu agar semakin cepat laku.",
+                        bannerImage = "https://images.tokopedia.net/img/promo-page/preview-kupon-product.png",
+                        bottomText = "Mulai buat kupon untuk produk pilihanmu.\"",
+                        ctaText = "Buat Kupon",
+                        ctaLink = "https://seller.tokopedia.com/v2/vouchertoko/locked-product/create",
+                        isEligible = 1,
+                        infoText = ""
+                    )
+                )
+            )
         )
-    }
-
-    @Test
-    fun `Failed get layout data for promo creation`() = runBlocking {
         coEvery {
-            getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } throws MessageErrorException()
+            getPromotionUseCase.execute(any())
+        } returns successResult
 
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION, tabId = "0")
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
+        assert(result is Success)
+    }
+
+    @Test
+    fun `Failed get layout data for promotion list`() = runBlocking {
+        coEvery {
+            getPromotionUseCase.execute("")
+        } throws MessageErrorException("")
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION, tabId = "0")
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         assert(result != null && result is Fail)
-    }
-
-    @Test
-    fun `When get voucher cashback eligiblity fail, get layout data should also fails`() = runBlocking {
-        coEvery {
-            voucherCashbackEligibleUseCase.execute(any())
-        } throws MessageErrorException()
-
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-
-        assert(result is Fail)
-    }
-
-    @Test
-    fun trackFreeShippingImpressionTest() {
-        every {
-            CentralizedPromoTracking.sendImpressionFreeShipping(userSession, any())
-        } just runs
-
-        viewModel.trackFreeShippingImpression()
-
-        verify {
-            CentralizedPromoTracking.sendImpressionFreeShipping(userSession, any())
-        }
-    }
-
-    @Test
-    fun trackFreeShippingClickTest() {
-        every {
-            CentralizedPromoTracking.sendClickFreeShipping(userSession, any())
-        } just runs
-
-        viewModel.trackFreeShippingClick()
-
-        verify {
-            CentralizedPromoTracking.sendClickFreeShipping(userSession, any())
-        }
     }
 }

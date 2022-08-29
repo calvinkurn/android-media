@@ -61,7 +61,7 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
         verifyOrder {
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
             productListView.sendTrackingGTMEventSearchAttempt(any())
             productListView.redirectSearchToAnotherPage(redirectApplink)

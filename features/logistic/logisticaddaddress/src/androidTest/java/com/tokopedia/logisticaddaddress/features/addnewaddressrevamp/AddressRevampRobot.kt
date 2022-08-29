@@ -94,7 +94,7 @@ class AddressRevampRobot {
 
     fun fillAddressNegative(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+                .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
     private fun waitForData() {

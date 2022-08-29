@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.base.activity
 
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         setContentView(binding?.root)
         setStatusBarColor()
         setBackgroundColor()
+        setOrientation()
 
         if(savedInstanceState == null) {
             attachFragment()
@@ -55,6 +57,12 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         val bgColor = ContextCompat.getColor(this,
             com.tokopedia.unifyprinciples.R.color.Unify_Background)
         window?.decorView?.setBackgroundColor(bgColor)
+    }
+
+    private fun setOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     private fun attachFragment() {

@@ -18,6 +18,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -93,6 +94,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -108,7 +112,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
@@ -119,6 +123,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         val validateUseModel = ValidateUsePromoRevampUiModel(
                 status = "OK",
                 promoUiModel = PromoUiModel(
+                        globalSuccess = true,
                         voucherOrderUiModels = listOf(
                                 PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
                         )
@@ -145,6 +150,7 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         val validateUseModel = ValidateUsePromoRevampUiModel(
                 status = "OK",
                 promoUiModel = PromoUiModel(
+                        globalSuccess = true,
                         voucherOrderUiModels = listOf(
                                 PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
                         )
@@ -190,6 +196,26 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         // Then
         verify {
             view.renderErrorCheckPromoShipmentData(errorMessage)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use failed without error message THEN should render default error message`() {
+        // Given
+        val validateUseModel = ValidateUsePromoRevampUiModel(
+                status = "ERROR",
+                message = emptyList()
+        )
+        val position = 0
+        val noToast = true
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
+
+        // When
+        presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
+
+        // Then
+        verify {
+            view.renderErrorCheckPromoShipmentData(DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO)
         }
     }
 

@@ -1,7 +1,11 @@
 package com.tkpd.atcvariant.util
 
 import android.content.Intent
-import com.tkpd.atcvariant.data.uidata.*
+import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
+import com.tkpd.atcvariant.data.uidata.ProductHeaderData
+import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
+import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
+import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -9,13 +13,13 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
@@ -32,13 +36,6 @@ import com.tokopedia.usecase.coroutines.Success
  */
 object AtcCommonMapper {
 
-    private const val KEY_COLOUR_VARIANT = "colour"
-    private const val KEY_VALUE_VARIANT = "value"
-    private const val KEY_HEX_VARIANT = "hex"
-    private const val KEY_ID_VARIANT = "id"
-    private const val KEY_SIZE_VARIANT = "size"
-    private const val DEFAULT_MIN_ORDER = 1
-
     fun generateAtcData(actionButtonCart: Int,
                         selectedChild: VariantChild?,
                         selectedWarehouse: WarehouseInfo?,
@@ -48,7 +45,7 @@ object AtcCommonMapper {
                         categoryName: String,
                         shippingMinPrice: Double,
                         userId: String,
-                        isTokoNow: Boolean,
+                        showQtyEditor: Boolean,
                         selectedStock: Int
     ): Any {
         return when (actionButtonCart) {
@@ -91,11 +88,15 @@ object AtcCommonMapper {
                 )
             }
             else -> {
+                val quantityData = if (showQtyEditor)
+                    selectedStock
+                else
+                    selectedChild?.getFinalMinOrder() ?: 0
+
                 AddToCartRequestParams().apply {
                     productId = selectedChild?.productId?.toLongOrZero() ?: 0L
                     shopId = shopIdInt
-                    quantity = if (isTokoNow) selectedStock else selectedChild?.getFinalMinOrder()
-                            ?: 0
+                    quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
@@ -176,26 +177,33 @@ object AtcCommonMapper {
         ) ?: return null)
     }
 
-    fun mapToVisitable(selectedChild: VariantChild?,
-                       isTokoNow: Boolean,
-                       initialSelectedVariant: MutableMap<String, String>,
-                       processedVariant: List<VariantCategory>?,
-                       selectedProductFulfillment: Boolean,
-                       selectedQuantity: Int,
-                       shouldShowDeleteButton: Boolean,
-                       uspImageUrl: String,
-                       cashBackPercentage: Int): List<AtcVariantVisitable>? {
+    fun mapToVisitable(
+            selectedChild: VariantChild?,
+            showQtyEditor: Boolean,
+            initialSelectedVariant: MutableMap<String, String>,
+            processedVariant: List<VariantCategory>?,
+            selectedProductFulfillment: Boolean,
+            selectedQuantity: Int,
+            shouldShowDeleteButton: Boolean,
+            aggregatorUiData: ProductVariantAggregatorUiData?,
+    ): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
         val result: MutableList<AtcVariantVisitable> = mutableListOf()
+
+        val uspImageUrl = aggregatorUiData?.uspImageUrl ?: ""
+        val cashBackPercentage = aggregatorUiData?.cashBackPercentage ?: 0
+
+        val level1VariantOptionId = selectedChild?.optionIds?.firstOrNull() ?: ""
+        val productImage = aggregatorUiData?.getFirstLevelVariantImage(level1VariantOptionId)
 
         val headerData = generateHeaderDataModel(selectedChild)
         result.add(
                 VariantHeaderDataModel(
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
-                        productImage = headerData.first,
+                        productImage = productImage ?: headerData.first,
                         listOfVariantTitle = selectedChild?.optionName ?: listOf(),
                         isTokoCabang = selectedProductFulfillment,
                         uspImageUrl = uspImageUrl,
@@ -222,7 +230,7 @@ object AtcCommonMapper {
                         minOrder = selectedChild?.getFinalMinOrder() ?: 0,
                         maxOrder = selectedChild?.getFinalMaxOrder() ?: DEFAULT_ATC_MAX_ORDER,
                         shouldShowDeleteButton = shouldShowDeleteButton,
-                        shouldShowView = isTokoNow && selectedChild?.isBuyable == true)
+                        shouldShowView = showQtyEditor && selectedChild?.isBuyable == true)
         ).also {
             idCounter += 1
         }
@@ -249,9 +257,10 @@ object AtcCommonMapper {
                         selectedVariantChild: VariantChild?,
                         variantImage: String,
                         selectedProductFulfillment: Boolean,
-                        isTokoNow: Boolean,
+                        showQtyEditor: Boolean,
                         selectedQuantity: Int,
-                        shouldShowDeleteButton: Boolean): List<AtcVariantVisitable> {
+                        shouldShowDeleteButton: Boolean,
+                        aggregatorUiData: ProductVariantAggregatorUiData?): List<AtcVariantVisitable> {
 
         return oldList.map {
             when (it) {
@@ -267,15 +276,18 @@ object AtcCommonMapper {
                             maxOrder = selectedVariantChild?.getFinalMaxOrder()
                                     ?: DEFAULT_ATC_MAX_ORDER,
                             shouldShowDeleteButton = shouldShowDeleteButton,
-                            shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true)
+                            shouldShowView = showQtyEditor && selectedVariantChild?.isBuyable == true)
                 }
                 is VariantHeaderDataModel -> {
                     if (isPartiallySelected) {
                         //update image only when exist
                         it.copy(productImage = variantImage)
                     } else {
+                        val level1VariantOptionId = selectedVariantChild?.optionIds?.firstOrNull() ?: ""
+                        val productImage = aggregatorUiData?.getFirstLevelVariantImage(level1VariantOptionId)
+
                         val headerData = generateHeaderDataModel(selectedVariantChild)
-                        it.copy(productImage = headerData.first,
+                        it.copy(productImage = productImage ?: headerData.first,
                                 productId = selectedVariantChild?.productId ?: "",
                                 headerData = headerData.second,
                                 isTokoCabang = selectedProductFulfillment,
@@ -312,55 +324,11 @@ object AtcCommonMapper {
 
     fun putChatProductInfoTo(
             intent: Intent?,
-            productId: String?,
-            productInfo: VariantChild?,
-            variantResp: ProductVariant?,
-            freeOngkirImgUrl: String
+            productId: String?
     ) {
         if (intent == null || productId == null) return
-        val variants = variantResp?.mapSelectedProductVariants(productId)
-        val productImageUrl = productInfo?.picture?.original ?: ""
-        val productName = productInfo?.name ?: ""
-        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeDouble = productInfo?.slashPriceDouble ?: 0.0
-        val priceBefore = if (priceBeforeDouble > 0) {
-            priceBeforeDouble.getCurrencyFormatted()
-        } else {
-            ""
-        }
-        val dropPercentage = productInfo?.roundedDiscountPercentage ?: ""
-        val productUrl = productInfo?.url ?: ""
-        val isActive = productInfo?.isBuyable ?: true
-        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
-        val productColorVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
-        val productColorHexVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_HEX_VARIANT) ?: ""
-        val productSizeVariant = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
-        val productColorVariantId = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
-        val productSizeVariantId = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
-        val isSupportVariant = variants != null
-        val productPreview = ProductPreview(
-                id = productId,
-                imageUrl = productImageUrl,
-                name = productName,
-                price = productPrice,
-                colorVariantId = productColorVariantId,
-                colorVariant = productColorVariant,
-                colorHexVariant = productColorHexVariant,
-                sizeVariantId = productSizeVariantId,
-                sizeVariant = productSizeVariant,
-                url = productUrl,
-                productFsIsActive = productFsIsActive,
-                productFsImageUrl = freeOngkirImgUrl,
-                priceBefore = priceBefore,
-                priceBeforeInt = priceBeforeDouble,
-                dropPercentage = dropPercentage,
-                isActive = isActive,
-                remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER,
-                isSupportVariant = isSupportVariant,
-                campaignId = productInfo?.campaign?.campaignID.toLongOrZero()
-        )
-        val productPreviews = listOf(productPreview)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        val productIds = listOf(productId)
+        val stringProductPreviews = CommonUtil.toJson(productIds)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 

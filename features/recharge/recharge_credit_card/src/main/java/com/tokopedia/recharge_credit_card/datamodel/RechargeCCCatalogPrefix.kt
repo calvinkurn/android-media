@@ -3,21 +3,25 @@ package com.tokopedia.recharge_credit_card.datamodel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeCCCatalogPrefix(
+data class RechargeCCCatalogPrefix(
         @SerializedName("rechargeCatalogPrefixSelect")
         @Expose
-        val prefixSelect: CatalogPrefixSelect = CatalogPrefixSelect())
+        val prefixSelect: CatalogPrefixSelect = CatalogPrefixSelect()
+)
 
-class CatalogPrefixSelect(
+data class CatalogPrefixSelect(
         @SerializedName("text")
         @Expose
         val text: String = "",
+        @SerializedName("validations")
+        @Expose
+        val validations: List<Validation> = listOf(),
         @SerializedName("prefixes")
         @Expose
         val prefixes: List<CatalogPrefixs> = listOf()
 )
 
-class CatalogPrefixs(
+data class CatalogPrefixs(
         @SerializedName("key")
         @Expose
         val key: String = "",
@@ -29,7 +33,7 @@ class CatalogPrefixs(
         val operator: CatalogOperator = CatalogOperator()
 )
 
-class CatalogOperator(
+data class CatalogOperator(
         @SerializedName("id")
         @Expose
         val id: String = "",
@@ -38,7 +42,7 @@ class CatalogOperator(
         val attribute: CatalogPrefixAttributes = CatalogPrefixAttributes()
 )
 
-class CatalogPrefixAttributes(
+data class CatalogPrefixAttributes(
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = "",
@@ -48,4 +52,16 @@ class CatalogPrefixAttributes(
         @SerializedName("name")
         @Expose
         val name: String = ""
+)
+
+class Validation(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("message")
+        @Expose
+        val message: String = "",
+        @SerializedName("rule")
+        @Expose
+        val rule: String = ""
 )

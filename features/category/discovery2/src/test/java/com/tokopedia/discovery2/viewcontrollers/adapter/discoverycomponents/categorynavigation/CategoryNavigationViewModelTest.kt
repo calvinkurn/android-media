@@ -11,7 +11,6 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,6 +32,17 @@ class CategoryNavigationViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+    }
+
+    @Test
+    fun `test for useCase`() {
+        val viewModel: CategoryNavigationViewModel =
+                spyk(CategoryNavigationViewModel(application, componentsItem, 99))
+
+        val useCase = mockk<CategoryNavigationUseCase>()
+        viewModel.categoryNavigationUseCase = useCase
+
+        assert(viewModel.categoryNavigationUseCase === useCase)
     }
 
     @Test
@@ -74,6 +84,7 @@ class CategoryNavigationViewModelTest {
         viewModel.onAttachToViewHolder()
         assert(viewModel.getListData().value is Success)
         assert((viewModel.getListData().value as Success).data === list)
+        unmockkStatic(Dispatchers::class)
     }
 
     @Test

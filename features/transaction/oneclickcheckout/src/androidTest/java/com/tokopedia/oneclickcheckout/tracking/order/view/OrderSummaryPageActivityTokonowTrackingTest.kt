@@ -17,6 +17,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.RATES_TOKONOW_NO_DISCOU
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.TestOrderSummaryPageActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -24,6 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@CassavaTest
 class OrderSummaryPageActivityTokonowTrackingTest {
 
     companion object {

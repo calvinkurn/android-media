@@ -12,6 +12,7 @@ import rx.Observable;
  * Created by User on 9/8/2017.
  */
 
+@Deprecated /*this use case will be deleted, use GetWishlistV2UseCase from new depencendy : implementation projectOrAar(rootProject.ext.features.wishlistCommonV2) */
 public class GetWishListUseCase extends UseCase<List<String>> {
 
     private static final String USER_ID = "USER_ID";

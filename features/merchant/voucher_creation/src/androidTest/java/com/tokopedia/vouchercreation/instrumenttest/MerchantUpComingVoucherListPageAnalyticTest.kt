@@ -2,15 +2,14 @@ package com.tokopedia.vouchercreation.instrumenttest
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -19,7 +18,7 @@ import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHe
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.mock.MerchantUpComingVoucherListMockModelConfig
-import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
+import com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -37,12 +36,11 @@ class MerchantUpComingVoucherListPageAnalyticTest {
     @get:Rule
     var activityRule: IntentsTestRule<VoucherListActivity> = IntentsTestRule(VoucherListActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(MerchantUpComingVoucherListMockModelConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         activityRule.launchActivity(Intent())
@@ -50,7 +48,6 @@ class MerchantUpComingVoucherListPageAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -70,7 +67,7 @@ class MerchantUpComingVoucherListPageAnalyticTest {
 
     private fun doAnalyticDebuggerTest(fileName: String) {
         MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
+                cassavaRule.validate(fileName),
                 hasAllSuccess()
         )
     }

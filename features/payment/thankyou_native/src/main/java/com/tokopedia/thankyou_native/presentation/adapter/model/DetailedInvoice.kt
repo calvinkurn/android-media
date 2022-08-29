@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.thankyou_native.domain.model.AddOnItem
 import com.tokopedia.thankyou_native.presentation.adapter.factory.InvoiceTypeFactory
 
 data class InvoiceSummery(
@@ -89,20 +90,28 @@ data class ShopInvoice(
         val shippingInfo: String?,
         val discountOnShippingStr: String?,
         val shippingInsurancePriceStr: String?,
-        val shippingAddress: String?
+        val shippingAddress: String?,
+        val orderLevelAddOn: OrderLevelAddOn
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
+data class OrderLevelAddOn(
+    val addOnSectionDescription: String?,
+    val addOnList: ArrayList<AddOnItem>
+)
+
 data class OrderedItem(
         val itemName: String,
+        val itemVariant: String?,
         val itemCount: Int?,
         val itemPrice: String,
         val itemTotalPriceStr: String,
         val isBBIProduct : Boolean,
-        val orderItemType: OrderItemType
+        val orderItemType: OrderItemType,
+        val productLevelAddOn: ArrayList<AddOnItem>?
 )
 enum class OrderItemType {
     BUNDLE,

@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.voucherlist.view.adapter.DownloadVoucherAdapter
-import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcDownloadVoucherBinding
+import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.DownloadVoucherAdapter
 
 /**
  * Created By @ilhamsuaib on 28/04/20
@@ -61,8 +62,10 @@ class DownloadVoucherBottomSheet : BottomSheetUnify() {
 
     private var onDownloadClick: (List<DownloadVoucherUiModel>) -> Unit = {}
 
+    private var binding by autoClearedNullable<BottomsheetMvcDownloadVoucherBinding>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initBottomSheet(container)
+        initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -71,23 +74,23 @@ class DownloadVoucherBottomSheet : BottomSheetUnify() {
         setupView(view)
     }
 
-    private fun initBottomSheet(container: ViewGroup?) {
+    private fun initBottomSheet() {
         context?.run {
-            val child = View.inflate(this, R.layout.bottomsheet_mvc_download_voucher, container)
+            binding = BottomsheetMvcDownloadVoucherBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_select_voucher_size))
-            setChild(child)
+            setChild(binding?.root)
         }
     }
 
     private fun setupView(child: View) = with(child) view@{
         mAdapter.addElement(getDownloadItems())
-        rvMvcVouchers.run {
+        binding?.rvMvcVouchers?.run {
             layoutManager = LinearLayoutManager(this@view.context)
             adapter = mAdapter
             addItemDecoration(getItemDecoration())
         }
 
-        btnMvcDownloadVoucher.setOnClickListener {
+        binding?.btnMvcDownloadVoucher?.setOnClickListener {
             onDownloadClick(mAdapter.items.filter { it.isSelected })
             dismiss()
         }

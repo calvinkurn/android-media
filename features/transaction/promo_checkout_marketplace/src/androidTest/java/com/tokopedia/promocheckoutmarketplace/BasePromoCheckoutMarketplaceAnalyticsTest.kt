@@ -5,8 +5,7 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.promocheckoutmarketplace.interceptor.PromoCheckoutMarketplaceInterceptor
@@ -22,8 +21,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 
@@ -40,16 +39,16 @@ abstract class BasePromoCheckoutMarketplaceAnalyticsTest {
     @get:Rule
     val activityRule = ActivityTestRule(PromoCheckoutActivity::class.java, false, false)
 
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     private val interceptor = PromoCheckoutMarketplaceInterceptor()
     private var idlingResource: IdlingResource? = null
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         GraphqlClient.reInitRetrofitWithInterceptors(listOf(interceptor), context)
         interceptor.customCouponListRecommendationResponsePath = "promo/coupon_list_recommendation_empty_response.json"
         interceptor.customValidateUsePromoRevampResponsePath = "promo/validate_use_promo_revamp_success_response.json"
@@ -64,8 +63,6 @@ abstract class BasePromoCheckoutMarketplaceAnalyticsTest {
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
@@ -108,7 +105,7 @@ abstract class BasePromoCheckoutMarketplaceAnalyticsTest {
             // to ensure promo successfully applied
             Thread.sleep(1000)
 
-            assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, getAnalyticsValidatorQueryFileName()), hasAllSuccess())
+            assertThat(cassavaTestRule.validate(getAnalyticsValidatorQueryFileName()), hasAllSuccess())
         }
     }
 

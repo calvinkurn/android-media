@@ -44,38 +44,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         }
 
         return SerializableHydraSetupData(
-                selectedProduct = mSetupDataStore.getSelectedProducts().map {
-                    SerializableProductData(
-                            id = it.id,
-                            name = it.name,
-                            imageUrl = it.imageUrl,
-                            originalImageUrl = it.originalImageUrl,
-                            hasStock = it.stock is StockAvailable,
-                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0,
-                            price = when(val price = it.price) {
-                                is OriginalPrice -> price.price
-                                is DiscountedPrice -> price.originalPrice
-                                else -> ""
-                            },
-                            priceNumber = when(val price = it.price) {
-                                is OriginalPrice -> price.priceNumber
-                                is DiscountedPrice -> price.originalPriceNumber
-                                else -> 0.0
-                            },
-                            discountedPrice = when(val price = it.price) {
-                                is DiscountedPrice -> price.discountedPrice
-                                else -> ""
-                            },
-                            discountedPriceNumber = when(val price = it.price) {
-                                is DiscountedPrice -> price.discountedPriceNumber
-                                else -> 0.0
-                            },
-                            discountedPercent = when(val price = it.price) {
-                                is DiscountedPrice -> price.discountPercent
-                                else -> 0
-                            },
-                        )
-                },
                 selectedCoverData = SerializableCoverData(
                         coverImageUriString = coverImage.toString(),
                         coverTitle = title,
@@ -86,29 +54,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
     }
 
     override fun setSerializableData(data: SerializableHydraSetupData) {
-        mSetupDataStore.setSelectedProducts(data.selectedProduct.map {
-            ProductData(
-                    id = it.id,
-                    name = it.name,
-                    imageUrl = it.imageUrl,
-                    originalImageUrl = it.originalImageUrl,
-                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock,
-                    price = when {
-                        it.discountedPercent != 0 && it.discountedPrice.isNotEmpty() -> DiscountedPrice(
-                            originalPrice = it.price,
-                            originalPriceNumber = it.priceNumber,
-                            discountPercent = it.discountedPercent,
-                            discountedPrice = it.discountedPrice,
-                            discountedPriceNumber = it.discountedPriceNumber
-                        )
-                        it.discountedPercent == 0 && it.price.isNotEmpty() -> OriginalPrice(
-                            price = it.price,
-                            priceNumber = it.priceNumber
-                        )
-                        else -> PriceUnknown
-                    }
-            )
-        })
         mSetupDataStore.setFullCover(
                 PlayCoverUiModel(
                         croppedCover = CoverSetupState.Cropped.Uploaded(

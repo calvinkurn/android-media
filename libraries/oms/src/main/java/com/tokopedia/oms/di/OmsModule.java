@@ -2,14 +2,12 @@ package com.tokopedia.oms.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.data.CloudOmsDataStore;
 import com.tokopedia.oms.data.OmsRepositoryData;
 import com.tokopedia.oms.data.source.OmsApi;
@@ -50,7 +48,7 @@ public class OmsModule {
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(new OmsInterceptor(context, (NetworkRouter) context, userSession))
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession))
-                .addInterceptor(((OmsModuleRouter) context).getChuckerInterceptor())
+                .addInterceptor(new ChuckerInterceptor(context))
                 .build();
     }
 

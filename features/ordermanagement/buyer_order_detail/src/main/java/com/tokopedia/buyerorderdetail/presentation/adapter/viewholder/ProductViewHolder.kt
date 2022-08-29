@@ -1,57 +1,50 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
-import android.animation.LayoutTransition
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.view.ViewStub
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
-import com.tokopedia.buyerorderdetail.common.utils.Utils.composeItalicNote
+import com.tokopedia.buyerorderdetail.databinding.PartialItemBuyerOrderDetailAddonsBinding
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 
 open class ProductViewHolder(
-        itemView: View?,
-        private val listener: ProductViewListener,
-        private val navigator: BuyerOrderDetailNavigator
-) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
+    itemView: View?,
+    private val listener: PartialProductItemViewHolder.ProductViewListener,
+    private val navigator: BuyerOrderDetailNavigator
+) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
 
-    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
-    private val cardBuyerOrderDetailProduct = itemView?.findViewById<CardUnify>(R.id.cardBuyerOrderDetailProduct)
-    private val ivBuyerOrderDetailProductThumbnail = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailProductThumbnail)
-    private val tvBuyerOrderDetailProductName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductName)
-    private val tvBuyerOrderDetailProductPriceQuantity = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceQuantity)
-    private val tvBuyerOrderDetailProductNote = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductNote)
-    private val tvBuyerOrderDetailProductPriceValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
-    protected val btnBuyerOrderDetailBuyProductAgain = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
+    private var ivBuyerOrderDetailProductThumbnail: ImageUnify? = null
+
+    protected var btnBuyerOrderDetailBuyProductAgain: UnifyButton? = null
 
     private var element: ProductListUiModel.ProductUiModel? = null
 
-    init {
-        setupClickListeners()
-    }
+    private var partialProductItemViewHolder: PartialProductItemViewHolder? = null
+
+    private var partialProductAddonViewHolder: PartialProductAddonViewHolder? = null
+
+    private var partialProductItemViewStub: View? = null
+
+    private var partialItemBuyerOrderDetailAddonsBinding: PartialItemBuyerOrderDetailAddonsBinding? =
+        null
 
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
-            setupProductThumbnail(it.productThumbnailUrl)
-            setupProductName(it.productName)
-            setupProductQuantityAndPrice(it.quantity, it.priceText)
-            setupProductNote(it.productNote)
-            setupTotalPrice(it.totalPriceText)
-            setupButton(it.button, it.isProcessing)
+            setupProductList(it)
+            setupAddonSection(it.addonsListUiModel)
         }
     }
 
@@ -60,27 +53,13 @@ open class ProductViewHolder(
             if (it is Pair<*, *>) {
                 val (oldItem, newItem) = it
                 if (oldItem is ProductListUiModel.ProductUiModel && newItem is ProductListUiModel.ProductUiModel) {
-                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-                    this.element = newItem
                     if (oldItem.productThumbnailUrl != newItem.productThumbnailUrl) {
                         setupProductThumbnail(newItem.productThumbnailUrl)
                     }
-                    if (oldItem.productName != newItem.productName) {
-                        setupProductName(newItem.productName)
-                    }
-                    if (oldItem.quantity != newItem.quantity || oldItem.priceText != newItem.priceText) {
-                        setupProductQuantityAndPrice(newItem.quantity, newItem.priceText)
-                    }
-                    if (oldItem.productNote != newItem.productNote) {
-                        setupProductNote(newItem.productNote)
-                    }
-                    if (oldItem.totalPriceText != newItem.totalPriceText) {
-                        setupTotalPrice(newItem.totalPriceText)
-                    }
+                    partialProductItemViewHolder?.bindProductItemPayload(oldItem, newItem)
                     if (oldItem.button != newItem.button || oldItem.isProcessing != newItem.isProcessing) {
                         setupButton(newItem.button, newItem.isProcessing)
                     }
-                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -88,49 +67,50 @@ open class ProductViewHolder(
         super.bind(element, payloads)
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.cardBuyerOrderDetailProduct -> goToProductSnapshotPage()
-            R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
+    private fun setupProductList(item: ProductListUiModel.ProductUiModel) {
+        inflateViewStub()
+        partialProductItemViewHolder = PartialProductItemViewHolder(
+            itemView,
+            partialProductItemViewStub,
+            listener,
+            navigator,
+            item
+        )
+        setupProductThumbnail(item.productThumbnailUrl)
+        setupButton(item.button, item.isProcessing)
+    }
+
+    private fun inflateViewStub() {
+        val productListViewStub: View = itemView.findViewById(R.id.itemBomDetailProductViewStub)
+        if (productListViewStub is ViewStub) {
+            partialProductItemViewStub = productListViewStub.inflate()
+            ivBuyerOrderDetailProductThumbnail =
+                partialProductItemViewStub?.findViewById(R.id.ivBuyerOrderDetailProductThumbnail)
+            btnBuyerOrderDetailBuyProductAgain =
+                partialProductItemViewStub?.findViewById(R.id.btnBuyerOrderDetailBuyProductAgain)
+        } else {
+            productListViewStub.show()
         }
     }
 
-    private fun goToProductSnapshotPage() {
-        element?.let {
-            if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
-                navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
-                BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
-            } else {
-                showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
-            }
+    private fun setupAddonSection(addonsListUiModel: AddonsListUiModel?) {
+        val addonsViewStub: View = itemView.findViewById(R.id.itemBomDetailAddonsViewStub)
+        if (addonsListUiModel?.addonsItemList?.isNotEmpty() == true) {
+            if (addonsViewStub is ViewStub) addonsViewStub.inflate() else addonsViewStub.show()
+            setupAddonsBinding()
+            partialProductAddonViewHolder =
+                partialItemBuyerOrderDetailAddonsBinding?.let { PartialProductAddonViewHolder(it) }
+            partialProductAddonViewHolder?.bindViews(addonsListUiModel)
+        } else {
+            addonsViewStub.hide()
         }
     }
 
-    private fun onActionButtonClicked() {
-        element?.let {
-            when (it.button.key) {
-                BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
-                BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
-            }
+    private fun setupAddonsBinding() {
+        if (partialItemBuyerOrderDetailAddonsBinding == null) {
+            partialItemBuyerOrderDetailAddonsBinding =
+                PartialItemBuyerOrderDetailAddonsBinding.bind(this.itemView.findViewById(R.id.itemBomDetailAddonsViewStub))
         }
-    }
-
-    private fun addToCart() {
-        element?.let {
-            listener.onBuyAgainButtonClicked(it)
-        }
-    }
-
-    private fun seeSimilarProducts() {
-        element?.let {
-            navigator.openAppLink(it.button.url, false)
-            BuyerOrderDetailTracker.eventClickSimilarProduct(it.orderStatusId, it.orderId)
-        }
-    }
-
-    private fun setupClickListeners() {
-        cardBuyerOrderDetailProduct?.setOnClickListener(this@ProductViewHolder)
-        btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this@ProductViewHolder)
     }
 
     protected open fun setupProductThumbnail(productThumbnailUrl: String) {
@@ -139,26 +119,10 @@ open class ProductViewHolder(
         }
     }
 
-    private fun setupProductName(productName: String) {
-        tvBuyerOrderDetailProductName?.text = productName
-    }
-
-    private fun setupProductQuantityAndPrice(quantity: Int, priceText: String) {
-        tvBuyerOrderDetailProductPriceQuantity?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
-    }
-
-    private fun setupProductNote(productNote: String) {
-        tvBuyerOrderDetailProductNote?.apply {
-            text = composeItalicNote(productNote)
-            showWithCondition(productNote.isNotBlank())
-        }
-    }
-
-    private fun setupTotalPrice(totalPrice: String) {
-        tvBuyerOrderDetailProductPriceValue?.text = totalPrice
-    }
-
-    protected open fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
+    protected open fun setupButton(
+        showBuyAgainButton: ActionButtonsUiModel.ActionButton,
+        processing: Boolean
+    ) {
         btnBuyerOrderDetailBuyProductAgain?.apply {
             isLoading = processing
             text = showBuyAgainButton.label
@@ -166,9 +130,5 @@ open class ProductViewHolder(
             buttonType = Utils.mapButtonType(showBuyAgainButton.type)
             showWithCondition(showBuyAgainButton.label.isNotBlank())
         }
-    }
-
-    interface ProductViewListener {
-        fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
     }
 }

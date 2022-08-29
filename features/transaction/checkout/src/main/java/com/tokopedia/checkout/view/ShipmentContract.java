@@ -4,6 +4,9 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -30,11 +33,14 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -115,6 +121,8 @@ public interface ShipmentContract {
 
         void stopTrace();
 
+        void stopEmbraceTrace();
+
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 
         void resetCourier(int position);
@@ -162,6 +170,11 @@ public interface ShipmentContract {
 
         void logOnErrorCheckout(Throwable throwable, String request);
 
+        void showPopUp(PopUpData popUpData);
+
+        void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+
+        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
     }
 
     interface AnalyticsActionListener {
@@ -170,6 +183,8 @@ public interface ShipmentContract {
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                     Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
+                                                    String userId,
+                                                    boolean promoFlag,
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
@@ -240,7 +255,7 @@ public interface ShipmentContract {
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
-        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
+        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -338,11 +353,11 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
-
-        ShipmentDataConverter getShipmentDataConverter();
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
 
         void releaseBooking();
+
+        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded,String checkoutId);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -356,9 +371,19 @@ public interface ShipmentContract {
 
         ValidateUsePromoRequest getLastValidateUseRequest();
 
+        void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        UploadPrescriptionUiModel getUploadPrescriptionUiModel();
+
         String generateRatesMvcParam(String cartString);
 
         void setCheckoutData(CheckoutData checkoutData);
+
+        void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
+
+        void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
+
+        ShipmentUpsellModel getShipmentUpsellModel();
     }
 
 }

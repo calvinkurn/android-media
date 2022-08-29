@@ -140,6 +140,17 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         val f = fragment
+        //special behavior to handle finish if the url is paylater AN-34892
+        if (f is BaseSessionWebViewFragment) {
+            val currentUrl = f.webView?.url
+            if (currentUrl != null &&
+                (currentUrl.contains("/paylater/acquisition/status") ||
+                        currentUrl.contains("/paylater/thank-you"))
+            ) {
+                this.finish()
+                return
+            }
+        }
         if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
             if (checkForSameUrlInPreviousIndex(f.webView)) {
                 val historyItemsCount = f.webView.copyBackForwardList().size
@@ -291,7 +302,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(browserIntent)
             finish()
-        }catch (th:Throwable){
+        } catch (th: Throwable) {
             val messageMap: MutableMap<String, String> = HashMap()
             messageMap["type"] = "webview"
             messageMap["url"] = url

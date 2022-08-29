@@ -13,6 +13,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATION
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_DURATION_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeEducationalInformationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
@@ -25,9 +29,10 @@ class HomeEducationalInformationWidgetViewHolder(
 
     companion object {
         private const val LOTTIE = "https://assets.tokopedia.net/asts/android/tokonow/tokopedianow_educational_information_chevron_lottie.json"
-        private const val IMG_TWO_HOURS = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_two_hours.png"
+        private const val IMG_TIME = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_two_hours.png"
         private const val IMG_STOCK_AVAILABLE = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_stock_available.png"
         private const val IMG_GUARANTEED_QUALITY = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_educational_information_guaranteed_quality.png"
+        private const val IMG_FREE_SHIPPING = "https://images.tokopedia.net/img/android/tokonow/ic_educational_information_free_shipping.png"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_educational_information_widget
@@ -37,16 +42,20 @@ class HomeEducationalInformationWidgetViewHolder(
 
     override fun bind(element: HomeEducationalInformationWidgetUiModel) {
         if (element.state == HomeLayoutItemState.LOADED) {
-            setupUi()
+            setupUi(element.serviceType)
             listener?.onEducationInformationWidgetImpressed()
         }
     }
 
-    private fun setupUi() {
+    private fun setupUi(serviceType: String) {
         binding?.apply {
             cvEducationalInfo.show()
-            iuTwoHours.setImageUrl(IMG_TWO_HOURS)
-            iuStockAvailable.setImageUrl(IMG_STOCK_AVAILABLE)
+
+            setDurationText(serviceType)
+            setSelectedProductFreeShippingText(serviceType)
+
+            iuTime.setImageUrl(IMG_TIME)
+            iuSelectedProductFreeShipping.setImageUrl(if (serviceType == ServiceType.NOW_15M) IMG_STOCK_AVAILABLE  else IMG_FREE_SHIPPING)
             iuGuaranteedQuality.setImageUrl(IMG_GUARANTEED_QUALITY)
         }
 
@@ -54,6 +63,24 @@ class HomeEducationalInformationWidgetViewHolder(
             setupBasicButton()
         } else {
             setupLottie()
+        }
+    }
+
+    private fun setDurationText(serviceType: String) {
+        getServiceTypeRes(
+            key = EDU_WIDGET_DURATION_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            binding?.tpTime?.text = getString(it)
+        }
+    }
+
+    private fun setSelectedProductFreeShippingText(serviceType: String) {
+        getServiceTypeRes(
+            key = EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            binding?.tpSelectedProductFreeShipping?.text = getString(it)
         }
     }
 
@@ -84,6 +111,7 @@ class HomeEducationalInformationWidgetViewHolder(
             sivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
             sivChevronDown.setOnClickListener {
                 showBottomSheet()
+                listener?.onEducationInformationDropDownClicked()
             }
         }
     }
@@ -97,5 +125,6 @@ class HomeEducationalInformationWidgetViewHolder(
         fun isEducationInformationLottieStopped(): Boolean
         fun onEducationInformationLottieClicked()
         fun onEducationInformationWidgetImpressed()
+        fun onEducationInformationDropDownClicked()
     }
 }

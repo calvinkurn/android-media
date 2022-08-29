@@ -133,7 +133,9 @@ class ProductExoPlayer(val context: Context) {
     fun isMute(): Boolean = exoPlayer.volume == MUTE_VOLUME
 
     private fun prepareIfVideoDifferent(mediaSource: MediaSource, lastVideoPosition: Long, shouldPrepare: Boolean) {
-        if (shouldPrepare) exoPlayer.prepare(mediaSource, lastVideoPosition == VIDEO_AT_FIRST_POSITION, false)
+        if (shouldPrepare) exoPlayer.prepare(mediaSource,
+                lastVideoPosition == VIDEO_AT_FIRST_POSITION,
+                false)
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {

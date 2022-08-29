@@ -60,12 +60,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
     implementation projectOrAar(rootProject.ext.features.findNative)
     implementation projectOrAar(rootProject.ext.features.affiliateToko)
+    implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
     implementation projectOrAar(rootProject.ext.features.play)
     implementation projectOrAar(rootProject.ext.features.kol)
-    implementation projectOrAar(rootProject.ext.features.interestPick)
     implementation projectOrAar(rootProject.ext.features.feed)
 
     //Digital
@@ -77,9 +77,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.rechargeCreditCard)
     implementation projectOrAar(rootProject.ext.features.digitalEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalBrizzi)
-    implementation projectOrAar(rootProject.ext.features.smartBills)
     implementation projectOrAar(rootProject.ext.features.digitalCheckout)
     implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
+    implementation projectOrAar(rootProject.ext.features.digitalProductDetail)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.similarSearch)
@@ -100,6 +100,7 @@ dependencies {
 
     //Logistic
     implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
 
@@ -109,10 +110,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
-    implementation projectOrAar(rootProject.ext.features.productBundle)
+    implementation projectOrAar(rootProject.ext.features.feedShop)
 
     //Operational
 
@@ -152,6 +154,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
     implementation projectOrAar(rootProject.ext.features.wishlist)
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.unifyprinciples.Typography
@@ -47,11 +48,7 @@ class MvcTextContainer @JvmOverloads constructor(
         if (imageUrl.isEmpty()) return
 
         if (!(context as Activity).isFinishing) {
-            Glide.with(context)
-                .load(imageUrl)
-                .dontAnimate()
-                .into(imageCoupon)
-
+            imageCoupon.loadImage(imageUrl)
         }
     }
 }

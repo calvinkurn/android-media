@@ -1,6 +1,8 @@
 package com.tokopedia.minicart.cartlist
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.minicart.MiniCartBottomSheetUnify
+import com.tokopedia.minicart.MiniCartBottomSheetUnifyListener
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
@@ -26,6 +30,7 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
@@ -33,6 +38,11 @@ import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartListBinding
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
+import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -49,8 +59,18 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     : MiniCartListActionListener {
 
     companion object {
+        const val STATE_PRODUCT_BUNDLE_RECOM_ATC = "product_bundle_recom_atc"
+        const val STATE_PRODUCT_BUNDLE_RECOM_CLICKED = "product_bundle_recom_clicked"
+        const val STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED = "product_bundle_recom_impressed"
+
         private const val LONG_DELAY = 500L
         private const val SHORT_DELAY = 200L
+
+        private const val REQUEST_EDIT_BUNDLE = 101
+
+        private const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
+        private const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
+        private const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
@@ -66,8 +86,13 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private var globalEventObserver: Observer<GlobalEvent>? = null
     private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
+    private var productBundleRecomTrackerObserver: Observer<ProductBundleRecomTracker>? = null
 
     private var isShow: Boolean = false
+
+    // temporary variable to handle case edit bundle
+    // this is useful if there are multiple same bundleId in cart
+    private var toBeDeletedBundleGroupId = ""
 
     @Inject
     lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheet
@@ -102,10 +127,38 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             viewModel?.miniCartListBottomSheetUiModel?.removeObserver(it)
             bottomSheetUiModelObserver = null
         }
+        productBundleRecomTrackerObserver?.let {
+            viewModel?.productBundleRecomTracker?.removeObserver(it)
+            productBundleRecomTrackerObserver = null
+        }
+    }
+
+    private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
+            val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
+            if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
+                val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
+                val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == oldBundleId && it.bundleGroupId == toBeDeletedBundleGroupId }
+                toBeDeletedBundleGroupId = ""
+                if (deletedItems.isNotEmpty()) {
+                    viewModel?.deleteMultipleCartItems(deletedItems as List<MiniCartProductUiModel>, isFromEditBundle = true)
+                }
+            } else {
+                viewModel?.getCartList()
+            }
+        }
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
-        bottomSheet = BottomSheetUnify().apply {
+        bottomSheet = MiniCartBottomSheetUnify(object : MiniCartBottomSheetUnifyListener {
+            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+                if (requestCode == REQUEST_EDIT_BUNDLE) {
+                    onResultFromEditBundle(resultCode, data)
+                }
+            }
+        }).apply {
             showCloseIcon = false
             showHeader = true
             isDragable = true
@@ -122,8 +175,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 isShow = false
                 cancelAllDebounceJob()
                 resetObserver()
+                Toaster.onCTAClick = View.OnClickListener { }
                 bottomSheetListener?.onMiniCartListBottomSheetDismissed()
                 this@MiniCartListBottomSheet.viewBinding = null
+                this@MiniCartListBottomSheet.bottomSheet = null
             }
             setChild(viewBinding.root)
             show(fragmentManager, this.javaClass.simpleName)
@@ -147,18 +202,205 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun initializeViewModel(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         viewModel.initializeGlobalState()
+
         initializeGlobalEventObserver(viewBinding, viewModel, fragmentManager)
         initializeBottomSheetUiModelObserver(viewBinding, fragmentManager, viewModel, lifecycleOwner)
+        initializeProductBundleRecomAtcTrackerObserver()
+
         observeGlobalEvent(viewModel, lifecycleOwner)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
+        observeProductBundleRecomAtcTracker(viewModel, lifecycleOwner)
     }
 
     private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartListBinding) {
-        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this)
+        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback())
         adapter = MiniCartListAdapter(adapterTypeFactory)
         viewBinding.rvMiniCartList.adapter = adapter
         viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
         viewBinding.rvMiniCartList.addItemDecoration(miniCartListDecoration)
+    }
+
+    private fun goToPDP(productId: String) {
+        bottomSheet?.context?.let { context ->
+            val intent = RouteManager.getIntent(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+            )
+            context.startActivity(intent)
+        }
+    }
+
+    private fun multiProductBundleCallback() = object : MultipleProductBundleListener {
+
+        override fun onMultipleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundleType: String,
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
+        ) {
+            viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = selectedMultipleBundle.displayPrice,
+                state = STATE_PRODUCT_BUNDLE_RECOM_CLICKED
+            )
+
+            goToPDP(selectedProduct.productId)
+        }
+
+        override fun addMultipleBundleToCart(
+            shopId: String,
+            warehouseId: String,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
+            productDetails: List<ShopHomeBundleProductUiModel>,
+            bundleName: String,
+            bundleType: String,
+            bundlePosition: Int,
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
+        ) {
+            showProgressLoading()
+
+            viewModel?.addBundleToCart(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = selectedMultipleBundle.displayPrice,
+                productDetails = productDetails,
+                productQuantity = selectedMultipleBundle.minOrder
+            )
+        }
+
+        override fun impressionProductBundleMultiple(
+            shopId: String,
+            warehouseId: String,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundleType: String,
+            bundlePosition: Int
+        ) {
+            viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = selectedMultipleBundle.displayPrice,
+                state = STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED
+            )
+        }
+
+        override fun impressionProductItemBundleMultiple(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
+        ) { /* nothing to do */ }
+
+    }
+
+    private fun singleProductBundleCallback() = object : SingleProductBundleListener {
+
+        override fun onSingleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int,
+            bundleType: String
+        ) {
+            viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                bundleId = selectedSingleBundle.bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = selectedSingleBundle.displayPrice,
+                state = STATE_PRODUCT_BUNDLE_RECOM_CLICKED
+            )
+
+            goToPDP(selectedProduct.productId)
+        }
+
+        override fun addSingleBundleToCart(
+            shopId: String,
+            warehouseId: String,
+            selectedBundle: ShopHomeProductBundleDetailUiModel,
+            bundleListSize: Int,
+            bundleProducts: ShopHomeBundleProductUiModel,
+            bundleName: String,
+            bundleType: String,
+            bundlePosition: Int,
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
+        ) {
+            showProgressLoading()
+
+            viewModel?.addBundleToCart(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                bundleId = selectedBundle.bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = selectedBundle.displayPrice,
+                productDetails = listOf(bundleProducts),
+                productQuantity = selectedBundle.minOrder
+            )
+        }
+
+        override fun onTrackSingleVariantChange(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String
+        ) { /* nothing to do */ }
+
+        override fun impressionProductBundleSingle(
+            shopId: String,
+            warehouseId: String,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            selectedProduct: ShopHomeBundleProductUiModel,
+            bundleName: String,
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            bundleType: String
+        ) {
+            viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
+                bundleId = selectedSingleBundle.bundleId,
+                bundleName = bundleName,
+                bundleType = bundleType,
+                bundlePosition = bundlePosition,
+                priceCut = selectedSingleBundle.displayPrice,
+                state = STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED
+            )
+        }
     }
 
     private fun initializeTotalAmount(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, context: Context) {
@@ -211,7 +453,76 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 GlobalEvent.STATE_FAILED_TO_CHECKOUT -> {
                     onFailedGoToCheckout(viewBinding, it, fragmentManager)
                 }
+                GlobalEvent.STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM -> {
+                    onSuccessAddToCartProductBundleRecom(viewBinding)
+                }
+                GlobalEvent.STATE_FAILED_ADD_TO_CART_BUNDLE_RECOM_ITEM -> {
+                    onFailedAddToCartProductBundleRecom(it, viewBinding)
+                }
             }
+        }
+    }
+
+    private fun initializeProductBundleRecomAtcTrackerObserver() {
+        productBundleRecomTrackerObserver = Observer<ProductBundleRecomTracker> {
+            when(it.state) {
+                STATE_PRODUCT_BUNDLE_RECOM_ATC -> analytics.eventClickProductBundleRecomAtc(
+                    shopId = it.shopId,
+                    warehouseId = it.warehouseId,
+                    bundleId = it.bundleId,
+                    bundleName = it.bundleName,
+                    bundleType = it.bundleType,
+                    bundlePosition = it.bundlePosition,
+                    priceCut = it.priceCut,
+                    atcItems = it.atcItems
+                )
+                STATE_PRODUCT_BUNDLE_RECOM_CLICKED -> analytics.eventClickProductBundleRecom(
+                    shopId = it.shopId,
+                    warehouseId = it.warehouseId,
+                    bundleId = it.bundleId,
+                    bundleName = it.bundleName,
+                    bundleType = it.bundleType,
+                    bundlePosition = it.bundlePosition,
+                    priceCut = it.priceCut
+                )
+                STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED -> analytics.eventProductBundleRecomImpression(
+                    shopId = it.shopId,
+                    warehouseId = it.warehouseId,
+                    bundleId = it.bundleId,
+                    bundleName = it.bundleName,
+                    bundleType = it.bundleType,
+                    bundlePosition = it.bundlePosition,
+                    priceCut = it.priceCut
+                )
+            }
+        }
+    }
+
+    private fun onSuccessAddToCartProductBundleRecom(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        viewModel?.getCartList()
+
+        hideProgressLoading()
+
+        viewBinding.bottomsheetContainer.let { container ->
+            bottomSheetListener?.showToaster(
+                view = container,
+                message = container.context.getString(R.string.mini_cart_product_bundle_recommendation_success_toaster_description),
+                type = Toaster.TYPE_NORMAL
+            )
+        }
+    }
+
+    private fun onFailedAddToCartProductBundleRecom(globalEvent: GlobalEvent, viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        hideProgressLoading()
+
+        val messageError = globalEvent.data as? String
+
+        viewBinding.bottomsheetContainer.let { container ->
+            bottomSheetListener?.showToaster(
+                view = container,
+                message = if (messageError.isNullOrEmpty()) ErrorHandler.getErrorMessage(context = container.context, globalEvent.throwable) else messageError,
+                type = Toaster.TYPE_ERROR
+            )
         }
     }
 
@@ -246,6 +557,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
+            if (it == null) return@Observer
+
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 dismiss()
             }
@@ -349,12 +662,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         if (data?.isLastItem == true) return
 
         hideProgressLoading()
-        val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
+        val message = if (data?.isFromEditBundle == true) {
+            bottomSheet?.context?.getString(R.string.mini_cart_message_toaster_change_bundle_success)
+        } else {
+            data?.removeFromCartData?.data?.message?.firstOrNull()
+        } ?: ""
         if (message.isNotBlank()) {
-            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel)
-                    ?: ""
+            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel) ?: ""
             viewModel.getCartList()
-            if (data?.isBulkDelete == true) {
+            if (data?.isFromEditBundle == true || data?.isBulkDelete == true) {
                 viewBinding.bottomsheetContainer.let { view ->
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL)
                 }
@@ -373,6 +689,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun observeMiniCartListUiModel(viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver?.let {
             viewModel.miniCartListBottomSheetUiModel.observe(lifecycleOwner, it)
+        }
+    }
+
+    private fun observeProductBundleRecomAtcTracker(viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
+        productBundleRecomTrackerObserver?.let {
+            viewModel.productBundleRecomTracker.observe(lifecycleOwner, it)
         }
     }
 
@@ -519,7 +841,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
         analytics.eventClickDeleteFromTrashBin()
         bottomSheetListener?.showProgressLoading()
-        viewModel?.deleteSingleCartItem(element)
+        if (element.isBundlingItem) {
+            val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
+            val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == element.bundleId && it.bundleGroupId == element.bundleGroupId } as List<MiniCartProductUiModel>
+            if (deletedItems.isNotEmpty()) {
+                viewModel?.deleteMultipleCartItems(deletedItems)
+            }
+        } else {
+            viewModel?.deleteSingleCartItem(element)
+        }
     }
 
     override fun onBulkDeleteUnavailableItems() {
@@ -547,14 +877,14 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    override fun onQuantityChanged(productId: String, newQty: Int) {
-        viewModel?.updateProductQty(productId, newQty)
+    override fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int) {
+        viewModel?.updateProductQty(element, newQty)
         calculateProduct()
         updateCart()
     }
 
-    override fun onNotesChanged(productId: String, newNotes: String) {
-        viewModel?.updateProductNotes(productId, newNotes)
+    override fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String) {
+        viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, bundleGroupId, newNotes)
         updateCart()
     }
 
@@ -615,4 +945,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         analytics.eventClickChangeNotes()
     }
 
+    override fun onChangeBundleClicked(element: MiniCartProductUiModel) {
+        bottomSheet?.context?.let {
+            val intent = RouteManager.getIntentNoFallback(it, element.editBundleApplink) ?: return
+            analytics.eventClickChangeProductBundle()
+            toBeDeletedBundleGroupId = element.bundleGroupId
+            bottomSheet?.startActivityForResult(intent, REQUEST_EDIT_BUNDLE)
+        }
+    }
 }

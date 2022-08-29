@@ -31,7 +31,7 @@ public class CategoryItem implements Parcelable {
     private List<ProductItem> items = null;
     @SerializedName("id")
     @Expose
-    private int categoryId;
+    private String categoryId;
     @SerializedName("count")
     @Expose
     private int count;
@@ -95,11 +95,11 @@ public class CategoryItem implements Parcelable {
     }
 
 
-    public int getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -140,7 +140,7 @@ public class CategoryItem implements Parcelable {
         dest.writeString(this.url);
         dest.writeString(this.mediaUrl);
         dest.writeList(this.items);
-        dest.writeInt(categoryId);
+        dest.writeString(categoryId);
         dest.writeInt(count);
         dest.writeInt(isCard);
         dest.writeInt(priority);
@@ -154,7 +154,7 @@ public class CategoryItem implements Parcelable {
         this.items = new ArrayList<ProductItem>();
         this.mediaUrl = in.readString();
         in.readList(this.items, ProductItem.class.getClassLoader());
-        this.categoryId = in.readInt();
+        this.categoryId = in.readString();
         this.count = in.readInt();
         this.isCard = in.readInt();
         this.priority = in.readInt();

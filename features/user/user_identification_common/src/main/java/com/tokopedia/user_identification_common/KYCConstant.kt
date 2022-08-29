@@ -43,5 +43,14 @@ interface KYCConstant {
         const val QUERY_GET_KYC_PROJECT_INFO = "get_kyc_project_info"
         const val HOME_CREDIT_PROJECT_ID = "16"
         const val CO_BRAND_PROJECT_ID = "18"
+        const val GO_CICIL_PROJECT_ID = "21"
+
+        const val BUSINESS_UNIT = "businessUnit"
+        const val USER_PLATFORM = "user platform"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val CURRENT_SITE = "currentSite"
+        const val TRACKER_ID = "trackerId"
+
+        const val LIVENESS_TAG = "LIVENESS_TAG"
     }
 }

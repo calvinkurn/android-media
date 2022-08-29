@@ -25,7 +25,7 @@ data class VariantProductInput(
     val sku: String,
     @Expose
     @SerializedName("stock")
-    val stock: Int,
+    val stock: Int?,
     @Expose
     @SerializedName("pictures")
     val pictures: List<Picture>

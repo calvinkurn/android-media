@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.CycleInterpolator;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,6 +54,11 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.HtmlLinkHelper;
@@ -60,8 +67,11 @@ import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +92,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements ShipmentCartItemViewHolder.ShipmentItemListener {
 
-    public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment;
+    public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment_checkout;
 
     private static final int FIRST_ELEMENT = 0;
 
@@ -109,6 +119,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout layoutWarning;
     private Typography tvShopName;
     private LinearLayout layoutWarningAndError;
+    private Ticker tickerWarningCloseable;
 
     // Custom Error Ticker
     private CardUnify customTickerError;
@@ -203,7 +214,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private boolean isPriorityChecked = false;
 
     // Shipping Experience
-    private LinearLayout llShippingExperienceStateLoading;
+    private ConstraintLayout llShippingExperienceStateLoading;
     private FrameLayout containerShippingExperience;
     private ConstraintLayout layoutStateNoSelectedShipping;
     private ConstraintLayout layoutStateFailedShipping;
@@ -231,6 +242,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private IconUnify mIconTooltip;
     private Typography mPricePerProduct;
 
+    // Gifting AddOn
+    private LinearLayout llGiftingAddOnOrderLevel;
+    private LinearLayout llGiftingAddOnProductLevel;
+    private ButtonGiftingAddOnView buttonGiftingAddonOrderLevel;
+    private ButtonGiftingAddOnView buttonGiftingAddonProductLevel;
+    private Typography tvAddOnCostLabel;
+    private Typography tvAddOnPrice;
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -248,6 +267,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_error);
         tickerError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.ticker_error);
         layoutWarning = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_warning);
+        tickerWarningCloseable = itemView.findViewById(R.id.ticker_warning_closable);
         layoutWarning.setVisibility(View.GONE);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
@@ -363,6 +383,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelFreeShippingEtaText = itemView.findViewById(R.id.label_free_shipping_eta);
         imageMerchantVoucher = itemView.findViewById(R.id.img_mvc);
 
+        // AddOn Experience
+        llGiftingAddOnOrderLevel = itemView.findViewById(R.id.ll_gifting_addon_order_level);
+        llGiftingAddOnProductLevel = itemView.findViewById(R.id.ll_gifting_addon_product_level);
+        buttonGiftingAddonOrderLevel = itemView.findViewById(R.id.button_gifting_addon_order_level);
+        buttonGiftingAddonProductLevel = itemView.findViewById(R.id.button_gifting_addon_product_level);
+        tvAddOnCostLabel = itemView.findViewById(R.id.tv_add_on_fee);
+        tvAddOnPrice = itemView.findViewById(R.id.tv_add_on_price);
+
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
     }
@@ -389,6 +417,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         mActionListener.navigateToProtectionMore(cartItemModel);
     }
 
+    @Override
+    public void openAddOnProductLevelBottomSheet(@NotNull CartItemModel cartItem, @NotNull AddOnWordingModel addOnWordingModel) {
+        mActionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWordingModel);
+    }
+
+    @Override
+    public void addOnProductLevelImpression(@NonNull String productId) {
+        mActionListener.addOnProductLevelImpression(productId);
+    }
+
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                List<Object> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
@@ -407,6 +445,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderErrorAndWarning(shipmentCartItemModel);
         renderCustomError(shipmentCartItemModel);
         renderShippingVibrationAnimation(shipmentCartItemModel);
+        renderAddOnOrderLevel(shipmentCartItemModel, shipmentCartItemModel.getAddOnWordingModel());
     }
 
     public void unsubscribeDebouncer() {
@@ -472,6 +511,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
+        renderWarningCloseable(shipmentCartItemModel);
     }
 
     private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
@@ -518,7 +558,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
         if (cartItemModelList.size() > 0) {
-            renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
+            renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT), shipmentCartItemModel.getAddOnWordingModel());
         }
         if (shipmentCartItemModel.getCartItemModels().size() > 1) {
             rlExpandOtherProduct.setVisibility(View.VISIBLE);
@@ -561,6 +601,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             imgFreeShipping.setVisibility(View.VISIBLE);
             separatorFreeShipping.setVisibility(View.VISIBLE);
+            if (!shipmentCartItemModel.getHasSeenFreeShippingBadge() && shipmentCartItemModel.isFreeShippingPlus()) {
+                shipmentCartItemModel.setHasSeenFreeShippingBadge(true);
+                mActionListener.onViewFreeShippingPlusBadge();
+            }
         } else {
             imgFreeShipping.setVisibility(View.GONE);
             separatorFreeShipping.setVisibility(View.GONE);
@@ -601,7 +645,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     @SuppressLint("StringFormatInvalid")
-    private void renderFirstCartItem(CartItemModel cartItemModel) {
+    private void renderFirstCartItem(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
         if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);
         } else {
@@ -625,6 +669,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderProductTicker(cartItemModel);
         renderProductProperties(cartItemModel);
         renderBundlingInfo(cartItemModel);
+        renderAddOnProductLevel(cartItemModel, addOnWordingModel);
     }
 
     private void renderBundlingInfo(CartItemModel cartItemModel) {
@@ -665,11 +710,31 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
+    private void renderAddOnProductLevel(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel) {
+        AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
+        int status = addOnsDataModel.getStatus();
+        if (status == 0) {
+            llGiftingAddOnProductLevel.setVisibility(View.GONE);
+        } else {
+            if (status == 1) {
+                buttonGiftingAddonProductLevel.setState(ButtonGiftingAddOnView.State.ACTIVE);
+            } else if (status == 2) {
+                buttonGiftingAddonProductLevel.setState(ButtonGiftingAddOnView.State.INACTIVE);
+            }
+            llGiftingAddOnProductLevel.setVisibility(View.VISIBLE);
+            buttonGiftingAddonProductLevel.setTitle(addOnsDataModel.getAddOnsButtonModel().getTitle());
+            buttonGiftingAddonProductLevel.setDesc(addOnsDataModel.getAddOnsButtonModel().getDescription());
+            buttonGiftingAddonProductLevel.setUrlLeftIcon(addOnsDataModel.getAddOnsButtonModel().getLeftIconUrl());
+            buttonGiftingAddonProductLevel.setUrlRightIcon(addOnsDataModel.getAddOnsButtonModel().getRightIconUrl());
+            buttonGiftingAddonProductLevel.setOnClickListener(view -> mActionListener.openAddOnProductLevelBottomSheet(cartItemModel, addOnWordingModel));
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private void renderProductProperties(CartItemModel cartItemModel) {
         List<String> productInformationList = cartItemModel.getProductInformation();
+        layoutProductInfo.removeAllViews();
         if (productInformationList != null && !productInformationList.isEmpty()) {
-            layoutProductInfo.removeAllViews();
             for (int i = 0; i < productInformationList.size(); i++) {
                 Typography productInfo = new Typography(itemView.getContext());
                 productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
@@ -682,9 +747,38 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutProductInfo.addView(productInfo);
             }
             layoutProductInfo.setVisibility(View.VISIBLE);
+            renderEthicalDrugsProperty(cartItemModel);
         } else {
             layoutProductInfo.setVisibility(View.GONE);
         }
+        renderEthicalDrugsProperty(cartItemModel);
+    }
+
+    private void renderEthicalDrugsProperty(CartItemModel cartItemModel) {
+        if(cartItemModel.getEthicalDrugDataModel().getNeedPrescription()){
+            View ethicalDrugView = createProductInfoTextWithIcon(cartItemModel);
+            if(layoutProductInfo.getChildCount() > 0){
+                ethicalDrugView.setPadding(itemView.getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),0,0,0);
+            }
+            layoutProductInfo.addView(ethicalDrugView);
+            layoutProductInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private LinearLayout createProductInfoTextWithIcon(CartItemModel cartItemModel )  {
+        LinearLayout propertyLayoutWithIcon = new LinearLayout(itemView.getContext());
+        propertyLayoutWithIcon.setOrientation(LinearLayout.HORIZONTAL);
+        View propertiesBinding = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_addon_checkout_identifier,null);
+        ImageUnify propertyIcon = propertiesBinding.findViewById(R.id.checkout_iv_identifier);
+        if(propertyIcon != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getIconUrl())){
+            ImageHandler.loadImageWithoutPlaceholderAndError(propertyIcon, cartItemModel.getEthicalDrugDataModel().getIconUrl());
+        }
+        Typography propertyText = propertiesBinding.findViewById(R.id.checkout_label_identifier);
+        if(propertyText != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getText())){
+            propertyText.setText(cartItemModel.getEthicalDrugDataModel().getText());
+        }
+        propertyLayoutWithIcon.addView(propertiesBinding);
+        return propertyLayoutWithIcon;
     }
 
     private void renderProductPrice(CartItemModel cartItemModel) {
@@ -746,7 +840,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @SuppressLint("StringFormatInvalid")
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
         rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
-        initInnerRecyclerView(cartItemModels);
+        initInnerRecyclerView(cartItemModels, shipmentItem.getAddOnWordingModel());
         if (shipmentItem.isStateAllItemViewExpanded()) {
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
@@ -825,6 +919,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             // Is free ongkir shipping
             renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
+        } else if (shipmentCartItemModel.isHideChangeCourierCard()) {
+            // normal shipping but not show `pilih kurir` card
+            renderNormalShippingWithoutChooseCourierCard(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Is normal shipping
             renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
@@ -932,6 +1029,34 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderFreeShippingCourierVisibility(selectedCourierItemData);
         renderFreeShippingTitle(selectedCourierItemData);
         renderFreeShippingEta(selectedCourierItemData);
+    }
+
+    private void renderNormalShippingWithoutChooseCourierCard(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
+        layoutStateHasSelectedFreeShipping.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
+
+        labelFreeShippingCourierName.setVisibility(View.GONE);
+        if (selectedCourierItemData.getEstimatedTimeDelivery() != null) {
+            String titleText = selectedCourierItemData.getEstimatedTimeDelivery() + " (" + Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
+                        selectedCourierItemData.getShipperPrice(), false
+                )) + ")";
+            HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), titleText);
+            labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
+            labelSelectedFreeShipping.setWeight(Typography.BOLD);
+        }
+
+        if (!selectedCourierItemData.getDurationCardDescription().isEmpty()) {
+            labelFreeShippingEtaText.setVisibility(View.VISIBLE);
+            labelFreeShippingEtaText.setText(selectedCourierItemData.getDurationCardDescription());
+        } else {
+            labelFreeShippingEtaText.setVisibility(View.GONE);
+        }
     }
 
     private void renderFreeShippingTitle(CourierItemData selectedCourierItemData) {
@@ -1064,6 +1189,37 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 mActionListener.onClickRefreshErrorLoadCourier();
             }
         });
+    }
+
+    private void renderAddOnOrderLevel(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
+        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
+            AddOnButtonModel addOnButtonModel = addOnsDataModel.getAddOnsButtonModel();
+            int statusAddOn = addOnsDataModel.getStatus();
+            if (statusAddOn == 0) {
+                llGiftingAddOnOrderLevel.setVisibility(View.GONE);
+            } else {
+                if (statusAddOn == 1) {
+                    buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.ACTIVE);
+                } else if (statusAddOn == 2) {
+                    buttonGiftingAddonOrderLevel.setState(ButtonGiftingAddOnView.State.INACTIVE);
+                }
+
+                llGiftingAddOnOrderLevel.setVisibility(View.VISIBLE);
+                buttonGiftingAddonOrderLevel.setTitle(addOnButtonModel.getTitle());
+                buttonGiftingAddonOrderLevel.setDesc(addOnButtonModel.getDescription());
+                buttonGiftingAddonOrderLevel.setUrlLeftIcon(addOnButtonModel.getLeftIconUrl());
+                buttonGiftingAddonOrderLevel.setUrlRightIcon(addOnButtonModel.getRightIconUrl());
+                buttonGiftingAddonOrderLevel.setOnClickListener(openAddOnOrderLevelBottomSheet(shipmentCartItemModel, addOnWordingModel));
+                mActionListener.addOnOrderLevelImpression(shipmentCartItemModel.getCartItemModels());
+            }
+        }
+    }
+
+    private View.OnClickListener openAddOnOrderLevelBottomSheet(ShipmentCartItemModel shipmentCartItemModel, AddOnWordingModel addOnWordingModel) {
+        return view -> {
+            mActionListener.openAddOnOrderLevelBottomSheet(shipmentCartItemModel, addOnWordingModel);
+        };
     }
 
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {
@@ -1207,6 +1363,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         int additionalPrice = 0;
         long subTotalPrice = 0;
         long totalItemPrice = 0;
+        int totalAddOnPrice = 0;
+        boolean hasAddOnSelected = false;
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
@@ -1234,8 +1392,29 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     totalPurchaseProtectionItem += cartItemModel.getQuantity();
                     totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
                 }
+
+                if (cartItemModel.getAddOnProductLevelModel().getStatus() == 1) {
+                    if (!cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList().isEmpty()) {
+                        for (AddOnDataItemModel addOnDataItemModel : cartItemModel.getAddOnProductLevelModel().getAddOnsDataItemModelList()) {
+                            totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                            hasAddOnSelected = true;
+                        }
+                    }
+                }
             }
         }
+
+        if (shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+            if (shipmentCartItemModel.getAddOnsOrderLevelModel().getStatus() == 1) {
+                if (!shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsDataItemModelList().isEmpty()) {
+                    for (AddOnDataItemModel addOnDataItemModel : shipmentCartItemModel.getAddOnsOrderLevelModel().getAddOnsDataItemModelList()) {
+                        totalAddOnPrice += addOnDataItemModel.getAddOnPrice();
+                        hasAddOnSelected = true;
+                    }
+                }
+            }
+        }
+
         totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
         @SuppressLint("DefaultLocale") String totalPPPItemLabel = String.format("Proteksi Produk (%d Barang)", totalPurchaseProtectionItem);
 
@@ -1275,6 +1454,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             subTotalPrice = totalItemPrice;
         }
+        subTotalPrice += totalAddOnPrice;
         TextViewExtKt.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(subTotalPrice, false)), R.string.content_desc_tv_sub_total_price);
         TextViewExtKt.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), R.string.content_desc_tv_total_item_price_subtotal);
         tvTotalItem.setText(totalItemLabel);
@@ -1284,7 +1464,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 voucherLogisticItemUiModel != null) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
-                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, tvShippingFeePrice.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping), R.string.content_desc_tv_shipping_fee_price_subtotal);
+                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(0.0, false)), R.string.content_desc_tv_shipping_fee_price_subtotal);
             } else {
                 TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()), R.string.content_desc_tv_shipping_fee_price_subtotal);
             }
@@ -1294,6 +1474,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvProtectionLabel.setText(totalPPPItemLabel);
         tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));
         tvAdditionalFeePrice.setText(getPriceFormat(tvAdditionalFee, tvAdditionalFeePrice, additionalPrice));
+
+        if (hasAddOnSelected) {
+            tvAddOnCostLabel.setVisibility(View.VISIBLE);
+            tvAddOnPrice.setVisibility(View.VISIBLE);
+            tvAddOnPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(totalAddOnPrice, false)));
+        } else {
+            tvAddOnCostLabel.setVisibility(View.GONE);
+            tvAddOnPrice.setVisibility(View.GONE);
+        }
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 
@@ -1751,6 +1940,28 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
+    private void renderWarningCloseable(ShipmentCartItemModel shipmentCartItemModel) {
+        if (!shipmentCartItemModel.isError() && !TextUtils.isEmpty(shipmentCartItemModel.getShopTicker())) {
+            tickerWarningCloseable.setTickerTitle(shipmentCartItemModel.getShopTickerTitle());
+            tickerWarningCloseable.setHtmlDescription(shipmentCartItemModel.getShopTicker());
+            tickerWarningCloseable.setVisibility(View.VISIBLE);
+            tickerWarningCloseable.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NonNull CharSequence charSequence) {
+                    // no op //
+                }
+
+                @Override
+                public void onDismiss() {
+                    shipmentCartItemModel.setShopTicker("");
+                    tickerWarningCloseable.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            tickerWarningCloseable.setVisibility(View.GONE);
+        }
+    }
+
     private void initSaveStateDebouncer() {
         compositeSubscription.add(Observable.create(new Observable.OnSubscribe<ShipmentCartItemModel>() {
             @Override
@@ -1831,14 +2042,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         return view -> cbDropshipper.setChecked(!cbDropshipper.isChecked());
     }
 
-    private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
+    private void initInnerRecyclerView(List<CartItemModel> cartItemList, AddOnWordingModel addOnWordingModel) {
         rvCartItem.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(rvCartItem.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvCartItem.setLayoutManager(layoutManager);
 
         ShipmentInnerProductListAdapter shipmentInnerProductListAdapter =
-                new ShipmentInnerProductListAdapter(cartItemList, this);
+                new ShipmentInnerProductListAdapter(cartItemList, addOnWordingModel, this);
         rvCartItem.setAdapter(shipmentInnerProductListAdapter);
     }
 

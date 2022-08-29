@@ -12,17 +12,13 @@ class ReviewReminderPagerAdapter(
         private val tabLayout: TabLayout?
 ) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    val fragments = mutableListOf<Fragment>()
-
     private val classes = listOf(
             ReminderMessageFragment::class.java,
             ReminderPerformanceFragment::class.java
     )
 
     override fun getItem(position: Int): Fragment {
-        return classes[position].newInstance().also {
-            fragments.add(position, it as Fragment)
-        }
+        return classes[position].newInstance()
     }
 
     override fun getCount() = classes.size

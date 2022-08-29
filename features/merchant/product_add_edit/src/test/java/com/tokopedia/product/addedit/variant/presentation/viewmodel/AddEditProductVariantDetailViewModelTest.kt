@@ -1,22 +1,25 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
-import com.tokopedia.product.addedit.util.getPrivateProperty
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
+import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewModelTestFixture() {
@@ -78,60 +81,11 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
         // test overflowed element
         assert(viewModel.getCurrentHeaderPosition(999999) == 0)
+
+        // test input size change
+        assert(viewModel.getInputFieldSize() == 2)
     }
 
-    @Test
-    fun `When collapsedFields increement and decreement Expect valid collapsedFields`() {
-        // test for 2x2 variant
-        viewModel.setInputFieldSize(2)
-        // test increement/ decreement
-        viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
-        assert(viewModel.getCollapsedFields() == 2)
-        viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
-        assert(viewModel.getCollapsedFields() == 0)
-
-        // reset field
-        viewModel.resetCollapsedFields()
-        assert(viewModel.getCollapsedFields() == 0)
-    }
-
-    @Test
-    fun `When validate MultipleSelect data Expect valid error message`() {
-        val messagePriceMin = viewModel.validateVariantPriceInput(0.toBigInteger())
-        val messagePriceExact = viewModel.validateVariantPriceInput(MIN_PRODUCT_PRICE_LIMIT.toBigInteger())
-        assert(messagePriceMin == viewModel.provider.getMinLimitProductPriceErrorMessage())
-        assert(messagePriceExact.isEmpty())
-
-        val messageStockMin = viewModel.validateProductVariantStockInput(0.toBigInteger())
-        val messageStockExact = viewModel.validateProductVariantStockInput(MIN_PRODUCT_STOCK_LIMIT.toBigInteger())
-        assert(messageStockMin == viewModel.provider.getMinLimitProductStockErrorMessage())
-        assert(messageStockExact.isEmpty())
-    }
-
-    @Test
-    fun `When validate submit button data Expect valid boolean`() {
-        val variantInputs = listOf(
-                VariantDetailInputLayoutModel(price = "5000", stock = "1"),
-                VariantDetailInputLayoutModel(price = "3000", stock = "2"),
-                VariantDetailInputLayoutModel(price = "1000", stock = "1")
-        )
-
-        var isResultInvalid = viewModel.validateSubmitDetailField(variantInputs)
-        assert(!isResultInvalid)
-
-        // check invalid price
-        variantInputs[1].price = "0"
-        isResultInvalid = viewModel.validateSubmitDetailField(variantInputs)
-        assert(isResultInvalid)
-
-        // check invalid stock
-        variantInputs[1].price = "3000"
-        variantInputs[1].stock = "0"
-        isResultInvalid = viewModel.validateSubmitDetailField(variantInputs)
-        assert(isResultInvalid)
-    }
-
-    private val EXPECTED_AVAILABLE_FIELDS = 4
     private fun initVariantDetailInputMap(){
         viewModel.productInputModel.value = productInputModel
 
@@ -143,7 +97,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.updateVariantDetailHeaderMap(3, false)
 
         // create
-        viewModel.updateVariantDetailInputMap(1,
+        viewModel.addToVariantDetailInputMap(1,
                 VariantDetailInputLayoutModel(
                         headerPosition=0,
                         visitablePosition=1,
@@ -151,14 +105,14 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                         isActive=true,
                         price="9.999",
                         isPriceError=false,
-                        stock="1",
+                        stock=1,
                         isStockError=false,
                         isSkuFieldVisible=true,
                         priceEditEnabled=true,
                         isPrimary=false,
                         combination= listOf(0, 0)))
 
-        viewModel.updateVariantDetailInputMap(2,
+        viewModel.addToVariantDetailInputMap(2,
                 VariantDetailInputLayoutModel(
                         headerPosition=0,
                         visitablePosition=2,
@@ -166,14 +120,14 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                         isActive=true,
                         price="9.999",
                         isPriceError=false,
-                        stock="1",
+                        stock=1,
                         isStockError=false,
                         isSkuFieldVisible=true,
                         priceEditEnabled=true,
                         isPrimary=false,
                         combination= listOf(0, 1)))
 
-        viewModel.updateVariantDetailInputMap(4,
+        viewModel.addToVariantDetailInputMap(4,
                 VariantDetailInputLayoutModel(
                         headerPosition=3,
                         visitablePosition=4,
@@ -181,41 +135,34 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                         isActive=true,
                         price="9.999",
                         isPriceError=false,
-                        stock="1000000000000000000000000000",
+                        stock=1000000000,
                         isStockError=false,
                         isSkuFieldVisible=true,
                         priceEditEnabled=true,
                         isPrimary=false,
                         combination= listOf(1, 0)))
 
-        viewModel.editVariantDetailInputMap(4,
+        viewModel.updateVariantDetailInputMap(4,
                 viewModel.generateVariantDetailInputModel(2, 3, "8", true))
 
-        viewModel.updateVariantDetailInputMap(5,
+        viewModel.addToVariantDetailInputMap(5,
                 viewModel.generateVariantDetailInputModel(3, 3, "10", true))
 
     }
 
     @Test
-    fun `When getAvailableFields Expect valid number of fields`() {
-        assert(viewModel.getAvailableFields().isEmpty())
-
-        initVariantDetailInputMap()
-        assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS)
-
-        viewModel.updateVariantDetailHeaderMap(0, true)
-        viewModel.increaseCollapsedFields(EXPECTED_AVAILABLE_FIELDS)
-        assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS/ 2)
-
-        viewModel.updateVariantDetailHeaderMap(3, true)
-        viewModel.increaseCollapsedFields(EXPECTED_AVAILABLE_FIELDS/ 2)
-        assert(viewModel.getAvailableFields().isEmpty())
-    }
-
-    @Test
     fun `When validate variant input Expect valid error`() {
         initVariantDetailInputMap()
-        var inputModel: VariantDetailInputLayoutModel? = null
+        val dummyError = "error"
+        var inputModel: VariantDetailInputLayoutModel?
+
+        coEvery { imsResourceProvider.getEmptyProductPriceErrorMessage() } returns dummyError
+        coEvery { imsResourceProvider.getMinLimitProductPriceErrorMessage(MIN_PRODUCT_PRICE_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getEmptyProductStockErrorMessage() } returns dummyError
+        coEvery { imsResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getEmptyProductWeightErrorMessage() } returns dummyError
+        coEvery { imsResourceProvider.getMinLimitProductWeightErrorMessage(AddEditProductVariantConstants.MIN_PRODUCT_WEIGHT_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getMaxLimitProductWeightErrorMessage(AddEditProductVariantConstants.MAX_PRODUCT_WEIGHT_LIMIT) } returns dummyError
 
         // price test
         inputModel = viewModel.validateVariantPriceInput("0", 1)
@@ -228,17 +175,27 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(!inputModel.isPriceError)
 
         // stock test
-        inputModel = viewModel.validateProductVariantStockInput("0", 1)
+        inputModel = viewModel.validateProductVariantStockInput(0, 1)
         assert(inputModel.isStockError)
 
-        inputModel = viewModel.validateProductVariantStockInput("", 1)
+        inputModel = viewModel.validateProductVariantStockInput(null, 1)
         assert(inputModel.isStockError)
 
-        inputModel = viewModel.validateProductVariantStockInput("10", 1)
+        inputModel = viewModel.validateProductVariantStockInput(10, 1)
         assert(!inputModel.isStockError)
 
-        // check error count
-        assert(viewModel.errorCounter.getOrAwaitValue() == 0)
+        // weight test
+        inputModel = viewModel.validateProductVariantWeightInput(0, 1)
+        assert(inputModel.isWeightError)
+
+        inputModel = viewModel.validateProductVariantWeightInput(null, 1)
+        assert(inputModel.isWeightError)
+
+        inputModel = viewModel.validateProductVariantWeightInput(AddEditProductVariantConstants.MAX_PRODUCT_WEIGHT_LIMIT.inc(), 1)
+        assert(inputModel.isWeightError)
+
+        inputModel = viewModel.validateProductVariantWeightInput(10, 1)
+        assert(!inputModel.isWeightError)
     }
 
     @Test
@@ -265,7 +222,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                 visitablePosition=1,
                 unitValueLabel="8",
                 price=expectedPrice.toString(),
-                stock="1",
+                stock=1,
                 isActive = false,
                 combination= listOf(0, 0)))
         viewModel.updateProductInputModel()
@@ -299,6 +256,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
     @Test
     fun `When update primary variant Expect primary variant changes`() {
         initVariantDetailInputMap()
+        viewModel.addToVariantDetailInputMap(99, VariantDetailInputLayoutModel())
         viewModel.updatePrimaryVariant(listOf(1, 1))
         val variantInput = viewModel.productInputModel.value?.variantInputModel?.products?.first {
             it.combination[0] == 1 && it.combination[1] == 1
@@ -312,32 +270,6 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         val expectedTitle = "Biru Muda-10"
         val title = viewModel.getPrimaryVariantTitle(listOf(1, 1))
         assert(title == expectedTitle)
-    }
-
-    @Test
-    fun `When update multiple input variant Expect correct variant`() {
-        initVariantDetailInputMap()
-        val multipleVariantEditInputModel = MultipleVariantEditInputModel(price="666", stock="6",
-                sku="SK-U", selection= mutableListOf(
-                mutableListOf(0, 0),
-                mutableListOf(0, 1),
-                mutableListOf(1, 0),
-                mutableListOf(1, 1)))
-        val privateInputPriceErrorStatusMap = viewModel::class.java.getDeclaredField("inputPriceErrorStatusMap").apply {
-            isAccessible = true
-        }
-        val privateInputStockErrorStatusMap = viewModel::class.java.getDeclaredField("inputStockErrorStatusMap").apply {
-            isAccessible = true
-        }
-        privateInputPriceErrorStatusMap.set(viewModel, hashMapOf(1 to true, 2 to true))
-        privateInputStockErrorStatusMap.set(viewModel, hashMapOf(1 to true, 2 to true))
-
-        viewModel.updateProductInputModel(multipleVariantEditInputModel)
-
-        val isChanged = viewModel.productInputModel.value?.variantInputModel?.products?.all {
-            it.price == 666.toBigInteger() && it.stock == 6 && it.sku == "SK-U"
-        } ?: false
-        assert(isChanged)
     }
 
     @Test
@@ -355,7 +287,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         val updateSwitchStatusResult = viewModel.updateSwitchStatus(false, 999)
         val updateVariantSkuInputResult = viewModel.updateVariantSkuInput("KK", 999)
         val validateVariantPriceInputResult = viewModel.validateVariantPriceInput("KK", 999)
-        val validateProductVariantStockInputResult = viewModel.validateProductVariantStockInput("KK", 999)
+        val validateProductVariantStockInputResult = viewModel.validateProductVariantStockInput(null, 999)
         val generateVariantDetailInputModelResult = viewModel.generateVariantDetailInputModel(0, 0, "", true)
 
         assert(updateSwitchStatusResult.headerPosition == 0)
@@ -405,9 +337,165 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
     @Test
     fun `When editVariantDetailInputMap using invalid fieldPosition, expect inputLayoutModelMap unchanged`() {
-        viewModel.editVariantDetailInputMap(999, VariantDetailInputLayoutModel())
+        viewModel.updateVariantDetailInputMap(999, VariantDetailInputLayoutModel())
         val result = viewModel.getVariantDetailHeaderData(999)
         assert(result.isEmpty())
+    }
+
+    @Test
+    fun `When refreshInputDataValidStatus, expect inputDataValid value correctness`() {
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = true, isWeightError = true, isStockError = true))
+        val test0False = viewModel.getInputDataValidStatus()
+
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = false, isWeightError = true, isStockError = true))
+        val test1False = viewModel.getInputDataValidStatus()
+
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = false, isWeightError = true, isStockError = false))
+        val test2False = viewModel.getInputDataValidStatus()
+
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = false, isWeightError = false, isStockError = false))
+        val test3False = viewModel.getInputDataValidStatus()
+
+        assertFalse(test0False)
+        assertFalse(test1False)
+        assertFalse(test2False)
+        assertTrue(test3False)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and getting an error`() {
+        /*
+         * Init Data:
+         * 1. expectedErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current more than expectedMaxStockThreshold for this test case
+         */
+        val expectedErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "200000"
+
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
+
+        // create stub
+        every {
+            imsResourceProvider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns expectedErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(ArgumentMatchers.anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        val actualErrorMessage = viewModel.validateProductVariantStockInput(stockInput.toBigInteger())
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Expected error message equals to the actual one
+         */
+        assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        assertEquals(expectedErrorMessage, actualErrorMessage)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. expectedErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock less than expectedMaxStockThreshold for this test case
+         */
+        val expectedErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "212"
+
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
+
+        // create stub
+        every {
+            imsResourceProvider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns expectedErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(ArgumentMatchers.anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        val actualErrorMessage = viewModel.validateProductVariantStockInput(stockInput.toBigInteger())
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Expected error message does not equal to the actual one
+         */
+        assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        assertNotEquals(expectedErrorMessage, actualErrorMessage)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should fail in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. expectedErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock more than expectedMaxStockThreshold for this test case
+         */
+        val expectedErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold: String? = null
+        val stockInput = "200000"
+
+        // throw a throwable
+        coEvery {
+            getMaxStockThresholdUseCase.execute(ArgumentMatchers.anyString())
+        } throws Throwable()
+
+        // create stub
+        every {
+            imsResourceProvider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns expectedErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(ArgumentMatchers.anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        val actualErrorMessage = viewModel.validateProductVariantStockInput(stockInput.toBigInteger())
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Expected error message does not equal to the actual one
+         */
+        assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        assertNotEquals(expectedErrorMessage, actualErrorMessage)
     }
 
 }

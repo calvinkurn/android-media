@@ -1,13 +1,16 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationTroubleshooter
@@ -20,8 +23,8 @@ class PushNotifFieldFragment : SettingFieldFragment() {
 
     private val viewModel: SettingStateViewModel by lazy {
         ViewModelProvider(
-                this,
-                viewModelFactory
+            this,
+            viewModelFactory
         ).get(SettingStateViewModel::class.java)
     }
 
@@ -35,6 +38,7 @@ class PushNotifFieldFragment : SettingFieldFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        NotifSettingAnalytics.sendScreenName(SCREEN_NAME)
         setHasOptionsMenu(true)
     }
 
@@ -79,19 +83,23 @@ class PushNotifFieldFragment : SettingFieldFragment() {
 
     private fun pushNotifValidation() {
         val isNotificationEnabled = isNotificationEnabled()
-        val notificationAction = if(isNotificationEnabled) {
+        val notificationAction = if (isNotificationEnabled) {
             activationTroubleshooter()
         } else {
             activationPushNotif()
         }
         permissionValidationNotification(
-                isNotificationEnabled,
-                notificationAction,
-                settingStates
+            isNotificationEnabled,
+            notificationAction,
+            settingStates
         )
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_dialog_info_title)
     override fun getNotificationType() = TYPE_PUSH_NOTIF
+
+    companion object{
+        private const val SCREEN_NAME = "Push Notification Settings Page"
+    }
 
 }

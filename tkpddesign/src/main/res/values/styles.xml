@@ -85,7 +85,7 @@
     <style name="Button.Submit.Green">
         <item name="android:background">@drawable/bg_button_green</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:textColor">@color/text_submit_button</item>
+        <item name="android:textColor">@color/tkpddesign_dms_text_submit_button</item>
     </style>
 
     <style name="Button.Submit.Green.Full">

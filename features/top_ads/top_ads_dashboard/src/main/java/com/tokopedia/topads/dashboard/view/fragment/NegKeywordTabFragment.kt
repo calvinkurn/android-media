@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,14 +30,14 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
-import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.loader
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
-import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
-import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
+import com.tokopedia.unifycomponents.UnifyImageButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -47,12 +47,15 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci negatif"
+
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getInt(TopAdsDashboardConstant.GROUP_ID, 0).toString()
+    }
 
     companion object {
-
         fun createInstance(bundle: Bundle): NegKeywordTabFragment {
             val frag = NegKeywordTabFragment()
             frag.arguments = bundle
@@ -60,10 +63,21 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         }
     }
 
+    private var actionbar: ConstraintLayout? = null
+    private var closeButton: UnifyImageButton? = null
+    private var activate: Typography? = null
+    private var deactivate: Typography? = null
+    private var movetogroup: Typography? = null
+    private var delete: UnifyImageButton? = null
+    private var searchBar: SearchBarUnify? = null
+    private var btnFilter: UnifyImageButton? = null
+    private var btnAddItem: UnifyImageButton? = null
+    private var loader: LoaderUnify? = null
+    private lateinit var recyclerView: RecyclerView
+
     private var deleteCancel = false
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var recyclerView: RecyclerView
     private var totalPage = 0
     private var currentPageNum = 1
     private var max = 0
@@ -72,7 +86,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
         viewModelProvider.get(GroupDetailViewModel::class.java)
@@ -84,7 +98,8 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::setSelectMode, ::startEditActivity))
+        adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::setSelectMode,
+            ::startEditActivity))
     }
 
     private fun onSuccessAction() {
@@ -95,10 +110,10 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private fun setSelectMode(select: Boolean) {
         if (select) {
             adapter.setSelectMode(true)
-            actionbar.visibility = View.VISIBLE
+            actionbar?.visibility = View.VISIBLE
         } else {
             adapter.setSelectMode(false)
-            actionbar.visibility = View.GONE
+            actionbar?.visibility = View.GONE
         }
     }
 
@@ -106,9 +121,25 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_neg_keyword_list), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        val view =
+            inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_neg_keyword_list),
+                container, false)
         recyclerView = view.findViewById(R.id.neg_key_list)
+        actionbar = view.findViewById(R.id.actionbar)
+        closeButton = view.findViewById(R.id.close_butt)
+        activate = view.findViewById(R.id.activate)
+        deactivate = view.findViewById(R.id.deactivate)
+        movetogroup = view.findViewById(R.id.movetogroup)
+        delete = view.findViewById(R.id.delete)
+        searchBar = view.findViewById(R.id.searchBar)
+        btnFilter = view.findViewById(R.id.btnFilter)
+        btnAddItem = view.findViewById(R.id.btnAddItem)
+        loader = view.findViewById(R.id.loader)
         setAdapterView()
         return view
     }
@@ -134,19 +165,24 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(currentPage: Int) {
-        viewModel.getGroupKeywordData(resources, 0, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar.searchBarTextField.text.toString(), null, null, currentPage, ::onSuccessKeyword, ::onEmpty)
+        val resources = context?.resources ?: return
+        viewModel.getGroupKeywordData(resources,
+            0,
+            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0,
+            searchBar?.searchBarTextField?.text.toString(), null, null,
+            currentPage, ::onSuccessKeyword, ::onEmpty)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        close_butt?.setOnClickListener { setSelectMode(false) }
+        closeButton?.setOnClickListener { setSelectMode(false) }
         setSearchBar()
         fetchData()
-        delete.setOnClickListener {
+        delete?.setOnClickListener {
             showConfirmationDialog(requireContext())
         }
-        btnAddItem.setOnClickListener {
+        btnAddItem?.setOnClickListener {
             startEditActivity()
         }
         Utils.setSearchListener(context, view, ::fetchData)
@@ -156,34 +192,41 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
-            putExtra(ParamObject.ISWHITELISTEDUSER, arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false)
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI_NEGATIVE, "")
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(
+            CLICK_TAMBAH_KATA_KUNCI_NEGATIVE,
+            "")
     }
 
     private fun setSearchBar() {
-        movetogroup.visibility = View.GONE
-        activate.visibility = View.GONE
-        deactivate.visibility = View.GONE
-        btnFilter.visibility = View.GONE
-        btnAddItem.visibility = View.VISIBLE
+        movetogroup?.visibility = View.GONE
+        activate?.visibility = View.GONE
+        deactivate?.visibility = View.GONE
+        btnFilter?.visibility = View.GONE
+        btnAddItem?.visibility = View.VISIBLE
     }
 
     private fun performAction(actionActivate: String) {
+        val resources = context?.resources ?: return
         if (actionActivate == ACTION_DELETE) {
             view.let {
-                Toaster.make(it!!, String.format(getString(R.string.topads_neg_keyword_del_toaster), getAdIds().size),
-                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
-                    deleteCancel = true
-                })
+                Toaster.make(it!!,
+                    String.format(getString(R.string.topads_neg_keyword_del_toaster),
+                        getAdIds().size),
+                    TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_batal),
+                    View.OnClickListener {
+                        deleteCancel = true
+                    })
             }
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -191,23 +234,27 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 
     private fun fetchData() {
         currentPageNum = 1
-        loader.visibility = View.VISIBLE
+        loader?.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        viewModel.getGroupKeywordData(resources, 0, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar.searchBarTextField.text.toString(), null, null, currentPageNum, ::onSuccessKeyword, ::onEmpty)
+        val resources = context?.resources ?: return
+        viewModel.getGroupKeywordData(resources, 0,
+            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
+            searchBar?.searchBarTextField?.text.toString(), null, null,
+            currentPageNum, ::onSuccessKeyword, ::onEmpty)
     }
 
     private fun showConfirmationDialog(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setDescription(context.getString(R.string.topads_dash_confirm_delete_negkey_desc))
-        dialog.setTitle(String.format(context.getString(R.string.topads_dash_confirm_delete_negkey), adapter.getSelectedItems().size))
+        dialog.setTitle(String.format(context.getString(R.string.topads_dash_confirm_delete_negkey),
+            adapter.getSelectedItems().size))
         dialog.setPrimaryCTAText(context.getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
         dialog.setSecondaryCTAText(context.getString(R.string.topads_dash_ya_hapus))
         dialog.setPrimaryCTAClickListener {
@@ -249,7 +296,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
-        loader.visibility = View.GONE
+        loader?.visibility = View.GONE
         max = response.meta.page.max
         perPage = response.meta.page.perPage
         totalPage = if (max % response.meta.page.perPage == 0) {

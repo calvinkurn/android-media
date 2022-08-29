@@ -26,21 +26,24 @@ class TopupBillsRecommendation(
         @SerializedName("webLink")
         @Expose
         val weblink: String = "",
+        @SerializedName("productPrice")
+        @Expose
+        val productPrice: Int = 0,
         @SerializedName("type")
         @Expose
         val type: String = "",
         @SerializedName("categoryId")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @SerializedName("productId")
         @Expose
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("isATC")
         @Expose
         val isAtc: Boolean = false,
         @SerializedName("operatorID")
         @Expose
-        val operatorId: Int = 0,
+        val operatorId: String = "0",
         @SerializedName("description")
         @Expose
         val description: String = "",

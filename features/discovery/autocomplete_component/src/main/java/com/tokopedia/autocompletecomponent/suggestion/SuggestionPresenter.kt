@@ -17,6 +17,8 @@ import com.tokopedia.autocompletecomponent.suggestion.singleline.convertToSingle
 import com.tokopedia.autocompletecomponent.suggestion.title.convertToTitleHeader
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.convertToTopShopWidgetVisitableList
+import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
+import com.tokopedia.autocompletecomponent.util.SuggestionItemIdList
 import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -47,6 +49,7 @@ class SuggestionPresenter @Inject constructor(
     private var isTyping = false
     private var searchParameter = mutableMapOf<String, String>()
     private var shouldAddSeparator = true
+    private val shopSuggestionProcessing = ShopSuggestionProcessing()
 
     override fun getSearchParameter(): Map<String, String> {
         return searchParameter
@@ -107,8 +110,15 @@ class SuggestionPresenter @Inject constructor(
     private fun updateListVisitable(suggestionUniverse: SuggestionUniverse) {
         val typePosition = hashMapOf<String, Int?>()
         shouldAddSeparator = true
-        for (item in suggestionUniverse.data.items) {
-            if (suggestionUniverse.data.items.isEmpty()) continue
+        val items = suggestionUniverse.data.items
+
+        shopSuggestionProcessing.processData(
+            HeadlineAdsIdList(suggestionUniverse.cpmModel.data.map { it.cpm.cpmShop.id }),
+            SuggestionItemIdList(items.map { it.suggestionId })
+        )
+
+        for (item in items) {
+            if (items.isEmpty() || shopSuggestionProcessing.shouldSkipSuggestionItem(item)) continue
 
             when (item.template) {
                 SUGGESTION_HEADER -> addTitleToVisitable(item)
@@ -116,7 +126,12 @@ class SuggestionPresenter @Inject constructor(
                 SUGGESTION_DOUBLE_LINE ->
                     addDoubleLineToVisitable(typePosition, item)
                 SUGGESTION_DOUBLE_LINE_SHOP_ADS ->
-                    addDoubleLineShopAdsToVisitable(typePosition, item, suggestionUniverse.cpmModel)
+                    addDoubleLineShopAdsToVisitable(
+                        typePosition,
+                        item,
+                        suggestionUniverse.cpmModel,
+                        shopSuggestionProcessing.renderedShopAdsId
+                    )
                 SUGGESTION_TOP_SHOP_WIDGET ->
                     addTopShopWidgetToVisitable(typePosition, item, suggestionUniverse.topShop)
                 SUGGESTION_DOUBLE_LINE_WITHOUT_IMAGE ->
@@ -162,8 +177,11 @@ class SuggestionPresenter @Inject constructor(
         typePosition: HashMap<String, Int?>,
         item: SuggestionItem,
         cpmModel: CpmModel,
+        renderedShopId: String,
     ) {
-        val cpmData = cpmModel.data.firstOrNull() ?: return
+        val cpmData = cpmModel.data.firstOrNull {
+            it.cpm.cpmShop.id == renderedShopId
+        } ?: return
 
         typePosition.incrementPosition(TYPE_SHOP)
 
@@ -570,7 +588,7 @@ class SuggestionPresenter @Inject constructor(
             "- po: ${item.position} " +
             "- page: ${item.applink}"
 
-        view?.trackClickChip(label, item.dimension90, baseSuggestionDataView)
+        view?.trackClickChip(label, item.dimension90, item)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)

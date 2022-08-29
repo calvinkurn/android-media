@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class Content(
         @SerializedName("activityID")
         @Expose
-        var activityID: Int = 0,
+        var activityID: String = "",
 
         @SerializedName("title")
         @Expose

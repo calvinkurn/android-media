@@ -8,11 +8,11 @@ import com.tokopedia.home.beranda.di.module.query.QueryHomeSlides.HOME_SLIDES_QU
 internal object QueryHomeSlides {
     const val HOME_SLIDES_QUERY_NAME = "HomeSlidesQuery"
     const val HOME_SLIDES_QUERY: String = "" +
-            "query homeSlides()\n" +
+            "query homeSlides(\$page: String, \$location: String)\n" +
             "        {\n" +
-            "          slides(device: 32) {\n" +
+            "          slides {\n" +
             "            meta { total_data }\n" +
-            "            slides {\n" +
+            "            slides(page: \$page, location: \$location) {\n" +
             "              id\n" +
             "              galaxy_attribution\n" +
             "              persona\n" +

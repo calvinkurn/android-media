@@ -20,10 +20,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -39,9 +43,12 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
 import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
+import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
@@ -57,6 +64,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
 import java.util.*
 import javax.inject.Inject
 
@@ -67,7 +76,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
         private const val OFFSET_TO_SHADOW = 100
+        private const val REQUEST_REVIEW_PRODUCT = 999
         private const val COACHMARK_SAFE_DELAY = 200L
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -112,6 +124,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MePageRollenceController.fetchMePageRollenceValue()
+        val rollence = MePageRollenceController.isMePageUsingRollenceVariant()
+        viewModel.setIsMePageUsingRollenceVariant(rollence)
+
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
         context?.let {
@@ -153,6 +170,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
+                REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
             }
         }
     }
@@ -232,7 +250,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorBuListClicked(position: Int) {
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
     }
 
     override fun onErrorTransactionListClicked(position: Int) {
@@ -241,6 +259,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
+            hitClickTrackingBasedOnId(homeNavMenuDataModel)
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
@@ -253,7 +272,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
                 RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
@@ -300,6 +318,47 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return remoteConfig.getString(EXP_NAME, CONTROL) == VARIANT
     }
 
+    override fun onErrorAffiliateInfoRefreshClicked(position: Int) {
+        viewModel.refreshUserAffiliateData()
+    }
+
+    override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
+        when(homeNavTitleDataModel.identifier){
+            ClientMenuGenerator.IDENTIFIER_TITLE_ORDER_HISTORY -> sendTrackingAllTransaction()
+            ClientMenuGenerator.IDENTIFIER_TITLE_WISHLIST -> TrackingTransactionSection.clickOnWishlistViewAll()
+            ClientMenuGenerator.IDENTIFIER_TITLE_FAVORITE_SHOP -> TrackingTransactionSection.clickOnFavoriteShopViewAll()
+        }
+        RouteManager.route(context, homeNavTitleDataModel.applink)
+    }
+
+    override fun onErrorWishlistClicked() {
+        viewModel.refreshWishlistData()
+    }
+
+    override fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int) {
+        TrackingTransactionSection.clickOnWishlistItem(getUserId(), wishlistModel, position)
+        goToPDP(wishlistModel.productId, position)
+    }
+
+    override fun onErrorFavoriteShopClicked() {
+        viewModel.refreshFavoriteShopData()
+    }
+
+    override fun onFavoriteShopItemClicked(favoriteShopModel: NavFavoriteShopModel, position: Int) {
+        TrackingTransactionSection.clickOnFavoriteShopItem(
+            userId = getUserId(),
+            position = position,
+            favoriteShopModel = favoriteShopModel
+        )
+        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, favoriteShopModel.id)
+        startActivity(intent)
+    }
+
+    override fun showReviewProduct(uriReviewProduct: String) {
+        val intent = RouteManager.getIntent(context, uriReviewProduct)
+        startActivityForResult(intent, REQUEST_REVIEW_PRODUCT)
+    }
+
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
         context?.let {
             return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
@@ -317,7 +376,26 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), object : TokopediaPlusListener {
+            override fun isShown(
+                isShown: Boolean,
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+
+            }
+
+            override fun onClick(
+                pageSource: String,
+                tokopediaPlusDataModel: TokopediaPlusDataModel
+            ) {
+                TrackingProfileSection.onClickTokopediaPlus(tokopediaPlusDataModel.isSubscriber)
+            }
+
+            override fun onRetry() {
+                viewModel.refreshTokopediaPlusData()
+            }
+        })
         adapter = MainNavListAdapter(mainNavFactory)
 
         activity?.let {
@@ -333,6 +411,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
+
         if (data.dataList.size > 1 && !mainNavDataFetched) {
             viewModel.getMainNavData(true)
             mainNavDataFetched = true
@@ -366,6 +445,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun getSharedPreference(): SharedPreferences {
         return requireContext().getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+    }
+
+    private fun goToPDP(productId: String, position: Int) {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+            startActivityForResult(this, REQUEST_FROM_PDP)
+        }
+    }
+
+    private fun sendTrackingAllTransaction() {
+        TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
     }
 }
 

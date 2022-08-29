@@ -30,7 +30,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black_55"
+            android:textColor="@color/analyticsdebugger_dms_black_55"
             app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_title"
@@ -78,7 +78,7 @@
             app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_log_gc_token"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_channel_id"
+            app:layout_constraintTop_toBottomOf="@+id/tv_websocket_detail_warehouse_id"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
@@ -101,13 +101,42 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:textColor="@color/black_55"
+            android:textColor="@color/analyticsdebugger_dms_black_55"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintStart_toStartOf="@id/tv_websocket_detail_log_title"
             app:layout_constraintTop_toBottomOf="@id/tv_websocket_detail_log_gc_token"
             app:typographyType="body_3"
             tools:text="This is message" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_websocket_detail_warehouse"
+            app:layout_constraintHorizontal_weight="1"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintEnd_toStartOf="@id/tv_websocket_detail_warehouse_id"
+            android:text="@string/warehouse_id"
+            app:layout_constraintStart_toStartOf="@+id/tv_websocket_detail_log_channel_id_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_websocket_detail_log_channel_id_label" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_websocket_detail_warehouse_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_websocket_detail_warehouse"
+            app:layout_constraintEnd_toEndOf="@+id/tv_websocket_detail_log_channel_id"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toEndOf="@+id/tv_websocket_detail_warehouse"
+            app:layout_constraintTop_toTopOf="@+id/tv_websocket_detail_warehouse"
+            app:layout_constraintVertical_bias="0.0"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="1234701919" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

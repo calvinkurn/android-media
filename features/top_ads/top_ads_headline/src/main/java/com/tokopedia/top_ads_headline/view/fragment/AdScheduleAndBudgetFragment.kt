@@ -23,6 +23,8 @@ import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewMode
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_IKLAN_TOKO
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getToday
@@ -35,13 +37,12 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.fragment_ad_schedule_and_budget.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -60,6 +61,21 @@ private const val CLICK_IKLANKAN = "click - iklankan on atur jadwal dan anggaran
 private const val CLICK_PREVIEW = "click - preview on atur jadwal dan anggaran page"
 
 class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
+
+    private var text1: Typography? = null
+    private var advertisingCost: TextFieldUnify? = null
+    private var startDate: TextFieldUnify? = null
+    private var endDate: TextFieldUnify? = null
+    private var adAppearanceMessage: Typography? = null
+    private var adScheduleSwitch: SwitchUnify? = null
+    private var budgetWarningMessage: Typography? = null
+    private var budgetCost: TextFieldUnify? = null
+    private var hari: Typography? = null
+    private var budgetCostMessage: Typography? = null
+    private var limitBudgetSwitch: SwitchUnify? = null
+    private var tooltipBtn: FloatingButtonUnify? = null
+    private var btnNext: UnifyButton? = null
+    private var previewBtn: Typography? = null
 
     private val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
     private var selectedStartDate: Calendar? = null
@@ -81,11 +97,29 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AdScheduleAndBudgetViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(AdScheduleAndBudgetViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_ad_schedule_and_budget, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_ad_schedule_and_budget, container, false)
+        text1 = view.findViewById(R.id.text1)
+        advertisingCost = view.findViewById(R.id.advertisingCost)
+        startDate = view.findViewById(R.id.startDate)
+        endDate = view.findViewById(R.id.endDate)
+        adAppearanceMessage = view.findViewById(R.id.adAppearanceMessage)
+        adScheduleSwitch = view.findViewById(R.id.adScheduleSwitch)
+        budgetWarningMessage = view.findViewById(R.id.budgetWarningMessage)
+        budgetCost = view.findViewById(R.id.budgetCost)
+        hari = view.findViewById(R.id.hari)
+        budgetCostMessage = view.findViewById(R.id.budgetCostMessage)
+        limitBudgetSwitch = view.findViewById(R.id.limitBudgetSwitch)
+        tooltipBtn = view.findViewById(R.id.tooltipBtn)
+        btnNext = view.findViewById(R.id.btnNext)
+        previewBtn = view.findViewById(R.id.previewBtn)
+        return view
     }
 
     override fun gotoNextPage() {
@@ -93,27 +127,31 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     override fun populateView() {
-        advertisingCost.textFieldInput.isSaveEnabled = false
-        budgetCost.textFieldInput.isSaveEnabled = false
-        startDate.textFieldInput.isSaveEnabled = false
-        endDate.textFieldInput.isSaveEnabled = false
+        advertisingCost?.textFieldInput?.isSaveEnabled = false
+        budgetCost?.textFieldInput?.isSaveEnabled = false
+        startDate?.textFieldInput?.isSaveEnabled = false
+        endDate?.textFieldInput?.isSaveEnabled = false
         setMinBid()
         setUpToolTip()
         setUpScheduleView()
         setUpLimitView()
-        previewBtn.setOnClickListener {
+        previewBtn?.setOnClickListener {
             openPreviewBottomSheet()
         }
-        btnNext.setOnClickListener {
+        btnNext?.setOnClickListener {
             createHeadlineAd()
         }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_ATUR_JADWAL, "{${userSession.shopId}} - {${stepperModel?.groupName}}", userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_ATUR_JADWAL,
+            "{${userSession.shopId}} - {${stepperModel?.groupName}}",
+            userSession.userId)
     }
 
     private fun createHeadlineAd() {
         showLoader()
         val topAdsHeadlineInput = getTopAdsManageHeadlineInput()
-        viewModel.createHeadlineAd(topAdsHeadlineInput, this::onCreationSuccess, this::onCreationError)
+        viewModel.createHeadlineAd(topAdsHeadlineInput,
+            this::onCreationSuccess,
+            this::onCreationError)
 
     }
 
@@ -122,7 +160,8 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             findViewById<LoaderUnify>(R.id.loader_unify).show()
 
         }
-        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun hideLoader() {
@@ -139,16 +178,22 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
 
     private fun onCreationSuccess() {
         getSwitchBtnStatus()
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_IKLANKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${text1.text}} - {${tetapkanStatus}} - {${batasiStatus}}", userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_IKLANKAN,
+            "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${text1?.text}} - {${tetapkanStatus}} - {${batasiStatus}}",
+            userSession.userId)
         val intent: Intent = Intent(context, SuccessActivity::class.java).apply {
             if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
+                    getSellerMigrationFeatureName(activity?.intent?.extras))
+                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
+                    getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
             }
             putExtra(EXTRA_HIDE_TOOLBAR, true)
-            putExtra(EXTRA_TITLE, getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
+            putExtra(EXTRA_TITLE,
+                getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
             putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
             putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
+            putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_IKLAN_TOKO)
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -156,18 +201,22 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     private fun getSwitchBtnStatus() {
-        tetapkanStatus = when(adScheduleSwitch.isChecked) {
-            true -> "tetapkan jadwal iklan toggle ON"
-            false -> "tetapkan jadwal iklan toggle OFF"
+        adScheduleSwitch?.let {
+            tetapkanStatus = when (it.isChecked) {
+                true -> "tetapkan jadwal iklan toggle ON"
+                false -> "tetapkan jadwal iklan toggle OFF"
+            }
         }
 
-        batasiStatus = when(limitBudgetSwitch.isChecked) {
-            true -> "batasi anggaran iklan toggle ON"
-            false -> "batasi anggaran iklan toggle OFF"
+        limitBudgetSwitch?.let {
+            batasiStatus = when (it.isChecked) {
+                true -> "batasi anggaran iklan toggle ON"
+                false -> "batasi anggaran iklan toggle OFF"
+            }
         }
     }
 
-    private fun getTimeSelected(): Long? {
+    private fun getTimeSelected(): Long {
         var endDate = selectedEndDate?.time?.time ?: 0
         var startDate = selectedStartDate?.time?.time ?: 0
         context?.let {
@@ -181,86 +230,94 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     private fun getTopAdsManageHeadlineInput(): TopAdsManageHeadlineInput {
-        val scheduleStart = if (adScheduleSwitch.isChecked) {
+        val scheduleStart = if (adScheduleSwitch?.isChecked == true) {
             selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
             context?.getToday()?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         }
-        val scheduleEnd = if (adScheduleSwitch.isChecked) {
+        val scheduleEnd = if (adScheduleSwitch?.isChecked == true) {
             selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
             ""
         }
-        val dailyBudget: Float = if (limitBudgetSwitch.isChecked) {
-            budgetCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero()
+        val dailyBudget: Float = if (limitBudgetSwitch?.isChecked == true) {
+            budgetCost?.textFieldInput?.text.toString().removeCommaRawString().toFloatOrZero()
         } else
             0.0F
         return TopAdsManageHeadlineInput().apply {
             source = HEADLINE_SOURCE
             operation = TopAdsManageHeadlineInput.Operation(
-                    action = ACTION_CREATE,
-                    group = TopAdsManageHeadlineInput.Operation.Group(
-                            id = "0",
-                            shopID = userSession.shopId,
-                            name = stepperModel?.groupName ?: "",
-                            priceBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero(),
-                            dailyBudget = dailyBudget,
-                            scheduleStart = scheduleStart,
-                            scheduleEnd = scheduleEnd,
-                            adOperations = stepperModel?.adOperations ?: emptyList(),
-                            keywordOperations = stepperModel?.keywordOperations ?: emptyList()
-                    )
+                action = ACTION_CREATE,
+                group = TopAdsManageHeadlineInput.Operation.Group(
+                    id = "0",
+                    shopID = userSession.shopId,
+                    name = stepperModel?.groupName ?: "",
+                    priceBid = advertisingCost?.textFieldInput?.text.toString()
+                        .removeCommaRawString()
+                        .toFloatOrZero(),
+                    dailyBudget = dailyBudget,
+                    scheduleStart = scheduleStart,
+                    scheduleEnd = scheduleEnd,
+                    adOperations = stepperModel?.adOperations ?: emptyList(),
+                    keywordOperations = stepperModel?.keywordOperations ?: emptyList()
+                )
             )
         }
     }
 
     private fun openPreviewBottomSheet() {
         getSwitchBtnStatus()
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_PREVIEW, "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${text1.text}} - {${tetapkanStatus}} - {${batasiStatus}}", userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_PREVIEW,
+            "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${text1?.text}} - {${tetapkanStatus}} - {${batasiStatus}}",
+            userSession.userId)
         val previewBottomSheet = HeadlinePreviewBottomSheet.newInstance(stepperModel?.groupName
-                ?: "",
-                stepperModel?.cpmModel)
+            ?: "", stepperModel?.cpmModel)
         previewBottomSheet.show(childFragmentManager, "")
     }
 
     private fun setMinBid() {
         stepperModel?.minBid?.let {
             val cost = convertToCurrency(it.toLong())
-            advertisingCost.textFieldInput.setText(cost)
-            advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
+            advertisingCost?.textFieldInput?.setText(cost)
+            advertisingCost?.textFieldInput?.addTextChangedListener(advertisingCostTextWatcher())
             val budget = it.toDouble() * MULTIPLIER
             stepperModel?.dailyBudget = budget.toFloat()
-            budgetCost.textFieldInput.setText(convertToCurrency(budget.toLong()))
-            budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
-            budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
+            budgetCost?.textFieldInput?.setText(convertToCurrency(budget.toLong()))
+            budgetCost?.textFieldInput?.addTextChangedListener(budgetCostTextWatcher())
+            budgetCostMessage?.text =
+                getString(R.string.topads_headline_schedule_budget_cost_message, budget.toString())
         }
     }
 
     private fun advertisingCostTextWatcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val input = number.toInt()
-                when {
-                    input < stepperModel?.minBid.toDoubleOrZero() -> {
-                        advertisingCost.setError(true)
-                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.minBid?.toLong()
-                                ?: 0)))
-                        btnNext.isEnabled = false
-                    }
-                    input > stepperModel?.maxBid.toDoubleOrZero() -> {
-                        advertisingCost.setError(true)
-                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), convertToCurrency(stepperModel?.maxBid?.toLong()
-                                ?: 0)))
-                        btnNext.isEnabled = false
-                    }
-                    else -> {
-                        stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
-                        btnNext.isEnabled = true
-                        advertisingCost.setMessage("")
-                        advertisingCost.setError(false)
-                        budgetCost.textFieldInput.setText(convertToCurrency(stepperModel?.dailyBudget?.toLong()
+        return advertisingCost?.let {
+            object : NumberTextWatcher(it.textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val input = number.toInt()
+                    when {
+                        input < stepperModel?.minBid.toDoubleOrZero() -> {
+                            advertisingCost?.setError(true)
+                            advertisingCost?.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error),
+                                convertToCurrency(stepperModel?.minBid?.toLong()
+                                    ?: 0)))
+                            btnNext?.isEnabled = false
+                        }
+                        input > stepperModel?.maxBid.toDoubleOrZero() -> {
+                            advertisingCost?.setError(true)
+                            advertisingCost?.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error),
+                                convertToCurrency(stepperModel?.maxBid?.toLong()
+                                    ?: 0)))
+                            btnNext?.isEnabled = false
+                        }
+                        else -> {
+                            stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
+                            btnNext?.isEnabled = true
+                            advertisingCost?.setMessage("")
+                            advertisingCost?.setError(false)
+                            budgetCost?.textFieldInput?.setText(convertToCurrency(stepperModel?.dailyBudget?.toLong()
                                 ?: 0))
+                        }
                     }
                 }
             }
@@ -268,82 +325,96 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     private fun budgetCostTextWatcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(budgetCost.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, convertToCurrency(number.toLong()))
-                val minBid: String = if (advertisingCost.isTextFieldError) {
-                    stepperModel?.minBid ?: "0"
-                } else {
-                    advertisingCost.textFieldInput.text.toString().removeCommaRawString()
-                }
-                val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
-                if (number < (minBid.toDoubleOrZero() * MULTIPLIER) && budgetCost.isVisible) {
-                    budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.dailyBudget?.toLong()
-                            ?: 0)))
-                    btnNext.isEnabled = false
-                } else if (number > maxDailyBudget) {
-                    budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), MAX_DAILY_BUDGET))
-                    btnNext.isEnabled = false
-                } else {
-                    btnNext.isEnabled = true
-                    budgetCost.setMessage("")
-                    budgetCost.setError(false)
+        return budgetCost?.let {
+            object : NumberTextWatcher(it.textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    budgetCostMessage?.text =
+                        getString(R.string.topads_headline_schedule_budget_cost_message,
+                            convertToCurrency(number.toLong()))
+                    val minBid: String = if (advertisingCost?.isTextFieldError == true) {
+                        stepperModel?.minBid ?: "0"
+                    } else {
+                        advertisingCost?.textFieldInput?.text.toString().removeCommaRawString()
+                    }
+                    val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
+                    if (number < (minBid.toDoubleOrZero() * MULTIPLIER) && it.isVisible) {
+                        budgetCost?.setError(true)
+                        budgetCost?.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error),
+                            convertToCurrency(stepperModel?.dailyBudget?.toLong()
+                                ?: 0)))
+                        btnNext?.isEnabled = false
+                    } else if (number > maxDailyBudget) {
+                        budgetCost?.setError(true)
+                        budgetCost?.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error),
+                            MAX_DAILY_BUDGET))
+                        btnNext?.isEnabled = false
+                    } else {
+                        btnNext?.isEnabled = true
+                        budgetCost?.setMessage("")
+                        budgetCost?.setError(false)
+                    }
                 }
             }
         }
     }
 
     private fun setUpLimitView() {
-        limitBudgetSwitch.setOnCheckedChangeListener { _, isChecked ->
+        limitBudgetSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                budgetWarningMessage.hide()
-                budgetCost.show()
-                hari.show()
-                budgetCostMessage.show()
-                btnNext.isEnabled = !budgetCost.isTextFieldError
+                budgetWarningMessage?.hide()
+                budgetCost?.show()
+                hari?.show()
+                budgetCostMessage?.show()
+                btnNext?.isEnabled = budgetCost?.isTextFieldError == false
             } else {
-                budgetWarningMessage.show()
-                budgetCost.hide()
-                hari.hide()
-                budgetCostMessage.hide()
-                btnNext.isEnabled = !advertisingCost.isTextFieldError
+                budgetWarningMessage?.show()
+                budgetCost?.hide()
+                hari?.hide()
+                budgetCostMessage?.hide()
+                btnNext?.isEnabled = advertisingCost?.isTextFieldError == false
             }
         }
     }
 
     private fun setUpScheduleView() {
-        startDate.textFieldInput.isFocusable = false
-        endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
-        startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
-        endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
+        startDate?.textFieldInput?.isFocusable = false
+        endDate?.textFieldInput?.isFocusable = false
+        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
+        startDate?.textFieldIcon1?.setPadding(padding, padding, padding, padding)
+        endDate?.textFieldIcon1?.setPadding(padding, padding, padding, padding)
         context?.run {
             setDate()
-            startDate.textFieldInput.setOnClickListener {
-                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
-                        getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onStartDateChanged)
+            startDate?.textFieldInput?.setOnClickListener {
+                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header),
+                    "",
+                    getToday(),
+                    selectedStartDate as GregorianCalendar,
+                    getSpecifiedDateFromToday(years = 50),
+                    this@AdScheduleAndBudgetFragment::onStartDateChanged)
             }
-            endDate.textFieldInput.setOnClickListener {
+            endDate?.textFieldInput?.setOnClickListener {
                 getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar)?.let { it1 ->
                     getSpecifiedDateFromStartDate(it1, month = 1)?.let { it2 ->
-                        openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
-                                it1, it2, getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onEndDateChanged)
+                        openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header),
+                            getString(R.string.topads_headline_end_date_info),
+                            it1,
+                            it2,
+                            getSpecifiedDateFromToday(years = 50),
+                            this@AdScheduleAndBudgetFragment::onEndDateChanged)
                     }
                 }
             }
         }
-        adScheduleSwitch.setOnCheckedChangeListener { _, isChecked ->
+        adScheduleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                startDate.show()
-                endDate.show()
-                adAppearanceMessage.show()
+                startDate?.show()
+                endDate?.show()
+                adAppearanceMessage?.show()
             } else {
-                startDate.hide()
-                endDate.hide()
-                adAppearanceMessage.hide()
+                startDate?.hide()
+                endDate?.hide()
+                adAppearanceMessage?.hide()
             }
         }
         setAdAppearanceMessage()
@@ -354,28 +425,38 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             if (selectedStartDate == null || selectedEndDate == null) {
                 selectedStartDate = getToday()
                 selectedEndDate = getSpecifiedDateFromToday(month = 1)
-                val startDateString = getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
-                startDate.textFieldInput.setText(startDateString)
-                val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
-                endDate.textFieldInput.setText(endDateString)
+                val startDateString =
+                    getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
+                startDate?.textFieldInput?.setText(startDateString)
+                val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(
+                    HEADLINE_DATETIME_FORMAT1,
+                    localeID)
+                endDate?.textFieldInput?.setText(endDateString)
             } else {
-                startDate.textFieldInput.setText(selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
-                endDate.textFieldInput.setText(selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
+                startDate?.textFieldInput?.setText(selectedStartDate?.time?.toFormattedString(
+                    HEADLINE_DATETIME_FORMAT1,
+                    localeID))
+                endDate?.textFieldInput?.setText(selectedEndDate?.time?.toFormattedString(
+                    HEADLINE_DATETIME_FORMAT1,
+                    localeID))
             }
         }
     }
 
     private fun setAdAppearanceMessage() {
-        adAppearanceMessage.text = String.format(getString(R.string.topads_headline_schedule_add_appearance_message), getTimeSelected()?.toInt())
+        adAppearanceMessage?.text =
+            String.format(getString(R.string.topads_headline_schedule_add_appearance_message),
+                getTimeSelected().toInt())
     }
 
     private fun onStartDateChanged(calendar: Calendar) {
         val startDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
-        startDate.textFieldInput.setText(startDateString)
+        startDate?.textFieldInput?.setText(startDateString)
         selectedStartDate = calendar
-        val endDateCalendar = getSpecifiedDateFromStartDate(selectedStartDate as GregorianCalendar?, month = 1)
+        val endDateCalendar =
+            getSpecifiedDateFromStartDate(selectedStartDate as GregorianCalendar?, month = 1)
         endDateCalendar?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)?.let {
-            endDate.textFieldInput.setText(it)
+            endDate?.textFieldInput?.setText(it)
         }
         selectedEndDate = endDateCalendar
         setAdAppearanceMessage()
@@ -383,16 +464,18 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
 
     private fun onEndDateChanged(calendar: Calendar) {
         val endDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
-        endDate.textFieldInput.setText(endDateString)
+        endDate?.textFieldInput?.setText(endDateString)
         selectedEndDate = calendar
         setAdAppearanceMessage()
     }
 
-    private fun openSetStartDateTimePicker(header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
-                                           maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
+    private fun openSetStartDateTimePicker(
+        header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
+        maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit,
+    ) {
         context?.run {
             val startDateTimePicker = DateTimePickerUnify(this, minDate, defaultDate, maxDate, null,
-                    DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
+                DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                 setTitle(header)
                 if (info.isNotEmpty()) {
                     setInfo(info)
@@ -402,7 +485,8 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
                 }
                 minuteInterval = MINUTE_INTERVAL
                 datePickerButton.let { button ->
-                    button.text = this@run.getString(R.string.topads_headline_date_picker_calendar_button)
+                    button.text =
+                        this@run.getString(R.string.topads_headline_date_picker_calendar_button)
                     button.setOnClickListener {
                         onDateChanged.invoke(getDate())
                         dismiss()
@@ -424,30 +508,39 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     override fun initInjector() {
-        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerHeadlineAdsComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     private fun setUpToolTip() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
-            val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
-        }
-        tooltipBtn.addItem(tooltipView)
-        tooltipBtn.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(CLICK_TIPS, "{${userSession.shopId}} - {${stepperModel?.groupName}}", userSession.userId)
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
+        tooltipBtn?.addItem(tooltipView)
+        tooltipBtn?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(CLICK_TIPS,
+                "{${userSession.shopId}} - {${stepperModel?.groupName}}",
+                userSession.userId)
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_schedule_header))
                 add(TipsUiRowModel(R.string.topads_headline_tips_schedule_row1))
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_budget_header))
-                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row1, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row1,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3,
+                    R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            val tipsListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.show(childFragmentManager, "")
         }
     }

@@ -1,8 +1,9 @@
 package com.tokopedia.kol.feature.comment.view.subscriber;
 
-import com.tokopedia.kol.R;
 import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
+
+import java.lang.ref.WeakReference;
 
 import rx.Subscriber;
 
@@ -12,11 +13,11 @@ import rx.Subscriber;
 
 public class DeleteKolCommentSubscriber extends Subscriber<Boolean> {
 
-    private final KolComment.View view;
+    private final WeakReference<KolComment.View> view;
     private final int adapterPosition;
 
     public DeleteKolCommentSubscriber(KolComment.View view, int adapterPosition) {
-        this.view = view;
+        this.view = new WeakReference<KolComment.View>(view);
         this.adapterPosition = adapterPosition;
     }
 
@@ -27,12 +28,18 @@ public class DeleteKolCommentSubscriber extends Subscriber<Boolean> {
 
     @Override
     public void onError(Throwable e) {
+        KolComment.View view = this.view.get();
+        if (view == null) return;
+
         view.dismissProgressDialog();
         view.onErrorDeleteComment(GraphqlErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override
     public void onNext(Boolean deleteKolCommentDomain) {
+        KolComment.View view = this.view.get();
+        if (view == null) return;
+
         view.dismissProgressDialog();
         if (deleteKolCommentDomain) {
             view.onSuccessDeleteComment(adapterPosition);

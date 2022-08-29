@@ -102,28 +102,24 @@ class GetProductReviewInitialUseCase @Inject constructor(
 
         val requests = mutableListOf(overAllRatingRequest, feedbackDetailListRequest, feedbackDetailFilterRequest)
 
-        try {
-            val gqlResponse = graphQlRepository.response(requests)
+        val gqlResponse = graphQlRepository.response(requests)
 
-            if (gqlResponse.getError(ProductReviewDetailOverallResponse::class.java)?.isNotEmpty() != true) {
-                productReviewInitialResponse.productReviewDetailOverallResponse = gqlResponse.getData<ProductReviewDetailOverallResponse>(ProductReviewDetailOverallResponse::class.java)
-            } else {
-                productReviewInitialResponse.productReviewDetailOverallResponse = null
-            }
+        if (gqlResponse.getError(ProductReviewDetailOverallResponse::class.java)?.isNotEmpty() != true) {
+            productReviewInitialResponse.productReviewDetailOverallResponse = gqlResponse.getData<ProductReviewDetailOverallResponse>(ProductReviewDetailOverallResponse::class.java)
+        } else {
+            productReviewInitialResponse.productReviewDetailOverallResponse = null
+        }
 
-            if (gqlResponse.getError(ProductFeedbackDetailResponse::class.java)?.isNotEmpty() != true) {
-                productReviewInitialResponse.productFeedBackResponse = gqlResponse.getData<ProductFeedbackDetailResponse>(ProductFeedbackDetailResponse::class.java)
-            } else {
-                productReviewInitialResponse.productFeedBackResponse = null
-            }
+        if (gqlResponse.getError(ProductFeedbackDetailResponse::class.java)?.isNotEmpty() != true) {
+            productReviewInitialResponse.productFeedBackResponse = gqlResponse.getData<ProductFeedbackDetailResponse>(ProductFeedbackDetailResponse::class.java)
+        } else {
+            productReviewInitialResponse.productFeedBackResponse = null
+        }
 
-            if (gqlResponse.getError(ProductFeedbackFilterResponse::class.java)?.isNotEmpty() != true) {
-                productReviewInitialResponse.productReviewFilterResponse = gqlResponse.getData<ProductFeedbackFilterResponse>(ProductFeedbackFilterResponse::class.java)
-            } else {
-                productReviewInitialResponse.productReviewFilterResponse = null
-            }
-        } catch (e: Throwable) {
-
+        if (gqlResponse.getError(ProductFeedbackFilterResponse::class.java)?.isNotEmpty() != true) {
+            productReviewInitialResponse.productReviewFilterResponse = gqlResponse.getData<ProductFeedbackFilterResponse>(ProductFeedbackFilterResponse::class.java)
+        } else {
+            productReviewInitialResponse.productReviewFilterResponse = null
         }
 
         return productReviewInitialResponse

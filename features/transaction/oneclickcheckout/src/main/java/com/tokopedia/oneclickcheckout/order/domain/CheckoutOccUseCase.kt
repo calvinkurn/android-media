@@ -13,7 +13,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccRedirectParam
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
-import java.util.*
 import javax.inject.Inject
 
 class CheckoutOccUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) {
@@ -41,10 +40,10 @@ class CheckoutOccUseCase @Inject constructor(@ApplicationContext private val gra
                                         response.data.paymentParameter.redirectParam.form
                                 )
                         ),
-                        OccPrompt(response.data.prompt.type.toLowerCase(Locale.ROOT),
+                        OccPrompt(response.data.prompt.type.lowercase(),
                                 response.data.prompt.title, response.data.prompt.description, response.data.prompt.imageUrl,
                                 response.data.prompt.buttons.map {
-                                    OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
+                                    OccPromptButton(it.text, it.link, it.action.lowercase(), it.color.lowercase())
                                 }
                         )
                 )

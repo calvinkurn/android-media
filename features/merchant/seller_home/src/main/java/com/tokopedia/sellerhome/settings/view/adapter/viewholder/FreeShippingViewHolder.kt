@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.settings.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -12,6 +11,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.FreeShippingWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class FreeShippingViewHolder(itemView: View?,
                              private val onFreeShippingClicked: () -> Unit,
@@ -28,7 +28,7 @@ class FreeShippingViewHolder(itemView: View?,
         itemView?.findViewById(R.id.iv_sah_new_other_shop_free_shipping)
     private val errorLayout: ConstraintLayout? =
         itemView?.findViewById(R.id.error_state_sah_new_other_shop_free_shipping)
-    private val shimmerLoading: LoaderTextView? =
+    private val shimmerLoading: LoaderUnify? =
         itemView?.findViewById(R.id.shimmer_sah_new_other_free_shipping)
 
     override fun bind(element: FreeShippingWidgetUiModel) {

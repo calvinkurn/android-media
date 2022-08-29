@@ -11,7 +11,8 @@ import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireOptionUiMo
  */
 
 class QuestionnaireOptionAdapter(
-    private val items: List<QuestionnaireOptionUiModel>
+    private val items: List<QuestionnaireOptionUiModel>,
+    private val onAnswerSelected: () -> Unit
 ) : RecyclerView.Adapter<QuestionnaireOptionAdapter.QuestionnaireOptionViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -28,7 +29,7 @@ class QuestionnaireOptionAdapter(
 
     override fun onBindViewHolder(holder: QuestionnaireOptionViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item)
+        holder.bind(item, onAnswerSelected)
     }
 
     override fun getItemCount(): Int = items.size
@@ -36,17 +37,19 @@ class QuestionnaireOptionAdapter(
     inner class QuestionnaireOptionViewHolder(private val binding: ItemPmQuestionnaireOptionItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: QuestionnaireOptionUiModel) {
+        fun bind(item: QuestionnaireOptionUiModel, onAnswerSelected: () -> Unit) {
             with(binding) {
                 tvPmQuestionnaireItem.text = item.text
                 cbPmQuestionnaireOption.isChecked = item.isChecked
 
                 cbPmQuestionnaireOption.setOnCheckedChangeListener { _, isChecked ->
                     item.isChecked = isChecked
+                    onAnswerSelected()
                 }
 
                 root.setOnClickListener {
                     cbPmQuestionnaireOption.isChecked = !cbPmQuestionnaireOption.isChecked
+                    onAnswerSelected()
                 }
             }
         }

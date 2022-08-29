@@ -10,9 +10,9 @@ import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
 import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
-import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
-import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
-import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomGetOrderDetailUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomReasonRejectUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomSetDeliveredUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,11 +71,10 @@ class SomDetailViewModel @Inject constructor(
         })
     }
 
-    fun getRejectReasons(rejectReasonQuery: String) {
+    fun getRejectReasons() {
         launchCatchError(block = {
             _rejectReasonResult.postValue(
                 somReasonRejectUseCase.execute(
-                    rejectReasonQuery,
                     SomReasonRejectParam()
                 )
             )
@@ -84,9 +83,9 @@ class SomDetailViewModel @Inject constructor(
         })
     }
 
-    fun setDelivered(rawQuery: String, orderId: String, receivedBy: String) {
+    fun setDelivered(orderId: String, receivedBy: String) {
         launchCatchError(block = {
-            _setDelivered.postValue(somSetDeliveredUseCase.execute(rawQuery, orderId, receivedBy))
+            _setDelivered.postValue(somSetDeliveredUseCase.execute(orderId, receivedBy))
         }, onError = {
             _setDelivered.postValue(Fail(it))
         })

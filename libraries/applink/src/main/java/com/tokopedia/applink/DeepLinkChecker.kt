@@ -61,6 +61,9 @@ object DeepLinkChecker {
     const val LOGIN_BY_QR = 39
     const val POWER_MERCHANT = 40
     const val SALDO_DEPOSIT = 41
+    const val SNAPSHOT = 42
+    const val TOKOFOOD = 43
+    const val TOP_ADS_CLICK_LINK = 44
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -133,6 +136,9 @@ object DeepLinkChecker {
         }
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
+        }
+        if (url.contains("ta.tokopedia.com")|| url.contains("ta-staging.tokopedia.com")) {
+            return TOP_ADS_CLICK_LINK
         }
         return try {
             val uriData = Uri.parse(url)
@@ -225,7 +231,7 @@ object DeepLinkChecker {
 
     // function for enable Hansel
 
-    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity"
+    private fun getCatalogDetailClassName() = "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)

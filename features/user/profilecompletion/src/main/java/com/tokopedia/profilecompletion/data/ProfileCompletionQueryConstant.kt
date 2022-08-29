@@ -20,7 +20,7 @@ object ProfileCompletionQueryConstant {
     const val QUERY_SKIP_OTP_PIN = "skip_otp_pin"
 
 
-    const val PARAM_NAME= "name"
+    const val PARAM_NAME = "name"
     const val PARAM_GENDER = "gender"
     const val PARAM_EMAIL = "email"
     const val PARAM_MSISDN = "msisdn"

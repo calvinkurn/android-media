@@ -48,6 +48,10 @@ data class HotelOrderDetail(
         @Expose
         val contactUs: Contact = Contact(),
 
+        @SerializedName("agent")
+        @Expose
+        val agent: Agent = Agent(),
+
         @SerializedName("hotelTransportDetails")
         @Expose
         val hotelTransportDetails: HotelTransportDetail = HotelTransportDetail()
@@ -156,6 +160,16 @@ data class HotelOrderDetail(
             @SerializedName("helpUrl")
             @Expose
             val helpUrl: String = ""
+    )
+
+    data class Agent(
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SerializedName("logo")
+            @Expose
+            val logo: String = ""
     )
 
     data class Response(

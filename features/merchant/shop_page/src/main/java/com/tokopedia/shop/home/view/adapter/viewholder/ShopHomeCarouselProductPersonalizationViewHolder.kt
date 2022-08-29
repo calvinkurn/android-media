@@ -7,15 +7,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
+import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.utils.view.binding.viewBinding
@@ -25,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class ShopHomeCarouselProductPersonalizationViewHolder (
         itemView: View,
-        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener
+        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+        private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -48,12 +53,12 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
                     shopHomeProductViewModel = it,
                     isHasATC = isHasATC(element),
-                    isHasOCCButton = element.name != RECENT_ACTIVITY,
+                    isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
                     occButtonText = if(isAtcOcc(element.name)) {
-                        itemView.context.getString(
-                                R.string.occ_text
-                        )
-                    } else ""
+                        itemView.context.getString(R.string.occ_text)
+                    } else "",
+                    element.name
+
             )
         }
 
@@ -80,6 +85,75 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 }
             }
         }
+
+        val productAddToCartDefaultListener =
+            object : CarouselProductCardListener.OnItemAddToCartListener {
+                override fun onItemAddToCart(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int
+                ) {
+                    val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    if (productItem.isEnableDirectPurchase) {
+                        saveScrollPosition()
+                        shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                            productItem,
+                            productItem.minimumOrder,
+                            element.name
+                        )
+                    } else {
+                        if (element.name == REMINDER) {
+                            shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                element,
+                                productItem
+                            )
+                        } else {
+                            shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                element,
+                                productItem,
+                                isOcc = isAtcOcc(element.name)
+                            )
+                        }
+                    }
+                }
+            }
+
+        val productAddToCartNonVariantListener =
+            object : CarouselProductCardListener.OnATCNonVariantClickListener {
+                override fun onATCNonVariantClick(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int,
+                    quantity: Int
+                ) {
+                    saveScrollPosition()
+                    val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
+                        productItem,
+                        quantity,
+                        element.name
+                    )
+                }
+
+            }
+
+        val productAddToCartVariantListener =
+            object : CarouselProductCardListener.OnAddVariantClickListener {
+                override fun onAddVariantClick(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int
+                ) {
+                    saveScrollPosition()
+                    val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                    shopHomeCarouselProductListener.onProductAtcVariantClick(productItem)
+                }
+
+            }
 
         val productClickListener = object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
@@ -122,18 +196,48 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                             productItem
                     )
                 }
-
+                if (element.name == RECENT_ACTIVITY || element.name == REMINDER) {
+                    if (productCardModel.isButtonAtcShown()) {
+                        shopHomeCarouselProductListener.onImpressionProductAtc(
+                            productItem,
+                            adapterPosition,
+                            element.name
+                        )
+                    }
+                }
             }
 
             override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
                 return element.productList.getOrNull(carouselProductCardPosition)
             }
         }
-
+        recyclerView?.isNestedScrollingEnabled = false
         when (element.name) {
+
+            ADD_ONS -> {
+                recyclerView?.bindCarouselProductCardViewGrid(
+                    scrollToPosition = getScrollPosition(),
+                    productCardModelList = carouselProductList,
+                        carouselProductCardOnItemAddToCartListener = productAddToCartListener,
+                        carouselProductCardOnItemClickListener = productClickListener,
+                        carouselProductCardOnItemImpressedListener = productImpressionListener
+                )
+            }
 
             RECENT_ACTIVITY -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
+                    scrollToPosition = getScrollPosition(),
+                    productCardModelList = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                    carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
+                )
+            }
+
+            BUY_AGAIN -> {
+                recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
                         carouselProductCardOnItemClickListener = productClickListener,
@@ -141,12 +245,14 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
-            BUY_AGAIN, REMINDER -> {
+            REMINDER -> {
                 recyclerView?.bindCarouselProductCardViewList(
-                        productCardModelList = carouselProductList,
-                        carouselProductCardOnItemAddToCartListener = productAddToCartListener,
-                        carouselProductCardOnItemClickListener = productClickListener,
-                        carouselProductCardOnItemImpressedListener = productImpressionListener
+                    productCardModelList = carouselProductList,
+                    carouselProductCardOnItemAddToCartListener = productAddToCartDefaultListener,
+                    carouselProductCardOnItemClickListener = productClickListener,
+                    carouselProductCardOnItemImpressedListener = productImpressionListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = productAddToCartNonVariantListener,
+                    carouselProductCardOnItemAddVariantClickListener = productAddToCartVariantListener
                 )
             }
 
@@ -172,4 +278,16 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
     private fun isHasATC(
        element : ShopHomeCarousellProductUiModel?
     ) : Boolean = (element?.header?.isATC == IS_ATC)
+
+
+    fun saveScrollPosition() {
+        shopHomeListener.getWidgetCarouselPositionSavedState().put(
+            adapterPosition,
+            recyclerView?.getCurrentPosition().orZero()
+        )
+    }
+
+    private fun getScrollPosition(): Int {
+        return shopHomeListener.getWidgetCarouselPositionSavedState().get(adapterPosition)
+    }
 }

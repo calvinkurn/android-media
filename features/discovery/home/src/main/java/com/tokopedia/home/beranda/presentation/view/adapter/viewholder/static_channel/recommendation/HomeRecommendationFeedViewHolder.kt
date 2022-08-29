@@ -24,7 +24,9 @@ import java.util.*
  */
 
 class HomeRecommendationFeedViewHolder(itemView: View,
-                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
+                                       private val listener: HomeCategoryListener,
+                                       private val cardInteraction: Boolean = false
+) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
     private val context: Context = itemView.context
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null
     private var recommendationTabDataModelList: List<RecommendationTabDataModel>? = null
@@ -82,7 +84,7 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                     reason = e.message.toString()
             )
         }
-        homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!))
+        homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!), cardInteraction)
         homeFeedsTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position < recommendationTabDataModelList!!.size) {

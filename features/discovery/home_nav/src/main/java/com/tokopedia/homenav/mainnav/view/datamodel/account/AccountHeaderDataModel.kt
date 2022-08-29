@@ -4,6 +4,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 
 data class AccountHeaderDataModel(
     /**
@@ -21,13 +22,13 @@ data class AccountHeaderDataModel(
     var profileMembershipDataModel: ProfileMembershipDataModel = ProfileMembershipDataModel(),
     var profileSaldoDataModel: ProfileSaldoDataModel = ProfileSaldoDataModel(),
     var profileSellerDataModel: ProfileSellerDataModel = ProfileSellerDataModel(),
-    var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel()
+    var profileAffiliateDataModel: ProfileAffiliateDataModel = ProfileAffiliateDataModel(),
+    var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel(),
+    var tokopediaPlusDataModel: TokopediaPlusDataModel = TokopediaPlusDataModel()
 ) : MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
-    override fun isContentTheSame(visitable: MainNavVisitable): Boolean {
-        return this == visitable
-    }
+    override fun isContentTheSame(visitable: MainNavVisitable): Boolean = false
 
     override fun type(factory: MainNavTypeFactory): Int {
         return factory.type(this)
@@ -103,6 +104,18 @@ data class AccountHeaderDataModel(
 
     }
 
+    fun setAffiliate(
+        isRegistered: Boolean,
+        affiliateName: String,
+        affiliateAppLink: String,
+        isLoading: Boolean
+    ) {
+        this.profileAffiliateDataModel.isRegister = isRegistered
+        this.profileAffiliateDataModel.affiliateName = affiliateName
+        this.profileAffiliateDataModel.affiliateAppLink = affiliateAppLink
+        this.profileAffiliateDataModel.isGetAffiliateLoading = isLoading
+    }
+
     fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {
         this.profileSellerDataModel.adminRoleText = adminRoleText
         this.profileSellerDataModel.canGoToSellerAccount = canGoToSellerAccount
@@ -122,5 +135,15 @@ data class AccountHeaderDataModel(
         }
         this.profileWalletAppDataModel.walletAppActivationCta = selectedBalance?.globalMenuText?.id ?: ""
         this.profileWalletAppDataModel.isWalletAppLinked = selectedBalance?.isLinked ?: false
+    }
+
+    fun setTokopediaPlus(
+        tokopediaPlusParam: TokopediaPlusParam?,
+        isLoading: Boolean,
+        error: Throwable?
+    ){
+        this.tokopediaPlusDataModel.tokopediaPlusParam = tokopediaPlusParam
+        this.tokopediaPlusDataModel.isGetTokopediaPlusLoading = isLoading
+        this.tokopediaPlusDataModel.tokopediaPlusError = error
     }
 }

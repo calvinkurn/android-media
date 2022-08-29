@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/bg_sob_slide_header_home" />
+        tools:src="@drawable/bg_sob_slide_header_home"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/sobViewPager"

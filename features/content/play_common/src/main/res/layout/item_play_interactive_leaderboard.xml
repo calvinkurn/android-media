@@ -5,37 +5,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl3"
     >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/play_dp_14"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="start"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_leaderboard"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Giveaway CD Blackpink"
-        />
+        app:layout_goneMarginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="heading_5"
+        tools:text="Giveaway CD Blackpink" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_winner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_goneMarginTop="@dimen/spacing_lvl2"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="@id/tv_leaderboard_title"
-        app:layout_constraintStart_toStartOf="@id/tv_leaderboard_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_leaderboard_title"
+        app:layout_constraintEnd_toEndOf="@id/rv_choices"
+        app:layout_constraintStart_toStartOf="@id/rv_choices"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_empty"
         tools:itemCount="5"
-        tools:listitem="@layout/item_play_interactive_leaderboard_winner"
-        />
+        tools:listitem="@layout/item_play_interactive_leaderboard_winner" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_other_participant"
@@ -48,29 +47,124 @@
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_winner"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_goneMarginTop="@dimen/spacing_lvl3"
         app:typographyType="body_3"
         tools:text="Dari 100 peserta game"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_ends_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:text="@string/play_interactive_ends_in"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/timer_ends_in"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/timer_ends_in"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/timer_ends_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/tv_ends_in"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_title"
+        app:timer_unify_single_type="minute_digit"
+        app:timer_unify_single_variant="main"
+        tools:timer_unify_single_remainingMinutes="49"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_empty"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="start"
-        android:text="@string/play_interactive_empty"
         android:textColor="@color/Unify_N300"
         android:textSize="@dimen/fontSize_lvl2"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/tv_leaderboard_title"
-        app:layout_constraintStart_toStartOf="@id/tv_leaderboard_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_leaderboard_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_choices"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_goneMarginBottom="@dimen/spacing_lvl3"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl3"
         app:typographyType="body_3"
-        tools:visibility="visible"
-        />
+        tools:text="@string/play_interactive_empty"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_leaderboard"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_leaderboard_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_leaderboard_title"
+        tools:visibility="gone" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_reward"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:padding="@dimen/spacing_lvl2"
+        android:background="@drawable/bg_leaderboard_reward"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="GIFT"
+        app:layout_goneMarginTop="@dimen/play_dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timer_ends_in"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_reward"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_reward"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_reward"
+        app:layout_constraintTop_toTopOf="@+id/iv_reward"
+        app:typographyType="heading_5"
+        tools:text="BULU MATA KUCING ANGGORA"
+        tools:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_choices"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_14"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/play_dp_14"
+        android:padding="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_reward"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_quiz_choice"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

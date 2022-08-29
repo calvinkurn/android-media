@@ -28,6 +28,8 @@ data class Data(
     var districtId: Long = 0,
     @SerializedName("district_name")
     var districtName: String = "",
+    @SerializedName("city_name")
+    var cityName: String = "",
     @SerializedName("formatted_address")
     var formattedAddress: String = "",
     @SerializedName("full_data")
@@ -41,6 +43,8 @@ data class Data(
     @SuppressLint("Invalid Data Type")
     @SerializedName("province_id")
     var provinceId: Long = 0,
+    @SerializedName("province_name")
+    var provinceName: String = "",
     @SerializedName("title")
     var title: String = ""
 )

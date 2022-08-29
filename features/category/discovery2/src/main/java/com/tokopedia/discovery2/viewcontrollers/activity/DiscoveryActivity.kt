@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -16,6 +18,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
@@ -31,6 +34,8 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
 
@@ -61,9 +66,15 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val ACTIVE_TAB = "activeTab"
         const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
+        const val RECOM_PRODUCT_ID = "recomProdId"
         const val PIN_PRODUCT = "pinProduct"
         const val CATEGORY_ID = "category_id"
         const val EMBED_CATEGORY = "embedCategory"
+        const val DYNAMIC_SUBTITLE= "dynamicSubtitle"
+        const val TARGET_TITLE_ID= "targetTitleID"
+        const val CAMPAIGN_ID= "campaign_id"
+        const val VARIANT_ID= "variant_id"
+        const val SHOP_ID= "shop_id"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -140,37 +151,6 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
-            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                handleWishlistAction(productCardOptionsModel)
-            }
-        })
-    }
-
-    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
-            if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-                if (productCardOptionsModel.wishlistResult.isSuccess) {
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_add_wishlist))
-                    discoveryViewModel.updateWishlist(productCardOptionsModel)
-                } else {
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_add_wishlist))
-                }
-            } else {
-                if (productCardOptionsModel.wishlistResult.isSuccess) {
-                    discoveryViewModel.updateWishlist(productCardOptionsModel)
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_remove_wishlist))
-                } else {
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_remove_wishlist))
-                }
-            }
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
-        }
-    }
     override fun onStop() {
         super.onStop()
         preSelectedTab = -1
@@ -214,6 +194,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
                 getPageIdentifier(),
                 getCampaignCode(),
                 getSourceIdentifier(),
+                UserSession(this),
                 trackingQueue)
     }
 

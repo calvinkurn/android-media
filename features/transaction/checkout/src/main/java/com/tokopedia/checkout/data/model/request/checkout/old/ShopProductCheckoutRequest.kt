@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 @Parcelize
 data class ShopProductCheckoutRequest(
@@ -34,9 +33,13 @@ data class ShopProductCheckoutRequest(
         var promos: List<PromoRequest>? = null,
         @SerializedName("is_order_priority")
         var isOrderPriority: Int = 0,
-        // Todo : add bundle data
+
+        // order metadata
+        var freeShippingMetadata: String = "",
+        var needPrescription: Boolean = false,
 
         // Additional data
         var cartString: String? = "",
-        var isTokoNow: Boolean = false
+        var isTokoNow: Boolean = false,
+        var giftingAddOnOrderLevel: ArrayList<AddOnGiftingRequest>? = null
 ) : Parcelable

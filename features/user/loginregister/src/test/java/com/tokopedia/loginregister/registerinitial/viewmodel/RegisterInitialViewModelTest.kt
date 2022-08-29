@@ -366,6 +366,20 @@ class RegisterInitialViewModelTest {
     }
 
     @Test
+    fun `on Success Activate User has other errors - 2`() {
+        /* When */
+        val responseData = ActivateUserData(isSuccess = 1, accessToken = "", refreshToken = "", tokenType = "", message = "")
+        val response = ActivateUserPojo(data = responseData)
+
+        coEvery { activateUserUseCase.executeOnBackground() } returns response
+
+        viewModel.activateUser("", "")
+
+        /* Then */
+        verify { activateUserObserver.onChanged(any<Fail>()) }
+    }
+
+    @Test
     fun `on Exception Throw during Activate User`() {
         coEvery { activateUserUseCase.executeOnBackground() } throws throwable
 

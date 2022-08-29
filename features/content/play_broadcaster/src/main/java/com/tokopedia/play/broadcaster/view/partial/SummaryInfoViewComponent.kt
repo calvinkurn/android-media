@@ -1,19 +1,19 @@
 package com.tokopedia.play.broadcaster.view.partial
 
-import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
+import com.tokopedia.play.broadcaster.databinding.LayoutPlaySummaryInfoBinding
+import com.tokopedia.play.broadcaster.ui.itemdecoration.MetricReportItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.viewholder.TrafficMetricViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -26,21 +26,12 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class SummaryInfoViewComponent(
         container: ViewGroup,
+        private val binding: LayoutPlaySummaryInfoBinding,
         listener: Listener
-) : ViewComponent(container, R.id.layout_summary_content) {
+) : ViewComponent(container, binding.layoutSummaryContent.id) {
 
-    val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
-    val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
-
-    private val flInfo = findViewById<FrameLayout>(R.id.fl_info)
-    private val llMeta = findViewById<LinearLayout>(R.id.ll_meta)
-    private val overflow = findViewById<View>(R.id.overflow)
-    private val tvTitle = findViewById<Typography>(R.id.tv_title)
-    private val ivCover = findViewById<ImageUnify>(R.id.iv_cover)
-    private val tvDuration = findViewById<Typography>(R.id.tv_duration)
-    private val recyclerView = findViewById<RecyclerView>(R.id.rv_info)
-    private val layoutError = findViewById<ConstraintLayout>(R.id.layout_summary_error)
-    private val tvErrorTryAgain = findViewById<Typography>(R.id.tv_error_try_again)
+    private val animationOffset = container.resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
+    private val animationDuration = container.resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
 
     private val trafficMetricReportAdapter = TrafficMetricReportAdapter(object : TrafficMetricViewHolder.Listener {
         override fun onLabelClicked(metricType: TrafficMetricType) {
@@ -49,8 +40,9 @@ class SummaryInfoViewComponent(
     })
 
     init {
-        recyclerView.apply {
+        binding.rvInfo.apply {
             layoutManager = LinearLayoutManager(container.context, RecyclerView.VERTICAL, false)
+            addItemDecoration(MetricReportItemDecoration(context))
             adapter = trafficMetricReportAdapter
         }
     }
@@ -60,43 +52,32 @@ class SummaryInfoViewComponent(
             override fun onGlobalLayout() {
                 container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                flInfo.translationY = animationOffset
-                overflow.translationY = animationOffset
-                llMeta.translationY = -animationOffset
-                flInfo.animate().translationYBy(-animationOffset).duration = animationDuration
-                llMeta.animate().translationYBy(animationOffset).duration = animationDuration
-                overflow.animate().translationYBy(-animationOffset).duration = animationDuration
+                binding.flInfo.translationY = animationOffset
+                binding.clBroSummaryMeta.translationY = -animationOffset
+                binding.flInfo.animate().translationYBy(-animationOffset).duration = animationDuration
+                binding.clBroSummaryMeta.animate().translationYBy(animationOffset).duration = animationDuration
             }
         })
     }
 
-    fun setChannelTitle(title: String) {
-        tvTitle.text = title
-    }
-
-    fun setChannelCover(coverUrl: String) {
-        ivCover.setImageUrl(coverUrl)
-    }
-
-    fun setLiveDuration(data: LiveDurationUiModel) {
-        tvDuration.text = data.duration
-    }
-
-    fun addTrafficMetric(metric: TrafficMetricUiModel, position: Int) {
-        trafficMetricReportAdapter.addItem(position, metric)
+    fun setChannelHeader(data: ChannelSummaryUiState) {
+        binding.ivBroSummaryCover.setImageUrl(data.coverUrl)
+        binding.tvBroSummaryLiveTitle.text = data.title
+        binding.tvBroSummaryDuration.text = data.duration
+        binding.tvBroSummaryDate.text = data.date
     }
 
     fun addTrafficMetrics(dataList: List<TrafficMetricUiModel>) {
-        trafficMetricReportAdapter.addItems(dataList)
+        trafficMetricReportAdapter.setItemsAndAnimateChanges(dataList)
     }
 
     fun showError(onRetry: () -> Unit) {
-        layoutError.show()
-        tvErrorTryAgain.setOnClickListener { onRetry() }
+        binding.layoutSummaryError.root.show()
+        binding.layoutSummaryError.tvErrorTryAgain.setOnClickListener { onRetry() }
     }
 
     fun hideError() {
-        layoutError.hide()
+        binding.layoutSummaryError.root.hide()
     }
 
     interface Listener {

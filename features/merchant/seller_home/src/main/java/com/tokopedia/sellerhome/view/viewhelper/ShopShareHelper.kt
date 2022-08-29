@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.viewhelper
 
 import android.app.Activity
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -25,7 +26,7 @@ class ShopShareHelper @Inject constructor(
 ) {
 
     companion object {
-        private const val LINKER_REQUEST_EVENT_ID = 0
+        private val LINKER_REQUEST_EVENT_ID = Int.ZERO
     }
 
     fun onShareOptionClicked(

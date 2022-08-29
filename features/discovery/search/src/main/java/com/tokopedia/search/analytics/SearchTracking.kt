@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
@@ -19,12 +20,14 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.ID
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselAnalyticsData
+import com.tokopedia.search.utils.joinActiveOptionsToString
+import com.tokopedia.search.utils.orNone
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.Locale
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -203,7 +206,7 @@ object SearchTracking {
                         "products", DataLayer.listOf(item)
                     )
                 ),
-                "searchFilter", productAnalyticsData.filterSortParams
+                "searchFilter", productAnalyticsData.filterSortParams,
             )
         )
     }
@@ -228,19 +231,20 @@ object SearchTracking {
             list: ArrayList<Any>,
             eventLabel: String?,
             irisSessionId: String,
-            userId: String
+            userId: String,
     ) {
-        val map = DataLayer.mapOf(TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
-                TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
-                TrackAppUtils.EVENT_LABEL, eventLabel,
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchTrackingConstant.USER_ID, userId,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                ECOMMERCE, DataLayer.mapOf(
+        val map = DataLayer.mapOf(
+            TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
+            TrackAppUtils.EVENT_LABEL, eventLabel,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.USER_ID, userId,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
                 "impressions", list
-            )
+            ),
         ) as HashMap<String, Any>
         if (!TextUtils.isEmpty(irisSessionId)) map[KEY_SESSION_IRIS] = irisSessionId
         trackingQueue.putEETracking(
@@ -401,6 +405,7 @@ object SearchTracking {
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
             SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId,
             SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
+            SearchEventTracking.EXTERNAL_REFERENCE, generalSearchTrackingModel.externalReference.orNone(),
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }
@@ -465,23 +470,6 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackImpressionInspirationCarouselList(trackingQueue: TrackingQueue, type: String, keyword: String, list: ArrayList<Any>) {
-        val map = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT,
-                SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
-                ECOMMERCE, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", list
-        )
-        ) as HashMap<String, Any>
-        trackingQueue.putEETracking(
-                map
-        )
-    }
-
-    @JvmStatic
     fun trackImpressionInspirationCarouselInfo(trackingQueue: TrackingQueue, type: String, keyword: String, list: ArrayList<Any>) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_VIEW,
@@ -496,36 +484,6 @@ object SearchTracking {
         ) as HashMap<String, Any>
         trackingQueue.putEETracking(
                 map
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCarouselOptionSeeAll(type: String, keywordBefore: String, keywordAfter: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_SEARCH,
-                        SearchTrackingConstant.EVENT_LABEL, "$type - $keywordBefore - $keywordAfter"
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCarouselListProduct(type: String,
-                                                      keyword: String,
-                                                      products: ArrayList<Any>) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_PRODUCT,
-                        SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
-                        ECOMMERCE, DataLayer.mapOf("click",
-                        DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/search - carousel"),
-                                "products", products
-                        )
-                )
-                )
         )
     }
 
@@ -591,60 +549,6 @@ object SearchTracking {
         ) as HashMap<String, Any>
         trackingQueue.putEETracking(
                 map
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCarouselChipsProduct(
-            type: String,
-            keyword: String,
-            chipsValue: String,
-            userId: String?,
-            products: ArrayList<Any>
-    ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_PRODUCT,
-                        SearchTrackingConstant.EVENT_LABEL, "$type - $keyword - $chipsValue",
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchTrackingConstant.USER_ID, userId,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                        ECOMMERCE, DataLayer.mapOf("click",
-                        DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/search - carousel chips"),
-                                "products", products
-                        )
-                )
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCarouselChipsSeeAll(type: String, keyword: String, chipsValue: String, userId: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_LIHAT_SEMUA,
-                        SearchTrackingConstant.EVENT_LABEL, "$type - $keyword - $chipsValue",
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchTrackingConstant.USER_ID, userId,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickInspirationCarouselChipsVariant(type: String, keyword: String, chipsValue: String, userId: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_VARIANT,
-                        SearchTrackingConstant.EVENT_LABEL, "$type - $keyword - $chipsValue",
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchTrackingConstant.USER_ID, userId,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
-                )
         )
     }
 
@@ -828,66 +732,7 @@ object SearchTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
     }
 
-    @JvmStatic
-    fun trackEventLastFilterImpression(
-        iris: Iris,
-        keyword: String,
-        filter: String,
-        pageSource: String,
-    ) {
-        val impressionDataLayer = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_SAVE_LAST_FILTER,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
-            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-            SearchTrackingConstant.PAGE_SOURCE, pageSource,
-        )
 
-        iris.saveEvent(impressionDataLayer)
-    }
-
-    private fun getLastFilterEventLabel(keyword: String, filter: String): String =
-        SearchEventTracking.Label.KEYWORD_FILTER.format(keyword, filter)
-
-    @JvmStatic
-    fun trackEventLastFilterClickApply(
-        keyword: String,
-        filter: String,
-        pageSource: String,
-    ) {
-        val clickDataLayer = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SAVE_LAST_FILTER,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
-            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-            SearchTrackingConstant.PAGE_SOURCE, pageSource,
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
-    }
-
-    @JvmStatic
-    fun trackEventLastFilterClickClose(
-        keyword: String,
-        filter: String,
-        pageSource: String,
-    ) {
-        val clickDataLayer = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLOSE_SAVE_LAST_FILTER,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
-            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-            SearchTrackingConstant.PAGE_SOURCE, pageSource,
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
-    }
 
     fun getInspirationCarouselUnificationListName(type: String, componentId: String): String =
         CAROUSEL_UNIFICATION_LIST_NAME.format(type, componentId)
@@ -931,6 +776,32 @@ object SearchTracking {
                         "products", products
                     )
                 )
+            )
+        )
+    }
+
+    fun trackEventClickDropdownQuickFilter(filterTitle: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
+                SearchTrackingConstant.EVENT_LABEL, "$filterTitle",
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            )
+        )
+    }
+
+    fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.APPLY_DROPDOWN_QUICK_FILTER,
+                SearchTrackingConstant.EVENT_LABEL, optionList?.joinActiveOptionsToString(),
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )
         )
     }

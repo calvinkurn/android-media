@@ -2,20 +2,21 @@ package com.tokopedia.centralizedpromo.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemPromoCreationBinding
 
-class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
+class PromoCreationViewHolder(view: View?, val impressionListener: (String) -> Unit) :
+    AbstractViewHolder<PromoCreationUiModel>(view) {
 
-    var onFreeShippingImpression: (() -> Unit)? = null
-    var onFreeShippingClicked: (() -> Unit)? = null
+    var onClickItemPromo: ((PromoCreationUiModel) -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -27,60 +28,38 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     override fun bind(element: PromoCreationUiModel) {
         binding.run {
-            ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
+            ivRecommendedPromo.loadImage(element.icon)
             tvRecommendedPromoTitle.text = element.title
-            tvRecommendedPromoDescription.text = element.description
-
-            if (element.extra.isNotBlank()) {
-                tvRecommendedPromoExtra.text = element.extra
-                tvRecommendedPromoExtra.show()
-                tvRecommendedPromoDescription.setPadding(
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl4).toInt()
-                )
+            if (element.notAvailableText.isEmpty()) {
+                tvRecommendedPromoDescription.text = element.description
             } else {
-                tvRecommendedPromoExtra.text = ""
-                tvRecommendedPromoDescription.setPadding(
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl2).toInt()
-                )
+                tvRecommendedPromoDescription.text = itemView.context.getString(
+                    R.string.centralized_promo_description,
+                    element.notAvailableText,
+                    element.description
+                ).parseAsHtml()
             }
-
-            root.addOnImpressionListener(element.impressHolder) {
-                if (isFreeShippingPromo(element.title)) {
-                    onFreeShippingImpression?.invoke()
-                } else {
-                    CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
-                }
+            if (element.titleSuffix.equals(getTextBadgeNew(), ignoreCase = true)) {
+                tvBadgeNew.show()
+            } else {
+                tvBadgeNew.gone()
             }
 
             root.setOnClickListener {
-                openApplink(element.applink, element.title)
+                openApplink(element)
+            }
+
+            root.addOnImpressionListener(element.impressHolder) {
+                impressionListener.invoke(element.title)
             }
         }
     }
 
-    private fun openApplink(url: String, title: String) {
-        with(itemView) {
-            if (RouteManager.route(context, url)) {
-                trackClickPromo(title)
-            }
-        }
+    private fun openApplink(element: PromoCreationUiModel) {
+        onClickItemPromo?.invoke(element)
     }
 
-    private fun trackClickPromo(title: String) {
-        if (isFreeShippingPromo(title)) {
-            onFreeShippingClicked?.invoke()
-        } else {
-            CentralizedPromoTracking.sendClickPromoCreation(title)
-        }
-    }
+    private fun getTextBadgeNew() =
+        itemView.context?.getString(R.string.text_badge_new) ?: String.EMPTY
 
-    private fun isFreeShippingPromo(title: String): Boolean {
-        return title == getString(R.string.centralized_promo_promo_creation_free_shipping_title)
-    }
 }

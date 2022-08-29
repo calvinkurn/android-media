@@ -4,12 +4,51 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.*
+import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
+import com.tokopedia.cart.databinding.ItemCartChooseAddressBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledAccordionBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartDisabledReasonBinding
+import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
+import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
+import com.tokopedia.cart.databinding.ItemCartSectionHeaderBinding
+import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
+import com.tokopedia.cart.databinding.ItemCartWishlistBinding
+import com.tokopedia.cart.databinding.ItemEmptyCartBinding
+import com.tokopedia.cart.databinding.ItemSelectAllBinding
+import com.tokopedia.cart.databinding.ItemShopBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
-import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.cart.view.viewholder.*
+import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
+import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.viewholder.CartChooseAddressViewHolder
+import com.tokopedia.cart.view.viewholder.CartEmptyViewHolder
+import com.tokopedia.cart.view.viewholder.CartLoadingViewHolder
+import com.tokopedia.cart.view.viewholder.CartRecentViewViewHolder
+import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
+import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
+import com.tokopedia.cart.view.viewholder.CartShopViewHolder
+import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
+import com.tokopedia.cart.view.viewholder.CartTopAdsHeadlineViewHolder
+import com.tokopedia.cart.view.viewholder.CartWishlistViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledItemHeaderViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledReasonViewHolder
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -104,6 +143,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                         if ((data.isPartialSelected || data.isAllSelected)) {
                             for (cartItemHolderData in data.productUiModelList) {
                                 if (cartItemHolderData.isSelected && !cartItemHolderData.isError) {
+                                    cartItemHolderData.shopBoMetadata = data.boMetadata
+                                    cartItemHolderData.shopBoAffordabilityData = data.boAffordability
                                     cartItemDataList.add(cartItemHolderData)
                                 }
                             }
@@ -140,7 +181,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 when (data) {
                     is CartShopHolderData -> {
                         val cartItemHolderDataList = data.productUiModelList
-                        cartItemDataList.addAll(cartItemHolderDataList)
+                        for (cartItemHolderData in cartItemHolderDataList) {
+                            cartItemHolderData.shopBoMetadata = data.boMetadata
+                            cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                            cartItemDataList.add(cartItemHolderData)
+                        }
                     }
                     hasReachAllShopItems(data) -> break@loop
                 }
@@ -160,7 +205,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 when (data) {
                     is CartShopHolderData -> {
                         if (!data.isError) {
-                            cartItemDataList.addAll(data.productUiModelList)
+                            val cartItemHolderDataList = data.productUiModelList
+                            for (cartItemHolderData in cartItemHolderDataList) {
+                                cartItemHolderData.shopBoMetadata = data.boMetadata
+                                cartItemHolderData.shopBoAffordabilityData = data.boAffordability
+                                cartItemDataList.add(cartItemHolderData)
+                            }
                         }
                     }
                     hasReachAllShopItems(data) -> break@loop
@@ -790,7 +840,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun getCartItemByBundleId(bundleId: String): List<CartItemHolderData> {
+    fun getCartItemByBundleGroupId(bundleId: String, bundleGroupId: String): List<CartItemHolderData> {
         val cartItemHolderDataList = mutableListOf<CartItemHolderData>()
         loop@ for (data in cartDataList) {
             if (cartItemHolderDataList.isNotEmpty()) {
@@ -799,7 +849,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             when (data) {
                 is CartShopHolderData -> {
                     data.productUiModelList.forEach { cartItemHolderData ->
-                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId) {
+                        if (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleId == bundleId && cartItemHolderData.bundleGroupId == bundleGroupId) {
                             cartItemHolderDataList.add(cartItemHolderData)
                         }
                     }
@@ -976,7 +1026,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 data is CartRecommendationItemHolderData
     }
 
-    fun removeProductByCartId(cartIds: List<String>): Pair<List<Int>, List<Int>> {
+    fun removeProductByCartId(cartIds: List<String>, needRefresh: Boolean, isFromGlobalCheckbox: Boolean): Pair<List<Int>, List<Int>> {
         val toBeRemovedItems = mutableListOf<Any>()
         val toBeRemovedIndices = mutableListOf<Int>()
         val toBeUpdatedIndices = mutableListOf<Int>()
@@ -993,9 +1043,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 data is DisabledAccordionHolderData -> disabledAccordionHolderDataIndexPair = Pair(data, index)
                 data is CartShopHolderData -> {
                     val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
+                    var hasSelectDeletedProducts = false
+                    var selectedNonDeletedProducts = 0
                     data.productUiModelList.forEach { cartItemHolderData ->
                         if (cartIds.contains(cartItemHolderData.cartId)) {
                             toBeDeletedProducts.add(cartItemHolderData)
+                            if (cartItemHolderData.isSelected) {
+                                hasSelectDeletedProducts = true
+                            }
+                        } else if (cartItemHolderData.isSelected) {
+                            selectedNonDeletedProducts += 1
                         }
                     }
                     if (toBeDeletedProducts.isNotEmpty()) {
@@ -1012,6 +1069,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             toBeRemovedItems.add(data)
                             toBeRemovedIndices.add(index)
                         } else {
+                            // update selection
+                            data.isAllSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size == selectedNonDeletedProducts
+                            data.isPartialSelected = selectedNonDeletedProducts > 0 && data.productUiModelList.size > selectedNonDeletedProducts
+                            if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts) && selectedNonDeletedProducts > 0) {
+                                actionListener.checkBoAffordability(data)
+                            }
                             toBeUpdatedIndices.add(index)
                         }
                     }
@@ -1206,7 +1269,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return null
     }
 
-    fun getFirstShopAndShopCount(): Pair<Int, Int> {
+    fun getFirstShopAndShopCountWithIterateFunction(func: (CartShopHolderData) -> Unit): Pair<Int, Int> {
         var firstIndex = 0
         var count = 0
         cartDataList.forEachIndexed { index, any ->
@@ -1216,8 +1279,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (firstIndex == 0) {
                         firstIndex = index
                     }
+                    func(any)
                 }
-                is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
+                is DisabledItemHeaderHolderData, is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
                     return@forEachIndexed
                 }
             }
@@ -1301,6 +1365,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (changeShopLevelCheckboxState) {
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
+                        actionListener.checkBoAffordability(data)
                     }
                 }
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {

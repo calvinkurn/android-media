@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="TopAdsHomeShimmerStyle">
+        <item name="android:layout_height">17dp</item>
+        <item name="loader_type">rect</item>
+    </style>
+
     <style name="LineChartView">
         <item name="android:paddingRight">10dp</item>
     </style>

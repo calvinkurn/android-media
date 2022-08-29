@@ -9,6 +9,7 @@
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
     <string name="sah_exit_message">Tekan sekali lagi untuk keluar</string>
+    <string name="sah_some_widgets_need_to_be_refreshed">Beberapa data perlu diperbarui</string>
 
     <!--bottom nav-->
     <string name="sah_home">Home</string>
@@ -34,6 +35,8 @@
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
+    <string name="setting_menu_performance">Performa Toko</string>
+    <string name="setting_menu_setting">Pengaturan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
     <string name="setting_menu_statistic">Statistik</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
@@ -62,11 +65,16 @@
     <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
     <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
 
+    <!-- Free Shipping -->
+    <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
+    <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
+    <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
+
     <!--  Centralized Promo  -->
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
     <string name="sh_lbl_create_promotion">Buat Promosi</string>
     <string name="sh_lbl_create_promotion_desc">Pasang promosi untuk tingkatkan performa tokomu.</string>
-    <string name="sah_label_promo_and_ads">Iklan dan Promosimu</string>
+    <string name="sah_label_promo_and_ads">Fitur promosi aktifmu</string>
     <string name="sah_label_on_going_promotion_retry">Ketuk ikon untuk memuat ulang</string>
     <string name="sah_label_on_going_promotion_error">Data tidak dapat ditampilkan</string>
     <string name="sh_coachmark_title_on_going_promo">Promosi aktif dan selesai</string>
@@ -80,11 +88,32 @@
     <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
+    <string name="centralized_promo_promo_creation_voucher_product_title">Kupon Produk</string>
+    <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
+    <string name="centralized_promo_promo_creation_tokopedia_play_title">Tokopedia Play</string>
+    <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
+    <string name="centralized_promo_promo_creation_slash_price_title">Diskon Toko</string>
+    <string name="centralized_promo_promo_creation_slash_price_description">Tarik banyak pembeli dengan pasang diskon menarik. </string>
+    <string name="centralized_promo_promo_creation_tokomember_title">TokoMember</string>
+    <string name="centralized_promo_promo_creation_tokomember_description">Tingkatin pendapatan toko dengan beri keanggotaan eksklusif ke pembeli setia.</string>
+    <string name="centralized_promo_promo_creation_tokomember_tag_label">Baru</string>
+    <string name="centralized_promo_promo_creation_slash_price_new_info">Khusus PM PRO Expert</string>
+    <string name="centralized_promo_promo_creation_slash_price_tag_label">Baru</string>
+
+    <string name="centralized_promo_promo_creation_flash_sale_toko_title">Flash Sale Toko</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_description">Buat campaign Flash Sale sendiri khusus di halaman tokomu.</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_new_info">Khusus PM PRO dan OS</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_tag_label">Baru</string>
 
     <!-- First merchant voucher -->
+    <string name="centralized_promo_first_voucher_label">First Voucher</string>
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>
+    <string name="centralized_promo_bottomsheet_product_coupon_title">Keuntungan pakai Kupon Produk!</string>
+    <string name="centralized_promo_bottomsheet_tokopedia_play_title">Live sekarang</string>
     <string name="centralized_promo_bottomsheet_detail">Berbagai keuntungan:</string>
     <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>
+    <string name="centralized_promo_bottomsheet_product_coupon_next">Buat Kupon</string>
+    <string name="centralized_promo_bottomsheet_tokopedia_play_next">Lanjut Live Sekarang</string>
     <string name="centralized_promo_bottomsheet_increase_sell">Tarik lebih banyak pelanggan</string>
     <string name="centralized_promo_bottomsheet_increase_sell_desc">Dengan tetap mempertahankan citra brand toko dan harga barang.</string>
     <string name="centralized_promo_bottomsheet_time">Kelola waktu aktif voucher</string>
@@ -92,6 +121,15 @@
     <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
     <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
     <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
+    <string name="centralized_promo_bottomsheet_selected_product">Pasang khusus di produk pilihan</string>
+    <string name="centralized_promo_bottomsheet_selected_product_desc">Atur detail voucher ke produk tertentu sesuai kebutuhan penjualan.</string>
+    <string name="centralized_promo_bottomsheet_flexible_discount">Lebih fleksibel kelola promosi</string>
+    <string name="centralized_promo_bottomsheet_flexible_discount_desc">Pilih manfaat promosi yang cocok dengan produk-produk pilihanmu.</string>
+    <string name="centralized_promo_bottomsheet_quick_sold_out">Stok produkmu cepat laris</string>
+    <string name="centralized_promo_bottomsheet_quick_sold_out_desc">Pasang minimum pembelian ke produk pilihan yang banyak dicari.</string>
+    <string name="centralized_promo_bottomsheet_quick_live_desc">Bisa cepat nge-live dengan mudah</string>
+    <string name="centralized_promo_bottomsheet_interact_viewer_desc">Berinteraksi langsung dengan banyak penonton</string>
+    <string name="centralized_promo_bottomsheet_game_prize_desc">Bikin penonton betah dengan buat game hadiah</string>
     
     <!-- Other menu header revamp -->
     <string name="sah_new_other_shop_open">Toko Buka</string>
@@ -100,10 +138,13 @@
     <string name="sah_new_other_rm_since_has_passed">Telah Melewati</string>
     <string name="sah_new_other_rm_transaction_remaining">%s/100</string>
     <string name="sah_new_other_rm_total_transaction">%s Transaksi</string>
-    <string name="sah_new_other_operational_shop_open">Toko Buka</string>
+    <string name="sah_new_other_operational_shop_open">Jam Operasional</string>
     <string name="sah_new_other_operational_shop_off_hour">Toko Tutup</string>
     <string name="sah_new_other_operational_shop_closed">Toko Libur</string>
+    <string name="sah_new_other_operational_shop_weekly_closed">Toko Libur Rutin</string>
     <string name="sah_new_other_status_upgrade">Upgrade!</string>
+    <string name="sah_new_other_follower">Follower</string>
+    <string name="sah_new_other_topads_credit">Kredit TopAds</string>
     <string name="sah_new_other_status_pm_pro_title">Power Merchant PRO</string>
     <string name="sah_new_other_status_pm_pro_advanced">Advanced</string>
     <string name="sah_new_other_status_pm_pro_expert">Expert</string>
@@ -124,26 +165,30 @@
     <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
     <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
     <string name="sah_content_desc_image_widget_error">image widget error</string>
-    <string name="sah_recommendation_coach_mark_title">Lihat Performa Toko di Home</string>
-    <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
-    <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
-    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
+    <string name="sah_rebate_coach_mark_title">Sebagai Power Merchant PRO, kamu bisa ikutan Program Reward, lho!</string>
+    <string name="sah_rebate_coach_mark_description">Pantau terus kemajuan tokomu dalam mencapai target di tiap periode dan dapatkan Reward-nya.</string>
+    <string name="sah_unification_coach_mark_title">Apa kabar produkmu hari ini?</string>
+    <string name="sah_unification_coach_mark_description">Ketahui dengan cepat keadaan produkmu untuk atur strategi selanjutnya.</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
     <string name="settings_operational_hour_not_set">LIBUR</string>
     <string name="shop_operational_hour_24_hour">24 Jam</string>
-    <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
+    <string name="shop_operational_hour_weekly_close_can_atc">Produk bisa dibeli</string>
+    <string name="shop_operational_hour_weekly_close_cannot_atc">Tidak bisa dibeli</string>
+    <string name="shop_operational_hour_set_operational_time">Atur jam operasional</string>
     <string name="sah_content_desc_image_operational_hour">image operational hour</string>
     <string name="sah_share_action_copy_success">Teks berhasil disalin</string>
     <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
     <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="sah_empty_layout_message">Oops, kamu tidak punya izin untuk melihat konten di halaman Home</string>
-
+    <string name="centralized_promo_description"><![CDATA[<b> %s </b> \u2022 %s]]></string>
     <!-- Admin Restriction -->
     <string name="sah_admin_restriction_label">Admin Restriction</string>
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="sah_admin_restriction_article_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya. &lt;a href="#"&gt;Baca artikelnya&lt;/a&gt;.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
+    <string name="sah_admin_restriction_message">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     
     <!-- Social Media Links -->
     <string name="sah_social_menu_title">Media Sosial Tokopedia Seller</string>
@@ -157,5 +202,29 @@
     <string name="sah_social_fb_com_title">Keluarga Tokopedia</string>
     <string name="sah_social_fb_com_desc">Gabung grup Keluarga Tokopedia untuk berbagi info dan pengalaman ke sesama Seller.</string>
     <string name="sah_social_cta">Lihat</string>
-        
+    <string name="sah_widget_success_toaster">Berhasil melakukan pembaruan</string>
+
+    <!-- Seller Edu Webview -->
+    <string name="sah_seller_edu_error_message">Error wrong supported url format: %s</string>
+    <string name="download_trx_fee_report_ticker_activity_title">Biaya layanan transaksi</string>
+    <string name="download_trx_fee_report">Download laporan biaya transaksi</string>
+    <string name="trx_fee_heading">Cek laporan biaya layanan di tiap transaksi tokomu</string>
+    <string name="trx_fee_title">Pilih periode</string>
+    <string name="trx_fee_desc">Maksimum 90 hari, tidak bisa memilih periode sebelum  Juni 2020</string>
+    <string name="trx_fee_date">Pilih tanggal</string>
+    <string name="trx_fee_download">Download laporan</string>
+    <string name="trx_server_error_message">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
+    <string name="trx_no_network_error_message">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
+    <string name="sp_title_max_day">Kamu hanya dapat memilih rentang waktu maks. %d hari.</string>
+    <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
+    <string name="saldo_btn_oke">Oke</string>
+    <string name="saldo_save_date">Simpan</string>
+    <string name="sah_commission_download_complete_message">Laporan biaya transaksi berhasil di download</string>
+    <string name="info_download_excel_report">Pastikan kamu punya aplikasi Google Sheet untuk membuka file-nya.</string>
+    <string name="info_commission_breakdown">Untuk mempelajari detail biaya layanan per kategori bisa kamu pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;.</string>
+    <string name="sah_select_date_range">Pilih rentang waktu</string>
+    <string name="trx_refresh">Refresh</string>
+    <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
+    <string name="text_badge_new">Baru</string>
+
 </resources>

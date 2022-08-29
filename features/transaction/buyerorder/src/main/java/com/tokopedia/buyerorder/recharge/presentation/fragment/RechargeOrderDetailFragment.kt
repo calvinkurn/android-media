@@ -10,12 +10,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
+import com.tokopedia.buyerorder.detail.data.OrderCategory
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
@@ -25,6 +28,7 @@ import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailA
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.utils.RechargeOrderDetailAnalytics
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
@@ -43,13 +47,13 @@ import javax.inject.Inject
  * @author by furqan on 28/10/2021
  */
 class RechargeOrderDetailFragment : BaseDaggerFragment(),
-        RechargeOrderDetailTopSectionViewHolder.ActionListener,
-        RechargeOrderDetailProductViewHolder.ActionListener,
-        RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
-        RechargeOrderDetailStaticButtonViewHolder.ActionListener,
-        RechargeOrderDetailAboutOrderViewHolder.ActionListener,
-        RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
-        RecommendationWidgetListener {
+    RechargeOrderDetailTopSectionViewHolder.ActionListener,
+    RechargeOrderDetailProductViewHolder.ActionListener,
+    RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
+    RechargeOrderDetailStaticButtonViewHolder.ActionListener,
+    RechargeOrderDetailAboutOrderViewHolder.ActionListener,
+    RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
+    RecommendationWidgetListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -64,23 +68,25 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     private val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
-                viewModelFactory,
-                viewLifecycleOwner,
-                DigitalRecommendationAdditionalTrackingData(
-                        userType = "",
-                        widgetPosition = rechargeViewModel.getDigitalRecommendationPosition().toString()
-                ),
-                DigitalRecommendationPage.DIGITAL_GOODS
+            viewModelFactory,
+            viewLifecycleOwner,
+            DigitalRecommendationAdditionalTrackingData(
+                userType = "",
+                widgetPosition = rechargeViewModel.getDigitalRecommendationPosition().toString()
+            ),
+            DigitalRecommendationPage.DIGITAL_GOODS
         )
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
-        RechargeOrderDetailTypeFactory(digitalRecommendationData,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this)
+        RechargeOrderDetailTypeFactory(
+            digitalRecommendationData,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this,
+            this
+        )
     }
     private val adapter: RechargeOrderDetailAdapter by lazy {
         RechargeOrderDetailAdapter(typeFactory)
@@ -96,7 +102,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         getComponent(RechargeOrderDetailComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentRechargeOrderDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -143,10 +153,25 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onSeeInvoiceClicked(invoiceRefNum: String, invoiceUrl: String) {
         rechargeOrderDetailAnalytics.eventClickSeeInvoice(
-                OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
         )
         rechargeOrderDetailAnalytics.eventOpenScreen(RechargeOrderDetailAnalytics.DefaultValue.SCREEN_NAME_INVOICE)
+
+        context?.let {
+            startActivity(
+                SeeInvoiceActivity.newInstance(
+                    it,
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    orderId,
+                    invoiceUrl,
+                    invoiceRefNum,
+                    getString(R.string.title_invoice),
+                    OrderCategory.DIGITAL
+                )
+            )
+        }
     }
 
     override fun onCopyCodeClicked(label: String, value: String) {
@@ -161,8 +186,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onClickStaticButton(staticButtonModel: RechargeOrderDetailStaticButtonModel) {
         sendActionButtonClickedEvent(
-                staticButtonModel.title,
-                FEATURE_ACTION_BUTTON_TYPE
+            staticButtonModel.title,
+            FEATURE_ACTION_BUTTON_TYPE
         )
     }
 
@@ -172,42 +197,71 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel) {
         sendActionButtonClickedEvent(
-                actionButton.name,
-                actionButton.buttonType
+            actionButton.name,
+            actionButton.buttonType
         )
     }
 
-    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    override fun onVoidButtonClicked() {
+        showVoidDialog()
+    }
+
+    override fun onBestSellerClick(
+        bestSellerDataModel: BestSellerDataModel,
+        recommendationItem: RecommendationItem,
+        widgetPosition: Int
+    ) {
         rechargeOrderDetailAnalytics.eventTopAdsClick(recommendationItem)
         RouteManager.route(context, recommendationItem.appUrl)
     }
 
-    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    override fun onBestSellerImpress(
+        bestSellerDataModel: BestSellerDataModel,
+        recommendationItem: RecommendationItem,
+        widgetPosition: Int
+    ) {
         rechargeOrderDetailAnalytics.eventTopAdsImpression(recommendationItem)
     }
 
-    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    override fun onBestSellerThreeDotsClick(
+        bestSellerDataModel: BestSellerDataModel,
+        recommendationItem: RecommendationItem,
+        widgetPosition: Int
+    ) {
         // no op
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, chipsPosition: Int) {
+    override fun onBestSellerFilterClick(
+        filter: RecommendationFilterChipsEntity.RecommendationFilterChip,
+        bestSellerDataModel: BestSellerDataModel,
+        widgetPosition: Int,
+        chipsPosition: Int
+    ) {
         // no op
     }
 
-    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+    override fun onBestSellerSeeMoreTextClick(
+        bestSellerDataModel: BestSellerDataModel,
+        appLink: String,
+        widgetPosition: Int
+    ) {
         RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+    override fun onBestSellerSeeAllCardClick(
+        bestSellerDataModel: BestSellerDataModel,
+        appLink: String,
+        widgetPosition: Int
+    ) {
         RouteManager.route(context, appLink)
     }
 
     private fun fetchData() {
         rechargeViewModel.fetchData(
-                RechargeOrderDetailRequest(
-                        orderCategory = orderCategory,
-                        orderId = orderId
-                )
+            RechargeOrderDetailRequest(
+                orderCategory = orderCategory,
+                orderId = orderId
+            )
         )
     }
 
@@ -224,7 +278,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     private fun setupRecyclerView() {
         with(binding) {
-            rvRechargeOrderDetail.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            rvRechargeOrderDetail.layoutManager =
+                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             rvRechargeOrderDetail.adapter = adapter
 
             rvRechargeOrderDetail.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -251,8 +306,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 btnRechargeOrderDetailSticky.setOnClickListener {
                     context?.let { ctx ->
                         sendActionButtonClickedEvent(
-                                primaryActionButton.name,
-                                primaryActionButton.buttonType
+                            primaryActionButton.name,
+                            primaryActionButton.buttonType
                         )
                         onStickyActionButtonClicked(ctx, primaryActionButton.uri)
                     }
@@ -267,9 +322,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             hideLoading()
             when (result) {
                 is Success -> {
-                    adapter.updateItems(result.data,
-                            rechargeViewModel.getTopAdsData(),
-                            rechargeViewModel.getRecommendationWidgetPositionData())
+                    adapter.updateItems(
+                        result.data,
+                        rechargeViewModel.getTopAdsData(),
+                        rechargeViewModel.getRecommendationWidgetPositionData()
+                    )
                     setupStickyButton(result.data.actionButtonList.actionButtons.firstOrNull {
                         it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
                     })
@@ -282,13 +339,37 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             }
         })
 
+        rechargeViewModel.emoneyVoidResponse.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.isNeedRefresh) {
+                        result.data.isNeedRefresh = false
+                        rechargeViewModel.resetOrderDetailData()
+                        activity?.recreate()
+                    }
+                }
+                is Fail -> {
+                    context?.let { ctx ->
+                        Toaster.build(
+                            binding.rvRechargeOrderDetail,
+                            result.throwable.message ?: "",
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+            }
+        })
+
         rechargeViewModel.topadsData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     rechargeViewModel.getOrderDetailResultData()?.let { orderData ->
-                        adapter.updateItems(orderData,
-                                result.data,
-                                rechargeViewModel.getRecommendationWidgetPositionData())
+                        adapter.updateItems(
+                            orderData,
+                            result.data,
+                            rechargeViewModel.getRecommendationWidgetPositionData()
+                        )
                     }
                 }
                 is Fail -> {
@@ -303,9 +384,9 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                     rechargeViewModel.fetchTopAdsData()
                     rechargeViewModel.getOrderDetailResultData()?.let { orderData ->
                         adapter.updateItems(
-                                orderData,
-                                rechargeViewModel.getTopAdsData(),
-                                result.data
+                            orderData,
+                            rechargeViewModel.getTopAdsData(),
+                            result.data
                         )
                     }
                 }
@@ -340,8 +421,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             val url = Uri.parse(mUri)
 
             if (mUri.contains(IDEM_POTENCY_KEY)) {
-                mUri = mUri.replace(url.getQueryParameter(IDEM_POTENCY_KEY)
-                        ?: "", "")
+                mUri = mUri.replace(
+                    url.getQueryParameter(IDEM_POTENCY_KEY)
+                        ?: "", ""
+                )
                 mUri = mUri.replace("${IDEM_POTENCY_KEY}=", "")
             }
             RouteManager.route(context, mUri)
@@ -352,31 +435,32 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     private fun copyToClipboard(label: String, value: String) {
         rechargeOrderDetailAnalytics.eventClickCopyButton(
-                OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
         )
         context?.let {
             BuyerUtils.copyTextToClipBoard(label, value, it)
             BuyerUtils.vibrate(it)
-            Toaster.build(binding.root,
-                    String.format(getString(R.string.recharge_order_detail_copied_message), label),
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL
+            Toaster.build(
+                binding.root,
+                String.format(getString(R.string.recharge_order_detail_copied_message), label),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
             ).show()
         }
     }
 
     private fun sendActionButtonClickedEvent(buttonName: String, buttonType: String) {
         rechargeOrderDetailAnalytics.eventClickActionButton(
-                OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
-                buttonName,
-                when (buttonType) {
-                    PRIMARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_PRIMARY_BUTTON
-                    SECONDARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_SECONDARY_BUTTON
-                    else -> RechargeOrderDetailAnalytics.EventAction.CLICK_FEATURE_BUTTON
-                },
-                (buttonType != PRIMARY_ACTION_BUTTON_TYPE && buttonType != SECONDARY_ACTION_BUTTON_TYPE)
+            OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+            OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+            buttonName,
+            when (buttonType) {
+                PRIMARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_PRIMARY_BUTTON
+                SECONDARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_SECONDARY_BUTTON
+                else -> RechargeOrderDetailAnalytics.EventAction.CLICK_FEATURE_BUTTON
+            },
+            (buttonType != PRIMARY_ACTION_BUTTON_TYPE && buttonType != SECONDARY_ACTION_BUTTON_TYPE)
         )
     }
 
@@ -386,6 +470,38 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     private fun hideError() {
         binding.containerRechargeOrderError.hide()
+    }
+
+    private fun showVoidDialog() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.dialog_void_emoney_title))
+            dialog.setDescription(MethodChecker.fromHtml(getString(R.string.dialog_void_emoney_description)))
+            dialog.setPrimaryCTAText(getString(R.string.dialog_void_emoney_primary_cta_label))
+            dialog.setPrimaryCTAClickListener {
+                rechargeViewModel.voidEmoneyData(orderId)
+                rechargeOrderDetailAnalytics.eventVoidPopupClickBatalkan(
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                )
+            }
+            dialog.setSecondaryCTAText(getString(R.string.dialog_void_emoney_secondary_cta_label))
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+                rechargeOrderDetailAnalytics.eventVoidPopupClickKembali(
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                )
+            }
+            dialog.setOnShowListener {
+                rechargeOrderDetailAnalytics.eventViewVoidPopup(
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                )
+            }
+            dialog.setOverlayClose(false)
+            dialog.show()
+        }
     }
 
     companion object {
@@ -402,14 +518,16 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
         private const val INVOICE_NUMBER_LABEL = "Nomor Invoice"
 
-        fun getInstance(orderId: String,
-                        orderCategory: String): RechargeOrderDetailFragment =
-                RechargeOrderDetailFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_ORDER_CATEGORY, orderCategory)
-                        putString(EXTRA_ORDER_ID, orderId)
-                    }
+        fun getInstance(
+            orderId: String,
+            orderCategory: String
+        ): RechargeOrderDetailFragment =
+            RechargeOrderDetailFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_ORDER_CATEGORY, orderCategory)
+                    putString(EXTRA_ORDER_ID, orderId)
                 }
+            }
     }
 
 }

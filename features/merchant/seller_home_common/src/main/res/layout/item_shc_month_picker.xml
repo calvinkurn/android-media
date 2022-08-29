@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl0">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStcPerMonthLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/radStcPerMonth"
+        app:layout_constraintEnd_toStartOf="@+id/radStcPerMonth"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/radStcPerMonth"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="7 hari terakhir" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/radStcPerMonth"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.DateTextFieldView
+        android:id="@+id/edtStcPerMonth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/radStcPerMonth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radStcPerMonth"
+        tools:visibility="gone" />
+
+    <View
+        android:id="@+id/verLineStcCustom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shc_dimen_1dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtStcPerMonth" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

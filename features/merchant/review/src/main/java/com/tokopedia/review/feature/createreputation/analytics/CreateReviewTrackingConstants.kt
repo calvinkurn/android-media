@@ -12,6 +12,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_SEND_RATING_OPTION = "click - kirim rating on pop up"
     const val EVENT_ACTION_CLICK_STAY_OPTION = "click - tetap disini on pop up"
     const val EVENT_ACTION_CLICK_SUBMIT = "click - kirim ulasan produk"
+    const val EVENT_ACTION_CLICK_SUBMIT_ERROR = "click - kirim ulasan produk - error"
     const val EVENT_ACTION_CLICK_TEMPLATE = "click - review template"
     const val EVENT_ACTION_DISMISS_FORM = "click - dismiss create review form"
     const val EVENT_ACTION_VIEW_DIALOG = "view - pop up %s"
@@ -21,13 +22,15 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET = "view - terimakasih untuk ulasanmu pop up"
     const val EVENT_ACTION_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET = "view - bottomsheet postsubmit review"
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
-    const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
-    const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
+    const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review reason checkbox"
+    const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review reason checkbox"
     const val EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON = "click - cta on bottomsheet postsubmit review"
+    const val EVENT_ACTION_VISIT_CAMERA = "visit camera"
 
     const val EVENT_CATEGORY = "product review detail page"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
         "product review detail page - create review form bottomsheet"
+    const val EVENT_CATEGORY_MEDIA_CAMERA = "media camera"
 
     const val EVENT_LABEL_ORDER_ID_PRODUCT_ID = "order id:%s; product id:%s;"
     const val EMPTY_LABEL = ""
@@ -50,6 +53,8 @@ object CreateReviewTrackingConstants {
         "reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
     const val EVENT_LABEL_IMPRESS_BAD_RATING_REASON = "order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_OPEN_MEDIA_PICKER = "%s - %s - %s;"
+    const val EVENT_LABEL_CLICK_SUBMIT_ERROR = "error_message : %s - order_id : %s - product_id : %s - star : %d - ulasan : %s - review_char : %d - gambar : %d - anonim : %s - feedback_is_incentive_eligible : %s - is_template_available : %s - count_template_used : %s"
 
     const val SCREEN_NAME = "/create-review-form"
     const val SCREEN_NAME_BOTTOM_SHEET = "create-review-form"
@@ -66,15 +71,12 @@ object CreateReviewTrackingConstants {
     const val KEY_POSITION = "position"
 
     const val BUSINESS_UNIT = "product detail page"
+    const val BUSINESS_UNIT_MEDIA = "media"
     const val CURRENT_SITE = "tokopediamarketplace"
 
     const val EVENT_PROMO_VIEW = "promoView"
     const val BAD_RATING_REASON_IMPRESSION_ENHANCED_ECOMMERCE_ID = "reason:%s;"
 
-    const val EVENT_KEY_EE_CREATIVE_NAME = "creative_name"
-    const val EVENT_KEY_EE_CREATIVE_SLOT = "creative_slot"
-    const val EVENT_KEY_EE_ITEM_ID = "item_id"
-    const val EVENT_KEY_EE_ITEM_NAME = "item_name"
-
-    const val EVENT_KEY_EE_PROMOTIONS = "promotions"
+    const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
 }

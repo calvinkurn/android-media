@@ -22,6 +22,7 @@ import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,12 +30,18 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
-
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 class AddEmailFragment : BaseDaggerFragment() {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker: ProfileInfoTracker
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -53,7 +60,11 @@ class AddEmailFragment : BaseDaggerFragment() {
         ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_add_email_setting_profile, container, false)
         return view
     }
@@ -64,8 +75,13 @@ class AddEmailFragment : BaseDaggerFragment() {
         setObserver()
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        tracker.trackClickOnBtnBackAddEmail()
+        return super.onFragmentBackPressed()
+    }
+
     private fun setListener() {
-        et_email.textFieldInput.addTextChangedListener(object : TextWatcher {
+        et_email.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -73,6 +89,8 @@ class AddEmailFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
                     setErrorText("")
+                } else if (et_email.editText.text.isEmpty()) {
+                    setErrorText(getString(com.tokopedia.profilecompletion.R.string.error_cant_empty))
                 }
             }
 
@@ -82,11 +100,12 @@ class AddEmailFragment : BaseDaggerFragment() {
         })
 
         buttonSubmit.setOnClickListener {
-            val email = et_email.textFieldInput.text.toString()
+            tracker.trackOnBtnLanjutAddEmailClick()
+            val email = et_email.editText.text.toString()
             if (email.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
             } else if (!isValidEmail(email)) {
-                setErrorText(getString(R.string.wrong_email_format))
+                setErrorText(getString(R.string.wrong_email_format), isButtonEnabled = true)
             } else {
                 showLoading()
                 context?.run { viewModel.checkEmail(this, email) }
@@ -95,7 +114,7 @@ class AddEmailFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity(email: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
@@ -108,18 +127,15 @@ class AddEmailFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_ADD_EMAIL_COTP)
     }
 
-    private fun setErrorText(s: String) {
+    private fun setErrorText(s: String, isButtonEnabled: Boolean = false) {
         if (TextUtils.isEmpty(s)) {
-            tv_message.visibility = View.VISIBLE
-            tv_error.visibility = View.GONE
+            et_email.setMessage("")
             buttonSubmit.isEnabled = true
-            et_email.setError(false)
+            et_email.isInputError = false
         } else {
-            tv_error.visibility = View.VISIBLE
-            tv_error.text = s
-            tv_message.visibility = View.GONE
-            buttonSubmit.isEnabled = false
-            et_email.setError(true)
+            et_email.setMessage(s)
+            buttonSubmit.isEnabled = isButtonEnabled
+            et_email.isInputError = true
         }
     }
 
@@ -129,40 +145,44 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun setObserver() {
         viewModel.mutateAddEmailResponse.observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessAddEmail(it.data)
-                        is Fail -> onErrorShowSnackbar(it.throwable)
-                    }
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessAddEmail(it.data)
+                    is Fail -> onErrorAddEmail(it.throwable)
                 }
+            }
         )
 
         viewModel.mutateCheckEmailResponse.observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> goToVerificationActivity(it.data)
-                        is Fail -> onErrorShowSnackbar(it.throwable)
-                    }
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> goToVerificationActivity(it.data)
+                    is Fail -> onErrorAddEmail(it.throwable)
                 }
+            }
         )
 
     }
 
-    private fun onErrorShowSnackbar(throwable: Throwable) {
+    private fun onErrorAddEmail(throwable: Throwable) {
         dismissLoading()
         view?.run {
+            val errorMsg = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            setErrorText(errorMsg)
+            tracker.trackOnBtnLanjutAddEmailFailed(errorMsg)
             Toaster.showError(
-                    this,
-                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-                    Snackbar.LENGTH_LONG)
+                this,
+                errorMsg,
+                Snackbar.LENGTH_LONG
+            )
         }
     }
 
     private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
-
+        tracker.trackOnBtnLanjutAddEmailSuccess()
         // update userSession for a new email
         userSession.email = result.email
 
@@ -199,12 +219,17 @@ class AddEmailFragment : BaseDaggerFragment() {
     private fun onSuccessVerifyAddEmail(data: Intent?) {
         data?.extras?.run {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
+            val validateToken = getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
             if (otpCode.isNotBlank()) {
-                val email = et_email.textFieldInput.text.toString().trim()
-                viewModel.mutateAddEmail(requireContext(), email, otpCode)
+                val email = et_email.editText.text.toString().trim()
+                viewModel.mutateAddEmail(requireContext(), email, otpCode, validateToken)
             } else {
-                onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
-                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
+                onErrorAddEmail(
+                    MessageErrorException(
+                        getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()
+                    )
+                )
             }
         }
     }

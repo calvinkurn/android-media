@@ -2,4 +2,5 @@
 <resources>
     <dimen name="seller_menu_business_card_height">110dp</dimen>
     <dimen name="seller_menu_feature_icon_size">24dp</dimen>
+    <dimen name="setting_shimmer_radius">40dp</dimen>
 </resources>

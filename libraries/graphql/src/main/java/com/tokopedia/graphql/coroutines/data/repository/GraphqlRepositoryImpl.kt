@@ -8,11 +8,9 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
-import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.LoggingUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -102,7 +100,9 @@ class GraphqlRepositoryImpl @Inject constructor(
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
         originalResponse?.forEachIndexed { index, jsonElement ->
-            val operationName = CacheHelper.getQueryName(requests.getOrNull(index)?.query.orEmpty())
+
+            val operationName = CommonUtils.getFullOperationName(requests.getOrNull(index))
+
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -117,7 +117,7 @@ class GraphqlRepositoryImpl @Inject constructor(
                     errors[typeOfT] =
                         CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
-                LoggingUtils.logGqlSuccessRate(operationName, "1")
+                LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
                 LoggingUtils.logGqlSuccessRate(operationName, "0")
@@ -160,7 +160,7 @@ class GraphqlRepositoryImpl @Inject constructor(
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
-                operationName = CacheHelper.getQueryName(requests.getOrNull(i)?.query.orEmpty())
+                operationName = CommonUtils.getFullOperationName(requests.getOrNull(i))
 
                 if (copyRequests[i].isNoCache) {
                     continue

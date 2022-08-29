@@ -14,6 +14,9 @@ data class SimpleBasicInfo (
         @SerializedName("shopName")
         @Expose
         val shopName: String = "",
+        @SerializedName("defaultMediaURL")
+        @Expose
+        val defaultMediaURL: String = "",
         @SerializedName("category")
         @Expose
         val category: Category = Category()

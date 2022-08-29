@@ -38,6 +38,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
@@ -87,8 +88,12 @@ public class MyApplication extends BaseMainApplication
         upgradeSecurityProvider();
 
         GraphqlClient.init(this, getAuthenticator());
+        GraphqlClient.setContextData(getApplicationContext());
+
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
+
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         // apps flyer is dummy
@@ -167,6 +172,11 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
+
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
 
     }
 

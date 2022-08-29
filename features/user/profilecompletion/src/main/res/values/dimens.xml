@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="complete_pin_image_200">200dp</dimen>
 
-    <dimen name="guideline_1">1dp</dimen>
-
-    <dimen name="dimen_id_image">300dp</dimen>
-    <dimen name="width_icon_register">125dp</dimen>
-    <dimen name="height_icon_register">95dp</dimen>
-    <dimen name="btn_login_height">52dp</dimen>
-    <dimen name="space_vs">5dp</dimen>
-    <dimen name="space_small">10dp</dimen>
     <dimen name="space_med">16dp</dimen>
     <dimen name="space_slightly_med">19dp</dimen>
-    <dimen name="space_large_32">32dp</dimen>
     <dimen name="space_large">30dp</dimen>
-    <dimen name="space_slightly_very_large">41dp</dimen>
-    <dimen name="space_very_large">43dp</dimen>
     <dimen name="image_size">90dp</dimen>
-    <dimen name="layout_250">250dp</dimen>
-    <dimen name="layout_50">50dp</dimen>
 
     <dimen name="padding_textview_prof_comp">2dp</dimen>
     <dimen name="dp_5mall_prof_comp">6dp</dimen>
-    <dimen name="dp_10_prof_comp">8dp</dimen>
     <dimen name="dp_10_med_prof_comp">8dp</dimen>
     <dimen name="dp_20ium_prof_comp">16dp</dimen>
     <dimen name="padding_large_prof_comp">18dp</dimen>
@@ -31,24 +16,8 @@
     <dimen name="text_size_6">6sp</dimen>
     <dimen name="text_size_8">8sp</dimen>
     <dimen name="text_size_11">11sp</dimen>
-    <dimen name="text_size_12">12sp</dimen>
-    <dimen name="text_size_13">13sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
-    <dimen name="dp_18">18dp</dimen>
-    <dimen name="sp_32">32sp</dimen>
 
-    <dimen name="padding_activity">24dp</dimen>
-    <dimen name="verification_icon">38dp</dimen>
-    <dimen name="extra_space_start">3dp</dimen>
-    <dimen name="button_height">40dp</dimen>
-    <dimen name="default_big_icon">200dp</dimen>
-    <dimen name="fontl">18sp</dimen>
-
-    <dimen name="onboarding_img_width">280dp</dimen>
-    <dimen name="onboarding_img_height">210dp</dimen>
-    <dimen name="dp_80">80dp</dimen>
-    <dimen name="dp_10">10dp</dimen>
     <dimen name="profile_completion_dp_20">20dp</dimen>
-    <dimen name="dp_180">180dp</dimen>
 </resources>

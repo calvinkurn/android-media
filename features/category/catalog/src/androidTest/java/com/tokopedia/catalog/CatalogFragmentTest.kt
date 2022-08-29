@@ -60,6 +60,7 @@ class CatalogFragmentTest
         login()
         launchActivity()
         setupIdlingResource()
+        Thread.sleep(3000)
     }
 
     @After
@@ -177,10 +178,12 @@ class CatalogFragmentTest
     @Test
     fun check_lihat_specifications_page_opening() {
         actionTest {
+            Thread.sleep(2000)
             onView(withId(R.id.catalog_detail_rv))
                     .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
                             ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
                             ViewActions.scrollTo()))
+            Thread.sleep(2000)
             onView(withId(R.id.catalog_specification_rv)).perform(CatalogViewActions.ScrollToBottomAction())
             Thread.sleep(2000)
             val viewInteraction = onView(withId(R.id.catalog_specification_rv))
@@ -266,118 +269,13 @@ class CatalogFragmentTest
                 ViewMatchers.isDisplayed())))
     }
 
-    @Test
-    fun check_drag_product_listing_bottom_sheet() {
-        actionTest {
-            launchProductListingBottomSheet()
-            closeProductListingBottomSheet()
-            launchProductListingBottomSheet()
-        }.assertTest {
-            val query = listOf(
-                    mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                            Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                            Event.LABEL_KEY to Event.ALL_STAR
-                    )
-            )
-            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-        }
-    }
-
-    @Test
-    fun check_quick_filter_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.search_product_quick_sort_filter),
-                ViewMatchers.isDisplayed())))
-    }
-
-    @Test
-    fun check_dynamic_filter_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.sort_filter_prefix),
-                ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.bottom_sheet_header),
-                ViewMatchers.isDisplayed())))
-    }
-
-    @Test
-    fun check_apply_quick_filter_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.sort_filter_items),
-                ViewMatchers.isDisplayed())))
-
-    }
-
-    @Test
-    fun check_click_on_product_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.product_recyclerview),
-                ViewMatchers.isDisplayed())))
-        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
-            it.adapter!!.itemCount
-        }
-        if (itemCount > 1) {
-            assert(true)
-        } else {
-            assert(false)
-        }
-
-    }
-
-    @Test
-    fun check_add_remove_wish_list_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.product_recyclerview),
-                ViewMatchers.isDisplayed())))
-        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
-            it.adapter!!.itemCount
-        }
-        if (itemCount > 1) {
-            assert(true)
-        } else {
-            assert(false)
-        }
-    }
-
-    private fun launchProductListingBottomSheet() {
-        onView(withId(R.id.bottom_sheet_fragment_container))
-                .perform(
-                        CatalogViewActions.withCustomConstraints(
-                                GeneralSwipeAction(
-                                        Swipe.FAST,
-                                        GeneralLocation.VISIBLE_CENTER,
-                                        { view: View -> floatArrayOf(view.width / 2.toFloat(), 0f) },
-                                        Press.FINGER),
-                                ViewMatchers.isDisplayingAtLeast(5)))
-        Thread.sleep(3000)
-    }
-
-    private fun closeProductListingBottomSheet() {
-        onView(withId(R.id.bottom_sheet_fragment_container))
-                .perform(
-                        CatalogViewActions.withCustomConstraints(
-                                GeneralSwipeAction(
-                                        Swipe.FAST,
-                                        GeneralLocation.TOP_CENTER,
-                                        { view: View -> floatArrayOf(view.width / 2.toFloat(),view.height.toFloat()) },
-                                        Press.FINGER),
-                                ViewMatchers.isDisplayingAtLeast(5)))
-        Thread.sleep(3000)
-    }
-
     private fun launchActivity() {
         val bundle = Bundle()
         bundle.putString(EXTRA_CATALOG_ID, "57735")
         val intent = Intent(context, CatalogDetailPageActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
+        Thread.sleep(5000)
     }
 
     private fun setupIdlingResource() {

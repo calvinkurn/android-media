@@ -6,12 +6,8 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 
-class NavigationChipsViewModel (application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class NavigationChipsViewModel (application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
@@ -21,8 +17,5 @@ class NavigationChipsViewModel (application: Application, val components: Compon
     fun getListDataLiveData(): MutableLiveData<ArrayList<ComponentsItem>> {
         return listData
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
 }

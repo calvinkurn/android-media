@@ -6,7 +6,8 @@ import com.google.gson.annotations.SerializedName
 class RechargeCCSignatureReponse(
         @SerializedName("rechargePCIDSSSignature")
         @Expose
-        val rechargeSignature: RechargeCCSignature = RechargeCCSignature())
+        val rechargeSignature: RechargeCCSignature = RechargeCCSignature()
+)
 
 class RechargeCCSignature(
         @SerializedName("signature")

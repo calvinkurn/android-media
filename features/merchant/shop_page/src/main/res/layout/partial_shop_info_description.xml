@@ -27,6 +27,69 @@
         tools:text="@string/shop_page_label_favorite"/>
 
     <LinearLayout
+        android:id="@+id/go_apotik_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sia_title"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            android:text="@string/shop_info_go_apotik_sia_number_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sia_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:text="440/02/SIA-35.79/2017/1.003" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sipa_title"
+            android:layout_marginTop="16dp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            android:text="@string/shop_info_go_apotik_sipa_number_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sipa_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:text="19741110/SIPA-35.79/2017/1.003" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_apj_title"
+            android:layout_marginTop="16dp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            android:text="@string/shop_info_go_apotik_apj_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_apj_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:text="Hariyadi S.Si.,Apt" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -34,7 +97,7 @@
         android:gravity="center_vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_18"
+            android:layout_width="18dp"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_info_location_grey"
             android:layout_marginRight="8dp"
@@ -58,7 +121,7 @@
         android:gravity="center_vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_18"
+            android:layout_width="18dp"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_info_open_label_grey"
             android:layout_marginRight="8dp"

@@ -19,8 +19,6 @@ public interface AccountSetting {
 
         void onSuccessGetConfig(AccountSettingConfig accountSettingConfig);
 
-        void logUnknownError(Throwable e);
-
         Context getContext();
     }
 }

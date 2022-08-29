@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
@@ -67,6 +68,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductListHeaderSection(context, productListUiModel.productListHeaderUiModel)
         addProductBundlingListSection(productListUiModel.productBundlingList)
         addProductListSection(context, productListUiModel.productList)
+        addAddonsListSection(productListUiModel.addonsListUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupShipmentInfoSection(
@@ -174,6 +176,14 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>
     ) {
         addAll(productBundlingList)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAddonsListSection(
+        addonsListUiModel: AddonsListUiModel?
+    ) {
+        if (addonsListUiModel != null && addonsListUiModel.addonsItemList.isNotEmpty()) {
+            add(addonsListUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(

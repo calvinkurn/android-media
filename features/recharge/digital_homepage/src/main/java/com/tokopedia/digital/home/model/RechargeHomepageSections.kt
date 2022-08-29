@@ -4,9 +4,18 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageCustomLastItemAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel.Companion.ALL_CATEGORY_PLATFORM_ID
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.recharge_component.digital_card.presentation.model.*
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardActionModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardCampaignModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardInfoModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardPriceModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardRatingModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardSoldPercentageModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyConst
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 import com.tokopedia.unifycomponents.Label
 
 data class RechargeHomepageSections(
@@ -51,7 +60,10 @@ data class RechargeHomepageSections(
         val mediaUrl: String = "",
         @SerializedName("label_1")
         @Expose
-        val label1: String = "#FFFFFF",
+        val label1: String = "",
+        @SerializedName("label_2")
+        @Expose
+        val label2: String = "",
         @SerializedName("items")
         @Expose
         val items: List<Item> = listOf()
@@ -254,7 +266,10 @@ data class RechargeHomepageFavoriteModel(val section: RechargeHomepageSections.S
 
 }
 
-data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.Section) :
+data class RechargeHomepageCategoryModel(
+    val section: RechargeHomepageSections.Section,
+    val platformId: Int
+) :
     RechargeHomepageSectionModel {
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -269,6 +284,8 @@ data class RechargeHomepageCategoryModel(val section: RechargeHomepageSections.S
             section == b.section
         } else false
     }
+
+    fun shouldShowChevron(): Boolean = (platformId == ALL_CATEGORY_PLATFORM_ID)
 
 }
 
@@ -437,7 +454,7 @@ data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSection
 
 }
 
-data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.Section) :
+open class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.Section) :
     RechargeHomepageSectionModel {
 
     // use 1 media type for all items
@@ -538,5 +555,90 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
             section == b.section
         } else false
     }
+
+}
+
+class RechargeHomepageProductCardCustomBannerV2Model(section: RechargeHomepageSections.Section) :
+    RechargeProductCardUnifyModel(section) {
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageProductCardCustomBannerV2Model) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
+
+data class RechargeHomepageThreeIconsModel(val section: RechargeHomepageSections.Section) :
+    RechargeHomepageSectionModel {
+    override fun visitableId(): String {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageThreeIconsModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
+
+class RechargeHomepageRecommendationBannerModel(section: RechargeHomepageSections.Section) :
+    RechargeProductCardUnifyModel(section) {
+    override fun visitableId(): String {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageRecommendationBannerModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
+
+class RechargeHomepageProductCardCustomLastItemModel(section: RechargeHomepageSections.Section) :
+    RechargeProductCardUnifyModel(section) {
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageProductCardCustomLastItemModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int =
+        typeFactory.type(this)
+
+    class LastItem(val section: RechargeHomepageSections.Section) :
+        Visitable<RechargeHomepageCustomLastItemAdapterTypeFactory> {
+        override fun type(typeFactory: RechargeHomepageCustomLastItemAdapterTypeFactory): Int =
+            typeFactory.type(this)
+    }
+}
+
+class RechargeHomepageOfferingWidgetModel(val section: RechargeHomepageSections.Section) :
+    RechargeHomepageSectionModel {
+
+    override fun visitableId(): String=section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageOfferingWidgetModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int =
+        typeFactory.type(this)
 
 }

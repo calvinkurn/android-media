@@ -56,6 +56,9 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
 
             productDetailInfoDescription.text = textDesc
             productDetailInfoDescription.show()
+            productDetailInfoDescription.setOnClickListener {
+                listener.onSeeMoreDescriptionClicked(element.dataContent, getComponentTrackData(element))
+            }
         } else {
             (productDetailInfoSeemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
             productDetailInfoDescription.hide()

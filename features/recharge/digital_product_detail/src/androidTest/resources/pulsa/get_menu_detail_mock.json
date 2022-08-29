@@ -1,0 +1,103 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 289,
+          "name": "pdp2022_pulsa",
+          "label": "Pulsa Test",
+          "icon": ""
+        },
+        "user_perso": {
+          "prefill": "087855812080",
+          "client_name": "",
+          "user_type": "new user",
+          "loyalty_status": "new user",
+          "prefill_operator_id": 5
+        },
+        "recommendations": [
+          {
+            "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+            "title": "10.000",
+            "clientNumber": "087855812080",
+            "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d289\u0026operator_id\u003d5\u0026product_id\u003d1136\u0026template\u003dpulsav2",
+            "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d5\u0026product_id\u003d1136\u0026client_number\u003d087855812080",
+            "productPrice": 11500,
+            "type": "",
+            "categoryId": 1,
+            "productId": 1136,
+            "isATC": false,
+            "description": "",
+            "operatorID": 5
+          },
+          {
+            "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+            "title": "100.000",
+            "clientNumber": "08121111111",
+            "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d289\u0026operator_id\u003d12\u0026product_id\u003d70\u0026template\u003dpulsav2",
+            "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d12\u0026product_id\u003d70\u0026client_number\u003d08121111111",
+            "productPrice": 100000,
+            "type": "",
+            "categoryId": 1,
+            "productId": 70,
+            "isATC": false,
+            "description": "",
+            "operatorID": 12
+          },
+          {
+            "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+            "title": "25.000",
+            "clientNumber": "0811111111111",
+            "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d289\u0026operator_id\u003d12\u0026product_id\u003d68\u0026template\u003dpulsav2",
+            "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d12\u0026product_id\u003d68\u0026client_number\u003d0811111111111",
+            "productPrice": 26500,
+            "type": "",
+            "categoryId": 1,
+            "productId": 68,
+            "isATC": false,
+            "description": "",
+            "operatorID": 12
+          },
+          {
+            "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+            "title": "15.000",
+            "clientNumber": "081911111111",
+            "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d289\u0026operator_id\u003d5\u0026product_id\u003d1137\u0026template\u003dpulsav2",
+            "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d5\u0026product_id\u003d1137\u0026client_number\u003d081911111111",
+            "productPrice": 15500,
+            "type": "",
+            "categoryId": 1,
+            "productId": 1137,
+            "isATC": false,
+            "description": "",
+            "operatorID": 5
+          }
+        ],
+        "promos": [
+          {
+            "id": 6938,
+            "filename": "https://images.tokopedia.net/img/ULHhFV/2022/4/5/212fc6c8-16f9-477d-a813-8779e8c57561.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-topspender/",
+            "status": 1,
+            "title": "Menangkan Hadiah Top Spender Voucher Hotel \u0026 Pesawat Total Rp12juta",
+            "subtitle": "Kode Promo: BAYARLAGI ",
+            "promo_code": "BAYARLAGI"
+          }
+        ],
+        "tickers": [],
+        "banners": [
+          {
+            "id": 1,
+            "title": "",
+            "img_url": "https://images.tokopedia.net/img/HjsoxQ/2022/3/18/aea79f36-7965-40ad-89d2-37e78181db17.png",
+            "link_url": "https://images.tokopedia.net/img/HjsoxQ/2022/3/18/aea79f36-7965-40ad-89d2-37e78181db17.png",
+            "promo_code": "",
+            "app_link": ""
+          }
+        ],
+        "express_checkout": false
+      }
+    }
+  }
+]

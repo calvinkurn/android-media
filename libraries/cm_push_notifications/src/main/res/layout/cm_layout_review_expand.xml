@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlMainExpanded"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvReviewPushTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/cm_sp_14"
+        tools:text="Content Title" />
+
+    <TextView
+        android:id="@+id/tvReviewPushMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvReviewPushTitle"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textColor="@color/Unify_N700_68"
+        android:textSize="@dimen/cm_sp_13"
+        tools:text="Content Text" />
+
+    <ImageView
+        android:id="@+id/ivProductLargeImage"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_below="@+id/tvReviewPushMessage"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:id="@+id/ll_review_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivProductLargeImage"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/ivReviewStarOne"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivReviewStarTwo"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
+
+
+        <ImageView
+            android:id="@+id/ivReviewStarThree"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivReviewStarFour"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivReviewStarFive"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+
+</RelativeLayout>

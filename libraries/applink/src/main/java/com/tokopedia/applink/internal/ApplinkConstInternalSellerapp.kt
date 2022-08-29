@@ -46,7 +46,9 @@ object ApplinkConstInternalSellerapp {
 
     //CentralizedPromoActivity
     const val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
-    const val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
+
+    //FirstVoucherActivity
+    const val CENTRALIZED_PROMO_FIRST_TIME = "$INTERNAL_SELLERAPP/first-time-centralized-promo"
 
     //MenuSettingActivity
     const val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
@@ -54,16 +56,22 @@ object ApplinkConstInternalSellerapp {
     //SellerSeamlessLoginFragment
     const val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
-
     //CreateMerchantVoucherStepsActivity
     const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
 
     //VoucherListActivity
     const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
     const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
     const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
 
+    //VoucherDetailActivity
     const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+    const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
+
+    // Seller Shop Flash Sale - CampaignListActivity
+    const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
 
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
@@ -81,7 +89,16 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
 
     const val REVIEW_REMINDER = "$INTERNAL_SELLERAPP/review-reminder"
-
     //AdminRestrictionActivity
     const val ADMIN_RESTRICTION = "$INTERNAL_SELLERAPP/admin-restriction"
+    const val PARAM_ARTICLE_URL = "article_url"
+
+    //ShopDiscount
+    const val SHOP_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount"
+    const val SHOP_DISCOUNT_MANAGE_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/variant"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
+
+    const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
 }

@@ -19,7 +19,6 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
 
     private var warehouseId = "0"
     private var shopId = ""
-    private var shopName: String = ""
     private var isSeller = false
     private var source: String = ""
     private lateinit var remoteConfig: RemoteConfig
@@ -37,8 +36,7 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
             false)
         source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY)
                 ?: ""
-        maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
-            AttachProductActivity.MAX_CHECKED_DEFAULT)
+        maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,MAX_CHECKED_DEFAULT)
         shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
                 ?: ""
         hiddenProducts.addAll(intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
@@ -78,11 +76,8 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
                 MethodChecker.getDrawable(this,
                     com.tokopedia.attachproduct.R.drawable.ic_attach_product_close_default))
         }
-        shopName =
-                intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) ?: ""
 
         toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-        toolbar.subtitle = shopName
     }
 
     override fun finishActivityWithResult(products: ArrayList<ResultProduct>) {
@@ -96,11 +91,5 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
         if (isSeller) {
             RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
         }
-    }
-
-    override fun setShopName(shopName: String) {
-        this.shopName = shopName
-        intent.putExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName)
-        toolbar.subtitle = shopName
     }
 }

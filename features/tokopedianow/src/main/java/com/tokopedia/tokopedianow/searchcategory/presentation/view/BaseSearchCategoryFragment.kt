@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.view
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -28,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -37,11 +40,18 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -58,16 +68,25 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
+import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
+import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
+import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
+import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -77,6 +96,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryF
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
@@ -86,22 +106,26 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.collections.set
 
 abstract class BaseSearchCategoryFragment:
-        BaseDaggerFragment(),
-        ChooseAddressListener,
-        BannerComponentListener,
-        TitleListener,
+    BaseDaggerFragment(),
+    ChooseAddressListener,
+    BannerComponentListener,
+    TitleListener,
     CategoryFilterListener,
     QuickFilterListener,
     SortFilterBottomSheet.Callback,
     CategoryChooserBottomSheet.Callback,
     MiniCartWidgetListener,
     ProductItemListener,
+    SwitcherWidgetListener,
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener,
     TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
@@ -109,9 +133,9 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
-        protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         protected const val REQUEST_CODE_LOGIN = 69
-        private const val DEFAULT_POSITION = 0
+        private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
+        const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -119,11 +143,15 @@ abstract class BaseSearchCategoryFragment:
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var sharedPref: TokoNowSharedPreference
+
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
     protected var trackingQueue: TrackingQueue? = null
+    protected var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
 
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
@@ -145,12 +173,10 @@ abstract class BaseSearchCategoryFragment:
 
     private val searchCategoryToolbarHeight: Int
         get() {
-            val defaultHeight = resources
-                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+            val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height).orZero()
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding =
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
 
             return height + padding
         }
@@ -178,7 +204,7 @@ abstract class BaseSearchCategoryFragment:
         configureRecyclerView()
         observeViewModel()
 
-        getViewModel().onViewCreated()
+        getViewModel().onViewCreated(miniCartWidgetSource)
     }
 
     protected open fun findViews(view: View) {
@@ -225,8 +251,7 @@ abstract class BaseSearchCategoryFragment:
     private fun createNavRecyclerViewOnScrollListener(
             navToolbar: NavToolbar,
     ): RecyclerView.OnScrollListener {
-        val toolbarTransitionRangePixel =
-                resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
+        val toolbarTransitionRangePixel = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
 
         return NavRecyclerViewScrollListener(
                 navToolbar = navToolbar,
@@ -259,22 +284,17 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
-    protected open fun createNavToolbarIconBuilder() = IconBuilder()
-            .addCart()
-            .addGlobalNav()
-
-    protected fun IconBuilder.addCart(): IconBuilder = this
-            .addIcon(
-                    iconId = ID_CART,
-                    disableRouteManager = false,
-                    disableDefaultGtmTracker = disableDefaultCartTracker,
-                    onClick = ::onNavToolbarCartClicked,
-            )
-
     protected open val disableDefaultCartTracker
         get() = false
 
+    protected open val disableDefaultShareTracker
+        get() = false
+
     protected open fun onNavToolbarCartClicked() {
+
+    }
+
+    protected open fun onNavToolbarShareClicked() {
 
     }
 
@@ -286,6 +306,26 @@ abstract class BaseSearchCategoryFragment:
                         disableDefaultGtmTracker = false
                 ) { }
             else this
+
+    protected fun IconBuilder.addCart(): IconBuilder = this
+        .addIcon(
+            iconId = ID_CART,
+            disableRouteManager = false,
+            disableDefaultGtmTracker = disableDefaultCartTracker,
+            onClick = ::onNavToolbarCartClicked,
+        )
+
+    protected fun IconBuilder.addShare(): IconBuilder = this
+        .addIcon(
+            iconId = ID_SHARE,
+            disableRouteManager = false,
+            disableDefaultGtmTracker = disableDefaultShareTracker,
+            onClick = ::onNavToolbarShareClicked,
+        )
+
+    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+        .addCart()
+        .addGlobalNav()
 
     protected open fun getNavToolbarHint(): List<HintData> {
         val hint = getString(R.string.tokopedianow_search_bar_hint)
@@ -321,7 +361,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
+        params[SearchApiConst.PLACEHOLDER] = context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty()
         params[SearchApiConst.PREVIOUS_KEYWORD] = getKeyword()
 
         return params
@@ -339,15 +379,23 @@ abstract class BaseSearchCategoryFragment:
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = eventCategory
+
+            override fun onSwitchService() {
+                getViewModel().switchService()
+            }
         }
     }
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            resetMovingPosition()
-            carouselScrollPosition.clear()
-            getViewModel().onViewReloadPage()
+            refreshLayout()
         }
+    }
+
+    private fun refreshLayout() {
+        resetMovingPosition()
+        carouselScrollPosition.clear()
+        getViewModel().onViewReloadPage()
     }
 
     private fun resetMovingPosition() {
@@ -384,10 +432,12 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager?.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
+        staggeredGridLayoutManager?.let {
+            endlessScrollListener =  createEndlessScrollListener(it)
+        }
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
@@ -479,6 +529,8 @@ abstract class BaseSearchCategoryFragment:
             ::sendAddToCartRepurchaseProductTrackingEvent
         )
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
+        getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
+        getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -490,10 +542,13 @@ abstract class BaseSearchCategoryFragment:
                 listener = this,
                 autoInitializeData = false,
                 pageName = miniCartWidgetPageName,
+                source = miniCartWidgetSource
         )
     }
 
     abstract val miniCartWidgetPageName: MiniCartAnalytics.Page
+
+    abstract val miniCartWidgetSource: MiniCartSource
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
@@ -509,6 +564,11 @@ abstract class BaseSearchCategoryFragment:
     private fun showContent() {
         loaderUnify?.gone()
         stickyView?.visible()
+    }
+
+    private fun hideContent() {
+        loaderUnify?.show()
+        stickyView?.gone()
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -540,8 +600,19 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
-        RouteManager.route(context, applink)
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
+        context?.let { context ->
+            switchService(
+                context = context,
+                param = param,
+                onRefreshPage = {
+                    getViewModel().switchService()
+                },
+                onRedirectPage = {
+                    RouteManager.route(it, applink)
+                }
+            )
+        }
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -736,13 +807,22 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
-        if (!isVisible) headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
-        else headerBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
+        if (!isVisible) {
+            headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
+        } else {
+            context?.resources?.apply {
+                val background = VectorDrawableCompat.create(this, R.drawable.tokopedianow_ic_header_background, context?.theme)
+                headerBackground?.setImageDrawable(background)
+            }
+        }
         headerBackground?.showWithCondition(isVisible)
     }
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
+
+        if (isLoadingVisible) return
+        showOnBoardingBottomSheet()
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
@@ -985,6 +1065,104 @@ abstract class BaseSearchCategoryFragment:
 
     }
 
+    override fun onClickSwitcherTo15M() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    override fun onClickSwitcherTo2H() {
+        hideContent()
+        getViewModel().setUserPreference(NOW_2H)
+    }
+
+    private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
+        showContent()
+        when(result) {
+            is Success -> {
+                context?.apply {
+                    //Set user preference data to local cache
+                    updateLocalCacheModel(
+                        data = result.data,
+                        context = this
+                    )
+
+                    //Refresh the page
+                    staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    refreshLayout()
+
+                    //Show toaster
+                    showOnBoardingToaster(
+                        data = result.data
+                    )
+
+                    //Refresh mini cart
+                    getViewModel().refreshMiniCart()
+                }
+            }
+            is Fail -> { /* do nothing */ }
+        }
+    }
+
+    protected abstract fun showDialogAgeRestriction(querySafeModel: QuerySafeModel)
+
+    private fun updateLocalCacheModel(data: SetUserPreference.SetUserPreferenceData, context: Context) {
+        ChooseAddressUtils.updateTokoNowData(
+            context = context,
+            warehouseId = data.warehouseId,
+            shopId = data.shopId,
+            serviceType = data.serviceType,
+            warehouses = data.warehouses.map {
+                LocalWarehouseModel(
+                    it.warehouseId.toLongOrZero(),
+                    it.serviceType
+                )
+            }
+        )
+    }
+
+    private fun showOnBoardingToaster(data: SetUserPreference.SetUserPreferenceData) {
+        /*
+           Note :
+           - Toaster will be shown when switching service type to 2 hours
+           - When switching to 20 minutes, toaster will be shown if only OnBoard20mBottomSheet has been shown before
+         */
+
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (!data.warehouseId.toLongOrZero().isZero() && !needToShowOnBoardBottomSheet) {
+            showSwitcherToaster(data.serviceType)
+        }
+    }
+
+    private fun showOnBoardingBottomSheet() {
+        val needToShowOnBoardBottomSheet = getViewModel().needToShowOnBoardBottomSheet(sharedPref.get20mBottomSheetOnBoardShown())
+        if (needToShowOnBoardBottomSheet) {
+            show20mOnBoardBottomSheet()
+        }
+    }
+
+    private fun show20mOnBoardBottomSheet() {
+        TokoNowOnBoard20mBottomSheet
+            .newInstance()
+            .show(childFragmentManager, OnBoard20mBottomSheetCallback(
+                onBackTo2hClicked = {
+                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME + QUERY_PARAM_SERVICE_TYPE_NOW2H)
+                },
+                onDismiss = {
+                    sharedPref.set20mBottomSheetOnBoardShown(true)
+                }
+            ))
+    }
+
+    private fun showSwitcherToaster(serviceType: String) {
+        TokoNowServiceTypeUtil.getServiceTypeRes(
+            key = TokoNowServiceTypeUtil.SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID,
+            serviceType = serviceType
+        )?.let {
+            showToaster(
+                message = getString(it),
+                toasterType = Toaster.TYPE_NORMAL
+            )
+        }
+    }
 
     protected open fun goToLogin() {
         activity?.let {
@@ -1000,4 +1178,18 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected abstract fun sendOOCOpenScreenTracking(isTracked: Boolean)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
+
+            override fun onVerificationSuccess(message: String?) {}
+
+            override fun onLoginPreverified() {}
+
+        })
+    }
 }

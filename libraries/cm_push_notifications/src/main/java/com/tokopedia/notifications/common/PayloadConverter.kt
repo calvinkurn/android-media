@@ -12,8 +12,8 @@ import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
+import com.tokopedia.notifications.model.payload_extra.Topchat
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
@@ -39,14 +39,19 @@ object PayloadConverter {
         if (data.containsKey(NOTIFICATION_PRIORITY)) {
             model.priorityPreOreo = data.getString(NOTIFICATION_PRIORITY, "2").toIntOrZero()
         }
-        model.soundFileName = data.getString(SOUND, "")
         model.notificationId = data.getString(NOTIFICATION_ID, "500").toIntOrZero()
         model.campaignId = data.getString(CAMPAIGN_ID, "0").toLongOrZero()
         model.parentId = data.getString(PARENT_ID, "0").toLongOrZero()
         model.elementId = data.getString(ELEMENT_ID, "")
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
-        model.channelName = data.getString(CHANNEL, "")
+        model.pushPayloadExtra = PushPayloadExtra(
+            isReviewNotif = isBooleanTrue(data, IS_REVIEW),
+            replyType = data.getString(REPLY_TYPE, "")
+        )
+
+        setNotificationSound(model= model, extras = data)
+
         model.title = data.getString(TITLE, "")
         model.detailMessage = data.getString(DESCRIPTION, "")
         model.message = data.getString(MESSAGE, "")
@@ -105,21 +110,30 @@ object PayloadConverter {
         // webHook parameters
         model.webHookParam = data.getString(WEBHOOK_PARAM)
 
+        model.payloadExtra = getPayloadExtras(data)
+        model.groupId = data.getString(GROUP_ID, "0").toIntOrZero()
+        model.groupName = data.getString(GROUP_NAME)
+
         return model
     }
 
-    fun convertToBaseModel(data: AmplificationBaseNotificationModel): BaseNotificationModel {
+    fun convertToBaseModel(data: SerializedNotificationData): BaseNotificationModel {
         val model = BaseNotificationModel()
         model.icon = data.icon
         model.priorityPreOreo = data.priorityPreOreo ?: 2
-        model.soundFileName = data.soundFileName
         model.notificationId = data.notificationId ?: 500
         model.campaignId = data.campaignId ?: 0
         model.parentId = data.parentId ?: 0
         model.elementId = data.elementId
         model.tribeKey = data.tribeKey
         model.type = data.type
-        model.channelName = data.channelName
+        model.pushPayloadExtra = PushPayloadExtra(
+            isReviewNotif = data.isReviewNotif,
+            replyType = data.replyType ?: ""
+        )
+
+        setNotificationSound(model, data)
+
         model.title = data.title
         model.detailMessage = data.detailMessage
         model.message = data.message
@@ -212,6 +226,9 @@ object PayloadConverter {
         // webHook parameters
         model.webHookParam = data.webHookParam
 
+        model.payloadExtra = getPayloadExtras(data)
+        model.groupId = data.groupId ?: 0
+        model.groupName = data.groupName
         return model
     }
 
@@ -221,15 +238,15 @@ object PayloadConverter {
         val isAdvanceTarget = isBooleanTrue(bundle, ADVANCE_TARGET)
 
         val appPriorities = when {
-            mainAppPriority.toInt() < sellerAppPriority.toInt() -> NotificationPriorityType.MainApp
-            mainAppPriority.toInt() > sellerAppPriority.toInt() -> NotificationPriorityType.SellerApp
+            mainAppPriority.toIntOrZero() < sellerAppPriority.toIntOrZero() -> NotificationPriorityType.MainApp
+            mainAppPriority.toIntOrZero() > sellerAppPriority.toIntOrZero() -> NotificationPriorityType.SellerApp
             else -> NotificationPriorityType.Both
         }
 
         return NotificationTargetPriorities(appPriorities, isAdvanceTarget)
     }
 
-    private fun isBooleanTrue(data: Bundle, key: String): Boolean {
+    public fun isBooleanTrue(data: Bundle, key: String): Boolean {
         return try {
             return data.containsKey(key) && data.getString(key)?.toBoolean() == true
         } catch (e: Exception) {
@@ -251,6 +268,21 @@ object PayloadConverter {
         } else {
             NotificationMode.POST_NOW
         }
+    }
+
+
+
+    private fun setNotificationSound(model: BaseNotificationModel,
+                                     extras: Bundle) {
+        model.soundFileName = extras.getString(NOTIFICATION_SOUND, "")
+        model.channelName = extras.getString(NOTIFICATION_CHANNEL, "")
+    }
+
+
+    private fun setNotificationSound(model: BaseNotificationModel,
+                                     data: SerializedNotificationData) {
+        model.soundFileName = data.notificationSound ?: ""
+        model.channelName = data.notificationChannel ?: ""
     }
 
     private fun getMedia(extras: Bundle): Media? {
@@ -368,5 +400,35 @@ object PayloadConverter {
         }
 
         return null
+    }
+
+    private fun getPayloadExtras(data : Bundle) : PayloadExtra{
+        return PayloadExtra(
+            campaignName = data.getString(PayloadExtraDataKey.CAMPAIGN_NAME, null),
+            journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
+            journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
+            sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
+            intentAction = data.getString(PayloadExtraDataKey.INTENT_ACTION, null),
+            topchat = getTopChatData(data)
+        )
+    }
+
+    private fun getTopChatData(data: Bundle): Topchat? {
+        return try {
+            val topChatDataString = data.getString(PayloadExtraDataKey.TOPCHAT)
+            Gson().fromJson(topChatDataString, Topchat::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getPayloadExtras(data : SerializedNotificationData) : PayloadExtra{
+        return PayloadExtra(
+            campaignName = data.campaignName,
+            journeyId = data.journeyId,
+            journeyName = data.journeyName,
+            sessionId = data.sessionId,
+        )
     }
 }

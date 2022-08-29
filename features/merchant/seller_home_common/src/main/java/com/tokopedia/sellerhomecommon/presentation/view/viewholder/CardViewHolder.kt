@@ -4,6 +4,7 @@ import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
@@ -58,24 +60,26 @@ class CardViewHolder(
     private fun observeState(element: CardWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> {
-                showViewComponent(element, false)
-                showOnError(false)
-                showShimmer(true)
-            }
+            null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 showShimmer(false)
-                showOnError(true)
+                showOnError(element, true)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
                 setupTag(element)
             }
             else -> {
-                showOnError(false)
+                showOnError(element, false)
                 showShimmer(false)
                 showViewComponent(element, true)
                 setupTag(element)
             }
         }
+    }
+
+    private fun showLoadingState(element: CardWidgetUiModel) {
+        showViewComponent(element, false)
+        showOnError(element, false)
+        showShimmer(true)
     }
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
@@ -102,6 +106,7 @@ class CardViewHolder(
                     shcCardValueCountdownView.invisible()
                     tvCardValue.text = shownValue.parseAsHtml()
                 }
+                setupRefreshButton(element)
             }
         }
 
@@ -125,9 +130,20 @@ class CardViewHolder(
                 tvCardValue.visible()
                 tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
-            tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            if (element.data?.description.isNullOrBlank()) {
+                tvCardSubValue.invisible()
+            } else {
+                tvCardSubValue.visible()
+                tvCardSubValue.show(
+                    primary = element.data?.description.orEmpty(),
+                    secondary = element.data?.secondaryDescription.orEmpty()
+                )
+            }
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
+                if (!element.data?.description.isNullOrBlank()) {
+                    tvCardSubValue.showTextWithAnimation()
+                }
             }
 
             root.setOnClickListener {
@@ -139,28 +155,76 @@ class CardViewHolder(
             }
 
             showCardState(element.data)
+            showBadge(element.data?.badgeImageUrl.orEmpty())
         }
     }
 
-    private fun showCardState(data: CardDataUiModel?) {
-        with(binding.imgShcCardState) {
-            when (data?.state) {
-                CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
-                    visible()
-                    loadImage(R.drawable.bg_shc_card_stata_warning)
+    private fun showBadge(badgeUrl: String) {
+        if (badgeUrl.isNotBlank()) {
+            binding.imgSahCardBadge.visible()
+            binding.imgSahCardBadge.loadImage(badgeUrl)
+        } else {
+            binding.imgSahCardBadge.gone()
+        }
+    }
+
+    private fun setupRefreshButton(element: CardWidgetUiModel) {
+        with(binding) {
+            element.data?.lastUpdated?.let {
+                val shouldShowRefreshButton = it.needToUpdated.orFalse()
+                        && !element.showLoadingState
+                val isError = !element.data?.error.isNullOrBlank()
+                icShcRefreshCard.isVisible = (shouldShowRefreshButton && it.isEnabled)
+                        || isError
+                icShcRefreshCard.setOnClickListener {
+                    refreshWidget(element)
                 }
-                CardDataUiModel.State.NORMAL -> gone()
             }
         }
     }
 
-    private fun showOnError(isError: Boolean) {
+    private fun refreshWidget(element: CardWidgetUiModel) {
+        listener.onReloadWidget(element)
+    }
+
+    private fun showCardState(data: CardDataUiModel?) {
+        with(binding) {
+            when (data?.state) {
+                CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
+                    imgShcCardState.visible()
+                    imgShcCardStatePlus.gone()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
+                }
+                CardDataUiModel.State.WARNING_PLUS, CardDataUiModel.State.DANGER_PLUS -> {
+                    imgShcCardState.visible()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
+                }
+                CardDataUiModel.State.GOOD_PLUS -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
+                }
+                else -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.gone()
+                }
+            }
+        }
+    }
+
+    private fun showOnError(element: CardWidgetUiModel, isError: Boolean) {
         if (!isError) return
         with(binding) {
             tvCardTitle.visible()
             tvCardValue.visible()
+            icShcRefreshCard.visible()
             tvCardValue.text = root.context.getString(R.string.shc_load_failed)
-            tvCardSubValue.text = ""
+            icShcRefreshCard.setOnClickListener {
+                refreshWidget(element)
+            }
+            tvCardSubValue.invisible()
         }
     }
 
@@ -169,6 +233,9 @@ class CardViewHolder(
             val visibility = if (isLoading) View.VISIBLE else View.GONE
             shimmerCardTitle.visibility = visibility
             shimmerCardValue.visibility = visibility
+            if (isLoading) {
+                icShcRefreshCard.gone()
+            }
         }
     }
 

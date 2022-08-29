@@ -18,7 +18,7 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
 
-class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
+open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
 
     companion object {
         private const val SCREEN_NAME = "Store - Manage product"
@@ -28,10 +28,11 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         val uri = intent.data
         val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
         val searchKeyword = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
+        val tab = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_TAB).orEmpty()
 
         return@lazy when {
-            filterId.isNotBlank() || searchKeyword.isNotBlank() -> {
-                ProductManageSellerFragment.newInstance(arrayListOf(filterId), searchKeyword)
+            filterId.isNotBlank() || searchKeyword.isNotBlank() || tab.isNotBlank() -> {
+                ProductManageSellerFragment.newInstance(arrayListOf(filterId), tab, searchKeyword)
             }
             else -> {
                 ProductManageSellerFragment()
@@ -46,7 +47,6 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
 
         if (!GlobalConfig.isSellerApp()) {
             window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            setupLayout(savedInstanceState)
         }
     }
 

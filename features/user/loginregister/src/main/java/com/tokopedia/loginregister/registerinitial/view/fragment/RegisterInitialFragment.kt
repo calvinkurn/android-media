@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -80,7 +82,6 @@ import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitial
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -115,7 +116,9 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
+class RegisterInitialFragment : BaseDaggerFragment(),
+    PartialRegisterInputView.PartialRegisterInputViewListener,
+    RegisterInitialRouter{
 
     private lateinit var optionTitle: Typography
     private lateinit var separator: View
@@ -148,7 +151,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
 
-    @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -166,11 +168,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
-    val registerInitialViewModel by lazy {
-        viewModelProvider.get(RegisterInitialViewModel::class.java)
+    private val registerInitialViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(RegisterInitialViewModel::class.java)
     }
 
     @Inject
@@ -316,7 +315,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         partialRegisterInputView.setListener(this)
 
         val emailExtensionList = mutableListOf<String>()
-        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
@@ -545,7 +544,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                resources.getDimensionPixelSize(R.dimen.dp_52))
+                requireContext().resources.getDimensionPixelSize(R.dimen.dp_52))
         layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
 
         socmedButtonsContainer?.removeAllViews()
@@ -1182,9 +1181,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
                 userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
                 userSession.isGoldMerchant,
                 userSession.shopId,
                 userSession.shopName
@@ -1205,12 +1201,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             }
 
+            TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
+
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
             it.finish()
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
-            DataVisorWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
         }
@@ -1219,7 +1217,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun isFromAtc(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     private fun onGoToChangeName() {
-        registerInitialRouter.goToChangeName(this)
+        registerInitialRouter.goToChangeName(this, validateToken)
     }
 
     private fun onGoToForbiddenPage() {
@@ -1257,7 +1255,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activity?.let {
             val phoneNumbers = PhoneUtils.getPhoneNumber(it, permissionCheckerHelper)
             if (phoneNumbers.isNotEmpty()) {
-                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers),
+                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, androidx.appcompat.R.layout.select_dialog_item_material, phoneNumbers),
                         View.OnFocusChangeListener { v, hasFocus ->
                             if (v?.windowVisibility == View.VISIBLE) {
                                 activity?.isFinishing?.let { isFinishing ->
@@ -1418,7 +1416,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
                 }
             }
 

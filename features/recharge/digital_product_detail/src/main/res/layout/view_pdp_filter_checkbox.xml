@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginBottom="@dimen/layout_lvl1">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_filter_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:layout_centerVertical="true"
+        tools:text="Param 1" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checbox_filter_tag"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:theme="@style/checkBoxStyle" />
+
+</RelativeLayout>

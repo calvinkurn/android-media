@@ -1,29 +1,81 @@
 package com.tokopedia.checkout.domain.mapper
 
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
+import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
+import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
-import com.tokopedia.checkout.domain.model.cartshipmentform.*
-import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
-import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
+import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.feature.promo.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDetail
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MessageInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
@@ -32,7 +84,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import java.util.*
 import javax.inject.Inject
 
 class ShipmentMapper @Inject constructor() {
@@ -53,7 +104,11 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
-
+            prescriptionShowImageUpload = shipmentAddressFormDataResponse.imageUpload.showImageUpload
+            prescriptionUploadText = shipmentAddressFormDataResponse.imageUpload.text
+            prescriptionLeftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
+            prescriptionCheckoutId = shipmentAddressFormDataResponse.imageUpload.checkoutId
+            prescriptionFrontEndValidation = shipmentAddressFormDataResponse.imageUpload.frontEndValidation
             keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
             keroToken = shipmentAddressFormDataResponse.keroToken
             keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime
@@ -87,6 +142,9 @@ class ShipmentMapper @Inject constructor() {
             if (!isDisableCrossSell) {
                 crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
+            popup = mapPopUp(shipmentAddressFormDataResponse.popup)
+            addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
+            upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
         }
     }
 
@@ -142,6 +200,7 @@ class ShipmentMapper @Inject constructor() {
                         fulfillmentName = it.tokoCabangInfo.message
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
+                        addOns = mapAddOnsData(it.addOns)
                         shopShipments = mapShopShipments(it.shopShipments)
                         val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                         products = mapProducts.first
@@ -235,12 +294,14 @@ class ShipmentMapper @Inject constructor() {
                     if (product.freeShipping.eligible) {
                         isFreeShipping = true
                     }
+                    freeShippingName = product.freeShippingGeneral.boName
                     if (product.tradeInInfo.isValidTradeIn) {
                         tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
                     }
                     if (!isDisablePPP && product.purchaseProtectionPlanDataResponse.protectionAvailable) {
                         purchaseProtectionPlanData = mapPurchaseProtectionData(product.purchaseProtectionPlanDataResponse)
                     }
+                    variantParentId = product.productVariantsResponse.parentId
                     variant = product.variantDescriptionDetail.variantDescription
                     productAlertMessage = product.productAlertMessage
                     productInformation = product.productInformation
@@ -266,6 +327,8 @@ class ShipmentMapper @Inject constructor() {
                         isBundlingItem = false
                         bundleId = "0"
                     }
+                    addOnProduct = mapAddOnsData(product.addOns)
+                    ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
                 }
                 productListResult.add(productResult)
             }
@@ -375,7 +438,88 @@ class ShipmentMapper @Inject constructor() {
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
             isTokoNow = shop.isTokoNow
+            shopTickerTitle = shop.shopTickerTitle
+            shopTicker = shop.shopTicker
         }
+    }
+
+    private fun mapAddOnsData(addOns: AddOnsResponse): AddOnsDataModel {
+        return AddOnsDataModel().apply {
+            status = addOns.status
+            addOnsButtonModel = mapAddOnButton(addOns.addOnButton)
+            addOnsBottomSheetModel = mapAddOnBottomSheet(addOns.addOnBottomsheet)
+            addOnsDataItemModelList = mapAddOnListData(addOns.addOnData)
+        }
+    }
+
+    private fun mapEthicalDrugData(addOns: EthicalDrugResponse): EthicalDrugDataModel {
+        return EthicalDrugDataModel().apply {
+            needPrescription = addOns.needPrescription
+            text = addOns.text
+            iconUrl = addOns.iconUrl
+        }
+    }
+
+    private fun mapAddOnListData(addOnData: List<AddOnsResponse.AddOnDataItem>): MutableList<AddOnDataItemModel> {
+        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
+        addOnData.forEach { item ->
+            listAddOnDataItem.add(AddOnDataItemModel().apply {
+                addOnPrice = item.addOnPrice
+                addOnId = item.addOnId
+                addOnMetadata = mapAddOnMetadata(item.addOnMetadata)
+                addOnQty = item.addOnQty
+            })
+        }
+        return listAddOnDataItem
+    }
+
+    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItemModel {
+        return AddOnMetadataItemModel(mapAddOnNote(addOnMetadata.addOnNote))
+    }
+
+    private fun mapAddOnNote(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItemModel {
+        return AddOnNoteItemModel().apply {
+            isCustomNote = addOnNote.isCustomNote
+            to = addOnNote.to
+            from = addOnNote.from
+            notes = addOnNote.notes
+        }
+    }
+
+    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
+        return AddOnButtonModel().apply {
+            leftIconUrl = addOnButton.leftIconUrl
+            rightIconUrl = addOnButton.rightIconUrl
+            description = addOnButton.description
+            action = addOnButton.action
+            title = addOnButton.title
+        }
+    }
+
+    private fun mapAddOnBottomSheet(addOnBottomsheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
+        return AddOnBottomSheetModel().apply {
+            headerTitle = addOnBottomsheet.headerTitle
+            description = addOnBottomsheet.description
+            ticker = mapAddOnTicker(addOnBottomsheet.ticker)
+            products = mapAddOnProducts(addOnBottomsheet.products)
+        }
+    }
+
+    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
+        return AddOnTickerModel().apply {
+            text = ticker.text
+        }
+    }
+
+    private fun mapAddOnProducts(products: List<AddOnsResponse.AddOnBottomsheet.ProductsItem>): MutableList<AddOnProductItemModel> {
+        val listAddOnProductItem = arrayListOf<AddOnProductItemModel>()
+        products.forEach { productItem ->
+            listAddOnProductItem.add(AddOnProductItemModel().apply {
+                productImageUrl = productItem.productImageUrl
+                productName = productItem.productName
+            })
+        }
+        return listAddOnProductItem
     }
 
     private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
@@ -404,6 +548,7 @@ class ShipmentMapper @Inject constructor() {
             shopLocation = shipmentInformation.shopLocation
             freeShipping = mapFreeShippingData(shipmentInformation.freeShipping)
             freeShippingExtra = mapFreeShippingData(shipmentInformation.freeShippingExtra)
+            freeShippingGeneral = mapFreeShippingGeneral(shipmentInformation.freeShippingGeneral)
         }
     }
 
@@ -412,6 +557,14 @@ class ShipmentMapper @Inject constructor() {
             badgeUrl = freeShipping.badgeUrl
             eligible = freeShipping.eligible
         }
+    }
+
+    private fun mapFreeShippingGeneral(freeShippingGeneral: FreeShippingGeneral): FreeShippingGeneralData {
+        return FreeShippingGeneralData(
+                badgeUrl = freeShippingGeneral.badgeUrl,
+                boType = freeShippingGeneral.boType,
+                boName = freeShippingGeneral.boName
+        )
     }
 
     private fun mapPreorderData(shipmentInformation: ShipmentInformation): PreorderData {
@@ -444,8 +597,13 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
-            shopId = groupAddress.userAddress.tokoNow.shopId
-            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = groupAddress.userAddress.tokoNow.isModified,
+                shopId = groupAddress.userAddress.tokoNow.shopId,
+                warehouseId = groupAddress.userAddress.tokoNow.warehouseId,
+                warehouses = groupAddress.userAddress.tokoNow.warehouses,
+                serviceType = groupAddress.userAddress.tokoNow.serviceType
+            )
         }
     }
 
@@ -521,6 +679,7 @@ class ShipmentMapper @Inject constructor() {
             messageInfo = mapLastApplyMessageInfoUiModel(additionalInfo.messageInfo)
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
+            pomlAutoApplied = additionalInfo.pomlAutoApplied
         }
     }
 
@@ -611,6 +770,28 @@ class ShipmentMapper @Inject constructor() {
         return CodModel().apply {
             isCod = cod.isCod
             counterCod = cod.counterCod
+        }
+    }
+
+    private fun mapPopUp(popup: PopUp): PopUpData {
+        return PopUpData().apply {
+            button = mapButton(popup.button)
+            description = popup.description
+            title = popup.title
+        }
+    }
+
+    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+        return AddOnWordingData().apply {
+            packagingAndGreetingCard = addOnWording.packagingAndGreetingCard
+            onlyGreetingCard = addOnWording.onlyGreetingCard
+            invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+        }
+    }
+
+    private fun mapButton(button: Button): ButtonData {
+        return ButtonData().apply {
+            text = button.text
         }
     }
 
@@ -775,8 +956,13 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
-            shopId = defaultAddress.tokoNow.shopId
-            warehouseId = defaultAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                isModified = defaultAddress.tokoNow.isModified,
+                shopId = defaultAddress.tokoNow.shopId,
+                warehouseId = defaultAddress.tokoNow.warehouseId,
+                warehouses = defaultAddress.tokoNow.warehouses,
+                serviceType = defaultAddress.tokoNow.serviceType
+            )
         }
     }
 
@@ -820,6 +1006,16 @@ class ShipmentMapper @Inject constructor() {
             }
         }
         return hasError
+    }
+
+    private fun mapUpsell(upsell: Upsell): UpsellData {
+        return UpsellData(
+                upsell.isShow,
+                upsell.title,
+                upsell.description,
+                upsell.appLink,
+                upsell.image
+        )
     }
 
     companion object {

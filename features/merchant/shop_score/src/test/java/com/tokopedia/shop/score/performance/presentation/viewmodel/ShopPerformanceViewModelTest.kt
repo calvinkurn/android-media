@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.performance.presentation.viewmodel
 
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -17,13 +16,12 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
     @Test
     fun `when getShopInfo should set live data success`() {
         runBlocking {
-            val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
+            val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(shopAge = 80, isNewSeller = true)
             onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodUiModel)
             shopPerformanceViewModel.getShopInfoPeriod(false)
             verifyGetShopInfoPeriodUseCaseCalled()
             val actualResult = (shopPerformanceViewModel.shopInfoPeriod.value as Success).data
             assertEquals(shopInfoPeriodUiModel, actualResult)
-            assertEquals(shopInfoPeriodUiModel.periodType, actualResult.periodType)
             assertEquals(shopInfoPeriodUiModel.isNewSeller, actualResult.isNewSeller)
         }
     }
@@ -44,7 +42,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
     @Test
     fun `when getShopScoreLevel should set live data success`() {
         runBlocking {
-            val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
+            val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(shopAge = 80, isNewSeller = true)
             val shopScoreWrapperResponse = ShopScoreWrapperResponse(
                     shopScoreLevelResponse = ShopScoreLevelResponse.ShopScoreLevel(
                             result = ShopScoreLevelResponse.ShopScoreLevel.Result(shopLevel = 4, shopScore = 80)
@@ -65,7 +63,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
     fun `when getShopScoreLevel should set live data error`() {
         runBlocking {
             val errorException = MessageErrorException()
-            val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
+            val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(shopAge = 80, isNewSeller = true)
             onGetShopPerformanceUseCaseError_thenReturn(errorException)
             shopPerformanceViewModel.getShopScoreLevel(shopInfoPeriodUiModel)
             verifyGetShopPerformanceUseCaseCalled()

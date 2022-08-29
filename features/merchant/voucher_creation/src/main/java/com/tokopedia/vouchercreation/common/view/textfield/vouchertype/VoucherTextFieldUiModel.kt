@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.common.view.textfield.vouchertype
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.common.view.VoucherCommonTypeFactory
-import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.shop.create.view.enums.PromotionType
 
 class VoucherTextFieldUiModel(
         val type: VoucherTextFieldType,

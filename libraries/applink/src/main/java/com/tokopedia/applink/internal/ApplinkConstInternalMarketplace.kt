@@ -32,6 +32,11 @@ object ApplinkConstInternalMarketplace {
     const val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
+    const val ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT = "$INTERNAL_MARKETPLACE/one-click-checkout?" +
+            "gateway_code={gateway_code}&" +
+            "tenure_type={tenure_type}&" +
+            "source={source}"
+    const val ADD_ON_GIFTING = "$INTERNAL_MARKETPLACE/add-on-gifting"
 
     // AddEditProductCategoryActivity
     const val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
@@ -42,6 +47,8 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
+
+    const val PRODUCT_DETAIL_EDUCATIONAL = "$INTERNAL_MARKETPLACE/product-edu/{type}/"
 
     // AtcVariantActivity
     @JvmField
@@ -57,18 +64,18 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
     // ReadReviewActivity
-    const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
+    const val SHOP_REVIEW_FULL_PAGE = "$INTERNAL_MARKETPLACE/shop/{id}/review"
 
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
+    // DetailedReviewMediaGalleryActivity
+    const val REVIEW_MEDIA_GALLERY = "$INTERNAL_MARKETPLACE/review/media-gallery"
+
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
 
-    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{stock}/"
-
-    // SetCashbackActivity
-    const val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
+    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{isVariant}/"
 
     // CampaignStockActivity
     const val RESERVED_STOCK_BASE = "$INTERNAL_MARKETPLACE/reserved-stock"
@@ -158,6 +165,8 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
+    const val SHOP_SETTINGS_OPERATIONAL_HOURS = "$SHOP_SETTINGS_BASE-operational-hours"
+
     const val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
 
     const val SHOP_SETTINGS_COD = "$SHOP_SETTINGS_BASE-cod"
@@ -187,10 +196,22 @@ object ApplinkConstInternalMarketplace {
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
-    // BenefitPackageActivity
+    // MembershipDetailActivity
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    //AdminInvitationConfirmationActivity
+    @JvmField
+    val ADMIN_INVITATION = "$INTERNAL_MARKETPLACE/shop-admin/invitation-page"
+
+    //AdminInvitationAcceptedActivity
+    @JvmField
+    val ADMIN_ACCEPTED = "$INTERNAL_MARKETPLACE/shop-admin/accepted-page"
+
+    //ShopAdminRedirectionActivity
+    @JvmField
+    val ADMIN_REDIRECTION = "$INTERNAL_MARKETPLACE/shop-admin/redirection-page"
 
     //ShopScorePerformanceActivity
     @JvmField
@@ -267,4 +288,16 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET = "$INTERNAL_MARKETPLACE/shop/widget/operational-hour/{shop_id}/"
 
+    const val SHOP_MVC_LOCKED_TO_PRODUCT = "$INTERNAL_MARKETPLACE/shop/widget/voucher/shop_id/{shop_id}/{voucher_id}/"
+
+    /**
+     * Go to chat list
+     */
+    const val TOPCHAT = "$INTERNAL_MARKETPLACE/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
 }

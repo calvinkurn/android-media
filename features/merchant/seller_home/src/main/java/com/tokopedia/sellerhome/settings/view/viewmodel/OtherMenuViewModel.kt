@@ -5,26 +5,38 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.domain.usecase.*
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
-import com.tokopedia.seller.menu.common.view.uimodel.base.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
+import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -37,9 +49,9 @@ import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase,
     private val getShopOperationalUseCase: GetShopOperationalUseCase,
-    private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
+    private val getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase,
     private val balanceInfoUseCase: BalanceInfoUseCase,
     private val getShopBadgeUseCase: GetShopBadgeUseCase,
     private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
@@ -47,6 +59,7 @@ class OtherMenuViewModel @Inject constructor(
     private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
     private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
     private val shopShareInfoUseCase: ShareInfoOtherUseCase,
+    private val getNewPromotionUseCase: GetNewPromotionUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ) : BaseViewModel(dispatcher.main) {
@@ -69,7 +82,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _shopShareInfoLiveData = MutableLiveData<OtherMenuShopShareData>()
 
     private val _freeShippingLiveData =
-        MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
+        MutableLiveData<SettingResponseState<TokoPlusBadgeUiModel>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
@@ -78,6 +91,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _kreditTopAdsFormattedLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
+    private val _isShowTagCentralizePromo = MutableLiveData<SettingResponseState<Boolean>>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
@@ -93,8 +107,10 @@ class OtherMenuViewModel @Inject constructor(
         get() = _kreditTopAdsFormattedLiveData
     val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
-    val freeShippingLiveData: LiveData<SettingResponseState<Pair<Boolean, String>>>
+    val freeShippingLiveData: LiveData<SettingResponseState<TokoPlusBadgeUiModel>>
         get() = _freeShippingLiveData
+    val isShowTagCentralizePromo: LiveData<SettingResponseState<Boolean>>
+        get() = _isShowTagCentralizePromo
 
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
@@ -118,6 +134,9 @@ class OtherMenuViewModel @Inject constructor(
         addSource(_freeShippingLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.FreeShipping, it)
         }
+        addSource(_isShowTagCentralizePromo) {
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.IsShowTagCentralizePromo, it)
+        }
     }
 
     private val _secondarySuccessStateMap =
@@ -136,6 +155,9 @@ class OtherMenuViewModel @Inject constructor(
             }
             addSource(_freeShippingLiveData) {
                 value = value?.getUpdatedSuccessMap(OtherMenuDataType.FreeShipping, it)
+            }
+            addSource(_isShowTagCentralizePromo) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.IsShowTagCentralizePromo, it)
             }
         }
 
@@ -201,6 +223,7 @@ class OtherMenuViewModel @Inject constructor(
         getBalanceInfoData()
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
+        getIsShowTagCentralizePromo()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -222,9 +245,9 @@ class OtherMenuViewModel @Inject constructor(
     fun getShopPeriodType() {
         launchCatchError(block = {
             val periodData = withContext(dispatcher.io) {
-                getShopInfoPeriodUseCase.requestParams =
-                    GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
-                getShopInfoPeriodUseCase.executeOnBackground()
+                getShopCreatedInfoUseCase.requestParams =
+                    GetShopCreatedInfoUseCase.createParams(userSession.shopId.toLongOrZero())
+                getShopCreatedInfoUseCase.executeOnBackground()
             }
             _shopPeriodType.value = Success(periodData)
         }, onError = {
@@ -242,6 +265,7 @@ class OtherMenuViewModel @Inject constructor(
                     OtherMenuDataType.Operational -> getShopOperational()
                     OtherMenuDataType.Saldo -> getBalanceInfo()
                     OtherMenuDataType.FreeShipping -> getFreeShippingStatus()
+                    OtherMenuDataType.IsShowTagCentralizePromo -> getIsShowTagCentralizePromo()
                     else -> getKreditTopAds()
                 }
             }
@@ -314,7 +338,9 @@ class OtherMenuViewModel @Inject constructor(
                 OtherMenuDataType.Operational to false,
                 OtherMenuDataType.Saldo to false,
                 OtherMenuDataType.Topads to false,
-                OtherMenuDataType.FreeShipping to false
+                OtherMenuDataType.FreeShipping to false,
+                OtherMenuDataType.IsShowTagCentralizePromo to false
+
             )
         }
     }
@@ -326,13 +352,30 @@ class OtherMenuViewModel @Inject constructor(
                 OtherMenuDataType.Followers to false,
                 OtherMenuDataType.Status to false,
                 OtherMenuDataType.Operational to false,
-                OtherMenuDataType.FreeShipping to false
+                OtherMenuDataType.FreeShipping to false,
+                OtherMenuDataType.IsShowTagCentralizePromo to false
+
             )
         }
     }
 
     fun setDefaultToasterState(isShown: Boolean) {
         _isToasterAlreadyShown.value = isShown
+    }
+
+   private fun getIsShowTagCentralizePromo() {
+        launchCatchError(
+            block = {
+                val data = withContext(dispatcher.io) {
+                    getNewPromotionUseCase.execute(userSession.shopId)
+                }
+                val isShow = data.data.pages.isNotEmpty()
+                _isShowTagCentralizePromo.value = SettingResponseState.SettingSuccess(isShow)
+            },
+            onError = {
+                _isShowTagCentralizePromo.value = SettingResponseState.SettingError(it)
+            }
+        )
     }
 
     private fun getFreeShippingStatusData() {
@@ -343,15 +386,9 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(block = {
             val freeShippingPair = withContext(dispatcher.io) {
                 if (freeShippingDisabled || inTransitionPeriod) {
-                    false to ""
+                    TokoPlusBadgeUiModel()
                 } else {
-                    val userId = userSession.userId.toLongOrZero()
-                    val shopId = userSession.shopId.toLongOrZero()
-                    val params =
-                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
-                    getShopFreeShippingInfoUseCase.execute(params).first().let {
-                        it.freeShipping.isActive to it.freeShipping.imgUrl
-                    }
+                    getTokoPlusBadgeUseCase.execute(userSession.shopId)
                 }
             }
             _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)
@@ -404,8 +441,6 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val userShopInfoWrapper = withContext(dispatcher.io) {
-                    getUserShopInfoUseCase.params =
-                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
@@ -432,7 +467,7 @@ class OtherMenuViewModel @Inject constructor(
                 userSession.setIsShopOfficialStore(true)
             }
             // This means that the power merchant status is IDLE
-            is PowerMerchantStatus.NotActive, is PowerMerchantProStatus.InActive -> {
+            is PowerMerchantStatus.NotActive -> {
                 userSession.setIsGoldMerchant(false)
                 userSession.setIsPowerMerchantIdle(true)
                 userSession.setIsShopOfficialStore(false)
@@ -485,7 +520,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val topAdsBalanceFormatted = withContext(dispatcher.io) {
                     topAdsDashboardDepositUseCase.params =
-                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId)
                     val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
                     _kreditTopAdsLiveData.postValue(topAdsBalance)
                     topAdsBalance.getCurrencyFormatted()

@@ -21,6 +21,8 @@ object ApplinkConstInternalLogistic {
 
     const val SHOP_EDIT_ADDRESS = "$INTERNAL_LOGISTIC/editaddress/"
 
+    const val EDIT_ADDRESS_REVAMP = "$INTERNAL_LOGISTIC/editaddressrevamp/"
+
     const val CUSTOM_PRODUCT_LOGISTIC = "$INTERNAL_LOGISTIC/customproductlogistic"
 
     @JvmField
@@ -28,4 +30,11 @@ object ApplinkConstInternalLogistic {
 
     const val TNC_WEBVIEW = "$INTERNAL_LOGISTIC/logistictnc"
 
+    const val RESCHEDULE_PICKUP = "$INTERNAL_LOGISTIC/reschedulepickup?order_id={order_id}"
+
+    const val PROOF_OF_DELIVERY = "$INTERNAL_LOGISTIC/shipping/pod/{orderId}"
+
+    const val PARAM_SOURCE = "source"
+
+    const val MANAGE_ADDRESS_FROM_ACCOUNT = "$MANAGE_ADDRESS?$PARAM_SOURCE=account"
 }

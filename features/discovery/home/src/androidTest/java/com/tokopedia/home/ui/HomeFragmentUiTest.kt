@@ -7,7 +7,10 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -108,7 +111,7 @@ class HomeFragmentUiTest {
         )
         onView(withTagStringValue(HomeTagHelper.getNotifCounterMessage(context))).check(
             matches(
-                withText(HomeMockValueHelper.DEFAULT_COUNTER_NOTIF_VALUE)
+                withText("30")
             )
         )
 
@@ -148,12 +151,12 @@ class HomeFragmentUiTest {
         /**
          * Assert header background
          */
-        onView(withId(R.id.view_background_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.header_background_home_background)).check(matches(isDisplayed()))
 
         /**
          * Assert choose address widget
          */
-        onView(withId(R.id.widget_choose_address)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_choose_address)).check(matches(isDisplayed()))
 
         /**
          * Assert balance widget
@@ -177,6 +180,17 @@ class HomeFragmentUiTest {
         onView(
             withTagStringValue(
                 HomeTagHelper.getTokopointsBalanceWidgetTag(context)
+            )
+        ).check(matches(isClickable()))
+
+        onView(
+            withTagStringValue(
+                HomeTagHelper.getSubscriptionBalanceWidgetTag(context)
+            )
+        ).check(matches(isDisplayed()))
+        onView(
+            withTagStringValue(
+                HomeTagHelper.getSubscriptionBalanceWidgetTag(context)
             )
         ).check(matches(isClickable()))
     }
@@ -222,17 +236,10 @@ class HomeFragmentUiTest {
      */
     private fun assertHomeCoachmarkDisplayed() {
         assertCoachmarkAndNext(
-            titleRes = R.string.home_gopay_new_coachmark_title,
-            descRes = R.string.home_gopay_new_coachmark_description,
-            isSingleCoachmark = true
-        )
-
-        assertCoachmarkAndNext(
             titleRes = null,
             descRes = null,
             isSingleCoachmark = true
         )
-
         assertCoachmarkAndNext(
             titleRes = R.string.home_tokonow_coachmark_title,
             descRes = R.string.home_tokonow_coachmark_description,
@@ -247,7 +254,7 @@ class HomeFragmentUiTest {
         desc: String? = null,
         isSingleCoachmark: Boolean = false
     ) {
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         titleRes?.let {
             onView(withText(titleRes))
                 .inRoot(RootMatchers.isPlatformPopup())

@@ -22,12 +22,13 @@ const val TYPE_FEED_X_CARD_PLAY: String = "FeedXCardPlay"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
 const val TYPE_TOPADS_HEADLINE_NEW = "topads_headline_new"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
-
+const val TYPE_LONG_VIDEO: String = "long-video"
+const val TYPE_VIDEO: String = "video"
 const val TYPE_IMAGE = "image"
 
 object DynamicFeedNewMapper {
 
-    fun map(feedXHome: FeedXHome, cursor: String): DynamicFeedDomainModel {
+    fun map(feedXHome: FeedXHome, cursor: String, shouldShowNewTopadsOnly:Boolean): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
         var firstPageCursor = ""
 
@@ -35,7 +36,7 @@ object DynamicFeedNewMapper {
             when (it.typename) {
                 TYPE_FEED_X_CARD_PLACEHOLDER -> {
                     if (it.type == TYPE_TOPADS_HEADLINE) {
-                        mapCardHeadline(posts)
+                        mapCardHeadline(posts, shouldShowNewTopadsOnly)
                     } else if (it.type == TYPE_CARD_PLAY_CAROUSEL && cursor.isEmpty()) {
                         mapCardCarousel(posts)
                     }
@@ -73,12 +74,14 @@ object DynamicFeedNewMapper {
     }
 
 
-    private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {
+    private fun mapCardHeadline(posts: MutableList<Visitable<*>>, shouldShowNewTopadsOnly: Boolean) {
         val headLinePge = TopAdsHeadlineActivityCounter.page++
         val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = headLinePge)
         val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = headLinePge)
-        posts.add(topadsHeadlineUiModel)
-        posts.add(topadsHeadlineUiModelV2)
+        if (!shouldShowNewTopadsOnly)
+            posts.add(topadsHeadlineUiModel)
+            posts.add(topadsHeadlineUiModelV2)
+
     }
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
@@ -122,7 +125,7 @@ object DynamicFeedNewMapper {
                 tagsType,
                 feed.appLink,
                 authorId,
-                feed.id.toIntOrZero(),
+                feed.id,
                 feed.media.size,
                 recomId
         )

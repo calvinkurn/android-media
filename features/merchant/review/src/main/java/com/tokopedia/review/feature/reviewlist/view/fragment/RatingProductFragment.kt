@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
@@ -58,6 +59,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -219,6 +222,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
 
     override fun onResume() {
         super.onResume()
+        loadInitialData()
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         }
@@ -444,13 +448,13 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
         tracking.eventViewErrorIris(throwable.message.orEmpty())
         swipeToRefresh?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
-            if (throwable.message?.isNotEmpty() == true) {
-                binding?.globalErrorReviewSeller?.setType(GlobalError.SERVER_ERROR)
-            } else if (throwable.message?.isEmpty() == true) {
+            if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
                 binding?.globalErrorReviewSeller?.setType(GlobalError.NO_CONNECTION)
+            } else {
+                binding?.globalErrorReviewSeller?.setType(GlobalError.SERVER_ERROR)
             }
 
-            showErrorState()
+            showErrorState(throwable.getErrorMessage(context))
 
             binding?.globalErrorReviewSeller?.setActionClickListener {
                 tracking.eventClickRetryError(
@@ -461,13 +465,13 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             }
         } else {
             onErrorLoadMoreToaster(
-                getString(R.string.error_message_load_more_review_product),
+                throwable.getErrorMessage(context, getString(R.string.error_message_load_more_review_product)),
                 getString(R.string.action_retry_toaster_review_product)
             )
         }
     }
 
-    private fun showErrorState() {
+    private fun showErrorState(errorMessage: String) {
         binding?.apply {
             filterAndSortLayout.root.gone()
             rvRatingProduct.gone()
@@ -475,6 +479,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             searchBarLayout.root.show()
             scrollViewGlobalErrorReviewSeller.show()
             globalErrorReviewSeller.show()
+            globalErrorReviewSeller.errorDescription.text = errorMessage
         }
     }
 
@@ -684,11 +689,12 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             Toaster.build(
                 it,
                 message,
+                duration = Toaster.LENGTH_INDEFINITE,
                 actionText = action,
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
-                })
+                }).show()
         }
     }
 
@@ -874,5 +880,9 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                 binding?.searchBarLayout?.tickerReviewReminder?.hide()
             }
         }
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 }

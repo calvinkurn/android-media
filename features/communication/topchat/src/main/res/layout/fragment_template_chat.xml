@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/loading_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:background="@color/Unify_N700"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:ignore="UnifyComponentUsage" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N50">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shadow_background_topchat"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl5"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/spacing_lvl5">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/title_template"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/title_template_chat"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/desc_template"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title_template"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:maxWidth="@dimen/dp_topchat_270"
+                    android:text="@string/caption_switch_template"
+                    android:textColor="@color/Unify_N700_44"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+                    android:id="@+id/switch_chat_template"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:checked="false"
+                    tools:checked="true" />
+
+            </RelativeLayout>
+
+            <androidx.legacy.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_lvl5" />
+
+            <RelativeLayout
+                android:id="@+id/template_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shadow_background_topchat"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/template_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginBottom="@dimen/spacing_lvl3"
+                    android:paddingLeft="@dimen/spacing_lvl4"
+                    android:text="@string/title_topchat_list_template"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold" />
+
+                <ImageView
+                    android:id="@+id/template_list_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/template_list"
+                    android:layout_alignBottom="@id/template_list"
+                    android:layout_toRightOf="@id/template_list"
+                    android:paddingLeft="@dimen/dp_topchat_6"
+                    app:srcCompat="@drawable/ic_information_topchat"
+                    android:contentDescription="template_list_info" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/template_list">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

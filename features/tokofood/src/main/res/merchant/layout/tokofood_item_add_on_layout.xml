@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/addOnsTypeLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_16"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_NN950"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Sugar Level"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/requiredAddOnsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addOnsTypeLabel">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_mandatory_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_mandatory_selection"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_dot_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_dot_separator"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toEndOf="@id/tpg_mandatory_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_mandatory_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_single_mandatory_add_on_amount"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toEndOf="@id/tpg_dot_divider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_optional_wording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:text="@string/text_optional_add_on_wording"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addOnsTypeLabel"
+        app:typographyType="display_3" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_add_on_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/addOnsTypeLabel"
+        tools:listitem="@layout/tokofood_item_add_on_item_layout"
+        tools:itemCount="5"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_8"
+        app:layout_constraintTop_toBottomOf="@id/rv_add_on_list" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

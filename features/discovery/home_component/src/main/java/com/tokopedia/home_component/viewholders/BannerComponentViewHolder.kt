@@ -33,7 +33,8 @@ import kotlin.coroutines.CoroutineContext
 
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
-                                private val homeComponentListener: HomeComponentListener?
+                                private val homeComponentListener: HomeComponentListener?,
+                                private val cardInteraction: Boolean = false
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         BannerItemListener, CoroutineScope {
@@ -50,16 +51,13 @@ class BannerComponentViewHolder(itemView: View,
 
     //set to true if you want to activate auto-scroll
     private var isAutoScroll = true
-    private var interval = 5000
-    private var currentPagePosition = 0
+    private var currentPagePosition = INITIAL_PAGE_POSITION
 
-    private val state_running = 0
-    private val state_paused = 1
-    private var autoScrollState = state_paused
+    private var autoScrollState = STATE_PAUSED
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
-        while (autoScrollState == state_running) {
-            delay(interval.toLong())
+        while (autoScrollState == STATE_RUNNING) {
+            delay(INTERVAL.toLong())
             autoScrollCoroutine()
         }
     }
@@ -140,16 +138,16 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun resumeAutoScroll() {
-        if (autoScrollState == state_paused) {
+        if (autoScrollState == STATE_PAUSED) {
             autoScrollLauncher()
-            autoScrollState = state_running
+            autoScrollState = STATE_RUNNING
         }
     }
 
     private fun pauseAutoScroll() {
-        if (autoScrollState == state_running) {
+        if (autoScrollState == STATE_RUNNING) {
             masterJob.cancelChildren()
-            autoScrollState = state_paused
+            autoScrollState = STATE_PAUSED
         }
     }
 
@@ -173,7 +171,7 @@ class BannerComponentViewHolder(itemView: View,
                 rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
             } else rvBanner.addItemDecoration(BannerChannelDecoration())
         }
-        val adapter = BannerChannelAdapter(list, this)
+        val adapter = BannerChannelAdapter(list, this, cardInteraction)
         rvBanner.adapter = adapter
         adapter.setItemList(list)
     }
@@ -262,5 +260,9 @@ class BannerComponentViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_banner
+        private const val INTERVAL = 5000
+        private const val STATE_RUNNING = 0
+        private const val STATE_PAUSED = 1
+        private const val INITIAL_PAGE_POSITION = 0
     }
 }

@@ -61,15 +61,11 @@ class FakeNotifcenterUsecase {
     @Provides
     @NotificationScope
     fun provideFakeNotifcenterDetailUseCase(
-        @Named(NotifcenterDetailUseCase.QUERY_NOTIFCENTER_DETAIL_V3)
-        query: String,
         gqlUseCase: FakeGraphqlUseCase<NotifcenterDetailResponse>,
         mapper: NotifcenterDetailMapper,
         dispatchers: CoroutineDispatchers
     ): FakeNotifcenterDetailUseCase {
-        return FakeNotifcenterDetailUseCase(
-            query, gqlUseCase, mapper, dispatchers
-        )
+        return FakeNotifcenterDetailUseCase(gqlUseCase, mapper, dispatchers)
     }
 
     // -- separator -- //

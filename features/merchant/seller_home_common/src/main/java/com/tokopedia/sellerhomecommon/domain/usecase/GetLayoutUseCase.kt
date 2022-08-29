@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -17,25 +18,29 @@ import com.tokopedia.usecase.RequestParams
  * Created By @ilhamsuaib on 09/06/20
  */
 
+@GqlQuery("GetLayoutGqlQuery", GetLayoutUseCase.QUERY)
 class GetLayoutUseCase(
     gqlRepository: GraphqlRepository,
     mapper: LayoutMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
-    gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, false
+    gqlRepository, mapper, dispatchers, GetLayoutGqlQuery()
 ) {
+
+    override val classType: Class<GetLayoutResponse>
+        get() = GetLayoutResponse::class.java
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
-        val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(graphqlQuery, classType, params.parameters)
         val gqlResponse: GraphqlResponse = graphqlRepository.response(
             listOf(gqlRequest), cacheStrategy
         )
 
-        val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
+        val errors: List<GraphqlError>? = gqlResponse.getError(classType)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>()
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
@@ -46,17 +51,7 @@ class GetLayoutUseCase(
     }
 
     companion object {
-        private const val KEY_SHOP_ID = "shopID"
-        private const val KEY_PAGE = "page"
-
-        fun getRequestParams(shopId: String, pageName: String): RequestParams {
-            return RequestParams.create().apply {
-                putLong(KEY_SHOP_ID, shopId.toLongOrZero())
-                putString(KEY_PAGE, pageName)
-            }
-        }
-
-        private val QUERY = """
+        internal const val QUERY = """
             query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
@@ -84,9 +79,9 @@ class GetLayoutUseCase(
                   applink
                   dataKey
                   ctaText
+                  gridSize
                   maxData
                   maxDisplay
-                  gridSize
                   emptyState {
                     imageUrl
                     title
@@ -101,6 +96,15 @@ class GetLayoutUseCase(
                 }
               }
             }
-        """.trimIndent()
+        """
+        private const val KEY_SHOP_ID = "shopID"
+        private const val KEY_PAGE = "page"
+
+        fun getRequestParams(shopId: String, pageName: String): RequestParams {
+            return RequestParams.create().apply {
+                putLong(KEY_SHOP_ID, shopId.toLongOrZero())
+                putString(KEY_PAGE, pageName)
+            }
+        }
     }
 }

@@ -1,0 +1,518 @@
+{
+  "rechargeCatalogPrefixSelect": {
+    "componentID": 5,
+    "name": "client_number",
+    "paramName": "operator",
+    "text": "Masukkan Nomor HP",
+    "help": "Input Nomor Telepon Anda\t",
+    "placeholder": "Nomor Telepon\t",
+    "validations": [
+      {
+        "id": 4,
+        "title": "Max 14 Digit",
+        "message": "Nomor terlalu panjang, maksimum 14 karakter",
+        "rule": "^\\d{0,14}$"
+      },
+      {
+        "id": 5,
+        "title": "Min 10 Digit",
+        "message": "Nomor terlalu pendek, minimal 10 karakter",
+        "rule": "^\\d{10,}$"
+      }
+    ],
+    "prefixes": [
+      {
+        "key": "5",
+        "value": "0879",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "1",
+        "value": "0831",
+        "operator": {
+          "id": 1,
+          "attributes": {
+            "name": "Axis",
+            "default_product_id": 6,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/axis_2.png"
+          }
+        }
+      },
+      {
+        "key": "1",
+        "value": "0836",
+        "operator": {
+          "id": 1,
+          "attributes": {
+            "name": "Axis",
+            "default_product_id": 6,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/axis_2.png"
+          }
+        }
+      },
+      {
+        "key": "5",
+        "value": "0817",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "5",
+        "value": "0818",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "5",
+        "value": "0819",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "1",
+        "value": "0832",
+        "operator": {
+          "id": 1,
+          "attributes": {
+            "name": "Axis",
+            "default_product_id": 6,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/axis_2.png"
+          }
+        }
+      },
+      {
+        "key": "1",
+        "value": "0838",
+        "operator": {
+          "id": 1,
+          "attributes": {
+            "name": "Axis",
+            "default_product_id": 6,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/axis_2.png"
+          }
+        }
+      },
+      {
+        "key": "2",
+        "value": "0856",
+        "operator": {
+          "id": 2,
+          "attributes": {
+            "name": "Indosat - IM3",
+            "default_product_id": 105,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/16/80338194/80338194_e8c69542-f292-437b-83c6-9e0c6458ccad.png"
+          }
+        }
+      },
+      {
+        "key": "2",
+        "value": "0857",
+        "operator": {
+          "id": 2,
+          "attributes": {
+            "name": "Indosat - IM3",
+            "default_product_id": 105,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/16/80338194/80338194_e8c69542-f292-437b-83c6-9e0c6458ccad.png"
+          }
+        }
+      },
+      {
+        "key": "5",
+        "value": "0877",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "5",
+        "value": "0878",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0881",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0882",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0883",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0884",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0885",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0886",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0887",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0888",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "7",
+        "value": "0889",
+        "operator": {
+          "id": 7,
+          "attributes": {
+            "name": "Smartfren",
+            "default_product_id": 45,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png"
+          }
+        }
+      },
+      {
+        "key": "4",
+        "value": "0895",
+        "operator": {
+          "id": 4,
+          "attributes": {
+            "name": "Tri",
+            "default_product_id": 8546,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/6/3/47672011/47672011_43b5c24b-99f8-48ca-bd82-c6ef0d2520c6.png"
+          }
+        }
+      },
+      {
+        "key": "4",
+        "value": "0896",
+        "operator": {
+          "id": 4,
+          "attributes": {
+            "name": "Tri",
+            "default_product_id": 8546,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/6/3/47672011/47672011_43b5c24b-99f8-48ca-bd82-c6ef0d2520c6.png"
+          }
+        }
+      },
+      {
+        "key": "4",
+        "value": "0897",
+        "operator": {
+          "id": 4,
+          "attributes": {
+            "name": "Tri",
+            "default_product_id": 8546,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/6/3/47672011/47672011_43b5c24b-99f8-48ca-bd82-c6ef0d2520c6.png"
+          }
+        }
+      },
+      {
+        "key": "4",
+        "value": "0898",
+        "operator": {
+          "id": 4,
+          "attributes": {
+            "name": "Tri",
+            "default_product_id": 8546,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/6/3/47672011/47672011_43b5c24b-99f8-48ca-bd82-c6ef0d2520c6.png"
+          }
+        }
+      },
+      {
+        "key": "4",
+        "value": "0899",
+        "operator": {
+          "id": 4,
+          "attributes": {
+            "name": "Tri",
+            "default_product_id": 8546,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/6/3/47672011/47672011_43b5c24b-99f8-48ca-bd82-c6ef0d2520c6.png"
+          }
+        }
+      },
+      {
+        "key": "12",
+        "value": "0821",
+        "operator": {
+          "id": 12,
+          "attributes": {
+            "name": "Telkomsel - Simpati",
+            "default_product_id": 70,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png"
+          }
+        }
+      },
+      {
+        "key": "12",
+        "value": "0822",
+        "operator": {
+          "id": 12,
+          "attributes": {
+            "name": "Telkomsel - Simpati",
+            "default_product_id": 70,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png"
+          }
+        }
+      },
+      {
+        "key": "12",
+        "value": "0812",
+        "operator": {
+          "id": 12,
+          "attributes": {
+            "name": "Telkomsel - Simpati",
+            "default_product_id": 70,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png"
+          }
+        }
+      },
+      {
+        "key": "12",
+        "value": "0813",
+        "operator": {
+          "id": 12,
+          "attributes": {
+            "name": "Telkomsel - Simpati",
+            "default_product_id": 70,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png"
+          }
+        }
+      },
+      {
+        "key": "4",
+        "value": "0894",
+        "operator": {
+          "id": 4,
+          "attributes": {
+            "name": "Tri",
+            "default_product_id": 8546,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/6/3/47672011/47672011_43b5c24b-99f8-48ca-bd82-c6ef0d2520c6.png"
+          }
+        }
+      },
+      {
+        "key": "1",
+        "value": "0833",
+        "operator": {
+          "id": 1,
+          "attributes": {
+            "name": "Axis",
+            "default_product_id": 6,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/axis_2.png"
+          }
+        }
+      },
+      {
+        "key": "3",
+        "value": "998",
+        "operator": {
+          "id": 3,
+          "attributes": {
+            "name": "Bolt",
+            "default_product_id": 170,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/studilmu.png"
+          }
+        }
+      },
+      {
+        "key": "3",
+        "value": "999",
+        "operator": {
+          "id": 3,
+          "attributes": {
+            "name": "Bolt",
+            "default_product_id": 170,
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/studilmu.png"
+          }
+        }
+      },
+      {
+        "key": "12",
+        "value": "0811",
+        "operator": {
+          "id": 12,
+          "attributes": {
+            "name": "Telkomsel - Simpati",
+            "default_product_id": 70,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png"
+          }
+        }
+      },
+      {
+        "key": "5",
+        "value": "08599",
+        "operator": {
+          "id": 5,
+          "attributes": {
+            "name": "XL",
+            "default_product_id": 32,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png"
+          }
+        }
+      },
+      {
+        "key": "15",
+        "value": "08517",
+        "operator": {
+          "id": 15,
+          "attributes": {
+            "name": "Telkomsel - As",
+            "default_product_id": 75,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_ab290808-5f51-413b-b72c-9ea988fb0373.png"
+          }
+        }
+      },
+      {
+        "key": "15",
+        "value": "08519",
+        "operator": {
+          "id": 15,
+          "attributes": {
+            "name": "Telkomsel - As",
+            "default_product_id": 75,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_ab290808-5f51-413b-b72c-9ea988fb0373.png"
+          }
+        }
+      },
+      {
+        "key": "15",
+        "value": "085151",
+        "operator": {
+          "id": 15,
+          "attributes": {
+            "name": "Telkomsel - As",
+            "default_product_id": 75,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_ab290808-5f51-413b-b72c-9ea988fb0373.png"
+          }
+        }
+      },
+      {
+        "key": "15",
+        "value": "085158",
+        "operator": {
+          "id": 15,
+          "attributes": {
+            "name": "Telkomsel - As",
+            "default_product_id": 75,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_ab290808-5f51-413b-b72c-9ea988fb0373.png"
+          }
+        }
+      },
+      {
+        "key": "15",
+        "value": "08510",
+        "operator": {
+          "id": 15,
+          "attributes": {
+            "name": "Telkomsel - As",
+            "default_product_id": 75,
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_ab290808-5f51-413b-b72c-9ea988fb0373.png"
+          }
+        }
+      }
+    ]
+  }
+}

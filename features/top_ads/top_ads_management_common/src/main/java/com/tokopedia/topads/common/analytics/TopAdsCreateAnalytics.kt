@@ -7,13 +7,20 @@ import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
-
-private const val KEY_EVENT = "event"
+const val ON = "on"
+const val OFF = "off"
+const val CLICK_AKTIFKAN_ATUR_MANUAL = "click aktifkan atur manual"
+const val CLICK_BATALKAN_ATUR_MANUAL = "click batalkan atur manual"
+const val CLICK_BATALKAN_ATUR_OTOMATIS = "click batalkan atur otomatis"
+const val CLICK_AKTIFKAN_ATUR_OTOMATIS = "click aktifkan atur otomatis"
+const val CLICK_TOGGLE_ATUR_OTOMATIS = "click toggle atur otomatis"
+private const val CLICK_TOP_ADS = "clickTopAds"
+const val KEY_EVENT = "event"
 private const val KEY_EVENT_SCREEN_NAME = "screenName"
 private const val KEY_OPEN_SCREEN_EVENT = "openScreen"
-private const val KEY_EVENT_CATEGORY = "eventCategory"
-private const val KEY_EVENT_ACTION = "eventAction"
-private const val KEY_EVENT_LABEL = "eventLabel"
+const val KEY_EVENT_CATEGORY = "eventCategory"
+const val KEY_EVENT_ACTION = "eventAction"
+const val KEY_EVENT_LABEL = "eventLabel"
 private const val KEY_EVENT_CATEGORY_VALUE = "ads creation form"
 private const val KEY_EVENT_CATEGORY_VALUE_EDIT = "edit group form"
 private const val KEY_EVENT_VALUE_EDIT = "clickEditGroup"
@@ -38,8 +45,8 @@ private const val KEY_EVENT_CATEGORY_HEADLINE_ADS = "headline ads dashboard"
 private const val KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION = "headline ads creation"
 private const val KEY_BUSINESS_UNIT = "ads solution"
 private const val KEY_CURRENT_SITE = "tokopediamarketplace"
-private const val KEY_BUSINESS_UNIT_EVENT = "businessUnit"
-private const val KEY_CURRENT_SITE_EVENT = "currentSite"
+const val KEY_BUSINESS_UNIT_EVENT = "businessUnit"
+const val KEY_CURRENT_SITE_EVENT = "currentSite"
 private const val KEY_ECOMMERCE_EVENT = "ecommerce"
 private const val KEY_PROMO_CLICK = "promoClick"
 private const val KEY_PROMO_VIEW = "promoView"
@@ -392,6 +399,18 @@ class TopAdsCreateAnalytics {
                     "position" to position+1))
         }
         return list
+    }
+
+    fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_TOP_ADS,
+            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
+            KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE)
+
+        getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {

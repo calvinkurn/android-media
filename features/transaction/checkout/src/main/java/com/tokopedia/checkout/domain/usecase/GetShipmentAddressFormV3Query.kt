@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.usecase
 
-fun getQueryShipmentAddressFormV3(): String {
-    return """
-        query shipment_address_form_v3(${'$'}params: ShipmentAddressFormParams) {
+const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
+        """
+        query shipmentAddressFormV3(${'$'}params: ShipmentAddressFormParams) {
           shipment_address_form_v3(params: ${'$'}params) {
             status
             error_message
@@ -18,9 +18,24 @@ fun getQueryShipmentAddressFormV3(): String {
               is_ineligible_promo_dialog_enabled
               disabled_features
               donation_checkbox_status
+              image_upload {
+                show_image_upload
+                text
+                left_icon_url
+                right_icon_url
+                checkout_id
+                front_end_validation
+              }
               open_prerequisite_site
               eligible_new_shipping_experience
               pop_up_message
+              pop_up {
+                title
+                description
+                button {
+                  text
+                }
+              }
               error_ticker
               group_address {
                 errors
@@ -47,11 +62,51 @@ fun getQueryShipmentAddressFormV3(): String {
                   state
                   state_detail
                   tokonow {
+                    is_modified
                     shop_id
                     warehouse_id
+                    warehouses {
+                      warehouse_id
+                      service_type
+                    }
+                    service_type
                   }
                 }
                 group_shop {
+                  add_ons {
+                    status
+                    add_on_data {
+                      add_on_id
+                      add_on_qty
+                      add_on_price
+                      add_on_metadata {
+                        add_on_note {
+                            is_custom_note
+                            to
+                            from
+                            notes
+                        }
+                      }
+                    }
+                    add_on_button {
+                      title
+                      description
+                      left_icon_url
+                      right_icon_url
+                      action
+                    }
+                    add_on_bottomsheet {
+                      header_title
+                      description
+                      products {
+                        product_name
+                        product_image_url
+                      }
+                      ticker {
+                        text
+                      }
+                    }
+                  }
                   errors
                   errors_unblocking
                   shipping_id
@@ -73,6 +128,11 @@ fun getQueryShipmentAddressFormV3(): String {
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -119,6 +179,8 @@ fun getQueryShipmentAddressFormV3(): String {
                     is_tokonow
                     is_gold
                     is_official
+                    shop_ticker
+                    shop_ticker_title
                     shop_type_info {
                       shop_tier
                       shop_grade
@@ -167,6 +229,40 @@ fun getQueryShipmentAddressFormV3(): String {
                       bundle_icon_url
                     }
                     products {
+                      add_ons {
+                        status
+                        add_on_data {
+                            add_on_id
+                            add_on_qty
+                            add_on_price
+                            add_on_metadata {
+                                add_on_note {
+                                    is_custom_note
+                                    to
+                                    from
+                                    notes
+                                }
+                            }
+                          }
+                          add_on_button {
+                            title
+                            description
+                            left_icon_url
+                            right_icon_url
+                            action
+                          }
+                          add_on_bottomsheet {
+                            header_title
+                            description
+                            products {
+                               product_name
+                               product_image_url
+                            }
+                            ticker {
+                               text
+                            }
+                          }
+                      }
                       errors
                       cart_id
                       product_id
@@ -210,6 +306,9 @@ fun getQueryShipmentAddressFormV3(): String {
                         protection_opt_in
                         protection_checkbox_disabled
                       }
+                      product_variants {
+                        parent_id
+                      }
                       product_tracker_data {
                         attribution
                         tracker_list_name
@@ -236,6 +335,11 @@ fun getQueryShipmentAddressFormV3(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       product_ticker {
                         show_ticker
                         message
@@ -247,6 +351,11 @@ fun getQueryShipmentAddressFormV3(): String {
                       product_alert_message
                       product_information
                       campaign_id
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                     }
                   }
                   warehouse {
@@ -445,6 +554,7 @@ fun getQueryShipmentAddressFormV3(): String {
                           sp_id
                         }
                       }
+                      poml_auto_applied
                     }
                     benefit_summary_info {
                       final_benefit_amount_str
@@ -498,8 +608,18 @@ fun getQueryShipmentAddressFormV3(): String {
                 additional_vertical_id
                 transaction_type
               }
+              add_on_wording {
+                packaging_and_greeting_card
+                only_greeting_card
+                invoice_not_sent_to_recipient
+              }
+              upsell {
+                is_show
+                title
+                description
+                app_link
+                image
+              }
             }
           }
-        }
-    """.trimIndent()
-}
+        }"""

@@ -57,7 +57,9 @@
               "adultNumeric": 1360700,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "7d4356bfc93d68852c062502efeaeaa2-6",
@@ -139,7 +141,9 @@
               "adultNumeric": 1338200,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : ""
           },
           {
             "id": "1f70f1533b76dc280cbb3522fe635e21-6",
@@ -221,7 +225,9 @@
               "adultNumeric": 1338200,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "a6abad30f2783d8db98b460780f405af-6",
@@ -293,7 +299,9 @@
               "adultNumeric": 1135600,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "9d3790608493295443ecdf9257e937ac-2",
@@ -409,7 +417,9 @@
               "adultNumeric": 1928100,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "8ea9ffcc29abea45e24c4af220b968a4-2",
@@ -481,7 +491,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "f79bad364069adf5930bd85ec8828041-6",
@@ -553,7 +565,9 @@
               "adultNumeric": 967300,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "a1bd4c04c2dea1548f2d8bbb4fda0d5a-6",
@@ -625,7 +639,9 @@
               "adultNumeric": 1135600,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "128559b71d695f78c0e7bf086a577b97-6",
@@ -697,7 +713,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "ac054b1651f825ae0af57135bf70c87e-6",
@@ -779,7 +797,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "43e2e4b6fb1a2c67c612dde99f1352e6-2",
@@ -861,7 +881,9 @@
               "adultNumeric": 1584900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "0483c7c7e5c872b610c09886a4d2af38-2",
@@ -921,7 +943,9 @@
               "adultNumeric": 2585800,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "325df1ba09ca49c359b8ce9e288f2310-6",
@@ -972,7 +996,9 @@
               "adultNumeric": 1235100,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "162f2b1bbbeab298fa3f7f84d2162a5f-6",
@@ -1049,7 +1075,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "c889a73907cdd493fe5a3f54b0564694-6",
@@ -1105,7 +1133,9 @@
               "adultNumeric": 1443000,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "a3c2b78a91d9ddab7f02b3c8f91bb534-2",
@@ -1156,7 +1186,9 @@
               "adultNumeric": 1027200,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "0007aebb4b166b690c9994f2de2b813f-6",
@@ -1238,7 +1270,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : ""
           },
           {
             "id": "e72966d2efed9cd3c99268f22156493e-6",
@@ -1310,7 +1344,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "48fae44aa0d80820dd6b04f579239821-6",
@@ -1382,7 +1418,9 @@
               "adultNumeric": 967300,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "",
+            "label2" : ""
           },
           {
             "id": "75c7dfc7a764948ca35b37701944961a-6",
@@ -1454,7 +1492,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "b305d72f077851cf510438d8836fb595-6",
@@ -1526,7 +1566,9 @@
               "adultNumeric": 967300,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "afdbd2fedfdc4ff454933bc2db56329a-6",
@@ -1608,7 +1650,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "8b6e4066ccc1f9ba4b110ac9c50ce954-6",
@@ -1680,7 +1724,9 @@
               "adultNumeric": 967300,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "a4d63aab98de99d3bacfe07a073da4fe-6",
@@ -1752,7 +1798,9 @@
               "adultNumeric": 967300,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "f79373e33dcfe73969b9a44d75e7b2ec-6",
@@ -1824,7 +1872,9 @@
               "adultNumeric": 967300,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "4cf42a4e5e55e1fdc073572a0acb343f-6",
@@ -1880,7 +1930,9 @@
               "adultNumeric": 1027200,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "b7f85f92e6dc32615c5a97f9e2b00112-6",
@@ -1962,7 +2014,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "a5a0fbdcd9b2656138e5e38cb683d331-6",
@@ -2034,7 +2088,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "dcc26fa2186913394b454da4e6994fa8-6",
@@ -2116,7 +2172,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "915da7437375eabc46fb3b07fbb066c9-2",
@@ -2167,7 +2225,9 @@
               "adultNumeric": 1443000,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "dde00f9fc700cbf94d2e887b56028c68-6",
@@ -2249,7 +2309,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "b5d4b9c73cdf2e54382d2ceb8856e930-6",
@@ -2305,7 +2367,9 @@
               "adultNumeric": 1027200,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "b6733f66075a60b925acccb3752c050a-6",
@@ -2377,7 +2441,9 @@
               "adultNumeric": 1050900,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "29036d11312a3ff99d977aeb371293da-2",
@@ -2428,7 +2494,9 @@
               "adultNumeric": 1027200,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           },
           {
             "id": "73eb6a642ab5fd8e7cfcf21d46cdd41a-6",
@@ -2510,7 +2578,9 @@
               "adultNumeric": 1353400,
               "childNumeric": 0,
               "infantNumeric": 0
-            }
+            },
+            "label1" : "Rapid Test Free",
+            "label2" : "Seat Distancing"
           }
         ],
         "error": [],

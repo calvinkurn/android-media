@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
@@ -68,7 +69,13 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         val MIN_NAME = 3
         val MAX_NAME = 35
 
-        fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
+		private const val SPAN_34 = 34
+		private const val SPAN_54 = 54
+		private const val SPAN_61 = 61
+		private const val SPAN_78 = 78
+		private const val FLAG_0 = 0
+
+		fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()
             fragment.arguments = bundle
             return fragment
@@ -82,24 +89,39 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     override fun initInjector() {
         if (activity != null && activity?.application != null) {
             DaggerAddNameComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
-                    .inject(this)
+                ((activity as Activity).application as BaseMainApplication).baseAppComponent
+            )
+                .build()
+                .inject(this)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorUtils.setBackgroundColor(context, activity)
-        phoneNumber =  getParamString(ApplinkConstInternalGlobal.PARAM_PHONE, arguments, savedInstanceState, "")
-        uuid =  getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
+        phoneNumber = getParamString(
+            ApplinkConstInternalGlobal.PARAM_PHONE,
+            arguments,
+            savedInstanceState,
+            ""
+        )
+        uuid =
+            getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         splitCompatInstall()
 
         return try {
-            val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
+            val view = inflater.inflate(
+                com.tokopedia.profilecompletion.R.layout.fragment_add_name_register,
+                container,
+                false
+            )
             bottomInfo = view.findViewById(R.id.bottom_info)
             progressBar = view.findViewById(R.id.progress_bar)
             mainContent = view.findViewById(R.id.main_content)
@@ -114,7 +136,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     }
 
     private fun splitCompatInstall() {
-        activity?.let{
+        activity?.let {
             SplitCompat.installActivity(it)
         }
     }
@@ -154,7 +176,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     private fun onContinueClick() {
         KeyboardHandler.DropKeyboard(activity, view)
-        phoneNumber?.let{
+        phoneNumber?.let {
             registerPhoneAndName(textName?.textFieldInput?.text.toString(), it)
             analytics.trackClickFinishAddNameButton()
         }
@@ -167,7 +189,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     }
 
     private fun isValidate(name: String): Boolean {
-        context?.let{
+        context?.let {
             if (name.length < MIN_NAME) {
                 showValidationError(it.resources.getString(R.string.error_name_too_short))
                 analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_short))
@@ -191,17 +213,18 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private fun initTermPrivacyView() {
         context?.let {
             val msg = getString(R.string.profile_completion_detail_term_and_privacy)
-            if(msg.isNotEmpty()) {
-                val termPrivacy = SpannableString(getString(R.string.profile_completion_detail_term_and_privacy))
-                termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
-                termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
+            if (msg.isNotEmpty()) {
+                val termPrivacy =
+                    SpannableString(getString(R.string.profile_completion_detail_term_and_privacy))
+                termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), SPAN_34, SPAN_54, FLAG_0)
+                termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), SPAN_61, SPAN_78, FLAG_0)
                 termPrivacy.setSpan(
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
                             com.tokopedia.unifyprinciples.R.color.Unify_G500
                         )
-                    ), 34, 54, 0
+                    ), SPAN_34, SPAN_54, FLAG_0
                 )
                 termPrivacy.setSpan(
                     ForegroundColorSpan(
@@ -209,7 +232,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
                             it,
                             com.tokopedia.unifyprinciples.R.color.Unify_G500
                         )
-                    ), 61, 78, 0
+                    ), SPAN_61, SPAN_78, FLAG_0
                 )
 
                 bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
@@ -223,14 +246,23 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                    startActivity(
+                        RouteManager.getIntent(
+                            it,
+                            ApplinkConstInternalUserPlatform.TERM_PRIVACY,
+                            page
+                        )
+                    )
                 }
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                ds.color = ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
             }
         }
     }
@@ -275,7 +307,11 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
         userSession.clearToken()
-        userSession.setToken(registerInfo.accessToken, "Bearer", EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV))
+        userSession.setToken(
+            registerInfo.accessToken,
+            "Bearer",
+            EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV)
+        )
 
         activity?.run {
             dismissLoading()
@@ -284,7 +320,10 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtras(Bundle().apply {
                     putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA, registerInfo.enable2Fa)
-                    putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, registerInfo.enableSkip2Fa)
+                    putExtra(
+                        ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA,
+                        registerInfo.enableSkip2Fa
+                    )
                 })
             })
 

@@ -1,5 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
+
 data class OrderProfile(
         val profileId: Int = 0,
         val enable: Boolean = true,
@@ -27,6 +29,7 @@ data class OrderProfileAddress(
         val cityName: String = "",
         val provinceId: Long = 0,
         val provinceName: String = "",
+        val country: String = "",
         val phone: String = "",
         val longitude: String = "",
         val latitude: String = "",
@@ -34,20 +37,31 @@ data class OrderProfileAddress(
         val state: Int = 0,
         val stateDetail: String = "",
         val status: Int = 0,
-        val tokoNowShopId: String = "",
-        val tokoNowWarehouseId: String = ""
+        val tokoNow: OrderProfileAddressTokoNow = OrderProfileAddressTokoNow()
 ) {
     internal val isMainAddress: Boolean
         get() = status == STATUS_MAIN_ADDRESS
+
+    internal val isAddressActive: Boolean
+        get() = status == STATUS_ADDRESS_ACTIVE
 
     internal val hasNoPinpoint: Boolean
         get() = longitude.isEmpty() || latitude.isEmpty()
 
     companion object {
+        private const val STATUS_ADDRESS_ACTIVE = 1
         private const val STATUS_MAIN_ADDRESS = 2
         const val STATE_OCC_ADDRESS_ID_NOT_MATCH = 211
     }
 }
+
+data class OrderProfileAddressTokoNow(
+    val isModified: Boolean = false,
+    val shopId: String = "",
+    val warehouseId: String = "",
+    val warehouses: List<Warehouse> = emptyList(),
+    val serviceType: String = ""
+)
 
 data class OrderProfileShipment(
         val serviceName: String = "",

@@ -12,6 +12,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiMod
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
@@ -24,6 +25,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import javax.inject.Inject
 
@@ -38,6 +40,7 @@ class LayoutMapper @Inject constructor(
     companion object {
         private const val EMPTY_WIDGET_MESSAGE =
             "Oops, kamu tidak punya izin untuk melihat kontent di halaman Home"
+        private const val DOUBLE_DOTS_CALENDAR_TITLE = ":"
     }
 
     override fun mapRemoteDataToUiData(
@@ -68,6 +71,8 @@ class LayoutMapper @Inject constructor(
                             WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
                             WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
+                            WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
+                            WidgetType.UNIFICATION -> mapToUnificationWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -75,6 +80,30 @@ class LayoutMapper @Inject constructor(
             }
             return mappedList
         } else throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+    }
+
+    private fun mapToUnificationWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): UnificationWidgetUiModel {
+        return UnificationWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_1),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
     }
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
@@ -416,6 +445,30 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
+    }
+
+    private fun mapToCalendarWidget(
+        widget: WidgetModel,
+        fromCache: Boolean
+    ): CalendarWidgetUiModel {
+        return CalendarWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty() + DOUBLE_DOTS_CALENDAR_TITLE,
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = fromCache,
             emptyState = widget.emptyStateModel.mapToUiModel()
         )
     }

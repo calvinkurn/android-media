@@ -345,6 +345,21 @@
             </LinearLayout>
         </RelativeLayout>
 
+        <!--Gifting: Gifting Experience - Product Level-->
+        <LinearLayout
+            android:id="@+id/ll_gifting_addon_product_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/item_shipment_gifting_addon_product_level"
+                tools:visibility="gone"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

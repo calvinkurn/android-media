@@ -34,7 +34,9 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
@@ -56,7 +58,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {

@@ -4,15 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignItems
@@ -209,6 +206,7 @@ class AddEditProductVariantFragment :
         // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
             addVariantValueAtLevel(VARIANT_VALUE_LEVEL_TWO_POSITION)
+
         }
 
         observeIsEditMode()
@@ -348,8 +346,6 @@ class AddEditProductVariantFragment :
         viewModel.updateSelectedVariantUnitMap(layoutPosition, Unit())
         // update layout - selected unit values map
         viewModel.updateSelectedVariantUnitValuesMap(layoutPosition, mutableListOf())
-        // clear old variant price/ stock
-        viewModel.clearProductVariant()
         // remove viewmodel's variant details
         viewModel.removeSelectedVariantDetails(variantDetail)
         // remove all photo adapter data
@@ -658,6 +654,7 @@ class AddEditProductVariantFragment :
             cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
             cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
+            cancellationDialog?.setDefaultMaxWidth()
             cancellationDialog?.setPrimaryCTAClickListener {
                 cancellationDialog?.dismiss()
             }
@@ -941,7 +938,7 @@ class AddEditProductVariantFragment :
     private fun showToaster(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG,
                 actionText = getString(R.string.action_oke))
-                .setAnchorView(R.id.linearLayoutSave)
+                .setAnchorView(R.id.cardViewSave)
                 .show()
     }
 
@@ -1009,7 +1006,6 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
-        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
@@ -1025,6 +1021,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.label_variant_exit_dialog_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.label_variant_exit_dialog_desc))
             setPrimaryCTAText(getString(R.string.action_cancel_exit))
             setPrimaryCTAClickListener {
@@ -1043,6 +1040,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.label_variant_delete_all_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.label_variant_delete_all_description))
             setPrimaryCTAText(getString(R.string.action_variant_delete_all_negative))
             setPrimaryCTAClickListener {
@@ -1073,6 +1071,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(dialogTitle)
+            setDefaultMaxWidth()
             setDescription(dialogDesc)
             setPrimaryCTAText(getString(R.string.action_cancel_replacement))
             setPrimaryCTAClickListener {
@@ -1099,8 +1098,7 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImageEditorBuilder(
                 imageUrls = arrayListOf(urlOrPath),
-                defaultRatio = ImageRatioType.RATIO_1_1,
-                convertToWebp = true
+                defaultRatio = ImageRatioType.RATIO_1_1
         )
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
         intent.putImageEditorBuilder(builder)
@@ -1213,7 +1211,7 @@ class AddEditProductVariantFragment :
         } else {
             if (autoSelectIndex.isLessThanZero() && oldVariantDetail != null) {
                 viewModel.isSingleVariantTypeIsSelected = true
-                deselectVariantType(layoutPosition, editedIndex, oldVariantDetail)
+                deselectVariantType(layoutPosition, editedIndex, variantDetail)
                 variantTypeAdapter?.deselectItem(editedIndex)
             } else {
                 deleteVariantType(editedIndex, variantDetail)
@@ -1279,10 +1277,8 @@ class AddEditProductVariantFragment :
     private fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
-            val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID)
-                    ?: ""
+            val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID).orEmpty()
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
-
             val intent = Intent().putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
@@ -1335,7 +1331,6 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
-        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)

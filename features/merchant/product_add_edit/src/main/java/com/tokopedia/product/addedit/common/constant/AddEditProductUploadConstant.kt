@@ -14,5 +14,7 @@ class AddEditProductUploadConstant {
         const val MESSAGE_NOTIF_PRODUCT_UPLOAD = "Mengupload produk"
         const val MESSAGE_NOTIF_PRODUCT_UPLOAD_SUCCESS = "Produk berhasil di-upload"
         const val MESSAGE_NOTIF_PRODUCT_UPLOAD_ERROR = "Product gagal di-upload. Coba lagi"
+
+        const val REQUEST_DELAY_MILLIS = 500L
     }
 }

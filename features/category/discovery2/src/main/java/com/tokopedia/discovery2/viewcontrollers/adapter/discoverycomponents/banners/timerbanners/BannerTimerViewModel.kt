@@ -29,9 +29,19 @@ class BannerTimerViewModel(val application: Application, val components: Compone
     fun getRestartTimerAction(): LiveData<Boolean> = restartStoppedTimerEvent
 
     fun startTimer(timer:TimerUnifyHighlight) {
-        val timeDiff = Utils.getElapsedTime(components.data?.firstOrNull()?.endDate ?: "")
+        var parsingDate = ""
+        val saleStartDate = components.data?.firstOrNull()?.startDate ?: ""
+        val saleEndDate = components.data?.firstOrNull()?.endDate ?: ""
+        val timeDiff : Long = if(Utils.isFutureSaleOngoing(saleStartDate = saleStartDate, saleEndDate = saleEndDate, TIMER_DATE_FORMAT)){
+            parsingDate = saleEndDate
+            Utils.getElapsedTime(saleEndDate)
+
+        }else{
+            parsingDate = saleStartDate
+            Utils.getElapsedTime(saleStartDate)
+        }
         if (timeDiff > 0) {
-            Utils.parseData(components.data?.firstOrNull()?.endDate?:"",TIMER_DATE_FORMAT)?.let {date->
+            Utils.parseData(parsingDate,TIMER_DATE_FORMAT)?.let {date->
                 val calendar = Calendar.getInstance()
                 calendar.time = date
                 timer.targetDate = calendar
@@ -80,8 +90,14 @@ class BannerTimerViewModel(val application: Application, val components: Compone
     }
 
     fun checkTimerEnd() {
-        if (Utils.getElapsedTime(components.data?.firstOrNull()?.endDate ?: "") <= DEFAULT_TIME_DATA) {
+        val saleStartDate = components.data?.firstOrNull()?.startDate ?: ""
+        val saleEndDate = components.data?.firstOrNull()?.endDate ?: ""
+        if (Utils.isFutureSaleOngoing(saleStartDate = saleStartDate, saleEndDate = saleEndDate, TIMER_DATE_FORMAT)) {
             this@BannerTimerViewModel.syncData.value = true
+        } else {
+            if (Utils.getElapsedTime(saleEndDate) <= DEFAULT_TIME_DATA) {
+                this@BannerTimerViewModel.syncData.value = true
+            }
         }
     }
 

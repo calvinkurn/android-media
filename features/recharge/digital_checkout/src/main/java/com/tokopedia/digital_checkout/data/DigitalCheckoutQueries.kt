@@ -6,7 +6,7 @@ package com.tokopedia.digital_checkout.data
 
 object DigitalCheckoutQueries {
 
-    fun getGetCartQuery() = """
+    const val RECHARGE_GET_CART_QUERY= """
         query rechargeGetCart(${'$'}categoryId: Int!) {
           rechargeGetCart(CategoryID: ${'$'}categoryId) {
             id
@@ -96,11 +96,14 @@ object DigitalCheckoutQueries {
             atc_source
             admin_fee_text
             admin_fee
+            admin_fee_included
+            channel_id
+            collection_point_id
           }
         }
-    """.trimIndent()
+    """
 
-    fun getCancelVoucherCartQuery() = """
+    const val CANCEL_VOUCHER_CHART_QUERY = """
         mutation clearCacheAutoApplyStack(${'$'}serviceID: String!, ${'$'}promoCode:[String], ${'$'}isOCC: Boolean) {
           clearCacheAutoApplyStack(serviceID:${'$'}serviceID, promoCode: ${'$'}promoCode, isOCC: ${'$'}isOCC) { 
             Success
@@ -109,5 +112,5 @@ object DigitalCheckoutQueries {
             error
           }
         }
-    """.trimIndent()
+    """
 }

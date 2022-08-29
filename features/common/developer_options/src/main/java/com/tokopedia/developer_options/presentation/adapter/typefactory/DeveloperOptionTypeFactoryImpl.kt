@@ -49,6 +49,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: AppVersionUiModel): Int = AppVersionViewHolder.LAYOUT
     override fun type(uiModel: UrlEnvironmentUiModel): Int = UrlEnvironmentViewHolder.LAYOUT
     override fun type(uiModel: FakeResponseActivityUiModel): Int = FakeResponseActivityViewHolder.LAYOUT
+    override fun type(uiModel: DataExplorerActivityUiModel): Int = DataExplorerActivityViewHolder.LAYOUT
     override fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int = HomeAndNavigationRevampSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int = RollenceAbTestingManualSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
@@ -58,6 +59,9 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
+    override fun type(uiModel: TypographySwitchUiModel): Int = TypographySwitcherViewHolder.LAYOUT
+    override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
+    override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -66,6 +70,7 @@ class DeveloperOptionTypeFactoryImpl(
             SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view)
             ResetOnBoardingViewHolder.LAYOUT -> ResetOnBoardingViewHolder(view, resetOnBoardingListener)
             ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view)
+            ForceLogoutViewHolder.LAYOUT -> ForceLogoutViewHolder(view)
             SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view)
             OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view)
             NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view)
@@ -91,6 +96,7 @@ class DeveloperOptionTypeFactoryImpl(
             AppVersionViewHolder.LAYOUT -> AppVersionViewHolder(view)
             UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
             FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
+            DataExplorerActivityViewHolder.LAYOUT -> DataExplorerActivityViewHolder(view)
             HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view)
             RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
@@ -100,6 +106,8 @@ class DeveloperOptionTypeFactoryImpl(
             SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
+            TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
+            ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

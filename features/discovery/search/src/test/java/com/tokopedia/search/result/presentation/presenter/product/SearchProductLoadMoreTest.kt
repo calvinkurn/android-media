@@ -15,6 +15,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
+private const val searchProductFirstPage8ProductsJSON = "searchproduct/loaddata/first-page-8-products.json"
 private const val searchProductThirdPageJSON = "searchproduct/loaddata/third-page.json"
 
 internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
@@ -112,9 +113,14 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         verifyOrder {
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
-            verifyProcessingData(productListView, searchProductModelFirstPage, slot())
+            verifyProcessingData(
+                productListView,
+                performanceMonitoring,
+                searchProductModelFirstPage,
+                slot()
+            )
 
             productListView.updateScrollListener()
 
@@ -143,6 +149,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
+        `Then verify start from is not incremented`()
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException, searchProductModelCommon)
         `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, requestParamsSlot.captured.getSearchProductParams())
     }
@@ -153,6 +160,12 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         }
     }
 
+    private fun `Then verify start from is not incremented`() {
+        val startFrom = productListPresenter.startFrom
+
+        startFrom shouldBe 8
+    }
+
     private fun `Then verify view interaction for load data failed with exception`(
             slotSearchParameterErrorLog: CapturingSlot<String>,
             exception: Exception,
@@ -161,15 +174,20 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         verifyOrder {
             productListView.isAnyFilterActive
 
-            verifyShowLoading(productListView)
+            verifyShowLoading(productListView, performanceMonitoring)
 
-            verifyProcessingData(productListView, searchProductModelFirstPage, slot())
+            verifyProcessingData(
+                productListView,
+                performanceMonitoring,
+                searchProductModelFirstPage,
+                slot()
+            )
 
             productListView.updateScrollListener()
 
             verifyHideLoading(productListView)
 
-            verifyShowLoadMoreError(productListView, 8)
+            verifyShowLoadMoreError(productListView)
 
             productListView.logWarning(capture(slotSearchParameterErrorLog), exception)
         }
@@ -191,7 +209,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
-        } andThen {
+        } andThenAnswer {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelThirdPage)
         }
 
@@ -205,5 +223,20 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         val expectedStart = 16
         `Then verify load more use case request params`(expectedStart, searchProductModelSecondPage.searchProduct.header.additionalParams)
+    }
+
+    @Test
+    fun `do not load more if all product is fetched`() {
+        val testException = TestException()
+        val searchProductModelFirstPage = searchProductFirstPage8ProductsJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
+        `Given Search Product Load More API will throw exception`(testException)
+        `Given Product List Presenter already Load Data`()
+
+        `When Product List Presenter Load More Data`(mapOf())
+
+        verify (exactly = 0) {
+            searchProductLoadMoreUseCase.execute(any(), any())
+        }
     }
 }

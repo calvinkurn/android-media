@@ -72,7 +72,6 @@ dependencies {
 
     testImplementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
@@ -102,6 +101,7 @@ dependencies {
     if (project.hasProperty("newRelic")) {
         implementation rootProject.ext.miscDependencies.newRelic
     }
+    implementation rootProject.ext.miscDependencies.gson
 }
 
 project.ext {

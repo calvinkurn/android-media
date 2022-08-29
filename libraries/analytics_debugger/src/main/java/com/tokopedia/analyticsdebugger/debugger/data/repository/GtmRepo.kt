@@ -1,6 +1,6 @@
 package com.tokopedia.analyticsdebugger.debugger.data.repository
 
-import com.tokopedia.analyticsdebugger.AnalyticsSource
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData

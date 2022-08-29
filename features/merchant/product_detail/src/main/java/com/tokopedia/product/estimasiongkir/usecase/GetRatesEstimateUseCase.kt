@@ -6,7 +6,10 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_PLUS
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_PLUS_DT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW_15
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationScope
@@ -32,11 +35,12 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
         private const val PARAM_BO_META_DATA = "bo_metadata"
         private const val PARAM_PO_TIME = "po_time"
         private const val PARAM_SHOP_TIER = "shop_tier"
-        private const val FIELD_BO_METADATA = "{\"bo_metadata\":{\"bo_type\":3,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"}]}}\""
+        private const val PARAM_UNIQUE_ID = "unique_id"
+        private const val PARAM_ORDER_VALUE = "order_value"
 
         fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String,
                          shopId: String, isFulfillment: Boolean, destination: String, freeShippingFlag: Int,
-                         poTime: Long, shopTier: Int): Map<String, Any?> = mapOf(
+                         poTime: Long, shopTier: Int, uniqueId: String, orderValue: Int, boMetadata: String): Map<String, Any?> = mapOf(
                 PARAM_PRODUCT_WEIGHT to productWeight,
                 PARAM_SHOP_DOMAIN to shopDomain,
                 PARAM_ORIGIN to origin,
@@ -47,11 +51,14 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 PARAM_PO_TIME to poTime,
                 PARAM_FREE_SHIPPING to freeShippingFlag,
                 PARAM_SHOP_TIER to shopTier,
-                PARAM_BO_META_DATA to if (freeShippingFlag == BO_TOKONOW) FIELD_BO_METADATA else "")
+                PARAM_UNIQUE_ID to uniqueId,
+                PARAM_ORDER_VALUE to orderValue,
+                PARAM_BO_META_DATA to boMetadata
+        )
 
         val QUERY = """
-            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int, ${'$'}po_time: Int, ${'$'}shop_tier: Int, ${'$'}bo_metadata:String) {
-                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment,free_shipping_flag: ${'$'}free_shipping_flag, po_time: ${'$'}po_time,shop_tier: ${'$'}shop_tier, bo_metadata: ${'$'}bo_metadata}) {
+            query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int, ${'$'}po_time: Int, ${'$'}shop_tier: Int, ${'$'}unique_id: String, ${'$'}order_value: Int, ${'$'}bo_metadata:String) {
+                  ratesEstimateV3(input: {weight: ${'$'}weight, domain: ${'$'}domain, origin: ${'$'}origin, shop_id: ${'$'}shop_id, product_id: ${'$'}product_id,destination: ${'$'}destination, is_fulfillment: ${'$'}is_fulfillment,free_shipping_flag: ${'$'}free_shipping_flag, po_time: ${'$'}po_time,shop_tier: ${'$'}shop_tier, unique_id: ${'$'}unique_id, order_value: ${'$'}order_value, bo_metadata: ${'$'}bo_metadata}) {
                       data{
                           tokocabang_from{
                                icon_url
@@ -64,6 +71,14 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                               eta_text
                               error_code 
                               title
+                              desc
+                              raw_shipping_rate
+                              free_shipping_bottomsheet{
+                                shipping_price
+                                eta_text
+                                raw_shipping_rate
+                              }
+                              is_quota_empty
                           }
                           address {
                               city_name
@@ -124,6 +139,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                       recommend
                                       checksum
                                       ut
+                                      ui_rates_hidden
                                       price {
                                           price
                                           formatted_price

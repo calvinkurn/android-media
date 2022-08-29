@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape
-            android:shape="oval">
-            <solid android:color="@color/white" />
+        <shape android:shape="oval">
+            <solid android:color="@color/white"/>
         </shape>
     </item>
-
-    <item android:bottom="@dimen/gami_core_floating_shadow_margin"
-        android:right="@dimen/gami_core_floating_shadow_margin"
-        android:left="@dimen/gami_core_floating_shadow_margin"
-        android:top="@dimen/gami_core_floating_shadow_margin">
-        <shape
-            android:shape="oval">
-            <solid android:color="@color/red_pink" />
+    <item android:bottom="@dimen/gami_core_floating_shadow_margin" android:right="@dimen/gami_core_floating_shadow_margin" android:left="@dimen/gami_core_floating_shadow_margin" android:top="@dimen/gami_core_floating_shadow_margin">
+        <shape android:shape="oval">
+            <solid android:color="@color/red_pink"/>
         </shape>
     </item>
-
 </layer-list>

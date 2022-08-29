@@ -21,6 +21,7 @@ data class MilestoneWidgetUiModel(
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
+    override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     var isAlreadyMinimized: Boolean = false
 ) : BaseWidgetUiModel<MilestoneDataUiModel> {

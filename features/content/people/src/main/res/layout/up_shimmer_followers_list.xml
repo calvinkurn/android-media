@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_followers_list_shimmer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/user_profile_margin_8"
+    android:paddingBottom="@dimen/user_profile_margin_8">
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+    <include layout="@layout/up_shimmer_followers_list_item" />
+
+</LinearLayout>

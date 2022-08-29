@@ -20,12 +20,6 @@ class StockInformationBottomSheet(
         private val TAG: String = StockInformationBottomSheet::class.java.simpleName
     }
 
-    init {
-        val title = context?.getString(R.string.product_manage_stock_information).orEmpty()
-
-        setTitle(title)
-    }
-
     private var binding by autoClearedNullable<BottomSheetProductManageStockInformationBinding>()
 
     override fun onCreateView(
@@ -39,7 +33,6 @@ class StockInformationBottomSheet(
             false
         )
         setChild(binding?.root)
-
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -60,7 +53,10 @@ class StockInformationBottomSheet(
     }
 
     private fun setupView() {
-        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_info_description)
+        val title = context?.getString(R.string.product_manage_stock_information).orEmpty()
+        setTitle(title)
+
+        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_description_information_stock)
             .orEmpty()
         val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
 

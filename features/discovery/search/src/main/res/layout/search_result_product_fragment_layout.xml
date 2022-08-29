@@ -15,7 +15,6 @@
         android:paddingBottom="8dp"
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"
-        android:background="@color/Unify_N0"
         android:visibility="gone" />
 
     <include
@@ -35,7 +34,7 @@
             android:divider="@android:color/transparent"
             android:descendantFocusability="blocksDescendants"
             android:clipToPadding="false"
-            android:paddingBottom="@dimen/dp_100"
+            android:paddingBottom="100dp"
             android:dividerHeight="0dp" />
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

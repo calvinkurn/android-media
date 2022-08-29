@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:paddingBottom="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerShapeType="loose"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerType="error"
+        tool:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tickerError">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivProduct"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyProductName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            tool:text="Judul Produk Bisa Sepanjang Dua Baris Kebawah (A)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="paragraph_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyOriginalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="8dp"
+            tool:text="Rp17.000.000"
+            app:layout_constraintStart_toEndOf="@+id/ivProduct"
+            app:layout_constraintTop_toBottomOf="@+id/typographyProductName"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyPriceMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:text="@string/editproduct_campaign_price_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivProduct"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.ContentSwitcherUnify
+            android:id="@+id/switchPrice"
+            android:layout_width="80dp"
+            android:layout_height="32dp"
+            android:textOff="@string/editproduct_switch_text_currency"
+            android:textOn="@string/editproduct_switch_text_percent"
+            app:layout_constraintBottom_toBottomOf="@+id/typographyPriceMode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/typographyPriceMode" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layoutCampaignPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/switchPrice">
+
+            <com.tokopedia.shop.flashsale.common.customcomponent.TextFieldLabelView
+                android:id="@+id/tfCampaignPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:tfl_placeholder_text="@string/editproduct_input_price_placeholder"
+                app:tfl_prepend_text="@string/editproduct_switch_text_currency" />
+
+            <com.tokopedia.shop.flashsale.common.customcomponent.TextFieldLabelView
+                android:id="@+id/tfCampaignPricePercent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:tfl_append_text="@string/editproduct_switch_text_percent"
+                app:tfl_enable_editing="false"
+                app:tfl_placeholder_text="@string/editproduct_input_price_percent_placeholder" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divCampaignPrice"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/layoutCampaignPrice" />
+
+        <com.tokopedia.shop.flashsale.common.customcomponent.SpinnerView
+            android:id="@+id/spinnerShopLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:spinner_placeholder_text="@string/editproduct_input_shoploc_placeholder"
+            app:spinner_title_text="@string/editproduct_input_shoploc_placeholder"
+            app:spinner_message="@string/editproduct_input_shoploc_message"
+            app:layout_constraintTop_toBottomOf="@+id/divCampaignPrice" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/tfStock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintWidth_percent="0.49"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerShopLocation"
+            app:unify_text_field_input_type="number"
+            app:unify_text_field_label="@string/editproduct_input_stock_placeholder"
+            app:unify_text_field_message="" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/tfMaxSold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintWidth_percent="0.49"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerShopLocation"
+            app:unify_text_field_input_type="number"
+            app:unify_text_field_label="@string/editproduct_input_max_transaction_placeholder"
+            app:unify_text_field_message="@string/editproduct_input_max_transaction_message"  />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/btnDelete"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:card_type="border"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSave"
+        app:layout_constraintWidth_percent="0.12">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_delete_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_name="DELETE"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="6dp"
+        android:text="@string/editproduct_button_save_text"
+        app:layout_constraintEnd_toStartOf="@+id/btnSaveNext"
+        app:layout_constraintStart_toEndOf="@+id/btnDelete"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInput"
+        app:layout_constraintWidth_percent="0.37"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSaveNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/editproduct_button_save_and_next_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInput"
+        app:layout_constraintWidth_percent="0.45"
+        app:unifyButtonSize="medium" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typographyProductRemaining"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingHorizontal="12dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/btnSave"
+        app:typographyType="paragraph_3"
+        android:textColor="@color/Unify_G500"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

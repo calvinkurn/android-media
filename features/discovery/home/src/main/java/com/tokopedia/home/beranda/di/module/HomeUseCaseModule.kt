@@ -3,8 +3,6 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -12,36 +10,72 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
+import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
-import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
-import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
-import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
-import com.tokopedia.home.beranda.di.module.query.WalletBalanceQuery
-import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
-import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
-import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
-import com.tokopedia.home.beranda.di.module.query.RecommendationQuery
-import com.tokopedia.home.beranda.di.module.query.PopularKeywordGqlQuery
-import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
-import com.tokopedia.home.beranda.di.module.query.HomeQuery
-import com.tokopedia.home.beranda.di.module.query.HomeDataRevampQuery
-import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
-import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.AtfQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
 import com.tokopedia.home.beranda.di.module.query.CloseChannelQuery
+import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
+import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
+import com.tokopedia.home.beranda.di.module.query.GetHomeBalanceWidgetQuery
+import com.tokopedia.home.beranda.di.module.query.HomeDataRevampQuery
+import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
+import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
+import com.tokopedia.home.beranda.di.module.query.HomeQuery
+import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
+import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
+import com.tokopedia.home.beranda.di.module.query.PopularKeywordGqlQuery
+import com.tokopedia.home.beranda.di.module.query.RecommendationQuery
+import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
+import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
-import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeIconUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
+import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitDataRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitTabRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeCloseChannelRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDataRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDynamicChannelsRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeFlagRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeHeadlineAdsRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeKeywordSearchRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeMissionWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePageBannerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayLiveDynamicRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationChipRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationFeedTabRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRecommendationRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeReviewSuggestedRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTickerRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeTopadsImageRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
+import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.HomeFlagData
+import com.tokopedia.home.beranda.domain.model.HomeIconData
+import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
@@ -49,14 +83,14 @@ import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,7 +140,8 @@ class HomeUseCaseModule {
             homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
             homeChooseAddressRepository: HomeChooseAddressRepository,
             homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            homeMissionWidgetRepository: HomeMissionWidgetRepository
     ) = HomeDynamicChannelUseCase(
             homeDataMapper = homeDataMapper,
             homeDynamicChannelsRepository = homeDynamicChannelsRepository,
@@ -134,9 +169,9 @@ class HomeUseCaseModule {
             homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
             homeChooseAddressRepository = homeChooseAddressRepository,
             homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
-            userSessionInterface = userSession
+            userSessionInterface = userSession,
+            homeMissionWidgetRepository = homeMissionWidgetRepository
     )
-
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
@@ -175,6 +210,14 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
+    fun provideGetHomeBalanceWidgetUseCase(graphqlRepository: GraphqlRepository): GetHomeBalanceWidgetUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeBalanceWidgetData>(graphqlRepository)
+        useCase.setGraphqlQuery(GetHomeBalanceWidgetQuery())
+        return GetHomeBalanceWidgetUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
     fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): HomePlayLiveDynamicRepository {
         return HomePlayLiveDynamicRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
@@ -183,14 +226,6 @@ class HomeUseCaseModule {
     @Provides
     fun getKeywordSearchUseCase(graphqlRepository: GraphqlRepository): HomeKeywordSearchRepository {
         return HomeKeywordSearchRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
-    }
-
-    @HomeScope
-    @Provides
-    fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(WalletBalanceQuery())
-        return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
 
     @HomeScope
@@ -330,10 +365,10 @@ class HomeUseCaseModule {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          mapper: PlayWidgetUiMapper,
                           connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders, connectionUtil)
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapper, connectionUtil)
     }
 
     @HomeScope
@@ -342,7 +377,7 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideHomeBeautyFestUseCase(): HomeBeautyFestRepository {
-        return HomeBeautyFestRepository()
+    fun provideTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
+        return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
 }

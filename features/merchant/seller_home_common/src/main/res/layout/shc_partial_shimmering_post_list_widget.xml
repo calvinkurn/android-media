@@ -6,12 +6,13 @@
     android:layout_height="@dimen/shc_large_widget_height"
     android:padding="@dimen/layout_lvl2">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_card_title"
         android:layout_width="@dimen/shc_dimen_156dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl1"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,11 +40,12 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/shimmering_second_info_seller_item" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/shc_dimen_156dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/shc_dimen_28dp"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_third_info_seller_item" />

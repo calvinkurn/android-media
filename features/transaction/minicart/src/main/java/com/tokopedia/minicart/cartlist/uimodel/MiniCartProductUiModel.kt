@@ -3,12 +3,14 @@ package com.tokopedia.minicart.cartlist.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.common.data.response.minicartlist.Action
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_DELETE
 import com.tokopedia.minicart.common.data.response.minicartlist.WholesalePrice
 
 data class MiniCartProductUiModel(
         var cartId: String = "",
         var productId: String = "",
         var parentId: String = "",
+        var cartString: String = "",
         var productImageUrl: String = "",
         var productName: String = "",
         var productVariantName: String = "",
@@ -29,8 +31,28 @@ data class MiniCartProductUiModel(
         var selectedUnavailableActionLink: String = "",
         var wholesalePriceGroup: List<WholesalePrice> = emptyList(),
         var maxNotesLength: Int = 0,
+        var placeholderNote: String = "",
         var isProductDisabled: Boolean = false,
         var productCashbackPercentage: Int = 0,
+        var bundleId: String = "",
+        var bundleGroupId: String = "",
+        var bundleName: String = "",
+        var bundlePrice: Long = 0,
+        var bundlePriceFmt: String = "",
+        var bundleOriginalPrice: Long = 0,
+        var bundleOriginalPriceFmt: String = "",
+        var bundleMinOrder: Int = 0,
+        var bundleMaxOrder: Int = 0,
+        var bundleQty: Int = 0,
+        var bundleLabelQty: Int = 0,
+        var bundleMultiplier: Int = 0,
+        var bundleIconUrl: String = "",
+        var slashPriceLabel: String = "",
+        var isBundlingItem: Boolean = false,
+        var showBundlingHeader: Boolean = false,
+        var showBottomDivider: Boolean = false,
+        var isLastProductItem: Boolean = false,
+        var editBundleApplink: String = "",
 
         // Fields below are for analytics purpose only
         var campaignId: String = "",
@@ -89,4 +111,56 @@ data class MiniCartProductUiModel(
         )
     }
 
+    fun hasDeleteAction(): Boolean {
+            return productActions.find { it.id == ACTION_DELETE } != null
+    }
+
+    fun setQuantity(qty: Int) {
+            if(isBundlingItem) {
+                    bundleQty = qty
+                    productQty = bundleMultiplier * qty
+            } else {
+                    productQty = qty
+            }
+    }
+
+    fun getQuantity(): Int {
+            return if(isBundlingItem) {
+                    bundleQty
+            } else {
+                    productQty
+            }
+    }
+
+    fun getPrice(): Long {
+            return if(isBundlingItem) {
+                    bundlePrice
+            } else {
+                    productPrice
+            }
+    }
+
+    fun getOriginalPrice(): Long {
+            return if(isBundlingItem) {
+                    bundleOriginalPrice
+            } else {
+                    productOriginalPrice
+            }
+    }
+
+    fun getMaxOrder(): Int {
+            return if(isBundlingItem) {
+                    bundleMaxOrder
+            } else {
+                    productMaxOrder
+            }
+    }
+
+    fun getMinOrder(): Int {
+            return if(isBundlingItem) {
+                    bundleMinOrder
+            } else {
+                    productMinOrder
+            }
+    }
 }

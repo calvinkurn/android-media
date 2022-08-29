@@ -66,7 +66,6 @@ class CalendarWidgetItemViewModelTest {
 
             viewModel.subscribeUserForPushNotification(1)
 
-            assertEquals(viewModel.getShowLoginData().value , true)
         }
     }
 
@@ -87,7 +86,6 @@ class CalendarWidgetItemViewModelTest {
 
             viewModel.unSubscribeUserForPushNotification(1)
 
-            assertEquals(viewModel.getShowLoginData().value , true)
         }
     }
     @Test
@@ -106,7 +104,6 @@ class CalendarWidgetItemViewModelTest {
 
             viewModel.checkUserPushStatus(1)
 
-            assertEquals(viewModel.getShowLoginData().value , true)
         }
     }
 

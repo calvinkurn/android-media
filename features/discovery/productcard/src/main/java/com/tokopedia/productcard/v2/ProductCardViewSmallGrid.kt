@@ -15,7 +15,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 
 /**
  * ProductCardView with Small Grid layout.
@@ -288,7 +287,7 @@ class ProductCardViewSmallGrid: ProductCardView {
     }
 
     fun setLabelPreOrderInvisible(isInvisible: Boolean){
-        label_pre_order?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
+        labelPreOrder?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 
     fun setlabelDiscountInvisible(isInvisible: Boolean) {

@@ -28,6 +28,10 @@ data class Data(
         var districtId: Long = 0,
         @SerializedName("district_name")
         var districtName: String = "",
+        @SerializedName("province_name")
+        var provinceName: String = "",
+        @SerializedName("city_name")
+        var cityName: String = "",
         @SerializedName("formatted_address")
         var formattedAddress: String = "",
         @SerializedName("full_data")

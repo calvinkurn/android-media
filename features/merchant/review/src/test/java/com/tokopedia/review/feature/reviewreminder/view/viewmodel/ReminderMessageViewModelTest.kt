@@ -22,11 +22,11 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
 
     @Test
     fun `when fetch reminder counter fail should update error value`() {
-        val errorMessage = anyString()
-        coEvery { productrevGetReminderCounterUseCase.executeOnBackground() } throws Throwable(errorMessage)
+        val throwable = Throwable()
+        coEvery { productrevGetReminderCounterUseCase.executeOnBackground() } throws throwable
         viewModel.fetchReminderCounter()
         coVerify { productrevGetReminderCounterUseCase.executeOnBackground() }
-        viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getError().verifyValueEquals(throwable)
         viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
@@ -42,11 +42,11 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
 
     @Test
     fun `when fetch reminder template fail should update error value`() {
-        val errorMessage = anyString()
-        coEvery { productrevGetReminderTemplateUseCase.executeOnBackground() } throws Throwable(errorMessage)
+        val throwable = Throwable()
+        coEvery { productrevGetReminderTemplateUseCase.executeOnBackground() } throws throwable
         viewModel.fetchReminderTemplate()
         coVerify { productrevGetReminderTemplateUseCase.executeOnBackground() }
-        viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getError().verifyValueEquals(throwable)
         viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
@@ -62,11 +62,11 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
 
     @Test
     fun `when fetch product list fail should update error value`() {
-        val errorMessage = anyString()
-        coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws Throwable(errorMessage)
+        val throwable = Throwable()
+        coEvery { productrevGetReminderListUseCase.executeOnBackground() } throws throwable
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
-        viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getError().verifyValueEquals(throwable)
         viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 

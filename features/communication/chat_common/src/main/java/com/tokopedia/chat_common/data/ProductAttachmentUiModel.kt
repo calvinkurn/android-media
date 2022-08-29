@@ -35,7 +35,7 @@ open class ProductAttachmentUiModel protected constructor(
         private set
     var canShowFooter: Boolean = builder.canShowFooter
         private set
-    var priceInt: Long = builder.priceInt
+    var priceNumber: Double = builder.priceNumber
         private set
     var category: String = builder.category
         private set
@@ -43,10 +43,10 @@ open class ProductAttachmentUiModel protected constructor(
         private set
     var priceBefore: String = builder.priceBefore
         private set
-    var shopId: Long = builder.shopId
+    var shopId: String = builder.shopId
     var freeShipping: FreeShipping = builder.freeShipping
     var playStoreData: PlayStoreData = builder.playStoreData
-    var categoryId: Long = builder.categoryId
+    var categoryId: String = builder.categoryId
     var minOrder: Int = builder.minOrder
     var variants: List<AttachmentVariant> = builder.variants
     var remainingStock: Int = builder.remainingStock
@@ -68,10 +68,11 @@ open class ProductAttachmentUiModel protected constructor(
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
                     && priceBefore != productPrice && dropPercentage != "0"
         }
-    val stringBlastId: String get() = blastId.toString()
-    var campaignId: Long = builder.campaignId
+    val stringBlastId: String get() = blastId
+    var campaignId: String = builder.campaignId
     var isFulfillment: Boolean = builder.isFulfillment
     var urlTokocabang: String = builder.urlTokoCabang
+    var descTokoCabang: String = builder.descTokoCabang
     var parentId: String = "0"
 
     var colorVariantId: String = ""
@@ -84,6 +85,8 @@ open class ProductAttachmentUiModel protected constructor(
 
     var isUpcomingCampaign: Boolean = builder.isUpcomingCampaign
     var locationStock: LocationStock = builder.locationStock
+    var androidUrl: String = builder.androidUrl
+    var iosUrl: String = builder.iosUrl
 
     init {
         if (variants.isNotEmpty()) {
@@ -105,7 +108,7 @@ open class ProductAttachmentUiModel protected constructor(
             productPrice = attribute.productProfile.price
             productUrl = attribute.productProfile.url
             productImage = attribute.productProfile.imageUrl
-            priceInt = attribute.productProfile.priceInt
+            priceNumber = attribute.productProfile.priceInt
             category = attribute.productProfile.category
             variants = attribute.productProfile.variant ?: emptyList()
             dropPercentage = attribute.productProfile.dropPercentage
@@ -124,6 +127,7 @@ open class ProductAttachmentUiModel protected constructor(
             campaignId = attribute.productProfile.campaignId
             isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
+            descTokoCabang = attribute.productProfile.descTokocabang
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
@@ -132,6 +136,8 @@ open class ProductAttachmentUiModel protected constructor(
             isSupportVariant = attribute.productProfile.isSupportVariant
             isUpcomingCampaign = attribute.productProfile.isUpcomingCampaign
             locationStock = attribute.productProfile.locationStock
+            androidUrl = attribute.productProfile.androidUrl
+            iosUrl = attribute.productProfile.iosUrl
         }
     }
 
@@ -144,11 +150,11 @@ open class ProductAttachmentUiModel protected constructor(
         for (variant in variants) {
             val variantOption = variant.options
             if (variantOption.isColor()) {
-                colorVariantId = variantOption.id.toString()
+                colorVariantId = variantOption.id
                 colorVariant = variantOption.value
                 colorHexVariant = variantOption.hex
             } else {
-                sizeVariantId = variantOption.id.toString()
+                sizeVariantId = variantOption.id
                 sizeVariant = variantOption.value
             }
         }
@@ -164,26 +170,6 @@ open class ProductAttachmentUiModel protected constructor(
 
     fun getFreeShippingImageUrl(): String {
         return freeShipping.imageUrl
-    }
-
-    fun getAtcEventLabel(): String {
-        val atcEventLabel = when {
-            blastId == 0L -> "chat"
-            blastId == -1L -> "drop price alert"
-            blastId == -2L -> "limited stock"
-            blastId > 0 -> "broadcast"
-            else -> "chat"
-        }
-
-        return "$atcEventLabel - $blastId"
-    }
-
-    fun getAtcEventAction(): String {
-        return "click atc on bottom sheet"
-    }
-
-    fun getBuyEventAction(): String {
-        return "click buy on bottom sheet"
     }
 
     fun hasVariant(): Boolean {
@@ -231,7 +217,7 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     private fun getField(): String {
-        return if (blastId > 0) {
+        return if (blastId.isNotEmpty() && blastId != "0") {
             "/broadcast"
         } else {
             "/chat"
@@ -243,15 +229,11 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     fun fromBroadcast(): Boolean {
-        return blastId != 0L
-    }
-
-    fun isFlashSaleProduct(): Boolean {
-        return campaignId == -10000L
+        return (blastId.isNotEmpty() && blastId != "0")
     }
 
     fun isProductCampaign(): Boolean {
-        return campaignId != 0L
+        return campaignId != "0"
     }
 
     fun getProductSource(): String {
@@ -302,7 +284,7 @@ open class ProductAttachmentUiModel protected constructor(
         if (hasSizeVariant()) {
             val size = JsonObject()
             val sizeOption = JsonObject()
-            sizeOption.addProperty("id", sizeVariantId.toInt())
+            sizeOption.addProperty("id", sizeVariantId.toLongOrNull() ?: 0)
             sizeOption.addProperty("value", sizeVariant)
             size.add("option", sizeOption)
             list.add(size)
@@ -328,13 +310,13 @@ open class ProductAttachmentUiModel protected constructor(
         internal var productUrl: String = ""
         internal var productImage: String = ""
         internal var canShowFooter: Boolean = false
-        internal var priceInt: Long = 0
+        internal var priceNumber: Double = 0.0
         internal var category: String = ""
         internal var dropPercentage: String = ""
         internal var priceBefore: String = ""
-        internal var shopId: Long = 0
+        internal var shopId: String = "0"
         internal var freeShipping: FreeShipping = FreeShipping()
-        internal var categoryId: Long = 0
+        internal var categoryId: String = "0"
         internal var playStoreData: PlayStoreData = PlayStoreData()
         internal var minOrder: Int = 1
         internal var remainingStock: Int = 0
@@ -346,11 +328,14 @@ open class ProductAttachmentUiModel protected constructor(
         internal var images: List<String> = emptyList()
         internal var needSync: Boolean = true
         internal var isSupportVariant: Boolean = false
-        internal var campaignId: Long = 0
+        internal var campaignId: String = "0"
         internal var locationStock: LocationStock = LocationStock()
         internal var isUpcomingCampaign: Boolean = false
         internal var isFulfillment: Boolean = false
         internal var urlTokoCabang: String = ""
+        internal var descTokoCabang: String = ""
+        internal var androidUrl: String = ""
+        internal var iosUrl: String = ""
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -381,6 +366,9 @@ open class ProductAttachmentUiModel protected constructor(
             withIsUpcomingCampaign(product.productProfile.isUpcomingCampaign)
             withIsFulfillment(product.productProfile.isFulFillment)
             withUrlTokoCabang(product.productProfile.urlTokocabang)
+            withDescTokoCabang(product.productProfile.descTokocabang)
+            withAndroidUrl(product.productProfile.androidUrl)
+            withIOSUrl(product.productProfile.iosUrl)
             return self()
         }
 
@@ -419,8 +407,8 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withPriceInt(priceInt: Long): Builder {
-            this.priceInt = priceInt
+        fun withPriceInt(priceInt: Double): Builder {
+            this.priceNumber = priceInt
             return self()
         }
 
@@ -439,7 +427,7 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withShopId(shopId: Long): Builder {
+        fun withShopId(shopId: String): Builder {
             this.shopId = shopId
             return self()
         }
@@ -449,7 +437,7 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withCategoryId(categoryId: Long): Builder {
+        fun withCategoryId(categoryId: String): Builder {
             this.categoryId = categoryId
             return self()
         }
@@ -479,8 +467,8 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withVariants(variants: List<AttachmentVariant>): Builder {
-            this.variants = variants
+        fun withVariants(variants: List<AttachmentVariant>?): Builder {
+            this.variants = variants?: emptyList()
             return self()
         }
 
@@ -509,7 +497,7 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withCampaignId(campaignId: Long): Builder {
+        fun withCampaignId(campaignId: String): Builder {
             this.campaignId = campaignId
             return self()
         }
@@ -531,6 +519,21 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withUrlTokoCabang(urlTokoCabang: String): Builder {
             this.urlTokoCabang = urlTokoCabang
+            return self()
+        }
+
+        fun withDescTokoCabang(descTokoCabang: String): Builder {
+            this.descTokoCabang = descTokoCabang
+            return self()
+        }
+
+        fun withAndroidUrl(androidUrl: String): Builder {
+            this.androidUrl = androidUrl
+            return self()
+        }
+
+        fun withIOSUrl(iosUrl: String) : Builder {
+            this.iosUrl = iosUrl
             return self()
         }
 

@@ -1,46 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:viewBindingIgnore="true">
+
+    <View
+        android:id="@+id/topSeperator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/chooseCredit"
         layout="@layout/topads_dash_choose_topup_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/saveBtn"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/topSeperator" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/cancelBtn"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/topads_common_cancel_btn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/saveBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chooseCredit"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost" />
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:elevation="@dimen/spacing_lvl2"
+        android:background="@color/Unify_Static_White"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:padding="@dimen/spacing_lvl3">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/saveBtn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/topads_dash_aktifan"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cancelBtn"
-        app:layout_constraintTop_toBottomOf="@id/chooseCredit"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="filled" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/cancelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:text="@string/topads_common_cancel_btn"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_weight="1"
+            android:text="@string/topads_dash_aktifan"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+    </LinearLayout>
+</LinearLayout>

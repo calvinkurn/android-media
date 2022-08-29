@@ -3,8 +3,10 @@ package com.tokopedia.vouchercreation.common.utils
 import android.content.Context
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.SetVoucherPeriodFragment
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -21,14 +23,16 @@ object DateTimeUtils {
 
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_FORMAT = "dd MMM yyyy"
+    const val DATE_FORMAT_DAY_MONTH = "dd MMM"
     const val HOUR_FORMAT = "HH:mm"
 
     const val EXTRA_HOUR = 3
     const val EXTRA_MINUTE = 30
     const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
+    const val EXTRA_DAYS_COUPON = 31
     const val MINUTE_INTERVAL = 30
-
+    const val ROLLOUT_DATE_THRESHOLD_TIME = 1647536401000L
 
     private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
     private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
@@ -96,6 +100,8 @@ object DateTimeUtils {
 
     fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
 
+    fun Context.isBeforeRollout() = getToday().timeInMillis.orZero() < ROLLOUT_DATE_THRESHOLD_TIME
+
     /**
      * Minimum start time should be 3 hours after current time
      */
@@ -133,6 +139,29 @@ object DateTimeUtils {
                     add(Calendar.DATE, EXTRA_DAYS)
                 }
             }
+
+    fun Context.getCouponMaxStartDate() =
+        getToday().apply {
+            add(Calendar.DATE, EXTRA_DAYS_COUPON)
+        }
+
+    fun getCouponMaxEndDate(startCalendar: GregorianCalendar?): GregorianCalendar =
+        startCalendar?.let { startDate ->
+            GregorianCalendar().apply {
+                time = startDate.time
+                add(Calendar.DATE, EXTRA_DAYS_COUPON)
+            }
+        } ?: GregorianCalendar()
+
+    fun GregorianCalendar.roundDate() {
+        val minute = get(Calendar.MINUTE)
+        if (minute <= MINUTE_INTERVAL) {
+            set(Calendar.MINUTE, MINUTE_INTERVAL)
+        } else {
+            set(Calendar.MINUTE, 0)
+            add(Calendar.HOUR, EXTRA_HOUR)
+        }
+    }
 
     internal fun getDisplayedDateString(context: Context?,
                                         startDate: String,

@@ -95,7 +95,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         )
         if (walletUiModel.isFailed) {
             adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
-            viewModel.getBalanceAndPoint(walletUiModel.id)
+            viewModel.getBalanceAndPoint(walletUiModel.id, walletUiModel.hideTitle)
         } else if (!walletUiModel.applink.isEmpty()) {
             goToApplink(walletUiModel.applink)
         }
@@ -136,7 +136,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfigVertical.forEach {
                 adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
-                viewModel.getBalanceAndPoint(it.id)
+                viewModel.getBalanceAndPoint(it.id, it.hideTitle)
             }
         }
 
@@ -145,7 +145,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             centralizedUserAssetConfig.assetConfigHorizontal.forEach {
                 if (it.id == AccountConstants.WALLET.CO_BRAND_CC) {
                     adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
-                    viewModel.getBalanceAndPoint(it.id)
+                    viewModel.getBalanceAndPoint(it.id, it.hideTitle)
                 } else {
                     adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletUiModel(it))
                 }
@@ -166,7 +166,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
         if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC && balanceAndPoint.isActive) {
             val wallet = UiModelMapper.getWalletUiModel(
-                balanceAndPoint
+                    balanceAndPoint
             ).apply {
                 this.isVertical = false
             }

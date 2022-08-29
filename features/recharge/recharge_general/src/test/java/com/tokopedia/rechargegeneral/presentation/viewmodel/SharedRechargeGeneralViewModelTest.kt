@@ -26,9 +26,9 @@ class SharedRechargeGeneralViewModelTest {
 
     @Test
     fun setRecommendationItem() {
-        val recommendationItem = TopupBillsRecommendation(productId = 1)
+        val recommendationItem = TopupBillsRecommendation(productId = "1")
         val observer = Observer<TopupBillsRecommendation> {
-            assertEquals(it.productId, 1)
+            assertEquals(it.productId, "1")
         }
 
         try {

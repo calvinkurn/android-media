@@ -7,7 +7,10 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.AnimatedInfos
+import com.tokopedia.mvcwidget.MVCActivityCallbacks
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
@@ -36,6 +39,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     private val mvcActivityCallbacks = MVCActivityCallbacks()
 
     var shopId: String = ""
+    var productId = ""
     var isTokomember = false
     val mvcTracker = MvcTracker()
 
@@ -68,13 +72,13 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 startActivityForResultFunction?.invoke()
             } else {
                 if (context is AppCompatActivity) {
-                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source, productId = this.productId, hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
                 } else {
-                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC))
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source, productId = this.productId, hashCode = mvcActivityCallbacks.hashCodeForMVC))
                 }
             }
 
-            mvcTracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
+            mvcTracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember, this.productId)
         }
     }
 
@@ -87,10 +91,12 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 shopId: String,
                 @MvcSource source: Int,
                 startActivityForResultFunction: (() -> Unit)? = null,
-                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl()
+                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl(),
+                productId: String = ""
     ) {
         this.source = source
         this.shopId = shopId
+        this.productId = productId
         this.startActivityForResultFunction = startActivityForResultFunction
         this.mvcTracker.trackerImpl = mvcTrackerImpl
         mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl

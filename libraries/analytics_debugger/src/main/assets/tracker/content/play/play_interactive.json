@@ -33,6 +33,115 @@
       "currentSite":"tokopediamarketplace",
       "sessionIris":".*",
       "userId":".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - quiz widget",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - quiz widget",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - follow quiz popup",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - follow quiz popup",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - multiple choice quiz popup",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - multiple choice quiz popup",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - quiz leaderboard bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },{
+      "event": "viewContentIris",
+      "eventAction": "view - refresh button leaderboard bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - refresh button leaderboard bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - hasil game button",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - hasil game button",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

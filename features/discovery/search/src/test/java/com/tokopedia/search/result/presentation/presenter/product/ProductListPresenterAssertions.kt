@@ -3,30 +3,35 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope
 
-fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
-    productListView.stopPreparePagePerformanceMonitoring()
-    productListView.startNetworkRequestPerformanceMonitoring()
+fun MockKVerificationScope.verifyShowLoading(
+    productListView: ProductListSectionContract.View,
+    performanceMonitoring: PageLoadTimePerformanceInterface,
+) {
+    performanceMonitoring.stopPreparePagePerformanceMonitoring()
+    performanceMonitoring.startNetworkRequestPerformanceMonitoring()
 
     productListView.showRefreshLayout()
 }
 
 fun MockKVerificationScope.verifyProcessingData(
-        productListView: ProductListSectionContract.View,
-        searchProductModel: SearchProductModel,
-        visitableListSlot: CapturingSlot<List<Visitable<*>>>
+    productListView: ProductListSectionContract.View,
+    performanceMonitoring: PageLoadTimePerformanceInterface,
+    searchProductModel: SearchProductModel,
+    visitableListSlot: CapturingSlot<List<Visitable<*>>>
 ) {
-    productListView.stopNetworkRequestPerformanceMonitoring()
-    productListView.startRenderPerformanceMonitoring()
+    performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
+    performanceMonitoring.startRenderPerformanceMonitoring()
 
     productListView.isLandingPage
 
@@ -40,7 +45,6 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.setProductList(capture(visitableListSlot))
     productListView.backToTop()
     productListView.addLoading()
-    productListView.stopTracePerformanceMonitoring()
 }
 
 fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSectionContract.View) {
@@ -50,14 +54,14 @@ fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSection
 fun MockKVerificationScope.verifyShowError(productListView: ProductListSectionContract.View) {
     productListView.showRefreshLayout()
     productListView.removeLoading()
-    productListView.showNetworkError(any(), any())
+    productListView.showNetworkError(any())
     productListView.hideRefreshLayout()
 }
 
-fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListSectionContract.View, startRow: Int = 0) {
+fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListSectionContract.View) {
     productListView.removeLoading()
     productListView.hideRefreshLayout()
-    productListView.showNetworkError(startRow, any())
+    productListView.showNetworkError(any())
 }
 
 fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {

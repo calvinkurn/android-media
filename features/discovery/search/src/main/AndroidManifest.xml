@@ -12,7 +12,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_search_result"
             android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/Theme.White"
+            android:theme="@style/DiscoveryTheme"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

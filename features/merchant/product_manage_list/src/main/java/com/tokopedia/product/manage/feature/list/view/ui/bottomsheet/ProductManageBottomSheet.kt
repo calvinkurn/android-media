@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -16,9 +19,12 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ProductManageBottomSheet : BottomSheetUnify() {
 
@@ -38,15 +44,32 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     }
 
     private var menuAdapterListener: ProductMenuListener? = null
-    private var sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener? = null
+    private var sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener? =
+        null
     private var menuAdapter: ProductMenuAdapter? = null
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
     private var product: ProductUiModel? = null
     private var isPowerMerchantOrOfficialStore: Boolean = false
-    
+    private var isProductCouponEnabled: Boolean = true
+    var menuLayoutManager: LinearLayoutManager? = null
+
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var binding by autoClearedNullable<BottomSheetProductManageBinding>()
+
+    val menuList: RecyclerView?
+        get() = binding?.menuList
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initRemoteConfigValue()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         setupChildView(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -54,8 +77,46 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.run {
-            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@ProductManageBottomSheet)?.commit()
+            parentFragment?.childFragmentManager?.beginTransaction()
+                ?.remove(this@ProductManageBottomSheet)?.commit()
         }
+    }
+
+    fun init(
+        productMenuListener: ProductMenuListener,
+        sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener
+    ) {
+
+        this.menuAdapterListener = productMenuListener
+        this.sellerFeatureCarouselListener = sellerFeatureCarouselListener
+    }
+
+    fun show(
+        fm: FragmentManager,
+        product: ProductUiModel,
+        isPowerMerchantOrOfficialStore: Boolean
+    ) {
+        this.product = product
+        this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
+        show(fm, TAG)
+    }
+
+    fun dismiss(fm: FragmentManager) {
+        (fm.findFragmentByTag(TAG) as? BottomSheetUnify)?.dismissAllowingStateLoss()
+    }
+
+    private fun initRemoteConfigValue() {
+        isProductCouponEnabled =
+            try {
+                context?.let {
+                    FirebaseRemoteConfigImpl(it).getBoolean(
+                        RemoteConfigKey.ENABLE_MVC_PRODUCT,
+                        true
+                    )
+                }.orFalse()
+            } catch (ex: Exception) {
+                false
+            }
     }
 
     private fun setupView(binding: BottomSheetProductManageBinding) {
@@ -68,15 +129,16 @@ class ProductManageBottomSheet : BottomSheetUnify() {
             val menuList = menuList
             menuAdapter = ProductMenuAdapter(it)
             menuList.adapter = menuAdapter
-        }
-
-        if(GlobalConfig.isSellerApp()) {
-            menuList.clearItemDecoration()
+            menuList.layoutManager = LinearLayoutManager(requireContext())
         }
 
         product?.let { product ->
-            val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
-            
+            val menu = createProductManageMenu(
+                product,
+                isPowerMerchantOrOfficialStore,
+                isProductCouponEnabled
+            )
+
             if (!GlobalConfig.isSellerApp()) {
                 val sellerFeatureList = createSellerFeatureList(product)
                 sellerFeatureCarousel.setItems(sellerFeatureList)
@@ -84,6 +146,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
             menuAdapter?.clearAllElements()
             menuAdapter?.addElement(menu)
+            menuLayoutManager = menuList.layoutManager as LinearLayoutManager
         }
     }
 
@@ -98,7 +161,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
     private fun setupChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        val binding = BottomSheetProductManageBinding.inflate(
+        binding = BottomSheetProductManageBinding.inflate(
             inflater,
             container,
             false
@@ -107,12 +170,13 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
         val menuTitle = context?.getString(R.string.product_manage_bottom_sheet_title).orEmpty()
         setTitle(menuTitle)
-        setChild(binding.root)
+        setChild(binding?.root)
     }
 
     private fun createProductManageMenu(
         product: ProductUiModel,
-        isPowerMerchantOrOfficialStore: Boolean
+        isPowerMerchantOrOfficialStore: Boolean,
+        isProductCouponEnabled: Boolean
     ): List<Visitable<*>> {
         val menuList = mutableListOf<Visitable<*>>()
 
@@ -122,41 +186,41 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
                 add(Preview(product))
 
-                if(duplicateProduct) {
+                if (duplicateProduct) {
                     add(Duplicate(product))
                 }
 
-                if(GlobalConfig.isSellerApp() && setStockReminder) {
+                if (GlobalConfig.isSellerApp() && setStockReminder) {
                     add(StockReminder(product))
                 }
 
-                if(deleteProduct) {
+                if (deleteProduct) {
                     add(Delete(product))
                 }
 
-                if(GlobalConfig.isSellerApp()) {
+                if (GlobalConfig.isSellerApp()) {
                     add(ProductItemDivider)
 
-                    if(setTopAds) {
+                    if (setTopAds) {
                         when {
                             product.hasTopAds() -> add(SeeTopAds(product))
                             else -> add(SetTopAds(product))
                         }
                     }
 
-                    if(broadcastChat) {
-                        add(CreateBroadcastChat(product))
+                    if (isProductCouponEnabled) {
+                        add(CreateProductCoupon(product))
                     }
 
-                    if(setCashBack) {
-                        add(SetCashBack(product))
+                    if (broadcastChat) {
+                        add(CreateBroadcastChat(product))
                     }
 
                     if(isFeatured && isPowerMerchantOrOfficialStore && setFeatured) {
                         add(RemoveFeaturedProduct(product))
                     }
 
-                    if(!isFeatured && product.isActive() && setFeatured) {
+                    if (!isFeatured && product.isActive() && setFeatured) {
                         add(SetFeaturedProduct(product))
                     }
                 }
@@ -165,57 +229,34 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
         return menuList
     }
-    
+
     private fun createSellerFeatureList(product: ProductUiModel): List<SellerFeatureUiModel> {
         val featureList = mutableListOf<SellerFeatureUiModel>()
 
         access?.run {
             featureList.apply {
-                if(multiSelect) {
+                if (multiSelect) {
                     add(SellerFeatureUiModel.MultiEditFeatureWithDataUiModel(product))
                 }
 
-                if(setTopAds) {
+                if (setTopAds) {
                     add(SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product))
                 }
 
-                if(setCashBack) {
-                    add(SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product))
-                }
-
-                if(setFeatured) {
+                if (setFeatured) {
                     add(SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product))
                 }
 
-                if(setStockReminder) {
+                if (setStockReminder) {
                     add(SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product))
                 }
 
-                if(broadcastChat) {
-                   add(SellerFeatureUiModel.BroadcastChatProductManageUiModel(product))
+                if (broadcastChat) {
+                    add(SellerFeatureUiModel.BroadcastChatProductManageUiModel(product))
                 }
             }
         }
 
         return featureList
-    }
-
-    fun init(
-            productMenuListener: ProductMenuListener,
-            sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener
-    ) {
-
-        this.menuAdapterListener = productMenuListener
-        this.sellerFeatureCarouselListener = sellerFeatureCarouselListener
-    }
-
-    fun show(fm: FragmentManager, product: ProductUiModel, isPowerMerchantOrOfficialStore: Boolean) {
-        this.product = product
-        this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
-        show(fm, TAG)
-    }
-
-    fun dismiss(fm: FragmentManager) {
-        (fm.findFragmentByTag(TAG) as? BottomSheetUnify)?.dismissAllowingStateLoss()
     }
 }

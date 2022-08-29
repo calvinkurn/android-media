@@ -5,15 +5,20 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
+import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
-import kotlinx.android.synthetic.main.similar_search_original_product_layout.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
+import kotlin.LazyThreadSafetyMode.NONE
 
 internal class OriginalProductView
     @JvmOverloads
@@ -26,6 +31,58 @@ internal class OriginalProductView
                     .inflate(R.layout.similar_search_original_product_layout, this, true)
     private var originalProductCardViewAnimator: OriginalProductViewAnimator? = null
     private var originalProductViewListener: OriginalProductViewListener? = null
+
+    private val cardViewOriginalProductSimilarSearch: CardView? by lazy(NONE) {
+        findViewById(R.id.cardViewOriginalProductSimilarSearch)
+    }
+    private val imageProduct: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.imageProduct)
+    }
+    private val buttonWishlist: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.buttonWishlist)
+    }
+    private val buttonBuy: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonBuy)
+    }
+    private val buttonAddToCart: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCart)
+    }
+    private val buttonAddToCartCollapsed: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCartCollapsed)
+    }
+    private val textViewProductName: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewProductName)
+    }
+    private val textViewPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewPrice)
+    }
+    private val textViewProductNameCollapsed: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewProductNameCollapsed)
+    }
+    private val textViewShopLocation: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewShopLocation)
+    }
+    private val textViewReviewCount: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewReviewCount)
+    }
+    private val linearLayoutImageRating: LinearLayout? by lazy(NONE) {
+        findViewById(R.id.linearLayoutImageRating)
+    }
+    private val imageViewRating1: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.imageViewRating1)
+    }
+    private val imageViewRating2: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.imageViewRating2)
+    }
+    private val imageViewRating3: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.imageViewRating3)
+    }
+    private val imageViewRating4: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.imageViewRating4)
+    }
+    private val imageViewRating5: ImageUnify? by lazy(NONE) {
+        findViewById(R.id.imageViewRating5)
+    }
 
     fun bindOriginalProductView(similarSearchOriginalProduct: Product, originalProductViewListener: OriginalProductViewListener) {
         this.originalProductViewListener = originalProductViewListener
@@ -45,13 +102,13 @@ internal class OriginalProductView
     }
 
     private fun initCardViewOriginalProduct() {
-        inflatedView.cardViewOriginalProductSimilarSearch?.setOnClickListener {
+        cardViewOriginalProductSimilarSearch?.setOnClickListener {
             originalProductViewListener?.onItemClicked()
         }
     }
 
     private fun initImageProduct(similarSearchOriginalProduct: Product) {
-        ImageHandler.loadImageRounded2(context, inflatedView.imageProduct, similarSearchOriginalProduct.imageUrl, 6f.toPx())
+        ImageHandler.loadImageRounded2(context, imageProduct, similarSearchOriginalProduct.imageUrl, 6f.toPx())
     }
 
     private fun Float.toPx(): Float {
@@ -65,31 +122,31 @@ internal class OriginalProductView
     private fun initButtonWishlist(similarSearchOriginalProduct: Product) {
         updateWishlistStatus(similarSearchOriginalProduct.isWishlisted)
 
-        inflatedView.buttonWishlist?.setOnClickListener {
+        buttonWishlist?.setOnClickListener {
             originalProductViewListener?.onButtonWishlistClicked()
         }
     }
 
     fun updateWishlistStatus(isWishlisted: Boolean) {
         if (isWishlisted) {
-            inflatedView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
+            buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
         }
         else {
-            inflatedView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
+            buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
         }
     }
 
     private fun initProductName(similarSearchOriginalProduct: Product) {
-        inflatedView.textViewProductName?.text = similarSearchOriginalProduct.name
-        inflatedView.textViewProductNameCollapsed?.text = similarSearchOriginalProduct.name
+        textViewProductName?.text = similarSearchOriginalProduct.name
+        textViewProductNameCollapsed?.text = similarSearchOriginalProduct.name
     }
 
     private fun initProductPrice(similarSearchOriginalProduct: Product) {
-        inflatedView.textViewPrice?.text = similarSearchOriginalProduct.price
+        textViewPrice?.text = similarSearchOriginalProduct.price
     }
 
     private fun initShopLocation(similarSearchOriginalProduct: Product) {
-        inflatedView.textViewShopLocation?.text = similarSearchOriginalProduct.shop.location
+        textViewShopLocation?.text = similarSearchOriginalProduct.shop.location
     }
 
     private fun initRating(similarSearchOriginalProduct: Product) {
@@ -102,17 +159,17 @@ internal class OriginalProductView
     }
 
     private fun hideRating() {
-        inflatedView.linearLayoutImageRating?.visibility = View.GONE
+        linearLayoutImageRating?.visibility = View.GONE
     }
 
     private fun showRating(rating: Int) {
-        inflatedView.linearLayoutImageRating?.visibility = View.VISIBLE
+        linearLayoutImageRating?.visibility = View.VISIBLE
 
-        inflatedView.imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
-        inflatedView.imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
-        inflatedView.imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
-        inflatedView.imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
-        inflatedView.imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+        imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
+        imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
+        imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
+        imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
+        imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
     }
 
     @DrawableRes
@@ -122,23 +179,23 @@ internal class OriginalProductView
     }
 
     private fun initReview(similarSearchOriginalProduct: Product) {
-        inflatedView.textViewReviewCount?.shouldShowWithAction(similarSearchOriginalProduct.countReview != 0) {
-            inflatedView.textViewReviewCount?.text = context.getString(R.string.similar_search_original_product_review_count, similarSearchOriginalProduct.countReview.toString())
+        textViewReviewCount?.shouldShowWithAction(similarSearchOriginalProduct.countReview != 0) {
+            textViewReviewCount?.text = context.getString(R.string.similar_search_original_product_review_count, similarSearchOriginalProduct.countReview.toString())
         }
     }
 
     private fun initOnButtonBuyClicked() {
-        inflatedView.buttonBuy?.setOnClickListener {
+        buttonBuy?.setOnClickListener {
             originalProductViewListener?.onButtonBuyClicked()
         }
     }
 
     private fun initOnButtonAddToCartClicked() {
-        inflatedView.buttonAddToCart?.setOnClickListener {
+        buttonAddToCart?.setOnClickListener {
             originalProductViewListener?.onButtonAddToCartClicked()
         }
 
-        inflatedView.buttonAddToCartCollapsed?.setOnClickListener {
+        buttonAddToCartCollapsed?.setOnClickListener {
             originalProductViewListener?.onButtonAddToCartClicked()
         }
     }

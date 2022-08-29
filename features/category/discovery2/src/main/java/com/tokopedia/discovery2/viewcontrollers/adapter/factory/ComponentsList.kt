@@ -45,6 +45,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     QuickCoupon(R.layout.quick_coupon_layout, ComponentNames.QuickCoupon.componentName),
     BannerCarousel(R.layout.horizontal_recycler_view_lihat, ComponentNames.BannerCarousel.componentName),
     BannerCarouselItemView(R.layout.banner_carousel_item_layout, ComponentNames.BannerCarouselItemView.componentName),
+    BannerCarouselShimmer(R.layout.disco_shimmer_carousel_banner_layout, ComponentNames.BannerCarouselShimmer.componentName),
 
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp
@@ -67,8 +68,14 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
     SaleEndState(R.layout.sale_end_state, ComponentNames.SaleEndState.componentName),
 
+    MixLeftEmptyItem(R.layout.disco_mix_left_empty_item,ComponentNames.MixLeftEmptyItem.componentName),
+
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
+
+    //Product Card Single
+    ProductCardSingle(R.layout.disco_product_card_single, ComponentNames.ProductCardSingle.componentName),
+    ProductCardSingleItem(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardSingleItem.componentName),
 
     //Navigation Chips
     NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
@@ -80,8 +87,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Discovery Play Widget
     DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
 
-    DiscoTDNBanner(R.layout.discovery_tdn_banner_view,ComponentNames.DiscoTDNBanner.componentName),
-    MerchantVoucher(R.layout.discovery_mv_view,ComponentNames.MerchantVoucher.componentName),
+    DiscoTDNBanner(R.layout.discovery_tdn_banner_view, ComponentNames.DiscoTDNBanner.componentName),
+    MerchantVoucher(R.layout.discovery_mv_view, ComponentNames.MerchantVoucher.componentName),
     MerchantVoucherCarousel(R.layout.disco_merchant_voucher_carousel, ComponentNames.MerchantVoucherCarousel.componentName),
     MerchantVoucherList(R.layout.disco_merchant_voucher_list, ComponentNames.MerchantVoucherList.componentName),
     MerchantVoucherListItem(R.layout.disco_merchant_voucher_carousel_item, ComponentNames.MerchantVoucherListItem.componentName),
@@ -89,6 +96,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
+    ProductListNetworkErrorLoad(R.layout.discovery_list_2_buttons_empty_state, ComponentNames.ProductListNetworkErrorLoad.componentName),
+
     //Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
 
@@ -96,11 +105,26 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
     Section(R.layout.disco_section_component, ComponentNames.Section.componentName),
+    AnchorTabs(R.layout.disco_anchor_tabs, ComponentNames.AnchorTabs.componentName),
+    AnchorTabsItem(R.layout.disco_anchor_tabs_item, ComponentNames.AnchorTabsItem.componentName),
+    //Rilisan Spesial View
+    ShopCardView(R.layout.horizontal_rv_shop_card_layout, ComponentNames.ShopCardView.componentName),
+
+    //Rilisan Spesial ItemView
+    ShopCardItemView(R.layout.shop_card_item_layout, ComponentNames.ShopCardItemView.componentName),
+
     //Calendar Widget
     CalendarWidgetCarousel(R.layout.discovery_calendar_widget_carousel_layout, ComponentNames.CalendarWidgetCarousel.componentName),
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),
     CalendarWidgetItem(R.layout.discovery_calendar_widget_item_layout, ComponentNames.CalendarWidgetItem.componentName),
     ShimmerCalendarWidget(R.layout.discovery_shimmer_calendar_layout, ComponentNames.ShimmerCalendarWidget.componentName),
-    TopQuestWidget(R.layout.disco_top_quest,ComponentNames.TopQuestWidget.componentName),
+    TopQuestWidget(R.layout.disco_top_quest, ComponentNames.TopQuestWidget.componentName),
+
+    MyCoupon(R.layout.component_my_coupon_layout,ComponentNames.MyCoupon.componentName),
+    MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
+    BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
+    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName),
+    ShopCardInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.ShopCardInfinite.componentName),
+    ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
 
 }

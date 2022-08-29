@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopInfoUiModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
@@ -31,13 +31,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerMenuViewModel @Inject constructor(
-        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
-        private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
-        private val getProductListMetaUseCase: GetProductListMetaUseCase,
-        private val getSellerMenuNotifications: GetSellerNotificationUseCase,
-        private val getShopScoreLevelUseCase: GetShopScoreLevelUseCase,
-        private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers
+    private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
+    private val getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase,
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getSellerMenuNotifications: GetSellerNotificationUseCase,
+    private val getShopScoreLevelUseCase: GetShopScoreLevelUseCase,
+    private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -73,8 +73,8 @@ class SellerMenuViewModel @Inject constructor(
     fun getShopAccountInfo() {
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
-                getShopInfoPeriodUseCase.executeOnBackground()
+                getShopCreatedInfoUseCase.requestParams = GetShopCreatedInfoUseCase.createParams(userSession.shopId.toLongOrZero())
+                getShopCreatedInfoUseCase.executeOnBackground()
             }
             _shopAccountInfo.postValue(Success(data))
         }, onError = {

@@ -1,29 +1,39 @@
 package com.tokopedia.product.addedit.common.util
 
+import android.R
+import android.content.res.ColorStateList
 import android.graphics.drawable.ScaleDrawable
 import android.text.*
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.Exception
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
+private const val DIALOG_MAX_WIDTH = 900
+private const val DIALOG_MARGIN_TOP = 8
 private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
+
+const val MAX_LENGTH_STOCK_INPUT = 7 // including delimiter
 
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
@@ -45,22 +55,26 @@ fun TextFieldUnify?.setModeToNumberInput(maxLength: Int = MAX_LENGTH_NUMBER_INPU
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-            // clean any kind of number formatting here
-            val productPriceInput = charSequence?.toString()?.replace(".", "")
-            productPriceInput?.let {
-                // format the number
-                it.toLongOrNull()?.let { parsedLong ->
-                    textFieldInput.removeTextChangedListener(this)
-                    val formattedText: String = NumberFormat.getNumberInstance(Locale.US)
+            try {
+                val productPriceInput = charSequence?.toString()?.replace(".", "")
+                productPriceInput?.let {
+                    // format the number
+                    it.toLongOrNull()?.let { parsedLong ->
+                        textFieldInput.removeTextChangedListener(this)
+                        val formattedText: String = NumberFormat.getNumberInstance(Locale.US)
                             .format(parsedLong)
                             .toString()
                             .replace(",", ".")
-                    val lengthDiff = formattedText.length - charSequence.length
-                    val cursorPosition = start + count + lengthDiff
-                    textFieldInput.setText(formattedText)
-                    textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
-                    textFieldInput.addTextChangedListener(this)
+                        val lengthDiff = formattedText.length - charSequence.length
+                        val cursorPosition = start + count + lengthDiff
+                        textFieldInput.setText(formattedText)
+                        textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
+                        textFieldInput.addTextChangedListener(this)
+                    }
                 }
+            } catch (e: Exception) {
+                AddEditProductErrorHandler.logMessage("setModeToNumberInput: $charSequence")
+                AddEditProductErrorHandler.logExceptionToCrashlytics(e)
             }
         }
     })
@@ -75,6 +89,18 @@ fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.tex
 fun Typography?.setTextOrGone(text: String) {
     this?.text = text
     this?.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
+}
+
+fun Typography?.displayRequiredAsterisk(visible: Boolean) {
+    this?.run {
+        val asterisk = context.getString(com.tokopedia.product.addedit.R.string.label_asterisk)
+        text = text.toString().replace(asterisk, "")
+        if (visible) {
+            val redAsterisk = context.getString(com.tokopedia.product.addedit.R.string.colored_asterisk)
+            val addedAsteriskText = MethodChecker.fromHtml(text.toString() + redAsterisk)
+            text = addedAsteriskText
+        }
+    }
 }
 
 fun TextFieldUnify?.setHtmlMessage(text: String) {
@@ -159,9 +185,82 @@ fun TextFieldUnify2?.updateText(text: String) {
     }
 }
 
+fun Typography.activateHighlight(isActive: Boolean = true) {
+    val myColorStateList = ColorStateList(
+        arrayOf(
+            intArrayOf(R.attr.state_enabled),
+            intArrayOf(-R.attr.state_enabled)
+        ), intArrayOf(
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500),
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        )
+    )
+    val backgroundColor = if (isActive) {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+    } else {
+        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+    }
+    if (isActive) {
+        setTextColor(myColorStateList)
+    } else {
+        setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    }
+    setBackgroundColor(backgroundColor)
+}
+
+fun DialogUnify.setDefaultMaxWidth(adjustButtonOrientation: Boolean = true) {
+    dialogMaxWidth = DIALOG_MAX_WIDTH
+
+    val isTablet = DeviceScreenInfo.isTablet(context)
+    if (adjustButtonOrientation && isTablet) {
+        setDialogOrientationToVertical()
+    }
+}
+
+fun DialogUnify.setDialogOrientationToVertical() {
+    val paramSecondary = (dialogSecondaryLongCTA.layoutParams as LinearLayout.LayoutParams).apply {
+        setMargins(Int.ZERO, DIALOG_MARGIN_TOP, Int.ZERO, Int.ZERO)
+    }
+
+    dialogSecondaryCTA.gone()
+    dialogSecondaryLongCTA.show()
+    dialogSecondaryLongCTA.layoutParams = paramSecondary
+    dialogCTAContainer.orientation = LinearLayout.VERTICAL
+    dialogCTAContainer.requestLayout()
+
+    dialogSecondaryLongCTA.post {
+        dialogPrimaryCTA.layoutParams = paramSecondary
+        dialogPrimaryCTA.layoutParams.width = dialogSecondaryLongCTA.measuredWidth
+        dialogPrimaryCTA.requestLayout()
+    }
+}
+
+fun CoachMark2.hideCoachmarkWhenTouchOutside(anchorView: View) {
+    anchorView.requestFocus()
+    anchorView.requestFocusFromTouch()
+    anchorView.setOnFocusChangeListener { _, hasFocus ->
+        if (!hasFocus) dismissCoachMark()
+    }
+    setOnDismissListener {
+        anchorView.clearFocus()
+    }
+}
+
 fun Fragment.setFragmentToUnifyBgColor() {
     if (activity != null && context != null) {
         activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
                 context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
+}
+
+fun Ticker.setDescriptionClick(onClick: () -> Unit) {
+    setDescriptionClickEvent(object : TickerCallback {
+        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+            onClick.invoke()
+        }
+
+        override fun onDismiss() {
+            // no-op
+        }
+    })
 }

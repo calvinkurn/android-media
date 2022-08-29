@@ -13,13 +13,14 @@ import com.tokopedia.home.databinding.HomeItemReviewBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.reputation.common.view.AnimatedReputationView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
-import io.embrace.android.embracesdk.Embrace
 
 class ReviewViewHolder(
         itemView: View,
         private val reviewListener: HomeReviewListener,
-        private val categoryListener: HomeCategoryListener
+        private val categoryListener: HomeCategoryListener,
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<ReviewDataModel>(itemView) {
 
     private var binding: HomeItemReviewBinding? by viewBinding()
@@ -30,6 +31,10 @@ class ReviewViewHolder(
         val LAYOUT = R.layout.home_item_review
         private const val FPM_REVIEW = "home_review"
         private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
+        private const val IMAGE_RADIUS = 8
+        private const val CARD_REVIEW_CLICK_AT = 5
+        private const val CARD_REVIEW_CLICK_DELAY = 0L
+        private const val ANIMATED_REVIEW_CLICK_DELAY = 500L
     }
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val performanceTraceName = "mp_home_review_widget_load_time"
@@ -39,8 +44,8 @@ class ReviewViewHolder(
     }
 
     override fun bind(element: ReviewDataModel) {
+        binding?.cardReview?.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         performanceMonitoring?.startTrace(performanceTraceName)
-        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         binding?.reviewCardBg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->
             if (suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
@@ -52,7 +57,7 @@ class ReviewViewHolder(
                         suggestedProductReview.suggestedProductReview.title,
                         suggestedProductReview.suggestedProductReview.description
                 )
-                binding?.imgReview?.loadImageRounded(suggestedProductReview.suggestedProductReview.imageUrl, 8, FPM_REVIEW)
+                binding?.imgReview?.loadImageRounded(suggestedProductReview.suggestedProductReview.imageUrl, IMAGE_RADIUS, FPM_REVIEW)
 
                 itemView.addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
@@ -83,8 +88,8 @@ class ReviewViewHolder(
                         )
                         reviewListener.onReviewClick(
                                 adapterPosition,
-                                5,
-                                0,
+                                CARD_REVIEW_CLICK_AT,
+                                CARD_REVIEW_CLICK_DELAY,
                                 suggestedProductReview.suggestedProductReview.linkURL
                         )
                         isPressed = true
@@ -105,7 +110,7 @@ class ReviewViewHolder(
                             reviewListener.onReviewClick(
                                     adapterPosition,
                                     position,
-                                    500,
+                                    ANIMATED_REVIEW_CLICK_DELAY,
                                     suggestedProductReview.suggestedProductReview.linkURL
                             )
                             isPressed = true
@@ -126,6 +131,5 @@ class ReviewViewHolder(
         }
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
-        Embrace.getInstance().endEvent(performanceTraceName)
     }
 }

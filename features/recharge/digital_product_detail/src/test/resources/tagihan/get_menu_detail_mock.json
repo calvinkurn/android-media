@@ -1,0 +1,148 @@
+{
+  "rechargeCatalogMenuDetail": {
+    "catalog": {
+      "id": 305,
+      "name": "pdp2022_listrik_pln",
+      "label": "Listrik PLN",
+      "icon": ""
+    },
+    "user_perso": {
+      "prefill": "111122223333",
+      "user_type": "new user",
+      "loyalty_status": "new user"
+    },
+    "recommendations": [
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Rp 200.000",
+        "clientNumber": "111122223333",
+        "appLink": "tokopedia://digital/form?category_id\u003d3\u0026menu_id\u003d113\u0026operator_id\u003d6\u0026product_id\u003d176\u0026template\u003dgeneral",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id\u003d3\u0026operator_id\u003d6\u0026product_id\u003d176\u0026client_number\u003d111122223333",
+        "productPrice": 202750,
+        "type": "",
+        "categoryId": 3,
+        "productId": 176,
+        "isATC": false,
+        "description": "",
+        "operatorID": 6
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Tagihan Listrik Bulanan",
+        "clientNumber": "102111106111",
+        "appLink": "tokopedia://digital/form?category_id\u003d3\u0026menu_id\u003d113\u0026operator_id\u003d18\u0026product_id\u003d291\u0026template\u003dgeneral",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id\u003d3\u0026operator_id\u003d18\u0026product_id\u003d291\u0026client_number\u003d102111106111",
+        "productPrice": 10000,
+        "type": "",
+        "categoryId": 3,
+        "productId": 291,
+        "isATC": false,
+        "description": "",
+        "operatorID": 18
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Rp 20.000",
+        "clientNumber": "111111111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d3\u0026menu_id\u003d113\u0026operator_id\u003d6\u0026product_id\u003d182\u0026template\u003dgeneral",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id\u003d3\u0026operator_id\u003d6\u0026product_id\u003d182\u0026client_number\u003d111111111111",
+        "productPrice": 22750,
+        "type": "",
+        "categoryId": 3,
+        "productId": 182,
+        "isATC": false,
+        "description": "",
+        "operatorID": 6
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/866b38b0-baa5-4db7-bb23-09e717d05b8a.png",
+        "title": "Rp 20.000",
+        "clientNumber": "111111111112",
+        "appLink": "tokopedia://digital/form?category_id\u003d3\u0026menu_id\u003d113\u0026operator_id\u003d6\u0026product_id\u003d182\u0026template\u003dgeneral",
+        "webLink": "https://pulsa.tokopedia.com/pln/?category_id\u003d3\u0026operator_id\u003d6\u0026product_id\u003d182\u0026client_number\u003d111111111112",
+        "productPrice": 22750,
+        "type": "",
+        "categoryId": 3,
+        "productId": 182,
+        "isATC": false,
+        "description": "",
+        "operatorID": 6
+      }
+    ],
+    "promos": [
+      {
+        "id": 3876,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/gopay-2",
+        "status": 1,
+        "title": "Cashback hingga 50rb untuk Top-up Pulsa hingga Bayar Tagihan dengan GoPay",
+        "subtitle": "Kode Promo: {GOPAYBYR}",
+        "promo_code": "GOPAYBYR"
+      },
+      {
+        "id": 2252,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_ecb8b9a8-2345-489e-b8d4-4a4a8143f40a.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
+        "status": 1,
+        "title": "Khusus Pengguna Baru. Bayar Tagihan, Cashback s.d Rp100rb.",
+        "subtitle": "Kode Promo: {COBABAYAR}",
+        "promo_code": "COBABAYAR"
+      },
+      {
+        "id": 2093,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/9/30/42484317/42484317_a2884af5-2dc9-4759-9aa5-527113543c99.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-pln-3/",
+        "status": 1,
+        "title": "Bayar Tagihan Apa Saja, cashback hingga Rp50rb.",
+        "subtitle": "Kode Promo: {BAYARINYUK}",
+        "promo_code": "BAYARINYUK"
+      },
+      {
+        "id": 1573,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+        "status": 1,
+        "title": "Bayar Tagihan s.d Pulsa, Dapat Cashback terus-terusan.",
+        "subtitle": "kode promo : {BAYARTERUS}",
+        "promo_code": "BAYARTERUS"
+      },
+      {
+        "id": 2476,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-8/",
+        "status": 1,
+        "title": "Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+        "subtitle": "kode promo : {FASHDG}",
+        "promo_code": "FASHDG"
+      },
+      {
+        "id": 6074,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/paket-data/",
+        "status": 1,
+        "title": "Bayar Tagihan tiap Selasa, Diskon Rp30rb dengan Kartu Kredit CIMB Niaga",
+        "subtitle": "Kode promo: {CIMBBTS30}",
+        "promo_code": "CIMBBTS30"
+      }
+    ],
+    "tickers": [
+      {
+        "ID": 1508,
+        "Name": "Gangguan",
+        "Content": "Mohon maaf saat ini sedang terjadi gangguan. Silahkan cek kembali secara berkala.",
+        "Type": "warning",
+        "Environment": "all",
+        "ActionText": "",
+        "ActionLink": ""
+      }
+    ],
+    "banners": [],
+    "express_checkout": false
+  }
+}

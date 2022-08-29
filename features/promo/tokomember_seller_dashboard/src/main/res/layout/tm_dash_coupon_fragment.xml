@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:measureAllChildren="false"
+    android:id="@+id/viewFlipperCoupon">
+
+    <include layout="@layout/tm_shimmer_layout_coupon_list"/>
+
+    <include layout="@layout/tm_dash_coupon_list"/>
+
+    <include layout="@layout/tm_layout_no_access"/>
+
+</ViewFlipper>

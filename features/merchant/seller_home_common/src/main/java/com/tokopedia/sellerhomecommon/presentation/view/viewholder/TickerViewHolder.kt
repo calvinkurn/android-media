@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcTickerWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -45,14 +46,20 @@ class TickerViewHolder(
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
 
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    val item = itemData as? TickerItemUiModel
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        val item = itemData as? TickerItemUiModel
                         item?.let {
                             RouteManager.route(context, it.redirectUrl)
                         }
                     }
+                    item?.let {
+                        listener.sendTickerCtaClickEvent(it)
+                    }
                 }
             })
+            rootView.addOnImpressionListener(element.impressHolder) {
+                listener.sendTickerImpression(tickerData?.tickers.orEmpty())
+            }
         }
 
         hideTickerIfEmpty(element)
@@ -71,5 +78,8 @@ class TickerViewHolder(
         itemView.requestLayout()
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+        fun sendTickerImpression(tickers: List<TickerItemUiModel>) {}
+        fun sendTickerCtaClickEvent(ticker: TickerItemUiModel) {}
+    }
 }

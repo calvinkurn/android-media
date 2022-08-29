@@ -16,17 +16,22 @@ class AffiliateViewModel @Inject constructor(
 
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var errorMessage = MutableLiveData<Throwable>()
+    private var progressBar = MutableLiveData<Boolean>()
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
+            progressBar.value = true
             validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+            progressBar.value = false
         }, onError = {
             it.printStackTrace()
+            progressBar.value = false
             errorMessage.value = it
         })
     }
 
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
+    fun progressBar(): LiveData<Boolean> = progressBar
 
 }

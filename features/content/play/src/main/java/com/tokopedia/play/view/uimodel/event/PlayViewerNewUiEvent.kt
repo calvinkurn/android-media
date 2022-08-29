@@ -2,8 +2,11 @@ package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -11,7 +14,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
  */
 sealed class PlayViewerNewUiEvent
 
-data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
+data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String, val interactiveType: InteractiveUiModel) : PlayViewerNewUiEvent()
 
 data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
@@ -63,6 +66,24 @@ data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResu
 object CloseShareExperienceBottomSheet: PlayViewerNewUiEvent()
 object ErrorGenerateShareLink: PlayViewerNewUiEvent()
 
+/**
+ * Status
+ */
+data class BuySuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
+) : PlayViewerNewUiEvent()
+data class AtcSuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
+) : PlayViewerNewUiEvent()
+
 //---------------------
 
 sealed class UiString {
@@ -79,3 +100,11 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
+
+/**
+ * Interactive
+ * */
+data class QuizAnsweredEvent(val isTrue: Boolean) : PlayViewerNewUiEvent()
+
+object OpenKebabEvent : PlayViewerNewUiEvent()
+object OpenUserReportEvent : PlayViewerNewUiEvent()

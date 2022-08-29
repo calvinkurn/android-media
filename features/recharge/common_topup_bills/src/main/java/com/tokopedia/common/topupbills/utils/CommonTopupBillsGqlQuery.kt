@@ -83,12 +83,15 @@ object CommonTopupBillsGqlQuery {
                     promo {
                       id
                       new_price
+                      new_price_plain
+                      discount
                     }
                     product_labels
                     detail
                     detail_compact
                     detail_url
                     detail_url_text
+                    status
                   }
                 }
               }
@@ -106,12 +109,20 @@ object CommonTopupBillsGqlQuery {
               label
               icon
             }
+            user_perso {
+                prefill
+                client_name
+                user_type
+                loyalty_status
+                prefill_operator_id
+            }
             recommendations {
               iconUrl
               title
               clientNumber
               appLink
               webLink
+              productPrice
               type
               categoryId
               productId
@@ -147,6 +158,7 @@ object CommonTopupBillsGqlQuery {
               app_link
             }
             express_checkout
+            menu_label
           }
         }
     """.trimIndent()
@@ -254,6 +266,32 @@ object CommonTopupBillsGqlQuery {
               category_id
               label
               icon_url
+            }
+          }
+        }
+    """.trimIndent()
+
+    val rechargePersoFavoriteNumber = """
+        query digiPersoGetPersonalizedItems(${'$'}input: DigiPersoGetPersonalizedItemsRequest!) {
+          digiPersoGetPersonalizedItems(input:${'$'}input) {
+            trackingData {
+              userType
+            }
+            items {
+              id
+              title
+              subtitle
+              mediaURL
+              token
+              trackingData {
+                clientNumber
+                lastOrderDate
+                totalTransaction
+                productID
+                operatorID
+                categoryID
+                operatorName
+              }
             }
           }
         }

@@ -5,8 +5,8 @@ import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
 import com.tokopedia.inbox.fake.domain.usecase.chat.FakeGetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
-import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.usecase.GetChatListMessageUseCase
+import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -24,9 +24,9 @@ class FakeChatListUseCase {
     @ChatListScope
     @Provides
     fun provideFakeGetChatListMessageUseCase(
-            gql: FakeGraphqlUseCase<ChatListPojo>,
-            mapper: GetChatListMessageMapper,
-            dispatchers: CoroutineDispatchers
+        gql: FakeGraphqlUseCase<ChatListPojo>,
+        mapper: GetChatListMessageMapper,
+        dispatchers: CoroutineDispatchers
     ): FakeGetChatListMessageUseCase {
         return FakeGetChatListMessageUseCase(gql, mapper, dispatchers)
     }

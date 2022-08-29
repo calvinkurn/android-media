@@ -46,7 +46,9 @@ class Payment(
         @SerializedName("specific_gateway_campaign_only_type")
         val specificGatewayCampaignOnlyType: Int = 0,
         @SerializedName("wallet_additional_data")
-        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData()
+        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData(),
+        @SerializedName("payment_fee_detail")
+        val paymentFeeDetail: List<PaymentFeeDetailResponse> = emptyList(),
 )
 
 class PaymentErrorMessage(
@@ -133,7 +135,7 @@ class OvoAdditionalData(
 
 class WalletAdditionalData(
         @SerializedName("wallet_type")
-        val walletType: Int = 0, // 1 for ovo, 2 for gopay, 3 for gopaylater
+        val walletType: Int = 0,
         @SerializedName("enable_wallet_amount_validation")
         val enableWalletAmountValidation: Boolean = false,
         @SerializedName("activation")
@@ -141,7 +143,9 @@ class WalletAdditionalData(
         @SerializedName("top_up")
         val topUp: WalletData = WalletData(),
         @SerializedName("phone_number_registered")
-        val phoneNumberRegistered: WalletData = WalletData()
+        val phoneNumberRegistered: WalletData = WalletData(),
+        @SerializedName("go_cicil")
+        val goCicilData: GoCicilData = GoCicilData(),
 )
 
 class OvoActionData(
@@ -174,4 +178,34 @@ class WalletData(
         val headerTitle: String = "",
         @SerializedName("url_link")
         val urlLink: String = ""
+)
+
+class GoCicilData(
+        @SerializedName("error_message_invalid_tenure")
+        val errorMessageInvalidTenure: String = "",
+        @SerializedName("error_message_top_limit")
+        val errorMessageTopLimit: String = "",
+        @SerializedName("error_message_bottom_limit")
+        val errorMessageBottomLimit: String = "",
+        @SerializedName("error_message_unavailable_tenure")
+        val errorMessageUnavailableTenures: String = "",
+        @SerializedName("selected_tenure")
+        val selectedTenure: Int = 0,
+)
+
+class PaymentFeeDetailResponse(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("fee")
+        val fee: Double = 0.0,
+        @SerializedName("show_slashed")
+        val showSlashed: Boolean = false,
+        @SerializedName("show_tooltip")
+        val showTooltip: Boolean = false,
+        @SerializedName("slashed_fee")
+        val slashedFee: Int = 0,
+        @SerializedName("tooltip_info")
+        val tooltipInfo: String = "",
+        @SerializedName("type")
+        val type: Int = 0,
 )

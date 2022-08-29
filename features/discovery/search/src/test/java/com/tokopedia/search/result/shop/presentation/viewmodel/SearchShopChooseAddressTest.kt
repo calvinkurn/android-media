@@ -39,7 +39,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
         `Then assert search shop state is success and contains choose address model at first index`()
     }
 
-    private fun `Setup initial choose address data`(chooseAddressModel: LocalCacheModel?) {
+    private fun `Setup initial choose address data`(chooseAddressModel: LocalCacheModel) {
         `Given search shop API call will be successful with request param`()
         `Given chosen address data`(chooseAddressModel)
 
@@ -50,7 +50,7 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
         searchShopFirstPageUseCase.stubExecute(requestParamsSlot).returns(searchShopModel)
     }
 
-    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
+    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel) {
         every { chooseAddressWrapper.getChooseAddressData() } returns chooseAddressModel
     }
 
@@ -85,15 +85,6 @@ internal class SearchShopChooseAddressTest: SearchShopDataViewTestFixtures() {
         parameters[SearchApiConst.USER_DISTRICT_ID] shouldBe expectedChooseAddressData.district_id
         parameters[SearchApiConst.USER_POST_CODE] shouldBe expectedChooseAddressData.postal_code
         parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe expectedChooseAddressData.warehouse_id
-    }
-
-    @Test
-    fun `Null choose address data will not send choose address parameter`() {
-        `Setup initial choose address data`(null)
-
-        `When handle view is visible and added`()
-
-        `Then verify choose address data is not sent`(requestParamsSlot.captured.parameters as Map<String, String>)
     }
 
     @Test

@@ -12,6 +12,7 @@
     "data": {
       "isQuerySafe": true,
       "autocompleteApplink": "tokopedia://search-autocomplete?q=produk%20wardyah",
+      "backendFilters": "fcity=123,234#456&official=true",
       "redirection": {
         "redirectApplink": ""
       },

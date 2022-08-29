@@ -13,38 +13,41 @@ import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_EMAIL
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                            private val checkEmaillUseCase: GraphqlUseCase<CheckEmailPojo>,
-                                            private val addEmaillUseCase: GraphqlUseCase<AddEmailPojo>)
-    : BaseViewModel(dispatcher.main) {
+class AddEmailViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val checkEmaillUseCase: GraphqlUseCase<CheckEmailPojo>,
+    private val addEmaillUseCase: GraphqlUseCase<AddEmailPojo>
+) : BaseViewModel(dispatcher.main) {
 
     val mutateCheckEmailResponse = MutableLiveData<Result<String>>()
     val mutateAddEmailResponse = MutableLiveData<Result<AddEmailResult>>()
 
-    fun mutateAddEmail(context: Context, email: String, otpCode: String) {
-
+    fun mutateAddEmail(context: Context, email: String, otpCode: String, validateToken: String) {
         GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)?.let { query ->
 
-            val params = mapOf(PARAM_EMAIL to email,
-                    PARAM_OTP_CODE to otpCode)
+            val params = mapOf(
+                PARAM_EMAIL to email,
+                PARAM_OTP_CODE to otpCode,
+                PARAM_VALIDATE_TOKEN to validateToken,
+            )
 
             addEmaillUseCase.setTypeClass(AddEmailPojo::class.java)
             addEmaillUseCase.setRequestParams(params)
             addEmaillUseCase.setGraphqlQuery(query)
 
             addEmaillUseCase.execute(
-                    onSuccessMutateAddEmail(email),
-                    onErrorMutateAddEmail()
+                onSuccessMutateAddEmail(email),
+                onErrorMutateAddEmail()
             )
 
         }
-
     }
 
     fun checkEmail(context: Context, email: String) {
@@ -58,8 +61,8 @@ class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             checkEmaillUseCase.setGraphqlQuery(query)
 
             checkEmaillUseCase.execute(
-                    onSuccessMutateCheckEmail(email),
-                    onErrorMutateCheckEmail()
+                onSuccessMutateCheckEmail(email),
+                onErrorMutateCheckEmail()
             )
         }
 
@@ -73,8 +76,12 @@ class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             if (errorMessage.isBlank() && isSuccess) {
                 mutateCheckEmailResponse.value = Success(email)
             } else if (!errorMessage.isBlank()) {
-                mutateCheckEmailResponse.value = Fail(MessageErrorException(errorMessage,
-                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+                mutateCheckEmailResponse.value = Fail(
+                    MessageErrorException(
+                        errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
+                    )
+                )
             } else {
                 mutateCheckEmailResponse.value = Fail(RuntimeException())
             }
@@ -104,8 +111,12 @@ class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             if (errorMessage.isBlank() && isSuccess) {
                 mutateAddEmailResponse.value = Success(AddEmailResult(it, email))
             } else if (!errorMessage.isBlank()) {
-                mutateAddEmailResponse.value = Fail(MessageErrorException(errorMessage,
-                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+                mutateAddEmailResponse.value = Fail(
+                    MessageErrorException(
+                        errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
+                    )
+                )
             } else {
                 mutateAddEmailResponse.value = Fail(RuntimeException())
             }

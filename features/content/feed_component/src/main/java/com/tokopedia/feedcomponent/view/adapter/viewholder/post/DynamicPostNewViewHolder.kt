@@ -1,12 +1,8 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
@@ -20,7 +16,7 @@ import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
+import com.tokopedia.unifyprinciples.R as unifyR
 
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 private const val BROADCAST_FEED = "BROADCAST_FEED"
@@ -33,8 +29,6 @@ open class DynamicPostNewViewHolder(
     private val imagePostListener: ImagePostViewHolder.ImagePostListener
 ) : AbstractViewHolder<DynamicPostUiModel>(itemView) {
 
-    private lateinit var receiver: BroadcastReceiver
-
     private val postDynamicView =
         itemView.findViewById<PostDynamicViewNew>(R.id.item_post_dynamic_view)
 
@@ -45,6 +39,7 @@ open class DynamicPostNewViewHolder(
         const val PAYLOAD_FRAGMENT_VISIBLE = 44
         const val PAYLOAD_FRAGMENT_GONE = 42
         const val PAYLOAD_POST_VISIBLE = 77
+        const val PAYLOAD_CTA_VISIBLE = 88
 
 
         @LayoutRes
@@ -52,6 +47,11 @@ open class DynamicPostNewViewHolder(
     }
 
     override fun bind(element: DynamicPostUiModel?, payloads: MutableList<Any>) {
+        bind(element, payloads, "")
+    }
+
+    fun bind(element: DynamicPostUiModel?, payloads: MutableList<Any>,
+                      broadcastValueForDynamicPost: String) {
         if (element == null) {
             itemView.hide()
             return
@@ -62,13 +62,34 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_PLAY_VIDEO -> postDynamicView.playVideo(element.feedXCard)
             PAYLOAD_PLAY_VOD -> postDynamicView.playVOD(element.feedXCard)
             PAYLOAD_COMMENT -> postDynamicView.setCommentCount(element.feedXCard.comments)
-            PAYLOAD_FRAGMENT_VISIBLE -> postDynamicView.setVideo(true)
-            PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
+            PAYLOAD_FRAGMENT_VISIBLE -> {
+                if (broadcastValueForDynamicPost.isEmpty()) {
+                    postDynamicView.setVideo(true)
+                } else {
+                    setPostDynamicView(broadcastValueForDynamicPost)
+                }
+            }
+            PAYLOAD_FRAGMENT_GONE -> {
+                if (broadcastValueForDynamicPost.isEmpty()) {
+                    postDynamicView.setVideo(false)
+                } else {
+                    setPostDynamicView(broadcastValueForDynamicPost)
+                }
+            }
             PAYLOAD_POST_VISIBLE -> postDynamicView.bindImage(
-                    element.feedXCard.tags,
-                    element.feedXCard.media[element.feedXCard.lastCarouselIndex],
-                    element.feedXCard
+                element.feedXCard.tags,
+                element.feedXCard.media[element.feedXCard.lastCarouselIndex],
+                element.feedXCard
             )
+            PAYLOAD_CTA_VISIBLE -> postDynamicView.onCTAVisible(element.feedXCard)
+        }
+    }
+
+    fun setPostDynamicView(visibility:String) {
+        if (visibility == BROADCAST_VISIBLITY) {
+            postDynamicView?.setVideo(false)
+        } else {
+            postDynamicView?.setVideo(true)
         }
     }
 
@@ -88,29 +109,19 @@ open class DynamicPostNewViewHolder(
             imagePostListener
         )
         postDynamicView.setMargin(
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_0),
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_12),
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_0),
+            itemView.context.resources.getDimensionPixelSize(unifyR.dimen.unify_space_12)
         )
+    }
 
-        receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent?.action == BROADCAST_VISIBLITY)
-                    postDynamicView?.setVideo(false)
-                else if (intent?.action == BROADCAST_FEED) {
-                    postDynamicView?.setVideo(true)
-                }
-            }
-        }
+    fun bind(element: DynamicPostUiModel?, broadcastValueForDynamicPost: String) {
+        bind(element)
+        setPostDynamicView(broadcastValueForDynamicPost)
     }
 
     fun onItemDetach(context: Context?, visitable: Visitable<*>) {
-        if (context?.applicationContext != null) {
-            LocalBroadcastManager
-                .getInstance(context.applicationContext)
-                .unregisterReceiver(receiver)
-        }
         try {
             postDynamicView?.detach(false, visitable as DynamicPostUiModel)
         } catch (e: Exception) {
@@ -118,14 +129,6 @@ open class DynamicPostNewViewHolder(
     }
 
     fun onItemAttach(context: Context?, visitable: Visitable<*>) {
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(BROADCAST_VISIBLITY)
-        intentFilter.addAction(BROADCAST_FEED)
-        if (context?.applicationContext != null) {
-            LocalBroadcastManager
-                .getInstance(context.applicationContext)
-                .registerReceiver(receiver,intentFilter)
-        }
         try {
             postDynamicView?.attach( visitable as DynamicPostUiModel)
         } catch (e: Exception) {

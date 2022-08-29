@@ -15,7 +15,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
     const val FORMAT_CREATIVE = "%s - %s"
     const val FORMAT_NAME = "/ - p%s - dynamic channel campaign - banner - %s"
     const val FORMAT_LABEL_CLICK = "%s - %s"
-    const val FORMAT_PROMO_ID = "%s - %s - %s - %s"
+    const val FORMAT_PROMO_ID = "%s_%s_%s_%s"
     const val CLICK_SEE_ALL_CARD = "click view all card on dynamic channel campaign"
     const val CLICK_SEE_ALL_CHANNEL = "click view all on dynamic channel campaign"
 
@@ -35,8 +35,8 @@ object CampaignWidgetTracking : BaseTrackerConst() {
                 Promotion(
                     id = String.format(
                         FORMAT_PROMO_ID,
-                        grid.id,
                         channel.id,
+                        grid.id,
                         channel.trackingAttributionModel.persoType,
                         channel.trackingAttributionModel.categoryId
                     ),
@@ -68,15 +68,14 @@ object CampaignWidgetTracking : BaseTrackerConst() {
                 Promotion(
                     id = String.format(
                         FORMAT_PROMO_ID,
-                        grid.id,
                         channel.id,
+                        grid.id,
                         channel.trackingAttributionModel.persoType,
                         channel.trackingAttributionModel.categoryId
                     ),
                     name = String.format(FORMAT_NAME, adapterPosition, channel.channelHeader.name),
                     position = (position + 1).toString(),
-                    creative = String.format(FORMAT_CREATIVE, channel.name, grid.name),
-                    creativeUrl = ""
+                    creative = String.format(FORMAT_CREATIVE, channel.name, grid.name)
                 )
             )
         ).appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -84,6 +83,10 @@ object CampaignWidgetTracking : BaseTrackerConst() {
             .appendUserId(userId)
             .appendAffinity(channel.trackingAttributionModel.persona)
             .appendAttribution(channel.trackingAttributionModel.galaxyAttribution)
+            .appendCampaignCode(grid.campaignCode.ifEmpty { channel.trackingAttributionModel.campaignCode })
+            .appendShopId(grid.shopId)
+            .appendChannelId(channel.id)
+            .appendCategoryId(grid.categoryId)
         return trackingBuilder.build()
     }
 
@@ -96,6 +99,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
         ).appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(channel.id)
+            .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
         return trackingBuilder.build()
     }
 
@@ -108,6 +112,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
         ).appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(channel.id)
+            .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
         return trackingBuilder.build()
     }
 

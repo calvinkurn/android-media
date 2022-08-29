@@ -15,6 +15,8 @@ object ProductManageDataLayer {
     const val EVENT_CATEGORY = "product list page"
     const val EVENT_NAME_EDIT_PRODUCT = "clickEditProduct"
     const val EVENT_CATEGORY_EDIT_PRODUCT = "edit product page"
+    const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_CATEGORY_PRODUCT_LIST_PAGE = "product list page"
 
     const val EVENT_ACTION_CLICK_ADD = "click add product"
     const val EVENT_ACTION_CLICK_MULTIPLE = "click multiple select"
@@ -30,7 +32,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_SETTINGS_DELETE = "$CLICK_SETTINGS_OPTION - delete product"
     const val EVENT_ACTION_CLICK_SETTINGS_TOPADS = "click advertise the product"
     const val EVENT_ACTION_CLICK_SETTINGS_TOPADS_DETAIL = "click ads detail"
-    const val EVENT_ACTION_CLICK_SETTINGS_CASHBACK = "$CLICK_SETTINGS_OPTION - cashback settings"
     const val EVENT_ACTION_CLICK_SETTINGS_FEATURED = "$CLICK_SETTINGS_OPTION - featured product"
 
     const val EVENT_ACTION_CLICK_TOGGLE_REMINDER = CLICK_ON_TOGGLE_STOCK_REMINDER
@@ -40,8 +41,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_MORE = "$CLICK_ON_FEATURED_PRODUCT_POP_UP - learn more"
 
     const val EVENT_ACTION_CLICK_ON_PRODUCT = "click on product"
-    const val EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS = "click on cashback settings - save"
-    const val EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS_POP_UP = "click on cashback settings pop up - save"
     const val EVENT_ACTION_CLICK_ON_DELETE_PRODUCT = "click on delete product - yes"
     const val EVENT_ACTION_CLICK_ON_ETALASE_FILTER = "click on etalase filter"
     const val EVENT_ACTION_CLICK_ON_CATEGORY_FILTER = "click on category filter - see all"
@@ -66,11 +65,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER = CLICK_ON_MORE_OTHERS_FILTER
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER_SAVE = "$CLICK_ON_MORE_OTHERS_FILTER - save"
 
-    const val EVENT_ACTION_CLICK_ON_PROMOTION_PAGE = "click back on promotion page"
-    const val EVENT_ACTION_CLICK_CASHBACK_VALUE = "click cashback "
-    const val EVENT_ACTION_CLICK_NO_CASHBACK_VALUE = "click no cashback"
-    const val EVENT_ACTION_CLICK_SAVE_PROMOTION = "click save promotion"
-
     const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT = "$EVENT_ACTION_CLICK_EDIT_PRICE - $VARIANTS"
     const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT - save"
     const val EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT = "$EVENT_ACTION_CLICK_EDIT_STOCK - $VARIANTS"
@@ -92,6 +86,8 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK = "click save stock - "
     const val EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT = "click preview variant product"
 
+    const val EVENT_ACTION_CLICK_CREATE_PRODUCT_COUPON = "click buat kupon produk"
+
     const val ALLOCATION_SINGLE_PRODUCT = "single product"
     const val ALLOCATION_VARIANT_PRODUCT = "variant product"
 
@@ -111,6 +107,7 @@ object ProductManageDataLayer {
     const val BUSINESS_UNIT = "businessUnit"
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
+    const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT_BROADCAST_CHAT = "communication, value"
     const val CURRENT_SITE_BROADCAST_CHAT = "tokopediamarketplace"
     const val EVENT_ACTION_CLICK_ON_CAROUSEL = "click on carousel"
@@ -121,5 +118,7 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_BROADCAST_CHAT = "click broadcast chat"
     const val CURRENT_SITE_BROADCAST_CHAT_SA = "tokopediaseller"
     const val BUSINESS_UNIT_BROADCAST_CHAT_SA = "communication"
+    const val TOKOPEDIA_SELLER = "tokopediaseller"
+    const val PHYSICAL_GOODS = "physical goods"
 
 }

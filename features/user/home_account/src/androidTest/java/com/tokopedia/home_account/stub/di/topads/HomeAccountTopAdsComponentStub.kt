@@ -1,14 +1,17 @@
 package com.tokopedia.home_account.stub.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.home_account.di.*
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.di.HomeAccountUserQueryModules
+import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
+import com.tokopedia.home_account.di.HomeAccountUserViewModelModules
 import com.tokopedia.home_account.stub.di.topads.FakeHomeAccountTopAdsModules
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
-@HomeAccountUserScope
+@ActivityScope
 @SessionCommonScope
 @Component(
     modules = [FakeHomeAccountTopAdsModules::class,

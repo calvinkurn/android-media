@@ -104,7 +104,7 @@ class BottomSheetManager(private val view: ViewGroup) {
         listener: SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener
     ) {
         somProductEmptyBottomSheet?.run {
-            setProducts(orderDetail?.listProduct.orEmpty())
+            setProducts(orderDetail?.getProductList().orEmpty())
             setOrderId(orderId)
             setListener(listener)
             setRejectReason(rejectReason)

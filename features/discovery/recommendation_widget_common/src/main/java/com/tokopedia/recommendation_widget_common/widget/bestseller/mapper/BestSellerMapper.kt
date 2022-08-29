@@ -8,6 +8,7 @@ import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.unifycomponents.CardUnify2
 import kotlinx.coroutines.Dispatchers
 
 /**
@@ -16,8 +17,8 @@ import kotlinx.coroutines.Dispatchers
 class BestSellerMapper (
     private val context: Context
 ){
-    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget): BestSellerDataModel{
-        val productList = mappingProductCards(recommendationWidget.recommendationItemList)
+    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget, cardInteraction: Boolean = false): BestSellerDataModel{
+        val productList = mappingProductCards(recommendationWidget.recommendationItemList, cardInteraction)
         return BestSellerDataModel(
             channelId = recommendationWidget.channelId,
             title = recommendationWidget.title,
@@ -31,9 +32,9 @@ class BestSellerMapper (
         )
     }
 
-    private fun mappingProductCards(recommendationList: List<RecommendationItem>): List<ProductCardModel> {
+    private fun mappingProductCards(recommendationList: List<RecommendationItem>, cardInteraction: Boolean = false): List<ProductCardModel> {
         return recommendationList.map { recommendationItem ->
-            recommendationItem.toProductCardModel(hasThreeDots = true)
+            recommendationItem.toProductCardModel(hasThreeDots = true, cardInteraction = cardInteraction)
         }
     }
 

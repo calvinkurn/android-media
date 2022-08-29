@@ -86,15 +86,10 @@ object VariantCommonMapper {
         return pairOfValue
     }
 
-    fun selectedProductData(variantData: ProductVariant, selectedOptionIds:List<String>): Pair<Int, VariantChild?>? {
-        var pairOfValue: Pair<Int, VariantChild?>? = null
-        for ((index, it: VariantChild) in variantData.children.withIndex()) {
-            if (it.optionIds == selectedOptionIds) {
-                pairOfValue = Pair(index, it)
-                break
-            }
+    fun selectedProductData(variantData: ProductVariant, selectedOptionIds:List<String>): VariantChild? {
+        return variantData.children.firstOrNull {
+            it.optionIds == selectedOptionIds
         }
-        return pairOfValue
     }
 
     private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<String>, mapOfSelectedVariant: MutableMap<String, String>?) {

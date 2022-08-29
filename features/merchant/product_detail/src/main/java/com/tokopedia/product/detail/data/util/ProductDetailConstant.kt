@@ -1,14 +1,13 @@
 package com.tokopedia.product.detail.data.util
 
 object ProductDetailConstant {
-    const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
-
     const val PARAM_PRODUCT_ID = "product_id"
 
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
@@ -29,7 +28,7 @@ object ProductDetailConstant {
     const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_UPDATE_IMAGE = 5
+    const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -57,6 +56,7 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHIPMENT = "shipment"
+    const val SHIPMENT_V2 = "shipment_v2"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -77,6 +77,7 @@ object ProductDetailConstant {
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
+    const val COD = "cod"
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
@@ -87,6 +88,7 @@ object ProductDetailConstant {
     const val MVC = "mvc"
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
     const val CATEGORY_CAROUSEL = "category_carousel"
+    const val HAMPERS_INFO = "palugada_hampers"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -94,6 +96,8 @@ object ProductDetailConstant {
     const val PRODUCT_BUNDLING = "product_bundling"
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
+    const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_NAME = "paylater_cicilan"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -106,10 +110,11 @@ object ProductDetailConstant {
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
-    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
+    const val ARG_LAYOUT_ID = "ARG_LAYOUT_ID"
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
+    const val ARG_CHANNEL = "ARG_CHANNEL"
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -127,7 +132,7 @@ object ProductDetailConstant {
     const val ALREADY_FAVORITE_SHOP = 1
 
     //TopAds Banner
-    const val ADS_COUNT = 1
+    const val ADS_COUNT = 3
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
 
@@ -164,4 +169,11 @@ object ProductDetailConstant {
 
     const val REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING = "android_enable_pdp_custom_sharing"
     const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
+
+    const val BUYER_IMAGE_TEXT = "Foto Pembeli"
+
+    const val WISHLIST_ERROR_TYPE = "error_wishlist"
+    const val WISHLIST_STATUS_KEY = "wishlist_status"
+    const val ADD_WISHLIST = "true"
+    const val REMOVE_WISHLIST = "false"
 }

@@ -638,4 +638,12 @@
         <key>android_enable_affiliate_universal_sharing</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_enable_blocking_touch_pdp_navbar</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_review_form_new_enable</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

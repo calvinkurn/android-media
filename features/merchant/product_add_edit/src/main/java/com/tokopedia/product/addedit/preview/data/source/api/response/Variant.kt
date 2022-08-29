@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.data.source.api.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.math.BigInteger
 
@@ -12,6 +13,7 @@ data class Variant(
         val sizecharts: List<Picture> = listOf()
 )
 
+@SuppressLint("Invalid Data Type")
 data class ProductVariant(
         @SerializedName("status")
         val status: String,
@@ -21,6 +23,7 @@ data class ProductVariant(
         val combination: List<Int>,
         @SerializedName("isPrimary")
         val isPrimary: Boolean,
+        @SuppressLint("Invalid Data Type") // price currently using Integer at server
         @SerializedName("price")
         val price: BigInteger,
         @SerializedName("sku")
@@ -28,7 +31,11 @@ data class ProductVariant(
         @SerializedName("stock")
         val stock: Int,
         @SerializedName("pictures")
-        val pictures: List<Picture>
+        val pictures: List<Picture>,
+        @SerializedName("weight")
+        val weight: Int,
+        @SerializedName("weightUnit")
+        val weightUnit: String
 )
 
 data class Selection(

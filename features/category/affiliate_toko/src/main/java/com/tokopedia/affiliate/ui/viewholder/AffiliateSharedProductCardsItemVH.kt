@@ -4,11 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class AffiliateSharedProductCardsItemVH(itemView: View, private val productClickInterface: ProductClickInterface?)
     : AbstractViewHolder<AffiliateSharedProductCardsModel>(itemView) {
@@ -40,9 +43,21 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
             }
             itemView.findViewById<Typography>(R.id.shop_name)?.text = product.footer?.firstOrNull()?.footerText
             itemView.setOnClickListener {
+                sendSelectContentEvent(product)
                 productClickInterface?.onProductClick(product.itemID, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "", product.itemID, product.status ?: 0)
             }
         }
+    }
+
+    private fun sendSelectContentEvent(product: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData.Item) {
+        val label = if(product.status == AffiliatePerformaSharedProductCardsItemVH.PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_DAFTAR_LINK_PRODUK,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_LINK_HISTORY,
+            UserSession(itemView.context).userId,product.itemID,adapterPosition+1,product.itemTitle,"${product.itemID} - $label",
+            AffiliateAnalytics.ItemKeys.AFFILIATE_DAFTAR_LINK_PRODUK)
+
     }
 }

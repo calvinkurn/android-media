@@ -14,7 +14,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -24,10 +31,12 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class RecentViewViewModel @Inject constructor(
-        baseDispatcher: CoroutineDispatchers,
+        private val baseDispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val recentViewUseCase: RecentViewUseCase
 ): BaseViewModel(baseDispatcher.io) {
 
@@ -52,38 +61,61 @@ open class RecentViewViewModel @Inject constructor(
         })
     }
 
-    fun addToWishlist(adapterPosition: Int, productId: String) {
+    fun addToWishlist(productId: String) {
         addWishListUseCase.createObservable(productId,
-                userSession.userId, object : WishListActionListener{
-            override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                _addWishlistResponse.postValue(Fail(Throwable(errorMessage)))
-            }
+            userSession.userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String, productId: String) {
+                    _addWishlistResponse.postValue(Fail(Throwable(errorMessage)))
+                }
 
-            override fun onSuccessAddWishlist(productId: String) {
-                _addWishlistResponse.postValue(Success(productId))
-            }
+                override fun onSuccessAddWishlist(productId: String) {
+                    _addWishlistResponse.postValue(Success(productId))
+                }
 
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-        })
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+            })
     }
 
-    fun removeFromWishlist(adapterPosition: Int, productId: String) {
+    fun addToWishlistV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        launch(baseDispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userSession.userId)
+            val result = withContext(baseDispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+            }
+        }
+    }
+
+    fun removeFromWishlist(productId: String) {
         removeWishListUseCase.createObservable(productId,
-                userSession.userId,  object : WishListActionListener{
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+            userSession.userId,  object : WishListActionListener{
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
 
-            override fun onSuccessAddWishlist(productId: String?) {}
+                override fun onSuccessAddWishlist(productId: String?) {}
 
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                _removeWishlistResponse.postValue(Fail(Throwable(errorMessage)))
-            }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    _removeWishlistResponse.postValue(Fail(Throwable(errorMessage)))
+                }
 
-            override fun onSuccessRemoveWishlist(productId: String) {
-                _removeWishlistResponse.postValue(Success(productId))
-            }
-        })
+                override fun onSuccessRemoveWishlist(productId: String) {
+                    _removeWishlistResponse.postValue(Success(productId))
+                }
+            })
     }
 
+    fun removeFromWishlistV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        launch(baseDispatcher.main) {
+            deleteWishlistV2UseCase.setParams(productId, userSession.userId)
+            val result = withContext(baseDispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, productId)
+            }
+        }
+    }
 }

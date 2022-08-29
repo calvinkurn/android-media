@@ -28,15 +28,6 @@ class ContentExploreAnalytics @Inject constructor() {
         ))
     }
 
-    fun eventSubmitSearch(text: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.SEARCH,
-                text
-        ))
-    }
-
     fun eventImpressionSuccessGetData() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 ContentExloreEventTracking.Event.EXPLORE,

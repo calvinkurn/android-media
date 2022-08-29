@@ -13,7 +13,8 @@ data class Patch(
     var tempPath: String = "",
     var md5: String = "",
     var appHash: String = "",
-    var isAppliedSuccess: Boolean = false
+    var isAppliedSuccess: Boolean = false,
+    var debug: Boolean = false
 ) : Cloneable {
 
     fun delete() {

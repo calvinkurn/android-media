@@ -18,10 +18,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.ShopTickerType
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -29,7 +32,9 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
@@ -127,52 +132,88 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
     }
 
-    fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean) {
-        shopPageHeaderDataModel.let {
-            when {
-                shouldShowShopStatusTicker(it.statusTitle, it.statusMessage) -> {
-                    showShopStatusTicker(it, isMyShop)
-                }
-                else -> {
-                    hideShopStatusTicker()
-                }
+    fun updateShopTicker(tickerData: ShopPageTickerData, isMyShop: Boolean) {
+        when {
+            shouldShowShopStatusTicker(tickerData.shopInfo.statusInfo.statusTitle, tickerData.shopInfo.statusInfo.statusMessage) -> {
+                showShopStatusTicker(tickerData.shopInfo, isMyShop)
+            }
+            shouldShowShopStatusTicker(tickerData.shopOperationalHourStatus.tickerTitle, tickerData.shopOperationalHourStatus.tickerMessage) -> {
+                showShopOperationalHourStatusTicker(tickerData.shopOperationalHourStatus, isMyShop)
+            }
+            else -> {
+                hideShopStatusTicker()
             }
         }
     }
 
     private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
-        return title.isNotEmpty() && message.isNotEmpty()
+        return !(title.isEmpty() && message.isEmpty())
     }
 
-    private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
+    private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean = false) {
         tickerShopStatus?.show()
-        tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
+        tickerShopStatus?.tickerType = if (isMyShop) {
+            Ticker.TYPE_WARNING
+        } else {
+            Ticker.TYPE_ANNOUNCEMENT
+        }
+        tickerShopStatus?.tickerTitle = HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+        tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+            }
+
+            override fun onDismiss() {}
+        })
+        if (isMyShop) {
+            tickerShopStatus?.closeButtonVisibility = View.GONE
+        } else {
+            tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+        }
+    }
+
+    private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
+        val statusTitle = shopInfo.statusInfo.statusTitle
+        val shopStatus = shopInfo.statusInfo.shopStatus
+        val shopTickerType = shopInfo.statusInfo.tickerType
+        val statusMessage = shopInfo.statusInfo.statusMessage
+        val shopId = shopInfo.shopCore.shopID
+        val isOfficialStore = shopInfo.goldOS.isOfficialStore()
+        val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
+        tickerShopStatus?.show()
+        tickerShopStatus?.tickerType = when(shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_WARNING
+        }
+        tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
-                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
-                    generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
+                if(shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+                    generateShopModerateTickerDescription(statusMessage)
                 } else {
-                    shopPageHeaderDataModel.statusMessage
+                    statusMessage
                 }
         )
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
-                when (shopPageHeaderDataModel.shopStatus) {
+                when (shopStatus) {
                     ShopStatusDef.CLOSED -> {
                         shopPageTracking?.sendOpenShop()
                         shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
                                 .create(
-                                        shopPageHeaderDataModel.shopId,
-                                        shopPageHeaderDataModel.isOfficial,
-                                        shopPageHeaderDataModel.isGoldMerchant
+                                        shopId,
+                                        isOfficialStore,
+                                        isGoldMerchant
                                 ))
                     }
                     ShopStatusDef.NOT_ACTIVE -> {
                         shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
                                 .create(
-                                        shopPageHeaderDataModel.shopId,
-                                        shopPageHeaderDataModel.isOfficial,
-                                        shopPageHeaderDataModel.isGoldMerchant
+                                        shopId,
+                                        isOfficialStore,
+                                        isGoldMerchant
                                 ))
                     }
                 }
@@ -190,10 +231,18 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
             override fun onDismiss() {}
 
         })
-        if (isMyShop) {
-            tickerShopStatus?.closeButtonVisibility = View.GONE
-        } else {
+
+        // special handling for shop status incubated
+        if (shopInfo.statusInfo.shopStatus == ShopStatusDef.INCUBATED) {
+            // always show ticker close button if shop is incubated
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+        } else {
+            // default general condition for shop ticker
+            if (isMyShop) {
+                tickerShopStatus?.closeButtonVisibility = View.GONE
+            } else {
+                tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+            }
         }
     }
 

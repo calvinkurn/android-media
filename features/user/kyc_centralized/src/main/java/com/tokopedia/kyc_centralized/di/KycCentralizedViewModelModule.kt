@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import dagger.Binds
@@ -23,6 +24,6 @@ abstract class KycCentralizedViewModelModule {
     abstract fun kycUploadViewModel(viewModel: KycUploadViewModel): ViewModel
 
     @Binds
-    @UserIdentificationCommonScope
+    @ActivityScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }

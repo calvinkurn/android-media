@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:paddingBottom="@dimen/spacing_lvl4"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_description_bid_switch_bs"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_common_auto_bid_switch_manual_bs_description"
+        android:textColor="@color/light_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtPencarianTitle"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/topads_common_iklan_pencarian_title"
+        app:layout_constraintEnd_toStartOf="@+id/txtRecommendasiTitle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_description_bid_switch_bs"
+        app:typographyType="heading_6" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtRecommendasiTitle"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_common_iklan_recommendasi_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtPencarianTitle"
+        app:layout_constraintTop_toTopOf="@id/txtPencarianTitle"
+        app:typographyType="heading_6" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_pencarian_bid_switch_bs"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:focusableInTouchMode="true"
+        app:layout_constraintEnd_toEndOf="@id/txtPencarianTitle"
+        app:layout_constraintStart_toStartOf="@id/txtPencarianTitle"
+        app:layout_constraintTop_toBottomOf="@id/txtPencarianTitle"
+        app:text_field_append_text="@string/topads_common_per_click"
+        app:text_field_input_type="number"
+        app:text_field_prepend_text="Rp" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_recommendasi_bid_switch_bs"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:focusableInTouchMode="true"
+        app:layout_constraintEnd_toEndOf="@id/txtRecommendasiTitle"
+        app:layout_constraintStart_toStartOf="@id/txtRecommendasiTitle"
+        app:layout_constraintTop_toBottomOf="@id/txtRecommendasiTitle"
+        app:text_field_append_text="@string/topads_common_per_click"
+        app:text_field_input_type="number"
+        app:text_field_prepend_text="Rp" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_save_bid_switch_bs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="@string/lanjutkan"
+        app:layout_constraintTop_toBottomOf="@id/tf_pencarian_bid_switch_bs" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
@@ -69,8 +70,17 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.725",
-                        totalPrice = "Rp116.725"
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp116.725",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1725.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -108,8 +118,17 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp500.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp12.875",
-                        totalPrice = "Rp527.875"
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp527.875",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 12875.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -202,8 +221,17 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp400.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp10.375",
-                        totalPrice = "Rp425.375"
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp425.375",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 10375.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -212,7 +240,10 @@ class OrderSummaryPageActivityCreditCardRevampTest {
 
             assertPaymentButtonEnable(false)
 
-            assertInstallmentErrorRevamp()
+            assertInstallmentErrorRevamp(
+                    errorMessage = "Cicilan tidak tersedia.",
+                    errorAction = "Ubah"
+            )
 
             clickInstallmentErrorActionRevamp {
                 chooseInstallment(0)
@@ -250,8 +281,17 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp10.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp375",
-                        totalPrice = "Rp25.375"
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp25.375",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 375.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -281,8 +321,17 @@ class OrderSummaryPageActivityCreditCardRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.725",
-                        totalPrice = "Rp116.725"
+                        insurancePrice = "Rp0",
+                        totalPrice = "Rp116.725",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1725.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }

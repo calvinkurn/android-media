@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -28,13 +29,19 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
-class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, ShopPagePerformanceMonitoringListener{
+class ShopPageActivity : BaseSimpleActivity(),
+        HasComponent<ShopComponent>,
+        HasSharedViewModel,
+        ShopPagePerformanceMonitoringListener,
+        ShopPageSharedListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -52,6 +59,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
     private val sellerMigrationDestinationApplink by lazy {
         intent?.getStringExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+    }
+
+    private val shopPageFeedTabSharedViewModel by lazy {
+        ViewModelProvider(this).get(ShopPageFeedTabSharedViewModel::class.java)
     }
 
     private var performanceMonitoringShop: PageLoadTimePerformanceInterface? = null
@@ -81,6 +92,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as? InterfaceShopPageHeader)?.onBackPressed()
+    }
+
+    override fun getSharedViewModel(): ShopPageFeedTabSharedViewModel {
+        return shopPageFeedTabSharedViewModel
     }
 
     fun stopShopHeaderPerformanceMonitoring() {
@@ -191,5 +206,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
+    }
+
+    override fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return (fragment as? NewShopPageFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 }

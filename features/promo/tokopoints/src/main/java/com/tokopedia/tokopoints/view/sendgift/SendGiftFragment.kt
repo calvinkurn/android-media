@@ -256,7 +256,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvRoute = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_route)
             val btnFailed = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentFail)
             btnFailed.setOnClickListener { view: View? -> activity!!.finish() }
-            tvRoute.setOnClickListener { view: View? -> RouteManager.route(this.context, ApplinkConst.TOKOPOINTS) }
+            tvRoute.setOnClickListener { view: View? -> RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD) }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentFail)

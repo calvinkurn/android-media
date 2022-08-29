@@ -21,5 +21,9 @@ object NotifSettingAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
+    fun sendScreenName(screenName : String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
 
 }

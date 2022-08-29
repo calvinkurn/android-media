@@ -179,7 +179,7 @@ class DiscomPresenterTest {
         presenter.autoFill(0.1, 0.1)
 
         verifyOrder {
-            view.showToasterError()
+            view.showToasterError("")
         }
     }
 
@@ -194,7 +194,7 @@ class DiscomPresenterTest {
         presenter.autoFill(0.1, 0.1)
 
         verifyOrder {
-            view.showToasterError()
+            view.showToasterError("Lokasi di luar Indonesia.")
         }
     }
 
@@ -209,7 +209,7 @@ class DiscomPresenterTest {
         presenter.autoFill(0.1, 0.1)
 
         verifyOrder {
-            view.showToasterError()
+            view.showToasterError("Lokasi gagal ditemukan")
         }
     }
 

@@ -2,14 +2,16 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
 import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductBundlingAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -18,8 +20,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class SomDetailProductBundleCardViewHolder(
-        private val actionListener: SomDetailAdapter.ActionListener?,
-        itemView: View?
+    private val actionListener: SomDetailAdapterFactoryImpl.ActionListener?,
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    itemView: View?
 ) : AbstractViewHolder<ProductBundleUiModel>(itemView) {
 
     companion object {
@@ -34,6 +37,7 @@ class SomDetailProductBundleCardViewHolder(
 
     override fun bind(element: ProductBundleUiModel) {
         binding?.run {
+            icSomProductBundling.loadImage(element.bundleIcon)
             tvSomBundleName.text = element.bundleName
             tvSomTotalPrice.text = element.bundleSubTotal
 
@@ -41,11 +45,13 @@ class SomDetailProductBundleCardViewHolder(
         }
     }
 
-    private fun setupProductList(products: List<SomDetailOrder.Data.GetSomDetail.Products>) {
+    private fun setupProductList(products: List<SomDetailOrder.Data.GetSomDetail.Details.Product>) {
         binding?.rvSomProductBundling?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
+            (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
+            setRecycledViewPool(recyclerViewSharedPool)
             adapter = productAdapter
             if (itemDecorationCount == 0) {
                 val margins = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl4).toInt()

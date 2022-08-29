@@ -1,5 +1,7 @@
 package com.tokopedia.digital_deals.view.model.response;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
 public class LikeUpdateResult {
@@ -18,6 +20,7 @@ public class LikeUpdateResult {
     @SerializedName("is_liked")
     private boolean isLiked;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("user_id")
     private int userId;
 
@@ -25,7 +28,7 @@ public class LikeUpdateResult {
     private String feedback;
 
     @SerializedName("product_id")
-    private int productId;
+    private String productId;
 
     public void setCode(String code) {
         this.code = code;
@@ -83,11 +86,19 @@ public class LikeUpdateResult {
         this.feedback = feedback;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public int getProductIdInInt() {
+        if (productId.isEmpty()) {
+            return 0;
+        } else {
+            return Integer.parseInt(productId);
+        }
+    }
+
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

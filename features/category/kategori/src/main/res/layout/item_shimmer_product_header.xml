@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_85"
         android:layout_gravity="center"
         android:padding="12dp"
-        app:corners="30" />
+        app:loader_corner_radius="15dp"
+        app:loader_type="rect"/>
 </FrameLayout>

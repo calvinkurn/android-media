@@ -1,0 +1,25 @@
+[
+  {
+    "data": {
+      "add_to_cart_multi": {
+        "error_message": "",
+        "status": "OK",
+        "data": {
+          "success": 1,
+          "messages": [
+            "Produk berhasil dimasukkan ke Keranjang Belanja"
+          ],
+          "data": [
+            {
+              "cart_id": "33398482",
+              "product_id": 15244838,
+              "quantity": 1,
+              "notes": "",
+              "shop_id": 480579
+            }
+          ]
+        }
+      }
+    }
+  }
+]

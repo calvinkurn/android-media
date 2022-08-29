@@ -12,10 +12,7 @@ class TokopointsHomeRepositoryTest {
 
     @Before
     fun setUp() {
-        repository = TokopointsHomeUsecase("tp_section_new",
-                "tp_homepage_section",
-                "tp_gql_reward",
-                "tp_gql_usersaving")
+        repository = TokopointsHomeUsecase("tp_section_new", "tp_gql_usersaving")
     }
 
     @After
@@ -26,7 +23,7 @@ class TokopointsHomeRepositoryTest {
     fun getTokoPointDetailData() {
         runBlocking {
             val useCase = mockk<MultiRequestGraphqlUseCase>()
-            repository.mGetTokoPointDetailUseCase = useCase
+            repository.tpHomeUsecase = useCase
             every { useCase.clearRequest() } just Runs
             every { useCase.addRequest(any()) } just Runs
             coEvery { useCase.executeOnBackground() } returns mockk()
@@ -45,7 +42,7 @@ class TokopointsHomeRepositoryTest {
     fun getRewardIntroData() {
         runBlocking {
             val useCase = mockk<MultiRequestGraphqlUseCase>()
-            repository.mGetRewardIntoUseCase = useCase
+            repository.tpHomeUsecase = useCase
             every { useCase.clearRequest() } just Runs
             every { useCase.addRequest(any()) } just Runs
             coEvery { useCase.executeOnBackground() } returns mockk()
@@ -63,7 +60,7 @@ class TokopointsHomeRepositoryTest {
     fun getUserSavingData() {
         runBlocking {
             val useCase = mockk<MultiRequestGraphqlUseCase>()
-            repository.mGetUserSavingUsecase = useCase
+            repository.tpHomeUsecase = useCase
             every { useCase.clearRequest() } just Runs
             every { useCase.addRequest(any()) } just Runs
             coEvery { useCase.executeOnBackground() } returns mockk()

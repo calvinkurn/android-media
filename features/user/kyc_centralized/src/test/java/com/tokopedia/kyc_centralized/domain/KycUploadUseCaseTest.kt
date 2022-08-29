@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.domain
 
 import com.tokopedia.kyc_centralized.data.model.response.KycData
+import com.tokopedia.kyc_centralized.data.model.response.KycResponse
 import com.tokopedia.kyc_centralized.data.repository.KycUploadImagesRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -29,7 +30,7 @@ class KycUploadUseCaseTest {
 
     @Test
     fun `Successfully upload image`() {
-        val expectedResult = KycData()
+        val expectedResult = KycResponse()
 
         val ktpImageString = "good ktp image"
         val faceImageString = "good face image"
@@ -37,7 +38,7 @@ class KycUploadUseCaseTest {
         coEvery {
             repository.uploadImages(any(), any(), any(), any(), any())
         } coAnswers {
-            expectedResult.isSuccessRegister  = true
+            expectedResult.data.isSuccessRegister  = true
             expectedResult
         }
 
@@ -46,19 +47,19 @@ class KycUploadUseCaseTest {
         }
 
         assertEquals(result, expectedResult)
-        Assert.assertTrue(result.isSuccessRegister)
+        Assert.assertTrue(result.data.isSuccessRegister)
     }
 
     @Test
     fun `Failed to upload image (bad image)`() {
-        val expectedResult = mockk<KycData>(relaxed = true)
+        val expectedResult = mockk<KycResponse>(relaxed = true)
         val ktpImageString = "bad ktp image"
         val faceImageString = "bad face image"
 
         coEvery {
             repository.uploadImages(any(), any(), any(), any(), any())
         } coAnswers {
-            expectedResult.isSuccessRegister  = false
+            expectedResult.data.isSuccessRegister  = false
             expectedResult
         }
 
@@ -67,7 +68,7 @@ class KycUploadUseCaseTest {
         }
 
         assertEquals(result, expectedResult)
-        Assert.assertFalse(result.isSuccessRegister)
+        Assert.assertFalse(result.data.isSuccessRegister)
     }
 
     @Test

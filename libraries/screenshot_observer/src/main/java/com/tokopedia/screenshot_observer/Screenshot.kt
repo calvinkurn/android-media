@@ -14,12 +14,12 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.provider.MediaStore
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.screenshot_observer.R
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
 open class Screenshot @JvmOverloads constructor(
@@ -37,12 +37,17 @@ open class Screenshot @JvmOverloads constructor(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
+    private val bottomSheetFeedback: BottomSheetUnify
+    private var isInitBottomSheet = true
+    private var isShowBottomSheet = false
 
     init {
         mHandlerThread.start()
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
-        mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
+        mContentObserver = ScreenshotObserver(mHandler, this)
+
+        bottomSheetFeedback = BottomSheetUnify()
     }
 
     private fun register() {
@@ -70,25 +75,36 @@ open class Screenshot @JvmOverloads constructor(
         if (activity == null) {
             return
         }
+        if (isInitBottomSheet) {
+            val viewBottomSheet =
+                View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
+                    val btnFeedback = this.findViewById<TextView>(R.id.btn_add_feedback)
+                    btnFeedback.setOnClickListener {
+                        listener?.onFeedbackClicked(uri, className, true)
+                        bottomSheetFeedback.dismiss()
+                    }
+                    val btnDismiss = this.findViewById<TextView>(R.id.btn_dismiss)
+                    btnDismiss.setOnClickListener {
+                        bottomSheetFeedback.dismiss()
+                    }
+                }
 
-        val bottomSheetFeedback = BottomSheetUnify()
-        val viewBottomSheet =
-            View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
-                btn_add_feedback.setOnClickListener {
-                    listener?.onFeedbackClicked(uri, className, true)
-                    bottomSheetFeedback.dismiss()
-                }
-                btn_dismiss.setOnClickListener {
-                    bottomSheetFeedback.dismiss()
-                }
+            bottomSheetFeedback.apply {
+                setChild(viewBottomSheet)
             }
+            isInitBottomSheet = false
 
-        bottomSheetFeedback.apply {
-            setChild(viewBottomSheet)
+            bottomSheetFeedback.setOnDismissListener {
+                isShowBottomSheet = false
+
+            }
         }
 
-        val fm = (activity as AppCompatActivity).supportFragmentManager
-        bottomSheetFeedback.show(fm, "")
+        if (!isShowBottomSheet) {
+            val fm = (activity as AppCompatActivity).supportFragmentManager
+            bottomSheetFeedback.show(fm, "")
+            isShowBottomSheet = true
+        }
     }
 
     fun unregister() {

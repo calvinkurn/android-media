@@ -17,9 +17,9 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
 class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder {
 
-    var id: String? = null
-    var name: String? = null
-    var displayedPrice: String? = null
+    var id: String = ""
+    var name: String = ""
+    var displayedPrice: String = ""
     var originalPrice: String? = null
     var discountPercentage: String? = null
     var imageUrl: String? = null
@@ -43,10 +43,19 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var hideGimmick: Boolean = false
     var stockSoldPercentage: Int = 0
     var recommendationType: String? = null
+    var categoryBreadcrumbs: String? = null
     var minimumOrder: Int = 1
+    var maximumOrder: Int = 0
     var isProductPlaceHolder: Boolean = false
     var totalProduct: Int = 0
     var totalProductWording: String = ""
+    var isEnableDirectPurchase: Boolean = false
+    var productInCart: Int = 0
+    var isVariant: Boolean = false
+    var isNewData: Boolean = false
+    var stock: Int = 0
+    var listChildId: List<String> = listOf()
+    var parentId: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){
@@ -65,9 +74,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     constructor() {}
 
     constructor(shopProduct: ShopProduct) {
-        id = shopProduct.productId
-        name = shopProduct.productName
-        displayedPrice = shopProduct.productPrice
+        id = shopProduct.productId.orEmpty()
+        name = shopProduct.productName.orEmpty()
+        displayedPrice = shopProduct.productPrice.orEmpty()
         imageUrl = shopProduct.productImage
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
@@ -94,9 +103,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     }
 
     constructor(gmFeaturedProduct: GMFeaturedProduct) {
-        id = gmFeaturedProduct.productId
-        name = gmFeaturedProduct.name
-        displayedPrice = gmFeaturedProduct.price?.toString()
+        id = gmFeaturedProduct.productId.orEmpty()
+        name = gmFeaturedProduct.name.orEmpty()
+        displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
         imageUrl = gmFeaturedProduct.imageUri
         productUrl = gmFeaturedProduct.uri
 

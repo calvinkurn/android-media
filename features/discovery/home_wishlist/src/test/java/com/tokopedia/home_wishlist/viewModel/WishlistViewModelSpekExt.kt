@@ -97,3 +97,7 @@ fun GetWishlistDataUseCase.givenRepositoryGetWishlistDataReturnsThisOnBulkProgre
 fun TopAdsImageViewUseCase.givenGetImageData(topadsImages: ArrayList<TopAdsImageViewModel>){
     coEvery { getImageData(any()) } returns topadsImages
 }
+
+fun GetWishlistDataUseCase.givenThrowable() {
+    coEvery { getData(GetWishlistParameter()) } returns WishlistEntityData(isSuccess = false)
+}

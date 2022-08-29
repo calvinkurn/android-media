@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -21,6 +22,10 @@ class AffiliateDatePickerItemVH(itemView: View,private val dateClickedInterface:
     override fun bind(element: AffiliateDateRangePickerModel?) {
         itemView.findViewById<Typography>(R.id.text).text = element?.dateRange?.text
         val radioBtn = itemView.findViewById<RadioButtonUnify>(R.id.textRadioButton)
+        itemView.findViewById<Typography>(R.id.sub_text)?.apply {
+            isVisible = element?.dateRange?.showTimeRange == true
+            text = element?.dateRange?.message
+        }
         radioBtn.isChecked= element?.dateRange?.isSelected == true
         itemView.setOnClickListener {
             radioBtn.isChecked = true

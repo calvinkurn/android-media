@@ -10,7 +10,7 @@ import com.tokopedia.recharge_component.databinding.ItemDigitalUnifyCardBinding
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewholder.DigitalUnifyCardViewHolder
 import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 
-class DigitalUnifyCardAdapterTypeFactory(
+open class DigitalUnifyCardAdapterTypeFactory(
     private val digitalUnifyCardCardListener: DigitalUnifyCardViewHolder.DigitalUnifyCardListener
 ) : BaseAdapterTypeFactory(), DigitalUnifyCardTypeFactory {
 

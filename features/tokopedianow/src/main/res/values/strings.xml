@@ -24,16 +24,17 @@
     <string name="tokopedianow_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
     <string name="tokopedianow_home_share_thumbnail_title">Tokopedia NOW!</string>
     <string name="tokopedianow_home_share_thumbnail_title_ss">Screenshot dan link tersimpan</string>
-    <string name="tokopedianow_home_share_title">Supermarket Online - Grocery Online Terlengkap | Tokopedia NOW!</string>
-    <string name="tokopedianow_home_share_desc">Nikmati Pengalaman Belanja Kebutuhan Sehari-hari Online Selama 24 Jam Terlengkap . Dapatkan Promo Khusus &amp; Pengiriman 2 Jam Tiba Hanya di Tokopedia NOW!</string>
+    <string name="tokopedianow_home_share_title">Belanja Sembako Online Langsung Kirim Sekarang | Tokopedia Now</string>
+    <string name="tokopedianow_home_share_desc">Belanja kebutuhan sehari-hari 🛒✨. Dapatkan Promo Khusus ✅, Bebas Ongkir ✅ dan 2 jam sampai tujuan ✈️ Hanya di Tokopedia Now</string>
     <string name="tokopedianow_home_share_main_text">Belanja di Tokopedia NOW! sampai dalam 2 jam. Produknya pasti tersedia, lho! </string>
 
     <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
     <string name="tokopedianow_all_category">Semua Kategori</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
-    <string name="tokopedianow_category_aisle_header">Lihat kategori lainnya</string>
+    <string name="tokopedianow_2h_category_aisle_header">Lihat kategori lainnya di 2 jam tiba</string>
+    <string name="tokopedianow_20m_category_aisle_header">Kategori 20 menit tiba lainnya</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
-    <string name="tokopedianow_find_item_in_tokopedia_now">Cari Barang di Tokopedia NOW!</string>
+    <string name="tokopedianow_find_item_in_tokopedia_now">Jelajahi NOW! 2 Jam Tiba</string>
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
@@ -48,18 +49,27 @@
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
+    <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
 
-    <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>2 jam tiba</b> dan <b>gratis ongkir!</b>]]></string>
+    <!-- Educational Information / USP -->
+    <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>%1$s tiba</b> dan <b>gratis ongkir!</b>]]></string>
     <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
-    <string name="tokopedianow_home_educational_information_two_hours">2 jam tiba</string>
-    <string name="tokopedianow_home_educational_information_stock_available">Stok pasti tersedia</string>
+    <string name="tokopedianow_home_educational_information_2h_duration">Maks. 2 jam tiba</string>
+    <string name="tokopedianow_home_educational_information_20m_duration">20 menit tiba</string>
+    <string name="tokopedianow_home_educational_information_selected_product">Produk pilihan</string>
+    <string name="tokopedianow_home_educational_information_free_shipping">Gratis Ongkir</string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
-    <string name="tokopedianow_home_educational_information_two_hours_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>2 jam tiba.</b></font> Terima belanjaan dalam 2 jam setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
-    <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Stok pasti tersedia.</b></font> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
+    <string name="tokopedianow_home_educational_information_2h_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Maks. 2 jam tiba.</b></font> Pesanan langsung dikirim dengan estimasi waktu sesuai alamatmu, maks. 2 jam tiba setelah pembayaran.]]></string>
+    <string name="tokopedianow_home_educational_information_20m_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>20 menit tiba.</b></font> Terima pesananmu lebih cepat dan tetap <b>gratis ongkir</b>.]]></string>
+    <string name="tokopedianow_home_educational_information_2h_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Gratis ongkir.</b></font> Belanja harian mudah & instan, gratis biaya pengiriman.]]></string>
+    <string name="tokopedianow_home_educational_information_20m_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Produk-produk terpilih.</b></font> Khusus menjual produk yang bisa dikirim cepat ke alamatmu. Temukan produk lebih lengkap di layanan 2 jam tiba.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
-    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">Pelajari</a></font>]]></string>
-    <string name="tokopedianow_home_educational_information_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
-    <string name="tokopedianow_home_educational_information_title">Untungnya pakai Tokopedia NOW!</string>
+    <string name="tokopedianow_home_educational_information_2h_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">di sini.</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_2h_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_20m_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/tokopedia-now-20-menit">di sini.</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_20m_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now-20-menit-tiba">syarat & ketentuan.</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_title">Untung pakai Tokopedia NOW!</string>
+    <string name="tokopedianow_educational_information_visit_now_button_bottomsheet">Kunjungi Tokopedia NOW!</string>
 
     <string name="tokopedianow_repurchase_empty_state_no_history_title_filter">Tidak ada pembelian sesuai filtermu</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_title_search">Belum ada pembelianmu yang sesuai kata kunci</string>
@@ -69,7 +79,8 @@
     <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
-    <string name="tokopedianow_repurchase_no_result_description">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
+    <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
+    <string name="tokopedianow_repurchase_no_result_description_twenty_minutes">Belanja sekarang, pesanan tiba dalam 20 menit!</string>
 
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
@@ -111,4 +122,61 @@
     <string name="tokopedianow_text_apply">Terapkan</string>
     <string name="tokopedianow_text_reset">Reset</string>
     <string name="tokopedianow_back_to_tokopedia">Kembali ke Tokopedia</string>
+
+    <string name="tokopedianow_2h_copy">2 jam</string>
+    <string name="tokopedianow_20m_copy">20 menit</string>
+
+    <string name="tokopedianow_20m_switcher_title">Butuh pesanan tiba lebih cepat?</string>
+    <string name="tokopedianow_20m_switcher_subtitle"><![CDATA[Cari produk di <b>20 menit tiba</b>]]></string>
+    <string name="tokopedianow_2h_switcher_title"><![CDATA[Kamu sedang di layanan <b>NOW! 20 menit tiba</b>]]></string>
+    <string name="tokopedianow_2h_switcher_subtitle">Kembali ke NOW! 2 jam</string>
+    <string name="tokopedianow_20m_coachmark_title">Baru! Pesanan bisa tiba ke lokasimu dalam 20 menit  🚀</string>
+    <string name="tokopedianow_20m_coachmark_description">Lebih cepat, tetap gratis ongkir!</string>
+
+    <string name="tokopedianow_search_category_title">Belum nemu yang kamu cari?</string>
+    <string name="tokopedianow_search_category_description_twenty_minutes"><![CDATA[Masih banyak produk lainnya yang bisa <b>20 menit tiba</b>, lho.]]></string>
+    <string name="tokopedianow_search_category_title_twenty_minutes">Jelajahi Sekarang</string>
+    <string name="tokopedianow_search_category_description_two_hours"><![CDATA[Atau cek Tokopedia NOW! <b>2 jam tiba</b>, pilihan lebih lengkap!]]></string>
+    <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
+    <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
+
+    <string name="tokopedianow_category_share_main_text">Belanja %1$s di Tokopedia NOW! sampai dalam 2 jam. Produknya pasti tersedia, lho!</string>
+    <string name="tokopedianow_category_share_title">Jual %1$s Langsung Kirim Sekarang | Tokopedia Now</string>
+    <string name="tokopedianow_category_share_desc">Belanja %1$s terlengkap dan berkualitas 🛒✨. Dapatkan Promo Khusus ✅, Bebas Ongkir ✅ dan 2 jam sampai tujuan ✈️ Hanya di Tokopedia Now</string>
+
+    <string name="tokopedianow_20m_empty_state_title">Tunggu Tokopedia NOW! 20 menit tiba tersedia di lokasimu</string>
+    <string name="tokopedianow_20m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
+    <string name="tokopedianow_20m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
+
+    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu belanja di Tokopedia NOW!, <b>dapat kupon cashback hingga %3$s.</b> <font color=\'%1$s\'><a href=\'%2$s\'>Selengkapnya</a></font>]]></string>
+    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan <b>kupon cashback %1$s!</b>]]></string>
+    <string name="tokopedianow_home_referral_widget_button_text_sender">Bagikan ke Temanmu</string>
+    <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
+    <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
+    <string name="tokopedianow_home_referral_share_title">Bagi Link Referral Tokopedia NOW &amp;  Dapatkan Cashback 20rb</string>
+    <string name="tokopedianow_home_referral_share_desc">Jangan simpan sendiri, cashback kamu akan bertambah kalau kamu ajak temanmu bergabung</string>
+    <string name="tokopedianow_home_referral_share_main_text">ngajak kamu pakai Tokopedia NOW!. Belanja kebutuhan harian, 2 jam tiba &amp; gratis ongkir. Cuma pakai link ini, dapat kupon cashback Rp20 rb setelah transaksi! </string>
+    <string name="tokopedianow_home_referral_share_your_friend">Temanmu</string>
+
+    <!-- Mix Left Carousel Widget -->
+    <string name="tokopedianow_mix_left_carousel_widget_see_all">Lihat Semua</string>
+    <string name="tokopedianow_mix_left_carousel_widget_subtitle">Berakhir dalam</string>
+    <string name="tokopedianow_mix_left_carousel_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
+
+    <!-- On Boarding 20m -->
+    <string name="tokopedianow_on_boarding_title_bottomsheet">Tokopedia NOW! 20 menit tiba</string>
+    <string name="tokopedianow_on_boarding_content_overview_bottomsheet">Baru! Selain layanan 2 jam tiba, kini Tokopedia NOW! punya layanan 20 menit tiba. Kamu bisa nikmati:</string>
+    <string name="tokopedianow_on_boarding_first_content_detail_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>20 menit tiba &amp; gratis ongkir.</b></font> Terima pesanan lebih cepat, tetap gratis ongkir.]]></string>
+    <string name="tokopedianow_on_boarding_second_content_detail_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Belanja produk pilihan.</b></font> Ada ribuan produk yang bisa dikirim cepat ke alamatmu. Jika butuh produk lebih lengkap, kamu bisa pakai layanan 2 jam tiba.]]></string>
+    <string name="tokopedianow_on_boarding_cta_try_now_button_bottomsheet">Coba Sekarang</string>
+    <string name="tokopedianow_on_boarding_cta_back_to_2h_bottomsheet">Ke Layanan 2 Jam Tiba</string>
+    <string name="tokopedianow_on_boarding_step_button_text_last_child">Oke</string>
+
+    <string name="tokopedianow_home_on_boarding_20m_title_first_section_coachmark">Kamu bisa belanja NOW! 20 menit tiba 🚀️</string>
+    <string name="tokopedianow_home_on_boarding_20m_description_first_section_coachmark">Belanja produknya di halaman ini, langsung tiba 20 menit ke alamatmu. Tetap gratis ongkir!</string>
+    <string name="tokopedianow_home_on_boarding_20m_title_second_section_coachmark">Klik ini untuk balik ke NOW! 2 jam tiba</string>
+    <string name="tokopedianow_home_on_boarding_20m_description_second_section_coachmark">Maks. 2 jam tiba, produk lebih lengkap &amp; gratis ongkir.</string>
+
+    <string name="tokopedianow_on_boarding_2h_toaster">Selamat menikmati layanan NOW! maks. 2 jam tiba!</string>
+    <string name="tokopedianow_on_boarding_20m_toaster">Kamu sekarang berada di halaman khusus produk NOW! 20 menit tiba. Selamat belanja!</string>
 </resources>

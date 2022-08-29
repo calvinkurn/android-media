@@ -8,22 +8,34 @@ import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_CLOSE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_NONE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
@@ -43,11 +55,10 @@ import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentList
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -67,6 +78,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val BACK_TYPE_NONE = 0
             const val BACK_TYPE_CLOSE = 1
             const val BACK_TYPE_BACK = 2
+            const val BACK_TYPE_BACK_WITHOUT_COLOR = 3
         }
 
         object ContentType {
@@ -85,6 +97,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val TYPE_EDITABLE = 1
         }
         private const val MAX_BACKGROUND_ALPHA = 225f
+        // for set transparent searchbar on toolbar
+        const val ALPHA_MAX = 255f
     }
 
     //public variable
@@ -109,6 +123,36 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var lifecycleOwner: LifecycleOwner? = null
     private var useCentralizedIconNotification = mapOf<Int, Boolean>()
     private var searchbarType: Int? = null
+    private var darkIconColor: Int? = getDarkIconColor()
+    private var lightIconColor: Int? = getLightIconColor()
+
+    private val navIconRecyclerView : RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.rv_icon_list)
+    }
+    private val divider: View by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.divider)
+    }
+    private val navToolbar : Toolbar by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.navToolbar)
+    }
+    private val tvToolbarTitle: Typography by lazy(LazyThreadSafetyMode.NONE){
+        findViewById(R.id.toolbar_title)
+    }
+    private val navIconBack: IconUnify by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.nav_icon_back)
+    }
+    private val layoutSearch : ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.layout_search)
+    }
+    private val layoutCustomView: ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.layout_custom_view)
+    }
+    private val etSearch : EditText by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.et_search)
+    }
+    private val iconSearchMagnify : IconUnify by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.search_magnify_icon)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -186,6 +230,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 ta.recycle()
             }
         }
+        etSearch.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         userSessionInterface = UserSession(context)
         configureInvertedSearchBar()
         configureInitialFillBasedOnAttribute()
@@ -206,7 +251,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
         navIconAdapter = NavToolbarIconAdapter(iconConfig, this)
         navIconAdapter?.setHasStableIds(true)
-        val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -246,16 +290,24 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if(shadowApplied){
             shadowApplied = false
             if (lineShadow) {
-                divider?.visibility = View.INVISIBLE
-                navToolbar?.background = ColorDrawable(getLightBackgroundColor())
+                divider.visibility = View.INVISIBLE
+                navToolbar.background = ColorDrawable(getLightBackgroundColor())
                 setBackgroundAlpha(0f)
-                navToolbar?.updatePadding(bottom = 0)
+                navToolbar.updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
-                navToolbar?.background = ColorDrawable(getLightBackgroundColor())
-                navToolbar?.updatePadding(bottom = pB)
+                navToolbar.background = ColorDrawable(getLightBackgroundColor())
+                navToolbar.updatePadding(bottom = pB)
             }
         }
+    }
+
+    /**
+     * Call this method first before another method
+     */
+    fun setIconCustomColor(darkColor: Int?, lightColor: Int?) {
+        darkIconColor = darkColor
+        lightIconColor = lightColor
     }
 
     /**
@@ -267,12 +319,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
             if (lineShadow) {
                 setBackgroundAlpha(MAX_BACKGROUND_ALPHA)
-                divider?.visibility = View.VISIBLE
-                navToolbar?.updatePadding(bottom = 0)
+                divider.visibility = View.VISIBLE
+                navToolbar.updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
-                navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-                navToolbar?.updatePadding(bottom = pB)
+                navToolbar.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+                navToolbar.updatePadding(bottom = pB)
             }
         }
     }
@@ -300,7 +352,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -377,7 +429,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setOnBackButtonClickListener(disableDefaultGtmTracker: Boolean = false, backButtonClickListener: () -> Unit) {
-        nav_icon_back.setOnClickListener {
+        navIconBack.setOnClickListener {
             if (!disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
                         pageName = toolbarPageName,
@@ -405,7 +457,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun getCustomViewContentView(): View? {
         if (toolbarCustomReference == null) return null
-        return layout_custom_view
+        return layoutCustomView
     }
 
     fun setBackButtonType(newBackType: Int? = null) {
@@ -413,10 +465,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
         if (backType != BACK_TYPE_NONE) {
             setBackButtonColorBasedOnTheme()
-            nav_icon_back.visibility = VISIBLE
-            nav_icon_back.tag = backType
+            navIconBack.visibility = VISIBLE
+            navIconBack.tag = backType
             if (context is Activity) {
-                nav_icon_back.setOnClickListener {
+                navIconBack.setOnClickListener {
                     NavToolbarTracking.clickNavToolbarComponent(
                             pageName = toolbarPageName,
                             componentName = IconList.NAME_BACK_BUTTON,
@@ -426,7 +478,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 }
             }
         } else {
-            nav_icon_back.visibility = GONE
+            navIconBack.visibility = GONE
         }
     }
 
@@ -457,7 +509,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     fun getGlobalNavIconView(): View? {
         val globalNavPosition = navIconAdapter?.getGlobalNavIconPosition()
         globalNavPosition?.let {
-            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
             return viewholder?.itemView
         }
         return null
@@ -467,17 +519,17 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     fun getInboxIconView(): View? {
         val globalNavPosition = navIconAdapter?.getInboxIconPosition()
         globalNavPosition?.let {
-            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
             return viewholder?.itemView
         }
         return null
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
-        navToolbar?.let {
-            val drawable = it.background
+        navToolbar.apply {
+            val drawable = background
             drawable.alpha = alpha.toInt()
-            it.background = drawable
+            background = drawable
         }
     }
 
@@ -515,12 +567,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun applyStatusBarPadding() {
         var pT = 0
         pT = ViewHelper.getStatusBarHeight(context)
-        navToolbar?.updatePadding(top = pT)
+        navToolbar.updatePadding(top = pT)
     }
 
     private fun resetPadding() {
         var pT = 0
-        navToolbar?.updatePadding(top = pT)
+        navToolbar.updatePadding(top = pT)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -583,14 +635,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun setupCustomView() {
         showCustomView()
         toolbarCustomReference?.let {
-            val parentLayout = layout_custom_view
+            val parentLayout = layoutCustomView
             val childView = LayoutInflater.from(context).inflate(it, parentLayout, false)
             childView.id = generateViewId()
             parentLayout.addView(childView)
         }
 
         toolbarCustomViewContent?.let {
-            val parentLayout = layout_custom_view
+            val parentLayout = layoutCustomView
             it.id = generateViewId()
             parentLayout.addView(it)
         }
@@ -606,18 +658,18 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun configureInvertedSearchBar() {
         if (invertSearchBarColor) {
-            layout_search.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
+            layoutSearch.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
         }
     }
 
     private fun configureInitialFillBasedOnAttribute() {
         if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
             toolbarFillColor = getLightBackgroundColor()
-            divider?.visibility = View.INVISIBLE
-            navToolbar?.background = ColorDrawable(toolbarFillColor)
+            divider.visibility = View.INVISIBLE
+            navToolbar.background = ColorDrawable(toolbarFillColor)
             setBackgroundAlpha(0f)
         } else {
-            navToolbar?.background = ColorDrawable(toolbarFillColor)
+            navToolbar.background = ColorDrawable(toolbarFillColor)
         }
     }
 
@@ -638,7 +690,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             val unwrappedDrawable: Drawable = it
             val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
             DrawableCompat.setTint(wrappedDrawable, color)
-            nav_icon_back.setImageDrawable(it)
+            navIconBack.setImageDrawable(it)
         }
     }
 
@@ -646,15 +698,19 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         when (backType) {
             BACK_TYPE_CLOSE -> {
                 toolbarThemeCondition(
-                        lightCondition = { nav_icon_back.setImage(newIconId = IconUnify.CLOSE, newLightEnable = getDarkIconColor()) },
-                        darkCondition = { nav_icon_back.setImage(newIconId = IconUnify.CLOSE, newLightEnable = getLightIconColor()) }
+                    lightCondition = { navIconBack.setImage(newIconId = IconUnify.CLOSE, newLightEnable = darkIconColor) },
+                    darkCondition = { navIconBack.setImage(newIconId = IconUnify.CLOSE, newLightEnable = lightIconColor) }
                 )
             }
             BACK_TYPE_BACK -> {
                 toolbarThemeCondition(
-                        lightCondition = { nav_icon_back.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getDarkIconColor()) },
-                        darkCondition = { nav_icon_back.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getLightIconColor()) }
+                    lightCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = darkIconColor) },
+                    darkCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = lightIconColor) }
                 )
+            }
+            BACK_TYPE_BACK_WITHOUT_COLOR -> {
+                val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
+                navIconBack.setImageDrawable(arrowBackIcon)
             }
         }
     }
@@ -662,7 +718,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun showTitle() {
         hideToolbarContent(hideTitle = false)
         showToolbarContent(showTitle = true)
-        toolbar_title.text = toolbarTitle
+        tvToolbarTitle.text = toolbarTitle
 
         setTitleTextColorBasedOnTheme()
     }
@@ -677,29 +733,39 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+    private fun getDarkIconColor(): Int {
+        val unifyColor = if (context.isDarkMode()) {
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        } else {
+            R.color.searchbar_dms_state_light_icon
+        }
+        return ContextCompat.getColor(context, unifyColor)
+    }
 
     private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
 
     private fun getLightBackgroundColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun setTitleTextColorBasedOnTheme() {
+        val lightColorCondition = darkIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val darkCondition = lightIconColor ?: ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+
         toolbarThemeCondition(
-                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)) },
-                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+            lightCondition = { tvToolbarTitle.setTextColor(lightColorCondition) },
+            darkCondition = { tvToolbarTitle.setTextColor(darkCondition) }
         )
     }
 
     private fun hideToolbarContent(hideTitle: Boolean = true, hideSearchbar: Boolean = true, hideCustomContent: Boolean = true) {
-        if (hideTitle) toolbar_title.visibility = View.GONE
-        if (hideSearchbar) layout_search.visibility = View.GONE
-        if (hideCustomContent) layout_custom_view.visibility = View.GONE
+        if (hideTitle) tvToolbarTitle.visibility = View.GONE
+        if (hideSearchbar) layoutSearch.visibility = View.GONE
+        if (hideCustomContent) layoutCustomView.visibility = View.GONE
     }
 
     private fun showToolbarContent(showTitle: Boolean = false, showSearchbar: Boolean = false, showCustomContent: Boolean = false) {
-        if (showTitle) toolbar_title.visibility = View.VISIBLE
-        if (showSearchbar) layout_search.visibility = View.VISIBLE
-        if (showCustomContent) layout_custom_view.visibility = View.VISIBLE
+        if (showTitle) tvToolbarTitle.visibility = View.VISIBLE
+        if (showSearchbar) layoutSearch.visibility = View.VISIBLE
+        if (showCustomContent) layoutCustomView.visibility = View.VISIBLE
     }
 
     private fun toolbarThemeCondition(lightCondition: () -> Unit = {}, darkCondition: () -> Unit = {}) {
@@ -712,4 +778,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     override fun isLoggedIn(): Boolean = userSessionInterface?.isLoggedIn?:false
 
     override fun getPageName(): String = toolbarPageName
+
+    fun setSearchBarAlpha(alpha: Float) = runCatching {
+        etSearch.alpha = alpha / ALPHA_MAX
+        layoutSearch.alpha = alpha / ALPHA_MAX
+        iconSearchMagnify.alpha = alpha / ALPHA_MAX
+        etSearch.isEnabled = etSearch.alpha > Float.ZERO
+    }
 }

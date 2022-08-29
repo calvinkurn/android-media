@@ -17,16 +17,16 @@ class PaymentListingViewModel @Inject constructor(private val getPaymentListingP
     val paymentListingPayload: LiveData<OccState<String>>
         get() = _paymentListingPayload
 
-    fun getPaymentListingPayload(request: PaymentListingParamRequest, amount: Double) {
+    fun getPaymentListingPayload(request: PaymentListingParamRequest, amount: Double, orderMetadata: String) {
         _paymentListingPayload.value = OccState.Loading
         getPaymentListingParamUseCase.execute(request, {
-            _paymentListingPayload.value = OccState.Success(generatePayload(it, request.version, amount))
+            _paymentListingPayload.value = OccState.Success(generatePayload(it, request.version, amount, orderMetadata))
         }, {
             _paymentListingPayload.value = OccState.Failed(Failure(it))
         })
     }
 
-    private fun generatePayload(param: ListingParam, version: String, amount: Double): String {
+    private fun generatePayload(param: ListingParam, version: String, amount: Double, orderMetadata: String): String {
         return "merchant_code=${getUrlEncoded(param.merchantCode)}&" +
                 "profile_code=${getUrlEncoded(param.profileCode)}&" +
                 "user_id=${getUrlEncoded(param.userId)}&" +
@@ -38,7 +38,8 @@ class PaymentListingViewModel @Inject constructor(private val getPaymentListingP
                 "version=${getUrlEncoded(version)}&" +
                 "signature=${getUrlEncoded(param.hash)}&" +
                 "amount=${getUrlEncoded(amount.toString())}&" +
-                "bid=${getUrlEncoded(param.bid)}"
+                "bid=${getUrlEncoded(param.bid)}&" +
+                "order_metadata=${getUrlEncoded(orderMetadata)}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

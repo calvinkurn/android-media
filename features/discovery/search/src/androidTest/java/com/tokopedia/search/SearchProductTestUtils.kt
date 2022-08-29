@@ -13,24 +13,23 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -116,6 +115,8 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
+
         override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
             get() = null
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
@@ -152,8 +153,7 @@ internal fun createSuggestionListener(): SuggestionListener {
 
 internal fun createEmptyStateListener(): EmptyStateListener {
     return object: EmptyStateListener {
-        override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
-        override fun onSelectedFilterRemoved(uniqueId: String?) {}
+        override fun resetFilters() {}
         override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun onEmptyButtonClicked() {}
     }
@@ -164,6 +164,7 @@ internal fun createRecommendationListener(): RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
         override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
+        override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
     }
 }
 

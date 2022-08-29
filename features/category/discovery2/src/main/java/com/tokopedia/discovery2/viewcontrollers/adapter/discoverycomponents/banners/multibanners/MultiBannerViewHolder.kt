@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
@@ -18,16 +19,20 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.PAGE_REFRESH_LOGIN
-import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
 class MultiBannerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_container_layout)
     private var context: Context
     private lateinit var bannerName: String
     private lateinit var multiBannerViewModel: MultiBannerViewModel
-    private lateinit var bannersItemList: ArrayList<BannerItem>
+    private var bannersItemList: ArrayList<BannerItem> = arrayListOf()
 
     init {
         context = constraintLayout.context
@@ -36,19 +41,24 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = discoveryBaseViewModel as MultiBannerViewModel
         getSubComponent().inject(multiBannerViewModel)
+        if (multiBannerViewModel.shouldShowShimmer()) {
+            constraintLayout.removeAllViews()
+            val shimmerView = constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), false)
+            constraintLayout.addView(shimmerView)
+        }
         multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
 
             if (!item.data.isNullOrEmpty()) {
                 constraintLayout.removeAllViews()
                 bannersItemList = ArrayList()
                 bannerName = item?.name ?: ""
-                addBanners(item.data!!)
+                addBanners(item.data!!,item.properties?.compType)
             }
         })
 
         multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
             updateImage(it.first)
-            if(it.second.isNotEmpty()){
+            if (it.second.isNotEmpty()) {
                 Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         })
@@ -78,11 +88,45 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         multiBannerViewModel.isPageRefresh().observe(fragment.viewLifecycleOwner, Observer {
             if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
         })
+
+        multiBannerViewModel.hideShimmer.observe(fragment.viewLifecycleOwner, { shouldHideShimmer ->
+            if (shouldHideShimmer) {
+                constraintLayout.removeAllViews()
+            }
+        })
+
+        multiBannerViewModel.showErrorState.observe(fragment.viewLifecycleOwner, { shouldShowError ->
+            if (shouldShowError) {
+                handleError()
+            }
+        })
+
+    }
+
+    private fun handleError() {
+        constraintLayout.removeAllViews()
+        val emptyStateParentView = constraintLayout.inflateLayout(R.layout.item_empty_error_state, false)
+        val emptyStateView: LocalLoad = emptyStateParentView.findViewById(R.id.viewEmptyState)
+        emptyStateView.apply {
+            val errorLoadUnifyView = emptyStateView.viewEmptyState
+            errorLoadUnifyView.title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+            errorLoadUnifyView.description?.text =
+                    context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+            errorLoadUnifyView.refreshBtn?.setOnClickListener {
+                hide()
+                constraintLayout.removeAllViews()
+                val shimmerView = constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), false)
+                constraintLayout.addView(shimmerView)
+                multiBannerViewModel.reload()
+            }
+        }
+        emptyStateView.isVisible = true
+        constraintLayout.addView(emptyStateParentView)
     }
 
     private fun updateImage(position: Int) {
         if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
-            && !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
+                && !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
@@ -91,10 +135,15 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         }
     }
 
-    private fun addBanners(data: List<DataItem>) {
+    private fun addBanners(data: List<DataItem>, compType: String?) {
         val constraintSet = ConstraintSet()
         val height = multiBannerViewModel.getBannerUrlHeight()
         val width = multiBannerViewModel.getBannerUrlWidth()
+
+        /*coupons can be there in form of banners so we need to set hardcoded values for component_name
+         (i have added componentPromoName key in dataItem for it)*/
+        // purpose - we need to send different GTM in case of coupons
+        multiBannerViewModel.setComponentPromoNameForCoupons(bannerName,data)
 
         for ((index, bannerItem) in data.withIndex()) {
             var bannerView: BannerItem
@@ -104,11 +153,11 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             }
             bannerItem.positionForParentItem = multiBannerViewModel.position
             bannerView = if (index == 0) {
-                BannerItem(bannerItem, constraintLayout, constraintSet, width, height, index,
-                        null, context, isLastItem)
+                BannerItem(bannerItem, constraintLayout, constraintSet, width, height,bannerItem.itemWeight, index,
+                        null, context, isLastItem,compType)
             } else {
-                BannerItem(bannerItem, constraintLayout, constraintSet, width, height, index,
-                        bannersItemList.get(index - 1), context, isLastItem)
+                BannerItem(bannerItem, constraintLayout, constraintSet, width, height,bannerItem.itemWeight, index,
+                        bannersItemList.get(index - 1), context, isLastItem,compType)
             }
             bannersItemList.add(bannerView)
 
@@ -119,11 +168,17 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-            data,
-            null,
-            Utils.getUserId(fragment.context)
-        )
+        if(data.firstOrNull()?.action == BANNER_ACTION_CODE){
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
+                    data
+            )
+        }else {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                    data,
+                    null,
+                    Utils.getUserId(fragment.context)
+            )
+        }
     }
 
     private fun checkSubscriptionStatus(position: Int) {
@@ -133,8 +188,13 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index, context)
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+            if(itemData.action == BANNER_ACTION_CODE){
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                        ?.trackPromoBannerClick(itemData, index)
+            }else {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                        ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
+            }
         }
     }
 }

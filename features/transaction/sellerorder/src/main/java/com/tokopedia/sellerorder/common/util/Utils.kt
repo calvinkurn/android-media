@@ -6,9 +6,11 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Spanned
+import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -17,7 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNCEMENT
@@ -74,6 +76,18 @@ object Utils {
         return drawable
     }
 
+    fun getColoredDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
+        val color = try {
+            Color.parseColor(colorHex)
+        } catch (t: Throwable) {
+            defaultColor
+        }
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
     fun getLocale(): Locale {
         return Locale("id")
     }
@@ -105,9 +119,9 @@ object Utils {
         return date.timeInMillis
     }
 
-    fun getNPastMonthTimeText(monthBefore: Int): String {
+    fun getNPastMonthTimeText(monthBefore: Int, format: String = PATTERN_DATE_PARAM): String {
         val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
-        return format(pastTwoYear, PATTERN_DATE_PARAM)
+        return format(pastTwoYear, format)
     }
 
     fun List<SomFilterUiModel>.copyListParcelable(): List<SomFilterUiModel> {
@@ -169,10 +183,22 @@ object Utils {
     }
 
     fun Fragment?.updateShopActive() {
-        this?.context?.let { UpdateShopActiveService.startService(it) }
+        this?.context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     fun Activity.updateShopActive() {
-        UpdateShopActiveService.startService(this)
+        UpdateShopActiveWorker.execute(this)
+    }
+
+    fun View.generateHapticFeedback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+        } else {
+            performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        }
+    }
+
+    fun String.stripLastDot(): String {
+        return removeSuffix(".")
     }
 }

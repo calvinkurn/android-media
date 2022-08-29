@@ -5,16 +5,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
-import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
 class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(itemView) {
 
@@ -48,6 +47,8 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private val mTvShippingDiscountPrice: TextView = itemView.findViewById(R.id.tv_shipping_discount_price)
     private val mTvProductDiscountLabel: TextView = itemView.findViewById(R.id.tv_product_discount_label)
     private val mTvProductDiscountPrice: TextView = itemView.findViewById(R.id.tv_product_discount_price)
+    private val mTvSummaryAddOnLabel: Typography = itemView.findViewById(R.id.tv_summary_add_on_label)
+    private val mTvSummaryAddOnPrice: Typography = itemView.findViewById(R.id.tv_summary_add_on_price)
 
     @SuppressLint("StringFormatInvalid")
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
@@ -94,6 +95,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         }
         mTvBookingFee.text = getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.bookingFee.toDouble())
         renderDiscount(shipmentCost)
+        renderAddOnCost(shipmentCost)
     }
 
     private fun renderDiscount(shipmentCost: ShipmentCostModel) {
@@ -125,7 +127,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         mTvShippingDiscountLabel.text = mTvShippingDiscountLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipping_discount)
         if (shipmentCost.shippingDiscountAmount > 0) {
             if (shipmentCost.shippingDiscountAmount >= shipmentCost.shippingFee) {
-                mTvShippingFee.setTextAndContentDescription(mTvShippingFee.context.getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping), R.string.content_desc_tv_shipping_fee_summary)
+                mTvShippingFee.setTextAndContentDescription(convertPriceValueToIdrFormat(0.0, false).removeDecimalSuffix(), R.string.content_desc_tv_shipping_fee_summary)
                 mTvShippingDiscountPrice.visibility = View.GONE
                 mTvShippingDiscountLabel.visibility = View.GONE
             } else {
@@ -140,6 +142,20 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     private fun renderGeneralDiscount(shipmentCost: ShipmentCostModel) {
         mTvDiscountLabel.text = mTvDiscountLabel.context.getString(R.string.label_total_discount)
         mTvDiscountPrice.text = getPriceFormat(mTvDiscountLabel, mTvDiscountPrice, (shipmentCost.discountAmount * -1).toDouble())
+    }
+
+    private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
+        if (shipmentCost.hasAddOn) {
+            mTvSummaryAddOnLabel.text = mTvDiscountLabel.context.getString(R.string.label_add_on_cost)
+
+            // exclusion : need to write if totalAddOnPrice is Rp 0
+            mTvSummaryAddOnLabel.visibility = View.VISIBLE
+            mTvSummaryAddOnPrice.visibility = View.VISIBLE
+            mTvSummaryAddOnPrice.text = convertPriceValueToIdrFormat(shipmentCost.totalAddOnPrice.toLong(), false).removeDecimalSuffix()
+        } else {
+            mTvSummaryAddOnLabel.visibility = View.GONE
+            mTvSummaryAddOnPrice.visibility = View.GONE
+        }
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {

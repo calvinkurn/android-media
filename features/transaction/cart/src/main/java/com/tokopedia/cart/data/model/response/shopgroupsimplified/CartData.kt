@@ -5,7 +5,6 @@ import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
-import java.util.*
 
 data class CartData(
         @SerializedName("errors")
@@ -53,5 +52,7 @@ data class CartData(
         @SerializedName("pop_up_message")
         val popUpMessage: String = "",
         @SerializedName("popup_error_message")
-        val popupErrorMessage: String = ""
+        val popupErrorMessage: String = "",
+        @SerializedName("placeholder_note")
+        val placeholderNote: String = "",
 )

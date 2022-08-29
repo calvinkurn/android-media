@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -7,11 +8,31 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
-import com.tokopedia.oneclickcheckout.order.data.checkout.*
+import com.tokopedia.oneclickcheckout.order.data.checkout.AddOnItem
+import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
+import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
+import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
+import com.tokopedia.oneclickcheckout.order.data.checkout.Profile
+import com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest
+import com.tokopedia.oneclickcheckout.order.data.checkout.ShippingInfo
+import com.tokopedia.oneclickcheckout.order.data.checkout.ShopProduct
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.coroutines.withContext
@@ -19,7 +40,8 @@ import javax.inject.Inject
 
 class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkoutOccUseCase: CheckoutOccUseCase,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                            private val executorDispatchers: CoroutineDispatchers) {
+                                                            private val executorDispatchers: CoroutineDispatchers,
+                                                            private val gson: Gson) {
 
     private fun generateShopPromos(finalPromo: ValidateUsePromoRevampUiModel?, orderCart: OrderCart): List<PromoRequest> {
         if (finalPromo != null) {
@@ -51,6 +73,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                            shop: OrderShop,
                            profile: OrderProfile,
                            orderShipment: OrderShipment,
+                           orderPayment: OrderPayment,
                            orderTotal: OrderTotal,
                            userId: String,
                            orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce): Pair<CheckoutOccResult?, OccGlobalEvent?> {
@@ -62,13 +85,41 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val checkoutProducts: ArrayList<ProductData> = ArrayList()
             products.forEach {
                 if (!it.isError) {
+                    val addOnProductLevelItems = mutableListOf<AddOnItem>()
+                    val addOnItemModel = it.addOn.addOnsDataItemModelList.firstOrNull()
+                    if (it.addOn.status == 1 && addOnItemModel != null) {
+                        addOnProductLevelItems.add(AddOnItem(
+                                itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                                itemId = addOnItemModel.addOnId,
+                                itemQty = addOnItemModel.addOnQty,
+                                itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
+                        ))
+                    }
                     checkoutProducts.add(ProductData(
-                            it.productId.toString(),
-                            it.orderQuantity,
-                            it.notes,
-                            it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+                            productId = it.productId.toString(),
+                            productQuantity = it.orderQuantity,
+                            productNotes = it.notes,
+                            isPPP = it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
+                            items = addOnProductLevelItems
                     ))
                 }
+            }
+
+            val addOnShopLevelItems = mutableListOf<AddOnItem>()
+            val addOnItemModel = shop.addOn.addOnsDataItemModelList.firstOrNull()
+            if (shop.addOn.status == 1 && addOnItemModel != null) {
+                addOnShopLevelItems.add(AddOnItem(
+                        itemType = AddOnConstant.ADD_ON_LEVEL_PRODUCT,
+                        itemId = addOnItemModel.addOnId,
+                        itemQty = addOnItemModel.addOnQty,
+                        itemMetadata = gson.toJson(addOnItemModel.addOnMetadata)
+                ))
+            }
+
+            val orderMetadata = arrayListOf<OrderMetadata>()
+            val logisticPromoUiModel = orderShipment.logisticPromoViewModel
+            if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
+                orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, logisticPromoUiModel.freeShippingMetadata))
             }
             val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
                     profile.address.addressId,
@@ -86,7 +137,9 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                             orderShipment.getRealUt(),
                                             orderShipment.getRealChecksum()
                                     ),
-                                    promos = shopPromos
+                                    promos = shopPromos,
+                                    items = addOnShopLevelItems,
+                                    orderMetadata = orderMetadata
                             )
                     )
             )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = if (shop.isTokoNow) ParamCart.FEATURE_TYPE_TOKONOW else ParamCart.FEATURE_TYPE_OCC_MULTI_NON_TOKONOW))
@@ -98,6 +151,13 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         var paymentType = profile.payment.gatewayName
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
+                        }
+                        val tenureType: String = if (orderPayment.walletData.isGoCicil && orderPayment.walletData.goCicilData.selectedTerm != null) {
+                            orderPayment.walletData.goCicilData.selectedTerm.installmentTerm.toString()
+                        } else if (orderPayment.creditCard.selectedTerm != null) {
+                            orderPayment.creditCard.selectedTerm.term.toString()
+                        } else {
+                            ""
                         }
                         products.forEach {
                             if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
@@ -116,6 +176,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                 userId,
                                 transactionId,
                                 paymentType,
+                                tenureType,
                                 orderSummaryPageEnhanceECommerce.apply {
                                     dataList.forEach {
                                         setPromoCode(allPromoCodes, it)

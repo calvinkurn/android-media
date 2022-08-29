@@ -13,6 +13,7 @@ import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
+import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -95,6 +96,7 @@ object DigitalCheckoutMapper {
                     1 else attributesDigital.isCouponActive = 0
                 attributesDigital.voucherAutoCode = attributes.voucher
                 attributesDigital.adminFee = attributes.adminFee
+                attributesDigital.isAdminFeeIncluded = attributes.isAdminFeeIncluded
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
                 if (userInputPrice.maxPayment != 0.0 && userInputPrice.minPayment != 0.0) {
@@ -152,6 +154,9 @@ object DigitalCheckoutMapper {
             cartDigitalInfoData.isNeedOtp = responseRechargeGetCart.response.isOtpRequired
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
             cartDigitalInfoData.title = responseRechargeGetCart.response.title
+            cartDigitalInfoData.channelId = responseRechargeGetCart.response.channelId
+            cartDigitalInfoData.collectionPointId =
+                responseRechargeGetCart.response.collectionPointId
 
             return cartDigitalInfoData
 
@@ -169,6 +174,18 @@ object DigitalCheckoutMapper {
             paymentPassData.queryString = queryString ?: ""
             paymentPassData.transactionId = parameter?.transactionId ?: ""
         }
+        return paymentPassData
+    }
+
+    fun mapToPaymentPassData(responseCheckoutData: RechargeCheckoutResponse): PaymentPassData {
+        val paymentPassData = PaymentPassData()
+
+        paymentPassData.callbackFailedUrl = responseCheckoutData.data.attributes.callbackUrlFailed
+        paymentPassData.callbackSuccessUrl = responseCheckoutData.data.attributes.callbackUrlSuccess
+        paymentPassData.redirectUrl = responseCheckoutData.data.attributes.redirectUrl
+        paymentPassData.queryString = responseCheckoutData.data.attributes.queryString
+        paymentPassData.transactionId = responseCheckoutData.data.attributes.parameter.transactionId
+
         return paymentPassData
     }
 

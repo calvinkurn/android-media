@@ -26,6 +26,17 @@ class SaldoDetailsAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
+    fun sendClickPaymentEvents(action: String, label: String = "") {
+        if (action.isEmpty()) return
+        val map = TrackAppUtils.gtmData(
+            SaldoDetailsConstants.Event.EVENT_CLICK_PAYMENT,
+            SaldoDetailsConstants.Category.SALDO_PAGE,
+            action,
+            label
+        )
+        sendGeneralEvent(map)
+    }
+
     fun sendApiFailureEvents(label: String = "") {
         if (label.isEmpty()) return
         val map = TrackAppUtils.gtmData(

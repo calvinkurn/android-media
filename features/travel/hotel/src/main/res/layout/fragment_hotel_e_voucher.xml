@@ -299,7 +299,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl6"
         android:background="@color/Unify_N0"
         android:orientation="horizontal"
         android:layout_gravity="bottom"
@@ -317,9 +317,12 @@
             app:typographyType="body_3" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_dynamic_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
+            android:adjustViewBounds="true"
+            tools:visibility="visible"
+            tools:srcCompat="@drawable/ic_hotel_booking_com_logo" />
 
     </LinearLayout>
     <include

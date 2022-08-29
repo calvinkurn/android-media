@@ -11,11 +11,7 @@ data class DeactivationPowerMerchantResponse(
         @Expose
         @SerializedName("goldTurnOffSubscription")
         val goldTurnOffSubscription: GoldTurnOffSubscriptionModel? = null,
-) {
-
-    val isSuccess: Boolean
-        get() = goldTurnOffSubscription?.header?.errorCode.isNullOrBlank()
-}
+)
 
 data class GoldTurnOffSubscriptionModel(
         @Expose

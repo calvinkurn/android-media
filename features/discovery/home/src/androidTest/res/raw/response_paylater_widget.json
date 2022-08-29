@@ -1,0 +1,18 @@
+[
+  {
+    "data": {
+      "paylater_getHomeWidget": {
+        "show": true,
+        "image_dark": "https://images.tokopedia.net/img/gpl_cicil_s.png",
+        "image_light": "https://images.tokopedia.net/img/gpl_cicil_s.png",
+        "description": "Bisa belanja pakai cicilan, limit sampai Rp0!",
+        "button": {
+          "button_name": "Daftar Sekarang",
+          "cta_type": 2,
+          "web_url": "https://www.tokopedia.com/paylater/switcher?gatewayCode=GOCICIL&redirectURL=tokopedia.com",
+          "apps_url": "https://www.tokopedia.com/paylater/switcher?gatewayCode=GOCICIL&redirectURL=tokopedia.com"
+        }
+      }
+    }
+  }
+]

@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -31,6 +32,7 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressList
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -40,6 +42,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -298,7 +302,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             label = "${data.districtName}, ${data.cityName}",
                             postalCode = data.postalCode,
                             warehouseId = data.tokonowModel.warehouseId.toString(),
-                            shopId = data.tokonowModel.shopId.toString()
+                            shopId = data.tokonowModel.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            serviceType = data.tokonowModel.serviceType
                         )
                     } else {
                         localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -310,7 +316,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             label = "${data.addressName} ${data.receiverName}",
                             postalCode = data.postalCode,
                             warehouseId = data.tokonowModel.warehouseId.toString(),
-                            shopId = data.tokonowModel.shopId.toString()
+                            shopId = data.tokonowModel.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                            serviceType = data.tokonowModel.serviceType
                         )
                     }
 
@@ -355,7 +363,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             )),
                             postalCode = data.postalCode,
                             warehouseId = it.data.tokonow.warehouseId.toString(),
-                            shopId = it.data.tokonow.warehouseId.toString()
+                            shopId = it.data.tokonow.shopId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(it.data.tokonow.warehouses),
+                            serviceType = it.data.tokonow.serviceType
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {
@@ -388,6 +398,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
                             putExtra(EXTRA_IS_FULL_FLOW, true)
                             putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(PARAM_SOURCE, AddEditAddressSource.ADDRESS_LOCALIZATION_WIDGET.source)
                         }, REQUEST_CODE_ADD_ADDRESS)
                     } else {
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
@@ -550,6 +561,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         ChooseAddressTracking.onClickCekAlamatLainnya(userSession.userId)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
         intent.putExtra(EXTRA_IS_LOCALIZATION, true)
+        intent.putExtra(PARAM_SOURCE, ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source)
         startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
     }
 
