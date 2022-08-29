@@ -23,17 +23,6 @@ class AnalyticsParser @Inject constructor() {
         )
     }
 
-    fun inferName(data: Map<String, Any>, source: String): String {
-       return runCatching {
-           when(source) {
-               "gtm" -> data["event"].toString()
-               "branch_io" -> data["eventName"].toString()
-               "error" -> "ERROR GTM V5"
-               else -> ""
-           }
-       }.getOrElse { "" }
-    }
-
     fun toJsonMap(str: String): JsonMap {
         val jsonType = object : TypeToken<Map<String, Any>>() {}.type
         return try {

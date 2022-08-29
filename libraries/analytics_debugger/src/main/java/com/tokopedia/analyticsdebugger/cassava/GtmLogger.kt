@@ -2,6 +2,8 @@ package com.tokopedia.analyticsdebugger.cassava
 
 import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.analyticsdebugger.cassava.core.NameInference
+import com.tokopedia.analyticsdebugger.cassava.core.TkpdNameInference
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.database.CassavaDatabase
@@ -21,6 +23,7 @@ class GtmLogger private constructor(
     private val parser: AnalyticsParser,
     private val dbSource: GtmRepo,
     private val pref: CassavaSharedPreference,
+    private val nameInference: NameInference? = null,
 ) : AnalyticsLogger, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -30,7 +33,7 @@ class GtmLogger private constructor(
 
     override fun save(data: Map<String, Any>, name: String?, source: String) {
         launch {
-            val nameNotNull = name ?: parser.inferName(data, source)
+            val nameNotNull = name ?: nameInference?.infer(data, source).orEmpty()
             val logData = AnalyticsLogData(
                 name = nameNotNull,
                 data = parser.parse(data),
@@ -70,7 +73,8 @@ class GtmLogger private constructor(
                         context,
                         AnalyticsParser(),
                         GtmRepo(dao),
-                        CassavaSharedPreference(context)
+                        CassavaSharedPreference(context),
+                        TkpdNameInference()
                     )
                 } else {
                     instance = emptyInstance()
