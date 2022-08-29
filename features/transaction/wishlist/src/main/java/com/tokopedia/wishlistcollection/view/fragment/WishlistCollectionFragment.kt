@@ -374,6 +374,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onResume() {
         super.onResume()
+        binding?.run {
+            wishlistCollectionStickyProgressDeletionWidget.rlDeletionProgress.gone()
+        }
         checkProgressDeletion()
     }
 
