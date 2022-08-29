@@ -15,6 +15,9 @@ import com.tokopedia.product.manage.common.feature.variant.adapter.model.Product
 import com.tokopedia.product.manage.databinding.ItemProductManageVariantBinding
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 class ProductVariantPriceViewHolder(
     itemView: View,
@@ -23,11 +26,18 @@ class ProductVariantPriceViewHolder(
 ): AbstractViewHolder<ProductVariant>(itemView) {
 
     companion object {
+        private const val PRICE_DECIMAL_PRECISION = 0
+        private const val LOCALE_LANGUAGE_ID = "in"
+        private const val LOCALE_COUNTRY_ID = "ID"
+
         @LayoutRes
         val LAYOUT = R.layout.item_product_manage_variant
     }
 
     private val binding by viewBinding<ItemProductManageVariantBinding>()
+    private val priceDecimalFormatter by lazy(LazyThreadSafetyMode.NONE) {
+        createPriceDecimalFormatter()
+    }
 
     private var priceTextWatcher: TextWatcher? = null
 
@@ -70,10 +80,7 @@ class ProductVariantPriceViewHolder(
     private fun setTextFieldPriceValue(variant: ProductVariant) {
        binding?.textFieldPrice?.run {
            val price = priceMap.getOrElse(variant.id) { variant.price }
-           // For now, set the price to int first as we do not support decimal price edit
-           val priceString = price.toLong().toString()
-           val priceRupiah = CurrencyFormatHelper.convertToRupiah(priceString)
-           val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
+           val priceTxt = priceDecimalFormatter.format(price).toString()
            val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
 
            prependText(prefixTxt)
@@ -154,6 +161,12 @@ class ProductVariantPriceViewHolder(
             showMinPriceError()
         } else {
             hidePriceError()
+        }
+    }
+
+    private fun createPriceDecimalFormatter(): NumberFormat {
+        return DecimalFormat.getInstance(Locale(LOCALE_LANGUAGE_ID, LOCALE_COUNTRY_ID)).apply {
+            maximumFractionDigits = PRICE_DECIMAL_PRECISION
         }
     }
 
