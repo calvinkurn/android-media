@@ -96,10 +96,8 @@ class RegisteredDialog {
         fun createRedefineRegisterInputPhoneOfferSuccess(context: Context, phone: String): DialogUnify {
             val confirmDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
 
-            val separatorPhone = PhoneNumberUtils.stripSeparators(phone)
-
             confirmDialog.apply {
-                setTitle(separatorPhone)
+                setTitle(phone)
                 setDescription(context.getString(R.string.register_email_input_phone_dialog_success_subtitle))
                 setPrimaryCTAText(context.getString(R.string.register_email_input_phone_dialog_success_primary_button))
                 setSecondaryCTAText(context.getString(R.string.register_email_input_phone_dialog_success_secondary_button))

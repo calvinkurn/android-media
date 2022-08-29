@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.redefine_register_email.input_phone.view.vie
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.redefine_register_email.input_phone.domain.RegisterCheckUseCase
@@ -17,8 +18,8 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private var phoneError = RESOURCE_NOT_CHANGED
     private val _formState = SingleLiveEvent<Int>()
     val formState: LiveData<Int> get() = _formState
-    private val _isRegisteredPhone = SingleLiveEvent<Boolean>()
-    val isRegisteredPhone: LiveData<Boolean> get() = _isRegisteredPhone
+    private val _isRegisteredPhone = SingleLiveEvent<RegisteredPhoneState>()
+    val isRegisteredPhone: LiveData<RegisteredPhoneState> get() = _isRegisteredPhone
 
     fun validatePhone(phone: String) {
         phoneError = when {
@@ -45,15 +46,38 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
 
     fun submitForm(phone: String) {
         if (isPhoneNumberValid()) {
-            _isRegisteredPhone.value = true
+            registerCheck(phone)
         } else {
             validatePhone(phone)
         }
     }
 
+    private fun registerCheck(phone: String) {
+        _isRegisteredPhone.value = RegisteredPhoneState.Loading()
+        launchCatchError(coroutineContext, {
+            val response = registerCheckUseCase(phone)
+
+            _isRegisteredPhone.value = when {
+                response.data.status == STATUS_USER_ACTIVE -> {
+                    RegisteredPhoneState.Registered()
+                }
+                response.data.errors.isNotEmpty() -> {
+                    RegisteredPhoneState.Failed(message = response.data.errors[0])
+                }
+                else -> {
+                    RegisteredPhoneState.Unregistered(response.data.view)
+                }
+            }
+
+        }, {
+            _isRegisteredPhone.value = RegisteredPhoneState.Error(it)
+        })
+    }
+
     companion object {
         const val NOTHING_RESOURCE = 0
         const val RESOURCE_NOT_CHANGED = -1
+        private const val STATUS_USER_ACTIVE = 1
     }
 
 }

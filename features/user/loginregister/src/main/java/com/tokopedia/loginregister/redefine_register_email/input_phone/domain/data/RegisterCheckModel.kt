@@ -12,5 +12,8 @@ data class RegisterCheckData(
     var status: Int = 0,
 
     @SerializedName("errors")
-    val errors: List<String> = emptyList()
+    val errors: List<String> = emptyList(),
+
+    @SerializedName("view")
+    val view: String =""
 )

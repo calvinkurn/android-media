@@ -19,6 +19,7 @@ class RegisterCheckUseCase @Inject constructor(
                 registerCheck(id: ${'$'}id) {
                     status
                     errors
+                    view
                 }
             }
         """.trimIndent()

@@ -22,8 +22,11 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.input_phone.view.viewmodel.RedefineRegisterInputPhoneViewModel
+import com.tokopedia.loginregister.redefine_register_email.input_phone.view.viewmodel.RegisteredPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -104,12 +107,36 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun initObserver() {
         viewModel.formState.observe(viewLifecycleOwner) {
             binding?.btnSubmit?.isEnabled = true
-            binding?.fieldInputPhone?.setMessageField(it)
+            binding?.fieldInputPhone?.setMessageFromResource(it)
         }
 
         viewModel.isRegisteredPhone.observe(viewLifecycleOwner) {
-            showDialogOfferLogin()
+            when (it) {
+                is RegisteredPhoneState.Loading -> {
+                    showLoading(true)
+                }
+                is RegisteredPhoneState.Registered -> {
+                    showLoading(false)
+                    showDialogOfferLogin()
+                }
+                is RegisteredPhoneState.Unregistered -> {
+                    showLoading(false)
+                    showDialogConfirmPhone(phone = it.message)
+                }
+                is RegisteredPhoneState.Failed -> {
+                    showLoading(false)
+                    binding?.fieldInputPhone?.setMessageFromString(it.message)
+                }
+                is RegisteredPhoneState.Error -> {
+                    showLoading(false)
+                    it.throwable?.let { throwable -> showToasterError(throwable) }
+                }
+            }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding?.btnSubmit?.isLoading = isLoading
     }
 
     private fun showDialogOfferLogin() {
@@ -132,8 +159,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         offerLoginDialog.show()
     }
 
-    private fun showDialogSuccess() {
-        val phone = binding?.fieldInputPhone?.editText?.text.toString()
+    private fun showDialogConfirmPhone(phone: String) {
         val confirmDialog = RegisteredDialog.createRedefineRegisterInputPhoneOfferSuccess(requireActivity(), phone)
 
         confirmDialog.setPrimaryCTAClickListener {
@@ -163,7 +189,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         failedDialog.show()
     }
 
-    private fun goToVerification(phone: String = "", otpType: Int, context: Context) {
+    private fun goToVerification(phone: String, otpType: Int, context: Context) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -181,7 +207,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         ))
     }
 
-    private fun TextFieldUnify2.setMessageField(stringResource: Int) {
+    private fun TextFieldUnify2.setMessageFromString(message: String) {
+        isInputError = true
+        setMessage(message)
+    }
+
+    private fun TextFieldUnify2.setMessageFromResource(stringResource: Int) {
         isInputError = if (stringResource != RedefineRegisterInputPhoneViewModel.NOTHING_RESOURCE && stringResource != RedefineRegisterInputPhoneViewModel.RESOURCE_NOT_CHANGED) {
             setMessage(getString(stringResource))
             true
@@ -189,6 +220,11 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             setMessage(SPACE)
             false
         }
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(requireActivity(), throwable)
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     override fun getScreenName(): String = SCREEN_NAME
