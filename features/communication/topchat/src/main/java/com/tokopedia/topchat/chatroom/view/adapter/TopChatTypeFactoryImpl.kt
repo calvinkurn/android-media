@@ -222,7 +222,8 @@ open class TopChatTypeFactoryImpl constructor(
             BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(
                 parent, imageAnnouncementListener, voucherListener, productAttachmentListener,
                 productCarouselListListener, deferredAttachment, searchListener,
-                commonListener, adapterListener, chatLinkHandlerListener
+                commonListener, adapterListener, chatLinkHandlerListener,
+                productBundlingListener, productBundlingCarouselListener
             )
             ChatMessageUnifyViewHolder.LAYOUT -> ChatMessageUnifyViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,

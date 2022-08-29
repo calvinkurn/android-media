@@ -55,7 +55,6 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleDataVie
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
@@ -661,6 +660,8 @@ class ProductListPresenter @Inject constructor(
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
+        if (!productDataView.isQuerySafe) view.showAdultRestriction()
+
         if (productDataView.productList.isEmpty()) {
             postProcessingFilter.checkPostProcessingFilter(
                 searchProductModel.isPostProcessing,
@@ -806,7 +807,6 @@ class ProductListPresenter @Inject constructor(
             }
 
             add(violation)
-            add(SeparatorDataView())
         }
     }
 
@@ -969,8 +969,6 @@ class ProductListPresenter @Inject constructor(
     ) {
         val searchProduct = searchProductModel.searchProduct
         val list = mutableListOf<Visitable<*>>()
-
-        if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
         addPageTitle(list)
 
@@ -1191,7 +1189,6 @@ class ProductListPresenter @Inject constructor(
         val inspirationWidgetVisitableIterator = inspirationWidgetVisitable.iterator()
         while (inspirationWidgetVisitableIterator.hasNext()) {
             val data = inspirationWidgetVisitableIterator.next()
-            val inspirationWidgetVisitableList = constructInspirationWidgetVisitableList(data)
 
             if (data.data.position < 0) {
                 inspirationWidgetVisitableIterator.remove()
@@ -1206,7 +1203,7 @@ class ProductListPresenter @Inject constructor(
                     val addIndex = minOf(widgetPosition, 1)
                     val visitableIndex = list.indexOf(product) + addIndex
 
-                    list.addAll(visitableIndex, inspirationWidgetVisitableList)
+                    list.add(visitableIndex, data)
                     inspirationWidgetVisitableIterator.remove()
                 } catch (exception: Throwable) {
                     Timber.w(exception)
@@ -1217,22 +1214,6 @@ class ProductListPresenter @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun constructInspirationWidgetVisitableList(
-        data: InspirationWidgetVisitable
-    ): List<Visitable<ProductListTypeFactory>> {
-        val inspirationSizeVisitableList = mutableListOf<Visitable<ProductListTypeFactory>>()
-
-        if (data.hasTopSeparator)
-            inspirationSizeVisitableList.add(SeparatorDataView())
-
-        inspirationSizeVisitableList.add(data)
-
-        if (data.hasBottomSeparator)
-            inspirationSizeVisitableList.add(SeparatorDataView())
-
-        return inspirationSizeVisitableList
     }
 
     private fun processInspirationCarouselPosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {

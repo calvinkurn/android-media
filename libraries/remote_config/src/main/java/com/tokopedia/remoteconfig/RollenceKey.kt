@@ -37,7 +37,6 @@ object RollenceKey {
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
-    const val VARIANT_NEW_PROFILE_REVAMP = "userprofile_revamp"
 
     //Auto Complete
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
@@ -65,9 +64,6 @@ object RollenceKey {
     // Global Menu (Me Page)
     const val ME_PAGE_REVAMP = "Navigation_Mepage"
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_Variant"
-
-    // Review
-    const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 
     // Food
     const val KEY_ROLLENCE_FOOD = "m1_gofood"
