@@ -632,8 +632,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun initialVar() {
         saldoDetailViewModel.isSeller = isSellerEnabled
-        totalBalanceTitle!!.text =
-            resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
+        context?.let { ctx->
+            totalBalanceTitle!!.text =
+                ctx.resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
+        }
         buyerSaldoBalanceRL!!.show()
         sellerSaldoBalanceRL!!.show()
 
