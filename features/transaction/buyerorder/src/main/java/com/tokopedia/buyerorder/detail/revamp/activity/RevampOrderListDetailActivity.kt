@@ -12,7 +12,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
-import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment
+import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment as OldOMSFragment
+import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment as NewOMSFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -30,13 +34,12 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
+        FirebaseRemoteConfigImpl(this)
+    }
+
     override fun getNewFragment(): Fragment {
-        return OmsDetailFragment.getInstance(
-            orderId ?: "",
-            "",
-            fromPayment,
-            upstream?:""
-        )
+        return getSwitchFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +67,24 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
 
     }
 
+    private fun getSwitchFragment(): Fragment {
+        return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_BUYER_ORDER_DETAIL)) {
+            NewOMSFragment.getInstance(
+                orderId ?: "",
+                "",
+                fromPayment,
+                upstream?:""
+            )
+        } else {
+            OldOMSFragment.getInstance(
+                orderId ?: "",
+                "",
+                fromPayment,
+                upstream?:""
+            )
+        }
+    }
+
     override fun getComponent(): OrderDetailsComponent =
         DaggerOrderDetailsComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
@@ -82,7 +103,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
 
                 if (formattedCategory.isNotEmpty()){
                     supportFragmentManager.beginTransaction()
-                        .add(com.tokopedia.abstraction.R.id.parent_view, OmsDetailFragment.getInstance(orderId ?: "", "", fromPayment, upstream ?: ""))
+                        .add(com.tokopedia.abstraction.R.id.parent_view, getSwitchFragment())
                         .commit()
                 }
             }
