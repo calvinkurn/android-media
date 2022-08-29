@@ -581,13 +581,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             ZERO
         }
 
-        val quotaWording = String.format(
-            getString(R.string.sfs_placeholder_remaining_quota),
-            quotaCounter
-        )
-        binding?.tpgRemainingQuota?.text = quotaWording
-        binding?.tpgRemainingQuota?.visible()
-
         if (tabPosition == TAB_POSITION_FIRST) {
             handleFirstTabEmptyState(hasCampaign, hasDraft, quotaCounter)
         } else {

@@ -224,27 +224,12 @@
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_8"
                 android:text="@string/sfs_create_campaign"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnDraft"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgRemainingQuota"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                android:text="@string/sfs_placeholder_remaining_quota"
-                android:textColor="@color/Unify_NN600"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnCreateCampaign"
-                app:typographyType="body_3"
-                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
