@@ -152,7 +152,13 @@
     <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis.</string>
     <string name="error_message_hit_driver_phone_number">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya.</string>
 
-    <!-- Search -->
+    <!-- Home - Search -->
+    <string name="search_hint_searchbar_gofood">Cari di GoFood</string>
+
+    <!-- Search - Initial State -->
+    <string name="initial_state_see_more_button">Lebih lebih banyak</string>
+
+    <!-- Search - Result Page -->
     <string name="search_srp_other_branch">Lihat Cabang Lain</string>
     <string name="search_srp_sort_title">Urutkan</string>
 

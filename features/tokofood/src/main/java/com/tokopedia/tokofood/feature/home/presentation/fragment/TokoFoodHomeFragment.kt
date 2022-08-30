@@ -45,6 +45,7 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -90,6 +91,7 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -475,6 +477,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
                 toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
+                setToolbarSearchHint()
             }
         }
     }
@@ -486,6 +489,23 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
                 .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
         navToolbar?.setIcon(icons)
+    }
+
+    private fun setToolbarSearchHint() {
+        navToolbar?.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_searchbar_gofood)
+                )
+            ),
+            searchbarClickCallback = { onSearchBarClick() }
+        )
+    }
+
+    private fun onSearchBarClick() {
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
+        }
     }
 
     private fun onClickShareButton() {

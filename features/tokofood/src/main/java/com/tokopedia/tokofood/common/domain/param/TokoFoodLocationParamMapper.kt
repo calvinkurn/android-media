@@ -1,9 +1,9 @@
-package com.tokopedia.tokofood.feature.home.domain.mapper
+package com.tokopedia.tokofood.common.domain.param
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import java.lang.StringBuilder
 
-object TokoFoodParamMapper {
+object TokoFoodLocationParamMapper {
 
     private const val PARAM_USER_LAT = "user_lat"
     private const val PARAM_USER_LONG = "user_long"
