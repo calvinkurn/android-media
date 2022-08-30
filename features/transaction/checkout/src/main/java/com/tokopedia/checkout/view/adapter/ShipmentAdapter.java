@@ -10,11 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
-import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
@@ -323,8 +318,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void addUploadPrescriptionUiDataModel(UploadPrescriptionUiModel uploadPrescriptionUiModel){
-        if(uploadPrescriptionUiModel != null){
+    public void addUploadPrescriptionUiDataModel(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        if (uploadPrescriptionUiModel != null) {
             this.uploadPrescriptionUiModel = uploadPrescriptionUiModel;
             shipmentDataList.add(uploadPrescriptionUiModel);
         }
@@ -655,7 +650,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
 
             boolean isPrescriptionFrontEndValidationError = false;
-            if(availableCheckout) {
+            if (availableCheckout) {
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     Object shipmentData = shipmentDataList.get(i);
                     if (shipmentData instanceof UploadPrescriptionUiModel) {
@@ -665,16 +660,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             isPrescriptionFrontEndValidationError = true;
                             errorPosition = i;
                             errorSelectedShipmentData = shipmentData;
-                        }else{
+                        } else {
                             isPrescriptionFrontEndValidationError = false;
                         }
                     }
                 }
             }
 
-            if(isPrescriptionFrontEndValidationError){
+            if (isPrescriptionFrontEndValidationError) {
                 shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
-            }else {
+            } else {
                 shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
             }
         } else {

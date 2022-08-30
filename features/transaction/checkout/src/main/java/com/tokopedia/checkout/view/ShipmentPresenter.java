@@ -14,10 +14,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase;
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
@@ -39,6 +35,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -46,6 +43,7 @@ import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
@@ -466,7 +464,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId,uploadPrescriptionUiModel.getPrescriptionIds()
+                listShipmentCrossSellModel, leasingId, uploadPrescriptionUiModel.getPrescriptionIds()
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
@@ -761,7 +759,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getPrescriptionUploadText(),
                 cartShipmentAddressFormData.getPrescriptionLeftIconUrl(),
                 cartShipmentAddressFormData.getPrescriptionCheckoutId(),
-                new ArrayList<>(),0,"",false,
+                new ArrayList<>(), 0, "", false,
                 cartShipmentAddressFormData.getPrescriptionFrontEndValidation()
         ));
         fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionShowImageUpload(), cartShipmentAddressFormData.getPrescriptionCheckoutId());
@@ -1557,7 +1555,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             checkoutRequest.setLeasingId(Integer.parseInt(leasingId));
         }
 
-        if(prescriptionsIds != null && !prescriptionsIds.isEmpty()){
+        if (prescriptionsIds != null && !prescriptionsIds.isEmpty()) {
             checkoutRequest.setPrescriptionIds(prescriptionsIds);
         }
 
@@ -2352,12 +2350,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
-        if(!checkoutId.isEmpty() && isUploadPrescriptionNeeded){
+        if (!checkoutId.isEmpty() && isUploadPrescriptionNeeded) {
             compositeSubscription.add(prescriptionIdsUseCase
                     .execute(checkoutId)
-                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>(){
+                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
                         @Override
-                        public void onCompleted() { }
+                        public void onCompleted() {
+                        }
 
                         @Override
                         public void onError(Throwable e) {
@@ -2366,9 +2365,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                         @Override
                         public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
-                            if(getPrescriptionIdsResponse.getDetailData() != null &&
+                            if (getPrescriptionIdsResponse.getDetailData() != null &&
                                     getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
-                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null){
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null) {
                                 getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
                             }
                         }

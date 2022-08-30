@@ -69,17 +69,8 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.analytics.EPharmacyAnalytics;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
-import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
-import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
-import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
-import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
-import com.tokopedia.checkout.domain.model.checkout.Prompt;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -102,6 +93,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -565,8 +557,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
-        if(uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
-                && uploadPrescriptionUiModel.getShowImageUpload()){
+        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
+                && uploadPrescriptionUiModel.getShowImageUpload()) {
             shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
         }
 
@@ -1285,8 +1277,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onUpdateResultAddOnProductLevelBottomSheet(data);
         } else if (requestCode == REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET) {
             onUpdateResultAddOnOrderLevelBottomSheet(data);
-        }else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
-            onUploadPrescriptionResult(data,false);
+        } else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
+            onUploadPrescriptionResult(data, false);
         }
     }
 
@@ -3233,10 +3225,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             onNeedUpdateViewItem(i);
                             notSelectCourierCount++;
                         }
-                    }else if(shipmentDataList.get(i) instanceof UploadPrescriptionUiModel){
+                    } else if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        if(uploadPrescriptionUiModel.getFrontEndValidation() && uploadPrescriptionUiModel.getUploadedImageCount()!= null
-                                && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
+                        if (uploadPrescriptionUiModel.getFrontEndValidation() && uploadPrescriptionUiModel.getUploadedImageCount() != null
+                                && uploadPrescriptionUiModel.getUploadedImageCount() == 0) {
                             if (firstFoundPosition == 0) {
                                 showToastNormal(getActivity().getString(R.string.message_error_prescription_not_found));
                                 firstFoundPosition = i;
@@ -3463,20 +3455,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
-        if(uploadPrescriptionUiModel.getCheckoutId() != null)
+        if (uploadPrescriptionUiModel.getCheckoutId() != null)
             ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
         Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
         uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
-        startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
+        startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
     }
 
-    private void onUploadPrescriptionResult(Intent data, boolean isApi){
-        if(data != null && data.getExtras() != null &&
-                data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null){
+    private void onUploadPrescriptionResult(Intent data, boolean isApi) {
+        if (data != null && data.getExtras() != null &&
+                data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null) {
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
             ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
             uploadModel.setError(false);
-            if(!isApi || (prescriptions != null && !prescriptions.isEmpty())){
+            if (!isApi || (prescriptions != null && !prescriptions.isEmpty())) {
                 uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
                 uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
                 uploadModel.setPrescriptionIds(prescriptions);
@@ -3484,7 +3476,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 uploadModel.setDescriptionText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
                         prescriptions.size()));
             }
-            if(!isApi){
+            if (!isApi) {
                 showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text));
             }
             shipmentAdapter.updateUploadPrescription(uploadModel);
@@ -3579,14 +3571,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions) {
         ArrayList<String> prescriptionsIds = new ArrayList<>();
-        for(int i = 0 ; i < prescriptions.size() ; i++){
-            if(prescriptions.get(i).getPrescriptionId() != null){
+        for (int i = 0; i < prescriptions.size(); i++) {
+            if (prescriptions.get(i).getPrescriptionId() != null) {
                 prescriptionsIds.add(prescriptions.get(i).getPrescriptionId());
             }
         }
         Intent intent = new Intent();
-        intent.putStringArrayListExtra(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA,prescriptionsIds);
-        onUploadPrescriptionResult(intent,true);
+        intent.putStringArrayListExtra(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA, prescriptionsIds);
+        onUploadPrescriptionResult(intent, true);
     }
 
     @Override
