@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,7 +19,6 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentQuotaMonitor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
-import com.tokopedia.shop.flashsale.presentation.detail.CampaignDetailFragment
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.adapter.QuotaMonitoringAdapter
 import com.tokopedia.unifycomponents.CardUnify2

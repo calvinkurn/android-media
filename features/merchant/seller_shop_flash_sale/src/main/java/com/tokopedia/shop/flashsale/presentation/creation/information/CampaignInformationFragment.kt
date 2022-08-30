@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -668,9 +667,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             adjustEndDate()
+
             val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
             adjustQuantityPicker(quantityPickerCurrentValue, newStartDate)
-            viewModel.getCampaignQuota(newStartDate.extractMonth(), newStartDate.extractYear())
+
+            val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
+            viewModel.getCampaignQuotaOfSelectedMonth(
+                newStartDate.extractMonth(),
+                newStartDate.extractYear(),
+                vpsPackageId
+            )
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -679,7 +685,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
+
+        val maximumEndDate = if (selectedVpsPackage.isShopTierBenefit) {
+            viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        } else {
+            selectedVpsPackage.packageEndTime
+        }
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
             TimePickerSelectionMode.END_TIME,

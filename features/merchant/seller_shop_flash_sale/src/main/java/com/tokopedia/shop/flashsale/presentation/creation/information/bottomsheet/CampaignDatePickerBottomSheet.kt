@@ -11,6 +11,7 @@ import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
@@ -132,7 +133,11 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
         observeUpcomingCampaigns()
         observeCampaignQuota()
         viewModel.getUpcomingCampaigns()
-        viewModel.getCampaignQuota(dateManager.getCurrentMonth(), dateManager.getCurrentYear())
+        viewModel.getCampaignQuota(
+            dateManager.getCurrentMonth(),
+            dateManager.getCurrentYear(),
+            vpsPackage?.packageId.orZero()
+        )
     }
 
     private fun observeUpcomingCampaigns() {
@@ -180,9 +185,11 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
         val calendar = binding?.unifyCalendar?.calendarPickerView
 
-        val initializer = calendar?.init(minimumDate, maximumDate, legends)
+        val normalizedMinDate = normalizeMinimumDate()
+        val initializer = calendar?.init(normalizedMinDate, maximumDate, legends)
         initializer?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-        if (selectedDate.after(minimumDate)) {
+
+        if (selectedDate.after(minimumDate) && selectedDate.before(maximumDate)) {
             initializer?.withSelectedDate(selectedDate)
         }
 
@@ -269,6 +276,15 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
                 String.format(getString(R.string.sfs_placeholder_empty_quota), monthName)
             binding?.tpgErrorMessage?.text = emptyQuotaWording
             binding?.tpgErrorMessage?.visible()
+        }
+    }
+
+    //A workaround to prevent force close issue since unify calendar not support minimumDate bigger than maximumDate
+    private fun normalizeMinimumDate() : Date {
+        return if (minimumDate.after(maximumDate)) {
+            maximumDate
+        } else {
+            minimumDate
         }
     }
 }
