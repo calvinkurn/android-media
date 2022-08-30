@@ -208,6 +208,7 @@ class OfficialHomeFragment :
                 onTopAdsHeadlineClicked)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
+        recyclerView?.itemAnimator = null
         officialHomeMapper.resetState(adapter)
         return view
     }

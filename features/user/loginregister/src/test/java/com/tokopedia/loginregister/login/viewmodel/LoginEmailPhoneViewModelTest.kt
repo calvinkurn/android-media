@@ -315,6 +315,113 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
+    fun `on Login Email V2 Success - has errors`() {
+        /* When */
+        val loginToken = LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            loginTokenV2.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - popup error`() {
+        /* When */
+        val popupError = PopupError("header", body = "body", action = "action")
+        val loginToken = LoginToken(accessToken = "", popupError = popupError)
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            showPopupErrorObserver.onChanged(popupError)
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - activation error`() {
+        /* When */
+        val loginToken = LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify {
+            goToActivationPage.onChanged(email)
+        }
+    }
+
+    @Test
+    fun `on Login Email V2 Success - go to security question`() {
+        /* When */
+        val loginToken = LoginToken(accessToken = "abc123", sqCheck = true)
+        val responseToken = LoginTokenPojoV2(loginToken = loginToken)
+
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
+
+        viewModel.loginEmailV2(email, password, useHash = true)
+
+        /* Then */
+        verify { goToSecurityQuestionObserver.onChanged(email) }
+    }
+
+    @Test
     fun `on Login Email V2 Empty key`() {
         val keyData = KeyData(key = "", hash = "")
         val generateKeyPojo = GenerateKeyPojo(keyData = keyData)

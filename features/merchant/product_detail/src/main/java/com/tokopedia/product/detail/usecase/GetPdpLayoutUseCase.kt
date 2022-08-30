@@ -117,6 +117,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         source
                         url
                       }
+                      containerType
             		}
             		... on pdpDataProductContent {
                       name

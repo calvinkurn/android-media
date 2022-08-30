@@ -49,6 +49,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -712,8 +713,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     val productListData = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductOnShop = it.data.totalProductData
+                    val currentPage = it.data.currentPage
                     addProductListHeader()
-                    updateProductListData(hasNextPage, productListData, totalProductOnShop)
+                    updateProductListData(hasNextPage, productListData, totalProductOnShop, currentPage)
                     productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
                 is Fail -> {
@@ -833,7 +835,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         viewModel?.shopProductFilterCountLiveData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetShopProductFilterCount(it.data)
+                    onSuccessGetShopProductFilterCount(count = it.data)
                 }
             }
         })
@@ -878,7 +880,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
-        shopPageHomeTracking.onClickProductAtcButton(
+        shopPageHomeTracking.onClickProductAtcDirectPurchaseButton(
             atcTrackerModel,
             shopId,
             customDimensionShopPage.shopType.orEmpty(),
@@ -923,11 +925,15 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         )
     }
 
-    private fun onSuccessGetShopProductFilterCount(count: Int) {
-        val countText = String.format(
-            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
-            count.thousandFormatted()
-        )
+    private fun onSuccessGetShopProductFilterCount(count: Int = Int.ZERO, isFulfillmentFilterActive: Boolean = false) {
+        val countText = if (isFulfillmentFilterActive) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                count.thousandFormatted()
+            )
+        }
         sortFilterBottomSheet?.setResultCountText(countText)
     }
 
@@ -936,8 +942,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
-    private fun addChangeProductGridSection(totalProductData: Int) {
-        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData, gridType)
+    private fun addChangeProductGridSection(isProductListEmpty: Boolean, totalProductData: Int = 0) {
+        shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty, totalProductData, gridType)
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
@@ -1217,12 +1223,15 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     private fun updateProductListData(
         hasNextPage: Boolean,
         productList: List<ShopHomeProductUiModel>,
-        totalProductData: Int
+        totalProductData: Int,
+        currentPage: Int
     ) {
-        if (totalProductData.isZero()) {
+        val isProductListEmpty = (productList.size.isZero() && currentPage == Int.ONE) || totalProductData.isZero()
+        if (isProductListEmpty) {
             shopHomeAdapter.setProductListEmptyState(isOwner)
+            addChangeProductGridSection(isProductListEmpty)
         } else {
-            addChangeProductGridSection(totalProductData)
+            addChangeProductGridSection(isProductListEmpty, totalProductData)
             shopHomeAdapter.setProductListData(productList, isOwner)
             updateScrollListenerState(hasNextPage)
         }
@@ -2225,16 +2234,18 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         position: Int,
         name: String
     ) {
-        val productPosition = if (name == ShopPageConstant.ShopProductCardAtc.CARD_HOME) {
-            position - shopHomeAdapter.getAllProductWidgetPosition()
-        } else {
-            position
+        if(isEnableDirectPurchase) {
+            val productPosition = if (name == ShopPageConstant.ShopProductCardAtc.CARD_HOME) {
+                position - shopHomeAdapter.getAllProductWidgetPosition()
+            } else {
+                position
+            }
+            trackImpressionProductAtc(
+                shopHomeProductUiModel,
+                ShopUtil.getActualPositionFromIndex(productPosition),
+                name
+            )
         }
-        trackImpressionProductAtc(
-            shopHomeProductUiModel,
-            ShopUtil.getActualPositionFromIndex(productPosition),
-            name
-        )
     }
 
     private fun trackImpressionProductAtc(
@@ -2242,7 +2253,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         position: Int,
         widgetName: String
     ) {
-        shopPageHomeTracking.onImpressionProductAtcButton(
+        shopPageHomeTracking.onImpressionProductAtcDirectPurchaseButton(
             shopHomeProductUiModel,
             widgetName,
             position,
@@ -3560,12 +3571,19 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     override fun getResultCount(mapParameter: Map<String, String>) {
         val tempShopProductFilterParameter = ShopProductFilterParameter()
         tempShopProductFilterParameter.setMapData(mapParameter)
-        viewModel?.getFilterResultCount(
-            shopId,
-            ShopUtil.getProductPerPage(context),
-            tempShopProductFilterParameter,
-            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        )
+        shopProductFilterParameterSharedViewModel?.setFulfillmentFilterActiveStatus(mapParameter)
+        val isFulfillmentFilterActive = shopProductFilterParameterSharedViewModel?.isFulfillmentFilterActive.orFalse()
+        if (isFulfillmentFilterActive) {
+            // if fulfillment filter is active then avoid gql call to get total product
+            onSuccessGetShopProductFilterCount(isFulfillmentFilterActive = isFulfillmentFilterActive)
+        } else {
+            viewModel?.getFilterResultCount(
+                shopId,
+                ShopUtil.getProductPerPage(context),
+                tempShopProductFilterParameter,
+                ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            )
+        }
     }
 
     private fun applySortFilterTracking(

@@ -482,4 +482,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun resetScroll(){
         _scrollState.value = null
     }
+
+    fun checkForSamePageOpened(queryParameterMapFromBundle: MutableMap<String, String?>) {
+        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty())
+            discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)?.queryParamMap?.let {
+                if (queryParameterMapFromBundle[RECOM_PRODUCT_ID] != it[RECOM_PRODUCT_ID]) {
+                    discoveryDataUseCase.clearPage(pageIdentifier)
+                }
+            }
+    }
 }
