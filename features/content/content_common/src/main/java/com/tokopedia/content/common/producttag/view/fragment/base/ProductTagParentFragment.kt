@@ -18,8 +18,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
-import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_FEED
-import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_PLAY
 import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
@@ -32,6 +30,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAct
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagSourceUiState
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.iconunify.IconUnify
@@ -161,8 +160,8 @@ class ProductTagParentFragment @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderActionBar(it.prevValue?.selectedProduct, it.value.selectedProduct)
                 renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
+                renderActionBar(it.prevValue, it.value)
             }
         }
 
@@ -209,20 +208,15 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun renderActionBar(
-        prevState: List<ProductUiModel>?,
-        currState: List<ProductUiModel>,
+        prevState: ProductTagUiState?,
+        currState: ProductTagUiState,
     ) {
-        if(prevState == currState) return
+        if(prevState?.selectedProduct == currState.selectedProduct &&
+            prevState.productTagSource == currState.productTagSource
+        ) return
 
-        val title = if(viewModel.isMultipleSelectionProduct) {
-            getString(R.string.content_creation_multiple_product_tag_title)
-                .format(currState.size, viewModel.maxSelectedProduct)
-        }
-        else {
-            getString(R.string.content_creation_product_tag_title)
-        }
-
-        binding.tvCcProductTagPageTitle.text = title
+        updateActionBar(currState.productTagSource.productTagSourceStack)
+        updateTitle(currState.selectedProduct)
     }
 
     private fun renderSelectedProductTagSource(
@@ -232,15 +226,23 @@ class ProductTagParentFragment @Inject constructor(
         if(prevState == currState) return
 
         updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
-
-        updateActionBar(currState.productTagSourceStack)
         updateBreadcrumb(currState.productTagSourceStack)
     }
 
     private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {
-        binding.groupActionBar.showWithCondition(
-            productTagSourceStack.currentSource != ProductTagSource.Autocomplete
-        )
+        val isShowActionBar = productTagSourceStack.currentSource != ProductTagSource.Autocomplete
+
+        binding.icCcProductTagBack.showWithCondition(isShowActionBar)
+        binding.tvCcProductTagPageTitle.showWithCondition(isShowActionBar)
+        binding.viewCcProductTagDivider.showWithCondition(isShowActionBar && viewModel.isShowActionBarDivider)
+    }
+
+    private fun updateTitle(selectedProduct: List<ProductUiModel>) {
+        val title = if(viewModel.isMultipleSelectionProduct)
+            getString(R.string.content_creation_multiple_product_tag_title).format(selectedProduct.size, viewModel.maxSelectedProduct)
+        else getString(R.string.content_creation_product_tag_title)
+
+        binding.tvCcProductTagPageTitle.text = title
     }
 
     private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
