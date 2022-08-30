@@ -66,7 +66,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
-    implementation projectOrAar(rootProject.ext.features.videoWidget)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
