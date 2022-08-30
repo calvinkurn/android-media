@@ -427,6 +427,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     fun getConfiguration(contentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty) {
+        val isParamNotEmpty = contentAccount != ContentAccountUiModel.Empty
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(authorId, authorType)
@@ -477,7 +478,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
 
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
+            _observableConfigInfo.value = NetworkResult.Fail(it) {
+                if (isParamNotEmpty) handleSelectedAccount(contentAccount)
+                else this.getConfiguration()
+            }
         }
     }
 
@@ -1526,7 +1530,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 getConfiguration()
             }
         }, onError = {
-            _observableConfigInfo.value = NetworkResult.Fail(it)
+            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
         })
     }
 
