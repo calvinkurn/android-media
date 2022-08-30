@@ -211,7 +211,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name="com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.activity.TokoNowRecipeSearchIngredientActivity"
+            android:name="com.tokopedia.tokopedianow.recipesearch.presentation.activity.TokoNowRecipeSearchIngredientActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"

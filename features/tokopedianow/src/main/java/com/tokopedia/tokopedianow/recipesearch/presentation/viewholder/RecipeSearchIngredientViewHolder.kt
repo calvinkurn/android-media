@@ -1,9 +1,9 @@
-package com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.viewholder
+package com.tokopedia.tokopedianow.recipesearch.presentation.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeSearchIngredientBinding
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.uimodel.RecipeSearchIngredientUiModel
+import com.tokopedia.tokopedianow.recipesearch.presentation.uimodel.RecipeSearchIngredientUiModel
 
 class RecipeSearchIngredientViewHolder(
     private val binding: ItemTokopedianowRecipeSearchIngredientBinding,

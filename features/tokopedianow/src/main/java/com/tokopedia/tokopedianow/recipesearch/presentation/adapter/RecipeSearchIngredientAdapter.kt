@@ -1,12 +1,12 @@
-package com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.adapter
+package com.tokopedia.tokopedianow.recipesearch.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeSearchIngredientBinding
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.uimodel.RecipeSearchIngredientUiModel
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.viewholder.RecipeSearchIngredientViewHolder
+import com.tokopedia.tokopedianow.recipesearch.presentation.uimodel.RecipeSearchIngredientUiModel
+import com.tokopedia.tokopedianow.recipesearch.presentation.viewholder.RecipeSearchIngredientViewHolder
 
 class RecipeSearchIngredientAdapter(
     private val listener: RecipeSearchIngredientViewHolder.RecipeSearchIngredientListener? = null

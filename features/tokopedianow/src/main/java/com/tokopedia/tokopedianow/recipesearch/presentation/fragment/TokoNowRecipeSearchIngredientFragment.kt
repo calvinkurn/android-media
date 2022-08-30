@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.fragment
+package com.tokopedia.tokopedianow.recipesearch.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.bottomsheet.TokoNowRecipeSearchIngredientBottomSheet
+import com.tokopedia.tokopedianow.recipesearch.presentation.bottomsheet.TokoNowRecipeSearchIngredientBottomSheet
 
 class TokoNowRecipeSearchIngredientFragment: Fragment() {
 

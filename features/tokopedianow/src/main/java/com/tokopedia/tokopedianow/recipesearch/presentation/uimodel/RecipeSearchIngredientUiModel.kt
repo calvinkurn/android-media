@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.uimodel
+package com.tokopedia.tokopedianow.recipesearch.presentation.uimodel
 
 data class RecipeSearchIngredientUiModel(
     val id: String,

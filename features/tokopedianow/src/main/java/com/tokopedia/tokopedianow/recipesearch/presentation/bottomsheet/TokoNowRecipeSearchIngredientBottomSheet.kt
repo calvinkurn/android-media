@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.bottomsheet
+package com.tokopedia.tokopedianow.recipesearch.presentation.bottomsheet
 
 import android.app.Activity
 import android.content.Intent
@@ -14,9 +14,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureBottomSheetHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeSearchIngredientBinding
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.adapter.RecipeSearchIngredientAdapter
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.uimodel.RecipeSearchIngredientUiModel
-import com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.viewholder.RecipeSearchIngredientViewHolder
+import com.tokopedia.tokopedianow.recipesearch.presentation.adapter.RecipeSearchIngredientAdapter
+import com.tokopedia.tokopedianow.recipesearch.presentation.uimodel.RecipeSearchIngredientUiModel
+import com.tokopedia.tokopedianow.recipesearch.presentation.viewholder.RecipeSearchIngredientViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
