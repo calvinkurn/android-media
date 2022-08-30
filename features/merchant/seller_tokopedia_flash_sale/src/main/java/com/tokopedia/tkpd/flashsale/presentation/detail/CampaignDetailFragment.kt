@@ -35,6 +35,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
 
+        private const val DATE_WITH_TIME = "dd MMM yyyy, HH:mm 'WIB'"
+        private const val TIME_WIB = "HH.mm 'WIB'"
+        private const val DATE_MONTH_ONLY = "dd MMM"
+
         @JvmStatic
         fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
@@ -44,10 +48,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             fragment.arguments = bundle
             return fragment
         }
-
-        const val DATE_WITH_TIME = "dd MMM yyyy, HH:mm 'WIB'"
-        const val TIME_WIB = "HH.mm 'WIB'"
-        const val DATE_MONTH_ONLY = "dd MMM"
     }
 
     @Inject
@@ -113,9 +113,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupView(flashSale: FlashSale) {
         when (tabName) {
             UPCOMING_TAB -> setupUpcoming(flashSale)
-            REGISTERED_TAB -> setupUpcoming(flashSale)
-            ONGOING_TAB -> setupUpcoming(flashSale)
-            FINISHED_TAB -> setupUpcoming(flashSale)
+            REGISTERED_TAB -> setupRegistered()
+            ONGOING_TAB -> setupOngoing()
+            FINISHED_TAB -> setupFinished()
         }
     }
 
@@ -181,7 +181,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     tgCampaignStatus.text = getString(R.string.registration_over_in_label)
                 }
             }
-            startUpcomingTimer(this, flashSale)
+            setupUpcomingTimer(this, flashSale)
             imageCampaign.setImageUrl(flashSale.coverImage)
             tgCampaignName.text = flashSale.name
             setUpcomingCampaignPeriod(this, flashSale)
@@ -268,7 +268,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun startUpcomingTimer(binding: StfsCdpUpcomingHeaderBinding, flashSale: FlashSale) {
+    private fun setupUpcomingTimer(binding: StfsCdpUpcomingHeaderBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
         val onTimerFinished = { binding.timer.gone() }
         when {
@@ -292,6 +292,18 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             }
             else -> onTimerFinished
         }
+    }
+
+    private fun setupRegistered() {
+        //TODO: implement registered CDP
+    }
+
+    private fun setupOngoing() {
+        //TODO: implement ongoing CDP
+    }
+
+    private fun setupFinished() {
+        //TODO: implement finished CDP
     }
 
     private fun showLoading() {
