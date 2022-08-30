@@ -439,7 +439,7 @@
             <com.tokopedia.iconunify.IconUnify
                 android:layout_width="@dimen/tm_dash_dp_16"
                 android:layout_height="@dimen/tm_dash_dp_16"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginStart="@dimen/tm_dash_dp_4"
                 app:icon_name="INFORMATION"
                 app:icon_color_light_enable="#2E3137"
