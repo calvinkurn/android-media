@@ -92,9 +92,9 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
 
     private fun setupBottomSheet() {
         setTitle(getString(R.string.label_price_recommendation))
-        isFullpage = true
-//        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        isFullpage = false
         clearContentPadding = true
+        isKeyboardOverlap = false
     }
 
     @FlowPreview
