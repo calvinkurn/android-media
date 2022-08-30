@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -122,8 +123,8 @@ class DealsCheckoutViewModel @Inject constructor(
       private fun mapToItemMapCheckout(itemMapResponses: List<ItemMapResponse>): List<ItemMapCheckout> {
             return itemMapResponses.map {
                   ItemMapCheckout(
-                          basePrice = it.basePrice.toInt(),
-                          categoryId = it.categoryId.toInt(),
+                          basePrice = it.basePrice.toIntSafely().toLong(),
+                          categoryId = it.categoryId.toIntSafely().toLong(),
                           childCategoryIds = it.childCategoryIds,
                           commission = it.commission,
                           commissionType = it.commissionType,
@@ -132,22 +133,22 @@ class DealsCheckoutViewModel @Inject constructor(
                           email = it.email,
                           endTime = it.endTime,
                           error = it.error,
-                          flagId = it.flagId.toIntOrZero(),
-                          id = it.id.toInt(),
-                          invoiceId = it.invoiceId.toInt(),
-                          invoiceItemId = it.invoiceItemId.toInt(),
+                          flagId = it.flagId.toIntSafely().toLong(),
+                          id = it.id.toIntSafely().toLong(),
+                          invoiceId = it.invoiceId.toIntSafely().toLong(),
+                          invoiceItemId = it.invoiceItemId.toIntSafely().toLong(),
                           invoiceStatus = it.invoiceStatus,
                           locationName = it.locationName,
                           locationDesc = it.locationDesc,
                           mobile = it.mobile,
                           name = it.name,
                           orderTraceId = it.orderTraceId,
-                          packageId = it.packageId.toIntOrZero(),
+                          packageId = it.packageId.toIntSafely().toLong(),
                           packageName = it.packageName,
                           paymentType = it.paymentType,
                           price = it.price,
                           productAppUrl = it.productAppUrl,
-                          productId = it.productId.toInt(),
+                          productId = it.productId.toIntSafely().toLong(),
                           productImage = it.productImage,
                           productName = it.productName,
                           providerInvoiceCode = it.providerInvoiceCode,
@@ -155,11 +156,11 @@ class DealsCheckoutViewModel @Inject constructor(
                           providerScheduleId = it.providerScheduleId,
                           providerTicketId = it.providerTicketId,
                           quantity = it.quantity,
-                          scheduleTimestamp = it.scheduleTimestamp.toInt(),
+                          scheduleTimestamp = it.scheduleTimestamp.toIntSafely(),
                           startTime = it.startTime,
                           totalPrice = it.totalPrice,
                           productWebUrl = it.productWebUrl,
-                          providerId = it.providerId.toInt(),
+                          providerId = it.providerId.toIntSafely().toLong(),
                           passengerForms = it.passengerForms
                   )
             }

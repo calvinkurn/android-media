@@ -53,7 +53,7 @@ class DealsVerifyViewModel @Inject constructor(
                 cartdata = CartData(
                     metadata = MetaData(
                             categoryName = categoryName,
-                            totalPrice = currentQuantity * dealsResponse.salesPrice,
+                            totalPrice = (currentQuantity * dealsResponse.salesPrice).toLong(),
                             quantity = currentQuantity,
                             productIds = listOf(dealsResponse.id.toString()),
                             productNames = listOf(dealsResponse.displayName),
@@ -71,7 +71,7 @@ class DealsVerifyViewModel @Inject constructor(
                                         endTime = getDateMilis(dealsResponse.maxEndDate),
                                         price = dealsResponse.salesPrice.toDouble(),
                                         quantity = currentQuantity,
-                                        totalPrice = currentQuantity * dealsResponse.salesPrice,
+                                        totalPrice = (currentQuantity * dealsResponse.salesPrice).toLong(),
                                         scheduleTimestamp = dealsResponse.maxEndDate.toString(),
                                         productImage = dealsResponse.imageWeb,
                                         flagID = dealsResponse.customText1.toString()
