@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchListGridItemLayoutBinding
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.itemdecoration.ListGridItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
@@ -54,18 +55,16 @@ class ListGridViewHolder(
 
     private fun bindRecyclerView(data: ListGridDataView) {
         val adapter = RelatedAdapter(relatedItemListener).apply {
-            val test = mutableListOf<RelatedItemDataView>()
-            test.addAll(data.related)
-            test.addAll(data.related)
-            test.addAll(data.related)
-            test.addAll(data.related)
+            val relatedItemDataList = mutableListOf<RelatedItemDataView>()
+            relatedItemDataList.addAll(data.related)
 
-            updateList(test)
+            updateList(relatedItemDataList)
         }
 
         binding?.universalSearchListGridRecyclerView?.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(itemView.context)
+            it.addItemDecoration(ListGridItemDecoration())
         }
     }
 }

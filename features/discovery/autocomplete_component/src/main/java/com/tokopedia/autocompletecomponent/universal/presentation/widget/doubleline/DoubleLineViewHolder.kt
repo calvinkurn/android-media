@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchDoubleLineItemLayoutBinding
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.itemdecoration.DoubleLineItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
@@ -57,13 +58,10 @@ class DoubleLineViewHolder(
 
     private fun bindRecyclerView(data: DoubleLineDataView) {
         val adapter = RelatedAdapter(relatedItemListener).apply {
-            val test = mutableListOf<RelatedItemDataView>()
-            test.addAll(data.related)
-            test.addAll(data.related)
-            test.addAll(data.related)
-            test.addAll(data.related)
+            val relatedItemDataList = mutableListOf<RelatedItemDataView>()
+            relatedItemDataList.addAll(data.related)
 
-            updateList(test)
+            updateList(relatedItemDataList)
         }
 
         binding?.universalSearchDoubleLineRecyclerView?.let {
@@ -74,6 +72,7 @@ class DoubleLineViewHolder(
                 GridLayoutManager.HORIZONTAL,
                 false
             )
+            it.addItemDecoration(DoubleLineItemDecoration())
         }
     }
 }

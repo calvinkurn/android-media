@@ -125,7 +125,7 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
             requireContext(),
             R.drawable.universal_search_divider
         )
-        val dividerItemDecoration = UniversalSearchItemDecoration(context, LinearLayoutManager.VERTICAL)
+        val dividerItemDecoration = UniversalSearchItemDecoration()
         dividerDrawable?.let {
             dividerItemDecoration.setDrawable(it)
         }

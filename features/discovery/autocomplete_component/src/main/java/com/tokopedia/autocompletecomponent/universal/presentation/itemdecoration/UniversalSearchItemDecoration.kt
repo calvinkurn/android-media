@@ -8,10 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-class UniversalSearchItemDecoration(
-    context: Context?,
-    orientation: Int,
-): RecyclerView.ItemDecoration() {
+class UniversalSearchItemDecoration: RecyclerView.ItemDecoration() {
     companion object {
         private const val DIVIDER_HEIGHT_DP = 8
         private const val DIVIDER_MARGIN_TOP_DP = 16
