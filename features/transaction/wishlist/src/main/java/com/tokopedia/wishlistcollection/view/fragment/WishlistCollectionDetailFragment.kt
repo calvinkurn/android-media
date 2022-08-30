@@ -2498,7 +2498,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
         } else {
             collectionItemsAdapter.hideCheckbox()
-            if (!isAutoDeletion) doResetFilter()
             setSwipeRefreshLayout()
             binding?.run {
                 containerDeleteSemuaWishlist.gone()
@@ -2556,7 +2555,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun showPopupBulkDeleteConfirmation(count: Int) {
         val dialog =
             context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.setTitle(getString(Rv2.string.wishlist_v2_popup_delete_bulk_title, count))
+        dialog?.setTitle(getString(Rv2.string.wishlist_collection_popup_delete_bulk_title, count))
         dialog?.setDescription(getString(Rv2.string.wishlist_v2_popup_delete_bulk_desc))
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
