@@ -122,6 +122,7 @@ class LastTaggedProductFragment @Inject constructor(
 
         binding.rvLastTaggedProduct.addOnScrollListener(scrollListener)
         binding.rvLastTaggedProduct.layoutManager = layoutManager
+        binding.rvLastTaggedProduct.itemAnimator = null
         binding.rvLastTaggedProduct.adapter = adapter
 
         binding.globalError.apply {
