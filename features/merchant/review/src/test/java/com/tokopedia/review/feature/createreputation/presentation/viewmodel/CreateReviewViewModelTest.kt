@@ -295,6 +295,16 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and placeholder from BE is blank`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyPlaceholder)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData(rating = 4)
+        val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+        Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
+    }
+
+    @Test
     fun `textAreaUiState textAreaHelper stringRes id should equal to review_create_bottom_sheet_text_area_partial_incentive when review text length is between 1 to 40`() = runBlockingTest {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()

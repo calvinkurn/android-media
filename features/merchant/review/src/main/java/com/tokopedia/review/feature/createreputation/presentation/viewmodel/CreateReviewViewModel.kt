@@ -459,11 +459,8 @@ class CreateReviewViewModel @Inject constructor(
         } else {
             reviewFormResult.result.productrevGetForm.placeholder.takeIf {
                 !it.isNullOrBlank()
-            }?.let {
-                StringRes(
-                    R.string.review_raw_string_format,
-                    listOf(reviewFormResult.result.productrevGetForm.placeholder.orEmpty())
-                )
+            }?.let { placeholder ->
+                StringRes(R.string.review_raw_string_format, listOf(placeholder))
             } ?: StringRes(R.string.review_form_good_helper)
         }
     }
