@@ -22,6 +22,7 @@ ext {
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
             affiliateToko                  : ":features:category:affiliate_toko",
+            ePharmacy                       : ":features:category:epharmacy",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
             moneyIn                         : ":features:category:moneyin",
