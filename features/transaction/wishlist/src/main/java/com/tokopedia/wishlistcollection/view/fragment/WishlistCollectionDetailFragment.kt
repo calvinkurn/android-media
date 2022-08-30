@@ -1000,7 +1000,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun setRefreshing() {
         isBulkDeleteShow = false
-        listSelectedProductIds.clear()
+        // listSelectedProductIds.clear()
         listExcludedBulkDelete.clear()
         collectionItemsAdapter.hideCheckbox()
         countRemovableAutomaticDelete = 0
@@ -1109,7 +1109,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun getCollectionItems() {
-        listSelectedProductIds.clear()
+        // listSelectedProductIds.clear()
         fetchUserLatestAddressData()
         userAddressData?.let { address ->
             paramGetCollectionItems.wishlistChosenAddress =
@@ -1136,7 +1136,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun triggerSearch() {
         paramGetCollectionItems.query = searchQuery
-        listSelectedProductIds.clear()
+        // listSelectedProductIds.clear()
         listExcludedBulkDelete.clear()
         if (isBulkDeleteShow) setDefaultLabelDeleteButton()
         doRefresh()
@@ -1188,7 +1188,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     toasterMessage = data.toasterMessage
                 )
             updateDeletionWidget(finishData)
-            showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
+            showToasterActionOke(data.toasterMessage, Toaster.TYPE_NORMAL)
         }
         hideStickyDeletionProgress()
         doRefresh()
@@ -2097,23 +2097,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun onCheckAllBulkOption() {
-        listSelectedProductIds = WishlistV2Utils.getListProductId() as ArrayList<String>
+        // listSelectedProductIds = WishlistV2Utils.getListProductId() as ArrayList<String>
         val showButton = listSelectedProductIds.isNotEmpty()
-        if (showButton) {
-            setBulkAddButton()
-        } else {
-            setDefaultAddCollectionButton()
-        }
-    }
 
-    override fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
-        if (isChecked) {
-            listSelectedProductIds.add(productId)
-        } else {
-            listSelectedProductIds.remove(productId)
-        }
-        collectionItemsAdapter.setCheckbox(position, isChecked)
-        val showButton = listSelectedProductIds.isNotEmpty()
         if (showButton) {
             if (isBulkAddShow) {
                 setBulkAddButton()
@@ -2129,11 +2115,22 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    override fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
+        if (isChecked) {
+            listSelectedProductIds.add(productId)
+        } else {
+            listSelectedProductIds.remove(productId)
+        }
+        collectionItemsAdapter.setCheckbox(position, isChecked)
+        onCheckAllBulkOption()
+    }
+
     private fun setLabelDeleteButton() {
         if (!_isDeleteOnly) {
             // semua wishlist - 2 buttons : delete & add
             if (collectionId == "0") {
                 binding?.run {
+                    bottomButtonLayout.visible()
                     containerDeleteCollectionDetail.gone()
                     containerDeleteSemuaWishlist.visible()
                     deleteButtonCollection.apply {
@@ -2206,6 +2203,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun setDefaultAddCollectionButton() {
         binding?.run {
+            bottomButtonLayout.visible()
             containerDeleteCollectionDetail.gone()
             containerDeleteSemuaWishlist.gone()
             containerAddBulk.visible()
@@ -2216,6 +2214,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun setDefaultLabelDeleteButton() {
         binding?.run {
+            bottomButtonLayout.visible()
             if (!_isDeleteOnly) {
                 if (collectionId == "0") {
                     containerDeleteCollectionDetail.gone()
@@ -2248,6 +2247,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         binding?.run {
             containerDeleteSemuaWishlist.gone()
             containerDeleteCollectionDetail.gone()
+            bottomButtonLayout.visible()
             containerAddBulk.visible()
             bulkAddButton.apply {
                 isEnabled = true
@@ -2639,6 +2639,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         hitCountDeletion = false
         getCollectionItems()
         refreshLayout()
+        if (isBulkDeleteShow) onCheckAllBulkOption()
     }
 
     private fun refreshLayout() {
@@ -2648,16 +2649,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
             wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
         }
-        showSortFilter()
         addEndlessScrollListener()
         collectionItemsAdapter.resetTicker()
-    }
-
-    private fun showSortFilter() {
-        collectionItemsAdapter.isRefreshing = true
-        binding?.run {
-            bottomButtonLayout.gone()
-        }
     }
 
     private fun finishRefresh() {

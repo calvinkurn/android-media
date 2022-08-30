@@ -553,7 +553,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onCreateNewCollectionClicked() {
-        if (isEligibleAddNewCollection && wordingMaxLimitCollection.isEmpty()) {
+        if (isEligibleAddNewCollection) {
             showBottomSheetCreateNewCollection()
         } else {
             showToaster(wordingMaxLimitCollection, getString(R.string.wishlist_oke_label), Toaster.TYPE_ERROR)
