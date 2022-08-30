@@ -14,8 +14,8 @@ import com.tokopedia.campaign.R
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyUiModel
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyResult
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.DiscountType
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.di.component.DaggerCampaignCommonComponent
 import com.tokopedia.campaign.databinding.CampaignBottomsheetManageProductBulkApplyBinding
+import com.tokopedia.campaign.di.component.DaggerCampaignCommonComponent
 import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.kotlin.extensions.orFalse
