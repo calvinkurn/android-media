@@ -350,14 +350,14 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                                 R.string.wishlist_v2_common_error_msg
                             )
                         }
-                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        errorMessage?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                     }
                 }
                 is Fail -> {
                     // TODO: show global error page?
                     finishRefresh()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -391,7 +391,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     private fun stopDeletionAndShowToasterError(message: String) {
-        showToaster(message, "", Toaster.TYPE_ERROR)
+        showToasterActionOke(message, Toaster.TYPE_ERROR)
         finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
         doRefresh()
     }
@@ -411,7 +411,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     toasterMessage = data.toasterMessage
                 )
             updateDeletionWidget(finishData)
-            showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
+            showToasterActionOke(data.toasterMessage, Toaster.TYPE_NORMAL)
         }
         hideDeletionProgress()
         doRefresh()
@@ -457,7 +457,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     finishRefresh()
                     if (result.data.status == OK && result.data.data.success) {
                         getWishlistCollections()
-                        showToaster(result.data.data.message, "", Toaster.TYPE_NORMAL)
+                        showToasterActionOke(result.data.data.message, Toaster.TYPE_NORMAL)
                     } else {
                         val errorMessage = if (result.data.errorMessage.isNotEmpty()) {
                             result.data.errorMessage.firstOrNull() ?: ""
@@ -471,7 +471,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -556,7 +556,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         if (isEligibleAddNewCollection) {
             showBottomSheetCreateNewCollection()
         } else {
-            showToaster(wordingMaxLimitCollection, getString(R.string.wishlist_oke_label), Toaster.TYPE_ERROR)
+            showToasterActionOke(wordingMaxLimitCollection, Toaster.TYPE_ERROR)
         }
     }
 
@@ -683,7 +683,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onSuccessUpdateCollectionName(message: String) {
-        showToaster(message, "", Toaster.TYPE_NORMAL)
+        showToasterActionOke(message, Toaster.TYPE_NORMAL)
         getWishlistCollections()
     }
 
@@ -698,9 +698,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
             if (messageToaster != null) {
                 if (isSuccess == true) {
-                    showToaster(messageToaster, "", Toaster.TYPE_NORMAL)
+                    showToasterActionOke(messageToaster, Toaster.TYPE_NORMAL)
                 } else {
-                    showToaster(messageToaster, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(messageToaster, Toaster.TYPE_ERROR)
                 }
             }
         }

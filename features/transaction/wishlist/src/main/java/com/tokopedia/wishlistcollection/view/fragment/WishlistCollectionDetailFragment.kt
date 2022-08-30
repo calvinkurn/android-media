@@ -405,7 +405,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Success -> {
                     result.data.let { deleteCollectionItems ->
                         if (deleteCollectionItems.data.success && deleteCollectionItems.status == OK) {
-                            showToaster(deleteCollectionItems.data.message, "", Toaster.TYPE_NORMAL)
+                            showToasterActionOke(deleteCollectionItems.data.message, Toaster.TYPE_NORMAL)
                             setRefreshing()
                             (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
                         } else {
@@ -475,7 +475,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     listSelectedProductIds.clear()
                     finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
 
                     val labelError = String.format(
                         getString(Rv2.string.on_error_observing_bulk_delete_wishlist_v2_string_builder),
@@ -938,7 +938,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showToasterInitial(toasterMessageInitial: String) {
-        showToaster(toasterMessageInitial, "", Toaster.TYPE_NORMAL)
+        showToasterActionOke(toasterMessageInitial, Toaster.TYPE_NORMAL)
     }
 
     private fun updateToolbarTitle(title: String) {
@@ -2086,7 +2086,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onSuccessUpdateCollectionName(message: String) {
         setRefreshing()
-        showToaster(message, "", Toaster.TYPE_NORMAL)
+        showToasterActionOke(message, Toaster.TYPE_NORMAL)
     }
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
@@ -2604,7 +2604,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     if (collectionId != null) {
                         showToasterActionLihat(messageToaster, Toaster.TYPE_NORMAL, collectionId)
                     } else {
-                        showToaster(messageToaster, "", Toaster.TYPE_NORMAL)
+                        showToasterActionOke(messageToaster, Toaster.TYPE_NORMAL)
                     }
                 } else {
                     showToasterActionOke(messageToaster, Toaster.TYPE_ERROR)
@@ -2787,7 +2787,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onSuccessSaveToNewCollection(dataItem: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
-        showToaster(dataItem.message, "", Toaster.TYPE_NORMAL)
+        showToasterActionOke(dataItem.message, Toaster.TYPE_NORMAL)
     }
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {
