@@ -122,6 +122,17 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun setupView() {
+        binding.icCcProductTagBack.setImage(
+            newIconId = when(viewModel.backButton) {
+                ContentProductTagConfig.BackButton.Back -> {
+                    IconUnify.ARROW_BACK
+                }
+                ContentProductTagConfig.BackButton.Close -> {
+                    IconUnify.CLOSE
+                }
+            }
+        )
+
         binding.icCcProductTagBack.setOnClickListener {
             analytic.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
@@ -355,6 +366,8 @@ class ProductTagParentFragment @Inject constructor(
                     isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
                     isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
                     maxSelectedProduct = productTagArgument.maxSelectedProduct,
+                    backButton = productTagArgument.backButton,
+                    isShowActionBarDivider = productTagArgument.isShowActionBarDivider,
                 )
             )
         )

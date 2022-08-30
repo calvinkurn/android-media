@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.producttag.view.uimodel
 
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.lang.StringBuilder
 
@@ -31,6 +32,12 @@ class ContentProductTagArgument private constructor(
     val maxSelectedProduct: Int
         get() = query[KEY_MAX_SELECTED_PRODUCT].toIntOrZero()
 
+    val backButton: ContentProductTagConfig.BackButton
+        get() = ContentProductTagConfig.BackButton.mapFromValue(query[KEY_BACK_BUTTON].toIntOrZero())
+
+    val isShowActionBarDivider: Boolean
+        get() = query[KEY_IS_SHOW_ACTION_BAR_DIVIDER].toBoolean()
+
     companion object {
         const val KEY_SHOP_BADGE = "shopBadge"
         const val KEY_AUTHOR_ID = "authorId"
@@ -38,7 +45,9 @@ class ContentProductTagArgument private constructor(
         const val KEY_PRODUCT_TAG_SOURCE = "productTagSource"
         const val KEY_IS_MULTIPLE_SELECTION_PRODUCT = "isMultipleSelectionProduct"
         const val KEY_IS_FULL_PAGE_AUTOCOMPLETE = "isFullPageAutocomplete"
-        const val KEY_MAX_SELECTED_PRODUCT = "maxSelectedProdict"
+        const val KEY_MAX_SELECTED_PRODUCT = "maxSelectedProduct"
+        const val KEY_BACK_BUTTON = "backButton"
+        const val KEY_IS_SHOW_ACTION_BAR_DIVIDER = "isShowActionBarDivider"
 
         const val QUERY_SEPARATOR = "&"
 
@@ -61,6 +70,8 @@ class ContentProductTagArgument private constructor(
         private var isMultipleSelectionProduct: Boolean = false
         private var isFullPageAutocomplete: Boolean = false
         private var maxSelectedProduct: Int = 0
+        private var backButton: ContentProductTagConfig.BackButton = ContentProductTagConfig.BackButton.Back
+        private var isShowActionBarDivider: Boolean = true
 
         fun setShopBadge(shopBadge: String): Builder {
             this.shopBadge = shopBadge
@@ -97,6 +108,16 @@ class ContentProductTagArgument private constructor(
             return this
         }
 
+        fun setBackButton(backButton: ContentProductTagConfig.BackButton): Builder {
+            this.backButton = backButton
+            return this
+        }
+
+        fun setIsShowActionBarDivider(isShowActionBarDivider: Boolean): Builder {
+            this.isShowActionBarDivider = isShowActionBarDivider
+            return this
+        }
+
         fun build(): String {
             return buildString {
                 append(KEY_SHOP_BADGE, shopBadge)
@@ -112,6 +133,10 @@ class ContentProductTagArgument private constructor(
                 append(KEY_IS_FULL_PAGE_AUTOCOMPLETE, isFullPageAutocomplete)
                 append(QUERY_SEPARATOR)
                 append(KEY_MAX_SELECTED_PRODUCT, maxSelectedProduct)
+                append(QUERY_SEPARATOR)
+                append(KEY_BACK_BUTTON, backButton.value)
+                append(QUERY_SEPARATOR)
+                append(KEY_IS_SHOW_ACTION_BAR_DIVIDER, isShowActionBarDivider)
             }
         }
 

@@ -10,6 +10,7 @@ import com.tokopedia.content.common.databinding.ActivityContentProductTagSampleB
 import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -74,6 +75,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setMultipleSelectionProduct(isMultipleSelectionProduct())
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
                 .setMaxSelectedProduct(if(isMultipleSelectionProduct()) 3 else 0)
+                .setBackButton(ContentProductTagConfig.BackButton.Close)
+                .setIsShowActionBarDivider(false)
                 .build()
         )
     }

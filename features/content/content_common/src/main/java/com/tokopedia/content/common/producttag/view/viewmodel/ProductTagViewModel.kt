@@ -107,6 +107,12 @@ class ProductTagViewModel @AssistedInject constructor(
     val maxSelectedProduct: Int
         get() = productTagConfig.maxSelectedProduct
 
+    val backButton: ContentProductTagConfig.BackButton
+        get() = productTagConfig.backButton
+
+    val isShowActionBarDivider: Boolean
+        get() = productTagConfig.isShowActionBarDivider
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow(setOf(if(isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))

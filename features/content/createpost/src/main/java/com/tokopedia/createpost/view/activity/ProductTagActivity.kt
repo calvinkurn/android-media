@@ -14,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import javax.inject.Inject
 
 /**
@@ -108,6 +109,8 @@ class ProductTagActivity : BaseActivity() {
                 .setProductTagSource(productTagList)
                 .setMultipleSelectionProduct(false)
                 .setFullPageAutocomplete(true)
+                .setBackButton(ContentProductTagConfig.BackButton.Back)
+                .setIsShowActionBarDivider(true)
                 .build()
         )
     }
