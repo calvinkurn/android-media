@@ -75,8 +75,7 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
             imgBtInsuranceInfo.let { iv ->
                 iv.setOnClickListener {
                     listener.onClickInsuranceInfo(
-                        insuranceData.insuranceUsedInfo,
-                        com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
+                        insuranceData.insuranceUsedInfo)
                 }
             }
             cbInsurance.setOnCheckedChangeListener { _, isChecked ->
@@ -118,6 +117,6 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
 
         fun onInsuranceChecked(isChecked: Boolean)
 
-        fun onClickInsuranceInfo( message: String, image: Int)
+        fun onClickInsuranceInfo( message: String)
     }
 }

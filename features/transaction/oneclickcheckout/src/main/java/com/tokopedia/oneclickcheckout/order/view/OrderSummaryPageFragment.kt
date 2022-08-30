@@ -1514,7 +1514,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 viewModel.setInsuranceCheck(isChecked)
             }
 
-            override fun onClickInsuranceInfo( message: String, image: Int) {
+            override fun onClickInsuranceInfo(message: String) {
                 context?.also { ctx ->
                     InsuranceBottomSheet().apply {
                         setDesc(message)
