@@ -18,12 +18,14 @@ import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
+import java.lang.ref.WeakReference
 
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
-        ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
+    private val topAdsHeadlineViewModel by lazy {
+        val vm = ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
+        WeakReference(vm)
     }
 
     var topadsBannerView: TopAdsBannerView
@@ -42,7 +44,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {
-        topAdsHeadlineViewModel.getTopAdsHeadlineData(params, onSuccess, onError)
+        topAdsHeadlineViewModel.get()?.getTopAdsHeadlineData(params, onSuccess, onError)
     }
 
     fun displayAds(cpmModel: CpmModel, index:Int = 0) {

@@ -30,6 +30,7 @@ import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.ref.WeakReference
 
 const val TOPADS_HEADLINE_VALUE_SRC = "pdp"
 const val PRODUCT_ID = "product_id"
@@ -37,9 +38,11 @@ const val PRODUCT_ID = "product_id"
 class TopAdsHeadlineViewHolder(
     val view: View,
     val userId: String,
-    val listener: DynamicProductDetailListener
+    listener: DynamicProductDetailListener
 ) :
     AbstractViewHolder<TopadsHeadlineUiModel>(view) {
+    private val weakReferenceListener = WeakReference(listener)
+    private val listener get() = weakReferenceListener.get()
 
     private val topadsHeadlineView: TopAdsHeadlineView =
         view.findViewById(R.id.topads_headline_view)
@@ -59,8 +62,6 @@ class TopAdsHeadlineViewHolder(
             this::onSuccessResponse,
             this::hideHeadlineView
         )
-
-
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
@@ -94,7 +95,7 @@ class TopAdsHeadlineViewHolder(
     override fun bind(element: TopadsHeadlineUiModel?) {
         topadsHeadlineUiModel = element
         hideHeadlineView()
-        topadsHeadlineUiModel?.run {
+        topadsHeadlineUiModel?.apply {
             if (cpmModel != null) {
                 showHeadlineView(cpmModel!!)
             } else if (!isHeadlineDataFetched) {
@@ -111,7 +112,7 @@ class TopAdsHeadlineViewHolder(
         topadsHeadlineUiModel?.impressHolder?.let {
             view.addOnImpressionListener(it) {
                 topadsHeadlineUiModel?.let { element ->
-                    listener.onImpressComponent(getComponentTrackData(element))
+                    listener?.onImpressComponent(getComponentTrackData(element))
                 }
             }
         }

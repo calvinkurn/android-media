@@ -30,7 +30,7 @@ import java.lang.ref.WeakReference
 
 class ProductRecommendationViewHolder(
     private val view: View,
-    private val listenerRef: WeakReference<DynamicProductDetailListener>
+    listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     companion object {
@@ -38,7 +38,8 @@ class ProductRecommendationViewHolder(
     }
 
     private val binding = ItemDynamicRecommendationBinding.bind(view)
-    private val listener get() = listenerRef.get()
+    private val weakReferenceListener = WeakReference(listener)
+    private val listener get() = weakReferenceListener.get()
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
 

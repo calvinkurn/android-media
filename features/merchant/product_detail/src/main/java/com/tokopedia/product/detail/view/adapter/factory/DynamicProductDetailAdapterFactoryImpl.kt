@@ -201,10 +201,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view,listener)
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
-                view,
-                WeakReference(listener)
-            )
+            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
                 view,
                 listener
