@@ -254,6 +254,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             selectedDateFromCalendar.localFormatTo(DateConstant.DATE)
         )
         val buttonWording = getString(R.string.sfs_apply)
+        val isVpsPackage = !vpsPackage?.isShopTierBenefit.orFalse()
         val param = TimePickerHandler.Param(
             mode,
             selectedDateFromCalendar,
@@ -262,7 +263,8 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
             maximumDate,
             title,
             info,
-            buttonWording
+            buttonWording,
+            isVpsPackage
         )
 
         val timePickerHandler = TimePickerHandler(param)
