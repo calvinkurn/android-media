@@ -21,6 +21,9 @@ data class NewUpsellData(
         val image: String = "",
         val price: Long = 0,
         val duration: String = "",
-        val wording: String = "",
-        val buttonText: String = ""
+        val summaryInfo: String = "",
+        val buttonText: String = "",
+        val id: String = "",
+        val additionalVerticalId: String = "",
+        val transactionType: String = "",
 ): Parcelable

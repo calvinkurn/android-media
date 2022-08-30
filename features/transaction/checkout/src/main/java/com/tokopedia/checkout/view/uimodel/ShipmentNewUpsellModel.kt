@@ -8,7 +8,10 @@ data class ShipmentNewUpsellModel(
         var image: String = "",
         var price: Long = 0,
         var duration: String = "",
-        var wording: String = "",
+        var summaryInfo: String = "",
         var buttonText: String = "",
-        var hasSeenUpsell: Boolean = false // flag for impression tracker
+        var id: String = "",
+        var additionalVerticalId: String = "",
+        var transactionType: String = "",
+        var hasSeenUpsell: Boolean = false, // flag for impression tracker
 )

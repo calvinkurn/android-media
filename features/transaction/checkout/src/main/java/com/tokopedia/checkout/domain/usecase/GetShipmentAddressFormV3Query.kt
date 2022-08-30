@@ -609,6 +609,22 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 image
               }
               cart_data
+              upsell_v2 {
+                is_show
+                is_selected
+                price
+                price_fmt
+                description
+                summary_info
+                image
+                app_link
+                button {
+                  text
+                }
+                id
+                additional_vertical_id
+                transaction_type
+              }
             }
           }
         }"""

@@ -32,10 +32,16 @@ class NewUpsell(
         val price: Long = 0,
         @SerializedName("duration")
         val duration: String = "",
-        @SerializedName("wording")
-        val wording: String = "",
+        @SerializedName("summary_info")
+        val summaryInfo: String = "",
         @SerializedName("button")
-        val button: UpsellButton = UpsellButton()
+        val button: UpsellButton = UpsellButton(),
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("additional_vertical_id")
+        val additionalVerticalId: String = "",
+        @SerializedName("transaction_type")
+        val transactionType: String = "",
 )
 
 class UpsellButton(

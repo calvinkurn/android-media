@@ -980,7 +980,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ShipmentCrossSellModel upsellCost = null;
         if (shipmentNewUpsellModel != null && shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
             CrossSellModel crossSellModel = new CrossSellModel();
-            crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentNewUpsellModel.getWording(), ""));
+            crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentNewUpsellModel.getSummaryInfo(), ""));
             crossSellModel.setPrice(shipmentNewUpsellModel.getPrice());
             upsellCost = new ShipmentCrossSellModel(crossSellModel, true, true);
         }
