@@ -1848,19 +1848,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
 
-                    imgInsuranceInfo.setOnClickListener(view ->{
-
-                        InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
-                                insuranceBottomSheet.setDesc( courierItemData.getInsuranceUsedInfo());
-                                insuranceBottomSheet.show(
-                                        view.getContext().getString(
-                                            com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance
-                                        ),
-                                        imgInsuranceInfo.getContext(),
-                                        mActionListener.getCurrentFragmentManager());
-                            }
-
-                    );
+//                    imgInsuranceInfo.setOnClickListener(view ->
+//                            showInsuranceBottomSheet(
+//                                    imgInsuranceInfo.getContext(),
+//                                    view.getContext().getString(
+//                                            com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+//                                    courierItemData.getInsuranceUsedInfo()
+//                            )
+//                    );
                 }
             }
 
@@ -1986,6 +1981,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             return Unit.INSTANCE;
         });
         generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
+    }
+
+    private void showInsuranceBottomSheet(Context context, String title, String message) {
+        InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
+        insuranceBottomSheet.setDesc(message);
+        insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {
