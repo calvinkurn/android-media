@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor.repository
 
 import android.os.Bundle
-import android.util.Log
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -44,7 +43,6 @@ class HomeDynamicChannelsRepository @Inject constructor(
     }
 
     companion object{
-        private const val TAG = "FrenzelDebug"
         const val GROUP_IDS = "groupIDs"
         const val TOKEN = "token"
         const val NUM_OF_CHANNEL = "numOfChannel"
@@ -72,8 +70,6 @@ class HomeDynamicChannelsRepository @Inject constructor(
             params.putString(GROUP_IDS, groupIds)
             params.putString(CHANNEL_IDS, channelIds)
             params.putString(LOCATION, locationParams)
-            Log.d(TAG, "buildParamsV2 channelIds: $channelIds")
-            Log.d(TAG, "buildParamsV2 params: $queryParams")
             return params
         }
     }
@@ -89,7 +85,7 @@ class HomeDynamicChannelsRepository @Inject constructor(
         val requestParams = if(isUsingV2){
             buildParamsV2(
                 groupIds = groupId,
-                channelIds = channelIds,
+                channelIds = channelIds.toString(),
                 queryParams = params,
                 locationParams = location
             )

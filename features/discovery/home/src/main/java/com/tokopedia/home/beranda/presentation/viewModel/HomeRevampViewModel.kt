@@ -423,7 +423,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId, channelModel.id)
+            val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 
             if(visitableList.isEmpty()){
                 deleteWidget(visitable, position)
