@@ -4,12 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/logisticLabelView"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_64"
+    android:layout_height="64dp"
     app:shop_lv_title_color="@color/Unify_N600_96"
     app:shop_lv_sub_title_color="@color/Unify_N700_68"
     app:shop_lv_image="@drawable/ic_smiley_good"
-    app:shop_lv_image_width="@dimen/dp_64"
-    app:shop_lv_image_height="@dimen/dp_32"
+    app:shop_lv_image_width="64dp"
+    app:shop_lv_image_height="32dp"
     app:shop_lv_image_margin_right="16dp"
     app:shop_lv_title_text_size="14sp"/>
 

@@ -32,6 +32,7 @@ sealed interface CreateReviewMediaPickerUiState {
 
     data class FailedUpload(
         override val failedOccurrenceCount: Int,
-        override val mediaItems: List<CreateReviewMediaUiModel>
+        override val mediaItems: List<CreateReviewMediaUiModel>,
+        val errorCode: String
     ) : CreateReviewMediaPickerUiState, HasMedia
 }

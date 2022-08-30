@@ -119,7 +119,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     }
 
     private fun goToForgotPassword() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
     }

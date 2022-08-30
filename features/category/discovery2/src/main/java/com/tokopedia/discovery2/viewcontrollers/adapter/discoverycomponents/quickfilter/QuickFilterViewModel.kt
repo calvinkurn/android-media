@@ -256,9 +256,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             (components.searchParameter.contains(it) && components.searchParameter.get(it) != DEFAULT_SORT_ID && components.searchParameter.get(it).isNotEmpty())
         }
         _filterCountLiveData.value = if (list.isNullOrEmpty()) {
-            components.filterController.filterViewStateSet.size
+            components.filterController.getFilterCount()
         } else {
-            components.filterController.filterViewStateSet.size + 1
+            components.filterController.getFilterCount() + 1
         }
     }
 

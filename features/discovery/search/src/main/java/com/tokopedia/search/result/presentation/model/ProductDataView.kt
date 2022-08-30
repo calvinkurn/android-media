@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView

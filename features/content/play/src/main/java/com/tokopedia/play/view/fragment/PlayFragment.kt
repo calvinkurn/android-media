@@ -39,6 +39,7 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.*
@@ -231,6 +232,10 @@ class PlayFragment @Inject constructor(
 
     override fun onAnimationFinish(isHidingInsets: Boolean) {
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
+    }
+
+    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
+        fragmentBottomSheetView.openVariantBottomSheet(action, product)
     }
 
     fun onFirstTopBoundsCalculated() {

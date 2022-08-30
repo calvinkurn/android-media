@@ -8,15 +8,15 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.topads.sdk.utils.TdnHelper
+import com.tokopedia.topads.sdk.widget.TdnBannerView
 
-class ProductTopAdsImageViewHolder(private val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<TopAdsImageDataModel>(view) {
+class ProductTopAdsImageViewHolder(
+    val view: View,
+    val listener: DynamicProductDetailListener
+) : AbstractViewHolder<TopAdsImageDataModel>(view) {
 
-    private val topAdsImageView: TopAdsImageView = view.findViewById(R.id.adsTopAdsImageView)
+    private val topAdsTdnView: TdnBannerView = view.findViewById(R.id.adsTdnView)
 
     companion object {
         val LAYOUT = R.layout.item_top_ads_image_view
@@ -24,29 +24,33 @@ class ProductTopAdsImageViewHolder(private val view: View, val listener: Dynamic
 
     override fun bind(element: TopAdsImageDataModel) {
         if (!element.data.isNullOrEmpty()) {
-            val bannerId = element.data?.get(0)?.bannerId ?: ""
-            val bannerName = element.data?.get(0)?.bannerName ?: ""
-
-            topAdsImageView.loadImage(element.data?.get(0) ?: TopAdsImageViewModel()) {
-                topAdsImageView.hide()
-            }
-            topAdsImageView.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
-                override fun onTopAdsImageViewClicked(applink: String?) {
-                    listener.onTopAdsImageViewClicked(element, applink, bannerId, bannerName)
-                }
-            })
-
-            topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-                override fun onTopAdsImageViewImpression(viewUrl: String) {
+            val bannerId = element.data?.firstOrNull()?.bannerId ?: ""
+            val bannerName = element.data?.firstOrNull()?.bannerName ?: ""
+            element.data?.let {
+                val tdnBannerList = TdnHelper.categoriesTdnBanners(it)
+                val tdnBanner = tdnBannerList.toList().firstOrNull()
+                if (tdnBanner != null) {
+                    topAdsTdnView.renderTdnBanner(
+                        tdnBanner,
+                        onTdnBannerClicked = { applink ->
+                            listener.onTopAdsImageViewClicked(
+                                element,
+                                applink,
+                                bannerId,
+                                bannerName
+                            )
+                        },
+                        onLoadFailed = { topAdsTdnView.hide() },
+                        onTdnBannerImpressed = {
+                            listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
+                        })
                     view.addOnImpressionListener(element.impressHolder) {
-                        ImpresionTask(this@ProductTopAdsImageViewHolder.javaClass.canonicalName).execute(viewUrl)
-                        listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
                         listener.onImpressComponent(getComponentTrackData(element))
                     }
                 }
-            })
-        }
 
+            }
+        }
     }
 
     private fun getComponentTrackData(

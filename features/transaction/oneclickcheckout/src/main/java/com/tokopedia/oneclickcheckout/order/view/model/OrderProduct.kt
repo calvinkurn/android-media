@@ -22,6 +22,7 @@ data class OrderProduct(
         var orderQuantity: Int = 0,
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
+        var freeShippingName: String = "",
         var weight: Int = 0,
         var weightActual: Int = 0,
         var notes: String = "",

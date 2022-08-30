@@ -62,6 +62,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
@@ -265,6 +266,8 @@ abstract class TopchatRoomTest {
     protected open fun setupResponse() {
         firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
         firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
+        firstPageChatBroadcastAsBuyer = getChatUseCase.defaultBroadCastChatWithBuyerResponse
+
         chatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
@@ -276,10 +279,6 @@ abstract class TopchatRoomTest {
         stickerListAsBuyer = AndroidFileUtil.parse(
             "success_chat_bundle_sticker.json",
             StickerResponse::class.java
-        )
-        firstPageChatBroadcastAsBuyer = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
         )
         getShopFollowingStatus = AndroidFileUtil.parse(
             "success_get_shop_following_status.json",
@@ -368,7 +367,7 @@ abstract class TopchatRoomTest {
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
                 0, click()
             )
-        onView(withId(R.id.rv_topchat_attachment_menu))
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
     }
 
@@ -377,7 +376,7 @@ abstract class TopchatRoomTest {
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
                 1, click()
             )
-        onView(withId(R.id.rv_topchat_attachment_menu))
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
     }
 
@@ -386,7 +385,7 @@ abstract class TopchatRoomTest {
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
                 2, click()
             )
-        onView(withId(R.id.rv_topchat_attachment_menu))
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
     }
 
@@ -395,32 +394,32 @@ abstract class TopchatRoomTest {
             .actionOnItemAtPosition<AttachmentItemViewHolder>(
                 3, click()
             )
-        onView(withId(R.id.rv_topchat_attachment_menu))
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
             .perform(viewAction)
     }
 
     protected fun clickComposeArea() {
-        onView(withId(R.id.new_comment))
+        onView(withIndex(withId(R.id.new_comment), 0))
             .perform(click())
     }
 
     protected fun typeMessage(msg: String) {
-        onView(withId(R.id.new_comment))
+        onView(withIndex(withId(R.id.new_comment), 0))
             .perform(typeText(msg))
     }
 
     protected fun clickStickerIconMenu() {
-        onView(withId(R.id.iv_chat_sticker))
+        onView(withIndex(withId(R.id.iv_chat_sticker), 0))
             .perform(click())
     }
 
     protected fun clickPlusIconMenu() {
-        onView(withId(R.id.iv_chat_menu))
+        onView(withIndex(withId(R.id.iv_chat_menu), 0))
             .perform(click())
     }
 
     protected fun clickSendBtn() {
-        onView(withId(R.id.send_but))
+        onView(withIndex(withId(R.id.send_but), 0))
             .perform(click())
     }
 
@@ -536,7 +535,7 @@ abstract class TopchatRoomTest {
     protected fun assertSrwTitle(
         title: String
     ) {
-        onView(withId(R.id.tp_srw_partial)).check(
+        onView(withIndex(withId(R.id.tp_srw_partial), 0)).check(
             matches(withText(title))
         )
     }
@@ -544,7 +543,8 @@ abstract class TopchatRoomTest {
     protected fun assertSrwTotalQuestion(
         totalQuestion: Int
     ) {
-        onView(withId(R.id.rv_srw_partial)).check(matches(withTotalItem(totalQuestion)))
+        onView(withIndex(withId(R.id.rv_srw_partial), 0))
+            .check(matches(withTotalItem(totalQuestion)))
     }
 
     /**
@@ -643,7 +643,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun assertChatAttachmentMenuVisibility(visibilityMatcher: Matcher<in View>) {
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0)).check(
             matches(visibilityMatcher)
         )
     }
@@ -651,13 +651,13 @@ abstract class TopchatRoomTest {
     protected fun assertChatStickerMenuVisibility(
         visibilityMatcher: Matcher<in View>
     ) {
-        onView(withId(R.id.ll_sticker_container)).check(
+        onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
             matches(visibilityMatcher)
         )
     }
 
     protected fun assertComposedTextValue(msg: String) {
-        onView(withId(R.id.new_comment)).check(
+        onView(withIndex(withId(R.id.new_comment), 0)).check(
             matches(withText(msg))
         )
     }
@@ -799,6 +799,12 @@ abstract class TopchatRoomTest {
         ).check(matches(withText(expectedTitle)))
     }
 
+    protected fun assertStickerContainer() {
+        onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
+            matches(isDisplayed())
+        )
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
@@ -845,6 +851,10 @@ abstract class TopchatRoomTest {
                 isDescendantOfA(withId(R.id.cl_attachment_preview))
             )
         ).perform(click())
+    }
+
+    protected fun clickOnSrwPartial() {
+        onView(withIndex(withId(R.id.tp_srw_container_partial), 0)).perform(click())
     }
 
     protected fun scrollChatToPosition(position: Int) {

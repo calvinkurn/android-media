@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.SaveToGalleryManager
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import kotlinx.coroutines.flow.*
@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PreviewViewModel @Inject constructor(
-    private val imageCompressor: ImageCompressionManager,
-    private val mediaSaver: SaveToGalleryManager
+    private val imageCompressor: ImageCompressionRepository,
+    private val mediaSaver: SaveToGalleryRepository
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
@@ -66,13 +66,14 @@ class PreviewViewModel @Inject constructor(
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        videoCameraFiles.plus(compressedImages)
+        originalFiles
             .forEach {
                 mediaSaver.dispatch(it)
             }
 
         PickerResult(
             originalPaths = originalFiles,
+            videoFiles = videoCameraFiles,
             compressedImages = compressedImages
         )
     }.shareIn(

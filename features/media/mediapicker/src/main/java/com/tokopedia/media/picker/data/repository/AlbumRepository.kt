@@ -14,7 +14,7 @@ open class AlbumRepository constructor(
     , LoaderDataSource by loaderDataSource {
 
     override fun execute(param: Unit): List<Album> {
-        val cursor = query( -1) ?: error("cannot find the query")
+        val cursor = query(-1) ?: return emptyList()
         val albumMap = mutableMapOf<String, Album>()
 
         var recentPreviewUri: Uri? = null
@@ -61,26 +61,26 @@ open class AlbumRepository constructor(
     private fun List<Album>.addRecentAlbumAtFirst(
         firstMediaPreviewUri: Uri?
     ): List<Album> {
-        var recentMediaSize = 0
+        var recentMediaSize = 1
 
         return this.map {
             val totalInAlbum = it.count
             recentMediaSize += totalInAlbum
 
             it
-        }
-            .toMutableList()
-            .also {
-                val firstItemIndex = 0
+        }.toMutableList().also {
+            val firstItemIndex = 0
 
-                // add the recent album at the first of item
-                it.add(firstItemIndex, Album(
+            // add the recent album at the first of item
+            it.add(
+                firstItemIndex, Album(
                     id = RECENT_ALBUM_ID,
                     name = RECENT_ALBUM_NAME,
                     preview = firstMediaPreviewUri,
-                    count = recentMediaSize + 1
-                ))
-            }
+                    count = recentMediaSize
+                )
+            )
+        }
     }
 
     companion object {
