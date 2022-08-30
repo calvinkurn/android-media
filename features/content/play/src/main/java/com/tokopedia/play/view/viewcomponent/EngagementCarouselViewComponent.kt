@@ -41,6 +41,7 @@ class EngagementCarouselViewComponent(
     init {
         carousel.apply {
             adapter = carouselAdapter
+            layoutParams.height = 110
         }
         autoScroll()
     }
