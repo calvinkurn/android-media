@@ -397,16 +397,16 @@ class ProductTagParentFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            query: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, query)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, argumentBuilder)
         }
 
         private fun createFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            query: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
@@ -415,7 +415,7 @@ class ProductTagParentFragment @Inject constructor(
                 ) as ProductTagParentFragment
             ).apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_QUERY, query)
+                    putString(EXTRA_QUERY, argumentBuilder.build())
                 }
             }
         }

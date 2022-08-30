@@ -132,7 +132,6 @@ class ProductTagActivity : BaseActivity() {
                 .setProductTagSource(productTagList)
                 .setMultipleSelectionProduct(false)
                 .setFullPageAutocomplete(true)
-                .build()
         )
     }
 

@@ -73,7 +73,6 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setProductTagSource("global_search,own_shop,last_purchase")
                 .setMultipleSelectionProduct(binding.rbMultipleSelectionProductYes.isChecked)
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
-                .build()
         )
     }
 
