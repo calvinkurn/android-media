@@ -245,3 +245,9 @@ const val ACTION_CLICK_MY_COUPON  = "click coupon"
 
 const val ACTION_VIEW_COUPON_BANNER = "coupon impression"
 const val ACTION_CLICK_COUPON_BANNER = "click on banner coupon"
+
+const val CAMPAIGN_ID= "campaign_id"
+const val VARIANT_ID= "variantId"
+const val SHOP_ID= "shopId"
+const val TRACKER_ID= "trackerId"
+const val TRACKER_ID_VALUE= "2729"

@@ -40,6 +40,7 @@ object ShopPageConstant {
     const val ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET = "android_shop_page_enable_universal_bottom_sheet"
     const val ALL_SHOWCASE_ID = "etalase"
     const val CODE_STATUS_SUCCESS = "200"
+    const val AFFILIATE_PAGE_ID = "pageID"
     object ShopLayoutFeatures{
         const val DIRECT_PURCHASE = "direct_purchase"
     }
