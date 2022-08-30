@@ -72,6 +72,7 @@ class PlayBroadcastTimerImpl @Inject constructor(
     override fun stop() {
         countUp.stop()
         removeLastDurationMillis()
+        removeLastPauseMillis()
     }
 
     override fun restart(duration: Long) {

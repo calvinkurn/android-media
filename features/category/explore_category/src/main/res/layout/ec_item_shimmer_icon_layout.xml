@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_icon_shimmer"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_margin="16dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_txt1"
-        android:layout_width="@dimen/dp_85"
+        android:layout_width="85dp"
         android:layout_height="10dp"
         android:layout_marginTop="12dp"
         app:loader_corner_radius="10dp"
@@ -29,7 +29,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ec_txt2"
-        android:layout_width="@dimen/dp_64"
+        android:layout_width="64dp"
         android:layout_height="10dp"
         android:layout_marginTop="12dp"
         app:loader_corner_radius="10dp"

@@ -342,6 +342,11 @@ const val CART_REVAMP_V3_QUERY =
                       is_parent
                       is_campaign_error
                       is_blacklisted
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                       free_shipping {
                         eligible
                         badge_url
