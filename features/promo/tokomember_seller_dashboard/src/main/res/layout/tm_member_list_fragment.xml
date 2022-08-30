@@ -9,7 +9,7 @@
     android:layout_height="wrap_content"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:title="TokoMember(49.890)"
+    app:unify_header_title="@string/tm_member_list_header_title"
     app:unify_header_is_show_shadow="true"
     />
 

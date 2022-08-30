@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmMemberListAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.decoration.TmMemberItemDecoration
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmMemberListViewModel
+import kotlinx.android.synthetic.main.tm_member_list_fragment.*
 
 class TokomemberMemberListFragment : Fragment() {
 
@@ -36,6 +38,11 @@ class TokomemberMemberListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tmMemberListRv = view.findViewById(R.id.tm_member_list_recycler_view)
+        initUI()
+    }
+
+    private fun initUI(){
+        setupHeader()
         initialSetupMemberList()
     }
 
@@ -43,8 +50,18 @@ class TokomemberMemberListFragment : Fragment() {
         tmMemberListRv.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = tmMemberAdapter
+            val dividerDecor  = TmMemberItemDecoration(requireContext())
+            addItemDecoration(dividerDecor)
         }
     }
+
+    private fun setupHeader(){
+        tm_member_list_header.setNavigationOnClickListener{
+            activity?.onBackPressed()
+        }
+    }
+
+
 
 
 
