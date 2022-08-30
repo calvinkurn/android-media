@@ -160,19 +160,19 @@
         android:id="@+id/fl_btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        android:background="@color/Unify_Background"
+        android:elevation="@dimen/content_common_space_10"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cc_product_tag_save"
-            android:layout_marginTop="@dimen/content_common_space_12"
-            android:layout_marginBottom="@dimen/content_common_space_12"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/content_common_space_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            />
+            android:layout_marginBottom="@dimen/content_common_space_12"
+            android:text="@string/cc_product_tag_save" />
 
     </FrameLayout>
 
