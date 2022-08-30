@@ -10,6 +10,7 @@ import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
@@ -97,13 +98,17 @@ class ProductTagActivity : BaseActivity() {
         authorId: String,
         authorType: String,
     ): ProductTagParentFragment {
-        return ProductTagParentFragment.getFragmentWithFeedSource(
+        return ProductTagParentFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            productTagList,
-            shopBadge,
-            authorId,
-            authorType,
+            ContentProductTagArgument.Builder()
+                .setShopBadge(shopBadge)
+                .setAuthorId(authorId)
+                .setAuthorType(authorType)
+                .setProductTagSource(productTagList)
+                .setMultipleSelectionProduct(false)
+                .setFullPageAutocomplete(true)
+                .build()
         )
     }
 
