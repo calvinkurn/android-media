@@ -1848,6 +1848,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
 
+                    imgInsuranceInfo.setOnClickListener(view -> showBottomSheet(imgInsuranceInfo.getContext(),
+                            imgInsuranceInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                            courierItemData.getInsuranceUsedInfo(),
+                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance));
 //                    imgInsuranceInfo.setOnClickListener(view ->
 //                            showInsuranceBottomSheet(
 //                                    imgInsuranceInfo.getContext(),
@@ -1983,11 +1987,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
     }
 
-    private void showInsuranceBottomSheet(Context context, String title, String message) {
-        InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
-        insuranceBottomSheet.setDesc(message);
-        insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
-    }
+//    private void showInsuranceBottomSheet(Context context, String title, String message) {
+//        InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
+//        insuranceBottomSheet.setDesc(message);
+//        insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
+//    }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {
         if (price == 0) {
