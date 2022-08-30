@@ -3551,11 +3551,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Nullable
     @Override
     public ShipmentCartItemModel getShipmentCartItemModel(int adapterPosition) {
-        final Object adapterItem = shipmentAdapter.getShipmentDataList().get(adapterPosition);
-        if (adapterItem instanceof ShipmentCartItemModel) {
-            return (ShipmentCartItemModel) adapterItem;
-        } else {
-            return null;
-        }
+        return shipmentAdapter.getShipmentCartItemModelByIndex(adapterPosition);
     }
 }
