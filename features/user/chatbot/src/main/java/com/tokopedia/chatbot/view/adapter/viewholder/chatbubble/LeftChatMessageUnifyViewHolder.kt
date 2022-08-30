@@ -12,6 +12,7 @@ import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
@@ -92,9 +93,18 @@ class LeftChatMessageUnifyViewHolder(
     }
 
     private fun bindSenderInfo(senderInfoData: SenderInfoData) {
+
+        senderInfoData.iconUrl?.let {
+            senderAvatar?.setImageUrl(it)
+        }
+        if (itemView.isInDarkMode()) {
+            senderInfoData.iconDarkUrl?.let {
+                senderAvatar?.setImageUrl(it)
+            }
+        }
+
         senderAvatar?.show()
         senderName?.show()
-        ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
         senderName?.text = senderInfoData.name
     }
 
