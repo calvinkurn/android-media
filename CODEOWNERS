@@ -98,7 +98,6 @@
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_autoads/                      @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_create/                       @tokopedia/android-minionsolo-dev
