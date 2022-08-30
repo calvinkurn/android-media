@@ -9,8 +9,8 @@
         android:id="@+id/view_left"
         android:layout_width="@dimen/dp_chatbot_50"
         android:layout_height="@dimen/dp_chatbot_1"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:background="@color/Unify_N150"
         app:layout_constraintBottom_toBottomOf="@+id/chatbot_tv_divider_message"
         app:layout_constraintEnd_toStartOf="@+id/chatbot_tv_divider_message"
@@ -20,12 +20,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chatbot_tv_divider_message"
-        android:layout_width="@dimen/unify_space_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginLeft="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:gravity="center"
         app:layout_constraintEnd_toStartOf="@+id/view_right"
         app:layout_constraintStart_toEndOf="@+id/view_left"
@@ -36,10 +36,9 @@
 
     <View
         android:id="@+id/view_right"
-        android:layout_width="@dimen/dp_chatbot_50"
-        android:layout_height="@dimen/dp_chatbot_1"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_width="50dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/Unify_N150"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chatbot_tv_divider_message"
@@ -49,8 +48,8 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chatbot_tv_divider_button"
         android:layout_width="@dimen/dp_chatbot_130"
-        android:layout_height="@dimen/unify_space_40"
-        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/ineractive_button_background"
         android:gravity="center"
         android:text="@string/cb_bot_leave_queue"
@@ -64,14 +63,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/unify_space_16" />
+        app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="@dimen/unify_space_40"
+        app:layout_constraintGuide_end="40dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
