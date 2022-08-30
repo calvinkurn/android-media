@@ -12,7 +12,6 @@ import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
-import java.util.Locale
 
 const val KEY_SESSION_IRIS = "sessionIris"
 
@@ -121,8 +120,8 @@ data class ProductDetailViews(
 )
 
 object ProductDetailViewsChecker {
-    fun onlyViewItem(event: String?) =
-        event?.lowercase(Locale.getDefault())?.contains("view_item") ?: false
+        fun onlyViewItem(event: String?) =
+                event?.toLowerCase()?.contains("view_item") ?: false
 
         fun isOnlyOneProduct(items: List<Product>) = items.size == 1
 

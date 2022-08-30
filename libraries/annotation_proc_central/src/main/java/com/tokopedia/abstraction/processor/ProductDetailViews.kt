@@ -12,7 +12,6 @@ import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.product.util.processor.KEY_SESSION_IRIS
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
-import java.util.Locale
 
 /**
  * Product Detail
@@ -117,8 +116,8 @@ data class ProductDetailProduct(
 )
 
 object ProductDetailViewsChecker {
-    fun onlyViewItem(event: String?) =
-        event?.lowercase(Locale.getDefault())?.contains("view_item") ?: false
+        fun onlyViewItem(event: String?) =
+                event?.toLowerCase()?.contains("view_item") ?: false
 
         fun isOnlyOneProduct(items: List<ProductDetailProduct>) = items.size == 1
 

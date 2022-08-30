@@ -344,8 +344,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
             for (i in packageInfo.requestedPermissions.indices) {
                 if (packageInfo.requestedPermissionsFlags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED != 0) {
                     var permission = packageInfo.requestedPermissions[i]
-                    permission = permission.substring(permission.lastIndexOf(".") + 1)
-                        .lowercase(Locale.getDefault())
+                    permission = permission.substring(permission.lastIndexOf(".") + 1).toLowerCase()
                     permissions.add(permission)
                 }
             }

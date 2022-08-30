@@ -2,7 +2,6 @@ package com.tokopedia.graphql.util
 
 import com.google.gson.GsonBuilder
 import timber.log.Timber
-import java.util.Locale
 
 /**
  * @author by milhamj on 29/01/19.
@@ -41,10 +40,10 @@ fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boole
     //setPrettyPrinting is needed because it's easier to find a variable in a formatted JSON
     //In a formatted JSON, a variable is always in a newline
     val gson = GsonBuilder()
-        .registerTypeAdapterFactory(DefaultValueAdapterFactory())
-        .serializeNulls()
-        .setPrettyPrinting().create()
-    val objectAsJson = gson.toJson(`object`).lowercase(Locale.getDefault())
+            .registerTypeAdapterFactory(DefaultValueAdapterFactory())
+            .serializeNulls()
+            .setPrettyPrinting().create()
+    val objectAsJson = gson.toJson(`object`).toLowerCase()
     val firstNullOccurrence = Regex(NULL_PATTERN).find(objectAsJson)
 
     return if (firstNullOccurrence == null) {

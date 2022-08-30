@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.KEY_URL
-import java.util.Locale
 
 class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
 
@@ -82,7 +81,7 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
     private fun isdownloadable(uri: String): Boolean {
         if (!extArray.isNullOrEmpty()) {
             for (i in extArray!!) {
-                if ((uri.lowercase(Locale.getDefault())).endsWith(i)) {
+                if ((uri.toLowerCase()).endsWith(i)) {
                     return true
                 }
             }
