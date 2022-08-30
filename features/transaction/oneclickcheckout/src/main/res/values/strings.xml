@@ -102,7 +102,4 @@
     <string name="occ_payment_fee_title_info">Tentang %s</string>
     <string name="occ_service_fee_title_info">Biaya Layanan</string>
     <string name="occ_service_fee_tooltip_info">Biaya ini dikenakan khusus pembayaran dengan metode tertentu.</string>
-
-    <string name="title_bottomsheet_insurance">Keuntungan pakai asuransi</string>
-
 </resources>
