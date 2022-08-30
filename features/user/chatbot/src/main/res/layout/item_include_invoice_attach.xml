@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/invoice_height"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_N0">
 
     <androidx.cardview.widget.CardView
@@ -63,7 +62,6 @@
                 android:layout_height="@dimen/invoice_thumbnail_size"
                 android:layout_below="@id/attach_invoice_item_invoice_date"
                 android:layout_alignLeft="@id/attach_invoice_item_invoice_date"
-                android:layout_below="@id/attach_invoice_item_invoice_date"
                 android:layout_marginTop="@dimen/dp_chatbot_6"
                 android:background="@color/Unify_N100"
                 android:padding="@dimen/dp_chatbot_1"
@@ -95,11 +93,6 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_alignLeft="@id/attach_invoice_item_product_name"
-                android:layout_below="@id/attach_invoice_item_product_name"
-                android:layout_marginEnd="@dimen/unify_space_16"
-                android:layout_marginRight="@dimen/unify_space_16"
-                android:layout_marginTop="@dimen/dp_chatbot_6"
                 android:maxLines="3"
                 android:textColor="@color/Unify_N700_32"
                 app:typographyType="display_3"
