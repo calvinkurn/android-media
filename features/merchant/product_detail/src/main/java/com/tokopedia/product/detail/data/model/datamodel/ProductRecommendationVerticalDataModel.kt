@@ -17,7 +17,10 @@ data class ProductRecommendationVerticalDataModel(
 
     override fun name(): String = name
 
-    override fun equalsWith(newData: DynamicPdpDataModel): Boolean = false
+    override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
+        return newData is ProductRecommendationVerticalDataModel &&
+                this.recommendationItem?.productId == newData.recommendationItem?.productId
+    }
 
     override fun newInstance(): DynamicPdpDataModel = this.copy()
 

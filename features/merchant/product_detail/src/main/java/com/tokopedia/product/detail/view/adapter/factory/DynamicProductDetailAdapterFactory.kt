@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
@@ -68,5 +69,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: FintechWidgetDataModel):Int
     fun type(data: ProductRecommendationVerticalDataModel): Int
     fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int
+    fun type(data: LoadingDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

@@ -412,4 +412,5 @@ interface DynamicProductDetailListener {
     fun onClickProductDetailnavigation(position: Int, label: String)
 
     fun startVerticalRecommendation()
+    fun onClickRecommendationVerticalItem(productId: String)
 }

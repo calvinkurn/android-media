@@ -61,6 +61,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
@@ -1209,12 +1210,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getVerticalRecommendationData(productId: String) {
+    fun getVerticalRecommendationData(page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {
+        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
+        val nonNullProductId = productId ?: ""
         launchCatchError(block = {
             val requestParams = GetRecommendationRequestParam(
-                pageNumber = 1,
+                pageNumber = nonNullPage,
                 pageName = "pdp_8_vertical",
-                productIds = arrayListOf(productId)
+                xSource = "recom_widget",
+                productIds = arrayListOf(nonNullProductId),
             )
             val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
             recommendationResponse.firstOrNull()?.let {

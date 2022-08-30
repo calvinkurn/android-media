@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
+import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -35,6 +36,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     private var rvPdp: RecyclerView? = null
     private var swipeToRefresh: SwipeRefreshLayout? = null
+    protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
     protected abstract fun createAdapterInstance(): ProductDetailAdapter
 
@@ -157,12 +159,33 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     private fun setupRecyclerView(view: View) {
-        rvPdp = view.findViewById(R.id.rv_pdp)
-        rvPdp?.isNestedScrollingEnabled = false
-        rvPdp?.layoutManager = CenterLayoutManager(view.context)
-        rvPdp?.itemAnimator = null
-        showLoading()
+        val rv = view.findViewById<RecyclerView>(R.id.rv_pdp) ?: return
 
-        rvPdp?.adapter = productAdapter
+        rv.apply{
+            isNestedScrollingEnabled = false
+            itemAnimator = null
+            layoutManager = CenterLayoutManager(view.context)
+            adapter = productAdapter
+            addItemDecoration(RecommendationItemDecoration())
+        }
+        rvPdp = rv
+        showLoading()
+    }
+
+    protected fun addEndlessScrollListener(loadMore: (page: Int) -> Unit) {
+        if(endlessScrollListener != null) return
+
+        val rv = rvPdp ?: return
+        endlessScrollListener = object : EndlessRecyclerViewScrollListener(rv.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                loadMore.invoke(page)
+            }
+        }.also { rv.addOnScrollListener(it) }
+    }
+
+    protected fun removeEndlessScrollListener() {
+        val rv = rvPdp ?: return
+        val scrollListener = endlessScrollListener ?: return
+        rv.removeOnScrollListener(scrollListener)
     }
 }

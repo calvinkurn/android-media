@@ -60,6 +60,7 @@ import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_8_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -612,9 +613,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateVerticalRecommendationData(data: RecommendationWidget){
-        (mapOfData[data.pageName] as? ProductRecommendationVerticalPlaceholderDataModel)?.run {
-            recomWidgetData = data
+        updateData(PDP_8_VERTICAL, true){
+            verticalRecommendationData?.apply {
+                if(recomWidgetData?.currentPage != data.currentPage){
+                    updateItemList(data.recommendationItemList)
+                }
+                recomWidgetData = data
+            }
         }
+    }
+
+    fun getVerticalRecommendationNextPage():Int{
+        return verticalRecommendationData?.recomWidgetData?.nextPage ?: -1
     }
 
     fun removeComponentP2Data(it: ProductInfoP2UiData, countReview: String) {

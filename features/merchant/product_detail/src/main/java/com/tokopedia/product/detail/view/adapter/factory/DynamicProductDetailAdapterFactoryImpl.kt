@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
@@ -42,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
@@ -208,6 +210,9 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT
     }
 
+    override fun type(data: LoadingDataModel): Int {
+        return LoadingViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -268,8 +273,9 @@ class DynamicProductDetailAdapterFactoryImpl(
                     )
                 } else super.createViewHolder(view, type)
             }
-            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view)
+            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view, listener)
             ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view)
+            LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
 
             else -> super.createViewHolder(view, type)
         }

@@ -24,7 +24,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -148,6 +147,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -2656,12 +2656,22 @@ open class DynamicProductDetailFragment :
     private fun observeVerticalRecommendation(){
         viewLifecycleOwner.observe(viewModel.verticalRecommendation){ data ->
             data.doSuccessOrFail({
-                pdpUiUpdater?.updateVerticalRecommendationData(it.data)
-                updateUi()
+                val recommendationWidget = it.data
+                pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
+                endlessScrollListener?.updateStateAfterGetData()
+                if(recommendationWidget.hasNext){
+                    addEndlessScrollListener {
+                        val page = pdpUiUpdater?.getVerticalRecommendationNextPage()
+                        viewModel.getVerticalRecommendationData(page, productId)
+                    }
+                } else{
+                    removeEndlessScrollListener()
+                }
+                updateUi(recommendationWidget.hasNext)
             },{
-
+                removeEndlessScrollListener()
+                updateUi()
             })
-
         }
     }
 
@@ -2798,10 +2808,13 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun updateUi() {
+    private fun updateUi(showLoading: Boolean = false) {
         val newData = pdpUiUpdater?.mapOfData?.values?.toList() ?: emptyList()
-        val verticalDataModels = pdpUiUpdater?.verticalRecommendationData?.getVerticalDataModels() ?: emptyList()
-        submitList(newData + verticalDataModels)
+        val dataModels = pdpUiUpdater?.verticalRecommendationData?.recommendationVerticalDataModels
+            ?: emptyList()
+
+        if (showLoading) submitList(newData + dataModels + LoadingDataModel())
+        else submitList(newData + dataModels)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -5378,6 +5391,11 @@ open class DynamicProductDetailFragment :
     )
 
     override fun startVerticalRecommendation() {
-        viewModel.getVerticalRecommendationData(productId ?: "")
+        viewModel.getVerticalRecommendationData(productId = productId)
+    }
+
+    override fun onClickRecommendationVerticalItem(productId: String) {
+        val intent = ProductDetailActivity.createIntent(requireContext(), productId)
+        startActivity(intent)
     }
 }
