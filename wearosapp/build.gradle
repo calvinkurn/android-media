@@ -74,6 +74,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.2.0"
     }
+    kotlinOptions{
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
 }
 dependencies {
     implementation rootProject.ext.playServicesDependencies.base
