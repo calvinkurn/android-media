@@ -108,6 +108,7 @@ class TmIntroFragment : BaseDaggerFragment(),
         ivBg.loadImage(TM_INTRO_BG)
         hideStatusBar()
         observeViewModel()
+        tmTracker = TmTracker()
         arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
             tmTracker?.viewIntroPage(it.toString())
             introLogic(it)
