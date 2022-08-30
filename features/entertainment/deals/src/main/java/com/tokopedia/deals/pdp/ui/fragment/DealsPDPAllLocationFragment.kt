@@ -4,24 +4,46 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.databinding.FragmentDealsDetailLocationBinding
 import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.adapter.DealsDetailAllLocationAdapter
+import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPAllLocationViewModel
+import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
 
 class DealsPDPAllLocationFragment: BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(DealsPDPAllLocationViewModel::class.java)
+    }
 
     private var binding by autoClearedNullable<FragmentDealsDetailLocationBinding>()
     private var outlets: List<Outlet>? = null
@@ -55,7 +77,23 @@ class DealsPDPAllLocationFragment: BaseDaggerFragment() {
         setupUi()
         setupHeader()
         setupSearchBar()
-        setupRecycleView()
+        observeFlowData()
+        outlets?.let {
+            setupRecycleView(it)
+        }
+    }
+
+    private fun observeFlowData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowSearchResult.collect {
+                if (it.isNullOrEmpty()) {
+                    showNoContent()
+                } else {
+                    hideNoContent()
+                    setupRecycleView(it)
+                }
+            }
+        }
     }
 
     private fun setupUi() {
@@ -74,10 +112,23 @@ class DealsPDPAllLocationFragment: BaseDaggerFragment() {
     }
 
     private fun setupSearchBar() {
+        searchBar?.apply {
+            searchBarTextField.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(text: Editable?) {
+                    text?.let { text ->
+                        outlets?.let { outlets ->
+                            viewModel.submitSearch(text.toString(), outlets)
+                        }
+                    }
+                }
 
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            })
+        }
     }
 
-    private fun setupRecycleView() {
+    private fun setupRecycleView(outlets: List<Outlet>) {
         context?.let { context ->
             val adapter = DealsDetailAllLocationAdapter(object : DealsDetailAllLocationAdapter.LocationCallBack {
                 override fun onClickLocation(latLang: String) {
@@ -86,9 +137,16 @@ class DealsPDPAllLocationFragment: BaseDaggerFragment() {
             })
             recycleView?.adapter = adapter
             recycleView?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            outlets?.let {
+            outlets.let {
                 adapter.addOutlets(it)
             }
+
+            recycleView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    KeyboardHandler.hideSoftKeyboard(activity)
+                }
+            })
         }
     }
 
@@ -108,6 +166,16 @@ class DealsPDPAllLocationFragment: BaseDaggerFragment() {
                 ).show()
             }
         }
+    }
+
+    private fun showNoContent() {
+        noContentLayout?.show()
+        recycleView?.hide()
+    }
+
+    private fun hideNoContent() {
+        noContentLayout?.hide()
+        recycleView?.show()
     }
 
     companion object {

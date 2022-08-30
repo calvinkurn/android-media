@@ -5,6 +5,7 @@ import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.pdp.data.Outlet
@@ -44,6 +45,11 @@ class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent>, D
         menu?.clear()
         menuInflater.inflate(R.menu.menu_deals_pdp, menu)
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        KeyboardHandler.hideSoftKeyboard(this)
     }
 
     override fun onShowMoreDesc(title: String, text: String) {

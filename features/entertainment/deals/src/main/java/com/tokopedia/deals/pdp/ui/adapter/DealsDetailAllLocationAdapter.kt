@@ -29,6 +29,7 @@ class DealsDetailAllLocationAdapter(private val locationCallBack: LocationCallBa
     }
 
     fun addOutlets(outlets: List<Outlet>) {
+        this.outlets.clear()
         this.outlets = outlets.toMutableList()
         notifyDataSetChanged()
     }
