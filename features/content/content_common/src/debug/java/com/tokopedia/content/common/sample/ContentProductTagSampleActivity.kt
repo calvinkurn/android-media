@@ -107,4 +107,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
             .build()
             .inject(this)
     }
+
+    override fun onBackPressed() {
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
+            it.onBackPressed()
+        } ?: super.onBackPressed()
+    }
 }
