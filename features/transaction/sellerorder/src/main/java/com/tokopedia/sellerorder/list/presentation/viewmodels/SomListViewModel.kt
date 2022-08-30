@@ -561,23 +561,18 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        if (somListGetFilterListUseCase.isFirstLoad) {
-            somListGetFilterListUseCase.isFirstLoad = false
-            launchCatchError(context = dispatcher.main, block = {
-                if (_canShowOrderData.value == true) {
-                    val result = somListGetFilterListUseCase.executeOnBackground(true)
-                    result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
-                    result.refreshOrder = refreshOrders
-                    setTabActiveFromAppLink("")
-                    _filterResult.value = Success(result)
-                    getFiltersFromCloud(refreshOrders, true)
-                }
-            }, onError = {
-                getFiltersFromCloud(refreshOrders, false)
-            })
-        } else {
+        launchCatchError(context = dispatcher.main, block = {
+            if (_canShowOrderData.value == true) {
+                val result = somListGetFilterListUseCase.executeOnBackground(true)
+                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
+                result.refreshOrder = refreshOrders
+                setTabActiveFromAppLink("")
+                _filterResult.value = Success(result)
+                getFiltersFromCloud(refreshOrders, true)
+            }
+        }, onError = {
             getFiltersFromCloud(refreshOrders, false)
-        }
+        })
     }
 
     fun getHeaderIconsInfo() {
