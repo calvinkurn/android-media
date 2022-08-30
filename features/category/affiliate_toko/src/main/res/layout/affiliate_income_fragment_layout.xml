@@ -165,7 +165,7 @@
                             android:id="@+id/transaction_history_affiliate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/spacing_lvl4"
+                            android:layout_margin="16dp"
                             android:text="@string/affiliate_transaction_history"
                             android:textColor="@color/Unify_NN950"
                             app:layout_constraintTop_toBottomOf="@id/withdrawal_home_widget"
@@ -229,7 +229,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:itemCount="4"
-                    android:visibility="gone"
                     tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/affiliate_transaction_history_item_layout"
                     tools:orientation="vertical" />
