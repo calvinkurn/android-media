@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_gojek_pick_address"
             android:background="@android:color/transparent"
-            android:textSize="@dimen/sp_16"
+            android:textSize="16sp"
             android:padding="10dp"
             android:focusable="true"
             android:focusableInTouchMode="true"

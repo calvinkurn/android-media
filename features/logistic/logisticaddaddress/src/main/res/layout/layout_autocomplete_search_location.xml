@@ -13,12 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dip"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="12sp" />
 
 </LinearLayout>

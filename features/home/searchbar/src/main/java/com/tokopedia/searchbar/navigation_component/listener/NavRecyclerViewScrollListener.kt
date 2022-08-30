@@ -1,8 +1,8 @@
 package com.tokopedia.searchbar.navigation_component.listener
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
@@ -16,26 +16,31 @@ class NavRecyclerViewScrollListener(
         val switchThemeOnScroll: Boolean = true,
         val fixedIconColor: Int? = null
 ): RecyclerView.OnScrollListener() {
+
+    companion object {
+
+        private const val START_TRANSITION_ALPHA_OFFSET = 150f
+    }
+
     private val statusBarUtil = navToolbar.statusBarUtil
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
         if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
-        calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
-        val offset = recyclerView.computeVerticalScrollOffset();
+        val offset = recyclerView.computeVerticalScrollOffset()
+        calculateNavToolbarTransparency(offset)
         navScrollCallback?.onYposChanged(offset)
-
     }
 
     private fun calculateNavToolbarTransparency(offset: Int) {
         val endTransitionOffset = startTransitionPixel + toolbarTransitionRangePixel
         val maxTransitionOffset = endTransitionOffset - startTransitionPixel
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / maxTransitionOffset * (offset - startTransitionPixel)
+        var offsetAlpha = NavToolbar.ALPHA_MAX / maxTransitionOffset * (offset - startTransitionPixel)
         //2.5 is maximum
-        if (offsetAlpha < 0) {
-            offsetAlpha = 0f
+        if (offsetAlpha < Float.ZERO) {
+            offsetAlpha = Float.ZERO
         }
         if (fixedIconColor != null) {
             when (fixedIconColor) {
@@ -46,13 +51,13 @@ class NavRecyclerViewScrollListener(
                     lightCondition = { statusBarUtil?.requestStatusBarLight() },
                     nightCondition = { statusBarUtil?.requestStatusBarDark() }
             )
-            if (offsetAlpha >= 150) {
+            if (offsetAlpha >= START_TRANSITION_ALPHA_OFFSET) {
                 navScrollCallback?.onSwitchToLightToolbar()
             } else {
                 navScrollCallback?.onSwitchToDarkToolbar()
             }
         } else {
-            if (offsetAlpha >= 150) {
+            if (offsetAlpha >= START_TRANSITION_ALPHA_OFFSET) {
                 if (switchThemeOnScroll) {
                     navToolbar.switchToLightToolbar()
                     darkModeCondition(
@@ -72,10 +77,10 @@ class NavRecyclerViewScrollListener(
                 navScrollCallback?.onSwitchToDarkToolbar()
             }
         }
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
+        if (offsetAlpha >= NavToolbar.ALPHA_MAX) {
+            offsetAlpha = NavToolbar.ALPHA_MAX
         }
-        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+        if (offsetAlpha in Float.ZERO..NavToolbar.ALPHA_MAX) {
             navToolbar.setBackgroundAlpha(offsetAlpha)
             navScrollCallback?.onAlphaChanged(offsetAlpha)
         }
