@@ -19,7 +19,7 @@ class GetReminderTickerUseCaseStub @Inject constructor(
         }
 
     private val defaultResponse =
-        "ticker_reminder/default_success_get_reminder_ticker.json"
+        "ticker_reminder/success_get_reminder_ticker.json"
 
     val defaultTickerReminder: GetReminderTickerResponse
         get() = alterResponseOf(defaultResponse) { }

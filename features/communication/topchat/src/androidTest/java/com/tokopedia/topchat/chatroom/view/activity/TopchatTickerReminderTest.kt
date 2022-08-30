@@ -4,18 +4,23 @@ import android.app.Activity
 import android.app.Instrumentation
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
+import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerIsNotAtPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerNotVisible
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerVisibleAtPosition
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderResult.assertReminderTickerVisibleWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot.clickTickerCloseButtonAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot.clickTickerLabel
+import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import org.junit.Test
 
 @UiTest
-class TopchatTickerReminderTest : TopchatRoomTest() {
+class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
 
     @Test
     fun should_show_announcement_ticker_when_gql_response_srw_ticker() {
@@ -129,5 +134,84 @@ class TopchatTickerReminderTest : TopchatRoomTest() {
 
         // Then
         assertReminderTickerNotVisible()
+    }
+
+    @Test
+    fun sent_fraud_text_to_ws_and_got_ticker_from_response_ws() {
+        // Given
+        val testMsg = "Fraud text 123"
+        reminderTickerUseCase.response = reminderTickerUseCase.defaultTickerReminder
+        getChatUseCase.response = getChatUseCase.noMatchTickerReminderReplyId
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultTickerReminderAttachment
+        launchChatRoomActivity()
+
+        // When
+        sendWebSocketTickerMessageWithLocalId("7e5bc157-d61c-4050-b070-c9278d204bc5", testMsg)
+
+        // Then
+        assertViewInRecyclerViewAt(1, R.id.tvMessage, withText(testMsg))
+        assertReminderTickerVisibleAtPosition(0)
+    }
+
+    @Test
+    fun should_not_show_double_ticker_from_response_ws() {
+        // Given
+        val testMsg = "Fraud text 123"
+        reminderTickerUseCase.response = reminderTickerUseCase.defaultTickerReminder
+        getChatUseCase.response = getChatUseCase.noMatchTickerReminderReplyId
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultTickerReminderAttachment
+        launchChatRoomActivity()
+
+        // When
+        // Send first ws message
+        sendWebSocketTickerMessageWithLocalId("localId1", testMsg)
+
+        // Send second ws message
+        sendWebSocketTickerMessageWithLocalId("localId2", testMsg)
+
+        // Then
+        assertReminderTickerVisibleAtPosition(1)
+        assertReminderTickerIsNotAtPosition(0)
+    }
+
+    @Test
+    fun should_not_show_double_ticker_from_response_ws_and_gql() {
+        // Given
+        val testMsg = "Fraud text 123"
+        reminderTickerUseCase.response = reminderTickerUseCase.defaultTickerReminder
+        getChatUseCase.response = getChatUseCase.getTickerReminderWithReplyId(
+            reminderTickerUseCase.defaultTickerReminder.getReminderTicker.replyId
+        )
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultTickerReminderAttachment
+        launchChatRoomActivity()
+
+        // When
+        sendWebSocketTickerMessageWithLocalId("localId1", testMsg)
+
+        // Then
+        assertReminderTickerVisibleAtPosition(3)
+        assertReminderTickerIsNotAtPosition(0)
+    }
+
+    private fun sendWebSocketTickerMessageWithLocalId(localId: String, message: String) {
+        webSocketPayloadGenerator.fakeLocalId = localId
+        changeResponseWebSocket (
+            wsTickerReminderResponse,
+        ) {
+            it.jsonObject?.addProperty(
+                "local_id",
+                localId
+            )
+            it.jsonObject?.get("reminder_ticker")?.asJsonObject?.addProperty(
+                "reply_id",
+                localId
+            )
+        }
+        changeResponseStartTime(
+            wsTickerReminderResponse, FakeTopchatWebSocket.exStartTime
+        )
+        typeMessage(message)
+        clickSendBtn()
+        websocket.simulateResponse(wsTickerReminderResponse)
     }
 }
