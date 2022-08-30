@@ -1,26 +1,33 @@
 package com.tokopedia.loginregister.redefine_register_email.register_email.view.fragment
 
-import android.net.Uri
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
+import com.tokopedia.loginregister.redefine_register_email.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefine_register_email.common.intentGoToInputPhone
+import com.tokopedia.loginregister.redefine_register_email.common.intentGoToLoginWithEmail
+import com.tokopedia.loginregister.redefine_register_email.common.intentGoToVerification
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.register_email.view.viewmodel.RedefineRegisterEmailViewModel
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -37,14 +44,16 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private val binding: FragmentRedefineRegisterEmailBinding? by viewBinding()
 
-    private var source: String = EMPTY_STRING
+    private var paramSource: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
+    private var paramIsRequiresInputPhone: Boolean = false
     private var isExtensionSelected = false
     private var emailExtensionList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, EMPTY_STRING)
+        paramSource = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
+        paramIsRequiresInputPhone = getParamBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE, arguments, savedInstanceState, false)
     }
 
     override fun onCreateView(
@@ -80,10 +89,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                     } else {
                         binding?.fieldEmail?.editText?.setText(String.format(
                             STRING_FORMAT_EMAIL,  binding?.fieldEmail?.editText?.text.toString().replace(
-                            DELIMITER_EMAIL, EMPTY_STRING
+                            DELIMITER_EMAIL, RedefineRegisterEmailConstants.Common.EMPTY_STRING
                             ), extension))
                     }
-                    binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= CHAR_SPACE }.length)
+                    binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= RedefineRegisterEmailConstants.Common.CHAR_SPACE }.length)
                     isExtensionSelected = true
                     showEmailExtension(false)
                 }
@@ -178,7 +187,19 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         }
 
         viewModel.isRegisteredEmail.observe(viewLifecycleOwner) {
-            if (it) showLoginDialog()
+            if (it) goToVerificationEmail()
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding?.apply {
+                btnSubmit.isLoading = it
+                fieldEmail.editText.isEnabled = !it
+                fieldPassword.editText.isEnabled = !it
+                fieldName.editText.isEnabled = !it
+            }
+            binding?.btnSubmit?.isLoading = it
+
+            com.tokopedia.abstraction.common.utils.view.KeyboardHandler.hideSoftKeyboard(activity)
         }
     }
 
@@ -187,7 +208,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             setMessage(getString(stringResource))
             true
         } else {
-            setMessage(SPACE)
+            setMessage(RedefineRegisterEmailConstants.Common.SPACE)
             false
         }
     }
@@ -198,7 +219,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
         offerToLoginDialog.setPrimaryCTAClickListener {
             offerToLoginDialog.dismiss()
-            gotoLoginEmailPage(email)
+            goToLoginEmailPage(email)
         }
 
         offerToLoginDialog.setSecondaryCTAClickListener {
@@ -208,16 +229,42 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         offerToLoginDialog.show()
     }
 
-    private fun gotoLoginEmailPage(email: String) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-        val intent = RouteManager.getIntent(
-            activity,
-            ApplinkConstInternalUserPlatform.LOGIN_EMAIL,
-            Uri.encode(email),
-            source
+        when (requestCode) {
+            RedefineRegisterEmailConstants.Request.VERIFICATION_EMAIL -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    goToInputPhone()
+                }
+            }
+        }
+    }
+
+    private fun goToVerificationEmail() {
+        val intent = intentGoToVerification(
+            email = viewModel.currentEmail,
+            otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
+            source = paramSource,
+            context = requireActivity()
         )
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+        startActivityForResult(intent, RedefineRegisterEmailConstants.Request.VERIFICATION_EMAIL)
+    }
 
+    private fun goToInputPhone() {
+        val intent = intentGoToInputPhone(
+            email = viewModel.currentEmail,
+            password = viewModel.currentPassword,
+            name = viewModel.currentName,
+            source = paramSource,
+            isRequiredInputPhone = paramIsRequiresInputPhone,
+            context = requireActivity()
+        )
+        startActivity(intent)
+    }
+
+    private fun goToLoginEmailPage(email: String) {
+        val intent = intentGoToLoginWithEmail(email, paramSource, requireActivity())
         startActivity(intent)
         activity?.finish()
     }
@@ -231,13 +278,13 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     companion object {
         private const val STRING_FORMAT_EMAIL = "%s@%s"
         private const val DELIMITER_EMAIL = "@"
-
-        private const val EMPTY_STRING = ""
-        private const val CHAR_SPACE = ' '
-        private const val SPACE = " "
         private val SCREEN_NAME = RedefineRegisterEmailFragment::class.java.simpleName
 
         @JvmStatic
-        fun newInstance() = RedefineRegisterEmailFragment()
+        fun newInstance(bundle: Bundle): Fragment {
+            val fragment = RedefineRegisterEmailFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

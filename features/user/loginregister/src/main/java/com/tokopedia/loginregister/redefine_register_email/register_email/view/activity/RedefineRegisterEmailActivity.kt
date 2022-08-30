@@ -16,7 +16,11 @@ class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<Redefin
         supportActionBar?.elevation = 0f
     }
 
-    override fun getNewFragment(): Fragment = RedefineRegisterEmailFragment.newInstance()
+    override fun getNewFragment(): Fragment {
+        val bundle = Bundle()
+        bundle.putAll(intent.extras)
+        return RedefineRegisterEmailFragment.newInstance(bundle)
+    }
 
     override fun getComponent(): RedefineRegisterEmailComponent {
         return DaggerRedefineRegisterEmailComponent.builder()

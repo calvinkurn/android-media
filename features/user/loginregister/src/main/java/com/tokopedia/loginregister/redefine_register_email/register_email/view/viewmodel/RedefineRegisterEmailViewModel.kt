@@ -20,6 +20,14 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     val formState: LiveData<RedefineEmailFormState> get() = _formState
     private val _isRegisteredEmail = SingleLiveEvent<Boolean>()
     val isRegisteredEmail: LiveData<Boolean> get() = _isRegisteredEmail
+    private var _isLoading = SingleLiveEvent<Boolean>()
+    val isLoading : LiveData<Boolean> get() = _isLoading
+    private var _currentEmail = ""
+    val currentEmail get() = _currentEmail
+    private var _currentPassword = ""
+    val currentPassword get() = _currentPassword
+    private var _currentName = ""
+    val currentName get() = _currentName
 
     fun validateEmail(email: String, setValue: Boolean = true) {
         state.emailError = when {
@@ -83,8 +91,17 @@ class RedefineRegisterEmailViewModel @Inject constructor(
 
     fun submitForm(email: String, password: String, name: String) {
         if (isAllDataValid()) {
-            _isRegisteredEmail.value = true
-            generateKey()
+            if (_isLoading.value == false || _isLoading.value == null) {
+                _isLoading.value = true
+
+                //save value
+                _currentEmail = email
+                _currentPassword = password
+                _currentName = name
+
+                _isRegisteredEmail.value = true
+                generateKey()
+            }
         } else {
             validateEmail(email, false)
             validatePassword(password, false)
@@ -96,8 +113,11 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     private fun generateKey() {
         launchCatchError(coroutineContext, {
             val response = generateKeyUseCase(Unit)
+
+            _isLoading.value = false
         }, {
 
+            _isLoading.value = false
         })
     }
 

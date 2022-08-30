@@ -56,10 +56,11 @@ class RegisterInitialRouterHelper @Inject constructor() {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
-    fun goToRedefineRegisterEmailPageWithParams(fragment: Fragment, source: String){
+    fun goToRedefineRegisterEmailPageWithParams(fragment: Fragment, source: String, isRequiredInputPhone: Boolean){
         val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_EMAIL)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE, isRequiredInputPhone)
+        fragment.startActivity(intent)
     }
 
     fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){

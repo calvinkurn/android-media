@@ -1,15 +1,14 @@
 package com.tokopedia.loginregister.redefine_register_email.input_phone.view.activity
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.ActivityRedefineRegisterInputPhoneBinding
+import com.tokopedia.loginregister.redefine_register_email.common.intentGoToHome
 import com.tokopedia.loginregister.redefine_register_email.di.DaggerRedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.input_phone.view.fragment.RedefineRegisterInputPhoneFragment
@@ -19,6 +18,7 @@ class RedefineRegisterInputPhoneActivity : BaseSimpleActivity(),
     HasComponent<RedefineRegisterEmailComponent> {
 
     private val binding : ActivityRedefineRegisterInputPhoneBinding? by viewBinding()
+    private var paramIsRequiresInputPhone: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class RedefineRegisterInputPhoneActivity : BaseSimpleActivity(),
     private fun setUpToolBar() {
         binding?.unifyToolbar?.apply {
             isShowShadow = false
-            if (isUsingMandatoryRollence()) {
+            if (paramIsRequiresInputPhone) {
                 setNavigationOnClickListener {
                     onBackPressed()
                 }
@@ -39,29 +39,35 @@ class RedefineRegisterInputPhoneActivity : BaseSimpleActivity(),
                 actionText = getString(R.string.register_email_input_phone_skip)
 
                 actionTextView?.setOnClickListener {
-                    gotoHome()
+                    goToHome()
                 }
             }
         }
     }
 
-    private fun gotoHome() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+    private fun goToHome() {
+        val intent = intentGoToHome(this)
         startActivity(intent)
     }
 
     override fun onBackPressed() {
-        if (isUsingMandatoryRollence()) {
+        if (paramIsRequiresInputPhone) {
             super.onBackPressed()
         } else {
             //show toaster
         }
     }
 
-    private fun isUsingMandatoryRollence(): Boolean = false
+    override fun getNewFragment(): Fragment{
+        paramIsRequiresInputPhone = intent.getBooleanExtra(
+            ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE,
+            false
+        )
 
-    override fun getNewFragment(): Fragment = RedefineRegisterInputPhoneFragment.newInstance()
+        val bundle = Bundle()
+        bundle.putAll(intent.extras)
+        return RedefineRegisterInputPhoneFragment.newInstance(bundle)
+    }
 
     override fun getComponent(): RedefineRegisterEmailComponent {
         return DaggerRedefineRegisterEmailComponent.builder()
