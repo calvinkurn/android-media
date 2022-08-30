@@ -94,23 +94,22 @@ object FeedEnhancedTracking {
         val category: String = "",
         val promoId: String = "",
         val promoCode: String = ""
-    )
+    ) {
+        companion object {
+            private const val CONTENT_FEED = "content feed"
+            private const val TOPADS = "topads"
+            private const val PRODUCT = "product"
+            private const val SHOP = "shop"
+            private const val TOKOPEDIA_CONTENT = "tokopedia_content"
+            const val TRACKING_NONE = "none"
+            const val TRACKING_EMPTY = "-"
+            fun createContentNameTopadsProduct(): String {
+                return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT)
+            }
 
-
-    object Tracking{
-        private const val CONTENT_FEED = "content feed"
-        private const val TOPADS = "topads"
-        private const val PRODUCT = "product"
-        private const val SHOP = "shop"
-        private const val TOKOPEDIA_CONTENT = "tokopedia_content"
-        const val TRACKING_NONE = "none"
-        const val TRACKING_EMPTY = "-"
-        fun createContentNameTopadsProduct(): String {
-            return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, PRODUCT)
-        }
-
-        fun createContentNameTopadsShop(): String {
-            return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP)
+            fun createContentNameTopadsShop(): String {
+                return String.format("/%s - %s - %s", CONTENT_FEED, TOPADS, SHOP)
+            }
         }
     }
 }

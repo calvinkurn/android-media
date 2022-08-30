@@ -922,21 +922,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         listTopAds.add(
             FeedEnhancedTracking.Promotion(
-                product.adId,
-                FeedEnhancedTracking.Promotion
+                id = product.adId,
+                name = FeedEnhancedTracking.Promotion
                     .createContentNameTopadsProduct(),
-                if (TextUtils.isEmpty(product.adRefKey))
+                creative = if (TextUtils.isEmpty(product.adRefKey))
                     FeedEnhancedTracking.Promotion.TRACKING_NONE
                 else
                     product.adRefKey,
-                position,
-                product.category.toString(),
-                product.id,
-                FeedEnhancedTracking.Promotion.TRACKING_EMPTY
+                position = position,
+                creativeUrl = product.category.toString(),
+                promoId = product.id,
+                promoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
         analytics.eventTrackingEnhancedEcommerce(
-            FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt)
+            FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt) as HashMap<String, Any>
         )
     }
 
@@ -952,19 +952,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         listTopAds.add(
             FeedEnhancedTracking.Promotion(
-                shop.adId,
-                FeedEnhancedTracking.Promotion
+                id = shop.adId,
+                name = FeedEnhancedTracking.Promotion
                     .createContentNameTopadsShop(),
-                shop.adRefKey,
-                position,
-                FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
-                shop.adId,
-                FeedEnhancedTracking.Promotion.TRACKING_EMPTY
+                creative = shop.adRefKey,
+                position = position,
+                category = FeedEnhancedTracking.Promotion.TRACKING_EMPTY,
+                promoId = shop.adId,
+                promoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
 
         analytics.eventTrackingEnhancedEcommerce(
-            FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt)
+            FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt) as HashMap<String, Any>
         )
     }
 

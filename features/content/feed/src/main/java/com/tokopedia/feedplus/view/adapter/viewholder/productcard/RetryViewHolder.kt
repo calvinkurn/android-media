@@ -5,6 +5,7 @@ import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.RetryModel
 
 /**
  * Created by stevenfredian on 5/31/17.

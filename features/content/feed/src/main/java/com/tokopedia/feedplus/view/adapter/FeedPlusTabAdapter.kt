@@ -15,10 +15,10 @@ import com.tokopedia.videoTabComponent.view.VideoTabFragment
 /**
  * @author by astidhiyaa on 30/08/22
  */
-class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>, bundle: Bundle) :
+class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>, bundle: Bundle?) :
     FragmentStatePagerAdapter(fm) {
     private var itemList: List<FeedTabs.FeedData>
-    private val bundle: Bundle
+    private val bundle: Bundle?
     private val registeredFragment = SparseArrayCompat<Fragment>()
     override fun getItem(position: Int): Fragment {
         val (_, key, _, _, type) = itemList[position]

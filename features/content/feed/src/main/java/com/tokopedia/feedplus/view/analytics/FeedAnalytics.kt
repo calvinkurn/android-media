@@ -20,26 +20,24 @@ import java.util.HashMap
 /**
  * @author by astidhiyaa on 30/08/22
  */
-class FeedAnalytics @Inject constructor(private val userSession: UserSessionInterface) {
+class FeedAnalytics @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val trackingQueue: TrackingQueue
+) {
 
-    @Inject
-    var trackingQueue: TrackingQueue? = null
-
-    interface Element {
-        companion object {
-            const val AVATAR = "avatar"
-            const val IMAGE = "image"
-            const val TAG = "tag"
-            const val SHARE = "share"
-            const val FOLLOW = "follow"
-            const val UNFOLLOW = "unfollow"
-            const val OPTION = "option "
-            const val VIDEO = "video"
-            const val PRODUCT = "product"
-            const val LIKE = "like"
-            const val UNLIKE = "unlike"
-            const val COMMENT = "comment"
-        }
+    object Element {
+        const val AVATAR = "avatar"
+        const val IMAGE = "image"
+        const val TAG = "tag"
+        const val SHARE = "share"
+        const val FOLLOW = "follow"
+        const val UNFOLLOW = "unfollow"
+        const val OPTION = "option "
+        const val VIDEO = "video"
+        const val PRODUCT = "product"
+        const val LIKE = "like"
+        const val UNLIKE = "unlike"
+        const val COMMENT = "comment"
     }
 
     fun trackScreen(screenName: String) {
@@ -50,13 +48,13 @@ class FeedAnalytics @Inject constructor(private val userSession: UserSessionInte
      * Send all pending analytics in trackingQueue
      */
     fun sendPendingAnalytics() {
-        trackingQueue?.sendAll()
+        trackingQueue.sendAll()
     }
 
     private fun trackEnhancedEcommerceEvent(
         eventData: HashMap<String, Any>?
     ) {
-        trackingQueue?.putEETracking(eventData)
+        trackingQueue.putEETracking(eventData)
     }
 
     fun eventFeedViewShop(screenName: String, shopId: String, label: String) {
