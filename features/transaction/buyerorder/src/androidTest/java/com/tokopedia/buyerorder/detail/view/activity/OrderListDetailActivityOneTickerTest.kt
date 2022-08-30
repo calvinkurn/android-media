@@ -13,6 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -38,8 +39,8 @@ class OrderListDetailActivityOneTickerTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
-    val activityRule: IntentsTestRule<OrderListDetailActivity> =
-        object : IntentsTestRule<OrderListDetailActivity>(OrderListDetailActivity::class.java) {
+    val activityRule: IntentsTestRule<RevampOrderListDetailActivity> =
+        object : IntentsTestRule<RevampOrderListDetailActivity>(RevampOrderListDetailActivity::class.java) {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
                 gtmLogDBSource.deleteAll().subscribe()
@@ -69,7 +70,7 @@ class OrderListDetailActivityOneTickerTest {
             override fun getActivityIntent(): Intent {
                 return Intent(
                     context,
-                    OrderListDetailActivity::class.java
+                    RevampOrderListDetailActivity::class.java
                 ).apply {
                     putExtra("order_id", "72b9fd8f-2e86-4484-8577-16cf1d97e16c")
                     data = Uri.parse("tokopedia://order/72b9fd8f-2e86-4484-8577-16cf1d97e16c?upstream-ORDERINTERNAL&vertical_category=foodvchr")
