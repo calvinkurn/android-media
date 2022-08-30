@@ -33,15 +33,14 @@ class CampaignDetailViewModel @Inject constructor(
     companion object {
         private const val TWENTY_FOUR_HOURS = 24
         private const val SIXTY_MINUTES = 60
-        private const val TAB_NAME = "upcoming"
     }
 
-    fun getCampaignDetail(campaignId: Long) {
+    fun getCampaignDetail(campaignId: Long, tabName: String) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = getFlashSaleDetailForSellerUseCase.execute(
-                    tabName = TAB_NAME,
+                    tabName = tabName,
                     campaignId = campaignId
                 )
                 _campaign.postValue(Success(result))

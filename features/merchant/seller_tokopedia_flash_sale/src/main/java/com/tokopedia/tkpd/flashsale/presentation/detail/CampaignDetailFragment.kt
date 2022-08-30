@@ -107,7 +107,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun loadData() {
         showLoading()
-        viewModel.getCampaignDetail(flashSaleId)
+        viewModel.getCampaignDetail(flashSaleId, tabName)
     }
 
     private fun setupView(flashSale: FlashSale) {
