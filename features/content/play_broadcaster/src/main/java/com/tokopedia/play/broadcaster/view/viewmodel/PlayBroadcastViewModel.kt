@@ -11,6 +11,7 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
@@ -231,8 +232,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
-    val contentAccountListState: Flow<List<ContentAccountUiModel>>
-        get() = _accountListState
 
     val contentAccountList: List<ContentAccountUiModel>
         get() = _accountListState.value
@@ -430,7 +429,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val isParamNotEmpty = contentAccount != ContentAccountUiModel.Empty
         viewModelScope.launchCatchError(block = {
 
-            val configUiModel = repo.getChannelConfiguration(authorId, authorType)
+            val configUiModel = if (isParamNotEmpty) repo.getChannelConfiguration(contentAccount.id, contentAccount.type)
+            else repo.getChannelConfiguration(authorId, authorType)
             setChannelId(configUiModel.channelId)
 
             _configInfo.value = configUiModel
@@ -461,7 +461,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
 
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-                if (contentAccount != ContentAccountUiModel.Empty) _selectedAccount.value = contentAccount
+                if (isParamNotEmpty) {
+                    _selectedAccount.value = contentAccount
+                    sharedPref.setLastSelectedAccount(contentAccount.type)
+                }
 
                 setProductConfig(configUiModel.productTagConfig)
                 setCoverConfig(configUiModel.coverConfig)
@@ -1510,7 +1513,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
 
-            val feedAccountList = response.whitelist.authors.map {
+            val accountList = response.whitelist.authors.map {
                 ContentAccountUiModel(
                     id = it.id,
                     name = it.name,
@@ -1522,16 +1525,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
 
-            _accountListState.value = feedAccountList
+            _accountListState.value = accountList
 
-            //TODO can't force to select first account need to check it first (eligible/last)
-            if(feedAccountList.isNotEmpty()) {
-                _selectedAccount.value = feedAccountList.first()
+            //TODO need to check about the account eligible
+            if (accountList.isNotEmpty()) {
+                val selectedAccount = getAccountFromCachedOrDefault(accountList)
+                _selectedAccount.value = selectedAccount
                 getConfiguration()
             }
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
         })
+    }
+
+    private fun getAccountFromCachedOrDefault(
+        accountList: List<ContentAccountUiModel>
+    ): ContentAccountUiModel {
+        val currentAccountType = sharedPref.getLastSelectedAccount()
+        return accountList.first {
+            it.type == if (currentAccountType.isNotEmpty()) currentAccountType else TYPE_SHOP
+        }
     }
 
     private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
