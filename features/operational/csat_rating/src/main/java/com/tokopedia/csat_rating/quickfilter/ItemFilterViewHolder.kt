@@ -6,7 +6,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.csat_rating.R
-import com.tokopedia.unifyprinciples.R as RUnify
 
 
 open class ItemFilterViewHolder(itemView: View, listener: QuickSingleFilterListener?) : BaseItemFilterViewHolder(itemView, listener!!) {
@@ -33,13 +32,13 @@ open class ItemFilterViewHolder(itemView: View, listener: QuickSingleFilterListe
         val drawableInside = layoutInside?.background?.current?.mutate() as GradientDrawable
         val drawableBorder = layoutBorder?.background?.current?.mutate() as GradientDrawable
         if (selected) {
-            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, RUnify.color.Unify_G500)) }
-            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, RUnify.color.Unify_G100)) }
-            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, RUnify.color.Unify_G500)) }
+            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)) }
+            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, R.color.csat_dms_reason_bg)) }
+            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)) }
         } else {
-            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, RUnify.color.Unify_N100)) }
-            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, RUnify.color.Unify_N0)) }
-            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, RUnify.color.Unify_N700_68)) }
+            layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)) }
+            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+            filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)) }
         }
     }
 
