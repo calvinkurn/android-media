@@ -2505,22 +2505,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return reloadedUniqueIds;
     }
 
-    private int getShipmentCartItemPositionByUniqueId(List<ShipmentCartItemModel> shipmentCartItemModels, String uniqueId) {
-        for (int i = 0; i < shipmentCartItemModels.size(); i++) {
-            if (Objects.equals(shipmentCartItemModels.get(i).getCartString(), uniqueId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private void doUnapplyBo(String uniqueId, String promoCode) {
-        final int itemPosition =
-                getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, uniqueId);
-        if (itemPosition != -1) {
-            getView().resetCourier(itemPosition);
+        final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId);
+        if (itemAdapterPosition != -1) {
+            getView().resetCourier(itemAdapterPosition);
             clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
-            getView().onNeedUpdateViewItem(itemPosition);
+            getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
     }
 
@@ -2534,13 +2524,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
-        final int itemPosition =
-                getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
-        if (itemPosition != -1) {
-            final ShipmentCartItemModel shipmentCartItemModel = shipmentCartItemModelList.get(itemPosition);
+        final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(voucherOrdersItemUiModel.getUniqueId());
+        final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
+        if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null ||
                     !shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode().equals(voucherOrdersItemUiModel.getCode())) {
-                processBoPromoCourierRecommendation(itemPosition, voucherOrdersItemUiModel, shipmentCartItemModel);
+                processBoPromoCourierRecommendation(itemAdapterPosition, voucherOrdersItemUiModel, shipmentCartItemModel);
             }
         }
     }
@@ -2592,7 +2581,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 new GetBoPromoCourierRecommendationSubscriber(
                                         getView(), this, cartString, promoCode, shippingId, spId,
                                         itemPosition, shippingCourierConverter, shipmentCartItemModel,
-                                        true, isTradeInDropOff, false
+                                        isTradeInDropOff, false
                                 )));
     }
 

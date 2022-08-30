@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -3532,6 +3533,29 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
 
             rvShipment.smoothScrollToPosition(firstFoundPosition);
+        }
+    }
+
+    @Override
+    public int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId) {
+        for (int i = 0; i < shipmentAdapter.getShipmentDataList().size(); i++) {
+            final Object adapterItem = shipmentAdapter.getShipmentDataList().get(i);
+            if (adapterItem instanceof ShipmentCartItemModel
+                    && Objects.equals(((ShipmentCartItemModel) adapterItem).getCartString(), uniqueId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Nullable
+    @Override
+    public ShipmentCartItemModel getShipmentCartItemModel(int adapterPosition) {
+        final Object adapterItem = shipmentAdapter.getShipmentDataList().get(adapterPosition);
+        if (adapterItem instanceof ShipmentCartItemModel) {
+            return (ShipmentCartItemModel) adapterItem;
+        } else {
+            return null;
         }
     }
 }

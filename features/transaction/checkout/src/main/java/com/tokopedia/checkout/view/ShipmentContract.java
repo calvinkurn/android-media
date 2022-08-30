@@ -2,6 +2,8 @@ package com.tokopedia.checkout.view;
 
 import android.app.Activity;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
@@ -13,7 +15,6 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
@@ -176,6 +177,10 @@ public interface ShipmentContract {
         void onNeedUpdateViewItem(int position);
 
         void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds);
+
+        int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId);
+
+        @Nullable ShipmentCartItemModel getShipmentCartItemModel(int position);
     }
 
     interface AnalyticsActionListener {
