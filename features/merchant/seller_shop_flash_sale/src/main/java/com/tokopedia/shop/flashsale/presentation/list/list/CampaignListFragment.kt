@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
@@ -43,6 +46,7 @@ import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanc
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
@@ -59,6 +63,8 @@ import com.tokopedia.shop.flashsale.presentation.list.list.adapter.CampaignAdapt
 import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.shop.flashsale.presentation.list.list.dialog.ShopDecorationDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringActivity
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -77,7 +83,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val MAX_DRAFT_COUNT = 3
         private const val TAB_POSITION_FIRST = 0
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
-        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS : Long = 3_000
+        private const val REFRESH_CAMPAIGN_DELAY_DURATION_IN_MILLIS: Long = 3_000
         private const val SHOP_DECORATION_ARTICLE_URL = "https://seller.tokopedia.com/dekorasi-toko"
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
@@ -166,6 +172,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setFragmentToUnifyBgColor()
+        observeVpsPackages()
         observeCampaigns()
         observeCampaignPrerequisiteData()
         observeShareComponentMetadata()
@@ -177,6 +184,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     override fun onResume() {
         super.onResume()
         viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
+        viewModel.getVpsPackages()
     }
 
 
@@ -263,11 +271,29 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 is Success -> {
                     binding?.loader?.gone()
                     viewModel.setCampaignDrafts(result.data.drafts)
-                    handleCampaignPrerequisiteData(result.data.drafts.size, result.data.remainingQuota)
+                    handleCampaignPrerequisiteData(
+                        result.data.drafts.size,
+                        result.data.remainingQuota
+                    )
                 }
                 is Fail -> {
                     binding?.loader?.gone()
                     binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeVpsPackages() {
+        viewModel.vpsPackages.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    displayVpsPackages(result.data)
+                }
+                is Fail -> {
+                    binding?.run {
+                        cardQuotaMonitoring.gone()
+                    }
                 }
             }
         }
@@ -321,6 +347,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             }
         }
     }
+
     private fun observeCampaignCreationEligibility() {
         viewModel.creationEligibility.observe(viewLifecycleOwner) { result ->
             binding?.btnCreateCampaignEmptyState.stopLoading()
@@ -377,7 +404,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         this.onScrollUp = onScrollUp
     }
 
-    fun setOnNavigateToActiveCampaignListener(onNavigateToActiveCampaignTab : () -> Unit){
+    fun setOnNavigateToActiveCampaignListener(onNavigateToActiveCampaignTab: () -> Unit) {
         this.onNavigateToActiveCampaignTab = onNavigateToActiveCampaignTab
     }
 
@@ -468,6 +495,64 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.cardView.slideUp()
     }
 
+    private fun displayVpsPackages(packages: List<VpsPackage>) {
+        val packageAvailability = viewModel.getPackageAvailability(packages)
+        val totalQuota = packageAvailability.totalQuota
+        val totalRemainingQuota = packageAvailability.remainingQuota
+        val totalQuotaSource = packages.count()
+        val isNearExpirePackageAvailable = packageAvailability.isNearExpirePackageAvailable
+        val packageNearExpireCount = packageAvailability.packageNearExpire
+
+        binding?.run {
+            if (isNearExpirePackageAvailable) {
+                groupAvailableSourceQuota.gone()
+                tgExpireValue.visible()
+            } else {
+                groupAvailableSourceQuota.visible()
+                tgExpireValue.gone()
+            }
+            tgQuotaValue.run {
+                text = if (totalRemainingQuota.isMoreThanZero()) {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.sfs_quota_monitoring_value_placeholder_normal_state,
+                            totalRemainingQuota,
+                            totalQuota
+                        )
+                    )
+                } else {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.sfs_quota_monitoring_value_placeholder_empty_state,
+                            totalRemainingQuota,
+                            totalQuota
+                        )
+                    )
+                }
+            }
+            tgExpireValue.run {
+                text = MethodChecker.fromHtml(
+                    getString(
+                        R.string.ssfs_expire_soon_value_placeholder,
+                        packageNearExpireCount
+                    )
+                )
+            }
+            tgQuotaSourceValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.sfs_quota_source_monitoring_value_placeholder,
+                    totalQuotaSource
+                )
+            )
+            cardQuotaMonitoring.apply {
+                visible()
+                setOnClickListener {
+                    routeToYourShopFlashSaleQuotaPage()
+                }
+            }
+        }
+    }
+
     private fun displayCampaigns(data: CampaignMeta) {
         if (data.campaigns.size.isMoreThanZero()) {
             binding?.groupNoSearchResult?.gone()
@@ -494,13 +579,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             ZERO
         }
 
-        val quotaWording = String.format(
-            getString(R.string.sfs_placeholder_remaining_quota),
-            quotaCounter
-        )
-        binding?.tpgRemainingQuota?.text = quotaWording
-        binding?.tpgRemainingQuota?.visible()
-
         if (tabPosition == TAB_POSITION_FIRST) {
             handleFirstTabEmptyState(hasCampaign, hasDraft, quotaCounter)
         } else {
@@ -509,7 +587,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     }
 
-    private fun handleFirstTabEmptyState(hasCampaign : Boolean, hasDraft : Boolean, remainingQuota: Int) {
+    private fun handleFirstTabEmptyState(
+        hasCampaign: Boolean,
+        hasDraft: Boolean,
+        remainingQuota: Int
+    ) {
         binding?.btnNavigateToFirstActiveCampaign?.gone()
 
         val quotaCounter = if (remainingQuota.isMoreThanZero()) {
@@ -538,7 +620,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.isVisible = !hasCampaign
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(getString(R.string.sfs_no_active_campaign_title))
-        binding?.emptyState?.setDescription( getString(R.string.sfs_no_active_campaign_description))
+        binding?.emptyState?.setDescription(getString(R.string.sfs_no_active_campaign_description))
 
         binding?.groupNoSearchResult?.gone()
     }
@@ -559,7 +641,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.emptyState?.isVisible = !hasCampaign
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(getString(R.string.sfs_no_campaign_history_title))
-        binding?.emptyState?.setDescription( getString(R.string.sfs_no_campaign_history_description))
+        binding?.emptyState?.setDescription(getString(R.string.sfs_no_campaign_history_description))
 
         binding?.groupNoSearchResult?.gone()
     }
@@ -602,7 +684,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         startActivityForResult(intent, CampaignDetailActivity.REQUEST_CODE_CAMPAIGN_DETAIL)
     }
 
-    private fun displayShareBottomSheet(thumbnailImageUrl : String, metadata: ShareComponentMetadata, ) {
+    private fun displayShareBottomSheet(
+        thumbnailImageUrl: String,
+        metadata: ShareComponentMetadata,
+    ) {
         val param = ShareComponentInstanceBuilder.Param(
             metadata.banner.shop.name,
             metadata.banner.shop.logo,
@@ -710,7 +795,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun showIneligibleAccess(context: Context){
+    private fun showIneligibleAccess(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(R.string.sfs_ineligible_access_title))
         dialog.setDescription(context.getString(R.string.sfs_ineligible_access_description))
@@ -726,7 +811,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         dialog.show()
     }
 
-    private fun showDraftListBottomSheet(drafts : List<CampaignUiModel>) {
+    private fun showDraftListBottomSheet(drafts: List<CampaignUiModel>) {
         DraftListBottomSheet.showUsingCampaignUiModel(
             childFragmentManager,
             drafts,
@@ -736,7 +821,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun showCancelCampaignSuccess(campaign: CampaignUiModel) {
-        val toasterMessage = String.format(findCancelCampaignSuccessWording(campaign.status), campaign.campaignName)
+        val toasterMessage =
+            String.format(findCancelCampaignSuccessWording(campaign.status), campaign.campaignName)
         showCancellationMessageThenUpdateData(toasterMessage)
     }
 
@@ -761,7 +847,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         startActivity(intent)
     }
 
-    fun setOnCancelCampaignSuccess(onCancelCampaignSuccess : () -> Unit) {
+    fun setOnCancelCampaignSuccess(onCancelCampaignSuccess: () -> Unit) {
         this.onCancelCampaignSuccess = onCancelCampaignSuccess
     }
 
@@ -780,16 +866,19 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         if (requestCode == REQUEST_CODE_CREATE_CAMPAIGN_INFO && resultCode == Activity.RESULT_OK) {
             showSaveDraftSuccessMessage()
-        } else if(requestCode == CampaignDetailActivity.REQUEST_CODE_CAMPAIGN_DETAIL
+        } else if (requestCode == CampaignDetailActivity.REQUEST_CODE_CAMPAIGN_DETAIL
             && resultCode == Activity.RESULT_OK
-            && data != null) {
+            && data != null
+        ) {
             handleCancellationResultFromCampaignDetail(data)
         }
     }
 
     private fun handleCancellationResultFromCampaignDetail(data: Intent) {
-        if(data.hasExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE)) {
-            val toasterMessage = data.getStringExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE) ?: return
+        if (data.hasExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE)) {
+            val toasterMessage =
+                data.getStringExtra(CampaignDetailActivity.BUNDLE_KEY_CAMPAIGN_CANCELLATION_MESSAGE)
+                    ?: return
             showCancellationMessageThenUpdateData(toasterMessage)
         }
     }
@@ -859,4 +948,9 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(activity ?: return, route)
     }
+
+    private fun routeToYourShopFlashSaleQuotaPage() {
+        QuotaMonitoringActivity.start(activity ?: return)
+    }
 }
+
