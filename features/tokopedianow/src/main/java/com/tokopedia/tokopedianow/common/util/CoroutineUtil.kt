@@ -9,7 +9,7 @@ object CoroutineUtil {
 
     fun CoroutineScope.launchWithDelay(
         block: () -> Unit,
-        onError: (Throwable) -> Unit,
+        onError: (Throwable) -> Unit = {},
         delay: Long
     ): Job {
         return launchCatchError(block = {

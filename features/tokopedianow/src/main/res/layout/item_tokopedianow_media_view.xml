@@ -67,6 +67,8 @@
         app:layout_constraintStart_toStartOf="@id/video_duration_bg"
         app:layout_constraintTop_toTopOf="@id/video_duration_bg"
         app:typographyType="display_3"
+        android:visibility="gone"
+        tools:visibility="visible"
         tools:text="01:30" />
 
     <com.tokopedia.unifycomponents.ImageUnify

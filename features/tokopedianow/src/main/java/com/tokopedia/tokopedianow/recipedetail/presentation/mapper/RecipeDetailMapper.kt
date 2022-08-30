@@ -1,12 +1,31 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
+import com.tokopedia.tokopedianow.common.util.NumberFormatter.formatFloatToString
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
+import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionTabUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.OutOfCoverageUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetailLoadingUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitleUiModel.IngredientSectionTitle
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitleUiModel.InstructionSectionTitle
 
 object RecipeDetailMapper {
+
+    private const val PRODUCT_DEFAULT_QTY = 0
+    private const val MEDIA_TYPE_IMAGE = "Image"
 
     fun MutableList<Visitable<*>>.updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         val miniCartItems = miniCart.miniCartItems
@@ -33,5 +52,122 @@ object RecipeDetailMapper {
             recipeTab = recipeTab.copy(ingredient = ingredientTab)
             set(itemIndex, recipeTab)
         }
+    }
+
+    fun MutableList<Visitable<*>>.updateDeletedProductQuantity(miniCart: MiniCartSimplifiedData) {
+        val miniCartProductIds = miniCart.miniCartItems
+            .filter { it.value is MiniCartItem.MiniCartItemProduct }
+            .map {
+                val cartItem = it.value as MiniCartItem.MiniCartItemProduct
+                cartItem.productId
+            }
+
+        find { it is RecipeTabUiModel }?.let { item ->
+            var recipeTab = item as RecipeTabUiModel
+            var ingredientTab = recipeTab.ingredient
+
+            val itemIndex = indexOf(recipeTab)
+            val itemList = ingredientTab.items.toMutableList()
+            val productList = itemList.filterIsInstance<RecipeProductUiModel>()
+
+            productList.forEach {
+                if(it.id !in miniCartProductIds) {
+                    val product = it.copy(quantity = PRODUCT_DEFAULT_QTY)
+                    val index = itemList.indexOf(it)
+                    itemList[index] = product
+                }
+            }
+
+            ingredientTab = ingredientTab.copy(items = itemList)
+            recipeTab = recipeTab.copy(ingredient = ingredientTab)
+            set(itemIndex, recipeTab)
+        }
+    }
+
+    fun MutableList<Visitable<*>>.removeLoadingItem() {
+        removeFirst { it is RecipeDetailLoadingUiModel }
+    }
+
+    fun mapToMediaSlider(response: RecipeResponse): MediaSliderUiModel {
+        val mediaItems = response.medias.map {
+            MediaItemUiModel(
+                url = it.url,
+                thumbnailUrl = it.url,
+                type = if(it.type == MEDIA_TYPE_IMAGE) {
+                    MediaType.IMAGE
+                } else {
+                    MediaType.VIDEO
+                }
+            )
+        }
+        return MediaSliderUiModel(mediaItems)
+    }
+
+    fun mapToRecipeInfo(response: RecipeResponse): RecipeInfoUiModel {
+        val thumbnail = response.images.first().urlThumbnail
+        val imageUrls = response.images.map { it.urlThumbnail }
+        val recipeLabels = response.tags.map {
+            it.name
+        }
+
+        return RecipeInfoUiModel(
+            title = response.title,
+            portion = response.portion,
+            duration = response.duration,
+            labels = recipeLabels,
+            thumbnail = thumbnail,
+            imageUrls = imageUrls
+        )
+    }
+
+    fun mapToRecipeTab(
+        response: RecipeResponse,
+        addressData: TokoNowLocalAddress
+    ): RecipeTabUiModel {
+        val isOutOfCoverage = addressData.isOutOfCoverage()
+
+        val ingredients = response.ingredients.map {
+            IngredientUiModel(it.name, formatFloatToString(it.quantity), it.unit)
+        }
+
+        val instruction = InstructionUiModel(response.instruction)
+
+        val products = response.products.map {
+            val detail = it.detail
+
+            RecipeProductUiModel(
+                id = it.id,
+                shopId = detail.shopID,
+                name = detail.name,
+                stock = detail.stock,
+                minOrder = detail.minOrder,
+                maxOrder = detail.maxOrder,
+                priceFmt = detail.fmtPrice,
+                weight = "500 g", // to do: waiting BE to provide weight response
+                imageUrl = detail.imageUrl,
+                slashedPrice = detail.slashedPrice,
+                discountPercentage = formatFloatToString(detail.discountPercentage)
+            )
+        }
+
+        val ingredientTabItems = mutableListOf<Visitable<*>>().apply {
+            if(isOutOfCoverage) {
+                add(OutOfCoverageUiModel)
+            } else {
+                addAll(products)
+            }
+        }
+
+        val instructionTabItems = mutableListOf<Visitable<*>>().apply {
+            add(IngredientSectionTitle)
+            addAll(ingredients)
+            add(InstructionSectionTitle)
+            add(instruction)
+        }
+
+        return RecipeTabUiModel(
+            IngredientTabUiModel(ingredientTabItems),
+            InstructionTabUiModel(instructionTabItems)
+        )
     }
 }

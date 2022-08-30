@@ -17,12 +17,6 @@ class RecipeBookmarkModule {
 
     @RecipeBookmarkScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @RecipeBookmarkScope
-    @Provides
     fun provideLocalizingAddressData(@ApplicationContext context: Context): LocalCacheModel {
         return ChooseAddressUtils.getLocalizingAddressData(context)
     }

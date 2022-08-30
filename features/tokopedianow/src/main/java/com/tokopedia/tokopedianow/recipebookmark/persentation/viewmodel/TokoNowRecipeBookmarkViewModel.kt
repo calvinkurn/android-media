@@ -22,15 +22,12 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiMo
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val chooseAddressData: LocalCacheModel,
-    private val userSessionInterface: UserSessionInterface,
     private val getRecipeBookmarksUseCase: GetRecipeBookmarksUseCase,
     private val removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase,
     private val addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase,
@@ -47,8 +44,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val _toaster: MutableStateFlow<UiState<ToasterUiModel>?> = MutableStateFlow(null)
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    private val userId: String
-        get() = userSessionInterface.userId
     private val warehouseId: String
         get() = chooseAddressData.warehouse_id
 
@@ -61,13 +56,12 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     val isOnScrollNotNeeded: StateFlow<Boolean>
         get() = _isOnScrollNotNeeded
 
-    private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, Boolean> {
+    private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, Boolean> {
         val response = getRecipeBookmarksUseCase.execute(
-            userId = userId,
             warehouseId = warehouseId,
             page = page,
             limit = DEFAULT_PER_PAGE
-        ).data.tokonowGetRecipeBookmarks
+        ).tokonowGetRecipeBookmarks
 
         return Triple(
             response.data.recipes.mapResponseToUiModelList(),
@@ -219,7 +213,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see noNeedLoadMore - if true no need to load widgets more
      * @see loadRecipeBookmarks - layout will be updated with latest layout or show global error
      */
-    private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
+    private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
 
         if (header.success) {
@@ -247,7 +241,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see noNeedLoadMore - if true no need to load widgets more
      * @see moreRecipeBookmarks - layout will be updated with latest layout or just hide load more loading
      */
-    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
+    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
         layout.removeRecipeProgressBar()
 
@@ -335,7 +329,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
             )
 
             val response = removeRecipeBookmarkUseCase.execute(
-                userId = userId,
                 recipeId = recipeId
             )
 
@@ -374,7 +367,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
             )
 
             val response = addRecipeBookmarkUseCase.execute(
-                userId = userId,
                 recipeId = recipeId
             )
 

@@ -48,4 +48,12 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowRecipeBookmarkActivity
     @JvmField
     val RECIPE_BOOKMARK = "$INTERNAL_TOKOPEDIA_NOW/recipe-bookmark"
+
+    //TokoNowRecipeHomeActivity
+    @JvmField
+    val RECIPE_HOME = "$INTERNAL_TOKOPEDIA_NOW/recipe-home"
+
+    //TokoNowRecipeSearchActivity
+    @JvmField
+    val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe-search"
 }

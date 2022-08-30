@@ -4,7 +4,6 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 internal object GetRecipeBookmarksQuery: GqlQueryInterface {
 
-    const val PARAM_USER_ID = "userID"
     const val PARAM_WAREHOUSE_ID = "warehouseID"
     const val PARAM_PAGE = "page"
     const val PARAM_PER_PAGE = "perPage"
@@ -18,14 +17,12 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
     override fun getQuery(): String {
         return """
             query $OPERATION_NAME(
-               ${'$'}$PARAM_USER_ID : String!,
                ${'$'}$PARAM_WAREHOUSE_ID : String!,
                ${'$'}$PARAM_PAGE : Int!,
                ${'$'}$PARAM_PER_PAGE : Int!
             ) {
                $OPERATION_NAME(input: 
                {
-                 $PARAM_USER_ID: ${'$'}$PARAM_USER_ID,
                  $PARAM_WAREHOUSE_ID: ${'$'}$PARAM_WAREHOUSE_ID,
                  $PARAM_PAGE: ${'$'}$PARAM_PAGE,
                  $PARAM_PER_PAGE: ${'$'}$PARAM_PER_PAGE
@@ -41,7 +38,7 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
                       total
                     }
                     data {
-                      userId
+                      userID
                       recipes {
                         id
                         title
@@ -52,6 +49,7 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
                         createdTime
                         updatedTime
                         publishedTime
+                        isBookmarked
                         category {
                           id
                           name
@@ -82,13 +80,13 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
                             maxOrder
                             categoryID
                             redirectLink
-                            labelGroup {
+                            labelGroups {
                               title
                               type
-                              typeVariant
-                              hexColor
+                              position
+                              url
                             }
-                            labelGroupVariant {
+                            labelGroupVariants {
                               title
                               type
                               typeVariant

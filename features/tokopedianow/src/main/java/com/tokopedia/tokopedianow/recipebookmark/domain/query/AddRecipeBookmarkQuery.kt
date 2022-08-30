@@ -4,7 +4,6 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 internal object AddRecipeBookmarkQuery: GqlQueryInterface {
 
-    const val PARAM_USER_ID = "userID"
     const val PARAM_RECIPE_ID = "recipeID"
 
     private const val OPERATION_NAME = "TokonowAddRecipeBookmark"
@@ -15,13 +14,11 @@ internal object AddRecipeBookmarkQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-            query $OPERATION_NAME(
-               ${'$'}$PARAM_USER_ID : String!,
+            mutation $OPERATION_NAME(
                ${'$'}$PARAM_RECIPE_ID : String!
             ) {
                $OPERATION_NAME(input: 
                {
-                 $PARAM_USER_ID: ${'$'}$PARAM_USER_ID,
                  $PARAM_RECIPE_ID: ${'$'}$PARAM_RECIPE_ID
                }) {
                    header {

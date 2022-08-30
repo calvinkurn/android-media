@@ -1,10 +1,10 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.applink.presentation.activity.AppLinkListActivity
 import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
@@ -25,10 +25,11 @@ class RouteManagerViewHolder(
         val tf = itemView.findViewById<TextFieldUnify>(R.id.route_manager_tf)
         val appLinkListBtn = itemView.findViewById<UnifyButton>(R.id.view_applink_list_btn)
         btn.setOnClickListener {
-            val routeManagerString = tf.textFieldInput.text.toString()
             itemView.context.apply {
+                val routeManagerString = tf.textFieldInput.text.toString()
                 if (routeManagerString.isBlank()) {
-                    Toast.makeText(this, "Route Manager String should not be empty", Toast.LENGTH_SHORT).show()
+                    val appLink = ApplinkConstInternalTokopediaNow.RECIPE_DETAIL
+                    RouteManager.route(this, appLink, "1")
                 } else {
                     RouteManager.route(this, routeManagerString)
                 }

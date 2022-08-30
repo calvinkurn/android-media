@@ -13,33 +13,27 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
+import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
+import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipedetail.domain.usecase.GetRecipeUseCase
+import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.mapToMediaSlider
+import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.mapToRecipeInfo
+import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.mapToRecipeTab
+import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.removeLoadingItem
+import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.updateProductQuantity
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BuyAllProductUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionTabUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.LoadingUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.OutOfCoverageUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.BookmarkUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetailLoadingUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitleUiModel.IngredientSectionTitle
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitleUiModel.InstructionSectionTitle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,6 +48,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     private val deleteCartUseCase: DeleteCartUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getAddressUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase,
+    private val removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase,
     private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -65,11 +61,12 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         private const val INVALID_SHOP_ID = 0L
         private const val OOC_WAREHOUSE_ID = 0L
         private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val BOOKMARK_DELAY = 500L
     }
 
-    val layoutList: LiveData<Result<List<Visitable<*>>>>
+    val layoutList: LiveData<List<Visitable<*>>>
         get() = _layoutList
-    val recipeInfo: LiveData<Result<RecipeInfoUiModel>>
+    val recipeInfo: LiveData<RecipeInfoUiModel>
         get() = _recipeInfo
     val addItemToCart: LiveData<Result<AddToCartDataModel>>
         get() = _addItemToCart
@@ -79,13 +76,22 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         get() = _updateCartItem
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
+    val addBookmark: LiveData<BookmarkUiModel>
+        get() = _addBookmark
+    val removeBookmark: LiveData<BookmarkUiModel>
+        get() = _removeBookmark
+    val isBookmarked: LiveData<Boolean>
+        get() = _isBookmarked
 
-    private val _layoutList = MutableLiveData<Result<List<Visitable<*>>>>()
-    private val _recipeInfo = MutableLiveData<Result<RecipeInfoUiModel>>()
+    private val _layoutList = MutableLiveData<List<Visitable<*>>>()
+    private val _recipeInfo = MutableLiveData<RecipeInfoUiModel>()
     private val _addItemToCart = MutableLiveData<Result<AddToCartDataModel>>()
     private val _removeCartItem = MutableLiveData<Result<Pair<String, String>>>()
     private val _updateCartItem = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    private val _addBookmark = MutableLiveData<BookmarkUiModel>()
+    private val _removeBookmark = MutableLiveData<BookmarkUiModel>()
+    private val _isBookmarked = MutableLiveData<Boolean>()
 
     private var recipeId: String = ""
     private val layoutItemList = mutableListOf<Visitable<*>>()
@@ -93,6 +99,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
+    private var bookmarkJob: Job? = null
 
     fun checkAddressData() {
         val shopId = addressData.getShopId()
@@ -116,11 +123,23 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
                 quantity.isZero() -> deleteCartItem(productId, cartId)
                 else -> updateCartItem(cartId, quantity, notes)
             }
-        }, {
-
-        }, CHANGE_QUANTITY_DELAY).let {
+        }, delay = CHANGE_QUANTITY_DELAY).let {
             changeQuantityJob = it
         }
+    }
+
+    fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            _addItemToCart.postValue(Success(it))
+        }, {
+            _addItemToCart.postValue(Fail(it))
+        })
     }
 
     fun deleteCartItem(productId: String, cartId: String) {
@@ -161,7 +180,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
-            _layoutList.postValue(Success(layoutItemList))
+            _layoutList.postValue(layoutItemList)
         }) {}
     }
 
@@ -170,7 +189,74 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         return items.getMiniCartItemProduct(productId)
     }
 
-    fun onAddressChanged() {
+    fun onClickBookmarkBtn(addBookmark: Boolean) {
+        bookmarkJob?.cancel()
+
+        launchWithDelay(block = {
+            val isRecipeBookmarked = _isBookmarked.value == true
+
+            when {
+                isRecipeBookmarked == addBookmark -> {
+                    return@launchWithDelay
+                }
+                addBookmark -> addRecipeBookmark()
+                else -> removeRecipeBookmark()
+            }
+        }, delay = BOOKMARK_DELAY).let {
+            bookmarkJob = it
+        }
+    }
+
+    fun addRecipeBookmark() {
+        launchCatchError(block = {
+            addRecipeBookmarkUseCase.execute(recipeId)
+
+            val isBookmarked = true
+            val data = BookmarkUiModel(
+                recipeTitle = getRecipeTitle(),
+                isSuccess = true
+            )
+
+            _isBookmarked.postValue(isBookmarked)
+            _addBookmark.postValue(data)
+        }) {
+            val isBookmarked = false
+            val data = BookmarkUiModel(
+                recipeTitle = getRecipeTitle(),
+                isSuccess = false
+            )
+
+            _isBookmarked.postValue(isBookmarked)
+            _addBookmark.postValue(data)
+        }
+    }
+
+    fun removeRecipeBookmark() {
+        launchCatchError(block = {
+            removeRecipeBookmarkUseCase.execute(recipeId)
+
+            val isBookmarked = false
+            val data = BookmarkUiModel(
+                recipeTitle = getRecipeTitle(),
+                isSuccess = true
+            )
+
+            _isBookmarked.postValue(isBookmarked)
+            _removeBookmark.postValue(data)
+        }) {
+            val isBookmarked = true
+
+            val data = BookmarkUiModel(
+                recipeTitle = getRecipeTitle(),
+                isSuccess = false
+            )
+
+            _isBookmarked.postValue(isBookmarked)
+            _removeBookmark.postValue(data)
+        }
+    }
+
+    fun refreshPage() {
         showLoading()
         updateAddressData()
         checkAddressData()
@@ -178,8 +264,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     fun showLoading() {
         layoutItemList.clear()
-        layoutItemList.add(LoadingUiModel)
-        _layoutList.postValue(Success(layoutItemList))
+        layoutItemList.add(RecipeDetailLoadingUiModel)
+        _layoutList.postValue(layoutItemList)
     }
 
     fun updateAddressData() = addressData.updateLocalData()
@@ -192,155 +278,28 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun getRecipe() {
         launchCatchError(block = {
-            // Temporary Hardcode Data
-            val mediaSlider = MediaSliderUiModel(
-                items = listOf(
-                    MediaItemUiModel(
-                        id = "1",
-                        url = "https://matamu.net/wp-content/uploads/2020/03/Foto-Landscpae-Gunung-dan-Padang-Rumput.jpg",
-                        thumbnailUrl = "https://matamu.net/wp-content/uploads/2020/03/Foto-Landscpae-Gunung-dan-Padang-Rumput.jpg",
-                        type = MediaType.IMAGE
-                    ),
-                    MediaItemUiModel(
-                        id = "2",
-                        url = "https://store.sirclo.com/blog/wp-content/uploads/2020/06/4.-cara-mencari-modal-usaha.jpg",
-                        thumbnailUrl = "https://store.sirclo.com/blog/wp-content/uploads/2020/06/4.-cara-mencari-modal-usaha.jpg",
-                        type = MediaType.IMAGE
-                    ),
-                    MediaItemUiModel(
-                        id = "3",
-                        url = "https://ecs7.tokopedia.net/assets/media/careers/recruitment-process.mp4",
-                        thumbnailUrl = "https://img.freepik.com/premium-vector/meadows-landscape-with-mountains-hill_104785-943.jpg?w=2000",
-                        duration = "02:30",
-                        type = MediaType.VIDEO
-                    )
-                )
-            )
-            val recipeInfo = RecipeInfoUiModel(
-                title = "Bubur Kacang Hijau",
-                portion = 1,
-                duration = 15,
-                labels = listOf("Snack", "Santan", "Manis", "Kacang", "Hijau"),
-                thumbnail = "https://matamu.net/wp-content/uploads/2020/03/Foto-Landscpae-Gunung-dan-Padang-Rumput.jpg"
-            )
+            val warehouseId = addressData.getWarehouseId().toString()
+            val response = getRecipeUseCase.execute(recipeId, warehouseId)
+            _isBookmarked.postValue(response.isBookmarked)
 
-            val ingredients = listOf(
-                IngredientUiModel("Kacang Hijau Muda, dikupas", 500, "gram"),
-                IngredientUiModel("Garam", 1, "sendok teh"),
-                IngredientUiModel("Gula pasir", 4, "sendok makan"),
-                IngredientUiModel("Pandan Segar", 2, "ikat"),
-                IngredientUiModel("Perisa pandan ", 1, "sendok teh"),
-                IngredientUiModel("Santan segar, dicairkan", 2, "cup", true)
-            )
-
-            val instruction = InstructionUiModel(
-                "<ol>\n" +
-                    "<li>&nbsp;Beli bahannya</li>\n" +
-                    "<li>&nbsp;Persiapkan alatnya</li>\n" +
-                    "<li>&nbsp;Dimasak</li>\n" +
-                    "<li>&nbsp;Disajikan</li>\n" +
-                    "</ol>"
-            )
-
-            val products = listOf(
-                RecipeProductUiModel(
-                    id = "1",
-                    shopId = "100",
-                    name = "Kacang Hijau Curah",
-                    quantity = 0,
-                    stock = 5,
-                    price = 15000,
-                    priceFmt = "Rp15.000",
-                    weight = "500 g",
-                    imageUrl = "https://utils.api.stdlib.com/automicon/codeworks.png",
-                    slashedPrice = "Rp30.000",
-                    discountPercentage = "50%"
-                ),
-                RecipeProductUiModel(
-                    id = "2",
-                    shopId = "101",
-                    name = "Garam",
-                    quantity = 0,
-                    stock = 0,
-                    price = 15000,
-                    priceFmt = "Rp15.000",
-                    weight = "500 g",
-                    imageUrl = "https://www.iconsdb.com/icons/preview/guacamole-green/square-xxl.png"
-                ),
-                RecipeProductUiModel(
-                    id = "3",
-                    shopId = "102",
-                    name = "Gula",
-                    quantity = 0,
-                    stock = 2,
-                    price = 15000,
-                    priceFmt = "Rp15.000",
-                    weight = "500 g",
-                    imageUrl = "https://www.iconsdb.com/icons/preview/pink/square-xxl.png"
-                ),
-                RecipeProductUiModel(
-                    id = "4",
-                    shopId = "103",
-                    name = "Daun Salam",
-                    quantity = 0,
-                    stock = 2,
-                    price = 15000,
-                    priceFmt = "Rp15.000",
-                    weight = "500 g",
-                    imageUrl = "https://www.iconsdb.com/icons/preview/pink/square-xxl.png"
-                )
-            )
-
-            val totalPrice = "Rp60.000"
-            val buyAllProductItem = BuyAllProductUiModel(totalPrice, products)
-            val isOutOfCoverage = addressData.isOutOfCoverage()
-
-            val ingredientTabItems = mutableListOf<Visitable<*>>().apply {
-                if(isOutOfCoverage) {
-                    add(OutOfCoverageUiModel)
-                } else {
-                    add(buyAllProductItem)
-                    addAll(products)
-                }
-            }
-
-            val instructionTabItems = mutableListOf<Visitable<*>>().apply {
-                add(IngredientSectionTitle)
-                addAll(ingredients)
-                add(InstructionSectionTitle)
-                add(instruction)
-            }
-
-            val recipeTab = RecipeTabUiModel(
-                IngredientTabUiModel(ingredientTabItems),
-                InstructionTabUiModel(instructionTabItems)
-            )
+            val mediaSlider = mapToMediaSlider(response)
+            val recipeInfo = mapToRecipeInfo(response)
+            val recipeTab = mapToRecipeTab(response, addressData)
 
             layoutItemList.clear()
             layoutItemList.add(mediaSlider)
             layoutItemList.add(recipeInfo)
             layoutItemList.add(recipeTab)
 
-            // Temporary for testing
-            val miniCart = MiniCartSimplifiedData(
-                miniCartItems = mapOf(
-                    MiniCartItemKey(id = "1") to MiniCartItem.MiniCartItemProduct(
-                        productId = "1",
-                        quantity = 2
-                    ),
-                    MiniCartItemKey(id = "3") to MiniCartItem.MiniCartItemProduct(
-                        productId = "3",
-                        quantity = 3
-                    )
-                )
-            )
-            setProductAddToCartQuantity(miniCart)
-            hideLoading()
+            miniCartData?.let {
+                updateProductQuantity(it)
+            }
 
-            _recipeInfo.postValue(Success(recipeInfo))
-            _layoutList.postValue(Success(layoutItemList))
+            _recipeInfo.postValue(recipeInfo)
+            _layoutList.postValue(layoutItemList)
         }) {
             hideLoading()
+            showError()
         }
     }
 
@@ -351,20 +310,6 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         },{
 
         }, GET_ADDRESS_SOURCE)
-    }
-
-    private fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            _addItemToCart.postValue(Success(it))
-        }, {
-            _addItemToCart.postValue(Fail(it))
-        })
     }
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
@@ -391,6 +336,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
         layoutItemList.updateProductQuantity(miniCart)
+        layoutItemList.updateDeletedProductQuantity(miniCart)
     }
 
     private fun setMiniCartData(miniCart: MiniCartSimplifiedData) {
@@ -399,12 +345,19 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun shouldGetMiniCart(shopId: List<String>): Boolean {
         val warehouseId = addressData.getWarehouseId()
-        val outOfCoverage = warehouseId != OOC_WAREHOUSE_ID
-        return !shopId.isNullOrEmpty() && outOfCoverage && userSession.isLoggedIn
+        val outOfCoverage = warehouseId == OOC_WAREHOUSE_ID
+        return !shopId.isNullOrEmpty() && !outOfCoverage && userSession.isLoggedIn
     }
 
+    private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()
+
     private fun hideLoading() {
-        layoutItemList.removeFirst { it is LoadingUiModel }
-        _layoutList.postValue(Success(layoutItemList))
+        layoutItemList.removeLoadingItem()
+        _layoutList.postValue(layoutItemList)
+    }
+
+    private fun showError() {
+        layoutItemList.add(TokoNowServerErrorUiModel)
+        _layoutList.postValue(layoutItemList)
     }
 }

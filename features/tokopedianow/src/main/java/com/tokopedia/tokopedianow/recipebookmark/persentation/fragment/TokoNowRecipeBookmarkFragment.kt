@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.recipebookmark.di.component.DaggerRecipeBookmarkComponent
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkAdapter
@@ -95,6 +96,10 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             recipeId = recipeId,
             isRemoving = true
         )
+    }
+
+    override fun onClickBookmark(recipeId: String) {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_DETAIL, recipeId)
     }
 
     private fun injectDependencies() {
@@ -221,7 +226,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private fun showFailToaster(throwable: Throwable?, data: ToasterUiModel?) {
         data?.model?.apply {
             setupToaster(
-                message = if (throwable == null) message else ErrorHandler.getErrorMessage(context, throwable),
+                message = if (throwable == null) message else getString(if (data.isRemoving) R.string.tokopedianow_recipe_failed_remove_bookmark else R.string.tokopedianow_recipe_failed_add_bookmark),
                 isSuccess = isSuccess,
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                 clickListener = {

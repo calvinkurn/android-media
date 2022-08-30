@@ -179,7 +179,7 @@
     <string name="tokopedianow_recipe_info_label">Tokopedia NOW!</string>
     <string name="tokopedianow_recipe_portion">%1$d Orang</string>
     <string name="tokopedianow_recipe_duration">%1$d Menit</string>
-    <string name="tokopedianow_recipe_ingredient_quantity">%1$d %2$s</string>
+    <string name="tokopedianow_recipe_ingredient_quantity">%1$s %2$s</string>
     <string name="tokopedianow_recipe_other_label">+ %1$d lainnya</string>
     <string name="tokopedianow_recipe_ingredient_section_title">Bahan-bahan</string>
     <string name="tokopedianow_recipe_instruction_section_title">Cara membuat</string>
@@ -217,4 +217,14 @@
     <string name="tokopedianow_recipe_ooc_description_text">Kamu belum bisa beli bahan masak langsung dari NOW!.</string>
     <string name="tokopedianow_recipe_change_address">Ganti Alamat</string>
     <string name="tokopedianow_recipe_learn_more">Apa itu Tokopedia NOW! <![CDATA[<font color=#00AA5B><b>Pelajari</b>]]></string>
+    <string name="tokopedianow_percentage_format">%1$s %%</string>
+
+    <string name="tokopedianow_recipe_success_add_bookmark">“%s” berhasil ditambahkan ke Buku Resep.</string>
+    <string name="tokopedianow_recipe_failed_add_bookmark">Wah belum bisa disimpan nih karena koneksi. Pastikan internetmu lancar, ya!</string>
+    <string name="tokopedianow_recipe_failed_remove_bookmark">Oops, resep gagal dihapus dari Buku Resep. Cek koneksi internetmu, ya.</string>
+    <string name="tokopedianow_recipe_search_hint">Cari resep</string>
+    <string name="tokopedianow_recipe_list_header_text">Pilihan resep spesial\nTokopedia NOW!</string>
+    <string name="tokopedianow_recipe_list_count">%1$d resep</string>
+
+    <string name="tokopedianow_filter">Filter</string>
 </resources>

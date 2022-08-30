@@ -6,7 +6,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MediaItemUiModel(
-    val id: String,
     val url: String,
     val thumbnailUrl: String,
     val duration: String = "",

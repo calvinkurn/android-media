@@ -8,7 +8,7 @@ object RecipeBookmarksMapper {
     private const val MAX_TAGS_DISPLAYED = 4
     private const val TAGS_DISPLAYED = 3
 
-    private fun mapTag(tags: List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe.Tag>?): List<TagUiModel> {
+    private fun mapTag(tags: List<GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Data.Recipe.Tag>?): List<TagUiModel> {
         if (tags.isNullOrEmpty()) return emptyList()
 
         val tagList: MutableList<TagUiModel> = mutableListOf()
@@ -42,7 +42,7 @@ object RecipeBookmarksMapper {
         return tagList
     }
 
-    fun List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe>.mapResponseToUiModelList(): List<RecipeUiModel> {
+    fun List<GetRecipeBookmarksResponse.TokonowGetRecipeBookmarks.Data.Recipe>.mapResponseToUiModelList(): List<RecipeUiModel> {
         return map { response ->
             RecipeUiModel(
                 id = response.id,
