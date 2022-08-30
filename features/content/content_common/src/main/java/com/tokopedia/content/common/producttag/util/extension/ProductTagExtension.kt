@@ -21,6 +21,9 @@ import kotlin.math.max
 val Set<ProductTagSource>.currentSource: ProductTagSource
     get() = lastOrNull() ?: ProductTagSource.Unknown
 
+val Set<ProductTagSource>.isAutocomplete: Boolean
+    get() = currentSource == ProductTagSource.Autocomplete
+
 fun Set<ProductTagSource>.removeLast(): Set<ProductTagSource> {
     return toMutableSet().apply {
         lastOrNull()?.let { remove(it) }

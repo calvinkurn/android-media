@@ -19,6 +19,7 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.currentSource
+import com.tokopedia.content.common.producttag.util.extension.isAutocomplete
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
@@ -155,8 +156,6 @@ class ProductTagParentFragment @Inject constructor(
             clickBreadcrumb()
         }
 
-        binding.flBtnSave.showWithCondition(viewModel.isMultipleSelectionProduct)
-
         binding.btnSave.setOnClickListener {
             viewModel.submitAction(ProductTagAction.ClickSaveButton)
         }
@@ -170,7 +169,7 @@ class ProductTagParentFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
                 renderActionBar(it.prevValue, it.value)
-                renderSaveButton(it.prevValue?.selectedProduct, it.value.selectedProduct)
+                renderSaveButton(it.prevValue, it.value)
             }
         }
 
@@ -227,17 +226,23 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun renderSaveButton(
-        prev: List<SelectedProductUiModel>?,
-        curr: List<SelectedProductUiModel>,
+        prevState: ProductTagUiState?,
+        currState: ProductTagUiState,
     ) {
-        if(curr == prev) return
+        if(prevState?.selectedProduct == currState.selectedProduct &&
+            prevState.productTagSource == currState.productTagSource
+        ) return
 
-        /** TODO: add additional validation: if same with prev -> disabled */
-        binding.btnSave.isEnabled = curr.isNotEmpty()
+        binding.flBtnSave.showWithCondition(
+            !currState.productTagSource.productTagSourceStack.isAutocomplete &&
+                    viewModel.isMultipleSelectionProduct
+        )
+
+        binding.btnSave.isEnabled = currState.selectedProduct.isNotEmpty() && !viewModel.isSameAsInitialSelectedProduct
     }
 
     private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {
-        val isShowActionBar = productTagSourceStack.currentSource != ProductTagSource.Autocomplete
+        val isShowActionBar = !productTagSourceStack.isAutocomplete
 
         binding.icCcProductTagBack.showWithCondition(isShowActionBar)
         binding.tvCcProductTagPageTitle.showWithCondition(isShowActionBar)
@@ -285,7 +290,7 @@ class ProductTagParentFragment @Inject constructor(
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
         if(viewModel.isUser) {
 
-            if(productTagSourceStack.currentSource == ProductTagSource.Autocomplete) {
+            if(productTagSourceStack.isAutocomplete) {
                 showBreadcrumb(false)
                 return
             }

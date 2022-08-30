@@ -64,6 +64,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
                         return listOf(
                             SelectedProductUiModel.createOnlyId("2148279610"),
                             SelectedProductUiModel.createOnlyId("4207525260"),
+                            SelectedProductUiModel.createOnlyId("2653580529"),
                         )
                     }
                 })

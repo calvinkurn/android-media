@@ -103,6 +103,10 @@ class ProductTagViewModel @AssistedInject constructor(
     val globalSearchQuery: String
         get() = _globalSearchProduct.value.param.query
 
+    val isSameAsInitialSelectedProduct: Boolean
+        get() = initialSelectedProduct.sortedBy { it.id } == _selectedProduct.value.sortedBy { it.id }
+
+    /** Config Public Getter */
     val isMultipleSelectionProduct: Boolean
         get() = productTagConfig.isMultipleSelectionProduct
 
