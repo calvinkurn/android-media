@@ -283,14 +283,17 @@ class ProductTagParentFragment @Inject constructor(
                 return
             }
 
-            showBreadcrumb(true)
-
             /** Update the First Part */
             if(productTagSourceStack.isNotEmpty()) {
                 val firstSource = productTagSourceStack.first()
 
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
                 binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
+
+                binding.tvCcProductTagProductSourceLabel.show()
+                binding.tvCcProductTagProductSource.show()
+                binding.icCcProductTagChevron1.show()
+
                 if(firstSource == ProductTagSource.MyShop && viewModel.shopBadge.isNotEmpty()) {
                     binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
                     binding.imgCcProductTagShopBadge1.show()
