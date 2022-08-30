@@ -11,9 +11,9 @@
         android:id="@+id/detail_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/dp_32"
+        android:layout_marginBottom="32dp"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/dp_60"
+        android:paddingBottom="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

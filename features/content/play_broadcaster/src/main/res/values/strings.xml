@@ -299,4 +299,11 @@
     <!-- leaderboard bottomsheet -->
     <string name="play_bro_finished_bottomsheet_option_right_empty">Gak ada yang pilih jawaban ini</string>
     <string name="play_bro_finished_bottomsheet_option_empty">Yaah, nggak ada yang ikutan quiz ini</string>
+
+    <!-- Pin Product -->
+    <string name="play_bro_pin">Pin</string>
+    <string name="play_bro_unpin">Lepas</string>
+    <string name="play_bro_pinned_product_info">Pin Dipasang</string>
+    <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
+    <string name="play_bro_pin_product_failed">Tunggu 5 detik untuk pin produk ya</string>
 </resources>

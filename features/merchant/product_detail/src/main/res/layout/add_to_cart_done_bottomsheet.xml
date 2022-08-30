@@ -87,7 +87,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/heading_price"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -147,7 +147,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/price"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="16dp"
@@ -167,7 +167,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/state_atc"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="18dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="16dp"

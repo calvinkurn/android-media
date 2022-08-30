@@ -14,12 +14,9 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
-import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -1128,19 +1125,6 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
-    private fun mergeImagePickerResultWithOriginalImages(
-        imagePickerResult: MutableList<String>,
-        imagesFedIntoPicker: MutableList<String>
-    ): List<String> {
-        return imagePickerResult.mapIndexed { index, result ->
-            if (result.endsWith(ReviewConstants.TEMP_IMAGE_EXTENSION)) {
-                imagesFedIntoPicker[index]
-            } else {
-                result
-            }
-        }
-    }
-
     private fun appendSelectedTemplatesToReviewText(
         reviewTemplate: ReviewTemplateRequestSuccessState
     ) {
@@ -1252,10 +1236,15 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
-    fun shouldUseUniversalMediaPicker(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
-        ) == RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
+    fun enqueueDisabledAddMoreMediaToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            )
+        )
     }
 
     // region MutableStateFlow updater
@@ -1312,14 +1301,6 @@ class CreateReviewViewModel @Inject constructor(
                 RequestState.Success(templates)
             } else currentValue
         }
-    }
-
-    fun updateMediaPicker(
-        selectedImages: MutableList<String>,
-        imagesFedIntoPicker: MutableList<String>
-    ) {
-        retryUploadMedia()
-        mediaUris.value = mergeImagePickerResultWithOriginalImages(selectedImages, imagesFedIntoPicker)
     }
 
     fun updateMediaPicker(selectedMedia: List<String>) {

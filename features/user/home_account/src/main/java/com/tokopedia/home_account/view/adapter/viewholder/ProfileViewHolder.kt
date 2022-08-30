@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
@@ -172,7 +173,7 @@ class ProfileViewHolder(
             listener.onSettingItemClicked(
                 CommonDataView(
                     id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
-                    applink = ApplinkConstInternalGlobal.FUNDS_AND_INVESTMENT
+                    applink = ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT
                 )
             )
         }

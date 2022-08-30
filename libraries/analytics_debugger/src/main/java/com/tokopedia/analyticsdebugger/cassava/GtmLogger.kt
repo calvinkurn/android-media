@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
+import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
@@ -65,12 +66,13 @@ class GtmLogger private constructor(
         fun getInstance(context: Context): AnalyticsLogger {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools() == true) {
-                    val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+                    val appContext = context.applicationContext
+                    val dao = CassavaDatabase.getInstance(appContext).cassavaDao()
                     instance = GtmLogger(
-                        context,
+                        appContext,
                         AnalyticsParser(),
                         GtmRepo(dao),
-                        CassavaSharedPreference(context)
+                        CassavaSharedPreference(appContext)
                     )
                 } else {
                     instance = emptyInstance()

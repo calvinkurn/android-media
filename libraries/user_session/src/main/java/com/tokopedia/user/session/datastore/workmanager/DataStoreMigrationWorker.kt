@@ -42,7 +42,9 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                         ) {
                             migrateData()
                         } else {
-                            logSyncResult(syncResult)
+                            if(syncResult.isNotEmpty()) {
+                                logSyncResult(syncResult)
+                            }
                         }
                     }
                     Result.success()
@@ -65,7 +67,6 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
             if (migrationResult.isEmpty()) {
                 getDataStoreMigrationPreference(applicationContext).edit()
                     .putBoolean(KEY_MIGRATION_STATUS, true).apply()
-                logMigrationResultSuccess()
             } else {
                 getDataStoreMigrationPreference(applicationContext).edit()
                     .putBoolean(KEY_MIGRATION_STATUS, false).apply()
@@ -75,15 +76,6 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
             e.printStackTrace()
             logMigrationException(e)
         }
-    }
-
-    private fun logMigrationResultSuccess() {
-        ServerLogger.log(
-            Priority.P2, USER_SESSION_LOGGER_TAG,
-            mapOf(
-                "method" to "migration_result_success"
-            )
-        )
     }
 
     private fun logMigrationResultFailed(result: List<String>) {
