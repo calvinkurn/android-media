@@ -4,8 +4,12 @@ import NewOrderSummaryScreen
 import SplashScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.sellerapp.presentation.screen.HomeScreen
 import com.tokopedia.sellerapp.presentation.screen.NewOrderDetailScreen
+import com.tokopedia.sellerapp.presentation.screen.NewOrderListScreen
+import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
 
 fun NavGraphBuilder.splashComposable(
@@ -25,6 +29,22 @@ fun NavGraphBuilder.homeComposable(
         route = ScreenConstant.HOME_SCREEN
     ) {
         HomeScreen(navigateToNewOrderSummary)
+    }
+}
+
+fun NavGraphBuilder.newOrderListComposable(
+    sharedViewModel: SharedViewModel,
+    messageClient: MessageClient,
+    nodeClient: NodeClient
+) {
+    composable(
+        route = ScreenConstant.NEW_ORDER_LIST_SCREEN
+    ) {
+        NewOrderListScreen(
+            sharedViewModel = sharedViewModel,
+            messageClient = messageClient,
+            nodeClient = nodeClient
+        )
     }
 }
 

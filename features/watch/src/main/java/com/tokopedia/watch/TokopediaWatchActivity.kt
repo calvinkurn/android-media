@@ -255,7 +255,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
             override fun onNext(orderListModel: OrderListModel) {
                 sendMessageToWatch(
-                    DataLayerServiceListener.MESSAGE_CLIENT_START_ORDER_ACTIVITY,
+                    DataLayerServiceListener.GET_ORDER_LIST_PATH,
                     Gson().toJson(orderListModel)
                 )
             }
