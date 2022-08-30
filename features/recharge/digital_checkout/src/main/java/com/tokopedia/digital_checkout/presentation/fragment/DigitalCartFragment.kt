@@ -55,6 +55,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -310,8 +311,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun showContent() {
-        contentCheckout.visibility = View.VISIBLE
-        checkoutBottomViewWidget.visibility = View.VISIBLE
+        contentCheckout.visible()
+        checkoutBottomViewWidget.visible()
+        viewEmptyState.gone()
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
