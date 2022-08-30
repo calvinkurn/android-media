@@ -269,5 +269,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.tokopedianow.recipesearch.presentation.activity.TokoNowRecipeSearchIngredientActivity"
+            android:exported="false"
+            android:label="@string/title_tokopedia_now"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent" />
     </application>
 </manifest>
