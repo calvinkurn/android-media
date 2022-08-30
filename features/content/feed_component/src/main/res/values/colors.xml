@@ -28,5 +28,4 @@
     <color name="feed_dms_discount_bg">#FFCCD9</color>
     <color name="feed_dms_discount_text">#EF144A</color>
     <color name="feed_dms_asgc_discount_toko_btn_bg_color">#F94D63</color>
-    <color name="feed_timestamp_color">@color/Unify_NN600</color>
 </resources>
