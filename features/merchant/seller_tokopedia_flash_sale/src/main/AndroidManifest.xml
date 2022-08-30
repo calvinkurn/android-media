@@ -24,6 +24,11 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

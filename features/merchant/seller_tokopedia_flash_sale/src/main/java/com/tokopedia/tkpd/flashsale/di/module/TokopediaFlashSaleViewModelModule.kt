@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListViewModel
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerViewModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.viewmodel.CampaignDetailBottomSheetViewModel
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -32,4 +33,9 @@ abstract class TokopediaFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(CampaignDetailBottomSheetViewModel::class)
     internal abstract fun provideCampaignDetailBottomSheetViewModel(viewModel: CampaignDetailBottomSheetViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CampaignDetailViewModel::class)
+    internal abstract fun provideCampaignDetailViewModel(viewModel: CampaignDetailViewModel): ViewModel
 }

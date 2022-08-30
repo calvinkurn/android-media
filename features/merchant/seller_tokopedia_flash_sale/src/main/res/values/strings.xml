@@ -99,4 +99,26 @@
     <string name="commonbs_field_required">Diwajibkan</string>
     <string name="commonbs_field_limited">Dibatasi</string>
 
+    <!--    Upcoming CDP-->
+    <string name="stfs_deskripsi_label">Deskripsi</string>
+    <string name="stft_check_reason">Cek Alasan</string>
+    <string name="stfs_title_ticker_upcoming_cdp_full_quota_state">Yah, kuota campaign sudah penuh</string>
+    <string name="stfs_title_ticker_upcoming_cdp_registration_close_state">Periode pendaftaran campaign ini sudah ditutup</string>
+    <string name="stfs_description_ticker_upcoming_cdp_product_not_eligible_state">Belum ada produkmu yang memenuhi kriteria campaign ini.</string>
+    <string name="stfs_description_ticker_upcoming_cdp_full_quota_state">Tenang, kamu masih punya kesempatan berpartisipasi di campaign menarik lainnya!</string>
+    <string name="stfs_description_ticker_upcoming_cdp_registration_close_state">Yuk, daftar di campaign lain yang periode pendaftarannya masih dibuka!</string>
+    <string name="registration_over_in_label">Pendaftaran Berakhir</string>
+    <string name="registration_closed_in_label">Pendaftaran Ditutup</string>
+    <string name="register_period_label">Periode pendaftaran</string>
+    <string name="campaign_quota_label">Kuota Campaign</string>
+    <string name="campaign_criteria_label">Kriteria Campaign</string>
+    <string name="see_criteria_label">Lihat Kriteria</string>
+    <string name="full_quota_label">Kuota Penuh!</string>
+    <string name="campaign_quota_value_placeholder">Sisa %d kuota!</string>
+    <string name="campaign_quota_value_placeholder_2">Tersedia (%d)</string>
+    <string name="register_period_value_placeholder_2">%s - %2s</string>
+    <string name="label_register">Daftar</string>
+    <string name="product_eligible_card_title_label">Yay, produkmu sesuai kriteria!</string>
+    <string name="product_eligible_card_description_label">Tunggu apa lagi? Yuk, daftar campaign sekarang!</string>
+    <string name="stfs_campaign_label">Campaign</string>
 </resources>

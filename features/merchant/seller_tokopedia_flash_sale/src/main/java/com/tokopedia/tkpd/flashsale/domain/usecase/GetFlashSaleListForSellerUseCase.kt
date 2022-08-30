@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleListForSellerMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
                   review_start_date_unix
                   review_end_date_unix
                   start_date_unix
+                  has_eligible_products
                   end_date_unix
                   remaining_quota
                   max_product_submission

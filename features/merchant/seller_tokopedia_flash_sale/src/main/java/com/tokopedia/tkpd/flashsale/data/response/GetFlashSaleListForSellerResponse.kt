@@ -27,6 +27,8 @@ data class GetFlashSaleListForSellerResponse(
             val maxProductSubmission: Int = 0,
             @SerializedName("name")
             val name: String = "",
+            @SerializedName("has_eligible_products")
+            val hasEligibleProduct: Boolean = false,
             @SerializedName("product_meta")
             val productMeta: ProductMeta = ProductMeta(),
             @SerializedName("remaining_quota")

@@ -40,6 +40,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.endDateUnix.epochToDate(),
                 flashSale.maxProductSubmission,
                 flashSale.name,
+                flashSale.hasEligibleProduct,
                 flashSale.toProductMeta(),
                 flashSale.remainingQuota,
                 flashSale.reviewEndDateUnix.epochToDate(),
@@ -73,7 +74,7 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
             else -> FlashSaleStatus.UPCOMING
         }
     }
-    
+
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toProductMeta(): FlashSale.ProductMeta {
         return FlashSale.ProductMeta(
             productMeta.acceptedProduct,

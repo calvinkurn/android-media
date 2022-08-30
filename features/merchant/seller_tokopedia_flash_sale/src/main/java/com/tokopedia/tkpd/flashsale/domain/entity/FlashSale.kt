@@ -11,6 +11,7 @@ data class FlashSale(
     val endDateUnix: Date,
     val maxProductSubmission: Int,
     val name: String,
+    val hasEligibleProduct: Boolean,
     val productMeta: ProductMeta,
     val remainingQuota: Int,
     val reviewEndDateUnix: Date,
