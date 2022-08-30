@@ -1849,13 +1849,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
 
                     imgInsuranceInfo.setOnClickListener(view ->
-
-                            //TODO - need to update image url and adjust with gql update from BE
                             showInsuranceBottomSheet(
                                     imgInsuranceInfo.getContext(),
-                                    view.getContext().getString(R.string.title_bottomsheet_insurance),
-                                    courierItemData.getInsuranceUsedInfo(),
-                                    R.drawable.ic_pp_insurance
+                                    view.getContext().getString(R.string.bottomsheet_insurance_title),
+                                    courierItemData.getInsuranceUsedInfo()
                             )
                     );
                 }
@@ -1985,7 +1982,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
     }
 
-    private void showInsuranceBottomSheet(Context context, String title, String message, int image) {
+    private void showInsuranceBottomSheet(Context context, String title, String message) {
         InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
         insuranceBottomSheet.setDesc(message);
         insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
