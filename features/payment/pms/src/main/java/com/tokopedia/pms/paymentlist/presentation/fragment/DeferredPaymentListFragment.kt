@@ -79,7 +79,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun observeViewModels() {
-        viewModel.paymentListResultLiveData.observe(viewLifecycleOwner, {
+        viewModel.paymentListResultLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> renderPaymentList(it.data)
                 is Fail -> showErrorUi(it.throwable)
@@ -88,8 +88,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                 is ProgressState -> showProgressForDelayedFetch()
                 else -> handleSwipeRefresh(false)
             }
-        })
-        viewModel.cancelPaymentDetailLiveData.observe(viewLifecycleOwner, {
+        }
+        viewModel.cancelPaymentDetailLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> showCancelDetailMessage(it.data)
                 is Fail -> showToast(
@@ -97,8 +97,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                     Toaster.TYPE_ERROR
                 )
             }
-        })
-        viewModel.cancelPaymentLiveData.observe(viewLifecycleOwner, {
+        }
+        viewModel.cancelPaymentLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> showCancelPaymentResult(it.data)
                 is Fail -> showToast(
@@ -106,7 +106,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                     Toaster.TYPE_ERROR
                 )
             }
-        })
+        }
     }
 
     private fun showCancelPaymentResult(data: CancelPayment) {
