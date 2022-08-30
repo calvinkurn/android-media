@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.addresschoice.recyclerview
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -299,20 +300,17 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
         onSearchReset()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initSearchView() {
         binding?.svAddressSearchBox?.searchTextView?.setOnClickListener(onSearchViewClickListener())
-        binding?.svAddressSearchBox?.searchTextView?.setOnTouchListener(onSearchViewTouchListener())
-        binding?.svAddressSearchBox?.setListener(this)
-        binding?.svAddressSearchBox?.setResetListener(this)
-        binding?.svAddressSearchBox?.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
-    }
-
-    private fun onSearchViewTouchListener(): OnTouchListener? {
-        return OnTouchListener { view, motionEvent ->
+        binding?.svAddressSearchBox?.searchTextView?.setOnTouchListener { _, _ ->
             binding?.svAddressSearchBox?.searchTextView?.isCursorVisible = true
             openSoftKeyboard()
             false
         }
+        binding?.svAddressSearchBox?.setListener(this)
+        binding?.svAddressSearchBox?.setResetListener(this)
+        binding?.svAddressSearchBox?.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
     }
 
     private fun openSoftKeyboard() {
