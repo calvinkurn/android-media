@@ -250,6 +250,7 @@ class ProductTagViewModel @AssistedInject constructor(
             is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId, action.componentId)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
+            ProductTagAction.ClickSaveButton -> handleClickSaveButton()
 
             /** Tagged Product */
             ProductTagAction.LoadLastTaggedProduct -> handleLoadLastTaggedProduct()
@@ -391,6 +392,12 @@ class ProductTagViewModel @AssistedInject constructor(
             else {
                 _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product)))
             }
+        }
+    }
+
+    private fun handleClickSaveButton() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductTagUiEvent.FinishProductTag(_selectedProduct.value))
         }
     }
 

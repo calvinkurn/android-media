@@ -132,8 +132,6 @@ class ProductTagParentFragment @Inject constructor(
             }
         )
 
-        binding.flBtnSave.showWithCondition(viewModel.isMultipleSelectionProduct)
-
         binding.icCcProductTagBack.setOnClickListener {
             analytic.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
@@ -153,6 +151,12 @@ class ProductTagParentFragment @Inject constructor(
 
         binding.tvCcProductTagProductSource2.setOnClickListener {
             clickBreadcrumb()
+        }
+
+        binding.flBtnSave.showWithCondition(viewModel.isMultipleSelectionProduct)
+
+        binding.btnSave.setOnClickListener {
+            viewModel.submitAction(ProductTagAction.ClickSaveButton)
         }
 
         showBreadcrumb(viewModel.isUser)
