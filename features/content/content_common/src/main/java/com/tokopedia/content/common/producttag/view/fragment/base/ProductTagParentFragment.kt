@@ -132,6 +132,8 @@ class ProductTagParentFragment @Inject constructor(
             }
         )
 
+        binding.flBtnSave.showWithCondition(viewModel.isMultipleSelectionProduct)
+
         binding.icCcProductTagBack.setOnClickListener {
             analytic.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
@@ -162,6 +164,7 @@ class ProductTagParentFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
                 renderActionBar(it.prevValue, it.value)
+                renderSaveButton(it.prevValue?.selectedProduct, it.value.selectedProduct)
             }
         }
 
@@ -195,6 +198,16 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
+    private fun renderSelectedProductTagSource(
+        prevState: ProductTagSourceUiState?,
+        currState: ProductTagSourceUiState,
+    ) {
+        if(prevState == currState) return
+
+        updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
+        updateBreadcrumb(currState.productTagSourceStack)
+    }
+
     private fun renderActionBar(
         prevState: ProductTagUiState?,
         currState: ProductTagUiState,
@@ -207,14 +220,14 @@ class ProductTagParentFragment @Inject constructor(
         updateTitle(currState.selectedProduct)
     }
 
-    private fun renderSelectedProductTagSource(
-        prevState: ProductTagSourceUiState?,
-        currState: ProductTagSourceUiState,
+    private fun renderSaveButton(
+        prev: List<ProductUiModel>?,
+        curr: List<ProductUiModel>,
     ) {
-        if(prevState == currState) return
+        if(curr == prev) return
 
-        updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
-        updateBreadcrumb(currState.productTagSourceStack)
+        /** TODO: add additional validation: if same with prev -> disabled */
+        binding.btnSave.isEnabled = curr.isNotEmpty()
     }
 
     private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {

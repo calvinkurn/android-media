@@ -153,7 +153,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fl_btn_save"
         app:layout_constraintTop_toBottomOf="@id/tv_cc_product_tag_product_source" />
+
+    <FrameLayout
+        android:id="@+id/fl_btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cc_product_tag_save"
+            android:layout_marginTop="@dimen/content_common_space_12"
+            android:layout_marginBottom="@dimen/content_common_space_12"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
