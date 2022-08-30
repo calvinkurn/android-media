@@ -198,6 +198,7 @@ class OfficialHomeFragment :
                 this
         )
         adapter = OfficialHomeAdapter(adapterTypeFactory)
+        recyclerView?.itemAnimator = null
         recyclerView?.adapter = adapter
         viewModel.resetState()
         return view
