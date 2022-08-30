@@ -20,7 +20,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -86,7 +85,6 @@ import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -98,10 +96,6 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
-import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
@@ -144,6 +138,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 /**
  * @author by nisie on 5/15/17.
@@ -173,7 +168,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     VideoViewHolder.VideoViewListener,
     FeedMultipleImageView.FeedMultipleImageViewListener,
     HighlightAdapter.HighlightListener,
-    InterestPickAdapter.InterestPickItemListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineListener,
     ShareCallback, ProductItemInfoBottomSheet.Listener {
@@ -2967,21 +2961,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun finishLoading() {
         swipeToRefresh.isRefreshing = false
-    }
-
-    private fun showInterestPick() {
-        if (context != null && isEnableInterestPick()) {
-            RouteManager.route(context, ApplinkConst.INTEREST_PICK)
-        }
-    }
-
-    private fun isEnableInterestPick(): Boolean {
-        val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
-        return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
-    }
-
-    private fun onShowRetryGetFeed() {
-        adapter.showRetry()
     }
 
     private fun hideAdapterLoading() {
