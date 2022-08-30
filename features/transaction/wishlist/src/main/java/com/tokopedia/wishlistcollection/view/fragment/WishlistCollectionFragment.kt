@@ -58,6 +58,7 @@ import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
+import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -94,6 +95,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private val handler = Handler(Looper.getMainLooper())
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
+    }
+    private val wishlistCollectionPref: WishlistCollectionPrefs? by lazy {
+        activity?.let { WishlistCollectionPrefs(it) }
     }
 
     @Inject
@@ -302,7 +306,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         isFetchRecommendation = false
         currRecommendationListPage = 1
         getWishlistCollections()
-        collectionAdapter.resetTicker()
     }
 
     private fun getWishlistCollections() {
@@ -316,6 +319,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        wishlistCollectionPref?.getHasClosed()
+                            ?.let { collectionAdapter.setTickerHasClosed(it) }
                         if (result.data.data.isEmptyState) {
                             val items = arrayListOf<Any>()
                             result.data.data.emptyState.messages.forEach { item ->
@@ -523,7 +528,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onCloseTicker() {
-        collectionAdapter.hideTicker()
+        wishlistCollectionPref?.setHasClosed(true)
+        collectionAdapter.setTickerHasClosed(true)
         WishlistCollectionAnalytics.sendClickXOnIntroductionSectionEvent()
     }
 
