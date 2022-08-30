@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductVoucherInfoBinding
@@ -63,6 +65,11 @@ class PlayVoucherView : FrameLayout {
 
     fun setupListener(listener: Listener) {
         mListener = listener
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy(){
+        mListener = null
     }
 
     interface Listener {
