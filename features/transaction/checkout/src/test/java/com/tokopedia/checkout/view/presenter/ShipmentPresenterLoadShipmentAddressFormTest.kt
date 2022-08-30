@@ -941,7 +941,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 isSelected = true,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
@@ -962,7 +962,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 isSelected = true,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         ), presenter.shipmentNewUpsellModel)
     }

@@ -171,7 +171,7 @@ class ShipmentPresenterUpsellTest {
                 isSelected = true,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
@@ -224,7 +224,7 @@ class ShipmentPresenterUpsellTest {
                 isSelected = true,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
@@ -275,7 +275,7 @@ class ShipmentPresenterUpsellTest {
                 isSelected = true,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
@@ -327,7 +327,7 @@ class ShipmentPresenterUpsellTest {
                 isSelected = true,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
@@ -377,7 +377,7 @@ class ShipmentPresenterUpsellTest {
                 isSelected = false,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
@@ -429,7 +429,7 @@ class ShipmentPresenterUpsellTest {
                 isSelected = false,
                 price = 100,
                 duration = "duration",
-                wording = "wording",
+                summaryInfo = "wording",
                 buttonText = "button"
         )
         coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs

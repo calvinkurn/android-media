@@ -5,7 +5,11 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
+import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
@@ -27,6 +31,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -52,8 +57,11 @@ import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
@@ -893,8 +901,162 @@ class ShipmentPresenterCheckoutTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "")
 
         // Then
+        assert(checkoutRequest.crossSell?.listItem?.isNotEmpty() == true)
         assert(checkoutRequest.promos?.isNotEmpty() == true)
         assert(checkoutRequest.promoCodes?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `WHEN generate checkout request with new upsell selected then cross sell model is not empty`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = true,
+                isSelected = true,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                price = 100,
+                duration = "duration",
+                summaryInfo = "wording",
+                buttonText = "button",
+                id = "1",
+                additionalVerticalId = "2",
+                transactionType = "upsell"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+
+        // Then
+        assert(checkoutRequest.crossSell!!.listItem.isNotEmpty())
+        assertEquals(CrossSellItemRequestModel(1, 100, "upsell", 2), checkoutRequest.crossSell!!.listItem[0])
+    }
+
+    @Test
+    fun `WHEN generate checkout request with new upsell not selected then cross sell model is empty`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = true,
+                isSelected = false,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                price = 100,
+                duration = "duration",
+                summaryInfo = "wording",
+                buttonText = "button",
+                id = "1",
+                additionalVerticalId = "2",
+                transactionType = "upsell"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+
+        // Then
+        assert(checkoutRequest.crossSell!!.listItem.isEmpty())
+    }
+
+    @Test
+    fun `WHEN generate checkout request with new upsell not showed then cross sell model is empty`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = false,
+                isSelected = false,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                price = 100,
+                duration = "duration",
+                summaryInfo = "wording",
+                buttonText = "button",
+                id = "1",
+                additionalVerticalId = "2",
+                transactionType = "upsell"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+
+        // Then
+        assert(checkoutRequest.crossSell!!.listItem.isEmpty())
+    }
+
+    @Test
+    fun `WHEN generate checkout request with new upsell selected but not showed then cross sell model is empty`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = NewUpsellData(
+                isShow = false,
+                isSelected = true,
+                description = "desc",
+                appLink = "applink",
+                image = "image",
+                price = 100,
+                duration = "duration",
+                summaryInfo = "wording",
+                buttonText = "button",
+                id = "1",
+                additionalVerticalId = "2",
+                transactionType = "upsell"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), newUpsell = upsell))
+        }
+
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", true)
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+
+        // Then
+        assert(checkoutRequest.crossSell!!.listItem.isEmpty())
     }
 
     @Test
