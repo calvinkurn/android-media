@@ -9,7 +9,7 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingInvoiceOrderN
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
 
-class InvoiceOrderNumberViewHolderPayloadViewHolder(
+class InvoiceOrderNumberViewHolder(
     view: View,
     private val listener: Listener
 ) : CustomPayloadViewHolder<InvoiceOrderNumberUiModel>(view) {

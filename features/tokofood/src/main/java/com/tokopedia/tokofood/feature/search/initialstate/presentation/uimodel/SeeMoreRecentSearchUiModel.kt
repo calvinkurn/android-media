@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.I
 data class SeeMoreRecentSearchUiModel(
     val sectionId: String,
     val recentSearchMoreList: List<RecentSearchItemUiModel>
-): BaseInitialStateTypeFactory {
+): BaseInitialStateVisitable {
     override fun type(typeFactory: InitialStateTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

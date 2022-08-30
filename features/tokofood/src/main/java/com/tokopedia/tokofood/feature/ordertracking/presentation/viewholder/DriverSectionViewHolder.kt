@@ -14,7 +14,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverI
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 
-class DriverSectionViewHolderPayloadViewHolder(
+class DriverSectionViewHolder(
     view: View,
     private val listener: Listener
 ) : CustomPayloadViewHolder<DriverSectionUiModel>(view) {

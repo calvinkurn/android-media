@@ -1,13 +1,12 @@
 package com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.InitialStateTypeFactoryImpl
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateTypeFactory
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateVisitable
 
 class InitialSearchStateDiffUtil(
-    private val oldItems: List<BaseInitialStateTypeFactory>,
-    private val newItems: List<BaseInitialStateTypeFactory>,
+    private val oldItems: List<BaseInitialStateVisitable>,
+    private val newItems: List<BaseInitialStateVisitable>,
     private val initialStateTypeFactoryImpl: InitialStateTypeFactoryImpl
 ) : DiffUtil.Callback() {
 

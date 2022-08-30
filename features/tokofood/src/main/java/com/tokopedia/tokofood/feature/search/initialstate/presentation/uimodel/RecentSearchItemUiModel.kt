@@ -9,7 +9,7 @@ data class RecentSearchItemUiModel(
     val title: String,
     val template: String,
     val imageActionUrl: String
-) : BaseInitialStateTypeFactory {
+) : BaseInitialStateVisitable {
     override fun type(typeFactory: InitialStateTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

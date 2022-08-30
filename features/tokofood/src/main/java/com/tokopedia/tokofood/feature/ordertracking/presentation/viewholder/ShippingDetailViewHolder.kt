@@ -8,7 +8,7 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailShippingSection
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingDetailUiModel
 
-class ShippingDetailViewHolderPayloadViewHolder(view: View):
+class ShippingDetailViewHolder(view: View):
     CustomPayloadViewHolder<ShippingDetailUiModel>(view) {
 
     companion object {

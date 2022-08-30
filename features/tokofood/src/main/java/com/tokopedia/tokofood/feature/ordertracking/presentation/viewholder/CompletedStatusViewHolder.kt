@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailStatusInfoHeade
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.CompletedStatusInfoUiModel
 
-class CompletedStatusViewHolderPayloadViewHolder(view: View): CustomPayloadViewHolder<CompletedStatusInfoUiModel>(view) {
+class CompletedStatusViewHolder(view: View): CustomPayloadViewHolder<CompletedStatusInfoUiModel>(view) {
 
     companion object {
         @LayoutRes

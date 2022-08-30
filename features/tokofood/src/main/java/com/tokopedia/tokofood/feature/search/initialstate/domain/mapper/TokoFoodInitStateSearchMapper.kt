@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.feature.search.initialstate.domain.mapper
 
 import com.tokopedia.tokofood.feature.search.initialstate.domain.model.RemoveSearchHistoryResponse
 import com.tokopedia.tokofood.feature.search.initialstate.domain.model.TokoFoodInitSearchStateResponse
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateTypeFactory
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateVisitable
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsListUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsPopularSearch
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
@@ -18,8 +18,8 @@ import javax.inject.Inject
 class TokoFoodInitStateSearchMapper @Inject constructor() {
 
     fun mapToInitialStateWrapperUiModel(tokoFoodInitSearchState: TokoFoodInitSearchStateResponse.TokofoodInitSearchState): InitialStateWrapperUiModel {
-        val baseInitialStateList = mutableListOf<BaseInitialStateTypeFactory>().apply {
-            tokoFoodInitSearchState.sections.map {
+        val baseInitialStateList = mutableListOf<BaseInitialStateVisitable>().apply {
+            tokoFoodInitSearchState.sections.forEach {
                 when (it.id) {
                     RECENT_SEARCH -> {
                         addRecentSearchSection(it)
@@ -31,7 +31,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
                         addCuisineListSection(it)
                     }
                     else -> {
-                        return@map
+                        return@forEach
                     }
                 }
             }
@@ -47,7 +47,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
         )
     }
 
-    private fun MutableList<BaseInitialStateTypeFactory>.addRecentSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
+    private fun MutableList<BaseInitialStateVisitable>.addRecentSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         val recentSearchSize = section.items.size
         val recentSearchLimit = section.items.take(MAX_LIMIT_ITEM)
         val recentSearchSeeMore = section.items.subList(THREE_INDEX, recentSearchSize)
@@ -77,7 +77,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
         add(SeeMoreRecentSearchUiModel(section.id, recentSearchSeeMoreList))
     }
 
-    private fun MutableList<BaseInitialStateTypeFactory>.addPopularSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
+    private fun MutableList<BaseInitialStateVisitable>.addPopularSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         add(HeaderItemInitialStateUiModel(section.header, section.labelText, section.labelAction))
         add(ChipsListUiModel(
             section.items.map { item ->
@@ -90,7 +90,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
         ))
     }
 
-    private fun MutableList<BaseInitialStateTypeFactory>.addCuisineListSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
+    private fun MutableList<BaseInitialStateVisitable>.addCuisineListSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         val cuisineListSize = section.items.size
         val cuisineListLimit = section.items.take(MAX_LIMIT_ITEM)
         val cuisineListSeeMore = section.items.subList(THREE_INDEX, cuisineListSize)

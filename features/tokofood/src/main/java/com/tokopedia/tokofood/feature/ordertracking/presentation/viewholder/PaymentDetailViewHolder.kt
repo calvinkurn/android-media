@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailPaymentInfoBind
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
 
-class PaymentDetailViewHolderPayloadViewHolder(view: View) : CustomPayloadViewHolder<PaymentDetailUiModel>(view) {
+class PaymentDetailViewHolder(view: View) : CustomPayloadViewHolder<PaymentDetailUiModel>(view) {
 
     companion object {
         @LayoutRes

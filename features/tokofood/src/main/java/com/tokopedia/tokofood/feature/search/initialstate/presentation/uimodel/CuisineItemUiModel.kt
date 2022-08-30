@@ -9,7 +9,7 @@ data class CuisineItemUiModel(
     val title: String,
     val template: String,
     val appLink: String
-): BaseInitialStateTypeFactory {
+): BaseInitialStateVisitable {
     override fun type(typeFactory: InitialStateTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

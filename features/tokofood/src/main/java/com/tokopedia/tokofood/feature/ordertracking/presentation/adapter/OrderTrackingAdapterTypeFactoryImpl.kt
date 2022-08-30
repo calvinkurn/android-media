@@ -26,24 +26,24 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDi
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.CompletedStatusViewHolderPayloadViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.DriverSectionViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.CompletedStatusViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.DriverSectionViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.FoodItemViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.InvoiceOrderNumberViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.InvoiceOrderNumberViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderDetailHeaderViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderDetailToggleCtaViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderDetailToggleCtaViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingErrorViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingEstimationViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingLoadingViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingStatusInfoViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingStatusInfoViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingTickerViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentAmountViewHolderPayloadViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentDetailViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentAmountViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentDetailViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentHeaderViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentMethodViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.PaymentMethodViewHolderPayload
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.RestaurantUserAddressViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailHeaderViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TemporaryFinishOrderViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ThickDividerViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ThinDividerMarginViewHolder
@@ -79,23 +79,23 @@ class OrderTrackingAdapterTypeFactoryImpl(
     }
 
     override fun type(completedStatusInfoUiModel: CompletedStatusInfoUiModel): Int {
-        return CompletedStatusViewHolderPayloadViewHolder.LAYOUT
+        return CompletedStatusViewHolder.LAYOUT
     }
 
     override fun type(shippingDetailUiModel: ShippingDetailUiModel): Int {
-        return ShippingDetailViewHolderPayloadViewHolder.LAYOUT
+        return ShippingDetailViewHolder.LAYOUT
     }
 
     override fun type(orderDetailToggleCtaUiModel: OrderDetailToggleCtaUiModel): Int {
-        return OrderDetailToggleCtaViewHolderPayloadViewHolder.LAYOUT
+        return OrderDetailToggleCtaViewHolder.LAYOUT
     }
 
     override fun type(driverSectionUiModel: DriverSectionUiModel): Int {
-        return DriverSectionViewHolderPayloadViewHolder.LAYOUT
+        return DriverSectionViewHolder.LAYOUT
     }
 
     override fun type(orderTrackingStatusInfoUiModel: OrderTrackingStatusInfoUiModel): Int {
-        return OrderTrackingStatusInfoViewHolderPayloadViewHolder.LAYOUT
+        return OrderTrackingStatusInfoViewHolder.LAYOUT
     }
 
     override fun type(orderTrackingEstimationUiModel: OrderTrackingEstimationUiModel): Int {
@@ -107,19 +107,19 @@ class OrderTrackingAdapterTypeFactoryImpl(
     }
 
     override fun type(invoiceOrderNumberUiModel: InvoiceOrderNumberUiModel): Int {
-        return InvoiceOrderNumberViewHolderPayloadViewHolder.LAYOUT
+        return InvoiceOrderNumberViewHolder.LAYOUT
     }
 
     override fun type(paymentInfoUiModel: PaymentDetailUiModel): Int {
-        return PaymentDetailViewHolderPayloadViewHolder.LAYOUT
+        return PaymentDetailViewHolder.LAYOUT
     }
 
     override fun type(paymentMethodUiModel: PaymentMethodUiModel): Int {
-        return PaymentMethodViewHolderPayloadViewHolder.LAYOUT
+        return PaymentMethodViewHolderPayload.LAYOUT
     }
 
     override fun type(paymentAmountUiModel: PaymentAmountUiModel): Int {
-        return PaymentAmountViewHolderPayloadViewHolder.LAYOUT
+        return PaymentAmountViewHolder.LAYOUT
     }
 
     override fun type(paymentHeaderUiModel: PaymentHeaderUiModel): Int {
@@ -153,20 +153,20 @@ class OrderTrackingAdapterTypeFactoryImpl(
             RestaurantUserAddressViewHolder.LAYOUT -> RestaurantUserAddressViewHolder(parent)
             ShippingDetailHeaderViewHolder.LAYOUT -> ShippingDetailHeaderViewHolder(parent)
             OrderDetailHeaderViewHolder.LAYOUT -> OrderDetailHeaderViewHolder(parent)
-            CompletedStatusViewHolderPayloadViewHolder.LAYOUT -> CompletedStatusViewHolderPayloadViewHolder(parent)
-            ShippingDetailViewHolderPayloadViewHolder.LAYOUT -> ShippingDetailViewHolderPayloadViewHolder(parent)
-            OrderDetailToggleCtaViewHolderPayloadViewHolder.LAYOUT -> OrderDetailToggleCtaViewHolderPayloadViewHolder(
+            CompletedStatusViewHolder.LAYOUT -> CompletedStatusViewHolder(parent)
+            ShippingDetailViewHolder.LAYOUT -> ShippingDetailViewHolder(parent)
+            OrderDetailToggleCtaViewHolder.LAYOUT -> OrderDetailToggleCtaViewHolder(
                 parent,
                 orderTrackingListener
             )
-            DriverSectionViewHolderPayloadViewHolder.LAYOUT -> DriverSectionViewHolderPayloadViewHolder(parent, orderTrackingListener)
-            OrderTrackingStatusInfoViewHolderPayloadViewHolder.LAYOUT -> OrderTrackingStatusInfoViewHolderPayloadViewHolder(parent)
+            DriverSectionViewHolder.LAYOUT -> DriverSectionViewHolder(parent, orderTrackingListener)
+            OrderTrackingStatusInfoViewHolder.LAYOUT -> OrderTrackingStatusInfoViewHolder(parent)
             OrderTrackingEstimationViewHolder.LAYOUT -> OrderTrackingEstimationViewHolder(parent)
             FoodItemViewHolder.LAYOUT -> FoodItemViewHolder(parent, recyclerViewPollerListener)
-            InvoiceOrderNumberViewHolderPayloadViewHolder.LAYOUT -> InvoiceOrderNumberViewHolderPayloadViewHolder(parent, orderTrackingListener)
-            PaymentDetailViewHolderPayloadViewHolder.LAYOUT -> PaymentDetailViewHolderPayloadViewHolder(parent)
-            PaymentMethodViewHolderPayloadViewHolder.LAYOUT -> PaymentMethodViewHolderPayloadViewHolder(parent)
-            PaymentAmountViewHolderPayloadViewHolder.LAYOUT -> PaymentAmountViewHolderPayloadViewHolder(parent)
+            InvoiceOrderNumberViewHolder.LAYOUT -> InvoiceOrderNumberViewHolder(parent, orderTrackingListener)
+            PaymentDetailViewHolder.LAYOUT -> PaymentDetailViewHolder(parent)
+            PaymentMethodViewHolderPayload.LAYOUT -> PaymentMethodViewHolderPayload(parent)
+            PaymentAmountViewHolder.LAYOUT -> PaymentAmountViewHolder(parent)
             PaymentHeaderViewHolder.LAYOUT -> PaymentHeaderViewHolder(parent)
             TemporaryFinishOrderViewHolder.LAYOUT -> TemporaryFinishOrderViewHolder(
                 parent,

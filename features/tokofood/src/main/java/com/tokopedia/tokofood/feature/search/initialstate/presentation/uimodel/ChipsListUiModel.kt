@@ -4,7 +4,7 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.I
 
 data class ChipsListUiModel(
     val chipsPopularSearchList: List<ChipsPopularSearch> = emptyList()
-) : BaseInitialStateTypeFactory {
+) : BaseInitialStateVisitable {
     override fun type(typeFactory: InitialStateTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

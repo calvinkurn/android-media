@@ -8,7 +8,7 @@ import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHo
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 
-class OrderDetailToggleCtaViewHolderPayloadViewHolder(
+class OrderDetailToggleCtaViewHolder(
     view: View,
     private val orderTrackingListener: OrderTrackingListener
 ) : CustomPayloadViewHolder<OrderDetailToggleCtaUiModel>(view) {

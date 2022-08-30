@@ -9,7 +9,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.Ord
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 
-class OrderTrackingStatusInfoViewHolderPayloadViewHolder(
+class OrderTrackingStatusInfoViewHolder(
     itemView: View
 ) : CustomPayloadViewHolder<OrderTrackingStatusInfoUiModel>(itemView) {
 

@@ -6,7 +6,7 @@ data class HeaderItemInitialStateUiModel(
     val headerLabel: String,
     val labelText: String,
     val labelAction: String
-): BaseInitialStateTypeFactory {
+): BaseInitialStateVisitable {
     override fun type(typeFactory: InitialStateTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

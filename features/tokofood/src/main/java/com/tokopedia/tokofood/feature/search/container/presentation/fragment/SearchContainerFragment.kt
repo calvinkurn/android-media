@@ -138,7 +138,7 @@ class SearchContainerFragment: BaseDaggerFragment(),
     private fun observeSearchKeyword() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.keywordResult.collect { keyword ->
-                if (keyword.length < THREE_WORDS) {
+                if (keyword.length < THREE_LETTERS) {
                     proceedInitialState()
                 } else {
                     proceedSearchResult(keyword)
@@ -160,6 +160,6 @@ class SearchContainerFragment: BaseDaggerFragment(),
             return SearchContainerFragment()
         }
 
-        const val THREE_WORDS = 3
+        const val THREE_LETTERS = 3
     }
 }

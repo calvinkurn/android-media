@@ -18,7 +18,7 @@ import com.tokopedia.tokofood.feature.search.initialstate.di.component.DaggerIni
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.InitialStateTypeFactoryImpl
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.TokoFoodInitStateAdapter
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.listener.InitialStateListener
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateTypeFactory
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateVisitable
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsPopularSearch
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.SeeMoreCuisineUiModel
@@ -159,7 +159,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
         }
     }
 
-    private fun setInitialStateData(initialStateList: List<BaseInitialStateTypeFactory>) {
+    private fun setInitialStateData(initialStateList: List<BaseInitialStateVisitable>) {
         initialSearchAdapter.setInitialStateList(initialStateList)
     }
 

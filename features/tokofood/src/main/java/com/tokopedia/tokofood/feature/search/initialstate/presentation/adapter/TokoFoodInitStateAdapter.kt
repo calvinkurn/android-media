@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.diffutil.InitialSearchStateDiffUtil
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateTypeFactory
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateVisitable
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.HeaderRecentSearchUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.SeeMoreRecentSearchUiModel
@@ -15,8 +15,8 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.S
 class TokoFoodInitStateAdapter(private val initialSearchAdapterFactoryImpl: InitialStateTypeFactoryImpl) :
     BaseAdapter<InitialStateTypeFactoryImpl>(initialSearchAdapterFactoryImpl) {
 
-    fun setInitialStateList(newList: List<BaseInitialStateTypeFactory>) {
-        val oldList = visitables.filterIsInstance<BaseInitialStateTypeFactory>()
+    fun setInitialStateList(newList: List<BaseInitialStateVisitable>) {
+        val oldList = visitables.filterIsInstance<BaseInitialStateVisitable>()
         val callBack = InitialSearchStateDiffUtil(oldList, newList, initialSearchAdapterFactoryImpl)
         val diffResult = DiffUtil.calculateDiff(callBack)
         visitables.clear()
@@ -46,9 +46,9 @@ class TokoFoodInitStateAdapter(private val initialSearchAdapterFactoryImpl: Init
     }
 
     fun removeAllInitialState() {
-        val initialStateList = visitables.filterIsInstance<BaseInitialStateTypeFactory>()
+        val initialStateList = visitables.filterIsInstance<BaseInitialStateVisitable>()
         if (initialStateList.size.isMoreThanZero()) {
-            visitables.removeAll { it is BaseInitialStateTypeFactory }
+            visitables.removeAll { it is BaseInitialStateVisitable }
             notifyItemRangeRemoved(visitables.size, initialStateList.size)
         }
     }
