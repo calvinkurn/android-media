@@ -426,7 +426,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    fun getConfiguration() {
+    fun getConfiguration(contentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty) {
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(authorId, authorType)
@@ -460,6 +460,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
 
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                if (contentAccount != ContentAccountUiModel.Empty) _selectedAccount.value = contentAccount
 
                 setProductConfig(configUiModel.productTagConfig)
                 setCoverConfig(configUiModel.coverConfig)
@@ -1531,8 +1532,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
         _observableConfigInfo.value = NetworkResult.Loading
-        _selectedAccount.value = contentAccount
-        getConfiguration()
+        getConfiguration(contentAccount)
     }
 
     /**
