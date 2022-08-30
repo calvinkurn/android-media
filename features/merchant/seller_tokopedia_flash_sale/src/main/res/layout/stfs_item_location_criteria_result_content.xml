@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
+        android:id="@+id/tfOriginalPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textvalue_icon_status="PASSED"
+        app:textvalue_subtitle="@string/commonbs_field_required"
+        app:textvalue_title="@string/commonbs_criteria_check_original_price_field_title"
+        tool:textvalue_value="80-100" />
+
+    <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
+        android:id="@+id/tfCampaignStock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textvalue_icon_status="PASSED"
+        app:textvalue_subtitle="@string/commonbs_field_required"
+        app:textvalue_title="@string/commonbs_criteria_check_campaign_stock_field_title"
+        tool:textvalue_value="80-100" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
