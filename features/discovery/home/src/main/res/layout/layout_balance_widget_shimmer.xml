@@ -6,15 +6,15 @@
     android:paddingVertical="2dp">
 
     <include
-        android:id="@+id/home_container_balance"
+        android:id="@+id/home_container_balance_shimmer"
         layout="@layout/layout_balance_widget_success"
         android:visibility="invisible"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/home_container_balance"
-        app:layout_constraintTop_toTopOf="@id/home_container_balance">
+        app:layout_constraintBottom_toBottomOf="@id/home_container_balance_shimmer"
+        app:layout_constraintTop_toTopOf="@id/home_container_balance_shimmer">
 
         <include
             android:id="@+id/layout_shimmer_balance_widget_1"
