@@ -43,6 +43,7 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
 
     <!-- Product Tag -->
     <string name="content_creation_product_tag_title">Tag Produk</string>
+    <string name="content_creation_multiple_product_tag_title">Pilih produk (%d/%d)</string>
     <string name="cc_product_tag_source_label">Pilih produk dari</string>
     <string name="cc_product_tag_source_my_account_label">Akun saya</string>
     <string name="cc_product_tag_source_my_shop_label">Toko saya</string>

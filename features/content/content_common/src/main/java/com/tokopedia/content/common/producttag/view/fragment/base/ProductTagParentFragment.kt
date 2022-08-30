@@ -27,6 +27,7 @@ import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSource
 import com.tokopedia.content.common.producttag.view.fragment.*
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
@@ -149,6 +150,7 @@ class ProductTagParentFragment @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderActionBar(it.prevValue?.selectedProduct, it.value.selectedProduct)
                 renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
             }
         }
@@ -193,6 +195,23 @@ class ProductTagParentFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun renderActionBar(
+        prevState: List<ProductUiModel>?,
+        currState: List<ProductUiModel>,
+    ) {
+        if(prevState == currState) return
+
+        val title = if(viewModel.isMultipleSelectionProduct) {
+            getString(R.string.content_creation_multiple_product_tag_title)
+                .format(currState.size, viewModel.maxSelectedProduct)
+        }
+        else {
+            getString(R.string.content_creation_product_tag_title)
+        }
+
+        binding.tvCcProductTagPageTitle.text = title
     }
 
     private fun renderSelectedProductTagSource(
@@ -335,6 +354,7 @@ class ProductTagParentFragment @Inject constructor(
                 ContentProductTagConfig(
                     isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
                     isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
+                    maxSelectedProduct = productTagArgument.maxSelectedProduct,
                 )
             )
         )

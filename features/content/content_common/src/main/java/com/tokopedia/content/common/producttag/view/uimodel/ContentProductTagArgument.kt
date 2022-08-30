@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.producttag.view.uimodel
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.lang.StringBuilder
 
 /**
@@ -27,6 +28,9 @@ class ContentProductTagArgument private constructor(
     val isFullPageAutocomplete: Boolean
         get() = query[KEY_IS_FULL_PAGE_AUTOCOMPLETE].toBoolean()
 
+    val maxSelectedProduct: Int
+        get() = query[KEY_MAX_SELECTED_PRODUCT].toIntOrZero()
+
     companion object {
         const val KEY_SHOP_BADGE = "shopBadge"
         const val KEY_AUTHOR_ID = "authorId"
@@ -34,6 +38,7 @@ class ContentProductTagArgument private constructor(
         const val KEY_PRODUCT_TAG_SOURCE = "productTagSource"
         const val KEY_IS_MULTIPLE_SELECTION_PRODUCT = "isMultipleSelectionProduct"
         const val KEY_IS_FULL_PAGE_AUTOCOMPLETE = "isFullPageAutocomplete"
+        const val KEY_MAX_SELECTED_PRODUCT = "maxSelectedProdict"
 
         const val QUERY_SEPARATOR = "&"
 
@@ -55,6 +60,7 @@ class ContentProductTagArgument private constructor(
         private var productTagSource: String = ""
         private var isMultipleSelectionProduct: Boolean = false
         private var isFullPageAutocomplete: Boolean = false
+        private var maxSelectedProduct: Int = 0
 
         fun setShopBadge(shopBadge: String): Builder {
             this.shopBadge = shopBadge
@@ -86,6 +92,11 @@ class ContentProductTagArgument private constructor(
             return this
         }
 
+        fun setMaxSelectedProduct(maxSelectedProduct: Int): Builder {
+            this.maxSelectedProduct = maxSelectedProduct
+            return this
+        }
+
         fun build(): String {
             return buildString {
                 append(KEY_SHOP_BADGE, shopBadge)
@@ -99,6 +110,8 @@ class ContentProductTagArgument private constructor(
                 append(KEY_IS_MULTIPLE_SELECTION_PRODUCT, isMultipleSelectionProduct)
                 append(QUERY_SEPARATOR)
                 append(KEY_IS_FULL_PAGE_AUTOCOMPLETE, isFullPageAutocomplete)
+                append(QUERY_SEPARATOR)
+                append(KEY_MAX_SELECTED_PRODUCT, maxSelectedProduct)
             }
         }
 
