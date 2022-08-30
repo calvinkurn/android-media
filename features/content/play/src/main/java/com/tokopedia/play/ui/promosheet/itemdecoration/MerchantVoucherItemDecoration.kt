@@ -38,7 +38,7 @@ class MerchantVoucherItemDecoration(context: Context) : RecyclerView.ItemDecorat
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        for (index in 0 until parent.childCount) {
+        for (index in 0 until parent.childCount - 1) {
             val child = parent.getChildAt(index)
 
             when (parent.getChildViewHolder(child)) {
