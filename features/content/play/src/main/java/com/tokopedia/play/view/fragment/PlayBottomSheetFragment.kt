@@ -281,9 +281,23 @@ class PlayBottomSheetFragment @Inject constructor(
             bottomSheetType = BottomInsetsType.CouponSheet,
             toasterType = Toaster.TYPE_NORMAL,
             message = getString(R.string.play_voucher_code_copied),
-            actionText = getString(R.string.play_action_ok),
+            actionText = getString(R.string.play_action_lihat),
+            actionClickListener = {
+                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+            }
         )
         analytic.clickCopyVoucher(voucher)
+    }
+
+    override fun onVoucherItemClicked(
+        view: ShopCouponSheetViewComponent,
+        voucher: PlayVoucherUiModel.MerchantVoucherUiModel
+    ) {
+        doShowToaster(
+            bottomSheetType = BottomInsetsType.CouponSheet,
+            toasterType = Toaster.TYPE_NORMAL,
+            message = getString(R.string.play_voucher_public),
+        )
     }
 
     override fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int) {
