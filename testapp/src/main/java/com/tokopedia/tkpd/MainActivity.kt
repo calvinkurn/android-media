@@ -119,13 +119,12 @@ class MainActivity : AppCompatActivity() {
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return "tokopedia-android-internal://marketplace/one-click-checkout?product_id=2101839250"
+        return ""
     }
 }
