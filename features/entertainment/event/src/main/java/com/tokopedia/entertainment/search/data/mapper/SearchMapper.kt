@@ -6,6 +6,7 @@ import com.tokopedia.entertainment.search.adapter.viewholder.*
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
 import com.tokopedia.entertainment.search.data.*
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * Author errysuprayogi on 05,March,2020
@@ -58,30 +59,13 @@ object SearchMapper {
         )
     }
 
-    fun mapperLocationtoSearchList(dataLocation: EventSearchFullLocationResponse.Data): MutableList<SearchEventItem<*>>{
-        val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
-        val lists: MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
-        dataLocation.let {
-            it.eventLocationSearch.let {
-                if(it.count.toInt() > 0){
-                    it.locations.forEach{
-                        lists.add(mappingLocationFullSuggestion(it))
-                    }
-                    listViewHolder.add(SearchLocationModel(lists, allLocation = true))
-                }
-            }
-        }
-
-        return listViewHolder
-    }
-
     fun mappingLocationandKegiatantoSearchList(dataLocation: EventSearchLocationResponse.Data, text:String): MutableList<SearchEventItem<*>>{
         val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
         val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
         val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
         dataLocation?.let {
             it.eventLocationSearch.let {
-                if(it.count.toInt()  > 0){
+                if(it.count.toIntSafely()  > 0){
                     it.locations.forEach {
                         listsLocation.add(SearchMapper.mappingLocationSuggestion(it))
                     }
@@ -89,7 +73,7 @@ object SearchMapper {
                 }
             }
             it.eventSearch.let {
-                if(it.count.toInt() > 0){
+                if(it.count.toIntSafely() > 0){
                     it.products.forEach{
                         listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
                     }

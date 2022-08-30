@@ -60,6 +60,7 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -155,7 +156,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             context?.let {
                 renderView(it, eventPDPContentCombined)
                 if(userSession.isLoggedIn){
-                    eventPDPViewModel.getWhiteListUser(userSession.userId.toInt(),userSession.email, productDetailData)
+                    eventPDPViewModel.getWhiteListUser(userSession.userId.toIntSafely(),userSession.email, productDetailData)
                 }
             }
         })

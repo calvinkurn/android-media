@@ -54,6 +54,7 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -155,8 +156,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             idPackageActive = idPackages
         }
 
-        if (qty.toInt() > EMPTY_QTY) {
-            hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate, idPackageActive, packageName))
+        if (qty.toIntSafely() > EMPTY_QTY) {
+            hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toIntSafely(), totalPrice, selectedDate, idPackageActive, packageName))
         } else {
             hashItemMap.remove(idPackagesItem)
         }
