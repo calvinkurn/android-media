@@ -39,6 +39,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted(SHOP_BADGE) val shopBadge: String,
     @Assisted(AUTHOR_ID) private val authorId: String,
     @Assisted(AUTHOR_TYPE) private val authorType: String,
+    @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
     @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
@@ -52,6 +53,7 @@ class ProductTagViewModel @AssistedInject constructor(
             @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted(AUTHOR_ID) authorId: String,
             @Assisted(AUTHOR_TYPE) authorType: String,
+            @Assisted(INITIAL_SELECTED_PRODUCT) initialSelectedProduct: List<SelectedProductUiModel>,
             @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
         ): ProductTagViewModel
     }
@@ -230,6 +232,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     init {
         processProductTagSource(productTagSourceRaw)
+        _selectedProduct.update { initialSelectedProduct }
     }
 
     private fun processProductTagSource(productTagSourceRaw: String) {

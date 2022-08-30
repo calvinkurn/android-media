@@ -59,6 +59,7 @@ class ProductTagParentFragment @Inject constructor(
 
     private lateinit var viewModel: ProductTagViewModel
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
 
     private var _binding: FragmentProductTagParentBinding? = null
     private val binding: FragmentProductTagParentBinding
@@ -369,11 +370,12 @@ class ProductTagParentFragment @Inject constructor(
             this,
             viewModelFactoryCreator.create(
                 this,
-                productTagArgument.productTagSource,
-                productTagArgument.shopBadge,
-                productTagArgument.authorId,
-                productTagArgument.authorType,
-                ContentProductTagConfig(
+                productTagSourceRaw = productTagArgument.productTagSource,
+                shopBadge = productTagArgument.shopBadge,
+                authorId = productTagArgument.authorId,
+                authorType = productTagArgument.authorType,
+                initialSelectedProduct = mDataSource?.getInitialSelectedProduct() ?: emptyList(),
+                productTagConfig = ContentProductTagConfig(
                     isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
                     isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
                     maxSelectedProduct = productTagArgument.maxSelectedProduct,
@@ -440,6 +442,10 @@ class ProductTagParentFragment @Inject constructor(
         mListener = listener
     }
 
+    fun setDataSource(dataSource: DataSource) {
+        mDataSource = dataSource
+    }
+
     companion object {
         const val TAG = "ProductTagParentFragment"
         private const val EXTRA_QUERY = "EXTRA_QUERY"
@@ -478,5 +484,9 @@ class ProductTagParentFragment @Inject constructor(
     interface Listener {
         fun onCloseProductTag()
         fun onFinishProductTag(products: List<SelectedProductUiModel>)
+    }
+
+    interface DataSource {
+        fun getInitialSelectedProduct(): List<SelectedProductUiModel>
     }
 }

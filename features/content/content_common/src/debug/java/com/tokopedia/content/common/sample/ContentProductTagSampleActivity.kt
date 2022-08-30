@@ -58,6 +58,15 @@ class ContentProductTagSampleActivity : BaseActivity() {
                         closeFragment()
                     }
                 })
+
+                fragment.setDataSource(object : ProductTagParentFragment.DataSource {
+                    override fun getInitialSelectedProduct(): List<SelectedProductUiModel> {
+                        return listOf(
+                            SelectedProductUiModel.createOnlyId("2148279610"),
+                            SelectedProductUiModel.createOnlyId("4207525260"),
+                        )
+                    }
+                })
             }
         }
     }

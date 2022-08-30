@@ -7,7 +7,7 @@ internal const val PRODUCT_TAG_SOURCE_RAW = "productTagSourceRaw"
 internal const val SHOP_BADGE = "shopBadge"
 internal const val AUTHOR_ID = "authorId"
 internal const val AUTHOR_TYPE = "authorType"
-internal const val PREVIOUS_SELECTED_PRODUCT = "previousSelectedProduct"
+internal const val INITIAL_SELECTED_PRODUCT = "initialSelectedProduct"
 internal const val PRODUCT_TAG_CONFIG = "productTagConfig"
 
 internal const val AUTHOR_USER = "content-user"
