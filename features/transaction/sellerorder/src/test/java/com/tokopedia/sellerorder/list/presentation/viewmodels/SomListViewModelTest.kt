@@ -1465,7 +1465,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCacheAndCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun `filterResult should equals to Success when get filters from cache and cloud is success`() = coroutineTestRule.runBlockingTest {
         val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
             "json/som_list_get_order_filter_success_response.json"
         )
@@ -1474,10 +1474,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         } answers {
             FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
         }
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns true
 
         getAdminPermission_shouldSuccess()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
@@ -1494,42 +1490,16 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun `filterResult should equals to Success when get filters from cache is failed and cloud is success`() = coroutineTestRule.runBlockingTest {
         val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
             "json/som_list_get_order_filter_success_response.json"
         )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
-        } answers {
-            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
-        }
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns false
-
-        getAdminPermission_shouldSuccess()
-        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
-        viewModel.getFilters(true)
-
-        coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(false)
-        }
-
-        val result = viewModel.filterResult.observeAwaitValue()
-
-        assert(result is Success && !result.data.fromCache)
-    }
-
-    @Test
-    fun getFiltersFromCacheAndCloud_shouldFailed() = coroutineTestRule.runBlockingTest {
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground(true)
         } throws Throwable()
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns true
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
@@ -1540,36 +1510,137 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetFilterListUseCase.executeOnBackground(false)
         }
 
-        assert(viewModel.filterResult.observeAwaitValue() is Fail)
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.fromCache)
     }
 
     @Test
-    fun getFiltersFromCloud_shouldFailed() = coroutineTestRule.runBlockingTest {
+    fun `filterResult should equals to Fail when get filters from cache is success and cloud is failed`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground(true)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, true)
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
         } throws Throwable()
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns false
 
         getAdminPermission_shouldSuccess()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
             somListGetFilterListUseCase.executeOnBackground(false)
         }
 
-        assert(viewModel.filterResult.observeAwaitValue() is Fail)
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `filterResult should equals to Fail when get filters from cache and cloud is failed`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } throws Throwable()
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `filterResult#refreshOrder should true after get filter data from cloud when refresh order is requested and get filters from cache is failed and cloud is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(true)
+        } throws Throwable()
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && result.data.refreshOrder)
+    }
+
+    @Test
+    fun `filterResult#refreshOrder should false after get filter data from cloud when refresh order is not requested and get filters from cache is failed and cloud is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(true)
+        } throws Throwable()
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(false)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.refreshOrder)
+    }
+
+    @Test
+    fun `filterResult#refreshOrder should false after get filter data from cloud when refresh order is requested and get filters from cache is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
+
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } answers {
+            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
+        }
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.refreshOrder)
     }
 
     @Test
     fun getFilters_shouldNotSendRequest_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns true
-
         getAdminPermission_shouldFail()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observe({ lifecycle }) {}
         viewModel.getFilters(false)
@@ -2123,20 +2194,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun isOrderStatusIdsChanged_shouldReturnFalse() = coroutineTestRule.runBlockingTest {
-        viewModel.setStatusOrderFilter(listOf(1, 2, 3, 4, 5))
-        val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
-        assertFalse(isChanged)
-    }
-
-    @Test
-    fun isOrderStatusIdsChanged_shouldReturnTrue() = coroutineTestRule.runBlockingTest {
-        viewModel.setStatusOrderFilter(listOf())
-        val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
-        assertTrue(isChanged)
-    }
-
-    @Test
     fun getFailingOrderIdsFromBulkRequestPickupStatus_shouldReturnNonEmptyList() = coroutineTestRule.runBlockingTest {
         val multiShippingStatusResult = MultiShippingStatusUiModel(
             listError = listOf(
@@ -2345,7 +2402,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
     @Test
     fun getTabActive_shouldReturnCorrespondingOrderStatusFilterKeyWhenFilterResultIsNotNull() {
-        getFiltersFromCloud_shouldSuccess()
+        `filterResult should equals to Success when get filters from cache and cloud is success`()
         viewModel.setStatusOrderFilter(listOf(220))
         assertEquals("new_order", viewModel.getTabActive())
     }

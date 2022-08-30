@@ -486,42 +486,15 @@ class SomListViewModel @Inject constructor(
 
     private fun getFiltersFromCloud(refreshOrders: Boolean, afterSuccessfulLoadFromCache: Boolean) {
         launchCatchError(context = dispatcher.main, block = {
-            if (_canShowOrderData.value == true) {
-                val oldFilterData = _filterResult.value?.let { oldResult ->
-                    if (oldResult is Success) {
-                        oldResult.data.copy()
-                    } else null
-                }
-                val newFilterData = somListGetFilterListUseCase.executeOnBackground(
-                    useCache = false
-                ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
-                val filterDataChanged = isFilterDataChanged(oldFilterData, newFilterData)
-                // only true if:
-                // * was requested to refresh order and this method called not after successful load from cache
-                // * was requested to refresh order, this method called after successful load from cache and filter data changed since the cached data is invalid now
-                newFilterData.refreshOrder = (refreshOrders && !afterSuccessfulLoadFromCache) || (refreshOrders && filterDataChanged)
-                setTabActiveFromAppLink("")
-                _filterResult.value = Success(newFilterData)
-            }
+            val newFilterData = somListGetFilterListUseCase.executeOnBackground(
+                useCache = false
+            ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
+            newFilterData.refreshOrder = refreshOrders && !afterSuccessfulLoadFromCache
+            setTabActiveFromAppLink("")
+            _filterResult.value = Success(newFilterData)
         }, onError = {
             _filterResult.value = Fail(it)
         })
-    }
-
-    private fun isFilterDataChanged(
-        oldFilterData: SomListFilterUiModel?,
-        newFilterData: SomListFilterUiModel
-    ): Boolean {
-        return if (oldFilterData == null) {
-            true
-        } else {
-            val selectedStatus = newFilterData.statusList.firstOrNull { it.isChecked }
-            val selectedStatusKey = selectedStatus?.key.orEmpty()
-            val selectedStatusIds = selectedStatus?.id.orEmpty()
-            oldFilterData.statusList.firstOrNull {
-                it.key == selectedStatusKey
-            }?.id != selectedStatusIds
-        }
     }
 
     fun bulkRequestPickup(orderIds: List<String>) {
@@ -709,10 +682,6 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
-
-    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
-        return this.getOrderListParams.statusList != orderStatusIds
-    }
 
     fun getAdminPermission() {
         launchCatchError(
