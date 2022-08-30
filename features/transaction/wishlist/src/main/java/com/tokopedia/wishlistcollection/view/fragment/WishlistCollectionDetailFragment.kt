@@ -528,8 +528,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 showRvWishlist()
                                 isFetchRecommendation = true
                                 hideTotalLabel()
-                                hideSearchBar()
-                                hideFilter()
                             }
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
