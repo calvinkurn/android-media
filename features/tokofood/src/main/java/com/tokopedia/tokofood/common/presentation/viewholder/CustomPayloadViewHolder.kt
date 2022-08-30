@@ -1,10 +1,10 @@
-package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
+package com.tokopedia.tokofood.common.presentation.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-open class BaseOrderTrackingViewHolder<T: Visitable<*>>(view: View): AbstractViewHolder<T>(view) {
+open class CustomPayloadViewHolder<T : Visitable<*>>(view: View) : AbstractViewHolder<T>(view) {
 
     override fun bind(element: T) {}
 

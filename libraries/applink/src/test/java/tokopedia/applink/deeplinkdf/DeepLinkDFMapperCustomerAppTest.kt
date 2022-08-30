@@ -1079,4 +1079,10 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
             "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
         assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_TOKOFOOD)
     }
+
+    @Test
+    fun `check tokofood search appLink then should return DF_TOKOFOOD in customerapp`() {
+        val internalApplink = "${DeeplinkConstant.SCHEME_INTERNAL}://food/search"
+        assertEqualDeepLinkCustomerApp(internalApplink, DeeplinkDFMapper.DF_TOKOFOOD)
+    }
 }

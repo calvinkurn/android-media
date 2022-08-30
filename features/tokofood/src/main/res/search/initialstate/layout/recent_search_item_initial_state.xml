@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icInitialStateHistory"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="SEARCH"
+        android:layout_margin="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvLabelRecentSearch"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLabelRecentSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_2"
+        tools:text="es teh indonesia"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/icInitialStateHistory"
+        app:layout_constraintEnd_toStartOf="@id/ivDeleteRecentSearch"
+        app:layout_constraintTop_toTopOf="@id/icInitialStateHistory"
+        app:layout_constraintBottom_toBottomOf="@id/icInitialStateHistory"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivDeleteRecentSearch"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        tools:text="es teh indonesia"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintStart_toEndOf="@id/tvLabelRecentSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/icInitialStateHistory"
+        app:layout_constraintBottom_toBottomOf="@id/icInitialStateHistory"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
