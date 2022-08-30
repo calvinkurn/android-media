@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.databinding.RedeemVoucherDealsLayoutBinding
+import com.tokopedia.buyerorder.databinding.RedeemVoucherDealsNewLayoutBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
@@ -26,7 +26,7 @@ class RedeemVoucherView : LinearLayout {
 
     private lateinit var actionButton: ActionButton
     private lateinit var item: Items
-    private lateinit var binding: RedeemVoucherDealsLayoutBinding
+    private lateinit var binding: RedeemVoucherDealsNewLayoutBinding
 
     constructor(context: Context?) : super(context){
         initView()
@@ -63,7 +63,7 @@ class RedeemVoucherView : LinearLayout {
     }
 
     private fun initView(){
-        binding = RedeemVoucherDealsLayoutBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = RedeemVoucherDealsNewLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
         if (actionButton.control.equals(KEY_REFRESH, true)) {
             renderRetryButton(actionButton)
