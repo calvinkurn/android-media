@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="chatbot_dms_read_more_color">#42b549</color>
-    <color name="chatbot_black_color_opacity_lvl_35">#66000000</color>
-    <color name="chatbot_black_color_opacity_lvl_40">#66141414</color>
-    <color name="chatbot_black_color_opacity_lvl_50">#8C000000</color>
-    <color name="chatbot_black_color_opacity_lvl_70">#B3000000</color>
-    <color name="chatbot_color_pink">#f05f68</color>
-    <color name="chatbot_color_pink_bg">#fdebec</color>
-    <color name="chatbot_seprator_bg_color">#FFFAE6</color>
-    <color name="chatbot_color_option_list_text">#F531353B</color>
     <color name="chatbot_dms_chat_background">#F3F5F8</color>
     <color name="chatbot_dms_right_message_bg">#D4FBE6</color>
     <color name="chatbot_dms_left_message_bg">#FFFFFF</color>
