@@ -19,10 +19,10 @@
             layout="@layout/layout_item_shimmer_balance_widget"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/home_container_balance"
-            app:layout_constraintBottom_toBottomOf="@id/home_container_balance"/>
+            app:layout_constraintBottom_toBottomOf="@id/home_container_balance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/home_container_balance"

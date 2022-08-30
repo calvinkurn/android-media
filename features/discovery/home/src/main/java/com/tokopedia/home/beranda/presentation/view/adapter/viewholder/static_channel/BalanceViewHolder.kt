@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -99,7 +100,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private fun renderItemLoading(element: BalanceDrawerItemModel) {
         binding?.shimmerItemBalanceWidget?.root?.show()
-        binding?.homeContainerBalance?.gone()
+        binding?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
             listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
         } else if (element.drawerItemType == TYPE_REWARDS) {
@@ -177,7 +178,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private fun showLoading(element: BalanceDrawerItemModel) {
         binding?.shimmerItemBalanceWidget?.root?.show()
-        binding?.homeContainerBalance?.gone()
+        binding?.homeContainerBalance?.invisible()
         if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
             element.state = BalanceDrawerItemModel.STATE_LOADING
             listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
