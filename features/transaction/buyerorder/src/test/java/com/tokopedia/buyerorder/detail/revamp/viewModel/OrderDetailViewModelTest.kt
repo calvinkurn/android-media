@@ -24,6 +24,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -133,7 +134,7 @@ class OrderDetailViewModelTest{
         coEvery { actionButtonUseCase.get().executeOnBackground() } returns mockData
 
         //When
-        viewModel.requestActionButton(emptyList(), 0, true, isCalledFromAdapter = true)
+        viewModel.requestActionButton(listOf(ActionButton()), 0, true, isCalledFromAdapter = true)
 
         //Then
         val result = viewModel.actionButton.value as ActionButtonEventWrapper.TapActionButton
@@ -203,8 +204,36 @@ class OrderDetailViewModelTest{
 
         //Then
         val result = viewModel.eventEmail.value as Success
+        val actionClickable = viewModel.actionClickable.value
         assertNotNull(result)
         assertEquals(response.getData<SendEventEmail>().data.message, result.data.data.message)
+        assertEquals(false, actionClickable)
+
+        verify { sendNotificationUseCase.get().execute(any()) }
+    }
+
+    @Test
+    fun `send event notification when getting errorBody null should be success`(){
+        //Given
+        val response = RestResponse(SendEventEmail(data = DataEmail(message = "test1")), 200, false)
+        response.errorBody = null
+        val responseMap = mapOf<Type, RestResponse>(SendEventEmail::class.java to response)
+
+        every { sendNotificationUseCase.get().execute(any()) } answers {
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onStart()
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onNext(responseMap)
+        }
+
+        //When
+        viewModel.sendEventEmail(ActionButton(), "")
+
+        //Then
+        val result = viewModel.eventEmail.value as Success
+        val actionClickable = viewModel.actionClickable.value
+        assertNotNull(result)
+        assertEquals(response.getData<SendEventEmail>().data.message, result.data.data.message)
+        assertEquals(false, actionClickable)
 
         verify { sendNotificationUseCase.get().execute(any()) }
     }
@@ -233,8 +262,11 @@ class OrderDetailViewModelTest{
 
         //Then
         val result = viewModel.eventEmail.value as Fail
+        val actionClickable = viewModel.actionClickable.value
         assertNotNull(result)
+        assertNotNull(actionClickable)
         assertEquals("failed to fetch", result.throwable.message)
+        assertEquals(false, actionClickable)
 
         verify { sendNotificationUseCase.get().execute(any()) }
     }
@@ -254,6 +286,24 @@ class OrderDetailViewModelTest{
         val result = viewModel.eventEmail.value as Fail
         assertNotNull(result)
         assertEquals("failed to fetch", result.throwable.message)
+
+        verify { sendNotificationUseCase.get().execute(any()) }
+    }
+
+    @Test
+    fun `send event notification given null error`(){
+        //Given
+
+        every { sendNotificationUseCase.get().execute(any()) } answers {
+            firstArg<Subscriber<Map<Type, RestResponse>>>().onError(null)
+        }
+
+        //When
+        viewModel.sendEventEmail(ActionButton(), "")
+
+        //Then
+        val result = viewModel.eventEmail.value
+        assertNull(result)
 
         verify { sendNotificationUseCase.get().execute(any()) }
     }
