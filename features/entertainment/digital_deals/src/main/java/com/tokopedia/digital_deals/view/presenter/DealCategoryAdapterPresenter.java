@@ -54,8 +54,8 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             } else {
                 rating.setIsLiked("true");
             }
-            rating.setUserId(Integer.parseInt(userSession.getUserId()));
-            rating.setProductId(id);
+            rating.setUserId(Long.parseLong(userSession.getUserId()));
+            rating.setProductId(Long.valueOf(id));
             rating.setFeedback("");
             requestModel.setRating(rating);
             com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();

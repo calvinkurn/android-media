@@ -13,7 +13,7 @@ public class DealsUrl {
         String DEALS_LIKES = "v1/api/deal/rating";
         String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
         String DEALS_BRAND = "v1/api/b/";
-        String DEALS_NSQ_EVENT = "/v1/api/tracking";
+        String tg_off = "/v1/api/tracking";
         String DEALS_NEAREST_LOCATION = "/v1/api/s/nearestlocation";
     }
 
