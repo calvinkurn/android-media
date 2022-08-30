@@ -457,10 +457,14 @@ class CreateReviewViewModel @Inject constructor(
         } else if (rating == CreateReviewFragment.RATING_3) {
             StringRes(R.string.review_form_neutral_helper)
         } else {
-            StringRes(
-                R.string.review_raw_string_format,
-                listOf(reviewFormResult.result.productrevGetForm.placeholder.orEmpty())
-            )
+            reviewFormResult.result.productrevGetForm.placeholder.takeIf {
+                !it.isNullOrBlank()
+            }?.let {
+                StringRes(
+                    R.string.review_raw_string_format,
+                    listOf(reviewFormResult.result.productrevGetForm.placeholder.orEmpty())
+                )
+            } ?: StringRes(R.string.review_form_good_helper)
         }
     }
 
