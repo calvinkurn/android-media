@@ -65,6 +65,7 @@
     <string name="tm_kupon_title_single">Tampilan Kupon</string>
     <string name="tm_kupon_single_ticker">Biar mudah cepat, pakai rekomendasi kupon dan minimum pembelian untuk member kamu!</string>
     <string name="tm_home_title">Bagian ini lagi disiapin, ya</string>
+    <string name="tm_no_internet_dashboard">Ke Dashboard Tokomember</string>
     <string name="tm_home_desc">Toped lagi rapi-rapi halaman statistik versi mobile, nih. Kamu masih bisa cek statistik lengkap di versi desktop.</string>
 
 </resources>

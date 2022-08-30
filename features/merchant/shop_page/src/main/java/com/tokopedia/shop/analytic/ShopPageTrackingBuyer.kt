@@ -3,6 +3,8 @@ package com.tokopedia.shop.analytic
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.extensions.view.digitsOnly
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
@@ -1240,7 +1242,7 @@ class ShopPageTrackingBuyer(
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    fun onImpressionProductAtcButton(
+    fun onImpressionProductAtcDirectPurchaseButton(
         shopProductUiModel: ShopProductUiModel,
         widgetName: String,
         position: Int,
@@ -1260,7 +1262,7 @@ class ShopPageTrackingBuyer(
             putParcelableArrayList(
                 PROMOTIONS,
                 arrayListOf(
-                    createProductAtcButtonPromotions(
+                    createProductAtcDirectPurchaseButtonPromotions(
                         widgetName,
                         position,
                         shopProductUiModel
@@ -1271,7 +1273,7 @@ class ShopPageTrackingBuyer(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
 
-    private fun createProductAtcButtonPromotions(
+    private fun createProductAtcDirectPurchaseButtonPromotions(
         widgetName: String,
         position: Int,
         shopProductUiModel: ShopProductUiModel
@@ -1284,7 +1286,7 @@ class ShopPageTrackingBuyer(
         }
     }
 
-    fun onClickProductAtcButton(
+    fun onClickProductAtcDirectPurchaseButton(
         atcTrackerModel: ShopPageAtcTracker,
         shopId: String,
         shopType: String,
@@ -1302,7 +1304,7 @@ class ShopPageTrackingBuyer(
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(
-                    createClickProductAtcButtonItems(
+                    createClickProductAtcDirectPurchaseButtonItems(
                         atcTrackerModel,
                         shopId,
                         shopName,
@@ -1317,7 +1319,7 @@ class ShopPageTrackingBuyer(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
     }
 
-    private fun createClickProductAtcButtonItems(
+    private fun createClickProductAtcDirectPurchaseButtonItems(
         atcTrackerModel: ShopPageAtcTracker,
         shopId: String,
         shopName: String,
@@ -1331,7 +1333,7 @@ class ShopPageTrackingBuyer(
             putString(ITEM_ID, atcTrackerModel.productId)
             putString(ITEM_NAME, atcTrackerModel.productName)
             putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())
-            putString(PRICE, atcTrackerModel.productPrice)
+            putLong(PRICE, atcTrackerModel.productPrice.digitsOnly().orZero())
             putInt(QUANTITY, atcTrackerModel.quantity)
             putString(ITEMS_SHOP_ID, shopId)
             putString(SHOP_NAME, shopName)

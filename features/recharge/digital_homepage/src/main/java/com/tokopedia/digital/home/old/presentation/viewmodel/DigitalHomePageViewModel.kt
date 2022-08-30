@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.old.domain.*
 import com.tokopedia.digital.home.old.model.DigitalHomePageItemModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class DigitalHomePageViewModel @Inject constructor(
     val isAllError: LiveData<Boolean>
         get() = mutableIsAllError
 
-    fun initialize(queryList: Map<String, String>) {
+    fun initialize(queryList: Map<String, GqlQueryInterface>) {
         val list: List<DigitalHomePageItemModel> = digitalHomePageUseCase.getEmptyList()
         digitalHomePageUseCase.queryList = queryList
         digitalHomePageUseCase.sectionOrdering = SECTION_ORDERING

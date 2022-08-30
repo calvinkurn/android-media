@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
@@ -206,6 +207,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
         clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)

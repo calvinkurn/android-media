@@ -24,6 +24,15 @@ sealed class PlayViewerNewAction {
     object AutoOpenInteractive: PlayViewerNewAction()
 
     object Follow : PlayViewerNewAction()
+
+    data class BuyProduct(
+        val product: PlayProductUiModel.Product,
+        val isProductFeatured: Boolean = false,
+    ) : PlayViewerNewAction()
+    data class AtcProduct(
+        val product: PlayProductUiModel.Product,
+        val isProductFeatured: Boolean = false,
+    ) : PlayViewerNewAction()
 }
 
 /**

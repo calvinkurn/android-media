@@ -20,7 +20,8 @@ import kotlinx.coroutines.test.resetMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
-import java.io.File
+import java.io.IOException
+import java.nio.charset.Charset
 
 @ExperimentalCoroutinesApi
 abstract class SingleProductBundleViewModelTestFixture {
@@ -72,9 +73,19 @@ abstract class SingleProductBundleViewModelTestFixture {
     }
 
     private fun getJsonFromFile(unit_test_path: String): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(unit_test_path)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        var json = ""
+        javaClass.classLoader?.getResourceAsStream(unit_test_path)?.let {
+            try {
+                val size = it.available()
+                val buffer = ByteArray(size)
+                it.read(buffer)
+                it.close()
+                json = String(buffer, Charset.forName("UTF-8"))
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return json
     }
 
     private fun getSingleBundle(typeBundle: String): GetBundleInfo? {

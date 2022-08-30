@@ -9,8 +9,8 @@
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv_ticket_created"
-        android:layout_width="@dimen/dp_280"
-        android:layout_height="@dimen/dp_140"
+        android:layout_width="280dp"
+        android:layout_height="140dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="72dp"
         android:layout_marginBottom="16dp"
