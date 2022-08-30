@@ -1,13 +1,13 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.DriverSectionViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.InvoiceOrderNumberViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderDetailToggleCtaViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.DriverSectionViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.InvoiceOrderNumberViewHolderPayloadViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderDetailToggleCtaViewHolderPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingErrorViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingTickerViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TemporaryFinishOrderViewHolder
 
-interface OrderTrackingListener : OrderDetailToggleCtaViewHolder.OrderDetailToggleCtaListener,
+interface OrderTrackingListener : OrderDetailToggleCtaViewHolderPayloadViewHolder.OrderDetailToggleCtaListener,
     OrderTrackingTickerViewHolder.Listener, TemporaryFinishOrderViewHolder.Listener,
-    DriverSectionViewHolder.Listener, OrderTrackingErrorViewHolder.Listener,
-    InvoiceOrderNumberViewHolder.Listener
+    DriverSectionViewHolderPayloadViewHolder.Listener, OrderTrackingErrorViewHolder.Listener,
+    InvoiceOrderNumberViewHolderPayloadViewHolder.Listener

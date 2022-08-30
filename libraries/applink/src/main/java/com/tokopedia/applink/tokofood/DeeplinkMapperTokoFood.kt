@@ -35,6 +35,7 @@ object DeeplinkMapperTokoFood {
                 isMatchPattern(ApplinkConst.TokoFood.MERCHANT, uri) -> getTokoFoodMerchantInternalAppLink(
                     getUriIdList(ApplinkConst.TokoFood.MERCHANT, uri), uri)
                 url.startsWith(ApplinkConst.TokoFood.TOKOFOOD_ORDER) -> { ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD }
+                url.startsWith(ApplinkConst.TokoFood.SEARCH) -> ApplinkConstInternalTokoFood.SEARCH
                 else -> url
             }
         } else {

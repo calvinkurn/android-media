@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.feature.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodParamMapper
+import com.tokopedia.tokofood.common.domain.param.TokoFoodLocationParamMapper
 
 object TokoFoodHomeTickerQuery: GqlQueryInterface {
 
@@ -32,7 +32,7 @@ object TokoFoodHomeTickerQuery: GqlQueryInterface {
             put(PARAM_PAGE, PARAM_TOKOFOOD)
             put(
                 PARAM_LOCATION,
-                TokoFoodParamMapper.mapLocation(localCacheModel)
+                TokoFoodLocationParamMapper.mapLocation(localCacheModel)
             )
         }
 

@@ -91,6 +91,7 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -494,7 +495,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         navToolbar?.setupSearchbar(
             hints = listOf(
                 HintData(
-                    placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_nav_toolbar_gofood_home)
+                    placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_searchbar_gofood)
                 )
             ),
             searchbarClickCallback = { onSearchBarClick() }
@@ -502,11 +503,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onSearchBarClick() {
-        context?.let { context ->
-            RouteManager.route(
-                context,
-                ""
-            )
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
         }
     }
 
