@@ -75,7 +75,8 @@ class ProfileInfoInstrumentTest {
     fun click_user_id_copied() {
         runTest {
             clickViewHolder(SECTION_USERID, clickChildWithViewId<IconUnify>(R.id.fragmentProfileItemIcon))
-            checkToasterShowing("disalin!")
+            checkToasterShowing(SUBSTRING_COPY_USER_ID)
+            Thread.sleep(3000)
         }
     }
 
@@ -130,5 +131,6 @@ class ProfileInfoInstrumentTest {
         const val SECTION_PHONE = "Nomor HP"
         const val SECTION_GENDER = "Jenis Kelamin"
         const val SECTION_DOB = "Tanggal Lahir"
+        const val SUBSTRING_COPY_USER_ID = "disalin!"
     }
 }

@@ -2,9 +2,12 @@ package com.tokopedia.profilecompletion.common.stub
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.common.AndroidFileUtil
+import com.tokopedia.profilecompletion.biousername.BioUsernameInstrumentTest
+import com.tokopedia.profilecompletion.biousername.BioUsernameInstrumentTest.Companion.ERROR_MESSAGE_USERNAME
 import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsername
 import com.tokopedia.profilecompletion.changebiousername.data.SubmitBioUsernameResponse
 import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidation
@@ -17,27 +20,44 @@ import com.tokopedia.profilecompletion.test.R
 import java.lang.reflect.Type
 
 class GraphqlRepositoryStub : GraphqlRepository {
+
     override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
         val param = requests.firstOrNull()?.variables
         requests.firstOrNull()?.query?.let {
+            println("check gql")
             return when {
-                it.contains("feedXProfileForm") -> GraphqlResponse(getResponse<ProfileFeedResponse>(R.raw.success_feed_profile_form), mapOf(), false)
+                it.contains("feedXProfileForm") -> {
+                    val response = getResponse<ProfileFeedResponse>(R.raw.success_feed_profile_form)
+                    GraphqlResponse(response, mapOf(), false)
+                }
                 it.contains("userProfileInfo") -> GraphqlResponse(getResponse<ProfileInfoResponse>(R.raw.success_profile_info), mapOf(), false)
                 it.contains("userProfileRole") -> GraphqlResponse(getResponse<ProfileRoleResponse>(R.raw.success_case_profile_role), mapOf(), false)
                 it.contains("checkUserFinancialAssets") -> GraphqlResponse(getResponse<UserFinancialAssetsData>(R.raw.success_case_financial_assets), mapOf(), false)
                 it.contains("feedXProfileValidateUsername") -> {
-                    if (param?.get("username")?.toString().equals("rama_exists"))
+                    if (param?.get("username")?.toString().equals(BioUsernameInstrumentTest.USERNAME_EXISTS))
                         GraphqlResponse(mapOf(UsernameValidationResponse::class.java to
-                                UsernameValidationResponse(UsernameValidation(isValid = true, errorMessage = ""))), mapOf(), false)
+                                UsernameValidationResponse(UsernameValidation(isValid = false, errorMessage = ERROR_MESSAGE_USERNAME))), mapOf(), false)
                     else
                         GraphqlResponse(mapOf(UsernameValidationResponse::class.java to
-                                UsernameValidationResponse(UsernameValidation(isValid = false, errorMessage = "Username ini sudah dipakai orang lain."))), mapOf(), false)
+                                UsernameValidationResponse(UsernameValidation(isValid = true, errorMessage = ""))), mapOf(), false)
+
                 }
                 it.contains("feedXProfileSubmit") -> {
-                    if (param?.get("username")?.toString().equals("rama_exists"))
+                    if (param?.get("username")?.toString().equals(BioUsernameInstrumentTest.USERNAME_FAILED)) {
+                        println("failed submit username")
                         GraphqlResponse(
                                 mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(
-                                        SubmitBioUsername(status = false))), mapOf(), false)
+                                        SubmitBioUsername(status = false))), mapOf(SubmitBioUsernameResponse::class.java to listOf(GraphqlError().apply {
+                            message = ERROR_MESSAGE_USERNAME
+                            path = listOf("feedXProfileSubmit")
+                            extensions = Extensions().apply {
+                                code = 11001
+                                developerMessage = ERROR_MESSAGE_USERNAME
+                            }
+
+                        })), false)
+                    }
+
                     else
                         GraphqlResponse(
                                 mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(
