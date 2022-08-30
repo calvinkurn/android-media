@@ -15,7 +15,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -369,7 +368,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
         tabList.add(buyerTabFragment)
     }
 
-    open protected fun createBuyerTabFragment(): ChatListFragment {
+    protected open fun createBuyerTabFragment(): ChatListFragment {
         return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
     }
 
@@ -385,7 +384,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     private fun initViewModel() {
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider = ViewModelProvider(this, viewModelFactory)
         webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
         chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
     }

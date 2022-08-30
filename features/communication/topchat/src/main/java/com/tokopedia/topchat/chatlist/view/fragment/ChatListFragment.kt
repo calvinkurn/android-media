@@ -4,14 +4,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -83,6 +86,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
 open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
@@ -100,7 +104,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private var chatTabListContract: ChatListContract.TabFragment? = null
@@ -436,12 +442,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
     }
 
-    private fun animateWhenOnTop() {
-        if ((getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() == 0) {
-            getRecyclerView(view)?.smoothScrollToPosition(0)
-        }
-    }
-
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
@@ -507,7 +507,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 setTitle(title)
                 setItemMenuList(itemMenus)
                 setOnItemMenuClickListener { menu, pos ->
-                    chatListAnalytics.eventClickListFilterChat(menu.title.toLowerCase())
+                    chatListAnalytics.eventClickListFilterChat(
+                        menu.title.lowercase(Locale.getDefault())
+                    )
                     filterChecked = pos
                     loadInitialData()
                     dismiss()
@@ -838,7 +840,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private fun showSnackbarError(throwable: Throwable) {
         view?.let {
             val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
-            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

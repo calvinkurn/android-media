@@ -8,7 +8,7 @@ class ChatListFragmentStub : ChatListFragment() {
     /**
      * Workaround for [com.tokopedia.unifycomponents.LoaderUnify] doesn't support
      * for no animation setting. This prevent the adapter showing loading state.
-     * TODO: Ask unify team to add support for no animation device
+     * Need to Ask unify team to add support for no animation device
      */
     override fun showLoading() {
         adapter?.removeErrorNetwork()

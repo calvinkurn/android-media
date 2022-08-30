@@ -21,11 +21,9 @@ object Utils {
             val date = inputFormat.parse(isoTime)
             dateFormat.format(date)
         } catch (e: ParseException) {
-            e.printStackTrace()
-            e.localizedMessage
+            e.localizedMessage.toString()
         } catch (e: Exception) {
-            e.printStackTrace()
-            e.localizedMessage
+            e.localizedMessage.toString()
         }
     }
 

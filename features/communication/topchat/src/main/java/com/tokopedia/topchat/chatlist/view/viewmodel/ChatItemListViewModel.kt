@@ -309,7 +309,7 @@ class ChatItemListViewModel @Inject constructor(
                 onErrorLoadChatBlastSellerMetaData()
             }
         }) {
-            onErrorLoadChatBlastSellerMetaData(it)
+            onErrorLoadChatBlastSellerMetaData()
         }
     }
 
@@ -319,7 +319,7 @@ class ChatItemListViewModel @Inject constructor(
         setBroadcastButtonUrl(broadCastUrl)
     }
 
-    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable? = null) {
+    private fun onErrorLoadChatBlastSellerMetaData() {
         broadCastButtonVisibility(false)
     }
 
