@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiM
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeChipFilterViewHolder.RecipeChipFilterListener
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeCountViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeFilterViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeHeaderViewHolder
@@ -20,8 +21,9 @@ import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewH
 
 class RecipeListAdapterTypeFactory(
     private val recipeItemListener: RecipeItemListener,
+    private val recipeFilterListener: RecipeChipFilterListener,
     private val serverErrorListener: ServerErrorListener
-): BaseAdapterTypeFactory(), RecipeListTypeFactory, TokoNowServerErrorTypeFactory {
+) : BaseAdapterTypeFactory(), RecipeListTypeFactory, TokoNowServerErrorTypeFactory {
 
     override fun type(uiModel: RecipeHeaderUiModel): Int = RecipeHeaderViewHolder.LAYOUT
 
@@ -34,11 +36,11 @@ class RecipeListAdapterTypeFactory(
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             RecipeHeaderViewHolder.LAYOUT -> RecipeHeaderViewHolder(parent)
             RecipeCountViewHolder.LAYOUT -> RecipeCountViewHolder(parent)
             RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent, recipeItemListener)
-            RecipeFilterViewHolder.LAYOUT -> RecipeFilterViewHolder(parent)
+            RecipeFilterViewHolder.LAYOUT -> RecipeFilterViewHolder(parent, recipeFilterListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener)
             else -> super.createViewHolder(parent, type)
         }

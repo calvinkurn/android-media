@@ -6,12 +6,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeFilterBinding
-import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipAdapter
-import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipAdapterTypeFactory
+import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipFilterAdapter
+import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipFilterAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
+import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeChipFilterViewHolder.RecipeChipFilterListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class RecipeFilterViewHolder(itemView: View): AbstractViewHolder<RecipeFilterUiModel>(itemView) {
+class RecipeFilterViewHolder(
+    itemView: View,
+    recipeFilterListener: RecipeChipFilterListener
+) : AbstractViewHolder<RecipeFilterUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -20,7 +24,11 @@ class RecipeFilterViewHolder(itemView: View): AbstractViewHolder<RecipeFilterUiM
 
     private var binding: ItemTokopedianowRecipeFilterBinding? by viewBinding()
 
-    private val chipAdapter by lazy { RecipeChipAdapter(RecipeChipAdapterTypeFactory()) }
+    private val chipAdapter by lazy {
+        RecipeChipFilterAdapter(
+            RecipeChipFilterAdapterTypeFactory(recipeFilterListener)
+        )
+    }
 
     override fun bind(filter: RecipeFilterUiModel) {
         binding?.recyclerView?.apply {

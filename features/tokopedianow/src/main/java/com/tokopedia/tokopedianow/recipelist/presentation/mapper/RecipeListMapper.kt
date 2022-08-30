@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.recipelist.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipUiModel.ChipType.MORE_FILTER
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
@@ -22,20 +22,20 @@ object RecipeListMapper {
     fun MutableList<Visitable<*>>.addFilterItems() {
         // Temporary Hardcode
         val chips = listOf(
-            RecipeChipUiModel(
+            RecipeChipFilterUiModel(
                 id = "1",
                 title = "Filter",
                 type = MORE_FILTER
             ),
-            RecipeChipUiModel(
+            RecipeChipFilterUiModel(
                 id = "2",
                 title = "Diskon"
             ),
-            RecipeChipUiModel(
+            RecipeChipFilterUiModel(
                 id = "3",
                 title = "Halal"
             ),
-            RecipeChipUiModel(
+            RecipeChipFilterUiModel(
                 id = "4",
                 title = "Organik",
             )

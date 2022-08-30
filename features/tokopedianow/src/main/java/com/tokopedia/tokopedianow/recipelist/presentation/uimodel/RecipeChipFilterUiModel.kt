@@ -1,20 +1,20 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipTypeFactory
+import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipFilterTypeFactory
 
-data class RecipeChipUiModel(
+data class RecipeChipFilterUiModel(
     val id: String,
     val title: String,
     val type: ChipType = ChipType.NORMAL
-): Visitable<RecipeChipTypeFactory> {
+): Visitable<RecipeChipFilterTypeFactory> {
 
     enum class ChipType {
         NORMAL,
         MORE_FILTER
     }
 
-    override fun type(typeFactory: RecipeChipTypeFactory): Int {
+    override fun type(typeFactory: RecipeChipFilterTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

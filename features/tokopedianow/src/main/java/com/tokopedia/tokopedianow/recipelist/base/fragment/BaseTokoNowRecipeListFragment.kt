@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,14 +19,16 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NOTEBOOK
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowNavToolbar
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeListBinding
+import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdapterTypeFactory
-import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.constant.ImageUrl
-import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeListener
+import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeFilterListener
+import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeListListener
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -34,7 +37,8 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), ServerErrorListener {
     private val adapter by lazy {
         RecipeListAdapter(
             RecipeListAdapterTypeFactory(
-                recipeItemListener = RecipeListener(context),
+                recipeItemListener = RecipeListListener(context),
+                recipeFilterListener = RecipeFilterListener(context),
                 serverErrorListener = this
             )
         )
@@ -48,7 +52,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), ServerErrorListener {
 
     abstract val searchHintData: List<HintData>
 
-    abstract val showHeaderBackground: Boolean
+    abstract val enableHeaderBackground: Boolean
 
     abstract val pageName: String
 
@@ -117,13 +121,15 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), ServerErrorListener {
     }
 
     private fun setupHeaderBackground() {
-        if (showHeaderBackground) {
-            binding?.ivHeaderBackground?.loadImage(ImageUrl.RECIPE_BACKGROUND_IMAGE_URL)
+        if (enableHeaderBackground) {
+            binding?.ivHeaderBackground?.setImageResource(
+                R.drawable.tokopedianow_ic_header_background_shimmering
+            )
             binding?.ivHeaderBackground?.show()
         } else {
             binding?.ivHeaderBackground?.hide()
         }
-        viewModel.showHeaderBackground = showHeaderBackground
+        viewModel.enableHeaderBackground = enableHeaderBackground
     }
 
     private fun setupSwipeRefreshLayout() {
@@ -141,11 +147,30 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), ServerErrorListener {
 
     private fun observeLiveData() {
         observe(viewModel.visitableList) {
-            adapter.submitList(it)
+            submitList(it)
         }
 
         observe(viewModel.showProgressBar) {
             binding?.loader?.showWithCondition(it)
+        }
+
+        observe(viewModel.showHeaderBackground) {
+            setHeaderBackgroundVisibility(it)
+        }
+    }
+
+    private fun submitList(items: List<Visitable<*>>) {
+        adapter.submitList(items)
+    }
+
+    private fun setHeaderBackgroundVisibility(show: Boolean) {
+        binding?.apply {
+            if (show) {
+                ivHeaderBackground.loadImage(ImageUrl.RECIPE_BACKGROUND_IMAGE_URL)
+                ivHeaderBackground.show()
+            } else {
+                ivHeaderBackground.hide()
+            }
         }
     }
 

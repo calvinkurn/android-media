@@ -220,4 +220,6 @@
     <string name="tokopedianow_recipe_search_hint">Cari resep</string>
     <string name="tokopedianow_recipe_list_header_text">Pilihan resep spesial\nTokopedia NOW!</string>
     <string name="tokopedianow_recipe_list_count">%1$d resep</string>
+
+    <string name="tokopedianow_filter">Filter</string>
 </resources>

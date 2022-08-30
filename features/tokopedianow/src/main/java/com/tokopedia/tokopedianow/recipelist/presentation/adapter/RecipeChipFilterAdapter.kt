@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.differ.RecipeFilterDiffer
 
-class RecipeChipAdapter(
-    typeFactory: RecipeChipAdapterTypeFactory
-) : BaseTokopediaNowListAdapter<Visitable<*>, RecipeChipAdapterTypeFactory>(
+class RecipeChipFilterAdapter(
+    typeFactory: RecipeChipFilterAdapterTypeFactory
+) : BaseTokopediaNowListAdapter<Visitable<*>, RecipeChipFilterAdapterTypeFactory>(
     typeFactory,
     RecipeFilterDiffer()
 )
