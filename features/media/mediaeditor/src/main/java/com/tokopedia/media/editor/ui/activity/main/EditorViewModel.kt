@@ -96,14 +96,14 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun cropImage(context: Context, sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel, isAutoCrop: ImageRatioType?) {
+    fun cropImage(context: Context, sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel) {
         sourceBitmap?.let { it ->
             val bitmapWidth = sourceBitmap.width
             val bitmapHeight = sourceBitmap.height
 
-            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
-            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
-            val autoCropRatio = ratioHeight / ratioWidth
+            val autoCropRatio = editorParam.value?.autoCropRatio?.let {
+                it.getRatioY().toFloat() / it.getRatioX()
+            } ?: 1f
 
             var newWidth = bitmapWidth
             var newHeight = (bitmapWidth * autoCropRatio).toInt()

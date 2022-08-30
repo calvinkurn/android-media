@@ -44,8 +44,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private var activeImageUrl: String = ""
 
-    private val isAutoCrop: ImageRatioType? get() = viewModel.editorParam.value?.autoCropRatio
-
     private var loader: LoaderDialog? = null
 
     fun isShowDialogConfirmation(): Boolean {
@@ -111,13 +109,13 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
         val data = listData[currentProcess]
         data.isAutoCropped = true
-        if (isAutoCrop != null && data.editList.size == 0 && !data.isVideo) {
+        if (data.editList.size == 0 && !data.isVideo) {
             loadImageWithEmptyTarget(requireContext(),
                 data.getImageUrl(),
                 properties = {},
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
-                        viewModel.cropImage(requireContext(), bitmap, data, isAutoCrop)
+                        viewModel.cropImage(requireContext(), bitmap, data)
                         thumbnailDrawerComponent.refreshItem(
                             currentProcess,
                             viewModel.editStateList.values.toList()
@@ -291,7 +289,12 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         viewModel.editorParam.observe(viewLifecycleOwner) {
             editorToolComponent.setupView(it.editorToolsList)
             thumbnailDrawerComponent.setupRecyclerView(viewModel.editStateList.values.toList())
-            startAutoCrop()
+
+            if(it.autoCropRatio != null) {
+                startAutoCrop()
+            } else {
+                viewBinding?.viewPager?.setAdapter(viewModel.editStateList.values.toList())
+            }
         }
     }
 
@@ -316,8 +319,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         loader?.dismiss()
 
         viewBinding?.mainEditorFragmentLayout?.let { editorFragmentContainer ->
-            val ratioWidth = isAutoCrop?.getRatioX()?.toFloat() ?: 1f
-            val ratioHeight = isAutoCrop?.getRatioY()?.toFloat() ?: 1f
+            val autoCropRatio = viewModel.editorParam.value?.autoCropRatio
+            val ratioWidth = autoCropRatio?.getRatioX()?.toFloat() ?: 1f
+            val ratioHeight = autoCropRatio?.getRatioY()?.toFloat() ?: 1f
 
             Toaster.build(
                 editorFragmentContainer,
