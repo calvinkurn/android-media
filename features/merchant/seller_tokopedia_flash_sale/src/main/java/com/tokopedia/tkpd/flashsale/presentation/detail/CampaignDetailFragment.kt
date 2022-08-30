@@ -11,8 +11,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
-import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_TIME
-import com.tokopedia.campaign.utils.constant.DateConstant.TIME_WIB
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
@@ -268,12 +268,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         flashSale: FlashSale
     ) {
         binding.run {
-            val startDate = flashSale.startDateUnix.formatTo(DATE_WITH_TIME)
+            val startDate = flashSale.startDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
             tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(flashSale)) {
-                val endDate = flashSale.endDateUnix.formatTo(TIME_WIB)
+                val endDate = flashSale.endDateUnix.formatTo(TIME_MINUTE_PRECISION_WITH_TIMEZONE)
                 "$startDate - $endDate"
             } else {
-                val endDate = flashSale.endDateUnix.formatTo(DATE_WITH_TIME)
+                val endDate = flashSale.endDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
                 "$startDate - $endDate"
             }
         }
