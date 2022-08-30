@@ -1011,14 +1011,17 @@ class ShipmentMapper @Inject constructor() {
     private fun mapUpsell(upsell: NewUpsell): NewUpsellData {
         return NewUpsellData(
                 true,
-                false,
+                true,
                 "Yay, <b>PLUS</b> ditambahkan ke keranjang! Nikmati keuntungannya di transaksi ini",
                 "https://staging.tokopedia.com/gotoplus?source=pg_checkout_v2",
                 "https://images.tokopedia.net/img/plus/logo/account/globalmenu/checkout/Logo%20Area%20Entrypoints@4x.png",
                 300000,
                 "6 bulan",
                 "Langganan 6 bulan",
-                "Cek PLUS"
+                "Cek PLUS",
+                upsell.id,
+                upsell.additionalVerticalId,
+                upsell.transactionType
         )
     }
 

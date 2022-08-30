@@ -1499,7 +1499,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     listCrossSellItemRequest.add(crossSellItemRequestModel);
                 }
             }
-            crossSellRequest.setListItem(listCrossSellItemRequest);
         }
         if (shipmentNewUpsellModel.isSelected() && shipmentNewUpsellModel.isShow()) {
             CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
@@ -1507,8 +1506,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             crossSellItemRequestModel.setPrice((int) shipmentNewUpsellModel.getPrice());
             crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentNewUpsellModel.getAdditionalVerticalId()));
             crossSellItemRequestModel.setTransactionType(shipmentNewUpsellModel.getTransactionType());
-            crossSellRequest.getListItem().add(crossSellItemRequestModel);
+            listCrossSellItemRequest.add(crossSellItemRequestModel);
         }
+        crossSellRequest.setListItem(listCrossSellItemRequest);
         CheckoutRequest checkoutRequest = new CheckoutRequest();
         checkoutRequest.setDonation(isDonation);
         checkoutRequest.setCrossSell(crossSellRequest);
