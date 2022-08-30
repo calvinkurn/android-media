@@ -9,7 +9,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 sealed interface ProductTagUiEvent {
     data class ShowError(val throwable: Throwable, val action: (() -> Unit)? = null): ProductTagUiEvent
 
-    data class ProductSelected(val product: ProductUiModel): ProductTagUiEvent
+    data class FinishProductTag(val products: List<ProductUiModel>) : ProductTagUiEvent
     object ShowSourceBottomSheet: ProductTagUiEvent
 
     data class OpenAutoCompletePage(val query: String): ProductTagUiEvent

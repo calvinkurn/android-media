@@ -32,7 +32,6 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
@@ -43,6 +42,7 @@ import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
@@ -633,13 +633,13 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun mapResultToRelatedProductItem(data: Intent?): RelatedProductItem {
         return RelatedProductItem(
-            id = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_ID) ?: "",
-            name = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_NAME) ?: "",
-            price = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE) ?: "",
-            image = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_IMAGE) ?: "",
-            priceOriginalFmt = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE_ORIGINAL_FMT) ?: "",
-            priceDiscountFmt = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE_DISCOUNT_FMT) ?: "",
-            isDiscount = data?.getBooleanExtra(ProductTagParentFragment.RESULT_PRODUCT_IS_DISCOUNT, false) ?: false,
+            id = data?.getStringExtra(ProductTagActivity.RESULT_PRODUCT_ID) ?: "",
+            name = data?.getStringExtra(ProductTagActivity.RESULT_PRODUCT_NAME) ?: "",
+            price = data?.getStringExtra(ProductTagActivity.RESULT_PRODUCT_PRICE) ?: "",
+            image = data?.getStringExtra(ProductTagActivity.RESULT_PRODUCT_IMAGE) ?: "",
+            priceOriginalFmt = data?.getStringExtra(ProductTagActivity.RESULT_PRODUCT_PRICE_ORIGINAL_FMT) ?: "",
+            priceDiscountFmt = data?.getStringExtra(ProductTagActivity.RESULT_PRODUCT_PRICE_DISCOUNT_FMT) ?: "",
+            isDiscount = data?.getBooleanExtra(ProductTagActivity.RESULT_PRODUCT_IS_DISCOUNT, false) ?: false,
         )
     }
 

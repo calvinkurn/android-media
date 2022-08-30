@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagPare
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import javax.inject.Inject
 
@@ -58,6 +60,28 @@ class ProductTagActivity : BaseActivity() {
             is ProductTagParentFragment -> {
                 fragment.setListener(object : ProductTagParentFragment.Listener {
                     override fun onCloseProductTag() {
+                        finish()
+                    }
+
+                    override fun onFinishProductTag(products: List<ProductUiModel>) {
+                        val product = products.firstOrNull()
+
+                        if(product == null) {
+                            finish()
+                            return
+                        }
+
+                        val data = Intent().apply {
+                            putExtra(RESULT_PRODUCT_ID, product.id)
+                            putExtra(RESULT_PRODUCT_NAME, product.name)
+                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
+                            putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
+                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
+                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
+                            putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
+                        }
+
+                        setResult(Activity.RESULT_OK, data)
                         finish()
                     }
                 })
@@ -123,6 +147,14 @@ class ProductTagActivity : BaseActivity() {
         private const val EXTRA_SHOP_BADGE = "shop_badge"
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
+
+        const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
+        const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
+        const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
+        const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
+        const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
+        const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
+        const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
 
         private const val PRODUCT = "product"
         private const val SHOP = "shop"
