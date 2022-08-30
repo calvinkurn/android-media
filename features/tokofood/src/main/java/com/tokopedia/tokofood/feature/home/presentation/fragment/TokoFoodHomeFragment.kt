@@ -503,6 +503,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onSearchBarClick() {
+        analytics.clickSearchBar()
         context?.let {
             TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
         }
