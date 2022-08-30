@@ -1518,7 +1518,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 context?.also { ctx ->
                     InsuranceBottomSheet().apply {
                         setDesc(message)
-                    }.show(getString(R.string.title_bottomsheet_insurance),ctx, parentFragmentManager)
+                    }.show(
+                        getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                        ctx,
+                        parentFragmentManager
+                    )
                 }
             }
         }

@@ -53,7 +53,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
-import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
@@ -1847,14 +1846,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setVisibility(View.GONE);
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
-
-                    imgInsuranceInfo.setOnClickListener(view ->
-                            showInsuranceBottomSheet(
-                                    imgInsuranceInfo.getContext(),
-                                    view.getContext().getString(R.string.bottomsheet_insurance_title),
-                                    courierItemData.getInsuranceUsedInfo()
-                            )
-                    );
+                    imgInsuranceInfo.setOnClickListener(view -> showBottomSheet(imgInsuranceInfo.getContext(),
+                            imgInsuranceInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                            courierItemData.getInsuranceUsedInfo(),
+                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance));
                 }
             }
 
@@ -1980,12 +1975,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             return Unit.INSTANCE;
         });
         generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
-    }
-
-    private void showInsuranceBottomSheet(Context context, String title, String message) {
-        InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
-        insuranceBottomSheet.setDesc(message);
-        insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {

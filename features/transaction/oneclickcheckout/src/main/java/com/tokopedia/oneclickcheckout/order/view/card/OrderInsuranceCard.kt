@@ -74,7 +74,6 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         binding.apply {
             imgBtInsuranceInfo.let { iv ->
                 iv.setOnClickListener {
-                    //TODO - need to update image url and adjust with gql update from BE
                     listener.onClickInsuranceInfo(
                         insuranceData.insuranceUsedInfo,
                         com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
