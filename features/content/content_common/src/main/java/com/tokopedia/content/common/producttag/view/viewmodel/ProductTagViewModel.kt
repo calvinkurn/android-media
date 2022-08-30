@@ -126,7 +126,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private val _myShopSort = MutableStateFlow<List<SortUiModel>>(emptyList())
 
-    private val _selectedProduct = MutableStateFlow<List<ProductUiModel>>(emptyList())
+    private val _selectedProduct = MutableStateFlow<List<SelectedProductUiModel>>(emptyList())
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -381,7 +381,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
                     if(currSelectedProductSize < maxSelectedProduct) {
                         currSelectedProduct.toMutableList().apply {
-                            add(product)
+                            add(SelectedProductUiModel.createOnlyId(id = product.id))
                         }.toList()
                     }
                     else currSelectedProduct
@@ -390,7 +390,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 _selectedProduct.value = newSelectedProduct
             }
             else {
-                _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product)))
+                _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product.toSelectedProduct())))
             }
         }
     }

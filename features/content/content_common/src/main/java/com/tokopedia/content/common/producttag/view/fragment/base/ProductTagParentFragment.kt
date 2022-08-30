@@ -26,6 +26,7 @@ import com.tokopedia.content.common.producttag.view.fragment.*
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
@@ -225,8 +226,8 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun renderSaveButton(
-        prev: List<ProductUiModel>?,
-        curr: List<ProductUiModel>,
+        prev: List<SelectedProductUiModel>?,
+        curr: List<SelectedProductUiModel>,
     ) {
         if(curr == prev) return
 
@@ -242,7 +243,7 @@ class ProductTagParentFragment @Inject constructor(
         binding.viewCcProductTagDivider.showWithCondition(isShowActionBar && viewModel.isShowActionBarDivider)
     }
 
-    private fun updateTitle(selectedProduct: List<ProductUiModel>) {
+    private fun updateTitle(selectedProduct: List<SelectedProductUiModel>) {
         val title = if(viewModel.isMultipleSelectionProduct)
             getString(R.string.content_creation_multiple_product_tag_title).format(selectedProduct.size, viewModel.maxSelectedProduct)
         else getString(R.string.content_creation_product_tag_title)
@@ -476,6 +477,6 @@ class ProductTagParentFragment @Inject constructor(
 
     interface Listener {
         fun onCloseProductTag()
-        fun onFinishProductTag(products: List<ProductUiModel>)
+        fun onFinishProductTag(products: List<SelectedProductUiModel>)
     }
 }

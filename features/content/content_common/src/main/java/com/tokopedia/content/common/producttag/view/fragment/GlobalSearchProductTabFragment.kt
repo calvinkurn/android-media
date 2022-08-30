@@ -21,6 +21,7 @@ import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTag
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.GlobalSearchProductUiState
@@ -254,7 +255,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private fun updateAdapterData(
         currState: GlobalSearchProductUiState,
-        selectedProduct: List<ProductUiModel>,
+        selectedProduct: List<SelectedProductUiModel>,
         showLoading: Boolean
     ) {
         val finalProducts = buildList {

@@ -11,6 +11,7 @@ import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,7 +53,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
                         closeFragment()
                     }
 
-                    override fun onFinishProductTag(products: List<ProductUiModel>) {
+                    override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
                         Log.d("<LOG>", products.toString())
                         closeFragment()
                     }
