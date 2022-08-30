@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChipListTypeFactory
 
 data class TokoNowChipListUiModel(
+    val parentId: String = "",
     val items: List<TokoNowChipUiModel>,
+    val isMultiSelect: Boolean = false
 ) : Visitable<TokoNowChipListTypeFactory> {
 
     override fun type(typeFactory: TokoNowChipListTypeFactory): Int {
