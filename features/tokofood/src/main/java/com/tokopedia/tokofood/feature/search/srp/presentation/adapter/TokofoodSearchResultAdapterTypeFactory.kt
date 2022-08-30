@@ -29,11 +29,10 @@ class TokofoodSearchResultAdapterTypeFactory(
     override fun type(uiModel: TokoFoodCategoryEmptyStateUiModel): Int = TokoFoodCategoryEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodProgressBarUiModel): Int = TokoFoodProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodErrorStateUiModel): Int = TokoFoodErrorStateViewHolder.LAYOUT
-    override fun type(merchantSearchResultUiModel: MerchantSearchResultUiModel): Int = MerchantSearchResultViewHolder.LAYOUT
+    override fun type(uiModel: MerchantSearchResultUiModel): Int = MerchantSearchResultViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
             MerchantSearchResultViewHolder.LAYOUT -> MerchantSearchResultViewHolder(view, merchantListListener)
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
             TokoFoodErrorStateViewHolder.LAYOUT -> TokoFoodErrorStateViewHolder(view, errorStateListener)

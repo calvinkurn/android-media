@@ -154,6 +154,7 @@
 
     <!-- Search -->
     <string name="search_srp_other_branch">Lihat Cabang Lain</string>
+    <string name="search_srp_sort_title">Urutkan</string>
 
     <!-- id -->
     <item name="product_ui_model" type="id" />
