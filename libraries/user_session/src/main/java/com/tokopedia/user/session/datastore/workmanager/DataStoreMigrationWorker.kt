@@ -39,9 +39,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                 var ops = NO_OPS
                 if (userSession.isLoggedIn) {
                     val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
-                    if (!dataStorePreference.isMigrationSuccess() &&
-                        (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
-                    ) {
+                    if (syncResult.isNotEmpty()) {
                         migrateData()
                         ops = MIGRATED
                     } else {
@@ -129,22 +127,25 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     companion object {
-        const val WORKER_ID = "DATASTORE_MIGRATION_WORKER"
+        private const val WORKER_ID = "DATASTORE_MIGRATION_WORKER"
+        private const val WORKER_ID_V2 = "DATASTORE_MIGRATION_WORKER_V2"
 
         const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
 
-        private const val WORKER_INTERVAL = 5L
+        private const val WORKER_INTERVAL = 3L
 
         @JvmStatic
         fun scheduleWorker(context: Context) {
             try {
+                val workManager = WorkManager.getInstance(context)
+                workManager.cancelUniqueWork(WORKER_ID)
                 val periodicWorker = PeriodicWorkRequest
                     .Builder(DataStoreMigrationWorker::class.java, WORKER_INTERVAL, TimeUnit.DAYS)
                     .setConstraints(Constraints.NONE)
                     .build()
 
-                WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                    WORKER_ID,
+                workManager.enqueueUniquePeriodicWork(
+                    WORKER_ID_V2,
                     ExistingPeriodicWorkPolicy.KEEP,
                     periodicWorker
                 )
