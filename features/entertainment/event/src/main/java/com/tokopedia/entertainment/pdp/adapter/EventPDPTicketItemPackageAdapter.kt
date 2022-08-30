@@ -96,7 +96,7 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.maxValue = items.maxQty.toIntSafely()
 
                     quantityEditor.setValueChangedListener { newValue, _, _ ->
-                        isError = !((quantityEditor.getValue() >= items.minQty.toIntSafely() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toInt())
+                        isError = !((quantityEditor.getValue() >= items.minQty.toIntSafely() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toIntSafely())
                         val total = if (newValue < items.minQty.toIntSafely()) EMPTY_QTY else newValue
                         onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage, items.id, items,
                                 items.salesPrice.toIntSafely() * total, total.toString(),

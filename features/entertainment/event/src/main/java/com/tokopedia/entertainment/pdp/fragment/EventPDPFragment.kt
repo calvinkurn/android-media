@@ -61,6 +61,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -251,10 +252,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadPrice(productDetailData: ProductDetailData) {
-        val price = productDetailData.salesPrice.toInt()
+        val price = productDetailData.salesPrice.toIntSafely()
         tg_event_pdp_price.apply {
             text = if(price != ZERO_PRICE) {
-                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toIntSafely())
             } else {
                  context?.resources?.getString(R.string.ent_free_price) ?: ""
             }

@@ -17,6 +17,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.PassengerForm
 import com.tokopedia.entertainment.pdp.data.pdp.PassengerInformation
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object EventMetaDataMapper {
 
@@ -107,7 +108,7 @@ object EventMetaDataMapper {
     private fun mapToItemMapCheckout(itemMapResponses: List<ItemMapResponse>, productDetailData: ProductDetailData, packageV3: PackageV3): List<ItemMapCheckout> {
         return itemMapResponses.map {
             ItemMapCheckout(
-                    basePrice = it.basePrice.toIntSafely(),
+                    basePrice = it.basePrice.toLongOrZero(),
                     categoryId = it.categoryId.toLong(),
                     childCategoryIds = it.childCategoryIds,
                     commission = it.commission,

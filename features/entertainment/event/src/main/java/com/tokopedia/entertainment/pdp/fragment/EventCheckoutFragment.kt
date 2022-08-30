@@ -70,6 +70,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -303,7 +304,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun renderDesc(pdp: ProductDetailData) {
-        tg_event_checkout_date.text = getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toInt())
+        tg_event_checkout_date.text = getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toIntSafely())
         tg_event_checkout_name.text = pdp.displayName
         tg_event_checkout_packet.text = getPackage(pdp, packageID).name
         iv_event_checkout_image.loadImageRounded(pdp.imageApp, ROUND_VALUE)
@@ -595,7 +596,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private fun NestedScrollView.focusOnView(toView: View) {
         Handler().post(Runnable {
-            this.smoothScrollTo(0, toView.y.toInt())
+            this.smoothScrollTo(0, toView.y.toIntSafely())
         })
     }
 
@@ -614,7 +615,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
-        const val ZERO_PRICE = 0
+        const val ZERO_PRICE = 0L
 
         const val ROUND_VALUE = 25f
 

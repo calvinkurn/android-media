@@ -411,7 +411,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                                 if(currentIndex == 1){
                                     val position = tgEventTicketRecommendationTitle.y
-                                    scroll_ticket_pdp.smoothScrollTo(0, position.toInt())
+                                    scroll_ticket_pdp.smoothScrollTo(0, position.toIntSafely())
                                 }
                             }
                         })
@@ -470,15 +470,17 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     }
 
     private fun changeLabel() {
-        val bitwiseIsHiburan = pdpData.customText1.toInt() and IS_HIBURAN
-        if (pdpData.dates.size > 1) {
-            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
-        } else if (bitwiseIsHiburan > 0) {
-            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_berlaku_hingga)
-            activity?.txtDate?.text = getDateTicketFormatted(pdpData.maxEndDate)
-        } else {
-            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
-            activity?.txtDate?.text = getDateTicketFormatted(pdpData.dates.first())
+        context?.let { context ->
+            val bitwiseIsHiburan = pdpData.customText1.toIntSafely() and IS_HIBURAN
+            if (pdpData.dates.size > 1) {
+                activity?.txtPlaceHolderTglKunjungan?.text = context.resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+            } else if (bitwiseIsHiburan > 0) {
+                activity?.txtPlaceHolderTglKunjungan?.text = context.resources.getString(R.string.ent_pdp_berlaku_hingga)
+                activity?.txtDate?.text = getDateTicketFormatted(pdpData.maxEndDate)
+            } else {
+                activity?.txtPlaceHolderTglKunjungan?.text = context.resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+                activity?.txtDate?.text = getDateTicketFormatted(pdpData.dates.first())
+            }
         }
     }
 
@@ -512,7 +514,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
 
         const val EMPTY_QTY = 0
-        const val ZERO_PRICE = 0
+        const val ZERO_PRICE = 0L
         const val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000L
         const val DELAY_TIME = 200L
