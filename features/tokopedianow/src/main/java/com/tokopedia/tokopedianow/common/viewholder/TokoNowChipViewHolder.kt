@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChipBinding
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowChipViewHolder(
@@ -23,6 +24,7 @@ class TokoNowChipViewHolder(
     override fun bind(chip: TokoNowChipUiModel) {
         renderTitle(chip)
         renderImage(chip)
+        renderChipType(chip)
         setOnClickListener(chip)
     }
 
@@ -39,7 +41,15 @@ class TokoNowChipViewHolder(
                 View.GONE
             }
         }
+    }
 
+    private fun renderChipType(chip: TokoNowChipUiModel) {
+        val type = if(chip.selected) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+        binding?.chip?.chipType = type
     }
 
     private fun setOnClickListener(chip: TokoNowChipUiModel) {
@@ -49,6 +59,6 @@ class TokoNowChipViewHolder(
     }
 
     interface ChipListener {
-        fun onClickChipItem(chipUiModel: TokoNowChipUiModel)
+        fun onClickChipItem(chip: TokoNowChipUiModel)
     }
 }
