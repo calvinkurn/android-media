@@ -1,11 +1,58 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmMemberListAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmMemberListViewModel
 
 class TokomemberMemberListFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    private lateinit var tmMemberListRv : RecyclerView
+
+
+    private val tmMemberViewModel:TmMemberListViewModel by lazy {
+        ViewModelProvider(this).get(TmMemberListViewModel::class.java)
+    }
+
+    private val tmMemberAdapter : TmMemberListAdapter by lazy {
+        TmMemberListAdapter(tmMemberViewModel.memberList,requireContext())
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(layout,container,false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tmMemberListRv = view.findViewById(R.id.tm_member_list_recycler_view)
+        initialSetupMemberList()
+    }
+
+    private fun initialSetupMemberList(){
+        tmMemberListRv.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = tmMemberAdapter
+        }
+    }
+
+
+
+    companion object{
+        fun getInstance() : TokomemberMemberListFragment{
+            return TokomemberMemberListFragment()
+        }
+
+        private val layout = R.layout.tm_member_list_fragment
     }
 }
