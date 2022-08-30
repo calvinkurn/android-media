@@ -891,7 +891,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         if (viewModel.hasVariants) {
             productPriceVariantTicker?.isVisible = true
             productPriceLayout?.isVisible = false
-            productPriceSuggestionLayout?.isVisible = false
             productStockField?.isVisible = false
             productSkuField?.isVisible = false
             tvProductStockHeader?.text = getString(R.string.add_product_order_header)
@@ -1606,7 +1605,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     }
                     // display price suggestion feedback
                     val priceSuggestionRange = viewModel.getProductPriceSuggestionRange(viewModel.isEditing)
-                    val isCompetitive = viewModel.isProductPriceCompetitive(it.toDoubleOrZero(), priceSuggestionRange)
+                    val isError = viewModel.isProductPriceInputError.value.orFalse()
+                    val isCompetitive = viewModel.isProductPriceCompetitive(it.toDoubleOrZero(), priceSuggestionRange, isError)
                     if (isCompetitive) {
                         priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
                         priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
@@ -2231,7 +2231,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         return viewModel.isPriceSuggestionLayoutVisible(
                 isRangeEmpty = viewModel.isPriceSuggestionRangeEmpty,
                 productStatus = productStatus,
-                isProductConditionNew
+                isProductConditionNew,
+                viewModel.hasVariants
         )
     }
 }

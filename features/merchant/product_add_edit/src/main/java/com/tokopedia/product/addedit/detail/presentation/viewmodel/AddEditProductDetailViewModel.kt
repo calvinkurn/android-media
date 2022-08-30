@@ -816,13 +816,14 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
-    fun isProductPriceCompetitive(priceInput: Double, priceSuggestionRange: Pair<Double, Double>): Boolean {
+    fun isProductPriceCompetitive(priceInput: Double, priceSuggestionRange: Pair<Double, Double>, isError: Boolean = false): Boolean {
+        if (isError) return false
         val minPrice = priceSuggestionRange.first
         val maxPrice = priceSuggestionRange.second
         return priceInput <= minPrice ||  priceInput in minPrice..maxPrice
     }
 
-    fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean): Boolean {
+    fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean, hasVariant: Boolean): Boolean {
         val isActive = productStatus == ProductStatus.STATUS_ACTIVE
         return !isRangeEmpty && isActive && isNew
     }

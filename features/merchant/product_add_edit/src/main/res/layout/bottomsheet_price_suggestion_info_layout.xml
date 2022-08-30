@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/unify_space_16">
+    android:paddingHorizontal="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_range_and_recommendation"
@@ -20,7 +20,7 @@
         android:id="@+id/tpg_range_and_recommendation_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginTop="8dp"
         android:text="@string/content_range_and_recommendation"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
         android:id="@+id/tpg_most_competitive_product_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginTop="8dp"
         android:text="@string/content_most_competitive_product"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +82,7 @@
         android:id="@+id/tpg_or"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginStart="4dp"
         android:text="@string/label_or"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/tpg_cta_learn_more"
@@ -94,7 +94,7 @@
         android:id="@+id/tpg_cta_feedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_4"
+        android:layout_marginStart="4dp"
         android:text="@string/label_feedback"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toEndOf="@id/tpg_or"
