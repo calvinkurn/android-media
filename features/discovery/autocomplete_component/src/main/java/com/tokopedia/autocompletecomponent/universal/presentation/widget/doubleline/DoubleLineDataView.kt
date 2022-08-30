@@ -16,7 +16,6 @@ class DoubleLineDataView(
     val related: List<RelatedItemDataView> = listOf(),
     val keyword: String = "",
     val dimension90: String = "",
-    val position: Int = 0,
 ): Visitable<UniversalSearchTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
     trackingOption = trackingOption,
