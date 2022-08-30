@@ -39,9 +39,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                 var ops = NO_OPS
                 if (userSession.isLoggedIn) {
                     val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
-                    if (!dataStorePreference.isMigrationSuccess() &&
-                        (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
-                    ) {
+                    if (syncResult.isNotEmpty()) {
                         migrateData()
                         ops = MIGRATED
                     } else {
