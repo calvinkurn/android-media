@@ -364,14 +364,20 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleProductSelected(product: ProductUiModel) {
         viewModelScope.launch {
             if(isMultipleSelectionProduct) {
+
                 val currSelectedProduct = _selectedProduct.value
                 val newSelectedProduct = if(currSelectedProduct.isProductFound(product)) {
                     currSelectedProduct.filter { it.id != product.id }
                 }
                 else {
-                    currSelectedProduct.toMutableList().apply {
-                        add(product)
-                    }.toList()
+                    val currSelectedProductSize = _selectedProduct.value.size
+
+                    if(currSelectedProductSize < maxSelectedProduct) {
+                        currSelectedProduct.toMutableList().apply {
+                            add(product)
+                        }.toList()
+                    }
+                    else currSelectedProduct
                 }
 
                 _selectedProduct.value = newSelectedProduct

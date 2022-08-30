@@ -71,8 +71,9 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setAuthorId(getAuthorId())
                 .setAuthorType(getAuthorType())
                 .setProductTagSource("global_search,own_shop,last_purchase")
-                .setMultipleSelectionProduct(binding.rbMultipleSelectionProductYes.isChecked)
+                .setMultipleSelectionProduct(isMultipleSelectionProduct())
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+                .setMaxSelectedProduct(if(isMultipleSelectionProduct()) 3 else 0)
                 .build()
         )
     }
@@ -91,6 +92,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
             binding.rbSeller.id -> ContentCommonUserType.TYPE_SHOP
             else -> ""
         }
+    }
+
+    private fun isMultipleSelectionProduct(): Boolean {
+        return binding.rbMultipleSelectionProductYes.isChecked
     }
 
     private fun inject() {
