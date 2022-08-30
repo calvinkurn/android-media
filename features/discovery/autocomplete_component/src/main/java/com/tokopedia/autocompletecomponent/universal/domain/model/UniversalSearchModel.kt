@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 internal data class UniversalSearchModel(
     @SerializedName("universe_universal_search")
     @Expose
-    val universalSearch: UniversalSearch,
+    val universalSearch: UniversalSearch = UniversalSearch(),
 ) {
     internal data class UniversalSearch(
         @SerializedName("header")

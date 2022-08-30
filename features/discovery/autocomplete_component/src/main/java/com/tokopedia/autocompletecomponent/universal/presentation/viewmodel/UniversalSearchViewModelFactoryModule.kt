@@ -11,6 +11,7 @@ import com.tokopedia.autocompletecomponent.universal.domain.getuniversalsearch.U
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
 import com.tokopedia.autocompletecomponent.universal.presentation.mapper.UniversalSearchModelMapperModule
 import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
+import com.tokopedia.autocompletecomponent.util.ChooseAddressWrapper
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.usecase.coroutines.UseCase
 import dagger.Module
@@ -33,15 +34,14 @@ internal class UniversalSearchViewModelFactoryModule(
         @Named(UniversalConstant.UNIVERSAL_SEARCH_USE_CASE)
         universalSearchUseCase: UseCase<UniversalSearchModel>,
         universalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView>,
-        @ApplicationContext
-        context: Context,
+        chooseAddressWrapper: ChooseAddressWrapper,
     ): ViewModelProvider.Factory {
         return UniversalSearchViewModelFactory(
             baseDispatcher,
             universalSearchUseCase,
             universalSearchModelMapper,
             searchParameter,
-            context
+            chooseAddressWrapper
         )
     }
 }

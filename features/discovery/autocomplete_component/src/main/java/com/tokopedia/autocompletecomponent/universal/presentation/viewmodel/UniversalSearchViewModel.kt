@@ -6,11 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.autocompletecomponent.universal.UniversalConstant
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
-import com.tokopedia.autocompletecomponent.universal.presentation.mapper.UniversalSearchModelMapper
 import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateDataView
+import com.tokopedia.autocompletecomponent.util.ChooseAddressWrapper
 import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
 import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
@@ -24,16 +23,14 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import javax.inject.Inject
-import javax.inject.Named
 
 internal class UniversalSearchViewModel(
     baseDispatcher: CoroutineDispatchers,
     private val universalSearchUseCase: UseCase<UniversalSearchModel>,
     private val universalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView>,
     searchParameter: Map<String, Any>,
-    context: Context
-): BaseViewModel(baseDispatcher.io), ContextProvider by WeakReferenceContextProvider(context) {
+    private val chooseAddressWrapper: ChooseAddressWrapper,
+): BaseViewModel(baseDispatcher.io) {
 
     private val searchParameter = searchParameter.toMutableMap()
 
@@ -56,7 +53,7 @@ internal class UniversalSearchViewModel(
     private fun createUniversalSearchParam(): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putAll(searchParameter)
-        requestParams.putChooseAddressParams(createChooseAddressData())
+        requestParams.putChooseAddressParams(chooseAddressWrapper.getChooseAddressData())
 
         return requestParams
     }
@@ -105,16 +102,6 @@ internal class UniversalSearchViewModel(
 
     private fun createErrorStateDataView(): ErrorStateDataView {
         return ErrorStateDataView()
-    }
-
-    private fun createChooseAddressData(): LocalCacheModel {
-        return context?.let {
-            try {
-                ChooseAddressUtils.getLocalizingAddressData(it)
-            } catch (e: Throwable) {
-                ChooseAddressConstant.emptyAddress
-            }
-        } ?: ChooseAddressConstant.emptyAddress
     }
 
     fun getUniversalSearchState(): LiveData<State<List<Visitable<*>>>> = universalSearchState

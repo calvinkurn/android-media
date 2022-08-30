@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
 import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
+import com.tokopedia.autocompletecomponent.util.ChooseAddressWrapper
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -14,7 +15,7 @@ internal class UniversalSearchViewModelFactory(
     private val universalSearchUseCase: UseCase<UniversalSearchModel>,
     private val universalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView>,
     private val searchParameter: Map<String, Any> = mapOf(),
-    private val context: Context,
+    private val chooseAddressWrapper: ChooseAddressWrapper,
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -32,7 +33,7 @@ internal class UniversalSearchViewModelFactory(
             universalSearchUseCase,
             universalSearchModelMapper,
             searchParameter,
-            context
+            chooseAddressWrapper,
         )
     }
 }
