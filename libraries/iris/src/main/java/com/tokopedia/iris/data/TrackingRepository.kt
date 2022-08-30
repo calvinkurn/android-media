@@ -21,9 +21,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -60,7 +58,7 @@ class TrackingRepository(
                     Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
-
+                setEmbraceLog("getCount","total count")
                 val dbCount = trackingDao.getCount()
                 if (dbCount >= getLineDBFlush()) {
                     ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dbCountFlush", "no" to dbCount.toString()))
@@ -81,7 +79,7 @@ class TrackingRepository(
 
     private fun getFromOldest(maxRow: Int): List<Tracking> {
         return try {
-            setEmbraceLog()
+            setEmbraceLog("getFromOldest",maxRow.toString())
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
             ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("getFromOldest %s", e.toString())))
@@ -91,8 +89,11 @@ class TrackingRepository(
 
 
 
-    private fun setEmbraceLog() {
-        TODO("Not yet implemented")
+    private fun setEmbraceLog(queryName: String, queryParam: String) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+            "queryName" to queryName,
+            "detail" to queryParam
+        )
     }
 
     fun delete(data: List<Tracking>) {
