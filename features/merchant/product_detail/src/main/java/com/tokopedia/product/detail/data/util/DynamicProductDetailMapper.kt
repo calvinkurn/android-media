@@ -30,6 +30,7 @@ import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -131,10 +132,14 @@ object DynamicProductDetailMapper {
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
                 }
-                ProductDetailConstant.PRODUCT_LIST_VERTICAL ->{
-                    if(component.componentName == PDP_8_VERTICAL){
-                        listOfComponent.add(ProductRecommendationVerticalPlaceholderDataModel(type = component.type, name= component.componentName))
-                    }
+                ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
+                    listOfComponent.add(
+                        ProductRecommendationVerticalPlaceholderDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                    listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {

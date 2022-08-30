@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
@@ -164,12 +165,25 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rv.apply{
             isNestedScrollingEnabled = false
             itemAnimator = null
-            layoutManager = CenterLayoutManager(view.context)
+            layoutManager = CenterLayoutManager(view.context).apply {
+                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+            }
             adapter = productAdapter
             addItemDecoration(RecommendationItemDecoration())
         }
         rvPdp = rv
         showLoading()
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                (recyclerView.layoutManager as CenterLayoutManager).invalidateSpanAssignments()
+                recyclerView.invalidateItemDecorations()
+            }
+        }
     }
 
     protected fun addEndlessScrollListener(loadMore: (page: Int) -> Unit) {
@@ -181,11 +195,13 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
                 loadMore.invoke(page)
             }
         }.also { rv.addOnScrollListener(it) }
+        rv.addOnScrollListener(scrollListener)
     }
 
     protected fun removeEndlessScrollListener() {
         val rv = rvPdp ?: return
         val scrollListener = endlessScrollListener ?: return
         rv.removeOnScrollListener(scrollListener)
+        endlessScrollListener = null
     }
 }

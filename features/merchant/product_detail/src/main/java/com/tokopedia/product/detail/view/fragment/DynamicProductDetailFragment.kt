@@ -175,6 +175,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
@@ -2653,22 +2654,24 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeVerticalRecommendation(){
-        viewLifecycleOwner.observe(viewModel.verticalRecommendation){ data ->
+    private fun observeVerticalRecommendation() {
+        viewLifecycleOwner.observe(viewModel.verticalRecommendation) { data ->
             data.doSuccessOrFail({
                 val recommendationWidget = it.data
                 pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
                 endlessScrollListener?.updateStateAfterGetData()
-                if(recommendationWidget.hasNext){
+                if (recommendationWidget.hasNext) {
                     addEndlessScrollListener {
-                        val page = pdpUiUpdater?.getVerticalRecommendationNextPage()
+                        val page =
+                            pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
                         viewModel.getVerticalRecommendationData(page, productId)
                     }
-                } else{
+                } else {
+                    pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
                     removeEndlessScrollListener()
                 }
-                updateUi(recommendationWidget.hasNext)
-            },{
+                updateUi()
+            }, {
                 removeEndlessScrollListener()
                 updateUi()
             })
@@ -2808,13 +2811,9 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun updateUi(showLoading: Boolean = false) {
-        val newData = pdpUiUpdater?.mapOfData?.values?.toList() ?: emptyList()
-        val dataModels = pdpUiUpdater?.verticalRecommendationData?.recommendationVerticalDataModels
-            ?: emptyList()
-
-        if (showLoading) submitList(newData + dataModels + LoadingDataModel())
-        else submitList(newData + dataModels)
+    private fun updateUi() {
+        val newData = pdpUiUpdater?.getCurrentDataModels() ?: emptyList()
+        submitList(newData)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {

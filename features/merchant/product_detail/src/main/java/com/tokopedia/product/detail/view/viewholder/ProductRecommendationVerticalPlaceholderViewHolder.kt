@@ -17,6 +17,18 @@ class ProductRecommendationVerticalPlaceholderViewHolder(
     private val binding = ViewProductRecommendationVerticalPlaceholderBinding.bind(view)
 
     override fun bind(element: ProductRecommendationVerticalPlaceholderDataModel) {
+        setTitle(element)
+    }
+
+    override fun bind(
+        element: ProductRecommendationVerticalPlaceholderDataModel,
+        payloads: MutableList<Any>
+    ) {
+        setTitle(element)
+        super.bind(element, payloads)
+    }
+
+    private fun setTitle(element: ProductRecommendationVerticalPlaceholderDataModel) {
         val recomWidgetData = element.recomWidgetData ?: return
         val title = recomWidgetData.title
         binding.productRecommendationVerticalTitle.showIfWithBlock(title.isNotEmpty()) {

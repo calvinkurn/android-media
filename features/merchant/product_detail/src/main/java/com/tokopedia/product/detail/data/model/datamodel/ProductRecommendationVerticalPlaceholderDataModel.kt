@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 data class ProductRecommendationVerticalPlaceholderDataModel(
@@ -12,8 +11,6 @@ data class ProductRecommendationVerticalPlaceholderDataModel(
     override val impressHolder: ImpressHolder = ImpressHolder(),
     var recomWidgetData: RecommendationWidget? = null
 ) : DynamicPdpDataModel {
-
-    val recommendationVerticalDataModels = mutableListOf<ProductRecommendationVerticalDataModel>()
 
     override fun type(): String = type
 
@@ -30,13 +27,12 @@ data class ProductRecommendationVerticalPlaceholderDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
-    fun updateItemList(items: List<RecommendationItem>) {
-        val dataModels = items.map { item ->
+    fun getItemDataModels(): List<ProductRecommendationVerticalDataModel> {
+        return recomWidgetData?.recommendationItemList?.map { item ->
             ProductRecommendationVerticalDataModel(
                 name = item.productId.toString(),
                 recommendationItem = item
             )
-        }
-        recommendationVerticalDataModels.addAll(dataModels)
+        } ?: emptyList()
     }
 }
