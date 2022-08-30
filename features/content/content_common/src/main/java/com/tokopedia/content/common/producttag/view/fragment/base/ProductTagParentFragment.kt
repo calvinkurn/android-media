@@ -168,20 +168,8 @@ class ProductTagParentFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when(it) {
-                    is ProductTagUiEvent.ProductSelected -> {
-                        val product = it.product
-
-                        val data = Intent().apply {
-                            putExtra(RESULT_PRODUCT_ID, product.id)
-                            putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
-                            putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
-                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
-                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
-                            putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
-                        }
-                        requireActivity().setResult(Activity.RESULT_OK, data)
-                        requireActivity().finish()
+                    is ProductTagUiEvent.FinishProductTag -> {
+                        mListener?.onFinishProductTag(it.products)
                     }
                     is ProductTagUiEvent.ShowSourceBottomSheet -> {
                         ProductTagSourceBottomSheet.getFragment(
@@ -438,14 +426,6 @@ class ProductTagParentFragment @Inject constructor(
         const val TAG = "ProductTagParentFragment"
         private const val EXTRA_QUERY = "EXTRA_QUERY"
 
-        const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
-        const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
-        const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
-        const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
-        const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
-        const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
-        const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
-
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
         }
@@ -453,16 +433,16 @@ class ProductTagParentFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            query: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, query)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, argumentBuilder)
         }
 
         private fun createFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            query: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
@@ -471,7 +451,7 @@ class ProductTagParentFragment @Inject constructor(
                 ) as ProductTagParentFragment
             ).apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_QUERY, query)
+                    putString(EXTRA_QUERY, argumentBuilder.build())
                 }
             }
         }
@@ -479,5 +459,6 @@ class ProductTagParentFragment @Inject constructor(
 
     interface Listener {
         fun onCloseProductTag()
+        fun onFinishProductTag(products: List<ProductUiModel>)
     }
 }

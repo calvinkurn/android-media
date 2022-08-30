@@ -7,6 +7,7 @@ import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.robot.ProductTagViewModelRobot
 import com.tokopedia.content.common.util.andThen
@@ -34,8 +35,16 @@ class ProductTagNavigationViewModelTest {
 
     private val commonModelBuilder = CommonModelBuilder()
     private val shopModelBuilder = ShopModelBuilder()
-    private val feedConfig = FeedProductTagConfig()
-    private val playConfig = PlayProductTagConfig()
+    private val feedConfig = ContentProductTagConfig(
+        isMultipleSelectionProduct = false,
+        isFullPageAutocomplete = true,
+        maxSelectedProduct = 0,
+    )
+    private val playConfig = ContentProductTagConfig(
+        isMultipleSelectionProduct = true,
+        isFullPageAutocomplete = false,
+        maxSelectedProduct = 0,
+    )
 
     private val mockException = commonModelBuilder.buildException()
 
@@ -305,7 +314,7 @@ class ProductTagNavigationViewModelTest {
             robot.recordEvent {
                 submitAction(ProductTagAction.ProductSelected(selectedProduct))
             }.andThen {
-                last().assertEqualTo(ProductTagUiEvent.ProductSelected(selectedProduct))
+                last().assertEqualTo(ProductTagUiEvent.FinishProductTag(listOf(selectedProduct)))
             }
         }
     }

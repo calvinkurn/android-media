@@ -389,7 +389,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 _selectedProduct.value = newSelectedProduct
             }
             else {
-                _uiEvent.emit(ProductTagUiEvent.ProductSelected(product))
+                _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product)))
             }
         }
     }
