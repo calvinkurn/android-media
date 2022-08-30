@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.databinding.ActivityContentProductTagSampleBinding
 import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -95,8 +97,11 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setMaxSelectedProduct(if(isMultipleSelectionProduct()) 3 else 0)
                 .setBackButton(ContentProductTagConfig.BackButton.Close)
                 .setIsShowActionBarDivider(false)
-                .build()
         )
+    }
+
+    private fun closeFragment() {
+        supportFragmentManager.beginTransaction().remove(getFragment()).commit()
     }
 
     private fun getAuthorId(): String {
