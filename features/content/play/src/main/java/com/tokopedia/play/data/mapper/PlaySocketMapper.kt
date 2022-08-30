@@ -75,6 +75,9 @@ class PlaySocketMapper(
             PlaySocketType.ChannelInteractiveQuiz.value-> {
                 return mapToChannelQuiz()
             }
+            PlaySocketType.MerchantVoucherV2.value -> {
+                return MerchantVoucher(mapToMerchantVoucher())
+            }
         }
         return null
     }
