@@ -7,6 +7,7 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationAffiliate
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
+import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCategory
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
@@ -307,6 +308,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
             DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
+            DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
@@ -351,7 +353,6 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_STATUS) { _, uri, _, _ -> getSomShippedAppLink(uri) },
             DLP.startWith(ApplinkConst.FEED_DETAILS) { _, _, deeplink, _ -> getRegisteredFeed(deeplink) },
             DLP.startWith(ApplinkConst.FEED_PlAY_LIVE_DETAIL, ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS),
-            DLP.startWith(ApplinkConst.INTEREST_PICK) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP.exact(ApplinkConst.FEED,
                 targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }),
             DLP(Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),

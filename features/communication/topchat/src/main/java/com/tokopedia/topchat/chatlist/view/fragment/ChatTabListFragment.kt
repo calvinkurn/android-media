@@ -319,14 +319,14 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     private fun setTitleTab(title: String, counter: String): CharSequence? {
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                    if (counter.toLongOrZero() > 99) {
-                        "99+"
+                    if (counter.toLongOrZero() > LIMIT_NOTIFICATION) {
+                        LIMIT_NOTIFICATION_STRING
                     } else {
                         counter
                     }
 
-            return if (title.length > 10) {
-                title.take(9) + ".. ($counterFormatted)"
+            return if (title.length > MAX_LENGTH_TITLE) {
+                title.take(TITLE_LENGTH) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
             }
@@ -467,7 +467,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     override fun loadNotificationCounter() {
-        chatNotifCounterViewModel.queryGetNotifCounter()
+        chatNotifCounterViewModel.queryGetNotifCounter(userSession.shopId)
     }
 
     override fun showSearchOnBoardingTooltip() {
@@ -579,6 +579,10 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+        private const val LIMIT_NOTIFICATION = 99
+        private const val LIMIT_NOTIFICATION_STRING = "99+"
+        private const val MAX_LENGTH_TITLE = 10
+        private const val TITLE_LENGTH = 9
 
         @JvmStatic
         fun create(): ChatTabListFragment {

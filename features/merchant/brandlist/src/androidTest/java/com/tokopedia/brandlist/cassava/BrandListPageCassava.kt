@@ -15,7 +15,6 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_category.presentation.activity.BrandlistActivity
-import com.tokopedia.brandlist.brandlist_category.presentation.adapter.BrandlistContainerAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
@@ -25,7 +24,6 @@ import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers
@@ -88,10 +86,10 @@ class BrandListPageCassava {
         }
         doActivityTestByModelClass(dataModelClass = AllBrandGroupHeaderUiModel::class) { holder, position ->
             logTestMessage("Captured is AllBrandGroupHeaderViewHolder")
-//            Espresso.onView(firstView(withId(R.id.chip_alphabet_header))).perform(click())
-            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 4)
+            CommonActions.clickOnEachItemRecyclerView(holder.itemView, R.id.rv_groups_chip, 3)
         }
-        doActivityTestByModelClass(dataModelClass = AllBrandUiModel::class) { holder, position ->
+        waitForData()
+        doActivityTestByModelClass(delayBeforeRender = 5000, dataModelClass = AllBrandUiModel::class) { holder, position ->
             logTestMessage("Captured is AllBrandViewHolder")
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 holder.itemView.performClick()

@@ -744,6 +744,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check epharmacy appLink then should return tokopedia internal category in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://epharmacy"
+        assertEqualsDeepLinkMapper(ApplinkConst.EPHARMACY, expectedDeepLink)
+    }
+
+    @Test
     fun `check payment back to default appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.PAYMENT_BACK_TO_DEFAULT, "")
     }
@@ -1637,12 +1643,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://content/draft/1234"
         val appLink = UriUtil.buildUri(ApplinkConst.CONTENT_DRAFT_POST, "1234")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check interest pick appLink then should return tokopedia internal interest pick in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://interestpick"
-        assertEqualsDeepLinkMapper(ApplinkConst.INTEREST_PICK, expectedDeepLink)
     }
 
     @Test
