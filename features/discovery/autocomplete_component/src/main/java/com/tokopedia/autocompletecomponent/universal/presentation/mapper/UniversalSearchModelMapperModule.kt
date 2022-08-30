@@ -1,8 +1,8 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchScope
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
-import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
 import com.tokopedia.discovery.common.Mapper
 import dagger.Module
 import dagger.Provides
@@ -15,7 +15,7 @@ internal class UniversalSearchModelMapperModule(
 
     @UniversalSearchScope
     @Provides
-    fun provideUniversalSearchModelMapper(): Mapper<UniversalSearchModel, UniversalDataView> {
+    fun provideUniversalSearchModelMapper(): Mapper<UniversalSearchModel, List<Visitable<*>>> {
         return UniversalSearchModelMapper(dimension90, keyword)
     }
 }

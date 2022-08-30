@@ -16,6 +16,7 @@ class CarouselDataView(
     val product: List<Product> = listOf(),
     val keyword: String = "",
     val dimension90: String = "",
+    val position: Int = 0,
 ): Visitable<UniversalSearchTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,

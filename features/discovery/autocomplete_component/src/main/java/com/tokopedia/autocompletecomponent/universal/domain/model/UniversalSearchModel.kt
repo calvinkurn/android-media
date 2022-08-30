@@ -211,4 +211,8 @@ internal data class UniversalSearchModel(
         @Expose
         val campaignCode: String = "",
     )
+
+    internal fun getItems(): List<UniversalSearchItem> {
+        return universalSearch.universalSearchData.items
+    }
 }

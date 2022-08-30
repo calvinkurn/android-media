@@ -1,33 +1,26 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
-import com.tokopedia.autocompletecomponent.universal.presentation.model.UniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateDataView
 import com.tokopedia.autocompletecomponent.util.ChooseAddressWrapper
-import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
-import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.discovery.common.State.Loading
 import com.tokopedia.discovery.common.State.Success
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 internal class UniversalSearchViewModel(
     baseDispatcher: CoroutineDispatchers,
     private val universalSearchUseCase: UseCase<UniversalSearchModel>,
-    private val universalSearchModelMapper: Mapper<UniversalSearchModel, UniversalDataView>,
+    private val universalSearchModelMapper: Mapper<UniversalSearchModel, List<Visitable<*>>>,
     searchParameter: Map<String, Any>,
     private val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
@@ -78,13 +71,8 @@ internal class UniversalSearchViewModel(
 
     private fun processVisitableListFromModel(universalSearchModel: UniversalSearchModel) {
         val universalDataView = universalSearchModelMapper.convert(universalSearchModel)
-        val visitableList = mutableListOf<Visitable<*>>()
 
-        visitableList.addAll(universalDataView.carouselDataView)
-        visitableList.addAll(universalDataView.listDataView)
-        visitableList.addAll(universalDataView.doubleLineDataView)
-
-        updateUniversalSearchVisitableList(visitableList)
+        updateUniversalSearchVisitableList(universalDataView)
     }
 
     private fun updateUniversalSearchVisitableList(visitableList: List<Visitable<*>>) {
