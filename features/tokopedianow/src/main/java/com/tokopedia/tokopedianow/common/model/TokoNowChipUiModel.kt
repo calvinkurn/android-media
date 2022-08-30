@@ -7,7 +7,8 @@ data class TokoNowChipUiModel(
     val id: String,
     val parentId: String = "",
     val text: String,
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val selected: Boolean = false
 ): Visitable<TokoNowChipTypeFactory> {
 
     override fun type(typeFactory: TokoNowChipTypeFactory): Int {
