@@ -4,12 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.Success
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
-import com.tokopedia.people.model.userprofile.PlayVideoModelBuilder
+import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
+import com.tokopedia.people.model.userprofile.*
 import com.tokopedia.people.robot.UserProfileViewModelRobot
-import com.tokopedia.people.util.equalTo
-import com.tokopedia.people.util.getOrAwaitValue
-import com.tokopedia.people.util.getOrNullValue
+import com.tokopedia.people.util.*
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -36,10 +36,20 @@ class UserProfilePlayVideoViewModelTest {
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
+    private val profileBuilder = ProfileUiModelBuilder()
+    private val followInfoBuilder = FollowInfoUiModelBuilder()
     private val playVideoBuilder = PlayVideoModelBuilder()
+    private val profileWhitelistBuilder = ProfileWhitelistUiModelBuilder()
+    private val shopRecomBuilder = ShopRecomModelBuilder()
 
-    private val mockOwnUsername = "jonathandarwin"
     private val mockException = commonBuilder.buildException()
+    private val mockUserId = "1"
+    private val mockOwnUsername = "jonathandarwin"
+
+    private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
+    private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
+    private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
+    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
 
     private val mockPlayVideo = playVideoBuilder.buildModel()
 
@@ -52,7 +62,41 @@ class UserProfilePlayVideoViewModelTest {
 
     @Before
     fun setUp() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+
+        coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
+
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+
         coEvery { mockRepo.getPlayVideo(any(), any()) } returns mockPlayVideo
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+    }
+
+    @Test
+    fun `load profile with refresh - should emit LoadPlayVideo event`() {
+
+        robot.start {
+            recordEvent {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                last().assertEvent(UserProfileUiEvent.LoadPlayVideo)
+            }
+        }
+    }
+
+    @Test
+    fun `load profile with no refresh - should not emit LoadPlayVideo event`() {
+
+        robot.start {
+            recordEvent {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = false))
+            } andThen {
+                this.assertEmpty()
+            }
+        }
     }
 
     @Test
