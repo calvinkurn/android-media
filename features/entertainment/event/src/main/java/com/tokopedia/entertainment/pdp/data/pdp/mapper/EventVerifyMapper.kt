@@ -4,7 +4,7 @@ import android.content.ClipData
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.*
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object EventVerifyMapper {
     fun getInitialVerify(pdpData: ProductDetailData): VerifyRequest {
@@ -37,7 +37,7 @@ object EventVerifyMapper {
                     categoryId = pdpData.categoryId,
                     startTime = pdpData.saleStartTime,
                     endTime = pdpData.saleEndDate,
-                    price = salesPrice.toLongOrZero(),
+                    price = salesPrice.toIntSafely().toLong(),
                     quantity = quantiy,
                     totalPrice = totalPrice.toLong(),
                     locationName = locationName,
