@@ -15,7 +15,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_C
  *
  * @created at 8/09/2020
  *
- * @appLink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TERM_PRIVACY]
+ * @appLink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.TERM_PRIVACY]
  * parameter :
  * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION]
  * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY]

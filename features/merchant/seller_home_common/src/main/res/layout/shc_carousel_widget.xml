@@ -98,9 +98,8 @@
                 app:typographyWeight="reguler"
                 tools:text="Lihat Semua" />
 
-            <include
+            <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetErrorStateView
                 android:id="@+id/shcCarouselErrorState"
-                layout="@layout/shc_partial_common_widget_state_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

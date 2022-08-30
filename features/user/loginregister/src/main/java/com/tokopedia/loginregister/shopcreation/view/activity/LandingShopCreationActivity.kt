@@ -8,7 +8,7 @@ import com.tokopedia.loginregister.shopcreation.view.fragment.LandingShopCreatio
  * Created by Ade Fulki on 2019-12-09.
  * ade.hadian@tokopedia.com
  * For navigating to this class
- * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION
  */
 
 class LandingShopCreationActivity : BaseShopCreationActivity() {

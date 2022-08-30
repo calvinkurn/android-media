@@ -146,7 +146,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
         // video resolution for stream and mp4 recording,
         // larix uses same resolution for camera preview and stream to simplify setup
-        val videoSize = BroadcasterUtil.getVideoSize(activeCamera)
+        val videoSize = BroadcasterUtil.getVideoSize(activeCamera.recordSizes, TARGET_ASPECT_RATIO)
 
         // Stream resolution is not tied to camera preview sizes
         // For example, you need gorgeous FullHD preview and smaller stream to save traffic
@@ -172,7 +172,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
         // This is useful option for camera flip, for example if back camera can do 1280x720 HD
         // and front camera can only produce 640x480
-
         videoConfig.videoSize = getAndroidVideoSize(videoSize)
 
         // verify video resolution support by encoder
@@ -194,7 +193,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         // larix wraps preview surface with AspectFrameLayout to maintain a specific aspect ratio
 
         builder.setSurface(holder.surface)
-        // builder.setSurfaceSize(Streamer.Size(binding.surfaceView.getWidth(), binding.surfaceView.getHeight()))
         builder.setSurfaceSize(Streamer.Size(surfaceSize.width, surfaceSize.height))
 
         // orientation will be later changed to actual device orientation when user press "Broadcast" button
@@ -241,7 +239,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 builder.addCamera(
                     CameraConfig().apply {
                         this.cameraId = it.cameraId
-                        this.videoSize = BroadcasterUtil.findFlipSize(it, videoSize)
+                        this.videoSize = BroadcasterUtil.findFlipSize(it.recordSizes, videoSize)
                     }
                 )
             }
@@ -657,5 +655,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
         private const val STATISTIC_DEFAULT_INTERVAL = 3000L
+
+        private const val TARGET_ASPECT_RATIO = 16.0 / 9.0
     }
 }

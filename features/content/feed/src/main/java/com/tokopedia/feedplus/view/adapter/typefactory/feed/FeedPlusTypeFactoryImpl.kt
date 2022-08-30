@@ -44,7 +44,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class FeedPlusTypeFactoryImpl(
         context: FeedPlusFragment,
         private val userSession: UserSessionInterface,
-        private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener,
         private val playWidgetCoordinator: PlayWidgetCoordinator
 ) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
@@ -101,10 +100,6 @@ class FeedPlusTypeFactoryImpl(
         return TopAdsBannerViewHolder.LAYOUT
     }
 
-    override fun type(onboardingViewModel: OnboardingViewModel): Int {
-        return OnboardingViewHolder.LAYOUT
-    }
-
     override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
         return CarouselPlayCardViewHolder.LAYOUT
     }
@@ -148,9 +143,6 @@ class FeedPlusTypeFactoryImpl(
                     videoViewListener,
                     gridItemListener,
                     imagePostListener)
-            }
-            OnboardingViewHolder.LAYOUT -> {
-                viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
             }
             TopAdsBannerViewHolder.LAYOUT -> {
                 viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
