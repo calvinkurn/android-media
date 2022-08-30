@@ -31,7 +31,7 @@ class LeftChatMessageUnifyViewHolder(
 
     private val backgroundForChat = ViewUtil.generateBackgroundWithShadow(
         customChatLayout?.fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        R.color.chatbot_dms_left_chat_message_bg,
         R.dimen.dp_chatbot_0,
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_20,

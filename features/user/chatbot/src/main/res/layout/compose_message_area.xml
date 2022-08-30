@@ -59,6 +59,7 @@
                 android:background="@null"
                 android:hint="@string/cb_bot_reply_text"
                 android:inputType="textMultiLine"
+                android:textColorHint="@color/chatbot_dms_compose_msg_hint"
                 android:maxLines="5"
                 android:textSize="@dimen/sp_chatbot_16"
                 tools:text="@tools:sample/lorem/random" />
