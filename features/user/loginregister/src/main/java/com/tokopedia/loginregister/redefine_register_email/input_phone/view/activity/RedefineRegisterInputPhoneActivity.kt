@@ -1,10 +1,13 @@
 package com.tokopedia.loginregister.redefine_register_email.input_phone.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.ActivityRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefine_register_email.di.DaggerRedefineRegisterEmailComponent
@@ -36,9 +39,16 @@ class RedefineRegisterInputPhoneActivity : BaseSimpleActivity(),
                 actionText = getString(R.string.register_email_input_phone_skip)
 
                 actionTextView?.setOnClickListener {
+                    gotoHome()
                 }
             }
         }
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
     override fun onBackPressed() {
