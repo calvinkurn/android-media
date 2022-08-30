@@ -66,13 +66,14 @@ class PreviewViewModel @Inject constructor(
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        videoCameraFiles.plus(compressedImages)
+        originalFiles
             .forEach {
                 mediaSaver.dispatch(it)
             }
 
         PickerResult(
             originalPaths = originalFiles,
+            videoFiles = videoCameraFiles,
             compressedImages = compressedImages
         )
     }.shareIn(

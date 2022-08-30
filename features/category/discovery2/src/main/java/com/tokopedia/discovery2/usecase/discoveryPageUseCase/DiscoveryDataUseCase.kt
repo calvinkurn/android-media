@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.USER_ADDRESS_KEY
 import com.tokopedia.discovery2.Constant.QueryParamConstants.QUERY_PARAMS_KEY
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
@@ -36,6 +37,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
                 it
             } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier, paramMap).apply {
                 discoveryPageData[pageIdentifier] = this
+                this.queryParamMap = queryParameterMap
                 componentMap = HashMap()
                 if (this.pageInfo.showChooseAddress && userAddressDataCopy == null)
                     userAddressDataCopy = localCacheModel
@@ -51,5 +53,9 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
 
     fun clearPage(pageIdentifier: String) {
         discoveryPageData.remove(pageIdentifier)
+    }
+
+    fun getDiscoResponseIfPresent(pageIdentifier: String): DiscoveryResponse? {
+        return discoveryPageData[pageIdentifier]
     }
 }

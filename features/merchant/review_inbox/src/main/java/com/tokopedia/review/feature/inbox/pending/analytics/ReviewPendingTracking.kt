@@ -119,10 +119,10 @@ object ReviewPendingTracking {
     private fun Bundle.appendBannerPromotions(position: Int, title: String): Bundle {
         val bannersPayload = listOf(
             Bundle().apply {
-                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_CREATIVE_NAME, null)
+                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_CREATIVE_NAME, "")
                 putInt(ReviewPendingTrackingConstants.EVENT_FIELD_EE_CREATIVE_SLOT, position)
                 putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_ID, title)
-                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_NAME, null)
+                putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_NAME, "")
             }
         )
         putParcelableArrayList(ReviewPendingTrackingConstants.EVENT_FIELD_EE_PROMOTIONS, ArrayList(bannersPayload))
