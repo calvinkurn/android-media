@@ -10,11 +10,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_WITH_TIME
+import com.tokopedia.campaign.utils.constant.DateConstant.TIME_WIB
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.extension.*
-import com.tokopedia.tkpd.flashsale.common.extension.formatTo
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
@@ -34,10 +36,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val REGISTERED_TAB = "registered"
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
-
-        private const val DATE_WITH_TIME = "dd MMM yyyy, HH:mm 'WIB'"
-        private const val TIME_WIB = "HH.mm 'WIB'"
-        private const val DATE_MONTH_ONLY = "dd MMM"
 
         @JvmStatic
         fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
@@ -100,7 +98,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     setupView(flashSale.data)
                 }
-                is Fail -> { }
+                is Fail -> {
+                    //TODO: Add Error Handling, not available on figma yet
+                }
             }
         }
     }
@@ -119,6 +119,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     *Region Upcoming CDP
+     */
     private fun setupUpcoming(flashSale: FlashSale) {
         val campaignStatus = when {
             viewModel.isCampaignRegisterClosed(flashSale) -> UpcomingCampaignStatus.CLOSED
@@ -155,6 +158,41 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val inflatedView = binding.layoutHeader
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_header
         inflatedView.inflate()
+        setupUpcomingHeaderStatus(flashSale, campaignStatus)
+    }
+
+    private fun setupUpcomingMid(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutMid
+        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
+        inflatedView.inflate()
+        upcomingCdpMidBinding?.run {
+            setupUpcomingMidStatus(flashSale, campaignStatus)
+            val startSubmissionDate = flashSale.submissionStartDateUnix.formatTo(
+                DATE_MONTH_ONLY
+            )
+            val endSubmissionDate = flashSale.submissionEndDateUnix.formatTo(DATE_MONTH_ONLY)
+            tgRegisterPeriod.text = getString(
+                R.string.register_period_value_placeholder_2,
+                startSubmissionDate,
+                endSubmissionDate
+            )
+        }
+    }
+
+    private fun setupUpcomingBody(flashSale: FlashSale) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutBody
+        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
+        inflatedView.inflate()
+        upcomingCdpBodyBinding?.run {
+            tgDescription.text = MethodChecker.fromHtml(
+                flashSale.description
+            )
+        }
+    }
+
+    private fun setupUpcomingHeaderStatus(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         upcomingCdpHeaderBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
@@ -181,18 +219,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     tgCampaignStatus.text = getString(R.string.registration_over_in_label)
                 }
             }
-            setupUpcomingTimer(this, flashSale)
             imageCampaign.setImageUrl(flashSale.coverImage)
             tgCampaignName.text = flashSale.name
+            setupUpcomingTimer(this, flashSale)
             setUpcomingCampaignPeriod(this, flashSale)
         }
     }
 
-    private fun setupUpcomingMid(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
-        val binding = binding ?: return
-        val inflatedView = binding.layoutMid
-        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
-        inflatedView.inflate()
+    private fun setupUpcomingMidStatus(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         upcomingCdpMidBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
@@ -226,29 +260,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     )
                 }
             }
-            val startSubmissionDate = flashSale.submissionStartDateUnix.formatTo(
-                DATE_MONTH_ONLY
-            )
-            val endSubmissionDate = flashSale.submissionEndDateUnix.formatTo(
-                DATE_MONTH_ONLY
-            )
-            tgRegisterPeriod.text = getString(
-                R.string.register_period_value_placeholder_2,
-                startSubmissionDate,
-                endSubmissionDate
-            )
-        }
-    }
-
-    private fun setupUpcomingBody(flashSale: FlashSale) {
-        val binding = binding ?: return
-        val inflatedView = binding.layoutBody
-        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_body
-        inflatedView.inflate()
-        upcomingCdpBodyBinding?.run {
-            tgDescription.text = MethodChecker.fromHtml(
-                flashSale.description
-            )
         }
     }
 
@@ -294,14 +305,23 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     * Region Registered CDP
+     */
     private fun setupRegistered() {
         //TODO: implement registered CDP
     }
 
+    /**
+     * Region Ongoing CDP
+     */
     private fun setupOngoing() {
         //TODO: implement ongoing CDP
     }
 
+    /**
+     * Region Finished CDP
+     */
     private fun setupFinished() {
         //TODO: implement finished CDP
     }

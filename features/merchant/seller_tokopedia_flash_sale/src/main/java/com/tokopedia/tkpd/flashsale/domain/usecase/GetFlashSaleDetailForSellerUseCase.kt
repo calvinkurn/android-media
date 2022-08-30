@@ -12,8 +12,8 @@ class GetFlashSaleDetailForSellerUseCase @Inject constructor(
     private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase,
 ) : GraphqlUseCase<FlashSale>(repository)  {
     companion object {
-        const val ONE = 1
-        const val FIRST_PAGE = 0
+        private const val ONE = 1
+        private const val FIRST_PAGE = 0
     }
 
     suspend fun execute(
