@@ -2629,6 +2629,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun doRefresh() {
+        listSelectedProductIds.clear()
         onLoadMore = false
         isFetchRecommendation = false
         currPage = 1
