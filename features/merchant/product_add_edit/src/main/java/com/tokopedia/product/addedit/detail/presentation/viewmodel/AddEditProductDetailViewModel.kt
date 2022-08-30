@@ -825,7 +825,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean, hasVariant: Boolean): Boolean {
         val isActive = productStatus == ProductStatus.STATUS_ACTIVE
-        return !isRangeEmpty && isActive && isNew
+        return !isRangeEmpty && isActive && isNew && !hasVariant
     }
 
     fun isPriceSuggestionRangeIsEmpty(minLimit: Double, maxLimit: Double): Boolean {
