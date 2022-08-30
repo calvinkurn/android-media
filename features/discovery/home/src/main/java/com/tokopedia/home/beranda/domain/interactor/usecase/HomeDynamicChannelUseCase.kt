@@ -1097,10 +1097,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             HomeDynamicChannelsRepository.TOKEN, homeDataResponse?.token?:""
                     )
                     putString(
-                            HomeDynamicChannelsRepository.CHANNEL_IDS,
-                            homeDataResponse?.dynamicHomeChannel?.channels?.joinToString(", ") { it.id }
-                    )
-                    putString(
                             HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
                         ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
                     )

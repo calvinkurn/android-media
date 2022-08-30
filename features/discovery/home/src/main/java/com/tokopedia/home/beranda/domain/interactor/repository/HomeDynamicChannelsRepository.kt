@@ -50,8 +50,13 @@ class HomeDynamicChannelsRepository @Inject constructor(
         const val LOCATION = "location"
         const val CHANNEL_IDS = "channelIDs"
 
-        fun buildParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
-        :RequestParams{
+        fun buildParams(
+            groupIds: String = "",
+            token: String = "",
+            numOfChannel: Int = 0,
+            queryParams: String = "",
+            locationParams: String = ""
+        ) : RequestParams {
             val params = RequestParams.create()
             params.parameters.clear()
             params.putString(PARAMS, queryParams)
@@ -62,8 +67,12 @@ class HomeDynamicChannelsRepository @Inject constructor(
             return params
         }
 
-        fun buildParamsV2(groupIds: String = "", channelIds: String = "0", queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
-                :RequestParams{
+        fun buildParamsV2(
+            groupIds: String = "",
+            channelIds: String = "0",
+            queryParams: String = "",
+            locationParams: String = ""
+        ) : RequestParams {
             val params = RequestParams.create()
             params.parameters.clear()
             params.putString(PARAMS, queryParams)
@@ -85,7 +94,7 @@ class HomeDynamicChannelsRepository @Inject constructor(
         val requestParams = if(isUsingV2){
             buildParamsV2(
                 groupIds = groupId,
-                channelIds = channelIds.toString(),
+                channelIds = channelIds,
                 queryParams = params,
                 locationParams = location
             )
