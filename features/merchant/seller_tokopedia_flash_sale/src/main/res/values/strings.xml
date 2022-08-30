@@ -3,6 +3,7 @@
     <string name="fs_canceled_lable">Batalkan</string>
     <string name="title_detail_category">Detail Category</string>
     <string name="quantity_product">%1$d/%2$d Produk</string>
+    <string name="action_apply">Terapkan</string>
 
     <!--Flash Sale List-->
     <string name="stfs_tab_name_upcoming">Akan Datang</string>
@@ -77,15 +78,26 @@
     <string name="campaigndetail_campaign_ended">Selesai</string>
     <string name="campaigndetail_submission_limit_format">Maks. %d</string>
     <string name="campaigndetail_max_shown_format">Maks. %1d dalam %2d hari</string>
-    <string-array name="criteria_items">
-        <item>Pastikan harga diskon produkmu lebih rendah dari harga termurah di Tokopedia untuk produk serupa.</item>
-        <item>Tampilan foto produk harus terlihat jelas, tidak terpotong, dengan pencahayaan terang, dan tidak berlatar putih polos. Foto produk yang terhalang logo kurir tertentu, watermark, atau tulisan tidak dapat mengikuti campaign.</item>
-        <item>Judul, gambar, dan deskripsi harus sesuai dengan produk didaftarkan tanpa melanggar Hak Merek Dagang dan sesuai syarat &amp; ketentuan Tokopedia.</item>
-        <item>Khusus untuk produk kategori makanan, pastikan produk memiliki surat keterangan BPOM dengan tanggal kedaluwarsa produk tidak kurang dari 1 bulan.</item>
-        <item>Pastikan produkmu sesuai dengan kategori yang dipilih dan tema campaign yang diikuti.</item>
-        <item>Stok produk harus memadai, dalam kondisi baru, dan tidak terdaftar di campaign lain di dalam periode yang sama.</item>
-        <item><![CDATA[Sesuai syarat & ketentuan Tokopedia, susu formula bayi usia 0–12 bulan tidak boleh mengikuti Flash Sale/campaign.]]></item>
-    </string-array>
+
+    <!--Common Bottomsheet-->
+    <string name="commonbs_sort_title">Urutkan</string>
+    <string name="commonbs_status_filter_title">Mau cari status apa?</string>
+    <string name="commonbs_category_filter_title">Mau cari kategori apa?</string>
+    <string name="commonbs_category_criteria_check_title">Kriteria campaign</string>
+    <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
+    <string name="commonbs_max_shown_format">Maks. %1d kali dalam %2d hari</string>
+    <string name="commonbs_multiloc_desc"><![CDATA[2 lokasi tokomu tidak sesuai dengan kriteria campaign. <a href="#">Cek Lokasi</a>]]></string>
+    <string name="commonbs_criteria_check_description">Menampilkan produk dan lokasi campaign yang belum sesuai kriteria.</string>
+    <string name="commonbs_criteria_check_original_price_field_title">Kisaran Harga Awal</string>
+    <string name="commonbs_criteria_check_min_rating_field_title">Min. Rating</string>
+    <string name="commonbs_criteria_check_sold_product_field_title">Produk Terjual</string>
+    <string name="commonbs_criteria_check_max_shown_field_title">Maks. Tampil</string>
+    <string name="commonbs_criteria_check_campaign_stock_field_title">Stok Campaign</string>
+    <string name="commonbs_criteria_check_min_score_field_title">Min. Skor Produk</string>
+    <string name="commonbs_criteria_check_min_buy_field_title">Min. Pembelian</string>
+    <string name="commonbs_criteria_check_other_criteria_field_title">Kriteria Khusus</string>
+    <string name="commonbs_field_required">Diwajibkan</string>
+    <string name="commonbs_field_limited">Dibatasi</string>
 
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>

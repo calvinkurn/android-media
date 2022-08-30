@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/divRow2"
         app:textvalue_title="Min. Rating"
-        app:textvalue_icon_visibility="true"
+        app:textvalue_icon_rating_visibility="true"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
     <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView

@@ -6,7 +6,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 
 data class FlashSaleListUiState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val totalFlashSaleCount: Int = 0,
     val tabName: String = "",
     val tabId: Int = TabConstant.TAB_ID_UPCOMING,

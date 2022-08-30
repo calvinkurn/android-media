@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.LayoutBottomSheetDetailCategoryFlashSaleTkpdBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetDetailCategoryFlashSaleTkpdBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -47,7 +47,7 @@ class DetailCategoryFlashSaleBottomSheet : BottomSheetUnify() {
         arguments?.getInt(BUNDLE_QUANTITY_MAX_PRODUCT).orZero()
     }
 
-    private var binding by autoClearedNullable<LayoutBottomSheetDetailCategoryFlashSaleTkpdBinding>()
+    private var binding by autoClearedNullable<StfsBottomsheetDetailCategoryFlashSaleTkpdBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +60,7 @@ class DetailCategoryFlashSaleBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding =
-            LayoutBottomSheetDetailCategoryFlashSaleTkpdBinding.inflate(inflater, container, false)
+            StfsBottomsheetDetailCategoryFlashSaleTkpdBinding.inflate(inflater, container, false)
         isKeyboardOverlap = false
         clearContentPadding = true
         setChild(binding?.root)

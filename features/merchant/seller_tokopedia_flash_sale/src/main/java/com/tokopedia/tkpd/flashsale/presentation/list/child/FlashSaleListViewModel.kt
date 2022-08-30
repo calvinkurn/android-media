@@ -85,7 +85,8 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedSort = selectedSort,
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER"
+                isFilterActive = selectedSort.id != "DEFAULT_VALUE_PLACEHOLDER",
+                isLoading = true
             )
         }
 
@@ -109,7 +110,8 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedCategoryIds = categoryIds,
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = categories.isNotEmpty()
+                isFilterActive = categories.isNotEmpty(),
+                isLoading = true
             )
         }
 
@@ -143,10 +145,10 @@ class FlashSaleListViewModel @Inject constructor(
                 selectedStatusIds = listOf(),
                 offset = 0,
                 allItems = listOf(),
-                isFilterActive = false
+                isFilterActive = false,
+                isLoading = true
             )
         }
-
         getFlashSaleList()
     }
 
@@ -165,8 +167,6 @@ class FlashSaleListViewModel @Inject constructor(
     }
 
     private fun getFlashSaleList() {
-        _uiState.update { it.copy(isLoading = true) }
-
         launchCatchError(
             dispatchers.io,
             block = {
@@ -177,7 +177,7 @@ class FlashSaleListViewModel @Inject constructor(
                     statusIds = currentState.selectedStatusIds,
                     sortOrderBy = currentState.selectedSort.id,
                     sortOrderRule = currentState.selectedSort.direction,
-                    requestProductMetaData = currentState.tabName == "finished"
+                    requestProductMetaData = currentState.tabName == "finished" || currentState.tabName == "ongoing"
                 )
                 val response = getFlashSaleListForSellerUseCase.execute(params)
                 val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
@@ -208,7 +208,7 @@ class FlashSaleListViewModel @Inject constructor(
                 TabConstant.TAB_ID_REGISTERED -> flashSale.toRegisteredItem()
                 TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem()
                 TabConstant.TAB_ID_FINISHED -> flashSale.toFinishedItem()
-                else -> throw IllegalArgumentException("Cannot map to model. Tab id is not registered.")
+                else -> flashSale.toUpcomingItem()
             }
         }
     }
