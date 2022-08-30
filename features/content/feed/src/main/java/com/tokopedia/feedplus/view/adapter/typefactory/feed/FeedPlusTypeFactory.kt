@@ -4,7 +4,7 @@ import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
-import com.tokopedia.feedplus.view.viewmodel.RetryModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.RetryModel
 
 /**
  * @author by nisie on 5/15/17.

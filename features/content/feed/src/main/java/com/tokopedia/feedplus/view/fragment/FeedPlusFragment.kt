@@ -20,7 +20,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -102,7 +101,6 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
@@ -145,6 +143,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.RetryModel
 
 /**
  * @author by nisie on 5/15/17.
@@ -762,7 +761,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
-        infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
+        infoBottomSheet = TopAdsInfoBottomSheet.newInstance(requireContext())
         newFeed.setOnClickListener {
             scrollToTop()
             sendNewFeedClickEvent()
