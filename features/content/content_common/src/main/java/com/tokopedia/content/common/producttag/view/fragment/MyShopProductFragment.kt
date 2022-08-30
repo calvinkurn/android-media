@@ -153,6 +153,7 @@ class MyShopProductFragment @Inject constructor(
 
         binding.rvMyShopProduct.addOnScrollListener(scrollListener)
         binding.rvMyShopProduct.layoutManager = layoutManager
+        binding.rvMyShopProduct.itemAnimator = null
         binding.rvMyShopProduct.adapter = adapter
 
         binding.globalError.apply {
