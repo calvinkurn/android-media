@@ -352,6 +352,11 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
                             address.setRecipientPhoneNumber(it.receiverPhone)
                             address.setStreet(it.addressStreet)
                             address.setPostalCode(it.postalCode)
+                            address.setDestinationDistrictName(it.districtName)
+                            address.setCityName(it.cityName)
+                            address.setProvinceName(it.provinceName)
+                            address.setLatitude(it.latitude)
+                            address.setLongitude(it.longitude)
                         }
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
@@ -375,6 +380,11 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
                             newAddress.setRecipientPhoneNumber(it.phone)
                             newAddress.setStreet(it.formattedAddress)
                             newAddress.setPostalCode(it.postalCode)
+                            newAddress.setDestinationDistrictName(it.districtName)
+                            newAddress.setCityName(it.cityName)
+                            newAddress.setProvinceName(it.provinceName)
+                            newAddress.setLatitude(it.latitude)
+                            newAddress.setLongitude(it.longitude)
                         }
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
