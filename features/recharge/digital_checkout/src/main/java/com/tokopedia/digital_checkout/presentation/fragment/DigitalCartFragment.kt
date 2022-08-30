@@ -448,7 +448,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
             it.show()
 
-            if (error.atcErrorPage.buttons.isNullOrEmpty()){
+            if (error.atcErrorPage.buttons.isNullOrEmpty()) {
                 it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
                 it.setActionClickListener { _ ->
                     it.gone()
@@ -461,14 +461,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
             it.errorAction.text = button.label
 
-            if (button.actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION){
-                it.setActionClickListener {
+            it.setActionClickListener {
+                if (button.actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
                     RouteManager.getIntent(context, button.appLinkUrl).apply {
                         startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
                     }
-                }
-            } else {
-                it.setActionClickListener {
+                } else {
                     RouteManager.route(context, button.appLinkUrl)
                 }
             }
