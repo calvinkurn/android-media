@@ -22,12 +22,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
 import com.tokopedia.deals.pdp.data.EventContentInnerData
@@ -35,6 +38,7 @@ import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
+import com.tokopedia.deals.pdp.ui.adapter.DealsRecommendationAdapter
 import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
@@ -56,6 +60,7 @@ import java.util.Calendar
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
+import okhttp3.Route
 
 class DealsPDPFragment: BaseDaggerFragment() {
 
@@ -102,6 +107,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var clRedeemInstruction: ConstraintLayout? = null
     private var cardCheckout: CardView? = null
     private var btnCheckout: UnifyButton? = null
+    private var tgRecommendation: Typography? = null
+    private var rvRecommendation: RecyclerView? = null
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
@@ -126,7 +133,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
         observeFlowData()
-        callPDP()
+        getPDP()
     }
 
     override fun initInjector() {
@@ -169,6 +176,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
             clRedeemInstruction = binding?.subView?.clRedeemInstructions
             cardCheckout = binding?.cvCheckout
             btnCheckout = binding?.btnBuynow
+            tgRecommendation = binding?.subView?.tgRecommendedDeals
+            rvRecommendation = binding?.subView?.recyclerView
             updateCollapsingToolbar()
         }
     }
@@ -180,6 +189,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                     is Success -> {
                         hideLoading()
                         showPDPData(it.data.eventProductDetail.productDetailData)
+                        getRecommendation(it.data.eventProductDetail.productDetailData.childCategoryIds)
                     }
 
                     is Fail -> {
@@ -202,11 +212,29 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowRecommendation.collect {
+                when (it) {
+                    is Success -> {
+                        showRecommendation(it.data.eventSearch.products)
+                    }
+
+                    is Fail -> {
+                        hideRecommendation()
+                    }
+                }
+            }
+        }
     }
 
-    private fun callPDP() {
+    private fun getPDP() {
         showLoading()
         viewModel.setPDP(productId)
+    }
+
+    private fun getRecommendation(childCategoryId: String) {
+        viewModel.setRecommendation(childCategoryId)
     }
 
     private fun showLoading() {
@@ -516,6 +544,37 @@ class DealsPDPFragment: BaseDaggerFragment() {
         context?.let {
             RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, url)
         }
+    }
+
+    private fun showRecommendation(listProduct: List<EventProductDetail>) {
+        if (listProduct.isNullOrEmpty()) {
+            hideRecommendation()
+        } else {
+            context?.let { context ->
+                tgRecommendation?.show()
+                rvRecommendation?.show()
+
+                val adapter = DealsRecommendationAdapter(object: DealsRecommendationAdapter.RecommendationListener {
+                    override fun onClickDealsBrand(brandUrl: String) {
+                        RouteManager.route(context, brandUrl)
+                    }
+
+                    override fun onClickDealsProduct(pdpUrl: String) {
+                        RouteManager.route(context, pdpUrl)
+                    }
+                })
+
+                rvRecommendation?.adapter = adapter
+                rvRecommendation?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                adapter.addProducts(listProduct)
+            }
+
+        }
+    }
+
+    private fun hideRecommendation() {
+        tgRecommendation?.hide()
+        rvRecommendation?.hide()
     }
 
     private fun showRedeemContent(data: EventContentInnerData) {

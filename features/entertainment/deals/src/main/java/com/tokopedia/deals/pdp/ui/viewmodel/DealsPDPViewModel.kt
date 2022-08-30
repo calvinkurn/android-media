@@ -2,11 +2,13 @@ package com.tokopedia.deals.pdp.ui.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
+import com.tokopedia.deals.pdp.domain.DealsPDPRecommendationUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,11 +30,13 @@ import kotlinx.coroutines.withContext
 class DealsPDPViewModel @Inject constructor (
     private val dealsPDPDetailUseCase: DealsPDPDetailUseCase,
     private val dealsPDPEventContentUseCase: DealsPDPEventContentUseCase,
+    private val dealsPDPRecommendationUseCase: DealsPDPRecommendationUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
     private val _inputPDPState = MutableSharedFlow<String>(Int.ONE)
     private val _inputContentState = MutableSharedFlow<String>(Int.ONE)
+    private val _inputRecommendationState = MutableSharedFlow<String>(Int.ONE)
 
     val flowPDP: SharedFlow<Result<DealsProductDetail>> =
         _inputPDPState.flatMapConcat {
@@ -60,12 +64,29 @@ class DealsPDPViewModel @Inject constructor (
             replay = Int.ONE
         )
 
-    fun setPDP(urlId: String) {
-        _inputPDPState.tryEmit(urlId)
+    val flowRecommendation: SharedFlow<Result<SearchData>> =
+        _inputRecommendationState.flatMapConcat {
+            flow {
+                emit(getRecommendation(it))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
+    fun setPDP(urlProduct: String) {
+        _inputPDPState.tryEmit(urlProduct)
     }
 
     fun setContent(productId: String) {
         _inputContentState.tryEmit(productId)
+    }
+
+    fun setRecommendation(childCategoryId: String) {
+        _inputRecommendationState.tryEmit(childCategoryId)
     }
 
     fun productImagesMapper(productDetail: ProductDetailData): List<String> {
@@ -94,6 +115,14 @@ class DealsPDPViewModel @Inject constructor (
         }
 
         return Success(eventContentResponse)
+    }
+
+    private suspend fun getRecommendation(childCategoryId: String): Result<SearchData> {
+        val dealsPDPRecommendationResponse = withContext(dispatcher.io) {
+            dealsPDPRecommendationUseCase.execute(childCategoryId)
+        }
+
+        return Success(dealsPDPRecommendationResponse)
     }
 
     companion object {

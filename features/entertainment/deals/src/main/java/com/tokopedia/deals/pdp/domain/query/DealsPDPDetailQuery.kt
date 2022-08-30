@@ -3,7 +3,7 @@ package com.tokopedia.deals.pdp.domain.query
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object DealsPDPDetailQuery: GqlQueryInterface {
-    private const val OPERATION_NAME = "EventProductDetail"
+    private const val OPERATION_NAME = "DealsProductDetail"
     private val QUERY = """
         query $OPERATION_NAME(${'$'}urlPDP:String!){
         event_product_detail_v3(URL:${'$'}urlPDP) {
