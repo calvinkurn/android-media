@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChipListType
 data class TokoNowChipListUiModel(
     val parentId: String = "",
     val items: List<TokoNowChipUiModel>,
-    val isMultiSelect: Boolean = false
+    val isMultiSelect: Boolean = true
 ) : Visitable<TokoNowChipListTypeFactory> {
 
     override fun type(typeFactory: TokoNowChipListTypeFactory): Int {

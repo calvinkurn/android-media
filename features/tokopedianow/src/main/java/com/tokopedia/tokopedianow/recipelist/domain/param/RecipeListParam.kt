@@ -9,9 +9,9 @@ class RecipeListParam {
     var perPage: Int = DEFAULT_PER_PAGE
     var warehouseID: String? = null
     var title: String? = null
-    var tagID: List<String>? = null
-    var ingredientID: List<String>? = null
-    var categoryID: List<String>? = null
+    var tagID: List<String> = emptyList()
+    var ingredientID: List<String> = emptyList()
+    var categoryID: List<String> = emptyList()
     var fromDuration: Int? = null
     var toDuration: Int? = null
     var fromPortion: Int? = null
@@ -36,16 +36,16 @@ class RecipeListParam {
                 putString(GetRecipeList.PARAM_TITLE, it)
             }
 
-            tagID?.let {
-                putObject(GetRecipeList.PARAM_TAG_ID, it)
+            if(tagID.isNotEmpty()) {
+                putObject(GetRecipeList.PARAM_TAG_ID, tagID)
             }
 
-            ingredientID?.let {
-                putObject(GetRecipeList.PARAM_INGREDIENT_ID, it)
+            if(ingredientID.isNotEmpty()) {
+                putObject(GetRecipeList.PARAM_INGREDIENT_ID, ingredientID)
             }
 
-            categoryID?.let {
-                putObject(GetRecipeList.PARAM_CATEGORY_ID, it)
+            if(categoryID.isNotEmpty()) {
+                putObject(GetRecipeList.PARAM_CATEGORY_ID, categoryID)
             }
 
             fromDuration?.let {

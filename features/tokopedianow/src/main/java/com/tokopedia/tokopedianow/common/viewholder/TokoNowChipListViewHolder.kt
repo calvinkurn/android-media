@@ -40,6 +40,7 @@ class TokoNowChipListViewHolder(
             addItemDecoration(ChipListDecoration())
             this.layoutManager = layoutManager
             this.itemAnimator = null
+            setHasFixedSize(true)
         }
     }
 

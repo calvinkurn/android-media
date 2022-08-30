@@ -8,7 +8,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_sort_based_on_buying"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnApplyFilter"
