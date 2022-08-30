@@ -395,7 +395,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun shouldShowOperationalInsightTicker(): Boolean {
-        val nextMonday = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
+        val nextMonday = sharedPref.getLong(getTickerPrefName(), 0)
         val todayTimeMillis = System.currentTimeMillis()
         return todayTimeMillis > nextMonday
     }
@@ -403,8 +403,12 @@ class ChatItemListViewModel @Inject constructor(
     fun saveNextMondayDate() {
         val newNextMonday = Utils.getNextParticularDay(Calendar.MONDAY)
         sharedPref.edit()
-            .putLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, newNextMonday)
+            .putLong(getTickerPrefName(), newNextMonday)
             .apply()
+    }
+
+    private fun getTickerPrefName(): String {
+        return "${OPERATIONAL_INSIGHT_NEXT_MONDAY}_${userSession.userId}"
     }
 
     companion object {
