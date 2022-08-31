@@ -29,6 +29,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
@@ -237,8 +239,17 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
-            data.removeBackgroundUrl = it?.path
-            viewBinding?.imgUcropPreview?.cropImageView?.loadImage(it?.path)
+            it?.let {
+                data.removeBackgroundUrl = it.path
+                loadImageWithEmptyTarget(requireContext(),
+                    it.path,
+                    {},
+                    mediaTarget = MediaBitmapEmptyTarget(
+                        onReady = { resultBitmap ->
+                            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(resultBitmap)
+                        }
+                    ))
+            }
             isEdited = true
         }
     }
