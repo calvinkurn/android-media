@@ -25,6 +25,7 @@ import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
+import com.tokopedia.picker.DebugPickerActivity
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -87,6 +88,8 @@ open class PickerActivity : BaseActivity()
         )
     }
 
+    private var editorParam: EditorParam? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
@@ -118,6 +121,12 @@ open class PickerActivity : BaseActivity()
                     onFinishIntent(it)
                 }
             }
+        } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
+            data.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+                onFinishIntent(
+                    PickerResult(it.originalPaths, editedImages = it.editedImages)
+                )
+            }
         }
     }
 
@@ -138,6 +147,10 @@ open class PickerActivity : BaseActivity()
         val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
+
+        if(pickerParam.isEditorEnabled()){
+            editorParam = intent?.getParcelableExtra(EXTRA_EDITOR_PARAM)?: EditorParam()
+        }
 
         // get data from uri query parameter
         intent?.data?.let {
@@ -243,11 +256,10 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        /*
-        * TODO: we didn't supported the editor yet,
-        *  need to change after editor developed on Q3.
-        *  */
-        onFinishIntent(data)
+        editorParam?.let {
+            val intent = MediaEditor.intent(this, it, data.originalPaths)
+            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+        }
     }
 
     private fun onPermissionPageView() {
@@ -505,6 +517,7 @@ open class PickerActivity : BaseActivity()
 
     companion object {
         const val REQUEST_PREVIEW_PAGE = 123
+        const val REQUEST_EDITOR_PAGE = 456
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 

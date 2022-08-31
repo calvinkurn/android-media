@@ -27,6 +27,8 @@ class DetailEditorActivity : BaseEditorActivity() {
     private var editorIntent = EditorDetailUiModel()
     private var editorParam = EditorParam()
 
+    override fun onHeaderActionClick() {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory

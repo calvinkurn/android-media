@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.activity.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,8 +14,14 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
+import com.tokopedia.picker.common.EXTRA_INTENT_EDITOR
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.EditorImageSource
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.EditorResult
 import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import javax.inject.Inject
 
 class EditorActivity : BaseEditorActivity() {
@@ -57,33 +64,14 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun initBundle(savedInstanceState: Bundle?) {
-        val data = savedInstanceState
-            ?.getParcelable(CACHE_PARAM_INTENT_DATA)
-            ?: intent?.getParcelableExtra<EditorParam>(EXTRA_EDITOR_PARAM)?.also {
-                param = it
-            }
-
-        data?.let {
+        intent?.getParcelableExtra<EditorParam>(EXTRA_EDITOR_PARAM)?.also {
+            param = it
             viewModel.setEditorParam(it)
         }
 
-        // sample data
-        val editorParam = EditorParam()
-        editorParam.withRemoveBackground()
-        editorParam.withWatermark()
-        editorParam.autoCropRatio = ImageRatioType.RATIO_2_1
-
-        viewModel.setEditorParam(editorParam)
-
-        // temporary, will remove later
-        viewModel.initStateList(
-            arrayListOf(
-                "/storage/emulated/0/Pictures/iN76Hq7.jpeg",
-                "/storage/emulated/0/Pictures/aaditya-ailawadhi-D6pgxi3gwNQ-unsplash 1.png",
-                "/storage/emulated/0/Pictures/Screen Shot 2021-07-12 at 15.23.45.png",
-                "/storage/emulated/0/Pictures/pirate.mp4"
-            )
-        )
+        intent?.getParcelableExtra<EditorImageSource>(EXTRA_INTENT_EDITOR)?.also {
+            viewModel.initStateList(it.originalPaths)
+        }
     }
 
     override fun initInjector() {
@@ -112,6 +100,24 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
+    override fun onDestroy() {
+        viewModel.cleanImageCache()
+        super.onDestroy()
+    }
+
+    override fun onHeaderActionClick() {
+        val listImageEditState = viewModel.editStateList.values
+        val result = EditorResult(
+            originalPaths = listImageEditState.map { it.getOriginalUrl() },
+            editedImages = listImageEditState.map { it.getImageUrl() }
+        )
+
+        val intent = Intent()
+        intent.putExtra(RESULT_INTENT_EDITOR, result)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
     private fun showBackDialogConfirmation() {
         DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(editorR.string.editor_activity_dialog_title))
@@ -133,11 +139,6 @@ class EditorActivity : BaseEditorActivity() {
 
             show()
         }
-    }
-
-    override fun onDestroy() {
-        viewModel.cleanImageCache()
-        super.onDestroy()
     }
 
     companion object {

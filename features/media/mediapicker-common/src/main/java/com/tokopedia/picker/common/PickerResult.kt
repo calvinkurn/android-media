@@ -9,5 +9,8 @@ data class PickerResult(
     val originalPaths: List<String> = emptyList(),
 
     // the collection of images (only) has compressed
-    val compressedImages: List<String> = emptyList()
+    val compressedImages: List<String> = emptyList(),
+
+    // if picker using editor feature
+    val editedImages: List<String> = emptyList()
 ) : Parcelable

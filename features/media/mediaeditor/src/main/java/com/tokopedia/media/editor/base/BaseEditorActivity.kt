@@ -11,6 +11,7 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
     abstract fun initViewModel()
     abstract fun initBundle(savedInstanceState: Bundle?)
     abstract fun initInjector()
+    abstract fun onHeaderActionClick()
 
     private lateinit var unifyToolbar: HeaderUnify
 
@@ -21,7 +22,7 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
         )
     }
 
-    fun setHeader(title: CharSequence, actionText: CharSequence? = null, actionCallback: () -> Unit = {}){
+    fun setHeader(title: CharSequence, actionText: CharSequence? = null){
         clearOldToolbar()
 
         if (::unifyToolbar.isInitialized){
@@ -34,7 +35,7 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
             if(!actionText.isNullOrEmpty()){
                 unifyToolbar.actionText = actionText!!
                 unifyToolbar.actionTextView?.setOnClickListener {
-                    actionCallback()
+                    onHeaderActionClick()
                 }
             }
         }

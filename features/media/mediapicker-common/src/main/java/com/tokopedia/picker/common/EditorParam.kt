@@ -10,7 +10,6 @@ import kotlinx.parcelize.Parcelize
 data class EditorParam(
     var ratioList: ArrayList<ImageRatioType> = createDefaultRatioList(),
     var editorToolsList: ArrayList<Int> = createDefaultEditorTools(),
-    var pickerParam: PickerParam = PickerParam(),
     var autoCropRatio: ImageRatioType? = null
 ) : Parcelable {
     fun withWatermark() = editorToolsList.add(EditorToolType.WATERMARK)
