@@ -6,6 +6,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -46,6 +47,8 @@ class PostImageEmphasizedViewHolder(
             imgPost.loadImage(element.featuredMediaUrl) {
                 setErrorDrawable(com.tokopedia.abstraction.R.drawable.error_drawable)
             }
+            cbShcItemPostImageEmphasize.isVisible = element.isCheckingMode
+            cbShcItemPostImageEmphasize.isEnabled = element.isChecked
             if (element.isPinned) {
                 tvPostDescription.setUnifyDrawableEnd(
                     iconId = IconUnify.PUSH_PIN_FILLED,

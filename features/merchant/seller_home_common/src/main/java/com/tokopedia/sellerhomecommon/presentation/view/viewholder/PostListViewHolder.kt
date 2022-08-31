@@ -189,10 +189,10 @@ class PostListViewHolder(
     private fun setupMoreView(element: PostListWidgetUiModel) {
         binding.shcPostListSuccessView.run {
             moreShcPostWidget.setOnMoreClicked {
-                listener.showMoreOption(element)
+                listener.showPostWidgetMoreOption(element)
             }
             moreShcPostWidget.setOnCancelClicked {
-                listener.cancelItemRemoval(element)
+                listener.postWidgetCancelItemRemoval(element)
             }
         }
     }
@@ -393,8 +393,8 @@ class PostListViewHolder(
 
         fun showPostFilter(element: PostListWidgetUiModel) {}
 
-        fun showMoreOption(element: PostListWidgetUiModel) {}
+        fun showPostWidgetMoreOption(element: PostListWidgetUiModel) {}
 
-        fun cancelItemRemoval(element: PostListWidgetUiModel) {}
+        fun postWidgetCancelItemRemoval(element: PostListWidgetUiModel) {}
     }
 }

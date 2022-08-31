@@ -18,6 +18,10 @@ class PostMoreOptionBottomSheet : BaseBottomSheet<ShcBottomSheetPostMoreOptionBi
 
     companion object {
         private const val TAG = "PostMoreOptionBottomSheet"
+
+        fun createInstance(): PostMoreOptionBottomSheet {
+            return PostMoreOptionBottomSheet()
+        }
     }
 
     private var onRemoveArticleOptionCallback: () -> Unit = {}
