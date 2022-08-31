@@ -328,7 +328,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         nsqServiceModel.setService(Utils.NSQ_SERVICE);
         NsqMessage nsqMessage = new NsqMessage();
         nsqMessage.setUserId(Long.parseLong(userId));
-        nsqMessage.setProductId(Long.valueOf(data.getId()));
+        nsqMessage.setProductId(data.getId());
         nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
         nsqMessage.setAction("product-detail");
         nsqServiceModel.setMessage(nsqMessage);

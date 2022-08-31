@@ -45,7 +45,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
         postUpdateDealLikesUseCase.unsubscribe();
     }
 
-    public boolean setDealLike(int id, boolean liked, final int position, int likes) {
+    public boolean setDealLike(long id, boolean liked, final int position, int likes) {
         if (userSession.isLoggedIn()) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -55,7 +55,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                 rating.setIsLiked("true");
             }
             rating.setUserId(Long.parseLong(userSession.getUserId()));
-            rating.setProductId(Long.valueOf(id));
+            rating.setProductId(id);
             rating.setFeedback("");
             requestModel.setRating(rating);
             com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
