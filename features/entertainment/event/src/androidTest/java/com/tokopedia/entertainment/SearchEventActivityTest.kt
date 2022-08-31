@@ -8,7 +8,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -23,7 +24,6 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.ResourcePathUtil
-import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -56,8 +56,6 @@ class SearchEventActivityTest {
 
     @Test
     fun validateSearchCity() {
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(5000)
         search_keyword()
         click_city()
@@ -67,8 +65,6 @@ class SearchEventActivityTest {
 
     @Test
     fun validateSearchEvent() {
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(5000)
         search_keyword()
         click_event()
@@ -82,15 +78,21 @@ class SearchEventActivityTest {
     }
 
     fun click_city() {
+        blockIntents()
         Thread.sleep(5000)
         onView(withId(R.id.recycler_view_location)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchLocationListViewHolder>(0, click()))
         Thread.sleep(3000)
     }
 
     fun click_event() {
+        blockIntents()
         Thread.sleep(5000)
         onView(withId(R.id.recycler_view_kegiatan)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchEventListViewHolder>(0, click()))
         Thread.sleep(3000)
+    }
+
+    private fun blockIntents(){
+        intending(isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @After
@@ -103,7 +105,6 @@ class SearchEventActivityTest {
         private const val ENTERTAINMENT_EVENT_SEARCH_PRODUCT_VALIDATOR_QUERY = "tracker/event/searchpageeventproduct.json"
 
         private const val KEY_EVENT_CHILD = "searchEventLocation"
-
         private const val PATH_RESPONSE_SEARCH = "event_search.json"
     }
 }
