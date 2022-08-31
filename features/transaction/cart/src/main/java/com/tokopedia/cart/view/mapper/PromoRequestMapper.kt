@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -79,13 +80,15 @@ object PromoRequestMapper {
 
     private fun getPromoCodesFromLastApplyByUniqueId(lastApplyPromo: LastApplyPromo, cartShopHolderData: CartShopHolderData): List<String> {
         // get from voucher order first
+        val promoCodes = arrayListOf<String>()
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
-                val promoCodes = listOf(voucherOrder.code)
-                if (promoCodes.isNotEmpty()) {
-                    return promoCodes
-                }
+                if (voucherOrder.code.isNotBlank())
+                    promoCodes.add(voucherOrder.code)
             }
+        }
+        if (promoCodes.isNotEmpty()) {
+            return promoCodes.distinct()
         }
 
         // if there is no promo code on voucher order, check from ui model (got from cart response)
@@ -95,15 +98,16 @@ object PromoRequestMapper {
 
     private fun getPromoCodesFromValidateUseByUniqueId(promoUiModel: PromoUiModel, cartShopHolderData: CartShopHolderData): List<String> {
         // get from voucher order first
+        val promoCodes = arrayListOf<String>()
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
-                val promoCodes = listOf(voucherOrder.code)
-                if (promoCodes.isNotEmpty()) {
-                    return promoCodes
-                }
+                if (voucherOrder.code.isNotBlank())
+                    promoCodes.add(voucherOrder.code)
             }
         }
-
+        if (promoCodes.isNotEmpty()) {
+            return promoCodes.distinct()
+        }
         // if there is no promo code on voucher order, check from ui model (got from cart response)
         // Otherwise return empty list (ui model promo codes default value)
         return cartShopHolderData.promoCodes
