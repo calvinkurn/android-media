@@ -58,8 +58,6 @@ class ProductBundleViewModel @Inject constructor(
         private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
-        private const val PREORDER_TYPE_DAY: Int = 1
-        private const val PREORDER_TYPE_MONTH: Int = 2
     }
 
     var parentProductID: Long = 0L

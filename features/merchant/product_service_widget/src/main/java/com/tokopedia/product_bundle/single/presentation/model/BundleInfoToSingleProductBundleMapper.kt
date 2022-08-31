@@ -20,8 +20,6 @@ object BundleInfoToSingleProductBundleMapper {
     private const val BUNDLE_ITEM_SHOW: String = "1"
     private const val BUNDLE_ITEM_ACTIVE: String = "ACTIVE"
     private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
-    private const val PREORDER_TYPE_DAY: Int = 1
-    private const val PREORDER_TYPE_MONTH: Int = 2
 
     fun mapToSingleProductBundle (
         context: Context, bundleInfo: List<BundleInfo>,
@@ -55,6 +53,7 @@ object BundleInfoToSingleProductBundleMapper {
     private fun getTimeUnitWording(context: Context, processTypeNum: Int): String {
         return when (processTypeNum) {
             PREORDER_TYPE_DAY -> context.getString(R.string.preorder_time_unit_day)
+            PREORDER_TYPE_WEEK -> context.getString(R.string.preorder_time_unit_week)
             PREORDER_TYPE_MONTH -> context.getString(R.string.preorder_time_unit_month)
             else -> ""
         }
