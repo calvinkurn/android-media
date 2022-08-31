@@ -65,7 +65,7 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<SsfsBottomsheetCampaignDatePickerBinding>()
     private var onDateTimePicked: (Date) -> Unit = {}
     private val mode by lazy {
-        arguments?.getSerializable(BUNDLE_KEY_SELECTION_MODE) as? TimePickerSelectionMode ?: TimePickerSelectionMode.START_TIME
+        arguments?.getSerializable(BUNDLE_KEY_SELECTION_MODE) as? TimePickerSelectionMode ?: TimePickerSelectionMode.CAMPAIGN_START_DATE
     }
     private val selectedDate by lazy {
         arguments?.getSerializable(BUNDLE_KEY_SELECTED_DATE) as? Date ?: Date()

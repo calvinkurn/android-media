@@ -79,10 +79,40 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMinTime(): GregorianCalendar {
-        return if (param.mode == TimePickerSelectionMode.START_TIME) {
-            applyCampaignMinDateRule(param)
+        return if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
+            applyCampaignStartDateRule(param)
         } else {
-            applyCampaignMaxEndDateRule(param)
+            applyCampaignEndDateRule(param)
+        }
+    }
+
+    private fun applyCampaignStartDateRule(param: Param): GregorianCalendar {
+        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
+        return if (isSameDay) {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+                set(Calendar.MINUTE, param.minimumDate.extractMinute())
+            }
+        } else {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+            }
+        }
+    }
+
+    private fun applyCampaignEndDateRule(param: Param): GregorianCalendar {
+        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
+        return if (isSameDay) {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+                set(Calendar.MINUTE, param.minimumDate.extractMinute())
+            }
+        } else {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+            }
         }
     }
 
@@ -96,45 +126,23 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMaxTime(isUsingVpsPackage: Boolean): Calendar {
-        return if (isUsingVpsPackage) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
-                set(Calendar.MINUTE, MAX_SELECTABLE_MINUTE_FOR_VPS_PACKAGE)
-            }
+         if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
+             return if (isUsingVpsPackage) {
+                 GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                     set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+                     set(Calendar.MINUTE, MAX_SELECTABLE_MINUTE_FOR_VPS_PACKAGE)
+                 }
+             } else {
+                 GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                     set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+                     set(Calendar.MINUTE, LAST_MINUTE)
+                 }
+             }
+
         } else {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+            return GregorianCalendar(LocaleConstant.INDONESIA).apply {
                 set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
                 set(Calendar.MINUTE, LAST_MINUTE)
-            }
-        }
-    }
-
-    private fun applyCampaignMinDateRule(param: Param): GregorianCalendar {
-        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
-        return if (isSameDay) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-                set(Calendar.MINUTE, param.minimumDate.extractMinute())
-            }
-        } else {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-            }
-        }
-    }
-
-    private fun applyCampaignMaxEndDateRule(param: Param): GregorianCalendar {
-        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
-        return if (isSameDay) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-                set(Calendar.MINUTE, param.minimumDate.extractMinute())
-            }
-        } else {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
             }
         }
     }
