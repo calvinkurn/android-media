@@ -210,6 +210,16 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _engagementUiState = combine(_tagItems, _interactive){
+        voucher, game -> EngagementUiState(
+            shouldShow = voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown,
+            data = mutableListOf<EngagementUiModel>().apply {
+                if(voucher.voucher.voucherList.isNotEmpty()) add(EngagementUiModel.Promo(info = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().first(), size = voucher.voucher.voucherList.size))
+                if(game.interactive !is InteractiveUiModel.Unknown) add(EngagementUiModel.Game(interactive = game.interactive))
+            }
+        )
+    }
+
     private val _likeUiState = combine(
         _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
     ) { likeInfo, channelDetail, bottomInsets, status, channelReport ->

@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.state
 
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -122,4 +123,9 @@ enum class KebabMenuType{
 data class AddressWidgetUiState(
     val shouldShow: Boolean,
     val warehouseInfo: WarehouseInfoUiModel
+)
+
+data class EngagementUiState(
+    val shouldShow: Boolean,
+    val data: List<EngagementUiModel>,
 )
