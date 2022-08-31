@@ -42,7 +42,7 @@ class UpcomingDescriptionViewComponent(
     private val impressHelper = ImpressHolder()
 
     init {
-        txt.addOnImpressionListener(impressHelper){
+        txt.addOnImpressionListener(impressHelper) {
             listener.onDescriptionImpressed(this)
         }
     }
@@ -62,7 +62,7 @@ class UpcomingDescriptionViewComponent(
             }
 
     fun setupText(description: String) {
-        if(uiModel.originalText == description) return
+        if (uiModel.originalText == description) return
 
         uiModel.originalText = description
         txt.text = description
@@ -71,7 +71,7 @@ class UpcomingDescriptionViewComponent(
     }
 
     fun setupExpand(isExpanded: Boolean) {
-        if(uiModel.isExpanded == isExpanded) return
+        if (uiModel.isExpanded == isExpanded) return
 
         uiModel.isExpanded = isExpanded
         resetText()
@@ -93,29 +93,38 @@ class UpcomingDescriptionViewComponent(
         animExpand.start()
     }
 
-    private fun getText(text: String): SpannedString {
-        if (uiModel.truncatedText.isEmpty()) {
-            val length = text.filter { it.isLetterOrDigit() }.length
-            uiModel.truncatedText = buildSpannedString {
-                append(
-                    text.take(length),
-                    ForegroundColorSpan(
-                        MethodChecker.getColor(
-                            ctx,
-                            unifyR.color.Unify_Static_White
-                        )
-                    ),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                append(END_CHARS)
-                append(
-                    getString(playR.string.play_upcoming_description_read_more),
-                    clickableSpan,
-                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                )
-            }
+    private fun String.truncatedText(readMoreText: String): SpannedString {
+        val length = this.filter { it.isLetterOrDigit() }.length
+        return buildSpannedString {
+            append(
+                this.take(length),
+                ForegroundColorSpan(
+                    MethodChecker.getColor(
+                        ctx,
+                        unifyR.color.Unify_Static_White
+                    )
+                ),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            append(END_CHARS)
+            append(
+                readMoreText,
+                clickableSpan,
+                Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+            )
         }
-        return uiModel.truncatedText
+    }
+
+    private fun String.toLongText(readLessText: String): SpannedString {
+        return buildSpannedString {
+            append(this)
+            append(" ")
+            append(
+                readLessText,
+                clickableSpan,
+                Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+        }
     }
 
     private fun setupExpandable() {
@@ -128,21 +137,18 @@ class UpcomingDescriptionViewComponent(
 
     private fun expandText(description: String, isExpand: Boolean) {
         //scroll to v top of content
-        txt.scrollTo(0,0)
+        txt.scrollTo(0, 0)
         if (!isExpand) {
             txt.ellipsize = TextUtils.TruncateAt.END
             txt.movementMethod = LinkMovementMethod.getInstance()
-            txt.text = getText(description)
+            txt.text = if (uiModel.truncatedText.isEmpty()) {
+                uiModel.truncatedText =
+                    description.truncatedText(getString(playR.string.play_upcoming_description_read_more))
+                uiModel.truncatedText
+            } else uiModel.truncatedText
         } else {
-            txt.text = buildSpannedString {
-                append(uiModel.originalText)
-                append(" ")
-                append(
-                    getString(playR.string.play_upcoming_description_less),
-                    clickableSpan,
-                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-                )
-            }
+            txt.text =
+                description.toLongText(getString(playR.string.play_upcoming_description_less))
             txt.ellipsize = null
         }
     }
