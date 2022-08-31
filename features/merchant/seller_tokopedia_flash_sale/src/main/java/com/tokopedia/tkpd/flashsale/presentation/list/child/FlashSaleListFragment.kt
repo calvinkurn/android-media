@@ -507,11 +507,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         flashSaleAdapter.removeItem(LoadingItem)
     }
 
-
-    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-
-    }
-
     private val onFlashSaleClicked: (Int) -> Unit = { selectedItemPosition ->
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
         val selectedFlashSaleId = selectedFlashSale.id()
