@@ -79,29 +79,6 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMinTime(): GregorianCalendar {
-        return if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
-            applyCampaignStartDateRule(param)
-        } else {
-            applyCampaignEndDateRule(param)
-        }
-    }
-
-    private fun applyCampaignStartDateRule(param: Param): GregorianCalendar {
-        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
-        return if (isSameDay) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-                set(Calendar.MINUTE, param.minimumDate.extractMinute())
-            }
-        } else {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-            }
-        }
-    }
-
-    private fun applyCampaignEndDateRule(param: Param): GregorianCalendar {
         val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
         return if (isSameDay) {
             GregorianCalendar(LocaleConstant.INDONESIA).apply {
