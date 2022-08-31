@@ -27,6 +27,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.applifecycle.CMActivityLifeCycle;
@@ -273,11 +274,25 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     public void handleCMInAppPushPayload(CMInApp cmInApp) {
+//        boolean isDuplicatePresentInDB = false;
+//        if (cmInApp.isAmplification()){
+//            isDuplicatePresentInDB = handleDuplicatePayload(cmInApp);
+//        }
         if (isSaveInAppNewFlowEnabled()) {
             handlePushPayloadVNew(cmInApp);
         } else {
             handlePushPayloadVOld(cmInApp);
         }
+    }
+
+    private boolean handleDuplicatePayload(CMInApp cmInAp) {
+        InAppDataDao inAppDataDao = RepositoryManager.getInstance().getInAppDataDao();
+        if (inAppDataDao != null) {
+            CMInApp data = inAppDataDao.getInAppData(cmInAp.id);
+            return data != null && data.freq == 0;
+        }
+        else
+            return false;
     }
 
     private void handlePushPayloadVOld(CMInApp cmInApp) {
