@@ -169,9 +169,9 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 
         private fun createParamsWithChannelId(channelId: String, playSource: PlaySource): Map<String, Any> = mutableMapOf(
                 PARAM_CHANNEL_ID to channelId,
-                PARAM_SOURCE_TYPE to playSource.key
+                PARAM_SOURCE_TYPE to playSource.type
         ).apply {
-            if (playSource is PlaySource.Shop) put(PARAM_SOURCE_ID, playSource.sourceId)
+            if (playSource.id.isNotBlank()) put(PARAM_SOURCE_ID, playSource.id)
         }
 
         private fun createParamsWithCursor(cursor: String): Map<String, Any> = mapOf(
