@@ -117,7 +117,7 @@ class UpcomingDescriptionViewComponent(
 
     private fun String.toLongText(readLessText: String): SpannedString {
         return buildSpannedString {
-            append(this)
+            append(uiModel.originalText)
             append(" ")
             append(
                 readLessText,
