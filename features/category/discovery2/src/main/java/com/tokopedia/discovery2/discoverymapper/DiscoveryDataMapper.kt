@@ -330,14 +330,14 @@ class DiscoveryDataMapper {
         )
     }
 
-    fun mapListToBundleProductList(component: ComponentsItem): ArrayList<BundleUiModel> {
+    fun mapListToBundleProductList(dataItem: List<DataItem>): ArrayList<BundleUiModel> {
         val bundleModelList: ArrayList<BundleUiModel> = arrayListOf()
-        val bundleShopUiModel = BundleShopUiModel(
-                shopId = component.data?.firstOrNull()?.shopId ?: "",
-                shopName = component.data?.firstOrNull()?.shopName ?: "",
-                shopIconUrl = component.data?.firstOrNull()?.shopLogo ?: ""
-        )
-        component.data?.firstOrNull()?.let { bundleData ->
+       dataItem.forEach { bundleData ->
+           val bundleShopUiModel = BundleShopUiModel(
+                   shopId = bundleData.shopId ?: "",
+                   shopName = bundleData.shopName ?: "",
+                   shopIconUrl = bundleData.shopLogo ?: ""
+           )
             val bundleDetailUiModelList: ArrayList<BundleDetailUiModel> = arrayListOf()
             val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
             val bundleModel = BundleUiModel(
@@ -347,16 +347,16 @@ class DiscoveryDataMapper {
                         bundleData.bundleDetails?.forEach { bundleDetails ->
                             add(BundleDetailUiModel(
                                     bundleId = (bundleDetails?.bundleId ?: "").toString(),
-                                    originalPrice = (bundleDetails?.originalPrice ?: "").toString(),
-                                    displayPrice = (bundleDetails?.displayPrice ?: "").toString(),
+                                    originalPrice = bundleDetails?.originalPrice ?: "",
+                                    displayPrice = bundleDetails?.displayPrice ?: "",
                                     displayPriceRaw = bundleDetails?.displayPriceRaw ?: 0,
                                     discountPercentage = bundleDetails?.discountPercentage?.roundToIntOrZero()
                                             ?: 0,
                                     isPreOrder = bundleDetails?.preOrder ?: false,
-                                    preOrderInfo = "", // need to check for this key
+                                    preOrderInfo = bundleDetails?.preOrderInfo ?: "",
                                     savingAmountWording = bundleDetails?.savingAmountWording ?: "",
                                     minOrder = bundleDetails?.minOrder.toZeroIfNull(),
-                                    minOrderWording = "",// need to check for this key
+                                    minOrderWording = bundleDetails?.minOrderWording ?: "",
                                     isSelected = false,// need to check for this key
                                     totalSold = 0,// need to check for this key
                                     shopInfo = bundleShopUiModel,
@@ -369,7 +369,7 @@ class DiscoveryDataMapper {
                                                     productImageUrl = bundleProducts?.imageUrl
                                                             ?: "",
                                                     productAppLink = bundleProducts?.applink ?: "",
-                                                    hasVariant = false // need to check for this key
+                                                    hasVariant = bundleDetails?.isProductHaveVariant ?: false
                                             ))
                                         }
                                     }

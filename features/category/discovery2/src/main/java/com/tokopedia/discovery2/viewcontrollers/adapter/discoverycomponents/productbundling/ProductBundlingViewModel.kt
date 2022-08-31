@@ -20,6 +20,7 @@ import kotlin.coroutines.CoroutineContext
 class ProductBundlingViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val bundledProductData: MutableLiveData<ArrayList<BundleUiModel>> = MutableLiveData()
+    private val _emptyBundleData: MutableLiveData<Boolean> = MutableLiveData()
     private val _showErrorState = SingleLiveEvent<Boolean>()
 
     @Inject
@@ -29,6 +30,7 @@ class ProductBundlingViewModel(val application: Application, val components: Com
         get() = Dispatchers.Main + SupervisorJob()
 
     fun getBundledProductDataList(): LiveData<ArrayList<BundleUiModel>> = bundledProductData
+    fun getEmptyBundleData(): LiveData<Boolean> = _emptyBundleData
     fun showErrorState(): LiveData<Boolean> = _showErrorState
 
     override fun onAttachToViewHolder() {
@@ -39,18 +41,14 @@ class ProductBundlingViewModel(val application: Application, val components: Com
     fun fetchProductBundlingData() {
         launchCatchError(block = {
             productBundlingUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
-            if(!getProductList().isNullOrEmpty()){
-                bundledProductData.value = components.getComponentsItem()?.firstOrNull()?.let { DiscoveryDataMapper().mapListToBundleProductList(it) }
+            if(!components.data.isNullOrEmpty()){
+                bundledProductData.value = components.data?.let { DiscoveryDataMapper().mapListToBundleProductList(it) }
+                _emptyBundleData.value = false
+            }else{
+                _emptyBundleData.value = true
             }
         }, onError = {
             _showErrorState.value = true
         })
-    }
-
-    fun getProductList(): ArrayList<ComponentsItem>? {
-        components.getComponentsItem()?.let { productList ->
-            return productList as ArrayList<ComponentsItem>
-        }
-        return null
     }
 }

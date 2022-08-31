@@ -32,6 +32,12 @@ data class BundleDetails(
         var minOrder: Int? = null,
         @SerializedName("is_po")
         var preOrder: Boolean? = null,
+        @SerializedName("preorder_info")
+        var preOrderInfo: String? = "",
+        @SerializedName("min_order_wording")
+        var minOrderWording: String? = "",
+        @SerializedName("is_product_have_variant")
+        var isProductHaveVariant: Boolean? = null,
         @SerializedName("display_price_raw")
         var displayPriceRaw: Long? = null
 

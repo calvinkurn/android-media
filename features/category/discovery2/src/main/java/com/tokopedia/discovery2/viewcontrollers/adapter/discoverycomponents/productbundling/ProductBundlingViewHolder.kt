@@ -15,7 +15,7 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapte
 
 class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoProductBundlingLayoutBinding = DiscoProductBundlingLayoutBinding.bind(itemView)
-    private var  mProductBundleRecycleAdapter: ProductBundleWidgetAdapter
+    private var mProductBundleRecycleAdapter: ProductBundleWidgetAdapter
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private lateinit var mProductBundlingViewModel: ProductBundlingViewModel
 
@@ -31,15 +31,21 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         mProductBundlingViewModel = discoveryBaseViewModel as ProductBundlingViewModel
         getSubComponent().inject(mProductBundlingViewModel)
         binding.productRv.show()
-        binding.viewEmptyState.hide()
+        binding.viewErrorState.hide()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mProductBundlingViewModel.getBundledProductDataList().observe(it,{ bundledProductList ->
-                binding.productRv.show()
+            mProductBundlingViewModel.getBundledProductDataList().observe(it, { bundledProductList ->
                 mProductBundleRecycleAdapter.updateDataSet(bundledProductList)
+            })
+            mProductBundlingViewModel.getEmptyBundleData().observe(it, { isBundledDataEmpty ->
+                if (isBundledDataEmpty) {
+                    binding.productRv.hide()
+                } else {
+                    binding.productRv.show()
+                }
             })
             mProductBundlingViewModel.showErrorState().observe(it, { shouldShowErrorState ->
                 if (shouldShowErrorState) handleErrorState()
@@ -50,19 +56,14 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     private fun handleErrorState() {
         with(binding) {
             mProductBundleRecycleAdapter.notifyDataSetChanged()
-            if (mProductBundlingViewModel.getProductList() == null) {
-                viewEmptyState.run {
-                    title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-                    description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
-                    refreshBtn?.setOnClickListener {
-                        reloadComponent()
-                    }
-                    viewEmptyState.show()
+            viewErrorState.run {
+                title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+                description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+                refreshBtn?.setOnClickListener {
+                    reloadComponent()
                 }
-            } else {
-                viewEmptyState.hide()
+                viewErrorState.show()
             }
-
             binding.productRv.hide()
         }
     }
@@ -70,7 +71,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     private fun reloadComponent() {
         with(binding) {
             productRv.show()
-            viewEmptyState.hide()
+            viewErrorState.hide()
             mProductBundlingViewModel.fetchProductBundlingData()
         }
     }
