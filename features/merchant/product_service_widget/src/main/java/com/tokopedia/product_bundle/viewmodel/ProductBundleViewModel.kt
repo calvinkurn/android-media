@@ -17,6 +17,9 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_DAY
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_MONTH
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PREORDER_TYPE_WEEK
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
 import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
@@ -130,8 +133,9 @@ class ProductBundleViewModel @Inject constructor(
 
     fun getPreOrderTimeUnitWording(processTypeNum: Int): String {
         return when (processTypeNum) {
-            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay() ?: ""
-            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth() ?: ""
+            PREORDER_TYPE_DAY -> rscProvider.getPreOrderTimeUnitDay()
+            PREORDER_TYPE_WEEK -> rscProvider.getPreOrderTimeUnitWeek()
+            PREORDER_TYPE_MONTH -> rscProvider.getPreOrderTimeUnitMonth()
             else -> ""
         }
     }
