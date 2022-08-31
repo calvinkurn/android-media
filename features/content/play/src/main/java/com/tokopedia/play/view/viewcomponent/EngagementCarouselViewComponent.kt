@@ -2,7 +2,9 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.R
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
@@ -22,7 +24,7 @@ class EngagementCarouselViewComponent(
     private val scope: CoroutineScope
 ) : ViewComponent(container, resId) {
 
-    private val carousel : RecyclerView = (rootView as RecyclerView)
+    private val carousel : RecyclerView = findViewById(R.id.rv_engagement_widget)
 
     private val carouselAdapter = EngagementWidgetAdapter(object : EngagementWidgetViewHolder.Listener{
         override fun onGiveawayEnd(giveaway: InteractiveUiModel.Giveaway) {
@@ -41,6 +43,7 @@ class EngagementCarouselViewComponent(
     init {
         carousel.apply {
             adapter = carouselAdapter
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
         autoScroll()
     }
