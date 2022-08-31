@@ -10,4 +10,10 @@ class TokoNowRecipeSearchViewModel @Inject constructor(
     getRecipeListUseCase: GetRecipeListUseCase,
     addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
-) : BaseTokoNowRecipeListViewModel(getRecipeListUseCase, addressData, dispatchers)
+) : BaseTokoNowRecipeListViewModel(getRecipeListUseCase, addressData, dispatchers) {
+
+    fun setTitleParam(title: String) {
+        getRecipeListParam.title = title
+    }
+
+}

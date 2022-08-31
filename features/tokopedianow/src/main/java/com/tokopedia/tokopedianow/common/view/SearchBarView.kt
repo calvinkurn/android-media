@@ -2,19 +2,16 @@ package com.tokopedia.tokopedianow.common.view
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,14 +28,14 @@ class SearchBarView (
         const val SOFT_INPUT_FLAG = 0
     }
 
-    private val searchParameter: SearchParameter by lazy { SearchParameter() }
+    lateinit var onTextSubmitListener: (String) -> Unit
+
     private val layout: ConstraintLayout? by lazy { binding?.layout }
     private val editText: EditText? by lazy { binding?.editText }
     private val backButton: IconUnify? by lazy { binding?.backButton }
     private val clearButton: IconUnify? by lazy { binding?.clearButton }
 
     private var binding: LayoutSearchBarViewBinding? = null
-    private var listener: OnTextListener? = null
 
     private val searchNavigationOnClickListener = OnClickListener { view ->
         when {
@@ -54,6 +51,12 @@ class SearchBarView (
             }
         }
     }
+
+    var searchHint: String
+        get() = editText?.hint.toString()
+        set(value) {
+            editText?.hint = value
+        }
 
     init {
         initiateView()
@@ -77,7 +80,6 @@ class SearchBarView (
 
     private fun initiateView() {
         binding = LayoutSearchBarViewBinding.inflate(LayoutInflater.from(context), this, true)
-
         binding?.apply {
             configureSearchNavigationLayout(this)
             setSearchNavigationListener(this)
@@ -136,8 +138,9 @@ class SearchBarView (
     }
 
     private fun submitText(text: CharSequence) {
-        searchParameter.setSearchQuery(text.toString().trim())
-        listener?.onTextSubmit(searchParameter)
+        if (this::onTextSubmitListener.isInitialized) {
+            onTextSubmitListener(text.trim().toString())
+        }
     }
 
     private fun showKeyboard(view: View) {
@@ -149,21 +152,5 @@ class SearchBarView (
     private fun hideKeyboard(view: View) {
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, SOFT_INPUT_FLAG)
-    }
-
-    fun setQueryTextListener(onQueryListener: OnTextListener) {
-        listener = onQueryListener
-    }
-
-    fun setHint(hint: String) {
-        editText?.hint = hint
-    }
-
-    fun setText(text: String) {
-        editText?.setText(text)
-    }
-
-    interface OnTextListener {
-        fun onTextSubmit(searchParameter: SearchParameter): Boolean
     }
 }
