@@ -6,15 +6,15 @@ import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodParamSort
 
 object TokoFoodMerchantListParamMapper {
 
-    private const val LAT_LONG_KEY = "latlong"
-    private const val TIMEZONE_KEY = "timezone"
     private const val FILTER_KEY = "filter"
     private const val SORT_BY_KEY = "sortBy"
-    private const val PAGE_KEY = "pageKey"
-    private const val LIMIT_KEY = "limit"
+    const val LAT_LONG_KEY = "latlong"
+    const val TIMEZONE_KEY = "timezone"
+    const val PAGE_KEY = "pageKey"
+    const val LIMIT_KEY = "limit"
 
-    private const val LIMIT = 10
-    private const val TIMEZONE = "Asia/Jakarta"
+    const val LIMIT = 10
+    const val TIMEZONE = "Asia/Jakarta"
 
     @JvmStatic
     fun createRequestParams(localCacheModel: LocalCacheModel?, option: Int = 0, brandUId: String = "",
@@ -27,7 +27,8 @@ object TokoFoodMerchantListParamMapper {
         put(SORT_BY_KEY, mapSort(sortBy, orderById))
     }
 
-    private fun mapLocation(localCacheModel: LocalCacheModel?): String {
+    @JvmStatic
+    fun mapLocation(localCacheModel: LocalCacheModel?): String {
         val stringBuilder = StringBuilder()
         if (!localCacheModel?.lat.isNullOrEmpty() && !localCacheModel?.long.isNullOrEmpty()){
             stringBuilder.append(localCacheModel?.lat)
