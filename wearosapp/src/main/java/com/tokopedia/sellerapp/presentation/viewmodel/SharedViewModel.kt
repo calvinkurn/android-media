@@ -25,10 +25,12 @@ class SharedViewModel @Inject constructor(
     MessageClient.OnMessageReceivedListener
 {
     private val _orderList: MutableStateFlow<UiState<List<String>>> = MutableStateFlow(UiState.Idle())
-    val orderList: StateFlow<UiState<List<String>>> = _orderList
+    val orderList: StateFlow<UiState<List<String>>>
+        get() = _orderList
 
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
-    val action: StateFlow<UiState<Boolean>> = _action
+    val action: StateFlow<UiState<Boolean>>
+        get() = _action
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when(messageEvent.path) {
