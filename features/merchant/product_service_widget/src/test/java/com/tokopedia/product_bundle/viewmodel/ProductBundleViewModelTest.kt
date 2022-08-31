@@ -163,21 +163,9 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val activeStatus = "ACTIVE"
         val inactiveStatus = "INACTIVE"
         val preorderDay = 1
+        val preorderWeek = 2
         val preorderMonth = 3
         val preorderInvalid = -1
-
-        coEvery {
-            resourceProvider.getPreOrderTimeUnitDay()
-        } returns ""
-        coEvery {
-            resourceProvider.getPreOrderTimeUnitMonth()
-        } returns ""
-
-        var preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
-        var preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
-
-        assertEquals("", preOrderWordingDay)
-        assertEquals("", preOrderWordingMonth)
 
         coEvery {
             resourceProvider.getPreOrderTimeUnitDay()
@@ -194,14 +182,16 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val preOrderInactive = viewModel.isPreOrderActive(inactiveStatus)
         val preOrderWordingInvalid = viewModel.getPreOrderTimeUnitWording(preorderInvalid)
 
-        preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
-        preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
+        val preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
+        val preOrderWordingWeek = viewModel.getPreOrderTimeUnitWording(preorderWeek)
+        val preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
 
         // then
         assert(preOrderActive)
         assert(!preOrderInactive)
         assertEquals("", preOrderWordingInvalid)
         assertEquals("hari", preOrderWordingDay)
+        assertEquals("minggu", preOrderWordingWeek)
         assertEquals("bulan", preOrderWordingMonth)
     }
 
