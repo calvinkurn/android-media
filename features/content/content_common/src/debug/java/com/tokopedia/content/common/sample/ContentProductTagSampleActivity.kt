@@ -1,7 +1,7 @@
 package com.tokopedia.content.common.sample
 
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.databinding.ActivityContentProductTagSampleBinding
 import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -38,9 +41,29 @@ class ContentProductTagSampleActivity : BaseActivity() {
         setupListener()
     }
 
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+
+        when(fragment) {
+            is ProductTagParentFragment -> {
+                fragment.setListener(object : ProductTagParentFragment.Listener {
+                    override fun onCloseProductTag() {
+                        closeFragment()
+                    }
+
+                    override fun onFinishProductTag(products: List<ProductUiModel>) {
+                        Log.d("<LOG>", products.toString())
+                        closeFragment()
+                    }
+                })
+            }
+        }
+    }
+
     private fun setupDefault() {
-        binding.rbFeed.isChecked = true
         binding.rbUser.isChecked = true
+        binding.rbMultipleSelectionProductNo.isChecked = true
+        binding.rbFullPageAutocompleteNo.isChecked = true
     }
 
     private fun setupListener() {
@@ -50,46 +73,31 @@ class ContentProductTagSampleActivity : BaseActivity() {
     }
 
     private fun setupFragment() {
-        val fragment = getFragment()
-
-        if(fragment == null) {
-            Toast.makeText(this, "Fragment is not found.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.fragmentContainer.id,
-                fragment,
+                getFragment(),
                 ProductTagParentFragment.TAG
             )
             .commit()
     }
 
-    private fun getFragment(): Fragment? {
-        return when(binding.rgSource.checkedRadioButtonId) {
-            binding.rbFeed.id -> {
-                ProductTagParentFragment.getFragmentWithFeedSource(
-                    supportFragmentManager,
-                    classLoader,
-                    "global_search,own_shop,last_purchase",
-                    "",
-                    getAuthorId(),
-                    getAuthorType(),
-                )
-            }
-            binding.rbPlay.id -> {
-                ProductTagParentFragment.getFragmentWithPlaySource(
-                    supportFragmentManager,
-                    classLoader,
-                    "global_search,own_shop,last_purchase",
-                    "",
-                    getAuthorId(),
-                    getAuthorType(),
-                )
-            }
-            else -> null
-        }
+    private fun getFragment(): Fragment {
+        return ProductTagParentFragment.getFragment(
+            supportFragmentManager,
+            classLoader,
+            ContentProductTagArgument.Builder()
+                .setShopBadge("")
+                .setAuthorId(getAuthorId())
+                .setAuthorType(getAuthorType())
+                .setProductTagSource("global_search,own_shop,last_purchase")
+                .setMultipleSelectionProduct(binding.rbMultipleSelectionProductYes.isChecked)
+                .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+        )
+    }
+
+    private fun closeFragment() {
+        supportFragmentManager.beginTransaction().remove(getFragment()).commit()
     }
 
     private fun getAuthorId(): String {
@@ -102,8 +110,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     private fun getAuthorType(): String {
         return when(binding.rgOpenAs.checkedRadioButtonId) {
-            binding.rbUser.id -> "content-user"
-            binding.rbSeller.id -> "content-shop"
+            binding.rbUser.id -> ContentCommonUserType.TYPE_USER
+            binding.rbSeller.id -> ContentCommonUserType.TYPE_SHOP
             else -> ""
         }
     }

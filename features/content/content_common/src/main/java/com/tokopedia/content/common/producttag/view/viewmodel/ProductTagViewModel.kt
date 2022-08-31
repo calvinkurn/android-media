@@ -352,7 +352,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleProductSelected(product: ProductUiModel) {
         viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.ProductSelected(product))
+            _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product)))
         }
     }
 

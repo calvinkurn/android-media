@@ -25,7 +25,9 @@ import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.content.common.producttag.view.fragment.*
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
@@ -155,20 +157,8 @@ class ProductTagParentFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when(it) {
-                    is ProductTagUiEvent.ProductSelected -> {
-                        val product = it.product
-
-                        val data = Intent().apply {
-                            putExtra(RESULT_PRODUCT_ID, product.id)
-                            putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
-                            putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
-                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
-                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
-                            putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
-                        }
-                        requireActivity().setResult(Activity.RESULT_OK, data)
-                        requireActivity().finish()
+                    is ProductTagUiEvent.FinishProductTag -> {
+                        mListener?.onFinishProductTag(it.products)
                     }
                     is ProductTagUiEvent.ShowSourceBottomSheet -> {
                         ProductTagSourceBottomSheet.getFragment(
@@ -321,17 +311,27 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun createViewModelProvider(): ViewModelProvider {
+        val productTagArgument = getProductTagArgument()
+
         return ViewModelProvider(
             this,
             viewModelFactoryCreator.create(
                 this,
-                getStringArgument(EXTRA_PRODUCT_TAG_LIST),
-                getStringArgument(EXTRA_SHOP_BADGE),
-                getStringArgument(EXTRA_AUTHOR_ID),
-                getStringArgument(EXTRA_AUTHOR_TYPE),
-                ContentProductTagConfig.mapFromString(getStringArgument(EXTRA_PAGE_SOURCE))
+                productTagArgument.productTagSource,
+                productTagArgument.shopBadge,
+                productTagArgument.authorId,
+                productTagArgument.authorType,
+                ContentProductTagConfig(
+                    isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
+                    isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
+                    maxSelectedProduct = productTagArgument.maxSelectedProduct,
+                )
             )
         )
+    }
+
+    private fun getProductTagArgument(): ContentProductTagArgument {
+        return ContentProductTagArgument.mapFromString(getStringArgument(EXTRA_QUERY))
     }
 
     private fun getStringArgument(key: String): String {
@@ -388,56 +388,25 @@ class ProductTagParentFragment @Inject constructor(
 
     companion object {
         const val TAG = "ProductTagParentFragment"
-        private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
-        private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
-        private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
-        private const val EXTRA_AUTHOR_TYPE = "EXTRA_AUTHOR_TYPE"
-        private const val EXTRA_PAGE_SOURCE = "EXTRA_PAGE_SOURCE"
-
-        const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
-        const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
-        const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
-        const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
-        const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
-        const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
-        const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
+        private const val EXTRA_QUERY = "EXTRA_QUERY"
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
         }
 
-        fun getFragmentWithFeedSource(
+        fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            productTagSource: String,
-            shopBadge: String,
-            authorId: String,
-            authorType: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_FEED)
-        }
-
-        fun getFragmentWithPlaySource(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            productTagSource: String,
-            shopBadge: String,
-            authorId: String,
-            authorType: String,
-        ): ProductTagParentFragment {
-            val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_PLAY)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, argumentBuilder)
         }
 
         private fun createFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            productTagSource: String,
-            shopBadge: String,
-            authorId: String,
-            authorType: String,
-            pageSource: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
@@ -446,11 +415,7 @@ class ProductTagParentFragment @Inject constructor(
                 ) as ProductTagParentFragment
             ).apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_PRODUCT_TAG_LIST, productTagSource)
-                    putSerializable(EXTRA_SHOP_BADGE, shopBadge)
-                    putSerializable(EXTRA_AUTHOR_ID, authorId)
-                    putSerializable(EXTRA_AUTHOR_TYPE, authorType)
-                    putString(EXTRA_PAGE_SOURCE, pageSource)
+                    putString(EXTRA_QUERY, argumentBuilder.build())
                 }
             }
         }
@@ -458,5 +423,6 @@ class ProductTagParentFragment @Inject constructor(
 
     interface Listener {
         fun onCloseProductTag()
+        fun onFinishProductTag(products: List<ProductUiModel>)
     }
 }
