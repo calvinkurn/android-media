@@ -1,10 +1,13 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -18,6 +21,32 @@ class ProductDetailNavigation(
     companion object {
         private const val REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH =
             "android_enable_blocking_touch_pdp_navbar"
+
+        /**
+         * ProductDetailNavigation will be render at front of recyclerview (stack)
+         * use this function to calculate first visible item position by passing offsetY param.
+         *
+         * usually the calculation start from 0 (top of recyclerview)
+         * instead we start form offsetY
+         */
+        fun calculateFirstVisibleItemPosition(recyclerView: RecyclerView, offsetY: Int = Int.ZERO): Int {
+            val layoutManager = recyclerView.layoutManager
+            if (layoutManager !is LinearLayoutManager) return -1
+
+            if (offsetY <= 0){
+                return layoutManager.findFirstVisibleItemPosition()
+            }
+
+            val position = layoutManager.findFirstVisibleItemPosition()
+            val someItem = layoutManager.findViewByPosition(position)
+            val rectItem = Rect()
+            someItem?.getGlobalVisibleRect(rectItem)
+            val rectRv = Rect()
+            recyclerView.getGlobalVisibleRect(rectRv)
+            return if ((rectItem.bottom - rectRv.top) <= offsetY) {
+                position + 1
+            } else position
+        }
     }
 
     private val binding = WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context))
@@ -42,8 +71,8 @@ class ProductDetailNavigation(
         offsetY: Int = 0,
     ) {
         this.listener = listener
-        navigationTab.start(recyclerView, items, enableBlockingTouch, this, offsetY = offsetY)
-        backToTop.start(recyclerView, enableBlockingTouch, this)
+        navigationTab.start(recyclerView, items, enableBlockingTouch, this, offsetY)
+        backToTop.start(recyclerView, enableBlockingTouch, this, offsetY)
     }
 
     fun stop(recyclerView: RecyclerView) {

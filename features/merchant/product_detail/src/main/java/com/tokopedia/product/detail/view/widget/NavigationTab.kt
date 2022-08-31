@@ -1,25 +1,24 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetNavigationTabBinding
-import kotlin.coroutines.CoroutineContext
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 
 class NavigationTab(
@@ -54,7 +53,7 @@ class NavigationTab(
     private var impressNavigation = false
     private var isVisible = false
     private var enableBlockingTouch = true
-    private var navTabPositionOffsetY = 0
+    private var navTabPositionOffsetY = Int.ZERO
 
     init {
         addView(view)
@@ -144,27 +143,6 @@ class NavigationTab(
         } else recyclerView?.suppressLayout(false)
     }
 
-    /**
-     * ProductDetailNavigation will render front of recyclerview
-     * layoutManager.findFirstVisibleItemPosition -> is doesn't aware of actual visible item
-     *
-     * we should manually determine if the item position if visible in screen
-     * (with nav tab in from of recyclerview)
-     */
-    private fun calculateFirstVisibleItemPosition(recyclerView: RecyclerView, offsetY: Int): Int {
-        val layoutManager = recyclerView.layoutManager
-        if (layoutManager !is LinearLayoutManager) return -1
-        val position = layoutManager.findFirstVisibleItemPosition()
-        val someItem = layoutManager.findViewByPosition(position)
-        val rectItem = Rect()
-        someItem?.getGlobalVisibleRect(rectItem)
-        val rectRv = Rect()
-        recyclerView.getGlobalVisibleRect(rectRv)
-        return if ((rectItem.bottom - rectRv.top) <= offsetY) {
-            position + 1
-        } else position
-    }
-
     data class Item(
         val label: String,
         private val positionUpdater: () -> Int
@@ -196,7 +174,10 @@ class NavigationTab(
         }
 
         private fun getFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
-            return calculateFirstVisibleItemPosition(recyclerView, offsetY = navTabPositionOffsetY)
+            return calculateFirstVisibleItemPosition(
+                recyclerView,
+                offsetY = navTabPositionOffsetY
+            )
         }
 
         private fun delayedShow() {
