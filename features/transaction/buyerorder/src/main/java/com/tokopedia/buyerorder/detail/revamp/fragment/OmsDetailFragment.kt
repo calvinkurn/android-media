@@ -177,6 +177,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
 
         viewModel.eventEmail.observe(viewLifecycleOwner){
+            isShowLoaderActionButton(false)
             when(it){
                 is Success -> {
                     showToaster(getString(R.string.event_voucher_code_copied))
@@ -842,6 +843,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     if (actionButton.control.equals(KEY_BUTTON, true)
                         && actionButton.name.equals(KEY_CUSTOMER_NOTIFICATION, true)){
                         viewModel.sendEventEmail(actionButton, orderDetails.metadata)
+                        isShowLoaderActionButton(true)
                         return@setOnClickListener
                     }
 
@@ -850,6 +852,16 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     }
                 }
             }
+        }
+    }
+
+    private fun isShowLoaderActionButton(isShow: Boolean){
+        if (isShow) {
+            binding?.iconActionButton?.gone()
+            binding?.loaderActionButton?.visible()
+        } else {
+            binding?.iconActionButton?.visible()
+            binding?.loaderActionButton?.gone()
         }
     }
 
