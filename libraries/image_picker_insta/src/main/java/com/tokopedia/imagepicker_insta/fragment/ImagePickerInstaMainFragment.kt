@@ -27,7 +27,7 @@ import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
@@ -104,10 +104,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when(childFragment) {
-            is FeedAccountTypeBottomSheet -> {
+            is ContentAccountTypeBottomSheet -> {
                 childFragment.setAnalytic(feedAccountAnalytic)
                 childFragment.setData(viewModel.contentAccountList)
-                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         viewModel.setSelectedFeedAccount(contentAccount)
                     }
@@ -308,7 +308,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun openFeedAccountBottomSheet(){
         try {
             feedAccountAnalytic.clickAccountInfo()
-            FeedAccountTypeBottomSheet
+            ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .showNow(childFragmentManager)
         }

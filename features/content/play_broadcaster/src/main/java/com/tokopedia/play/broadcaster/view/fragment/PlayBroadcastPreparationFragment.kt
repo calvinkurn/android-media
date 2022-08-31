@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
-import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
 import com.tokopedia.content.common.ui.model.NotEligibleType
@@ -233,9 +233,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
-            is FeedAccountTypeBottomSheet -> {
+            is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(parentViewModel.contentAccountList)
-                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
@@ -642,7 +642,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun openFeedAccountBottomSheet() {
         try {
-            FeedAccountTypeBottomSheet
+            ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .showNow(childFragmentManager)
         }
