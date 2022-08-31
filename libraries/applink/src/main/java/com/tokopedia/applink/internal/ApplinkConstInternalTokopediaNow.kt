@@ -56,4 +56,8 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowRecipeSearchActivity
     @JvmField
     val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe-search"
+
+    //TokoNowRecipeAutoCompleteActivity
+    @JvmField
+    val RECIPE_AUTO_COMPLETE = "$INTERNAL_TOKOPEDIA_NOW/recipe-auto-complete"
 }
