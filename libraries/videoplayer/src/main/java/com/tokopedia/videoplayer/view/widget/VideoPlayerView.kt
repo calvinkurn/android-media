@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.VideoView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.videoplayer.R
 import kotlinx.coroutines.*
 
@@ -52,12 +53,12 @@ class VideoPlayerView @JvmOverloads constructor(
                     val retriever = MediaMetadataRetriever()
                     safeExecute { retriever.setDataSource(uri.toString(), emptyMap()) }
                     yield()
-                    mVideoWidth =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                            ?.toInt() ?: 0
-                    mVideoHeight =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                            ?.toInt() ?: 0
+                    mVideoWidth = retriever
+                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                        .toIntOrZero()
+                    mVideoHeight = retriever
+                        .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                        .toIntOrZero()
                 }
                 super.setVideoURI(uri)
             }
