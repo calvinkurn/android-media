@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -14,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -37,6 +40,10 @@ class PlayUGCProductPickerBottomSheet @Inject constructor(
     private val productTagListener = object : ProductTagParentFragment.Listener {
         override fun onCloseProductTag() {
             dismiss()
+        }
+
+        override fun onFinishProductTag(products: List<ProductUiModel>) {
+            Toast.makeText(requireContext(), "Added", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -73,13 +80,15 @@ class PlayUGCProductPickerBottomSheet @Inject constructor(
     private fun setupView(view: View) {
         val selectedAccount = viewModel.uiState.value.selectedContentAccount
 
-        val productPicker = ProductTagParentFragment.getFragmentWithPlaySource(
+        val productPicker = ProductTagParentFragment.getFragment(
             fragmentManager = childFragmentManager,
             classLoader = requireActivity().classLoader,
-            productTagSource = "play",
-            shopBadge = selectedAccount.badge,
-            authorId = selectedAccount.id,
-            authorType = selectedAccount.type,
+            argumentBuilder = ContentProductTagArgument.Builder()
+                .setAuthorType(selectedAccount.type)
+                .setProductTagSource("play")
+                .setAuthorId(selectedAccount.id)
+                .setShopBadge(selectedAccount.badge)
+                .setMultipleSelectionProduct(true),
         )
 
         childFragmentManager.beginTransaction()
