@@ -111,6 +111,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   errors_unblocking
                   shipping_id
                   sp_id
+                  bo_code
                   is_insurance
                   is_fulfillment_service
                   toko_cabang {
