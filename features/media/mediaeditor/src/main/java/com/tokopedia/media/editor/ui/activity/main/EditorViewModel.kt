@@ -152,6 +152,13 @@ class EditorViewModel @Inject constructor(
         }
     }
 
+    fun saveToGallery(context: Context, imageList: List<String>): List<String>{
+        return saveImageRepository.saveToGallery(
+            context,
+            imageList
+        )
+    }
+
     private fun updateEditedItem(originalUrl: String) {
         _updatedIndexItem.value = getKeyIndex(originalUrl)
     }
