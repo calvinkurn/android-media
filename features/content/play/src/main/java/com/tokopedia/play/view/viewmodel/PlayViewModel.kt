@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -192,7 +193,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _loadingBuy = MutableStateFlow(false)
     private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
-    private val _engagementWidget = MutableStateFlow(emptyList<EngagementUiModel>())
+    private val _engagementWidget = MutableStateFlow(mutableListOf<EngagementUiModel>())
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
@@ -1149,10 +1150,24 @@ class PlayViewModel @AssistedInject constructor(
 
             _tagItems.value = tagItem.copy(voucher = createNewVoucherList(tagItem.voucher.voucherList))
 
-            val newList = mutableListOf<EngagementUiModel>().apply {
-                add(EngagementUiModel.Promo(_tagItems.value.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().first(), _tagItems.value.voucher.voucherList.size))
+
+            val cal = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, 2)
             }
-            _engagementWidget.value = newList
+
+            val interactive = InteractiveUiModel.Giveaway(
+                status = InteractiveUiModel.Giveaway.Status.Ongoing(cal),
+                waitingDuration = 5000L,
+                id = "1261",
+                title = "GA sendal",
+            )
+            _engagementWidget.update {
+                it.add(EngagementUiModel.Promo(_tagItems.value.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().first(), _tagItems.value.voucher.voucherList.size))
+                it.add(EngagementUiModel.Game(interactive))
+                return@update it.dropWhile { e ->
+                    e is EngagementUiModel.Promo
+                } as MutableList<EngagementUiModel>
+            }
 
             checkReminderStatus()
 
