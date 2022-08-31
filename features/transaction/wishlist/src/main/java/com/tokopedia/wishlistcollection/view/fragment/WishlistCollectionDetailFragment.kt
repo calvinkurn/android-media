@@ -518,16 +518,21 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.totalData <= 0) {
-                            if (paramGetCollectionItems.query.isNotEmpty()) {
-                                hideSortFilter(collectionDetail.sortFilters)
-                            }
-                            if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
-                                onFailedGetWishlistV2(ResponseErrorException())
+                            if (paramGetCollectionItems.query.isEmpty() && paramGetCollectionItems.sortFilters.isEmpty()) {
+                                hideSearchBar()
+                                hideFilter()
                             } else {
-                                hideLoader(collectionDetail.showDeleteProgress)
-                                showRvWishlist()
-                                isFetchRecommendation = true
-                                hideTotalLabel()
+                                if (paramGetCollectionItems.query.isNotEmpty()) {
+                                    hideSortFilter(collectionDetail.sortFilters)
+                                }
+                                if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
+                                    onFailedGetWishlistV2(ResponseErrorException())
+                                } else {
+                                    hideLoader(collectionDetail.showDeleteProgress)
+                                    showRvWishlist()
+                                    isFetchRecommendation = true
+                                    hideTotalLabel()
+                                }
                             }
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
