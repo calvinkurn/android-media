@@ -43,6 +43,10 @@ class SearchEventActivityTest {
                     KEY_EVENT_CHILD,
                     ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_SEARCH),
                     MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                KEY_EVENT_CATEGORY_CHILD,
+                ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_CATEGORY),
+                MockModelConfig.FIND_BY_CONTAINS)
         }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -97,5 +101,9 @@ class SearchEventActivityTest {
         private const val KEY_EVENT_CHILD = "searchEventLocation"
 
         private const val PATH_RESPONSE_SEARCH = "event_search.json"
+
+        private const val KEY_EVENT_CATEGORY_CHILD = "searchEventCategory"
+
+        private const val PATH_RESPONSE_CATEGORY = "event_category.json"
     }
 }
