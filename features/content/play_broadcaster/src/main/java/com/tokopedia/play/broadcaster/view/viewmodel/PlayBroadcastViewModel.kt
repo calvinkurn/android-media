@@ -425,12 +425,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    fun getConfiguration(contentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty) {
-        val isParamNotEmpty = contentAccount != ContentAccountUiModel.Empty
+    fun getConfiguration(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
 
-            val configUiModel = if (isParamNotEmpty) repo.getChannelConfiguration(contentAccount.id, contentAccount.type)
-            else repo.getChannelConfiguration(authorId, authorType)
+            val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
 
             _configInfo.value = configUiModel
@@ -461,10 +459,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
 
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-                if (isParamNotEmpty) {
-                    _selectedAccount.value = contentAccount
-                    sharedPref.setLastSelectedAccount(contentAccount.type)
-                }
+                _selectedAccount.value = selectedAccount
+                sharedPref.setLastSelectedAccount(selectedAccount.type)
 
                 setProductConfig(configUiModel.productTagConfig)
                 setCoverConfig(configUiModel.coverConfig)
@@ -482,8 +478,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) {
-                if (isParamNotEmpty) handleSelectedAccount(contentAccount)
-                else this.getConfiguration()
+                handleSelectedAccount(selectedAccount)
             }
         }
     }
@@ -1531,7 +1526,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (accountList.isNotEmpty()) {
                 val selectedAccount = getAccountFromCachedOrDefault(accountList)
                 _selectedAccount.value = selectedAccount
-                getConfiguration()
+                getConfiguration(selectedAccount)
             }
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
@@ -1539,17 +1534,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getAccountFromCachedOrDefault(
-        accountList: List<ContentAccountUiModel>
+        accountList: List<ContentAccountUiModel>,
+        defaultSelectedType: String = TYPE_SHOP
     ): ContentAccountUiModel {
-        val currentAccountType = sharedPref.getLastSelectedAccount()
+        val cacheSelectedType = sharedPref.getLastSelectedAccount()
         return accountList.first {
-            it.type == if (currentAccountType.isNotEmpty()) currentAccountType else TYPE_SHOP
+            it.type == if (cacheSelectedType.isNotEmpty()) cacheSelectedType else defaultSelectedType
         }
     }
 
-    private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
+    private fun handleSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _observableConfigInfo.value = NetworkResult.Loading
-        getConfiguration(contentAccount)
+        getConfiguration(selectedAccount)
     }
 
     /**
