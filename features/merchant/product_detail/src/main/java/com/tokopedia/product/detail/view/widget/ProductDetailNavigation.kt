@@ -70,12 +70,12 @@ class ProductDetailNavigation(
     }
 
     override fun onClickNavigationTab(position: Int, label: String) {
-        listener?.onClickProductDetailnavigation(position, label)
+        listener?.onClickProductDetailnavigation(position + 1, label)
         backToTop.onClickTab()
     }
 
     override fun onClickBackToTop(position: Int, label: String) {
-        listener?.onClickProductDetailnavigation(position + 1, label)
+        listener?.onClickProductDetailnavigation(position, label)
         navigationTab.onClickBackToTop()
     }
 }
