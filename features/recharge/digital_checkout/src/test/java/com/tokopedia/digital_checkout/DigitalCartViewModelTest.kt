@@ -803,6 +803,28 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun onPatchOtp_onFailedResponseError() {
+        // given
+        coEvery { digitalPatchOtpUseCase.executeOnBackground() } throws ResponseErrorException("error")
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        digitalCartViewModel.processPatchOtpCart(
+            RequestBodyIdentifier(),
+            DigitalCheckoutPassData(),
+            isSpecialProduct = false
+        )
+
+        // then
+        println("error: ${digitalCartViewModel.errorThrowable.value}")
+        assert(!digitalCartViewModel.showLoading.value!!)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is MessageErrorException)
+
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == "error")
+    }
+
+    @Test
     fun onCheckout_onSuccess() {
         // given
         val dummyResponse = PaymentPassData()
