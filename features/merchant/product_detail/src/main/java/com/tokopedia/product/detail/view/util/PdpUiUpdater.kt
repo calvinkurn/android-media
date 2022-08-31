@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -23,6 +24,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -48,6 +50,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -245,19 +248,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
                 topAdsProductBundlingData?.run {
-                    this.productId = dataP1?.basic?.productID
+                    this.productId = dataP1.basic.productID
                 }
             }
         }
     }
 
-    fun updateInitialMedia(media: List<Media>) {
+    fun updateInitialMedia(media: List<Media>, containerType: String) {
         updateData(ProductDetailConstant.MEDIA, true) {
-            mediaMap?.run {
-                initialScrollPosition = if (initialScrollPosition == -1) -1 else 0
-                listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
-                        media.toMutableList()
+            mediaMap?.let {
+                it.initialScrollPosition = if (mediaMap?.initialScrollPosition == -1) -1 else 0
+                it.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
+                    media.toMutableList()
                 )
+                it.containerType = if (GlobalConfig.isSellerApp()) {
+                    MediaContainerType.Square
+                } else {
+                    containerType.asMediaContainerType()
+                }
             }
         }
     }

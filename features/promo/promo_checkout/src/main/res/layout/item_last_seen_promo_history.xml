@@ -8,15 +8,15 @@
 
     <com.tokopedia.promocheckout.customview.PromoTicketView
         android:layout_width="@dimen/promo_ticket_container_width"
-        android:layout_height="@dimen/dp_110"
+        android:layout_height="110dp"
         app:backgroundcolor="@color/Unify_N0"
         app:borderwidth="2dp"
-        app:cardheight="@dimen/dp_90"
+        app:cardheight="90dp"
         app:cornerradius="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:offset="@dimen/promo_ticket_offset"
-        app:offsetafter="@dimen/dp_90"
+        app:offsetafter="90dp"
         app:scallopRadius="8dp"
         app:showborder="true" />
 
@@ -29,11 +29,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleLastCard"
-        android:layout_width="@dimen/dp_128"
+        android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_28"
-        android:layout_marginLeft="@dimen/dp_28"
-        android:layout_marginTop="@dimen/dp_22"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="22dp"
         android:textColor="@color/Unify_N700"
         app:layout_constraintRight_toLeftOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,14 +57,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnGunakanLast"
-        android:layout_width="@dimen/dp_76"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="76dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/btn_gunakan_lastseen_card"
         android:gravity="center"
         android:text="Gunakan"
         android:textColor="@color/Unify_N0"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"

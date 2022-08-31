@@ -7,7 +7,8 @@ private val LIST_FILTER_PARAMETER_KEY = setOf(
         PMAX_PARAM_KEY,
         RATING_PARAM_KEY,
         SORT_PARAM_KEY,
-        CATEGORY_PARAM_KEY
+        CATEGORY_PARAM_KEY,
+        IS_FULFILLMENT_KEY
 )
 
 fun getIndicatorCount(mapData: Map<String, Any>?): Int {

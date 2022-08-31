@@ -474,8 +474,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                     bundleType = it.bundleType,
                     bundlePosition = it.bundlePosition,
                     priceCut = it.priceCut,
-                    cartId = it.cartId,
-                    quantity = it.quantity
+                    atcItems = it.atcItems
                 )
                 STATE_PRODUCT_BUNDLE_RECOM_CLICKED -> analytics.eventClickProductBundleRecom(
                     shopId = it.shopId,

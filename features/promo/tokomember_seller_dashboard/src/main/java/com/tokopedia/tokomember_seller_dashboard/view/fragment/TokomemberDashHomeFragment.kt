@@ -39,6 +39,7 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tm_dash_home_fragment.*
 import javax.inject.Inject
 
+
 class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
     private var prefManager: TmPrefManager? = null
