@@ -262,7 +262,7 @@ class OfficialStoreAnalyticsTest {
         }
     }
     @Test
-    fun checkOfficialStoreAnalytics() {
+    fun checkOSAnalyticsWithCassava2() {
         onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         OSCassavaTest {
