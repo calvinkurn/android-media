@@ -95,9 +95,10 @@ class UpcomingDescriptionViewComponent(
 
     private fun String.truncatedText(readMoreText: String): SpannedString {
         val length = this.filter { it.isLetterOrDigit() }.length
+        val newText = this.take(length)
         return buildSpannedString {
             append(
-                this.take(length),
+                newText,
                 ForegroundColorSpan(
                     MethodChecker.getColor(
                         ctx,
