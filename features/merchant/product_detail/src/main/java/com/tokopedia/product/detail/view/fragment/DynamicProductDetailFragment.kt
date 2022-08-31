@@ -5243,7 +5243,7 @@ open class DynamicProductDetailFragment :
         ProductDetailNavigationTracking.clickNavigation(
             productInfo,
             userId,
-            ProductDetailNavigationTracker(position, label)
+            ProductDetailNavigationTracker(position + 1, label)
         )
     }
 
