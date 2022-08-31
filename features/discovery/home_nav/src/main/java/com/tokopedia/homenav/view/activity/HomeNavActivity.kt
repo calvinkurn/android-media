@@ -4,7 +4,17 @@ import android.content.res.TypedArray
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -42,28 +52,43 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //PLT monitoring started
-        navPerformanceCallback.startMonitoring(NAV_PAGE_PERFORMANCE_MONITORING_KEY)
-        navPerformanceCallback.startPreparePagePerformanceMonitoring()
-
+//        //PLT monitoring started
+//        navPerformanceCallback.startMonitoring(NAV_PAGE_PERFORMANCE_MONITORING_KEY)
+//        navPerformanceCallback.startPreparePagePerformanceMonitoring()
+//
         super.onCreate(savedInstanceState)
-        overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
-        setContentView(R.layout.activity_main_nav)
-        pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
-        findViewById<NavToolbar>(R.id.toolbar)?.let {
-            it.setToolbarTitle(getString(R.string.title_main_nav))
-            it.setupToolbarWithStatusBar(
-                this,
-                if (applicationContext.isDarkMode()) NavToolbar.Companion.StatusBar.STATUS_BAR_DARK else NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT,
-                true
-            )
-            it.setShowShadowEnabled(true)
+        setContent {
+            Greeting()
         }
-        setupNavigation()
-        setupView()
+//        overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
+//        setContentView(R.layout.activity_main_nav)
+//        pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
+//        findViewById<NavToolbar>(R.id.toolbar)?.let {
+//            it.setToolbarTitle(getString(R.string.title_main_nav))
+//            it.setupToolbarWithStatusBar(
+//                this,
+//                if (applicationContext.isDarkMode()) NavToolbar.Companion.StatusBar.STATUS_BAR_DARK else NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT,
+//                true
+//            )
+//            it.setShowShadowEnabled(true)
+//        }
+//        setupNavigation()
+//        setupView()
+//
+//        //PLT prepare finished
+//        navPerformanceCallback.stopPreparePagePerformanceMonitoring()
+    }
 
-        //PLT prepare finished
-        navPerformanceCallback.stopPreparePagePerformanceMonitoring()
+    @Composable
+    private fun Greeting() {
+        Text(
+            text = "Halo Fikry",
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
     }
 
     override fun finish() {

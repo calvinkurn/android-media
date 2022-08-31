@@ -7,6 +7,7 @@ apply from: "../../../compile-instrument-test.gradle"
 android{
     buildFeatures {
         viewBinding true
+        compose true
     }
     testOptions {
         unitTests {
@@ -24,6 +25,10 @@ android{
 
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.0.4'
     }
 }
 
@@ -127,6 +132,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation 'com.google.android.gms:play-services-wearable:17.1.0'
 
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.5.1'
+    // Compose Material Design
+    implementation 'androidx.compose.material:material:1.1.0'
 }
 
 project.ext {
