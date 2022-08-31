@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +14,21 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
+import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifyprinciples.R.color
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -55,9 +60,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     //View Binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
-    private var upcomingCdpHeaderBinding by autoClearedNullable<StfsCdpUpcomingHeaderBinding>()
+    //upcoming
+    private var upcomingCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
     private var upcomingCdpBodyBinding by autoClearedNullable<StfsCdpUpcomingBodyBinding>()
+    //registered
+    private var registeredCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
@@ -113,7 +121,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupView(flashSale: FlashSale) {
         when (tabName) {
             UPCOMING_TAB -> setupUpcoming(flashSale)
-            REGISTERED_TAB -> setupRegistered()
+            REGISTERED_TAB -> setupRegistered(flashSale)
             ONGOING_TAB -> setupOngoing()
             FINISHED_TAB -> setupFinished()
         }
@@ -137,7 +145,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
         binding?.run {
             layoutHeader.setOnInflateListener { _, view ->
-                upcomingCdpHeaderBinding = StfsCdpUpcomingHeaderBinding.bind(view)
+                upcomingCdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
             }
             layoutMid.setOnInflateListener { _, view ->
                 upcomingCdpMidBinding = StfsCdpUpcomingMidBinding.bind(view)
@@ -156,9 +164,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         val binding = binding ?: return
         val inflatedView = binding.layoutHeader
-        inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_header
+        inflatedView.layoutResource = R.layout.stfs_cdp_header
         inflatedView.inflate()
-        setupUpcomingHeaderStatus(flashSale, campaignStatus)
+        setupUpcomingHeaderData(flashSale, campaignStatus)
     }
 
     private fun setupUpcomingMid(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
@@ -167,7 +175,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         inflatedView.layoutResource = R.layout.stfs_cdp_upcoming_mid
         inflatedView.inflate()
         upcomingCdpMidBinding?.run {
-            setupUpcomingMidStatus(flashSale, campaignStatus)
+            setupUpcomingMidData(flashSale, campaignStatus)
             val startSubmissionDate = flashSale.submissionStartDateUnix.formatTo(
                 DATE_MONTH_ONLY
             )
@@ -192,7 +200,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupUpcomingHeaderStatus(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
+    private fun setupUpcomingHeaderData(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         upcomingCdpHeaderBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
@@ -222,11 +230,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             imageCampaign.setImageUrl(flashSale.coverImage)
             tgCampaignName.text = flashSale.name
             setupUpcomingTimer(this, flashSale)
-            setUpcomingCampaignPeriod(this, flashSale)
+            setHeaderCampaignPeriod(this, flashSale)
         }
     }
 
-    private fun setupUpcomingMidStatus(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
+    private fun setupUpcomingMidData(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         upcomingCdpMidBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
@@ -242,7 +250,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         setTextColor(
                             ContextCompat.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_R500
+                                color.Unify_R500
                             )
                         )
                     }
@@ -263,23 +271,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setUpcomingCampaignPeriod(
-        binding: StfsCdpUpcomingHeaderBinding,
-        flashSale: FlashSale
-    ) {
-        binding.run {
-            val startDate = flashSale.startDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
-            tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(flashSale)) {
-                val endDate = flashSale.endDateUnix.formatTo(TIME_MINUTE_PRECISION_WITH_TIMEZONE)
-                "$startDate - $endDate"
-            } else {
-                val endDate = flashSale.endDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
-                "$startDate - $endDate"
-            }
-        }
-    }
-
-    private fun setupUpcomingTimer(binding: StfsCdpUpcomingHeaderBinding, flashSale: FlashSale) {
+    private fun setupUpcomingTimer(binding: StfsCdpHeaderBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
         val onTimerFinished = { binding.timer.gone() }
         when {
@@ -308,8 +300,55 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     /**
      * Region Registered CDP
      */
-    private fun setupRegistered() {
-        //TODO: implement registered CDP
+    private fun setupRegistered(flashSale: FlashSale) {
+        binding?.run {
+            layoutHeader.setOnInflateListener { _, view ->
+                registeredCdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
+            }
+        }
+
+        setupRegisteredHeader(flashSale)
+    }
+
+    private fun setupRegisteredHeader(flashSale: FlashSale) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutHeader
+        inflatedView.layoutResource = R.layout.stfs_cdp_header
+        inflatedView.inflate()
+        setupRegisteredHeaderData(flashSale)
+    }
+
+    private fun setupRegisteredHeaderData(flashSale: FlashSale) {
+        registeredCdpHeaderBinding?.run {
+            when (flashSale.status) {
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
+                    tgCampaignStatus.setTextColorCompat(color.Unify_NN600)
+                }
+                FlashSaleStatus.WAITING_FOR_SELECTION -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_ORANGE)
+                    tgCampaignStatus.setTextColorCompat(color.Unify_YN400)
+                }
+                FlashSaleStatus.ON_SELECTION_PROCESS -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_BLUE)
+                    tgCampaignStatus.setTextColorCompat(color.Unify_BN500)
+                }
+                FlashSaleStatus.SELECTION_FINISHED -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
+                    tgCampaignStatus.setTextColorCompat(color.Unify_GN500)
+                }
+                else -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
+                    tgCampaignStatus.setTextColorCompat(color.Unify_NN600)
+                }
+            }
+            tickerHeader.gone()
+            timer.gone()
+            tgCampaignStatus.text = flashSale.statusText
+            imageCampaign.setImageUrl(flashSale.coverImage)
+            tgCampaignName.text = flashSale.name
+            setHeaderCampaignPeriod(this, flashSale)
+        }
     }
 
     /**
@@ -324,6 +363,22 @@ class CampaignDetailFragment : BaseDaggerFragment() {
      */
     private fun setupFinished() {
         //TODO: implement finished CDP
+    }
+
+    private fun setHeaderCampaignPeriod(
+        binding: StfsCdpHeaderBinding,
+        flashSale: FlashSale
+    ) {
+        binding.run {
+            val startDate = flashSale.startDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+            tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(flashSale)) {
+                val endDate = flashSale.endDateUnix.formatTo(TIME_MINUTE_PRECISION_WITH_TIMEZONE)
+                "$startDate - $endDate"
+            } else {
+                val endDate = flashSale.endDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+                "$startDate - $endDate"
+            }
+        }
     }
 
     private fun showLoading() {
