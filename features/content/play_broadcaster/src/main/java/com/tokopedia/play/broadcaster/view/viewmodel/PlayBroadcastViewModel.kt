@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
+import com.tokopedia.content.common.ui.model.NotEligibleType
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -231,6 +233,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
+    private val _notEligibleAccount = MutableStateFlow(NotEligibleAccountUiModel.Empty)
+
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
     val contentAccountList: List<ContentAccountUiModel>
@@ -305,6 +309,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
+        _notEligibleAccount,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -317,7 +322,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         quizDetail,
         onBoarding,
         quizBottomSheetUiState,
-        selectedFeedAccount ->
+        selectedFeedAccount,
+        notEligibleAccount ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -331,7 +337,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizDetail = quizDetail,
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
-            selectedContentAccount = selectedFeedAccount
+            selectedContentAccount = selectedFeedAccount,
+            notEligibleAccount = notEligibleAccount
         )
     }.stateIn(
         viewModelScope,
@@ -1522,7 +1529,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _accountListState.value = accountList
 
-            //TODO need to check about the account eligible
             if (accountList.isNotEmpty()) {
                 val selectedAccount = getAccountFromCachedOrDefault(accountList)
                 _selectedAccount.value = selectedAccount
@@ -1534,8 +1540,25 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectedAccount(selectedAccount: ContentAccountUiModel) {
-        _observableConfigInfo.value = NetworkResult.Loading
-        getConfiguration(selectedAccount)
+        checkSelectedAccountIsEligible(selectedAccount) {
+            _observableConfigInfo.value = NetworkResult.Loading
+            getConfiguration(selectedAccount)
+        }
+    }
+
+    private fun checkSelectedAccountIsEligible(
+        selectedAccount: ContentAccountUiModel,
+        isEligible: () -> Unit
+    ) {
+        when {
+            selectedAccount.hasUsername -> isEligible()
+            !selectedAccount.hasUsername -> {
+                _notEligibleAccount.value = NotEligibleAccountUiModel(
+                    type = NotEligibleType.NoUsername,
+                    selectedAccount = selectedAccount
+                )
+            }
+        }
     }
 
     private fun getAccountFromCachedOrDefault(

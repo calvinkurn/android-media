@@ -12,6 +12,8 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
+import com.tokopedia.content.common.ui.model.NotEligibleType
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -437,6 +439,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
+                renderNotEligibleAccount(prevState?.notEligibleAccount, state.notEligibleAccount)
             }
         }
     }
@@ -571,6 +574,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         if (prevState?.state != state.state && state.state == NetworkState.Success) {
             schedulePicker.dismiss()
+        }
+    }
+
+    private fun renderNotEligibleAccount(
+        prevState: NotEligibleAccountUiModel?,
+        state: NotEligibleAccountUiModel,
+    ) {
+        if (prevState == state) return
+
+        when(state.type) {
+            NotEligibleType.Banned -> { toaster.showToaster("banned")}
+            NotEligibleType.NoUsername -> { toaster.showToaster("no username")}
+            NotEligibleType.Unknown -> return
         }
     }
 
