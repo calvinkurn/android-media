@@ -116,6 +116,7 @@ class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> 
                 }
                 item.distanceHoursToEndDate > TWENTY_FOUR_HOURS -> {
                     timerFormat = TimerUnifySingle.FORMAT_DAY
+                    binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
                     targetDate = item.endDate.toCalendar()
                 }
                 else -> {}

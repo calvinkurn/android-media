@@ -82,7 +82,7 @@ class FinishedFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) ->
             when (item.status) {
                 FlashSaleStatus.FINISHED -> handleDescription(item)
                 FlashSaleStatus.MISSED -> this.text = context.getString(R.string.stfs_missed_reason)
-                FlashSaleStatus.CANCELLED -> this.text = context.getString(R.string.stfs_placeholder_cancellation_reason, item.cancellationReason)
+                FlashSaleStatus.CANCELLED -> this.text = item.cancellationReason
                 FlashSaleStatus.REJECTED -> displayAllProductAreRejected()
                 else -> this.text = ""
             }
