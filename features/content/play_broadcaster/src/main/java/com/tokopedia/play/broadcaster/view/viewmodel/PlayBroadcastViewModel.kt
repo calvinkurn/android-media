@@ -1533,6 +1533,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         })
     }
 
+    private fun handleSelectedAccount(selectedAccount: ContentAccountUiModel) {
+        _observableConfigInfo.value = NetworkResult.Loading
+        getConfiguration(selectedAccount)
+    }
+
     private fun getAccountFromCachedOrDefault(
         accountList: List<ContentAccountUiModel>,
         defaultSelectedType: String = TYPE_SHOP
@@ -1541,11 +1546,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return accountList.first {
             it.type == if (cacheSelectedType.isNotEmpty()) cacheSelectedType else defaultSelectedType
         }
-    }
-
-    private fun handleSelectedAccount(selectedAccount: ContentAccountUiModel) {
-        _observableConfigInfo.value = NetworkResult.Loading
-        getConfiguration(selectedAccount)
     }
 
     /**
