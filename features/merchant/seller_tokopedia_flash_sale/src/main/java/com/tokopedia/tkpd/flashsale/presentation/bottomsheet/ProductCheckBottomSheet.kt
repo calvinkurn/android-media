@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetProductCheckBinding
-import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductCheckingResult
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.adapter.ProductCheckingResultAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -19,6 +17,7 @@ class ProductCheckBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<StfsBottomsheetProductCheckBinding>()
     private var productName: String = ""
+    private var locationCheckingResults: List<ProductCheckingResult> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,16 +39,6 @@ class ProductCheckBottomSheet : BottomSheetUnify() {
 
     private fun setupRecyclerView() {
         binding?.rvResult?.apply {
-            val criteriaItems = resources.getStringArray(R.array.criteria_items).toList()
-            val locationCheckingResults = criteriaItems.mapIndexed { i, it ->
-                ProductCheckingResult(
-                    isMultiloc = i.isOdd(),
-                    name = it.take(7), locationCheckingResult = criteriaItems.take(3).map { it2 ->
-                        ProductCheckingResult.LocationCheckingResult(cityName = it2.take(7))
-                    }
-                )
-            }
-
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ProductCheckingResultAdapter().apply {
                 setDataList(locationCheckingResults)
@@ -59,9 +48,11 @@ class ProductCheckBottomSheet : BottomSheetUnify() {
 
     fun show(
         productName: String,
+        locationCheckingResults: List<ProductCheckingResult>,
         manager: FragmentManager,
         tag: String?
     ) {
+        this.locationCheckingResults = locationCheckingResults
         this.productName = productName
         show(manager, tag)
     }
