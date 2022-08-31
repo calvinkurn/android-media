@@ -113,7 +113,7 @@ class ContentProductTagArgument private constructor(
         }
 
         fun setBackButton(backButton: ContentProductTagConfig.BackButton): Builder {
-            argumentMap[KEY_BACK_BUTTON] = backButton
+            argumentMap[KEY_BACK_BUTTON] = backButton.value
             return this
         }
 
