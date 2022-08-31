@@ -13,7 +13,7 @@ import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewTemplateAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.typefactory.CreateReviewTemplateTypeFactory
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewItemAnimator
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewTemplateItemUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewTemplateItemViewHolder
