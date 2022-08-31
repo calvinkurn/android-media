@@ -90,10 +90,12 @@ class TrackingRepository(
 
 
     private fun setEmbraceLog(queryName: String, queryParam: String) {
-        val map: MutableMap<String, Any> = mutableMapOf(
+        val embraceMap = mapOf(
             "queryName" to queryName,
             "detail" to queryParam
         )
+
+        ServerLogger.log(Priority.SF,EMBRACE_CUSTOMER_TAG,embraceMap)
     }
 
     fun delete(data: List<Tracking>) {
@@ -202,5 +204,6 @@ class TrackingRepository(
 
     companion object {
         const val ERROR_MAX_LENGTH = 1000
+        const val EMBRACE_CUSTOMER_TAG = "android_customerapp_log_config_embrace"
     }
 }
