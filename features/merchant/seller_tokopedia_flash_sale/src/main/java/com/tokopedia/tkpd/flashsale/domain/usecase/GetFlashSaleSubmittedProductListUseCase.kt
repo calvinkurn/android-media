@@ -42,6 +42,21 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                             campaign_stock
                             is_multiwarehouse
                             is_parent_product
+                            price {
+                              price
+                              lower_price
+                              upper_price
+                            }
+                            discount {
+                              discount
+                              lower_discount
+                              upper_discount
+                            }
+                            discounted_price {
+                              price
+                              lower_price
+                              upper_price
+                            }
                             warehouses {
                               warehouse_id
                               name

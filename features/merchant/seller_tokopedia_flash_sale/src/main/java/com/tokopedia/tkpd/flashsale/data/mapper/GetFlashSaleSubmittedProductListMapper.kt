@@ -26,14 +26,35 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 submittedProduct.toProductCriteria(),
                 submittedProduct.productId,
                 submittedProduct.url,
+                submittedProduct.toPrice(),
+                submittedProduct.toDiscount(),
+                submittedProduct.toDiscountedPrice(),
                 submittedProduct.toWarehouses()
             )
         }
     }
 
-    private fun GetFlashSaleSubmittedProductListResponse.Product.toProductCriteria(): SubmittedProduct.ProductCriteria {
-        return SubmittedProduct.ProductCriteria(
-            productCriteria.criteriaId
+    private fun GetFlashSaleSubmittedProductListResponse.Product.toPrice(): SubmittedProduct.Price {
+        return SubmittedProduct.Price(
+            price.price,
+            price.lowerPrice,
+            price.lowerPrice
+        )
+    }
+
+    private fun GetFlashSaleSubmittedProductListResponse.Product.toDiscount(): SubmittedProduct.Discount {
+        return SubmittedProduct.Discount(
+            discount.discount,
+            discount.lowerDiscount,
+            discount.upperDiscount
+        )
+    }
+
+    private fun GetFlashSaleSubmittedProductListResponse.Product.toDiscountedPrice(): SubmittedProduct.DiscountedPrice {
+        return SubmittedProduct.DiscountedPrice(
+            discountedPrice.price,
+            discountedPrice.lowerPrice,
+            discountedPrice.lowerPrice
         )
     }
 
@@ -46,8 +67,31 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 warehouse.statusId,
                 warehouse.statusText,
                 warehouse.stock,
+                warehouse.toDiscountSetup(),
+                warehouse.toSubsidy(),
                 warehouse.warehouseId
             )
         }
+    }
+
+    private fun GetFlashSaleSubmittedProductListResponse.Warehouse.toDiscountSetup(): SubmittedProduct.DiscountSetup {
+        return SubmittedProduct.DiscountSetup(
+            discountSetup.price,
+            discountSetup.stock,
+            discountSetup.discount
+        )
+    }
+
+    private fun GetFlashSaleSubmittedProductListResponse.Warehouse.toSubsidy(): SubmittedProduct.Subsidy {
+        return SubmittedProduct.Subsidy(
+            subsidy.hasSubsidy,
+            subsidy.subsidyAmount
+        )
+    }
+
+    private fun GetFlashSaleSubmittedProductListResponse.Product.toProductCriteria(): SubmittedProduct.ProductCriteria {
+        return SubmittedProduct.ProductCriteria(
+            productCriteria.criteriaId
+        )
     }
 }
