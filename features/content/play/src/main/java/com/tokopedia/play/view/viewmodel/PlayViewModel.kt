@@ -25,6 +25,7 @@ import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
@@ -191,6 +192,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _loadingBuy = MutableStateFlow(false)
     private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
+    private val _engagementWidget = MutableStateFlow(emptyList<EngagementUiModel>())
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
@@ -1146,6 +1148,11 @@ class PlayViewModel @AssistedInject constructor(
             val tagItem = repo.getTagItem(channelId, warehouseId)
 
             _tagItems.value = tagItem.copy(voucher = createNewVoucherList(tagItem.voucher.voucherList))
+
+            val newList = mutableListOf<EngagementUiModel>().apply {
+                add(EngagementUiModel.Promo(_tagItems.value.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().first(), _tagItems.value.voucher.voucherList.size))
+            }
+            _engagementWidget.value = newList
 
             checkReminderStatus()
 
