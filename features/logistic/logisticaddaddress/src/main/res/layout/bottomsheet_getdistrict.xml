@@ -36,7 +36,7 @@
         android:id="@+id/getdistrict_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="@dimen/dp_18">
+            android:layout_marginTop="18dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_getdistrict"
@@ -65,15 +65,15 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:textColor="@color/Unify_N700_96"
-                android:textSize="@dimen/sp_16"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:typographyType="body_1"
                 tools:text="Jalan Taman Siswa" />
 
             <ImageView
                 android:id="@+id/ic_search_btn"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginStart="10dp"
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/sp_12"
+            android:textSize="12sp"
             app:typographyType="body_3"
             tools:text="Wirogunan Mergangsan Kota Yogyakarta Daerah Istimewa Yogyakarta" />
 
@@ -126,7 +126,7 @@
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_15" />
+                    android:textSize="15sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -147,7 +147,7 @@
                     android:paddingRight="2dp"
                     android:text="@string/tv_detail_address_placeholder"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -161,7 +161,7 @@
                     android:paddingEnd="2dp"
                     android:paddingRight="2dp"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_12" />
+                    android:textSize="12sp" />
 
             </RelativeLayout>
 
@@ -173,7 +173,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginBottom="30dp"
             android:foreground="?selectableItemBackground"
             android:text="@string/choose_this_location"
             android:textAllCaps="false"
@@ -213,8 +213,8 @@
 
             <ImageView
                 android:id="@+id/invalid_ic_search_btn"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginStart="10dp"
@@ -239,8 +239,8 @@
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/invalid_img"
-            android:layout_width="@dimen/dp_180"
-            android:layout_height="@dimen/dp_180"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:contentDescription="@string/invalid_img_description"

@@ -13,7 +13,7 @@
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:singleLine="true"
         android:textColor="@color/Unify_N700_96"
         android:textStyle="bold"
@@ -59,13 +59,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dp_45"
+        app:layout_constraintGuide_end="45dp"
         />
 
     <View
         android:id="@+id/view_line_separator"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="20dp"
         android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"
