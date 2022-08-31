@@ -26,6 +26,9 @@ class SourcePolicyManager @Inject constructor(
     }
 
     fun clear() {
+        val json = getString(KEY_SOURCE_POLICY, "")
+        if (json.isEmpty()) return
+
         clearCache()
     }
 

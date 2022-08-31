@@ -130,7 +130,7 @@
     <string name="feed_component_follow_fail_toast">Oops, gagal mem-follow.</string>
     <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
     <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
-    <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
+    <string name="kol_action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
     <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
     <string name="feed_header_follow_count_less_text">Rekomendasi</string>
 
@@ -200,7 +200,7 @@
     <string name="feeds_asgc_disc_one_products">Cek Sekarang! Diskon s.d %s</string>
     <string name="feeds_ads_text">Ad</string>
     <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
-    <string name="feeds_asgc_restock_text">Restock</string>
+    <string name="feeds_asgc_restock_text">Barang Restock</string>
 
     //video Tab in feed
     <string name="feed_video_tab_success_add_reminder">Pengingat berhasil terpasang!</string>

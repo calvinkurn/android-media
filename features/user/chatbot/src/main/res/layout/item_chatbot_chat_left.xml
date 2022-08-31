@@ -75,15 +75,14 @@
         app:layout_constraintTop_toBottomOf="@+id/senderAvatar"
         tools:ignore="RtlHardcoded">
 
-        <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
-            android:id="@+id/customChatLayout"
+        <com.tokopedia.chatbot.view.customview.MessageBubbleLayout
+            android:id="@+id/message_layout_with_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/dp_chatbot_10"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_chatbot_10"
-            app:showCheckMark="false" />
+            android:paddingBottom="@dimen/dp_chatbot_10" />
 
     </LinearLayout>
 
