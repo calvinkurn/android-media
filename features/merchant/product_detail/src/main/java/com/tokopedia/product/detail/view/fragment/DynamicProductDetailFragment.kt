@@ -1904,7 +1904,7 @@ open class DynamicProductDetailFragment :
                 productInfo?.basic?.productID?.let {
                     context?.let { context ->
                         if (isUsingAddRemoveWishlistV2(context)) {
-                            addWishlistV2(componentTrackDataModel, productInfo.isProductActive())
+                            addWishlistV2(componentTrackDataModel)
                         } else {
                             addWishList()
                             trackingEventSuccessAddToWishlist(componentTrackDataModel)
@@ -4041,7 +4041,13 @@ open class DynamicProductDetailFragment :
             }
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
-                addWishList()
+                context?.let { context ->
+                    if (isUsingAddRemoveWishlistV2(context)) {
+                        addWishlistV2(null)
+                    } else {
+                        addWishList()
+                    }
+                }
                 return@let
             }
 
@@ -4734,9 +4740,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun addWishlistV2(
-        componentTrackDataModel: ComponentTrackDataModel,
-        isProductActive: Boolean
-    ) {
+        componentTrackDataModel: ComponentTrackDataModel?) {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -4777,7 +4781,9 @@ open class DynamicProductDetailFragment :
                 }
                 if (result.success) {
                     updateFabIcon(productId, true)
-                    trackingEventSuccessAddToWishlist(componentTrackDataModel)
+                    if (componentTrackDataModel != null) {
+                        trackingEventSuccessAddToWishlist(componentTrackDataModel)
+                    }
                 }
             }
 
