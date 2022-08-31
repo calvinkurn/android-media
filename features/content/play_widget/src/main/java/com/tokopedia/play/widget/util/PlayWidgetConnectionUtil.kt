@@ -13,7 +13,7 @@ class PlayWidgetConnectionUtil @Inject constructor(
 ) {
 
     private val connectivityManager: ConnectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     fun isEligibleForHeavyDataUsage(): Boolean {
         return !connectivityManager.isActiveNetworkMetered
