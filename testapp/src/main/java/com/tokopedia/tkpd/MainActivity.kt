@@ -127,6 +127,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia-android-internal://global/media-editor"
+        return "tokopedia-android-internal://global/debug-media-picker"
     }
 }

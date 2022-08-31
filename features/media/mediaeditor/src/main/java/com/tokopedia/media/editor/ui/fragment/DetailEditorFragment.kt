@@ -204,6 +204,8 @@ class DetailEditorFragment @Inject constructor(
     override fun onLoadComplete() {
         if (!data.isToolRemoveBackground() && !data.isToolWatermark()) {
             readPreviousState(data)
+        } else {
+            implementedBaseBitmap = viewBinding?.imgUcropPreview?.getBitmap()
         }
 
         if (data.isToolWatermark()) setWatermarkDrawerItem()
