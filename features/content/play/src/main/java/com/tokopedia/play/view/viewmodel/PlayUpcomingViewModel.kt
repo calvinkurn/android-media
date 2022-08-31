@@ -91,12 +91,12 @@ class PlayUpcomingViewModel @Inject constructor(
         _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
         _channelDetail, _widgetState,
-    ) { partner, upcomingInfo, channelDetail, isExpanded ->
+    ) { partner, upcomingInfo, channelDetail, widgetState ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
             channel = channelDetail,
-            description = isExpanded,
+            description = widgetState,
         )
     }.flowOn(dispatchers.computation)
 
@@ -119,9 +119,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     val isExpanded: Boolean
             get() = _widgetState.value.isExpand
-
-    val isWidgetShown: Boolean
-        get() = _widgetState.value.isShown
 
     val remindState: PlayUpcomingState
         get() = _upcomingState.value
@@ -264,10 +261,6 @@ class PlayUpcomingViewModel @Inject constructor(
             _upcomingState.emit(if (!isReminderSet) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
             _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
-
-        /**
-         * Need to ask is there any tracker? for batal; user click?
-         */
 
         needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
             viewModelScope.launchCatchError(block = {
