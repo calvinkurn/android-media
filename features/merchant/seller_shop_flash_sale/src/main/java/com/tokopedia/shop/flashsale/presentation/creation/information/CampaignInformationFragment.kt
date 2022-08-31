@@ -656,7 +656,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val maximumCampaignEndDate = viewModel.findCampaignMaxEndDateByVpsRule(selectedVpsPackage, maximumEndDate)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
-            TimePickerSelectionMode.START_TIME,
+            TimePickerSelectionMode.CAMPAIGN_START_DATE,
             selectedDate,
             minimumDate,
             maximumCampaignEndDate,
@@ -694,7 +694,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         }
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
-            TimePickerSelectionMode.END_TIME,
+            TimePickerSelectionMode.CAMPAIGN_END_DATE,
             endDate,
             minimumDate,
             maximumEndDate,
