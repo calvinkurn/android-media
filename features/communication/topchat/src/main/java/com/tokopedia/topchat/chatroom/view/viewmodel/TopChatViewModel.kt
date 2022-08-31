@@ -272,7 +272,6 @@ open class TopChatViewModel @Inject constructor(
     val attachmentPreviewData: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
-    var isTickerNotShownYet = true
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var pendingLoadProductPreview: ArrayList<String> = arrayListOf()

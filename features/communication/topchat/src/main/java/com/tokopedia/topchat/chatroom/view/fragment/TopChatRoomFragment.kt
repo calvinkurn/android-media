@@ -240,6 +240,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
 
+    /**
+     * Ticker Reminder flag, only 1 ticker can exist in 1 session
+     */
+    private var isTickerNotShownYet = true
+
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
@@ -560,7 +565,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun renderTickerReminderIfNotYet() {
         val ticker = viewModel.tickerReminder.value
-        if (ticker != null && ticker is Success && viewModel.isTickerNotShownYet) {
+        if (ticker != null && ticker is Success && isTickerNotShownYet) {
             onSuccessGetTickerReminder(ticker.data)
         }
     }
@@ -981,7 +986,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun renderTickerReminder(chatBubble: BaseChatUiModel?) {
         chatBubble?.tickerReminder?.let {
             val reminderTickerUiModel = ReminderTickerUiModel.mapToReminderTickerUiModel(it)
-            if (viewModel.isTickerNotShownYet) {
+            if (isTickerNotShownYet) {
                 onSuccessGetTickerReminder(reminderTickerUiModel)
             }
         }
@@ -3001,7 +3006,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val eligiblePosition = adapter.findTickerPosition(data.replyId)
         if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
-        viewModel.isTickerNotShownYet = false
+        isTickerNotShownYet = false
+        if (getFirstVisibleItemPosition() == 0 && eligiblePosition == 0) {
+            rv?.smoothScrollToPosition(eligiblePosition)
+        }
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -3164,7 +3172,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
         viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
-        viewModel.isTickerNotShownYet = true
+        isTickerNotShownYet = true
     }
 
     private fun goToOCC() {
