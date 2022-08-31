@@ -166,6 +166,12 @@ data class FeeDetail (
         val name: String,
         @SerializedName("amount")
         val amount: Long,
+        @SerializedName("show_tooltip")
+        val showTooltip: String,
+        @SerializedName("tooltip_title")
+        val tooltipTitle: String,
+        @SerializedName("tooltip_desc")
+        val tooltipDesc: String,
 ) : Parcelable
 
 @Parcelize

@@ -16,6 +16,18 @@
         app:typographyType="body_3"
         tools:text="Payment Mode Name" />
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/infoToolTip"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        app:layout_constraintStart_toEndOf="@id/tvInvoicePaymentModeName"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="5.5dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/info_icon"
+        android:src="@drawable/info_icon"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoicePaidWithModeValue"
         android:layout_width="0dp"

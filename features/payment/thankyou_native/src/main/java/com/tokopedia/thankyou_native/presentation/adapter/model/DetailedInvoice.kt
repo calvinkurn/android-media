@@ -31,7 +31,10 @@ data class TotalFee(
 
 data class FeeDetail(
         val feeTitle : String,
-        val feeAmountStr : String
+        val feeAmountStr : String,
+        val showToolTip : String,
+        val tooltipTitle : String,
+        val tooltipDesc : String
 )
 
 data class CashBackEarned(
