@@ -680,7 +680,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun onSuccessValidateUse(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
                                      selectedPromoList: ArrayList<String>,
                                      validateUsePromoRequest: ValidateUsePromoRequest) {
-        if (validateUsePromoRevampUiModel.status == "OK") {
+        if (validateUsePromoRevampUiModel.status == "OK" && validateUsePromoRevampUiModel.errorCode == "200") {
             // Initialize response action state
             initApplyPromoResponseAction()
 
@@ -824,21 +824,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Check all promo merchant is success
         // Update : This logic might be unnecessary,
         // since if global success is true, all voucher order status shoulbe success
-        var successCount = 0
-        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.success) {
-                successCount++
-            } else {
-                // If one of promo merchant is error, then show error message
-                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
-                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
-                // Notify fragment apply promo to stop loading
-                setApplyPromoStateFailed(exception, selectedPromoList)
-                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
-            }
-        }
+//        // temporary disabled for bo unstack
+//        var successCount = 0
+//        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
+//            if (voucherOrder.success) {
+//                successCount++
+//            } else {
+//                // If one of promo merchant is error, then show error message
+//                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
+//                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
+//                // Notify fragment apply promo to stop loading
+//                setApplyPromoStateFailed(exception, selectedPromoList)
+//                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
+//            }
+//        }
 
-        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrderUiModels.size) {
+        if (isGlobalSuccess /*|| successCount == responseValidatePromo.voucherOrderUiModels.size*/) {
             var selectedRecommendationCount = 0
             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                 if (selectedPromoList.contains(it)) selectedRecommendationCount++
