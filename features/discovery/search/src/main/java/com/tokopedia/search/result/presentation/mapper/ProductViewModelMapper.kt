@@ -429,8 +429,25 @@ class ProductViewModelMapper {
                     data.trackingOption.toIntOrZero(),
                     dimension90,
                     createInspirationCarouselCardButtonViewModel(opt),
+                    createInspirationCarouselBundleViewModel(opt),
             )
         }
+    }
+
+    private fun createInspirationCarouselBundleViewModel(
+        option: InspirationCarouselOption,
+    ): InspirationCarouselDataView.Bundle {
+        return InspirationCarouselDataView.Bundle(
+            InspirationCarouselDataView.Bundle.Shop(
+                option.bundle.shop.name,
+                option.bundle.shop.url,
+            ),
+            option.bundle.countSold,
+            option.bundle.price,
+            option.bundle.originalPrice,
+            option.bundle.discount,
+            option.bundle.discountPercentage,
+        )
     }
 
     private fun createInspirationCarouselCardButtonViewModel(
