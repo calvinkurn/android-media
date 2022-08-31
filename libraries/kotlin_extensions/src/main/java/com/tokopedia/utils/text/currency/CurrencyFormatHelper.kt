@@ -4,6 +4,7 @@ import android.widget.EditText
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import java.lang.Integer.parseInt
 import java.text.NumberFormat
 import java.util.*
 
@@ -29,16 +30,7 @@ object CurrencyFormatHelper {
 
     fun convertToRupiah(string: String): String {
         return try {
-            val inrupiah: String =
-                RupiahFormat.format(
-                    string
-                        .replace("Rp", "")
-                        .toLongOrZero()
-                )
-                    .replace("$", "")
-                    .replace("Rp", "")
-                    .replace(".00", "")
-                    .replace(",", ".")
+            val inrupiah: String = RupiahFormat.format(java.lang.Long.parseLong(string.replace("Rp", ""))).replace("$", "").replace("Rp", "").replace(".00", "").replace(",", ".")
             inrupiah
         } catch (e: NumberFormatException) {
             e.printStackTrace()
@@ -56,14 +48,14 @@ object CurrencyFormatHelper {
                 var tempCursorPos = et.selectionStart
                 val tempLength = et.length()
                 val textToFormat = et.text.toString()
-                val formattedText = RupiahFormat.format(
-                    textToFormat
-                        .substring(noFirstCharToIgnore)
+                val formattedText = RupiahFormat.format(parseInt(
+                        textToFormat
+                                .substring(noFirstCharToIgnore)
+                                .replace("$", "")
+                                .replace(",", "")
+                                .replace(".", "")))
                         .replace("$", "")
-                        .replace(",", "")
-                        .replace(".", "")
-                        .toIntOrZero()
-                ).replace("$", "").replace(",", ".")
+                        .replace(",",".")
                 et.setText(formattedText)
                 if (et.length() - tempLength == 1) {
                     if (et.length() < 4 + noFirstCharToIgnore) {
