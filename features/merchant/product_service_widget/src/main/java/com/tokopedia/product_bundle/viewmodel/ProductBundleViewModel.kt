@@ -241,7 +241,7 @@ class ProductBundleViewModel @Inject constructor(
             bundleName = bundleInfo.name,
             quota = bundleInfo.quota,
             preOrderStatus = bundleInfo.preorder.status,
-            processDay = bundleInfo.preorder.processDay,
+            processDay = bundleInfo.preorder.processTime.toLongOrZero(),
             processTypeNum = bundleInfo.preorder.processTypeNum
         )
     }
