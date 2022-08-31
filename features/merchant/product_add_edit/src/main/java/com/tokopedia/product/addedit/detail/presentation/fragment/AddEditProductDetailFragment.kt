@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -1655,6 +1656,11 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     priceInput,
                     priceSuggestion
             )
+            priceSuggestionBottomSheet?.setShowListener {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                    priceSuggestionBottomSheet?.dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
+            }
             priceSuggestionBottomSheet?.setCloseClickListener {
                 ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
                 priceSuggestionBottomSheet?.dismiss()

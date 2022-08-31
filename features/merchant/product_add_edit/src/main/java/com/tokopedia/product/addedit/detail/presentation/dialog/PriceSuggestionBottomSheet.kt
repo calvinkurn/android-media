@@ -112,7 +112,6 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
     }
 
     private fun setupViews(binding: BottomsheetPriceSuggestionLayoutBinding?) {
-        binding?.root?.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
         // setup recyclerview
         adapter = SimilarProductAdapter(this)
         binding?.rvSimilarProducts?.let {
