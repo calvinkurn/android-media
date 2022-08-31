@@ -163,15 +163,15 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val activeStatus = "ACTIVE"
         val inactiveStatus = "INACTIVE"
         val preorderDay = 1
-        val preorderMonth = 2
+        val preorderMonth = 3
         val preorderInvalid = -1
 
         coEvery {
             resourceProvider.getPreOrderTimeUnitDay()
-        } returns null
+        } returns ""
         coEvery {
             resourceProvider.getPreOrderTimeUnitMonth()
-        } returns null
+        } returns ""
 
         var preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
         var preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
@@ -182,6 +182,9 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         coEvery {
             resourceProvider.getPreOrderTimeUnitDay()
         } returns "hari"
+        coEvery {
+            resourceProvider.getPreOrderTimeUnitWeek()
+        } returns "minggu"
         coEvery {
             resourceProvider.getPreOrderTimeUnitMonth()
         } returns "bulan"
