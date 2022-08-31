@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.recipelist.base.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,16 +31,23 @@ import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdap
 import com.tokopedia.tokopedianow.recipelist.presentation.constant.ImageUrl
 import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeFilterListener
 import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeListListener
+import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
+import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
+import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-abstract class BaseTokoNowRecipeListFragment : Fragment(), ServerErrorListener {
+abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, ServerErrorListener {
+
+    companion object {
+        const val REQUEST_CODE_FILTER = 101
+    }
 
     private val adapter by lazy {
         RecipeListAdapter(
             RecipeListAdapterTypeFactory(
-                recipeItemListener = RecipeListListener(context),
-                recipeFilterListener = RecipeFilterListener(context),
+                recipeItemListener = RecipeListListener(this),
+                recipeFilterListener = RecipeFilterListener(this),
                 serverErrorListener = this
             )
         )
@@ -75,9 +84,28 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), ServerErrorListener {
         observeLiveData()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode != Activity.RESULT_OK) return
+
+        when(requestCode) {
+            REQUEST_CODE_FILTER -> {
+                val filters = data
+                    ?.getParcelableArrayListExtra<SelectedFilter>(EXTRA_SELECTED_FILTER).orEmpty()
+                viewModel.applyFilter(filters)
+            }
+        }
+    }
+
     override fun onClickRetryButton() {
         viewModel.refreshPage()
     }
+
+    override fun viewModel() = viewModel
+
+    override fun context() = context
+
+    override fun fragment() = this
 
     private fun setupNavToolbar() {
         val fragment = this

@@ -11,18 +11,21 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSortFilterBinding
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.adapter.SortFilterAdapter
 import com.tokopedia.tokopedianow.sortfilter.presentation.differ.SortFilterDiffer
+import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.tokopedianow.sortfilter.presentation.typefactory.SortFilterAdapterTypeFactory
 import com.tokopedia.tokopedianow.sortfilter.presentation.uimodel.SortFilterUiModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.viewholder.SortFilterViewHolder.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 
 class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
     SortFilterViewHolderListener,
@@ -31,6 +34,8 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
     companion object {
         const val LAST_BOUGHT = 1
         const val FREQUENTLY_BOUGHT = 2
+
+        const val EXTRA_SELECTED_FILTER = "extra_selected_filter"
 
         private val TAG = TokoNowSortFilterBottomSheet::class.simpleName
 
@@ -77,8 +82,35 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         sortValue = value
     }
 
-    override fun onClickChipItem(chipUiModel: TokoNowChipUiModel) {
+    override fun onClickChipItem(chip: TokoNowChipUiModel) {
+        val newItemList = adapter.list.toMutableList()
+        val chipList = newItemList.filterIsInstance<TokoNowChipListUiModel>().first {
+            it.parentId == chip.parentId
+        }
+        val index = newItemList.indexOf(chipList)
 
+        val items = chipList.items.map {
+            val selected = it.id == chip.id
+            val isActive = chip.selected == selected
+
+            when {
+                chipList.isMultiSelect && selected -> {
+                    it.copy(selected = !chip.selected)
+                }
+                !chipList.isMultiSelect && isActive -> {
+                    it.copy(selected = false)
+                }
+                !chipList.isMultiSelect -> {
+                    it.copy(selected = selected)
+                }
+                else -> it
+            }
+        }
+
+        val newChipList = chipList.copy(items = items)
+        newItemList[index] = newChipList
+
+        adapter.submitList(newItemList)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -118,8 +150,22 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         btnApplyFilter?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(SORT_VALUE, sortValue)
+            intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, createSelectedFilters())
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
+    }
+
+    private fun createSelectedFilters(): ArrayList<SelectedFilter> {
+        val selectedChip = mutableListOf<TokoNowChipUiModel>()
+
+        adapter.list.filterIsInstance<TokoNowChipListUiModel>().forEach { chipList ->
+            val chips = chipList.items.filter { it.selected }
+            selectedChip.addAll(chips)
+        }
+
+        return ArrayList(selectedChip.map {
+            SelectedFilter(it.id, it.parentId)
+        })
     }
 }
