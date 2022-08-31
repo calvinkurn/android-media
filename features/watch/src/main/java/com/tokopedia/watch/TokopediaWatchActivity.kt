@@ -10,8 +10,19 @@ import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import com.google.gson.Gson
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.watch.databinding.ActivityTokopediaWatchBinding
+import com.tokopedia.watch.listenerservice.DataLayerServiceListener
+import com.tokopedia.watch.orderlist.mapper.OrderListMapper
+import com.tokopedia.watch.orderlist.model.OrderListModel
+import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -20,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import rx.Subscriber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,6 +60,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
     private val logList = mutableListOf<String>()
 
+    lateinit var userSession: UserSessionInterface
+
     override fun onResume() {
         super.onResume()
         dataClient.addListener(this)
@@ -63,6 +77,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokopedia_watch)
 
+        userSession = UserSession(this)
+
         binding?.tvConnectedDevice?.text = ""
         binding?.tvLog?.text = ""
 
@@ -70,9 +86,9 @@ class TokopediaWatchActivity : AppCompatActivity(),
             startWearableActivity()
         }
 
-        binding?.btnSendMessage?.setOnClickListener {
-            sendMessageToWatch()
-        }
+//        binding?.btnSendMessage?.setOnClickListener {
+//            sendMessageToWatch()
+//        }
 
         binding?.btnSendData?.setOnClickListener {
             sendDataToWatch()
@@ -85,6 +101,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
                 binding?.tvLog?.text = it.joinToString("\n\n")
             }
         }
+
+        getOrderList()
     }
 
     private fun sendDataToWatch() {
@@ -111,8 +129,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
         }
     }
 
-    private fun sendMessageToWatch() {
-        val message = binding?.etMessage?.editText?.text.toString()
+    private fun sendMessageToWatch(key: String, message: String) {
         lifecycleScope.launch {
             try {
                 val nodes = nodeClient.connectedNodes.await()
@@ -122,7 +139,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
                     async {
                         messageClient.sendMessage(
                             node.id,
-                            MESSAGE_CLIENT_MESSAGE_PATH,
+                            key,
                             message.toByteArray()
                         )
                             .await()
@@ -211,6 +228,38 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
         logList.add("[$currentDate] $logMessage")
         _activityLog.value = logList.toMutableList()
+    }
+
+    private fun getOrderList() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
+        }
+
+        val useCase = GetOrderListUseCase(
+            GraphqlUseCase(),
+            OrderListMapper()
+        )
+
+        useCase.execute(RequestParams(), getLoadOrderListDataSubscriber())
+    }
+
+    private fun getLoadOrderListDataSubscriber(): Subscriber<OrderListModel> {
+        return object: Subscriber<OrderListModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
+
+            override fun onNext(orderListModel: OrderListModel) {
+                sendMessageToWatch(
+                    DataLayerServiceListener.MESSAGE_CLIENT_START_ORDER_ACTIVITY,
+                    Gson().toJson(orderListModel)
+                )
+            }
+        }
     }
 
 }
