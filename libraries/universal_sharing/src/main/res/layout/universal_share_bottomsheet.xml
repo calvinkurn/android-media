@@ -107,8 +107,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thumb_nail_image"
-        android:background="@color/Unify_N75"
-        />
+        android:background="@color/Unify_N75" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_register_affiliate"
@@ -117,6 +116,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/rv_social_media_list"
+        android:visibility="gone"
         android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_height="wrap_content">
