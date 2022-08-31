@@ -20,7 +20,6 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                                                 private val itemPosition: Int,
                                                 private val shippingCourierConverter: ShippingCourierConverter,
                                                 private val shipmentCartItemModel: ShipmentCartItemModel,
-                                                private val isInitialLoad: Boolean,
                                                 private val isTradeInDropOff: Boolean,
                                                 private val isForceReloadRates: Boolean) : Subscriber<ShippingRecommendationData?>() {
 
