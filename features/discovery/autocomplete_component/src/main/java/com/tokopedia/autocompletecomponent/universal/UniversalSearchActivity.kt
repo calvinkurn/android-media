@@ -108,20 +108,30 @@ open class UniversalSearchActivity : BaseActivity(), HasComponent<BaseAppCompone
             null,
         )
         val toolbar = findViewById<NavToolbar>(R.id.universalSearchToolbar)
-        val toolbarTitle = customContentView.findViewById<Typography>(R.id.universalSearchToolbarTitle)
-        val toolbarSubtitle = customContentView.findViewById<Typography>(R.id.universalSearchToolbarSubtitle)
+        val toolbarTitle =
+            customContentView.findViewById<Typography>(R.id.universalSearchToolbarTitle)
+        val toolbarSubtitle =
+            customContentView.findViewById<Typography>(R.id.universalSearchToolbarSubtitle)
 
         toolbarTitle.text = getString(R.string.universal_search_toolbar_title, keyword)
         toolbarSubtitle.text = getString(R.string.universal_search_toolbar_subtitle)
 
         toolbar.apply {
             this@UniversalSearchActivity.lifecycle.addObserver(this)
+            setupToolbarWithStatusBar(
+                activity = this@UniversalSearchActivity,
+                applyPadding = false,
+                applyPaddingNegative = true,
+            )
             setToolbarPageName(UNIVERSAL_SEARCH_PAGE)
             setCustomViewContentView(customContentView)
             setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
             setIcon(
                 IconBuilder()
-                    .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+                    .addIcon(
+                        IconList.ID_NAV_GLOBAL,
+                        disableRouteManager = false,
+                        disableDefaultGtmTracker = false) { }
             )
         }
     }

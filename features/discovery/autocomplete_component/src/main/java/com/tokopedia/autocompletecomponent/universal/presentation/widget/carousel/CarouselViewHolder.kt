@@ -57,10 +57,13 @@ class CarouselViewHolder(
         binding?.universalSearchCarousel?.bindCarouselProductCardViewGrid(
             recyclerViewPool = carouselListener.carouselRecycledViewPool,
             productCardModelList = products.map {
+                val discountPercentage =
+                    if (it.discountPercentage == "0") "" else it.discountPercentage+"%"
+
                 ProductCardModel(
                     productName = it.title,
                     formattedPrice = it.price,
-                    discountPercentage = it.discountPercentage,
+                    discountPercentage = discountPercentage,
                     slashedPrice = it.originalPrice,
                     productImageUrl = it.imageUrl,
                     ratingString = it.ratingAverage,
