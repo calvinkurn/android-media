@@ -20,12 +20,11 @@ import com.tokopedia.buyerorder.disableCoachMark
 import com.tokopedia.buyerorder.setupRemoteConfig
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
-import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
-import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 
@@ -34,26 +33,26 @@ import org.junit.Test
  */
 
 @UiTest
-class RevampOrderListDetailActivitySingleTickerTest {
-
+class RevampOrderListDetailActivityDoubleTicker {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    val activityRule = object : IntentsTestRule<RevampOrderListDetailActivity>(RevampOrderListDetailActivity::class.java) {
+    val activityRule = object : IntentsTestRule<RevampOrderListDetailActivity>(
+        RevampOrderListDetailActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse {
                 addMockResponse(
                     KEY_CONTAINS_ORDER_DETAILS,
-                    getRawString(context, R.raw.mock_response_oms_single_ticker),
-                    FIND_BY_CONTAINS
+                    InstrumentationMockHelper.getRawString(context, R.raw.mock_response_oms_double_ticker),
+                    MockModelConfig.FIND_BY_CONTAINS
                 )
             }
 
             setupRemoteConfig(context, true)
             disableCoachMark(context)
 
-            loginInstrumentationTestUser1()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
             val userSession = UserSession(context)
             userSession.setLoginSession(
                 true,
@@ -80,9 +79,9 @@ class RevampOrderListDetailActivitySingleTickerTest {
     }
 
     @Test
-    fun shouldShowSingleTickerTest(){
+    fun shouldShowDoubleTickerTest(){
         assertLabelTopTicker()
-        assertBottomTickerNotShow()
+        assertBottomTickerShow()
     }
 
     private fun assertLabelTopTicker() {
@@ -90,17 +89,17 @@ class RevampOrderListDetailActivitySingleTickerTest {
         onView(withId(R.id.status_label)).check(matches(isDisplayed()))
         onView(withId(R.id.status_value)).check(matches(isDisplayed()))
         onView(withId(R.id.status_label)).check(matches(withText("Status")))
-        onView(withId(R.id.status_value)).check(matches(withText("Transaksi Berhasil")))
+        onView(withId(R.id.status_value)).check(matches(withText("Transaksi Dibatalkan")))
         onView(withId(R.id.ticker_status)).check(matches(isDisplayed()))
     }
 
-    private fun assertBottomTickerNotShow(){
+    private fun assertBottomTickerShow(){
         Thread.sleep(1000)
         val scrollView = activityRule.activity.findViewById<NestedScrollView>(R.id.parentScroll)
         while (scrollView.canScrollVertically(1)){
             onView(withId(R.id.parentScroll)).perform(swipeUp())
         }
         Thread.sleep(2000)
-        onView(withId(R.id.ticker_detail_order)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.ticker_detail_order)).check(matches(isDisplayed()))
     }
 }
