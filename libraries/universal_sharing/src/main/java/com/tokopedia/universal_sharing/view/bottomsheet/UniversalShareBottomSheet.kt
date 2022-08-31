@@ -58,6 +58,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -305,6 +306,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var tracker: UniversalSharebottomSheetTracker
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injectDependency()
@@ -437,8 +441,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun isShowAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
-        return generateAffiliateLinkEligibility.banner != null
-                && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
+        return (generateAffiliateLinkEligibility.banner != null
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false) && userSession.isLoggedIn
+                && userSession.shopId != affiliateQueryData?.shop?.shopID
     }
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
@@ -461,6 +466,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         generateAffiliateLinkEligibility.banner?.let { banner ->
+            if (banner.title.isBlank() && banner.message.isBlank()) return
             affiliateRegisterContainer?.visible()
             tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
             affiliateRegisterContainer?.setOnClickListener { _ ->
