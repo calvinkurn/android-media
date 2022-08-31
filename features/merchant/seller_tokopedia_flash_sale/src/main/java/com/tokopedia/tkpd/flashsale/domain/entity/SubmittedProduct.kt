@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
-import com.google.gson.annotations.SerializedName
-
 data class SubmittedProduct(
     val campaignStock: Int,
     val isMultiwarehouse: Boolean,

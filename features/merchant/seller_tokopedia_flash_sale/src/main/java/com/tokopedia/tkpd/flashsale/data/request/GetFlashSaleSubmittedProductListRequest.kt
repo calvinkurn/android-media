@@ -22,7 +22,7 @@ data class GetFlashSaleSubmittedProductListRequest(
 
     data class Pagination(
         @SerializedName("rows")
-        val rows: Int = 50,
+        val rows: Int = 10,
         @SerializedName("offset")
         val offset: Int = 0
     )

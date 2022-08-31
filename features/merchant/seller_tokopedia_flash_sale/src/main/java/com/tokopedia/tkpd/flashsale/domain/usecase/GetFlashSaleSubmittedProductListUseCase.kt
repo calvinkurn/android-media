@@ -18,7 +18,7 @@ import javax.inject.Inject
 class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetFlashSaleSubmittedProductListMapper
-) : GraphqlUseCase<SubmittedProduct>(repository) {
+) : GraphqlUseCase<SubmittedProductData>(repository) {
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
@@ -89,8 +89,8 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
     suspend fun execute(
         campaignId: Long,
         useCase: String = "",
-        pagination: Pagination,
-        filter: Filter
+        pagination: Pagination = Pagination(),
+        filter: Filter = Filter()
     ): SubmittedProductData {
         val request = buildRequest(campaignId, useCase, pagination, filter)
         val response = repository.response(listOf(request))

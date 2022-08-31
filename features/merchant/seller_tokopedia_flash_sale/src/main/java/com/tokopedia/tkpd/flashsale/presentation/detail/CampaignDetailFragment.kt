@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,12 +59,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     //View Binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
+
     //upcoming
     private var upcomingCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
     private var upcomingCdpBodyBinding by autoClearedNullable<StfsCdpUpcomingBodyBinding>()
+
     //registered
     private var registeredCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
+    private var registeredCdpMidBinding by autoClearedNullable<StfsCdpRegisteredMidBinding>()
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
@@ -96,7 +98,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
-        loadData()
+        observeSubmittedProductData()
+        loadCampaignDetailData()
     }
 
     private fun observeCampaignDetail() {
@@ -113,9 +116,26 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadData() {
+    private fun observeSubmittedProductData() {
+        viewModel.submittedProduct.observe(viewLifecycleOwner) { submittedProduct ->
+            when (submittedProduct) {
+                is Success -> {
+                    //TODO: Populate list data
+                }
+                is Fail -> {
+                    //TODO: Add Error Handling, not available on figma yet
+                }
+            }
+        }
+    }
+
+    private fun loadCampaignDetailData() {
         showLoading()
-        viewModel.getCampaignDetail(flashSaleId, tabName)
+        viewModel.getCampaignDetail(flashSaleId)
+    }
+
+    private fun loadSubmittedProductListData() {
+        viewModel.getSubmittedProduct(flashSaleId)
     }
 
     private fun setupView(flashSale: FlashSale) {
@@ -200,7 +220,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupUpcomingHeaderData(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
+    private fun setupUpcomingHeaderData(
+        flashSale: FlashSale,
+        campaignStatus: UpcomingCampaignStatus
+    ) {
         upcomingCdpHeaderBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
@@ -305,9 +328,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             layoutHeader.setOnInflateListener { _, view ->
                 registeredCdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
             }
+            layoutMid.setOnInflateListener { _, view ->
+                registeredCdpMidBinding = StfsCdpRegisteredMidBinding.bind(view)
+            }
         }
 
+        loadSubmittedProductListData()
         setupRegisteredHeader(flashSale)
+        setupRegisteredMid(flashSale)
     }
 
     private fun setupRegisteredHeader(flashSale: FlashSale) {
@@ -316,6 +344,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         inflatedView.layoutResource = R.layout.stfs_cdp_header
         inflatedView.inflate()
         setupRegisteredHeaderData(flashSale)
+    }
+
+    private fun setupRegisteredMid(flashSale: FlashSale) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutMid
+        inflatedView.layoutResource = R.layout.stfs_cdp_registered_mid
+        inflatedView.inflate()
+        setupRegisteredMidData(flashSale)
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
@@ -351,6 +387,122 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupRegisteredMidData(flashSale: FlashSale) {
+        registeredCdpMidBinding?.run {
+            when (flashSale.status) {
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
+                    cardProductEligibleForSelection.hide()
+                    llSelectionProcessView.hide()
+                    llBeforeSelectionView.visible()
+                    tgRemainingQuotaValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_remaining_quota_placeholder,
+                            flashSale.remainingQuota,
+                            flashSale.maxProductSubmission
+                        )
+                    )
+                    setupRegisteredTimer(this, flashSale)
+                }
+                FlashSaleStatus.WAITING_FOR_SELECTION -> {
+                    cardProductEligibleForSelection.hide()
+                    llSelectionProcessView.hide()
+                    llBeforeSelectionView.visible()
+                    tgRemainingQuotaValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_remaining_quota_placeholder,
+                            flashSale.remainingQuota,
+                            flashSale.maxProductSubmission
+                        )
+                    )
+                    setupRegisteredTimer(this, flashSale)
+                }
+                FlashSaleStatus.ON_SELECTION_PROCESS -> {
+                    cardProductEligibleForSelection.visible()
+                    llSelectionProcessView.visible()
+                    llBeforeSelectionView.hide()
+                    tpgCardMidTitle.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.product_eligible_for_selection_card_title_placeholder,
+                            flashSale.productMeta.totalProduct
+                        )
+                    )
+                    tpgCardMidDesctiption.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.product_eligible_for_selection_end_date_placeholder,
+                            flashSale.reviewEndDateUnix.formatTo(
+                                DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                            )
+                        )
+                    )
+                    tpgProposedProductValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.totalProduct
+                        )
+                    )
+                }
+                FlashSaleStatus.SELECTION_FINISHED -> {
+                    cardProductEligibleForSelection.visible()
+                    llSelectionProcessView.visible()
+                    llBeforeSelectionView.hide()
+                    tpgCardMidTitle.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.product_eligible_card_title_placeholder,
+                            flashSale.productMeta.acceptedProduct
+                        )
+                    )
+                    tpgCardMidDesctiption.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.product_eligible_start_date_placeholder,
+                            flashSale.reviewEndDateUnix.formatTo(
+                                DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                            )
+                        )
+                    )
+                    tpgProposedProductValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.totalProduct
+                        )
+                    )
+                    tpgAcceptedProductValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.acceptedProduct
+                        )
+                    )
+                    tpgRejectedProductValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.rejectedProduct
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
+        val targetDate = flashSale.submissionEndDateUnix
+        when {
+            viewModel.isFlashSaleClosedMoreThan24Hours(targetDate) -> {
+                binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_DAY
+                binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+            }
+            viewModel.isFlashSaleClosedLessThan24Hour(targetDate) -> {
+                binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+            }
+            viewModel.isFlashSaleClosedLessThan60Minutes(targetDate) -> {
+                binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_MINUTE
+                binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
+                binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+            }
+        }
+    }
+
     /**
      * Region Ongoing CDP
      */
@@ -370,12 +522,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         flashSale: FlashSale
     ) {
         binding.run {
-            val startDate = flashSale.startDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+            val startDate =
+                flashSale.startDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
             tgCampaignPeriod.text = if (viewModel.isFlashSalePeriodOnTheSameDate(flashSale)) {
                 val endDate = flashSale.endDateUnix.formatTo(TIME_MINUTE_PRECISION_WITH_TIMEZONE)
                 "$startDate - $endDate"
             } else {
-                val endDate = flashSale.endDateUnix.formatTo(DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+                val endDate = flashSale.endDateUnix.formatTo(
+                    DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                )
                 "$startDate - $endDate"
             }
         }
