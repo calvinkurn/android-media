@@ -588,4 +588,9 @@ class CampaignInformationViewModel @Inject constructor(
             }
         )
     }
+
+    fun isTodayInVpsPeriod(selectedVpsPackage : VpsPackageUiModel): Boolean {
+        val now = Date()
+        return now.after(selectedVpsPackage.packageStartTime) && now.before(selectedVpsPackage.packageEndTime)
+    }
 }
