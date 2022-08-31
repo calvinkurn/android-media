@@ -518,6 +518,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.totalData <= 0) {
+                            hideBottomButtonLayout()
                             if (paramGetCollectionItems.query.isEmpty() && paramGetCollectionItems.sortFilters.isEmpty()) {
                                 hideSearchBar()
                                 hideFilter()
@@ -2215,6 +2216,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             bulkAddButton.isEnabled = false
             bulkAddButton.text = getString(Rv2.string.collection_bulk_add_default)
         }
+    }
+
+    private fun hideBottomButtonLayout() {
+        binding?.run { bottomButtonLayout.gone() }
     }
 
     private fun setDefaultLabelDeleteButton() {
