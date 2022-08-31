@@ -39,16 +39,8 @@ class SearchBarView (
 
     private val searchNavigationOnClickListener = OnClickListener { view ->
         when {
-            view === backButton -> {
-                val activity = context as? Activity
-                KeyboardHandler.DropKeyboard(activity, editText)
-                activity?.onBackPressed()
-            }
-            view === clearButton -> {
-                editText?.text?.clear()
-                clearButton?.hide()
-                hideKeyboard(this)
-            }
+            view === backButton -> clickBackButton()
+            view === clearButton -> clickClearButton()
         }
     }
 
@@ -62,11 +54,15 @@ class SearchBarView (
         initiateView()
     }
 
-    override fun setBackground(background: Drawable?) {
+    override fun setBackground(
+        background: Drawable?
+    ) {
         layout?.background = background
     }
 
-    override fun setBackgroundColor(color: Int) {
+    override fun setBackgroundColor(
+        color: Int
+    ) {
         layout?.setBackgroundColor(color)
     }
 
@@ -79,19 +75,36 @@ class SearchBarView (
     }
 
     private fun initiateView() {
-        binding = LayoutSearchBarViewBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = LayoutSearchBarViewBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
+
         binding?.apply {
-            configureSearchNavigationLayout(this)
-            setSearchNavigationListener(this)
-            initSearchView(this)
+            configureSearchNavigationLayout(
+                binding = this
+            )
+            setSearchNavigationListener(
+                binding = this
+            )
+            initSearchView(
+                binding = this
+            )
         }
     }
 
-    private fun configureSearchNavigationLayout(binding: LayoutSearchBarViewBinding) {
-        configureSearchNavigationEditText(binding)
+    private fun configureSearchNavigationLayout(
+        binding: LayoutSearchBarViewBinding
+    ) {
+        configureSearchNavigationEditText(
+            binding = binding
+        )
     }
 
-    private fun configureSearchNavigationEditText(binding: LayoutSearchBarViewBinding) {
+    private fun configureSearchNavigationEditText(
+        binding: LayoutSearchBarViewBinding
+    ) {
         val context = binding.editText.context
         binding.editText.setHintTextColor(
             ContextCompat.getColor(
@@ -101,14 +114,22 @@ class SearchBarView (
         )
     }
 
-    private fun setSearchNavigationListener(binding: LayoutSearchBarViewBinding) {
+    private fun setSearchNavigationListener(
+        binding: LayoutSearchBarViewBinding
+    ) {
         binding.apply {
-            backButton.setOnClickListener(searchNavigationOnClickListener)
-            clearButton.setOnClickListener(searchNavigationOnClickListener)
+            backButton.setOnClickListener(
+                searchNavigationOnClickListener
+            )
+            clearButton.setOnClickListener(
+                searchNavigationOnClickListener
+            )
         }
     }
 
-    private fun initSearchView(binding: LayoutSearchBarViewBinding) {
+    private fun initSearchView(
+        binding: LayoutSearchBarViewBinding
+    ) {
         binding.editText.apply {
             showKeyboard(this)
 
@@ -137,20 +158,58 @@ class SearchBarView (
         }
     }
 
-    private fun submitText(text: CharSequence) {
+    private fun submitText(
+        text: CharSequence
+    ) {
         if (this::onTextSubmitListener.isInitialized) {
-            onTextSubmitListener(text.trim().toString())
+            onTextSubmitListener(
+                text.trim().toString()
+            )
         }
     }
 
-    private fun showKeyboard(view: View) {
+    private fun showKeyboard(
+        view: View
+    ) {
         view.requestFocus()
-        val imm = view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view, SOFT_INPUT_FLAG)
+
+        val imm = view.context?.getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as? InputMethodManager
+
+        imm?.showSoftInput(
+            view,
+            SOFT_INPUT_FLAG
+        )
     }
 
-    private fun hideKeyboard(view: View) {
-        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, SOFT_INPUT_FLAG)
+    private fun hideKeyboard(
+        view: View
+    ) {
+        val imm = view.context.getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as? InputMethodManager
+
+        imm?.hideSoftInputFromWindow(
+            view.windowToken,
+            SOFT_INPUT_FLAG
+        )
+    }
+
+    private fun clickBackButton() {
+        val activity = context as? Activity
+        KeyboardHandler.DropKeyboard(
+            activity,
+            editText
+        )
+        activity?.onBackPressed()
+    }
+
+    private fun clickClearButton() {
+        editText?.text?.clear()
+        clearButton?.hide()
+        hideKeyboard(
+            view = this
+        )
     }
 }
