@@ -10,15 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetNavigationTabBinding
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
 
 
 class NavigationTab(
@@ -65,7 +66,7 @@ class NavigationTab(
         items: List<Item>,
         enableBlockingTouch: Boolean,
         listener: NavigationListener,
-        offsetY: Int = 0
+        offsetY: Int = Int.ZERO
     ) {
         navTabPositionOffsetY = offsetY
         recyclerView.removeOnScrollListener(onScrollListener)
@@ -195,8 +196,6 @@ class NavigationTab(
         }
 
         private fun getFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return -1
             return calculateFirstVisibleItemPosition(recyclerView, offsetY = navTabPositionOffsetY)
         }
 
