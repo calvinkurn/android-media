@@ -9,7 +9,7 @@
         android:id="@+id/recom_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="1dp"
         />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
