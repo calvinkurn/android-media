@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
@@ -190,6 +191,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                         hideLoading()
                         showPDPData(it.data.eventProductDetail.productDetailData)
                         getRecommendation(it.data.eventProductDetail.productDetailData.childCategoryIds)
+                        getRating(it.data.eventProductDetail.productDetailData.id)
                     }
 
                     is Fail -> {
@@ -226,6 +228,22 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowRating.collect {
+                when (it) {
+                    is Success -> {
+                        it.data.data.first().apply {
+                            updateRating(totalLikes, isLiked)
+                        }
+                    }
+
+                    is Fail -> {
+                        updateRating(0, false, isHideImageRating = true)
+                    }
+                }
+            }
+        }
     }
 
     private fun getPDP() {
@@ -235,6 +253,10 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun getRecommendation(childCategoryId: String) {
         viewModel.setRecommendation(childCategoryId)
+    }
+
+    private fun getRating(productId: String) {
+        viewModel.setRating(productId)
     }
 
     private fun showLoading() {
@@ -438,10 +460,26 @@ class DealsPDPFragment: BaseDaggerFragment() {
             DealsUtils.convertEpochToString(maxEndDate.toIntSafely())))
     }
 
-    private fun updateImageFavorite() {
-        //todo image likes
-        //imgFavorite
-        //tgFavorite
+    private fun updateRating(likeCount: Int, isLiked: Boolean, isHideImageRating: Boolean = false) {
+
+        if (isHideImageRating) {
+            imgFavorite?.hide()
+        } else {
+            imgFavorite?.show()
+        }
+
+        if(isLiked) {
+            imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_filled)
+        } else {
+            imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_unfilled)
+        }
+
+        if (likeCount.isZero()) {
+            tgFavorite?.hide()
+        } else {
+            tgFavorite?.show()
+            tgFavorite?.text = likeCount.toString()
+        }
     }
 
     private fun showImageCarousel(data: ProductDetailData) {

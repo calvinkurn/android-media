@@ -8,7 +8,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.databinding.ItemDealsCardShortBinding
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
-import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
