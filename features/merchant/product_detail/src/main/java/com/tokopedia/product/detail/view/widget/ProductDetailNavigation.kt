@@ -70,7 +70,7 @@ class ProductDetailNavigation(
     }
 
     override fun onClickNavigationTab(position: Int, label: String) {
-        listener?.onClickProductDetailnavigation(position, label)
+        listener?.onClickProductDetailnavigation(position + 1, label)
         backToTop.onClickTab()
     }
 
