@@ -14,4 +14,5 @@
     <color name="product_detail_dms_default_blue_bg_start_gradient_color">#4F347A</color>
     <color name="product_detail_dms_regulatory_info_overlay">#29000000</color>
     <color name="product_detail_dms_label_carousel_background">#AD31353B</color>
+    <color name="product_detail_dms_divider_decorator_color">@color/Unify_NN50</color>
 </resources>

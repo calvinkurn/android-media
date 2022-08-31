@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.product.detail.R
 
 /**
  * Created by Yehezkiel on 26/01/21
@@ -19,7 +20,7 @@ class ProductSeparatorItemDecoration(
     private val context: Context,
     marginHorizontal: Int = 16,
     height: Float = 1f,
-    @ColorRes private val color: Int = com.tokopedia.abstraction.R.color.dividerunify_background
+    @ColorRes private val color: Int = R.color.product_detail_dms_divider_decorator_color
 ) : RecyclerView.ItemDecoration() {
 
     private val marginHorizontalPx = marginHorizontal.toPx()
