@@ -1,0 +1,403 @@
+[
+  {
+    "data": {
+      "orderDetails": {
+        "status": {
+          "status": 0,
+          "statusText": "Transaksi Berhasil",
+          "statusLabel": "Status",
+          "iconUrl": "",
+          "textColor": "#42B549",
+          "backgroundColor": "",
+          "fontSize": "16sp"
+        },
+        "title": [
+          {
+            "label": "Tanggal Transaksi",
+            "value": "19 May 2022 11:38 ",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          },
+          {
+            "label": "Kategori Produk",
+            "value": "Food & Voucher",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "metadata": "{\"category_name\":\"deal\",\"item_ids\":[7419],\"item_map\":{\"7419\":{\"buttons\":[{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811168899347\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811168899347\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811168899347%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811168899347%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811168899347%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811168899347-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811122952874\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811122952874\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811122952874%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811122952874%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811122952874%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811122952874-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811152706546\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811152706546\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811152706546%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811152706546%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811152706546%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811152706546-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811164296255\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811164296255\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811164296255%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811164296255%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811164296255%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811164296255-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811138362784\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811138362784\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811138362784%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811138362784%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811138362784%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811138362784-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"}],\"category_id\":15,\"child_category_ids\":\"25\",\"custom_link_app_url\":\"www.example.com\",\"custom_link_label\":\"Mau dapat kupon spesial? Bagikan link ini ke teman-temanmu yuk\",\"custom_link_type\":\"redirect\",\"custom_link_web_url\":\"www.example.com\",\"device\":\"\",\"device_version\":\"\",\"email\":\"elly.susilowati+089@tokopedia.com\",\"end_time\":\"30 Dec 2022 09:30\",\"flag_id\":1025,\"id\":7419,\"invoice_id\":557423,\"invoice_status\":\"BOOKED\",\"mobile\":\"087897156315\",\"name\":\"Paket Bucket KFC 20 Ayam Mix + 1 Kentang Large + 1 Lemon Tea Medium + 3 Perkedel Kentang\",\"order_trace_id\":\"2da89b2c-0f1a-446c-5da4-929573e3475d\",\"package_name\":\"Asana Grove Hotel Yogyakarta\",\"price\":10000,\"product_app_url\":\"tokopedia://deals/test-giftn-7419\",\"product_id\":7419,\"product_image\":\"https://images-staging.tokopedia.net/img/cache/300-square/HrTQDp/2021/1/8/01c37667-d6ad-4c62-bad4-2ec51bbe7603.png\",\"product_name\":\"Asana Grove Hotel Yogyakarta\",\"product_web_url\":\"https://staging.tokopedia.com/deals/i/test-giftn-7419/\",\"provider_id\":6,\"quantity\":5,\"start_time\":\"18 Oct 2019 10:30\",\"total_price\":50000,\"user_id\":3816220}},\"oi_order_uuid\":\"0473cec4-ee81-4951-b105-c3f273aaf74c\",\"order_subtitle\":\"Paket Bucket KFC 20 Ayam Mix + 1 Kentang Large + 1 Lemon Tea Medium + 3 Perkedel Kentang\",\"order_title\":\"Asana Grove Hotel Yogyakarta\",\"payment_configuration\":{},\"product_ids\":[7419],\"product_names\":[\"Paket Bucket KFC 20 Ayam Mix + 1 Kentang Large + 1 Lemon Tea Medium + 3 Perkedel Kentang\"],\"provider_ids\":[6],\"quantity\":5,\"total_price\":50000,\"unique_id\":\"3816220-1652935060\"}",
+        "invoice": {
+          "invoiceRefNum": "FOO/20220519/XXII/V/763050965319057411",
+          "invoiceUrl": "/order/invoice/0473cec4-ee81-4951-b105-c3f273aaf74c"
+        },
+        "items": [
+          {
+            "categoryID": 0,
+            "id": 7419,
+            "imageUrl": "https://images-staging.tokopedia.net/img/cache/300-square/HrTQDp/2021/1/8/01c37667-d6ad-4c62-bad4-2ec51bbe7603.png",
+            "category": "Food & Voucher",
+            "title": "Asana Grove Hotel Yogyakarta",
+            "quantity": 5,
+            "price": "Rp10.000",
+            "trackingURL": "",
+            "trackingNumber": "",
+            "invoiceID": 0,
+            "promotionAmount": "",
+            "metaData": "{\"buttons\":[{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811168899347\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811168899347\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811168899347%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811168899347%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811168899347%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811168899347-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811122952874\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811122952874\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811122952874%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811122952874%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811122952874%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811122952874-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811152706546\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811152706546\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811152706546%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811152706546%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811152706546%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811152706546-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811164296255\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811164296255\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811164296255%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811164296255%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811164296255%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811164296255-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"vouchercodes\",\"body\":{\"voucher_codes\":\"811138362784\"},\"color\":\"#42B549\",\"label\":\"Kode Voucher\",\"metadata\":{\"intools_label\":\"811138362784\",\"item_label\":\"Kode Voucher\"},\"text_color\":\"#FFFFFF\"},{\"action\":\"redirectexternal\",\"body\":{\"app_url\":\"https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811138362784%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood\\u0026$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811138362784%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood\",\"method\":\"GET\",\"web_url\":\"https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811138362784%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1\"},\"color\":\"#42B549\",\"label\":\"Redeem\",\"metadata\":{\"Is Chope\":true,\"intools_label\":\"811138362784-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"},\"text_color\":\"#FFFFFF\"}],\"category_id\":15,\"child_category_ids\":\"25\",\"custom_link_app_url\":\"www.example.com\",\"custom_link_label\":\"Mau dapat kupon spesial? Bagikan link ini ke teman-temanmu yuk\",\"custom_link_type\":\"redirect\",\"custom_link_web_url\":\"www.example.com\",\"device\":\"\",\"device_version\":\"\",\"email\":\"elly.susilowati+089@tokopedia.com\",\"end_time\":\"30 Dec 2022 09:30\",\"flag_id\":1025,\"id\":7419,\"invoice_id\":557423,\"invoice_status\":\"BOOKED\",\"mobile\":\"087897156315\",\"name\":\"Paket Bucket KFC 20 Ayam Mix + 1 Kentang Large + 1 Lemon Tea Medium + 3 Perkedel Kentang\",\"order_trace_id\":\"2da89b2c-0f1a-446c-5da4-929573e3475d\",\"package_name\":\"Asana Grove Hotel Yogyakarta\",\"price\":10000,\"product_app_url\":\"tokopedia://deals/test-giftn-7419\",\"product_id\":7419,\"product_image\":\"https://images-staging.tokopedia.net/img/cache/300-square/HrTQDp/2021/1/8/01c37667-d6ad-4c62-bad4-2ec51bbe7603.png\",\"product_name\":\"Asana Grove Hotel Yogyakarta\",\"product_web_url\":\"https://staging.tokopedia.com/deals/i/test-giftn-7419/\",\"provider_id\":6,\"quantity\":5,\"start_time\":\"18 Oct 2019 10:30\",\"total_price\":50000,\"user_id\":3816220}",
+            "actionButtons": [
+              {
+                "label": "Kode Voucher",
+                "buttonType": "vouchercodes",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "vouchercodes",
+                "header": "{\"intools_label\":\"811168899347\",\"item_label\":\"Kode Voucher\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "",
+                  "webURL": "",
+                  "method": "",
+                  "body": "811168899347"
+                }
+              },
+              {
+                "label": "Redeem",
+                "buttonType": "redirectexternal",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "redirectexternal",
+                "header": "{\"Is Chope\":true,\"intools_label\":\"811168899347-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811168899347%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood&$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811168899347%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood",
+                  "webURL": "https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811168899347%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1",
+                  "method": "GET",
+                  "body": ""
+                }
+              },
+              {
+                "label": "Kode Voucher",
+                "buttonType": "vouchercodes",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "vouchercodes",
+                "header": "{\"intools_label\":\"811122952874\",\"item_label\":\"Kode Voucher\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "",
+                  "webURL": "",
+                  "method": "",
+                  "body": "811122952874"
+                }
+              },
+              {
+                "label": "Redeem",
+                "buttonType": "redirectexternal",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "redirectexternal",
+                "header": "{\"Is Chope\":true,\"intools_label\":\"811122952874-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811122952874%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood&$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811122952874%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood",
+                  "webURL": "https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811122952874%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1",
+                  "method": "GET",
+                  "body": ""
+                }
+              },
+              {
+                "label": "Kode Voucher",
+                "buttonType": "vouchercodes",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "vouchercodes",
+                "header": "{\"intools_label\":\"811152706546\",\"item_label\":\"Kode Voucher\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "",
+                  "webURL": "",
+                  "method": "",
+                  "body": "811152706546"
+                }
+              },
+              {
+                "label": "Redeem",
+                "buttonType": "redirectexternal",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "redirectexternal",
+                "header": "{\"Is Chope\":true,\"intools_label\":\"811152706546-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811152706546%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood&$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811152706546%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood",
+                  "webURL": "https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811152706546%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1",
+                  "method": "GET",
+                  "body": ""
+                }
+              },
+              {
+                "label": "Kode Voucher",
+                "buttonType": "vouchercodes",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "vouchercodes",
+                "header": "{\"intools_label\":\"811164296255\",\"item_label\":\"Kode Voucher\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "",
+                  "webURL": "",
+                  "method": "",
+                  "body": "811164296255"
+                }
+              },
+              {
+                "label": "Redeem",
+                "buttonType": "redirectexternal",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "redirectexternal",
+                "header": "{\"Is Chope\":true,\"intools_label\":\"811164296255-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811164296255%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood&$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811164296255%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood",
+                  "webURL": "https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811164296255%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1",
+                  "method": "GET",
+                  "body": ""
+                }
+              },
+              {
+                "label": "Kode Voucher",
+                "buttonType": "vouchercodes",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "vouchercodes",
+                "header": "{\"intools_label\":\"811138362784\",\"item_label\":\"Kode Voucher\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "",
+                  "webURL": "",
+                  "method": "",
+                  "body": "811138362784"
+                }
+              },
+              {
+                "label": "Redeem",
+                "buttonType": "redirectexternal",
+                "uri": "",
+                "mappingUri": "",
+                "weight": 0,
+                "key": "",
+                "method": "",
+                "uriWeb": "",
+                "value": "",
+                "name": "",
+                "control": "redirectexternal",
+                "header": "{\"Is Chope\":true,\"intools_label\":\"811138362784-Redeem-Button\",\"item_label\":\"Yuk, redeem vouchermu di sini!\"}",
+                "color": {
+                  "textColor": "#FFFFFF",
+                  "border": "",
+                  "background": "#42B549"
+                },
+                "body": {
+                  "appURL": "https://tokopedia.app.link/?$android_deeplink_path=webview?url=https%3A%2F%2Fgojek.page.link%2F%3Flink%3Dhttps%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%253D811138362784%2526source%253DFV-OrderDetail%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26efr%3D1%26utm_source%3DFV-OrderDetail%26utm_campaign%3DFV-GoFood&$ios_deeplink_path=external-source%3Furl%3Dhttps%253A%252F%252Fgojek.page.link%252F%253Flink%253Dhttps%253A%252F%252Fgojek.link%252Fgrowth%252Fpromo%253Fcode%25253D811138362784%252526source%25253DFV-OrderDetail%2526apn%253Dcom.gojek.app%2526isi%253D944875099%2526ibi%253Dcom.go-jek.ios%2526efr%253D1%2526utm_source%253DFV-OrderDetail%2526utm_campaign%253DFV-GoFood",
+                  "webURL": "https://gojek.page.link/?link=https%3A%2F%2Fgojek.link%2Fgrowth%2Fpromo%3Fcode%3D811138362784%26apn%3Dcom.gojek.app%26isi%3D944875099%26ibi%3Dcom.go-jek.ios%26utm_campaign%3DFV-GoFood%26utm_medium%3DFV-OrderDetail%26utm_source%3DFV-OrderDetail%26efr%3D1",
+                  "method": "GET",
+                  "body": ""
+                }
+              }
+            ],
+            "tapActions": []
+          }
+        ],
+        "pricing": [
+          {
+            "label": "Total Harga",
+            "value": "Rp50.000",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "detail": [],
+        "paymentData": {
+          "label": "Total Tagihan",
+          "value": "Rp50.000",
+          "textColor": "#ff5722",
+          "backgroundColor": "",
+          "imageUrl": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png"
+        },
+        "actionButtons": [
+          {
+            "label": "Kirim Ulang E-mail",
+            "buttonType": "",
+            "uri": "https://booking-staging.tokopedia.com/v3/api/order/notify/user",
+            "mappingUri": "",
+            "weight": 0,
+            "key": "",
+            "method": "",
+            "uriWeb": "",
+            "value": "",
+            "name": "customer_notification",
+            "control": "button",
+            "header": "",
+            "color": {
+              "textColor": "#000000",
+              "border": "#E0E0E0",
+              "background": "#FFFFFF"
+            },
+            "body": {
+              "appURL": "",
+              "webURL": "",
+              "method": "",
+              "body": ""
+            }
+          }
+        ],
+        "conditionalInfo": {
+          "text": "",
+          "color": {
+            "border": "",
+            "background": ""
+          }
+        },
+        "contactUs": {
+          "helpText": "Butuh info lebih lanjut? Kunjungi Pusat Bantuan",
+          "helpUrl": "https://www.tokopedia.com/help"
+        },
+        "paymentMethod": {
+          "label": "",
+          "value": ""
+        },
+        "payMethod": [
+          {
+            "label": "Metode Pembayaran",
+            "value": "BCA Virtual Account"
+          },
+          {
+            "label": "Gateway Fee",
+            "value": "Rp0"
+          },
+          {
+            "label": "Extra Fee",
+            "value": "Rp1.000"
+          },
+          {
+            "label": "Amount",
+            "value": "Rp50.000"
+          }
+        ],
+        "beforeOrderId": 0,
+        "resolutionId": 0,
+        "driverDetails": {
+          "name": "",
+          "phone": "",
+          "photo": "",
+          "licenseNumber": "",
+          "trackingURL": ""
+        },
+        "promoCode": "",
+        "additionalInfo": [],
+        "additionalTickerInfo": [
+          {
+            "title": "ticker_for_cashback",
+            "notes": "Kamu dapat Rp5.000 Total Cashback GoPay Coins ",
+            "urlDetail": "",
+            "urlText": ""
+          }
+        ]
+      }
+    }
+  }
+]
