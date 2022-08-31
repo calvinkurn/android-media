@@ -18,7 +18,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel

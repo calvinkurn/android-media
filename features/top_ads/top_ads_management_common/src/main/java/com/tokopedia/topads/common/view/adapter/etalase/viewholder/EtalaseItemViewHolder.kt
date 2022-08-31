@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 

@@ -19,7 +19,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseUiModel
 import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
@@ -396,7 +396,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         items.add(0, EtalaseItemUiModel(true, viewModel.addSemuaProduk()))
         data.forEachIndexed { index, result ->
             items.add(index + 1,
-                EtalaseItemUiModel(false, result))
+                EtalaseItemUiModel(false, result)
+            )
         }
         filterSheetProductList.updateData(items)
     }

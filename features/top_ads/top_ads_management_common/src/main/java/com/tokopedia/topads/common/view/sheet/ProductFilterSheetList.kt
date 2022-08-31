@@ -11,8 +11,8 @@ import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapter
 import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapterTypeFactoryImpl
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemUiModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseShimerUiModel
 import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 

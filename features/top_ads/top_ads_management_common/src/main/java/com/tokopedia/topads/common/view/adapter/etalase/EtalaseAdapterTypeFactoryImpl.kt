@@ -4,8 +4,9 @@ import android.view.View
 import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseViewHolder
 import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseItemViewHolder
 import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseShimerViewHolder
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemUiModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseShimerUiModel
+
 
 class EtalaseAdapterTypeFactoryImpl(var actionClick: ((pos:Int) -> Unit)?) : EtalaseAdapterTypeFactory {
 
