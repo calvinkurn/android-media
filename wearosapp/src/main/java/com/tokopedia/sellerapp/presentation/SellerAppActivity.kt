@@ -5,44 +5,46 @@ import WearAppTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.tokopedia.sellerapp.presentation.viewmodel.SellerAppViewModel
-import com.tokopedia.sellerapp.presentation.viewmodel.SellerAppViewModelFactory
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.NodeClient
+import com.google.android.gms.wearable.Wearable
+import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SellerAppActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
-    private lateinit var sellerAppViewModel: SellerAppViewModel
+
+    private val nodeClient: NodeClient by lazy { Wearable.getNodeClient(this) }
+    private val messageClient: MessageClient by lazy { Wearable.getMessageClient(this) }
+    private val sharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             WearAppTheme {
                 navController = rememberSwipeDismissableNavController()
-                SetupNavigation(navController = navController)
+                SetupNavigation(
+                    navController = navController,
+                    sharedViewModel = sharedViewModel,
+                    messageClient = messageClient,
+                    nodeClient = nodeClient
+                )
             }
         }
-
-        initViewModel()
-        observeOrderListData()
-        loadData()
     }
 
-    private fun initViewModel() {
-        sellerAppViewModel =
-            ViewModelProvider(this, SellerAppViewModelFactory(this))
-                .get(SellerAppViewModel::class.java)
+    override fun onResume() {
+        super.onResume()
+        messageClient.addListener(sharedViewModel)
     }
 
-    private fun observeOrderListData() {
-        sellerAppViewModel.getOrderListDataState().observe(this) {
-
-        }
-    }
-
-    private fun loadData() {
-        sellerAppViewModel.getOrderListData(SellerAppViewModel.Action.GET_ORDER_LIST)
+    override fun onPause() {
+        super.onPause()
+        messageClient.removeListener(sharedViewModel)
     }
 }

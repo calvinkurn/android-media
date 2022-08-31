@@ -11,6 +11,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 class DataLayerServiceListener: WearableListenerService() {
+
+    private val messageClient by lazy { Wearable.getMessageClient(this) }
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
@@ -24,7 +27,6 @@ class DataLayerServiceListener: WearableListenerService() {
                 )
             }
             MESSAGE_CLIENT_APP_DETECTION -> {
-                val messageClient = Wearable.getMessageClient(this)
                 messageClient.sendMessage(messageEvent.sourceNodeId, MESSAGE_CLIENT_APP_DETECTION, byteArrayOf())
             }
         }
@@ -38,5 +40,7 @@ class DataLayerServiceListener: WearableListenerService() {
     companion object {
         const val MESSAGE_CLIENT_START_ORDER_ACTIVITY = "/start-order-activity"
         const val MESSAGE_CLIENT_APP_DETECTION = "/app-detection"
+        const val GET_ORDER_LIST_PATH = "/get-order-list"
+        const val ACCEPT_BULK_ORDER_PATH = "/accept_bulk-order"
     }
 }
