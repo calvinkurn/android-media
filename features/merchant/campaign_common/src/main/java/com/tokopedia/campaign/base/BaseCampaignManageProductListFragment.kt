@@ -30,14 +30,22 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
     override fun getScreenName(): String =
         BaseCampaignManageProductListFragment::class.java.canonicalName.orEmpty()
 
-    protected var rvProductList: RecyclerView? = null
-    protected var containerButtonSubmit: ViewGroup? = null
-    protected var buttonSubmit: UnifyButton? = null
-    protected var labelBulkApply: WidgetCampaignLabelBulkApply? = null
-    protected var headerUnify: HeaderUnify? = null
-    protected var ticker: Ticker? = null
-    protected var textTotalProduct: Typography? = null
-    protected var adapter: BaseListAdapter<Visitable<*>, F>? = null
+    var rvProductList: RecyclerView? = null
+        private set
+    var containerButtonSubmit: ViewGroup? = null
+        private set
+    var buttonSubmit: UnifyButton? = null
+        private set
+    var labelBulkApply: WidgetCampaignLabelBulkApply? = null
+        private set
+    var headerUnify: HeaderUnify? = null
+        private set
+    var ticker: Ticker? = null
+        private set
+    var textTotalProduct: Typography? = null
+        private set
+    var adapter: BaseListAdapter<Visitable<*>, F>? = null
+        private set
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,7 +90,7 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         rvProductList = viewBinding?.rvProductList
         containerButtonSubmit = viewBinding?.containerButtonSubmit
         buttonSubmit = viewBinding?.buttonSubmit
-        labelBulkApply = viewBinding?.labelBulkApply
+        labelBulkApply = viewBinding?.widgetBulkApply
         headerUnify = viewBinding?.headerUnify
         ticker = viewBinding?.ticker
         textTotalProduct = viewBinding?.textTotalProduct
@@ -97,6 +105,9 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         }
     }
 
+    /**
+     * Can be override if you want to use different implementation
+     */
     protected fun RecyclerView.setDecoration() {
         val dividerDrawable = MethodChecker.getDrawable(
             context,
@@ -109,11 +120,31 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         addItemDecoration(dividerItemDecoration)
     }
 
+    /**
+     * Can be used to show button submit
+     */
     protected fun showButtonSubmit() {
         containerButtonSubmit?.show()
     }
 
+    /**
+     * Can be used to hide button submit
+     */
     protected fun hideButtonSubmit() {
         containerButtonSubmit?.hide()
+    }
+
+    /**
+     * Can be used to enable button submit
+     */
+    protected fun enableButtonSubmit() {
+        buttonSubmit?.isEnabled = true
+    }
+
+    /**
+     * Can be used to disable button submit
+     */
+    protected fun disableButtonSubmit() {
+        buttonSubmit?.isEnabled = false
     }
 }

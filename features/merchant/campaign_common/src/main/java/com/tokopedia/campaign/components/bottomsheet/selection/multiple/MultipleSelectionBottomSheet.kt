@@ -23,13 +23,13 @@ class MultipleSelectionBottomSheet : BottomSheetUnify() {
 
         @JvmStatic
         fun newInstance(
-            selectedItemIds: ArrayList<String>,
-            items: ArrayList<MultipleSelectionItem>
+            selectedItemIds: List<String>,
+            items: List<MultipleSelectionItem>
         ): MultipleSelectionBottomSheet {
             return MultipleSelectionBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putStringArrayList(BUNDLE_KEY_SELECTED_ITEM_IDS, selectedItemIds)
-                    putParcelableArrayList(BUNDLE_KEY_MULTIPLE_SELECTION_ITEMS, items)
+                    putStringArrayList(BUNDLE_KEY_SELECTED_ITEM_IDS, ArrayList(selectedItemIds))
+                    putParcelableArrayList(BUNDLE_KEY_MULTIPLE_SELECTION_ITEMS, ArrayList(items))
                 }
             }
         }

@@ -5,6 +5,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
+import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
@@ -28,4 +29,6 @@ interface TokopediaFlashSaleComponent {
     fun inject(fragment: CampaignCriteriaFragment)
     fun inject(fragment: CampaignProductCriteriaFragment)
     fun inject(bottomSheet: CampaignDetailBottomSheet)
+
+    fun inject(fragment: CampaignDetailFragment)
 }

@@ -84,6 +84,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.loader_dialog
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
