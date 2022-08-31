@@ -38,6 +38,7 @@ class PostMoreOptionBottomSheet : BaseBottomSheet<ShcBottomSheetPostMoreOptionBi
     }
 
     override fun setupView() = binding?.run {
+        setTitle(root.context.getString(R.string.shc_post_more_title))
         setupOptions()
     }
 

@@ -48,13 +48,13 @@ class MoreOptionView : RelativeLayout {
                 onClickCancel?.invoke()
             }
 
-            showCancelMode(false)
+            showCheckingMode(false)
         }
     }
 
-    fun showCancelMode(isCancelMode: Boolean) {
+    fun showCheckingMode(isCheckingMode: Boolean) {
         binding?.run {
-            if (isCancelMode) {
+            if (isCheckingMode) {
                 tvShcMoreOptionCancel.visible()
                 icShcMoreOption.gone()
             } else {

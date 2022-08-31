@@ -127,6 +127,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.UnificationTabBottomSheet
@@ -866,9 +867,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun showPostWidgetMoreOption(element: PostListWidgetUiModel) {
         val bottomSheet = PostMoreOptionBottomSheet.createInstance()
         bottomSheet.setOnRemoveArticleOptionClicked {
-
+            bottomSheet.dismiss()
+            switchPostWidgetCheckingMode(element)
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    override fun postWidgetOnCancelChecking(element: PostListWidgetUiModel) {
+        switchPostWidgetCheckingMode(element)
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -2367,6 +2373,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
+    }
+
+    private fun switchPostWidgetCheckingMode(element: PostListWidgetUiModel) {
+        val widgets = adapter.data.map {
+            val isTheSameWidget = it.dataKey == element.dataKey && it is PostListWidgetUiModel
+            return@map if (isTheSameWidget) {
+                val widget = it.copyWidget() as PostListWidgetUiModel
+                widget.isCheckingMode = !widget.isCheckingMode
+                widget
+            } else {
+                it
+            }
+        }
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
+    }
+
+    private fun showFeedbackLoopOption(element: PostListWidgetUiModel) {
+        val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
+        bottomSheet.show(childFragmentManager)
     }
 
     interface Listener {

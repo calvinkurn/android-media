@@ -20,8 +20,8 @@
         tools:text="Contoh text from template" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

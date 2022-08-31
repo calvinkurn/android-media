@@ -46,6 +46,7 @@ class FeedbackLoopOptionAdapter(
         fun bind(item: FeedbackLoopOptionUiModel) = binding.run {
             cbShcFeedbackOption.isChecked = item.isSelected
             tvShcFeedbackOption.text = item.title
+            edtShcFeedbackOption.gone()
 
             root.setOnClickListener {
                 item.isSelected = !item.isSelected

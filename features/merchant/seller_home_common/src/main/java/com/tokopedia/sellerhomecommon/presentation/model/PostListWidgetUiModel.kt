@@ -29,7 +29,8 @@ data class PostListWidgetUiModel(
     override var emptyState: WidgetEmptyStateUiModel,
     val postFilter: List<WidgetFilterUiModel>,
     val maxData: Int,
-    val maxDisplay: Int
+    val maxDisplay: Int,
+    var isCheckingMode: Boolean = false
 ) : BaseWidgetUiModel<PostListDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

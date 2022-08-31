@@ -192,8 +192,9 @@ class PostListViewHolder(
                 listener.showPostWidgetMoreOption(element)
             }
             moreShcPostWidget.setOnCancelClicked {
-                listener.postWidgetCancelItemRemoval(element)
+                listener.postWidgetOnCancelChecking(element)
             }
+            moreShcPostWidget.showCheckingMode(element.isCheckingMode)
         }
     }
 
@@ -395,6 +396,6 @@ class PostListViewHolder(
 
         fun showPostWidgetMoreOption(element: PostListWidgetUiModel) {}
 
-        fun postWidgetCancelItemRemoval(element: PostListWidgetUiModel) {}
+        fun postWidgetOnCancelChecking(element: PostListWidgetUiModel) {}
     }
 }

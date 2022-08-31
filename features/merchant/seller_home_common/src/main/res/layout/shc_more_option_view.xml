@@ -6,7 +6,7 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icShcMoreOption"
-        android:layout_width="wrap_content"
+        android:layout_width="24dp"
         android:layout_height="wrap_content"
         app:icon_name="MENU_KEBAB_HORIZONTAL" />
 

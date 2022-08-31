@@ -19,6 +19,10 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
 
     companion object {
         private const val TAG = "FeedbackLoopOptionsBottomSheet"
+
+        fun createInstance(): FeedbackLoopOptionsBottomSheet {
+            return FeedbackLoopOptionsBottomSheet()
+        }
     }
 
     private var feedbackItems: List<FeedbackLoopOptionUiModel> = emptyList()
