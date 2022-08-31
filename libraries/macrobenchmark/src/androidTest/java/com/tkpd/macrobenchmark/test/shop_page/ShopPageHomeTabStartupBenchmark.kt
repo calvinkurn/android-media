@@ -19,13 +19,13 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class ShopPageHomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    override fun getIntent() = MacroIntent.ShopPage.getShopPageHomeIntent()
+class ShopPageHomeTabStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    override fun getIntent() = MacroIntent.ShopPage.getShopPageHomeTabIntent()
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
             MacroIntent.ShopPage.PACKAGE_NAME,
-            MacroIntent.ShopPage.RV_RESOURCE_ID
+            MacroIntent.ShopPage.RV_HOME_TAB_RESOURCE_ID
         )
     }
 
