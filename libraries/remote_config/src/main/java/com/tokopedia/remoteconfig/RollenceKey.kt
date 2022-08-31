@@ -33,11 +33,6 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
-    //User
-    const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
-    const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
-    const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
-
     //Auto Complete
     const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
     const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
@@ -75,6 +70,9 @@ object RollenceKey {
 
     // Saldo
     const val SALDO_MODAL_TOKO_WIDGET = "saldo_mclremoval";
+
+    // Review
+    const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
     object PdpToolbar {
         const val key = "pdp_dyn_container"

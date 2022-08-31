@@ -16,6 +16,8 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
@@ -148,6 +150,8 @@ class CreateReviewViewModel @Inject constructor(
         private const val SAVED_STATE_SHOULD_SHOW_INCENTIVE_BOTTOM_SHEET = "savedStateShowIncentiveBottomSheet"
         private const val SAVED_STATE_SHOULD_SHOW_TEXT_AREA_BOTTOM_SHEET = "savedStateShowTextAreaBottomSheet"
         private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
+
+        private const val REVIEW_INSPIRATION_ENABLED = "experiment_variant"
     }
 
     // region state that need to be saved and restored
@@ -455,7 +459,7 @@ class CreateReviewViewModel @Inject constructor(
             StringRes(R.string.review_form_neutral_helper)
         } else {
             reviewFormResult.result.productrevGetForm.placeholder.takeIf {
-                !it.isNullOrBlank()
+                !it.isNullOrBlank() && shouldShowReviewDynamicPlaceholder()
             }?.let { placeholder ->
                 StringRes(R.string.review_raw_string_format, listOf(placeholder))
             } ?: StringRes(R.string.review_form_good_helper)
@@ -596,7 +600,7 @@ class CreateReviewViewModel @Inject constructor(
         canRenderForm: Boolean,
         reviewFormRequestResult: ReviewFormRequestSuccessState
     ): CreateReviewTopicsUiState {
-        return if (canRenderForm) {
+        return if (canRenderForm && shouldShowReviewTopicsInspiration()) {
             if (reviewFormRequestResult.result.productrevGetForm.keywords.isNullOrEmpty()) {
                 CreateReviewTopicsUiState.Hidden
             } else {
@@ -1287,6 +1291,18 @@ class CreateReviewViewModel @Inject constructor(
             objectToPut = true,
             cacheDuration = TimeUnit.DAYS.toMillis(REVIEW_TOPICS_PEEK_ANIMATION_RUN_INTERVAL_DAYS)
         )
+    }
+
+    private fun shouldShowReviewTopicsInspiration(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME, REVIEW_INSPIRATION_ENABLED
+        ) == REVIEW_INSPIRATION_ENABLED
+    }
+
+    private fun shouldShowReviewDynamicPlaceholder(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME, REVIEW_INSPIRATION_ENABLED
+        ) == REVIEW_INSPIRATION_ENABLED
     }
 
     fun submitReview() {

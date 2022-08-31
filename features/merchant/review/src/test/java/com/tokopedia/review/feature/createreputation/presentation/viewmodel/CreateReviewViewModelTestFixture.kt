@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -27,6 +29,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.delay
 import org.junit.Before
@@ -260,6 +263,19 @@ abstract class CreateReviewViewModelTestFixture {
 
     protected fun mockErrorPostSubmitBottomSheet() {
         coEvery { getPostSubmitBottomSheetUseCase.executeOnBackground() } throws Exception()
+    }
+
+    protected suspend fun mockStringAb(key: String, defaultValue: String, value: String, block: suspend () -> Unit) {
+        mockkStatic(RemoteConfigInstance::class) {
+            val mockRemoteConfigInstance = mockk<RemoteConfigInstance>(relaxed = true) {
+                val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
+                    every { getString(key, defaultValue) } returns value
+                }
+                every { abTestPlatform } returns mockAbTestPlatform
+            }
+            every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
+            block()
+        }
     }
 
     protected fun setShouldRunReviewTopicsPeekAnimation() {
