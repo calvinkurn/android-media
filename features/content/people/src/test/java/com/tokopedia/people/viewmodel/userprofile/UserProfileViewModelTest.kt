@@ -1,6 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
@@ -70,7 +71,7 @@ class UserProfileViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
-        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecom
     }
 
@@ -92,7 +93,7 @@ class UserProfileViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 profileInfo equalTo mockOwnProfile
-                followInfo equalTo mockOwnFollow
+                followInfo equalTo FollowInfoUiModel.Empty
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
@@ -178,7 +179,7 @@ class UserProfileViewModelTest {
     }
 
     @Test
-    fun `when user load others profile and failed, it should emit empty profile`() {
+    fun `when user load others profile and failed, it should emit empty profile and all related data`() {
 
         coEvery { mockRepo.getProfile(any()) } throws mockException
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
@@ -195,19 +196,20 @@ class UserProfileViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 profileInfo equalTo ProfileUiModel.Empty
-                followInfo equalTo mockOtherFollowed
-                profileType equalTo ProfileType.OtherUser
+                followInfo equalTo FollowInfoUiModel.Empty
+                profileType equalTo ProfileType.Unknown
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
-                shopRecom equalTo mockEmptyShopRecom
+                shopRecom equalTo ShopRecomUiModel()
             }
         }
     }
 
     @Test
-    fun `when user load follow status and failed, it should emit status not followed`() {
+    fun `when user load follow status and but hasnt logged in, it should emit status not followed`() {
 
         coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
+        coEvery { mockUserSession.isLoggedIn } returns false
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
@@ -222,7 +224,7 @@ class UserProfileViewModelTest {
             } andThen {
                 profileInfo equalTo mockOtherProfile
                 followInfo equalTo FollowInfoUiModel.Empty
-                profileType equalTo ProfileType.OtherUser
+                profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
             }

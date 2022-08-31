@@ -242,9 +242,6 @@ public interface ApplinkConst {
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
-    String OVO_REGISTER_INIT = "tokopedia://ovo-reg-init";
-    String OVO_FINAL_PAGE = "tokopedia://ovo-final";
-
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
     String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
     String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
@@ -325,7 +322,6 @@ public interface ApplinkConst {
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
     String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
     String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
-    String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String KOL_YOUTUBE_HOST_BASE = "kolyoutube";
     String KOL_YOUTUBE = "tokopedia://" + KOL_YOUTUBE_HOST_BASE+ "/{youtube_url}";
@@ -393,6 +389,7 @@ public interface ApplinkConst {
     String CATEGORY_HOST = "category";
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
+    String EPHARMACY = "tokopedia://epharmacy";
     String AFFILIATE_TOKO = "tokopedia://affiliate";
     String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
     String QRSCAN = "tokopedia://scanqr";
