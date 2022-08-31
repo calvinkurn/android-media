@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductLocationCheckResultBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductCheckingResult
 
@@ -34,15 +35,20 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
 
     inner class CriteriaViewHolder(private val binding: StfsItemProductLocationCheckResultBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        private val context = binding.root.context
 
         fun bind(item: ProductCheckingResult.LocationCheckingResult) {
-            binding.tfLocationName.text = item.cityName
-            binding.tfPrice.text = item.checkingDetailResult.discountedPrice.getCurrencyFormatted()
-            binding.tfSlashPrice.text = item.checkingDetailResult.originalPrice.getCurrencyFormatted()
-            binding.labelDiscount.text = "${item.checkingDetailResult.discountPercent}%"
-            binding.tfSubsidiary.text = "Menerima subsidi sebesar ${item.checkingDetailResult.subsidyAmount.getCurrencyFormatted()} dari Tokopedia"
-            binding.tfSubsidiary.isVisible = item.checkingDetailResult.isSubsidy
-            binding.tfCampaignStock.text = "Stok Campaign: ${item.checkingDetailResult.stock}"
+            binding.apply {
+                tfLocationName.text = item.cityName
+                tfPrice.text = item.checkingDetailResult.discountedPrice.getCurrencyFormatted()
+                tfSlashPrice.text = item.checkingDetailResult.originalPrice.getCurrencyFormatted()
+                labelDiscount.text = "${item.checkingDetailResult.discountPercent}%"
+                tfSubsidiary.text = context.getString(R.string.commonbs_product_check_subsidy_format,
+                    item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
+                tfSubsidiary.isVisible = item.checkingDetailResult.isSubsidy
+                tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format,
+                    item.checkingDetailResult.stock)
+            }
         }
     }
 }
