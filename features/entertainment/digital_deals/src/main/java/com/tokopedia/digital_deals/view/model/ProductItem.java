@@ -92,7 +92,6 @@ public class ProductItem extends BaseItem implements Parcelable {
     @SerializedName("media")
     @Expose
     private Object media;
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private long id;

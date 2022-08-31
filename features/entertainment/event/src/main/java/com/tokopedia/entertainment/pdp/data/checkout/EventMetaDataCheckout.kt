@@ -47,7 +47,6 @@ data class ItemMapCheckout(
         @SerializedName("base_price")
         @Expose
         val basePrice: Long = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("category_id")
         @Expose
         val categoryId:Long = 0,
@@ -77,11 +76,9 @@ data class ItemMapCheckout(
         @SerializedName("error")
         @Expose
         val error:String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("flag_id")
         @Expose
         val flagId:Long = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id:Long = 0,

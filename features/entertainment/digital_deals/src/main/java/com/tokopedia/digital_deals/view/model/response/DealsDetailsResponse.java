@@ -16,19 +16,15 @@ import java.util.List;
 
 public class DealsDetailsResponse implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private long id;
-    @SuppressLint("Invalid Data Type")
     @SerializedName("brand_id")
     @Expose
     private long brandId;
-    @SuppressLint("Invalid Data Type")
     @SerializedName("category_id")
     @Expose
     private long categoryId;
-    @SuppressLint("Invalid Data Type")
     @SerializedName("provider_id")
     @Expose
     private long providerId;
