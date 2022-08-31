@@ -6,9 +6,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/universalSearchDoubleLineTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintRight_toLeftOf="@id/universalSearchDoubleLineSeeAll"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
@@ -16,8 +19,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/universalSearchDoubleLineSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintRight_toLeftOf="@id/universalSearchDoubleLineSeeAll"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/universalSearchDoubleLineTitle"
         app:typographyType="paragraph_3"/>
