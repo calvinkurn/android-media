@@ -348,6 +348,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
+        broadcastTimer.destroy()
     }
 
     fun submitAction(event: PlayBroadcastAction) {

@@ -66,12 +66,13 @@ class GtmLogger private constructor(
         fun getInstance(context: Context): AnalyticsLogger {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools() == true) {
-                    val dao = CassavaDatabase.getInstance(context).cassavaDao()
+                    val appContext = context.applicationContext
+                    val dao = CassavaDatabase.getInstance(appContext).cassavaDao()
                     instance = GtmLogger(
-                        context,
+                        appContext,
                         AnalyticsParser(),
                         GtmRepo(dao),
-                        CassavaSharedPreference(context)
+                        CassavaSharedPreference(appContext)
                     )
                 } else {
                     instance = emptyInstance()

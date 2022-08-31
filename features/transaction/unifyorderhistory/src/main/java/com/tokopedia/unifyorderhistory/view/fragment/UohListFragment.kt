@@ -1666,108 +1666,112 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         kebabMenuBottomSheet.setListener(object : UohKebabMenuBottomSheet.UohKebabMenuBottomSheetListener {
             override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
                 kebabMenuBottomSheet.dismiss()
-                val dotMenu = orderData.metadata.dotMenus[index]
-                if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                        RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
-                    } else {
-                        val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
-                            dotMenu.webURL
+                try {
+                    val dotMenu = orderData.metadata.dotMenus[index]
+                    if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                        if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                            RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
                         } else {
-                            dotMenu.appURL
-                        }
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                    }
-                } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
-                    if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                        var helpLinkUrl = ""
-                        currIndexNeedUpdate = index
-                        orderIdNeedUpdated = orderData.orderUUID
-                        orderData.metadata.dotMenus.forEach {
-                            if (it.label.equals(LABEL_HELP_LINK)) {
-                                helpLinkUrl = it.webURL
+                            val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                                dotMenu.webURL
+                            } else {
+                                dotMenu.appURL
                             }
-                        }
-
-                        val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
-                        val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
-                            putExtra(PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
-                            putExtra(PARAM_INVOICE, cancelOrderQueryParam.invoice)
-                            putExtra(PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
-                            putExtra(PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
-                            putExtra(PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
-                            putExtra(PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
-                            putExtra(PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
-                            putExtra(PARAM_STATUS_ID, cancelOrderQueryParam.status)
-                            putExtra(PARAM_SOURCE_UOH, true)
-                            putExtra(PARAM_HELP_LINK_URL, helpLinkUrl)
-                        }
-                        startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
-                    } else {
-                        val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
-                            dotMenu.webURL
-                        } else {
-                            dotMenu.appURL
-                        }
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                    }
-                } else {
-                    when {
-                        dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                            val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
-                            if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
-
-                            sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
-                                override fun onEmailSent(email: String) {
-                                    val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
-                                    val invoiceId = flightQueryParam.invoiceId
-                                    uohListViewModel.doFlightResendEmail(invoiceId, email)
-                                    userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
-                                }
-
-                            })
-                            sendEmailBottomSheet.show(childFragmentManager)
-                        }
-                        dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
-                            val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
-                            if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
-
-                            sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
-                                override fun onEmailSent(email: String) {
-                                    val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
-                                    val invoiceId = trainQueryParam.invoiceId
-                                    val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                                    uohListViewModel.doTrainResendEmail(param)
-                                    userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
-                                }
-
-                            })
-                            sendEmailBottomSheet.show(childFragmentManager)
-                        }
-                        dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
-                            doChatSeller(dotMenu.appURL, orderData)
-                        }
-                        dotMenu.actionType.equals(GQL_ATC, true) -> {
-                            atc(orderData)
-                        }
-                        dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
-                            orderIdNeedUpdated = orderData.orderUUID
-                            doFinishOrder(orderIndex, orderData.verticalStatus, orderData.verticalID)
-                        }
-                        dotMenu.actionType.equals(GQL_TRACK, true) -> {
-                            val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
-                            RouteManager.route(context, applinkTrack)
-                        }
-                        dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
-                            val linkUrl = dotMenu.appURL
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                         }
-                        dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
-                            goToOrderExtension(order, index)
+                    } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
+                        if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                            var helpLinkUrl = ""
+                            currIndexNeedUpdate = index
+                            orderIdNeedUpdated = orderData.orderUUID
+                            orderData.metadata.dotMenus.forEach {
+                                if (it.label.equals(LABEL_HELP_LINK)) {
+                                    helpLinkUrl = it.webURL
+                                }
+                            }
+
+                            val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
+                            val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
+                                putExtra(PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
+                                putExtra(PARAM_INVOICE, cancelOrderQueryParam.invoice)
+                                putExtra(PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
+                                putExtra(PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
+                                putExtra(PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
+                                putExtra(PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
+                                putExtra(PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
+                                putExtra(PARAM_STATUS_ID, cancelOrderQueryParam.status)
+                                putExtra(PARAM_SOURCE_UOH, true)
+                                putExtra(PARAM_HELP_LINK_URL, helpLinkUrl)
+                            }
+                            startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
+                        } else {
+                            val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                                dotMenu.webURL
+                            } else {
+                                dotMenu.appURL
+                            }
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                        }
+                    } else {
+                        when {
+                            dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
+                                val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
+                                if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                                sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
+                                    override fun onEmailSent(email: String) {
+                                        val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
+                                        val invoiceId = flightQueryParam.invoiceId
+                                        uohListViewModel.doFlightResendEmail(invoiceId, email)
+                                        userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                    }
+
+                                })
+                                sendEmailBottomSheet.show(childFragmentManager)
+                            }
+                            dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
+                                val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
+                                if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                                sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
+                                    override fun onEmailSent(email: String) {
+                                        val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
+                                        val invoiceId = trainQueryParam.invoiceId
+                                        val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
+                                        uohListViewModel.doTrainResendEmail(param)
+                                        userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                    }
+
+                                })
+                                sendEmailBottomSheet.show(childFragmentManager)
+                            }
+                            dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
+                                doChatSeller(dotMenu.appURL, orderData)
+                            }
+                            dotMenu.actionType.equals(GQL_ATC, true) -> {
+                                atc(orderData)
+                            }
+                            dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
+                                orderIdNeedUpdated = orderData.orderUUID
+                                doFinishOrder(orderIndex, orderData.verticalStatus, orderData.verticalID)
+                            }
+                            dotMenu.actionType.equals(GQL_TRACK, true) -> {
+                                val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                                RouteManager.route(context, applinkTrack)
+                            }
+                            dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
+                                val linkUrl = dotMenu.appURL
+                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                            }
+                            dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
+                                goToOrderExtension(order, index)
+                            }
                         }
                     }
+                    userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
             }
 
         })
@@ -1808,101 +1812,108 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        val detailUrl = order.metadata.detailURL
-        var intent: Intent? = null
-        if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
-        } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-            intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
-        }
-
-        currIndexNeedUpdate = index
-        orderIdNeedUpdated = order.orderUUID
-
-        // analytics
-        var jsonArray = JsonArray()
-        if (order.metadata.listProducts.isNotEmpty()) {
-            jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
-        }
-        val arrayListProducts = arrayListOf<ECommerceClick.Products>()
-        var i = 0
-        order.metadata.products.forEach {
-            var eeProductId = ""
-            var eeProductPrice = ""
-            if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(i).asJsonObject
-                eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+        try {
+            val detailUrl = order.metadata.detailURL
+            var intent = Intent()
+            if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
+                intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+            } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
+                intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
             }
-            arrayListProducts.add(
-                ECommerceClick.Products(
-                    name = it.title,
-                    id = eeProductId,
-                    price = eeProductPrice,
-                    list = "/order list - ${order.verticalCategory}",
-                    position = index.toString()
-            ))
-            i++
+
+            currIndexNeedUpdate = index
+            orderIdNeedUpdated = order.orderUUID
+
+            // analytics
+            var jsonArray = JsonArray()
+            if (order.metadata.listProducts.isNotEmpty()) {
+                jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+            }
+            val arrayListProducts = arrayListOf<ECommerceClick.Products>()
+            var i = 0
+            order.metadata.products.forEach {
+                var eeProductId = ""
+                var eeProductPrice = ""
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    val objProduct = jsonArray.get(i).asJsonObject
+                    eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                    eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                }
+                arrayListProducts.add(
+                    ECommerceClick.Products(
+                        name = it.title,
+                        id = eeProductId,
+                        price = eeProductPrice,
+                        list = "/order list - ${order.verticalCategory}",
+                        position = index.toString()
+                    ))
+                i++
+            }
+
+            userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+            // requested as old flow (from old order list)
+            UohAnalytics.orderDetailOpenScreenEvent()
+
+            startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
-
-        // requested as old flow (from old order list)
-        UohAnalytics.orderDetailOpenScreenEvent()
-
-        startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        order.metadata.buttons.firstOrNull()?.let { button ->
-            if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                handleRouting(button.appURL)
-            } else {
-                when {
-                    button.actionType.equals(GQL_FINISH_ORDER, true) -> {
-                        orderIdNeedUpdated = order.orderUUID
-                        doFinishOrder(index, order.verticalStatus, order.verticalID)
-                    }
-                    button.actionType.equals(GQL_ATC, true) -> {
-                        atc(order)
-                    }
-                    button.actionType.equals(GQL_TRACK, true) -> {
-                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
-                        RouteManager.route(context, applinkTrack)
-                    }
-                    button.actionType.equals(GQL_LS_FINISH, true) -> {
-                        orderIdNeedUpdated = order.orderUUID
-                        val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
-                        if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        try {
+            order.metadata.buttons.firstOrNull()?.let { button ->
+                if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                    handleRouting(button.appURL)
+                } else {
+                    when {
+                        button.actionType.equals(GQL_FINISH_ORDER, true) -> {
+                            orderIdNeedUpdated = order.orderUUID
+                            doFinishOrder(index, order.verticalStatus, order.verticalID)
+                        }
+                        button.actionType.equals(GQL_ATC, true) -> {
+                            atc(order)
+                        }
+                        button.actionType.equals(GQL_TRACK, true) -> {
+                            val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                            RouteManager.route(context, applinkTrack)
+                        }
+                        button.actionType.equals(GQL_LS_FINISH, true) -> {
+                            orderIdNeedUpdated = order.orderUUID
+                            val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
+                            if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
-                        lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
-                            override fun onClickLsFinishOrder(index: Int, orderId: String) {
-                                currIndexNeedUpdate = index
-                                uohItemAdapter.showLoaderAtIndex(index)
-                                uohListViewModel.doLsPrintFinishOrder(orderId)
+                            lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
+                                override fun onClickLsFinishOrder(index: Int, orderId: String) {
+                                    currIndexNeedUpdate = index
+                                    uohItemAdapter.showLoaderAtIndex(index)
+                                    uohListViewModel.doLsPrintFinishOrder(orderId)
+                                }
+
+                            })
+                            lsFinishOrderBottomSheet.show(childFragmentManager)
+                        }
+                        button.actionType.equals(GQL_LS_LACAK, true) -> {
+                            val linkUrl = button.appURL
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                        }
+                        button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                            currIndexNeedUpdate = index
+                            orderIdNeedUpdated = order.orderUUID
+                            if (order.verticalID.isNotEmpty()) {
+                                uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
                             }
-
-                        })
-                        lsFinishOrderBottomSheet.show(childFragmentManager)
-                    }
-                    button.actionType.equals(GQL_LS_LACAK, true) -> {
-                        val linkUrl = button.appURL
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                    }
-                    button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                        currIndexNeedUpdate = index
-                        orderIdNeedUpdated = order.orderUUID
-                        if (order.verticalID.isNotEmpty()) {
-                            uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
+                        }
+                        button.actionType.equals(GQL_MP_EXTEND, true) -> {
+                            goToOrderExtension(order, index)
                         }
                     }
-                    button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                        goToOrderExtension(order, index)
-                    }
                 }
+                userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
             }
-
-            userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
