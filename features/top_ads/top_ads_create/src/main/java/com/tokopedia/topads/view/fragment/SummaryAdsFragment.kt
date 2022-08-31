@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -229,9 +230,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 txtDailyBudget?.visibility = View.VISIBLE
                 var budget = 0
                 try {
-                    budget = Integer.parseInt(
-                        txtDailyBudget?.textFieldInput?.text.toString().removeCommaRawString()
-                    )
+                    budget = txtDailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toIntOrZero()
                 } catch (e: NumberFormatException) {
                 }
                 if (budget < suggestion && txtDailyBudget?.isVisible == true) {

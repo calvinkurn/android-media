@@ -454,7 +454,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(VIEW_GROUP_IKLAN, "")
         groupStatus = data.status
         groupName = data.groupName
-        groupTotal = data.groupTotal.toInt()
+        groupTotal = data.groupTotal.toIntOrZero()
         priceDaily = data.daiyBudget
 
         editRekomendasiBudget?.visibility = View.VISIBLE

@@ -133,7 +133,7 @@ class ProductListAdapter(
         }
     }
 
-    private fun setProductRating(productRating: Int, reviewCount: Int, ratingView: ViewGroup) {
+    private fun setProductRating(productRating: Int, reviewCount: String, ratingView: ViewGroup) {
         if (productRating != 0) {
             showRating(productRating, ratingView)
             val ratingText = "($reviewCount)"
