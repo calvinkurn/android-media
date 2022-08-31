@@ -25,4 +25,8 @@
     <string name="pp_cd_image_shop_badge_with_shop_type">image shop badge %1$s</string>
     <string name="pp_cd_image_badge_bo">image badge bebas ongkir</string>
     <string name="pp_cd_image_badge_boe">image badge bebas ongkir extra</string>
+
+    <string name="pp_epharmacy_upload_count_text">%d foto resep di-upload</string>
+    <string name="pp_epharmacy_upload_success_title_text">Berhasil Upload Resep</string>
+    <string name="pp_epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
 </resources>
