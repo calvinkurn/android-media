@@ -260,8 +260,12 @@ object DynamicProductDetailMapper {
         val bestSellerComponent = mapToOneLinersComponent(ProductDetailConstant.BEST_SELLER, data)
         val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
-                ?: ComponentData()
+        val newDataWithMedia = contentData?.copy(
+            media = mediaData.media,
+            youtubeVideos = mediaData.youtubeVideos,
+            containerType = mediaData.containerType
+        ) ?: ComponentData()
+
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
