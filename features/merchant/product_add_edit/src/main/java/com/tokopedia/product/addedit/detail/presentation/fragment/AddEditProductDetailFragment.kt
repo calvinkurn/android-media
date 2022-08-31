@@ -24,6 +24,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -1657,8 +1659,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     priceSuggestion
             )
             priceSuggestionBottomSheet?.setShowListener {
-                (priceSuggestionBottomSheet.dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                priceSuggestionBottomSheet.bottomSheetWrapper.parent.parent.requestLayout()
+                (priceSuggestionBottomSheet?.dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                priceSuggestionBottomSheet?.bottomSheetWrapper?.parent?.parent?.requestLayout()
             }
             priceSuggestionBottomSheet?.setCloseClickListener {
                 ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
