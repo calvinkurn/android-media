@@ -68,7 +68,7 @@ ext {
     playServiceAds = '17.1.0'
     playServiceTagManager = '17.0.0'
     playServiceMeasurementBase = '18.0.0'
-    playServiceMeasurementApi = '16.0.4'
+    playServiceMeasurementApi = '18.0.0'
     bomVersion = '26.2.0'
 
     JunitVersion = '4.12'
@@ -115,7 +115,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.23.2'
     unifyPrinciplesVersion = '1.4.1.2'
-    unifyComponentsVersion = '1.2.11'
+    unifyComponentsVersion = '1.2.13'
     unifyCoachMarkVersion = '1.2.17.2'
     unifyCalendarVersion = '1.2.1.2'
     unifyBannerVersion = '1.0.6.2'

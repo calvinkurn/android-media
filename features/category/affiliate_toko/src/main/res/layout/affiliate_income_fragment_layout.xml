@@ -146,6 +146,7 @@
                                     app:layout_constraintBottom_toBottomOf="@id/saldo_amount_affiliate"
                                     app:layout_constraintRight_toRightOf="parent"
                                     app:layout_constraintTop_toTopOf="@id/saldo_affiliate"
+                                    android:enabled="false"
                                     app:unifyButtonSize="small"
                                     app:unifyButtonType="main"
                                     app:unifyButtonVariant="ghost" />

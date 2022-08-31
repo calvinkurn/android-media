@@ -7,11 +7,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.config.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
-import com.tokopedia.sellerhomecommon.databinding.*
+import com.tokopedia.sellerhomecommon.databinding.ShcPartialPieChartWidgetEmptyBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcPieChartWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
@@ -33,7 +41,6 @@ class PieChartViewHolder(
     }
 
     private val binding by lazy { ShcPieChartWidgetBinding.bind(itemView) }
-    private val errorStateBinding by lazy { binding.shcPieChartErrorState }
     private val loadingStateBinding by lazy { binding.shcPieChartLoadingState }
     private val emptyStateBinding by lazy {
         ShcPartialPieChartWidgetEmptyBinding.bind(binding.root)
@@ -58,7 +65,7 @@ class PieChartViewHolder(
         when {
             data == null || element.showLoadingState -> setOnLoading()
             data.error.isNotBlank() -> {
-                setOnError()
+                setOnError(element)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
@@ -68,7 +75,7 @@ class PieChartViewHolder(
     private fun setOnLoading() {
         with(binding) {
             loadingStateBinding.shimmerWidgetCommon.visible()
-            errorStateBinding.commonWidgetErrorState.gone()
+            shcPieChartErrorState.gone()
             pieChartShc.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
@@ -93,7 +100,7 @@ class PieChartViewHolder(
 
     private fun setOnSuccess(element: PieChartWidgetUiModel) = with(binding) {
         loadingStateBinding.shimmerWidgetCommon.gone()
-        errorStateBinding.commonWidgetErrorState.gone()
+        shcPieChartErrorState.gone()
         pieChartShc.visible()
         tvPieChartValue.visible()
         tvPieChartSubValue.visible()
@@ -142,19 +149,18 @@ class PieChartViewHolder(
         }
     }
 
-    private fun setOnError() {
+    private fun setOnError(element: PieChartWidgetUiModel) {
         with(binding) {
-            errorStateBinding.commonWidgetErrorState.visible()
+            shcPieChartErrorState.visible()
             pieChartShc.gone()
             loadingStateBinding.shimmerWidgetCommon.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
             luvShcPieChart.gone()
             emptyStateBinding.groupShcPieChartEmpty.gone()
-
-            errorStateBinding.imgWidgetOnError.loadImage(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            )
+            shcPieChartErrorState.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
         }
     }
 

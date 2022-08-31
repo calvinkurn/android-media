@@ -188,7 +188,7 @@
         <com.tokopedia.tokopoints.view.customview.DynamicItemActionView
             android:id="@+id/dynamic_widget"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_110" />
+            android:layout_height="110dp" />
 
     </com.tokopedia.unifycomponents.CardUnify>
 
