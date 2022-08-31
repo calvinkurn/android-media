@@ -57,7 +57,7 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                 MethodChecker.getDrawable(context, R.drawable.bg_voucher_button)
         )
         btnUseVoucher.setTextColor(
-                context.resources.getColorStateList(R.color.merchant_voucher_dms_voucher_button)
+                context.resources.getColorStateList(com.tokopedia.merchantvoucher.R.color.merchant_voucher_dms_voucher_button)
         )
     }
 
