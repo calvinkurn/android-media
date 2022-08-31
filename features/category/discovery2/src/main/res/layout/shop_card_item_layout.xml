@@ -195,7 +195,7 @@
                 android:layout_height="@dimen/dp_10"
                 android:layout_gravity="center"
                 android:scaleType="fitXY"
-                android:src="@drawable/unify_timer2_ic"
+                android:src="@drawable/ic_unify_single_timer"
                 android:tint="@color/Unify_RN600"
                 app:layout_constraintDimensionRatio="H,1:1" />
 

@@ -7,6 +7,7 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationAffiliate
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
+import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCategory
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
@@ -307,6 +308,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
             DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
+            DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
@@ -452,9 +454,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalUserPlatform.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
-            DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalUserPlatform.INIT_REGISTER),
-            DLP.exact(ApplinkConst.OVO_FINAL_PAGE, ApplinkConstInternalGlobal.OVO_FINAL_PAGE),
             DLP.host(ApplinkConst.SHARING_HOST) { _, _, deeplink, _ -> DeeplinkMapperExternal.getRegisteredNavigation(deeplink) },
             DLP.exact(ApplinkConst.LINK_ACCOUNT, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW),
             DLP.exact(ApplinkConst.EXPLICIT_PROFILE, ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE),
