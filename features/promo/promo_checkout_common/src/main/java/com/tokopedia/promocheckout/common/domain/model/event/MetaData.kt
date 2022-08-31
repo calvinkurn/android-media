@@ -86,10 +86,9 @@ data class MetaData(
         @SerializedName("total_ticket_count")
         @Expose
         val totalTicketCount: Int = 0,
-        @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose
-        val totalTicketPrice: Int = 0,
+        val totalTicketPrice: Double = 0.0,
         @SerializedName("vertical_id")
         @Expose
         val verticalId: String = "0"
