@@ -48,14 +48,22 @@ class BioUsernameInstrumentTest {
     fun test_validate_username_valid() {
         runTest(true) {
             typeTextOnEditText(R.id.et_username, USERNAME_VALID)
-            checkMessageText(activity.getString(R.string.description_textfield_username))
+            checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
         }
     }
     @Test
     fun test_validate_username_already_exists() {
         runTest(true) {
             typeTextOnEditText(R.id.et_username, USERNAME_EXISTS)
-            checkMessageText(ERROR_MESSAGE_USERNAME)
+            checkMessageText(R.id.et_username, ERROR_MESSAGE_USERNAME)
+        }
+    }
+
+    @Test
+    fun test_validate_username_less_than_min_char() {
+        runTest(true) {
+            typeTextOnEditText(R.id.et_username, USERNAME_LESS_MIN_CHAR)
+            checkMessageText(R.id.et_username, ERROR_MESSAGE_MIN_CHAR)
         }
     }
 
@@ -63,7 +71,7 @@ class BioUsernameInstrumentTest {
     fun test_success_create_username() {
         runTest(true) {
             typeTextOnEditText(R.id.et_username, USERNAME_VALID)
-            checkMessageText(activity.getString(R.string.description_textfield_username))
+            checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
             clickSubmitButton(R.id.btn_submit)
             checkResultCode(activityTestRule.activityResult, Activity.RESULT_OK)
         }
@@ -73,21 +81,27 @@ class BioUsernameInstrumentTest {
     fun test_failed_create_username() {
         runTest(true) {
             typeTextOnEditText(R.id.et_username, USERNAME_FAILED)
-            checkMessageText(activity.getString(R.string.description_textfield_username))
+            checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
             clickSubmitButton(R.id.btn_submit)
+            checkMessageText(R.id.et_username, ERROR_MESSAGE_USERNAME)
         }
     }
 
     @Test
     fun test_success_create_bio() {
         runTest(false){
+            typeTextOnEditText(R.id.et_bio, BIO_VALID)
+            clickSubmitButton(R.id.btn_submit)
+            checkResultCode(activityTestRule.activityResult, Activity.RESULT_OK)
         }
     }
 
     @Test
     fun test_fail_create_bio() {
         runTest(false) {
-
+            typeTextOnEditText(R.id.et_bio, BIO_FAILED)
+            clickSubmitButton(R.id.btn_submit)
+            checkMessageText(R.id.et_bio, ERROR_MESSAGE_BIO)
         }
     }
 
@@ -107,9 +121,15 @@ class BioUsernameInstrumentTest {
 
     companion object {
         private val USERNAME_VALID = "ramaputra"
+        private val USERNAME_LESS_MIN_CHAR = "rm"
         val USERNAME_EXISTS = "username_exists"
         val USERNAME_FAILED = "username_failed"
+        val BIO_VALID = "format bio is valid to create bio on profile"
+        val BIO_FAILED = "Bio invalid"
+        val ERROR_MESSAGE_MIN_CHAR = "Minimum 3 karakter."
         val ERROR_MESSAGE_USERNAME = "Username ini sudah dipakai orang lain."
+        val ERROR_MESSAGE_BIO = "Tidak boleh mengandung kata sensitif."
+        val ERROR_MESSAGE_DEVELOPER = "[{\"key\":\"Biography\",\"value\":\"Tidak boleh mengandung kata sensitif.\"},{\"key\":\"Username\",\"value\":\"Username ini sudah dipakai orang lain.\"}]"
 
     }
 

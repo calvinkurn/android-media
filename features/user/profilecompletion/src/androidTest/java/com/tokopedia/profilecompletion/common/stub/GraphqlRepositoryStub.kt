@@ -24,7 +24,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
     override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
         val param = requests.firstOrNull()?.variables
         requests.firstOrNull()?.query?.let {
-            println("check gql")
             return when {
                 it.contains("feedXProfileForm") -> {
                     val response = getResponse<ProfileFeedResponse>(R.raw.success_feed_profile_form)
@@ -40,24 +39,22 @@ class GraphqlRepositoryStub : GraphqlRepository {
                     else
                         GraphqlResponse(mapOf(UsernameValidationResponse::class.java to
                                 UsernameValidationResponse(UsernameValidation(isValid = true, errorMessage = ""))), mapOf(), false)
-
                 }
                 it.contains("feedXProfileSubmit") -> {
-                    if (param?.get("username")?.toString().equals(BioUsernameInstrumentTest.USERNAME_FAILED)) {
-                        println("failed submit username")
+                    if ((param?.get("param") as Map<String, Any>).get("username").toString().equals(BioUsernameInstrumentTest.USERNAME_FAILED)
+                            || (param.get("param") as Map<String, Any>).get("biography").toString().equals(BioUsernameInstrumentTest.BIO_FAILED)) {
                         GraphqlResponse(
-                                mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(
+                                  mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(
                                         SubmitBioUsername(status = false))), mapOf(SubmitBioUsernameResponse::class.java to listOf(GraphqlError().apply {
                             message = ERROR_MESSAGE_USERNAME
                             path = listOf("feedXProfileSubmit")
                             extensions = Extensions().apply {
                                 code = 11001
-                                developerMessage = ERROR_MESSAGE_USERNAME
+                                developerMessage = BioUsernameInstrumentTest.ERROR_MESSAGE_DEVELOPER
                             }
 
                         })), false)
                     }
-
                     else
                         GraphqlResponse(
                                 mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(

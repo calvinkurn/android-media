@@ -100,7 +100,7 @@ fun clickSubmitButton(id: Int) {
     Thread.sleep(3000)
 }
 
-fun checkMessageText(expectedMessage: String) {
+fun checkMessageText(id:Int, expectedMessage: String) {
     val matcher = object: TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
         }
@@ -118,7 +118,7 @@ fun checkMessageText(expectedMessage: String) {
         }
 
     }
-    Espresso.onView(withId(R.id.et_username)).check(matches(matcher))
+    Espresso.onView(withId(id)).check(matches(matcher))
 }
 
 fun checkResultCode(activityResult: Instrumentation.ActivityResult, resultCode: Int) {
