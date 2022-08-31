@@ -15,7 +15,7 @@ data class Cart(
         val cartItems: List<CartItem> = emptyList(),
         @SerializedName("cashback_amount")
         @Expose
-        val cashbackAmount: Int = 0,
+        val cashbackAmount: Long = 0L,
         @SerializedName("count")
         @Expose
         val count: Int = 0,
@@ -36,10 +36,10 @@ data class Cart(
         val promocode: String = "",
         @SerializedName("promocode_cashback")
         @Expose
-        val promocodeCashback: Int = 0,
+        val promocodeCashback: Long = 0L,
         @SerializedName("promocode_discount")
         @Expose
-        val promocodeDiscount: Int = 0,
+        val promocodeDiscount: Long = 0L,
         @SerializedName("promocode_failure_message")
         @Expose
         val promocodeFailureMessage: String = "",

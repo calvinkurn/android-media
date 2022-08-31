@@ -34,5 +34,5 @@ data class Order(
 
         @SuppressLint("Invalid Data Type")
         @SerializedName("is_insurance_price")
-        var isInsurancePrice: Int? = null
+        var isInsurancePrice: Long? = null
 ) : Parcelable
