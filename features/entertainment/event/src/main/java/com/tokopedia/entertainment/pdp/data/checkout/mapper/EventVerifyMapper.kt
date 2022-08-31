@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.promocheckout.common.domain.model.event.*
 
 object EventVerifyMapper {
@@ -82,7 +83,7 @@ object EventVerifyMapper {
             for (i in 0..forms.size - 1) {
                 forms[i].apply {
                     val pessanger = EntityPassengerVerify(
-                            id = id.toInt(), productId = productId.toInt(),
+                            id = id.toIntSafely(), productId = productId.toIntSafely(),
                             name = name, title = title, value = value, validatorRegex = validatorRegex,
                             elementType = elementType, required = required.toString(), errorMessage = errorMessage
                     )

@@ -21,7 +21,7 @@ data class Cart(
         val count: Int = 0,
         @SerializedName("display_price")
         @Expose
-        val displayPrice: Int = 0,
+        val displayPrice: Double = 0.0,
         @SerializedName("grand_total")
         @Expose
         val grandTotal: Int = 0,
@@ -54,7 +54,7 @@ data class Cart(
         val totalConvFee: Int = 0,
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Double = 0.0,
         @SerializedName("user")
         @Expose
         val user: User = User()
