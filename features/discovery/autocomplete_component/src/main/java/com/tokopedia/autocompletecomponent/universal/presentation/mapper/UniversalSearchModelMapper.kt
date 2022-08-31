@@ -6,6 +6,7 @@ import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL_SEARCH_TEMPLATE_LIST_GRID
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel.UniversalSearchItem
+import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridDataView
@@ -27,17 +28,23 @@ internal class UniversalSearchModelMapper(
         }
     }
 
-    private fun UniversalSearchItem.convertToCarouselDataView(): CarouselDataView {
-        return CarouselDataView(
+    private fun UniversalSearchItem.convertToBaseUniversalDataView(): BaseUniversalDataView {
+        return BaseUniversalDataView(
             id = id,
             applink = applink,
             title = title,
             subtitle = subtitle,
             componentId = componentId,
             trackingOption = trackingOption,
-            product = product.toCarouselProductDataView(),
             dimension90 = dimension90,
-            keyword = keyword
+            keyword = keyword,
+        )
+    }
+
+    private fun UniversalSearchItem.convertToCarouselDataView(): CarouselDataView {
+        return CarouselDataView(
+            data = this.convertToBaseUniversalDataView(),
+            product = product.toCarouselProductDataView(),
         )
     }
 
@@ -68,29 +75,15 @@ internal class UniversalSearchModelMapper(
 
     private fun UniversalSearchItem.convertToListGridDataView(): ListGridDataView {
         return ListGridDataView(
-            id = id,
-            applink = applink,
-            title = title,
-            subtitle = subtitle,
-            componentId = componentId,
-            trackingOption = trackingOption,
+            data = this.convertToBaseUniversalDataView(),
             related = curated.toRelatedItemDataView(),
-            keyword = keyword,
-            dimension90 = dimension90,
         )
     }
 
     private fun UniversalSearchItem.convertToDoubleLineDataView(): DoubleLineDataView {
         return DoubleLineDataView(
-            id = id,
-            applink = applink,
-            title = title,
-            subtitle = subtitle,
-            componentId = componentId,
-            trackingOption = trackingOption,
+            data = this.convertToBaseUniversalDataView(),
             related = curated.toRelatedItemDataView(),
-            keyword = keyword,
-            dimension90 = dimension90,
         )
     }
 

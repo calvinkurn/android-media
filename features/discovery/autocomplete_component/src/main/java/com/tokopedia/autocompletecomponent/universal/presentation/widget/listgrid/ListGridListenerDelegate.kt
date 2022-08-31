@@ -16,6 +16,6 @@ class ListGridListenerDelegate @Inject constructor(
 
     override fun onListGridSeeAllClick(data: ListGridDataView){
         data.click(TrackApp.getInstance().gtm)
-        RouteManager.route(context, data.applink)
+        RouteManager.route(context, data.data.applink)
     }
 }

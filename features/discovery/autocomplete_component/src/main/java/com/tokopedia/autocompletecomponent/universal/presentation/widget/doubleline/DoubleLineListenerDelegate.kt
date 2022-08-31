@@ -16,6 +16,6 @@ class DoubleLineListenerDelegate @Inject constructor(
 
     override fun onDoubleLineSeeAllClick(data: DoubleLineDataView) {
         data.click(TrackApp.getInstance().gtm)
-        RouteManager.route(context, data.applink)
+        RouteManager.route(context, data.data.applink)
     }
 }

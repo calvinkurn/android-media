@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchListGridItemLayoutBinding
+import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.itemdecoration.ListGridItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
@@ -27,26 +28,26 @@ class ListGridViewHolder(
     private var binding: UniversalSearchListGridItemLayoutBinding? by viewBinding()
 
     override fun bind(data: ListGridDataView) {
-        bindTitle(data)
-        bindSubtitle(data)
+        bindTitle(data.data)
+        bindSubtitle(data.data)
         bindSeeAll(data)
         bindRecyclerView(data)
     }
 
-    private fun bindTitle(data: ListGridDataView) {
+    private fun bindTitle(data: BaseUniversalDataView) {
         binding?.universalSearchListGridTitle?.shouldShowWithAction(data.title.isNotEmpty()) {
             binding?.universalSearchListGridTitle?.text = data.title
         }
     }
 
-    private fun bindSubtitle(data: ListGridDataView) {
+    private fun bindSubtitle(data: BaseUniversalDataView) {
         binding?.universalSearchListGridSubtitle?.shouldShowWithAction(data.subtitle.isNotEmpty()) {
             binding?.universalSearchListGridSubtitle?.text = data.subtitle
         }
     }
 
     private fun bindSeeAll(data: ListGridDataView) {
-        binding?.universalSearchListGridSubtitle?.shouldShowWithAction(data.applink.isNotEmpty()) {
+        binding?.universalSearchListGridSubtitle?.shouldShowWithAction(data.data.applink.isNotEmpty()) {
             binding?.universalSearchListGridSubtitle?.setOnClickListener {
                 listGridListener.onListGridSeeAllClick(data)
             }

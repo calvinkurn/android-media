@@ -1,12 +1,19 @@
 package com.tokopedia.autocompletecomponent.universal.presenter.viewmodel
 
+import androidx.lifecycle.LiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.shouldBeInstanceOf
+import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridDataView
+import com.tokopedia.autocompletecomponent.universal.presenter.viewmodel.testinstance.universalSearchItems
 import com.tokopedia.discovery.common.State
 import org.junit.Test
 
 internal class LoadUniversalSearchTest: UniversalSearchDataViewTestFixtures() {
 
-    private val universalSearchState = universalSearchViewModel.getUniversalSearchState()
+    private lateinit var universalSearchState: LiveData<State<List<Visitable<*>>>>
     private val expectedDataCount = 3
 
     @Test
@@ -24,10 +31,21 @@ internal class LoadUniversalSearchTest: UniversalSearchDataViewTestFixtures() {
     }
 
     private fun `Then assert universal search is successful`() {
+        universalSearchState = universalSearchViewModel.getUniversalSearchState()
+
         universalSearchState.value.shouldBeInstanceOf<State.Success<*>>()
     }
 
     private fun `Then assert visitable data is correct`() {
         assert(universalSearchState.value?.data?.size == expectedDataCount)
+        universalSearchState.value?.data?.assertVisitableList()
+    }
+
+    private fun List<Visitable<*>>.assertVisitableList() {
+        get(0).shouldBeInstanceOf<CarouselDataView>()
+        get(1).shouldBeInstanceOf<DoubleLineDataView>()
+        get(2).shouldBeInstanceOf<ListGridDataView>()
+
+        assertVisitableListData(universalSearchItems, keyword, dimension90)
     }
 }

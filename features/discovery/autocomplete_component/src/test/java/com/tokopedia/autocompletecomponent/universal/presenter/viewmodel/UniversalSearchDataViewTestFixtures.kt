@@ -1,10 +1,14 @@
 package com.tokopedia.autocompletecomponent.universal.presenter.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.autocompletecomponent.initialstate.TestException
+import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.stubExecute
 import com.tokopedia.autocompletecomponent.universal.domain.model.UniversalSearchModel
+import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.mapper.UniversalSearchModelMapperModule
 import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.UniversalSearchViewModel
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
 import com.tokopedia.autocompletecomponent.universal.presenter.viewmodel.testinstance.universalSearchModel
 import com.tokopedia.autocompletecomponent.util.ChooseAddressWrapper
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -21,10 +25,10 @@ internal open class UniversalSearchDataViewTestFixtures {
 
     protected val universalSearchUseCase = mockk<UseCase<UniversalSearchModel>>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
-    private val dimension90 = ""
-    private val keyword = "susu"
+    protected val dimension90 = ""
+    protected val keyword = "susu"
     private val universalSearchModelMapperModule = UniversalSearchModelMapperModule(dimension90, keyword)
-    private val universalSearchModelMapper = universalSearchModelMapperModule.provideUniversalSearchModelMapper()
+    protected val universalSearchModelMapper = universalSearchModelMapperModule.provideUniversalSearchModelMapper()
 
     protected lateinit var universalSearchViewModel: UniversalSearchViewModel
 
@@ -34,6 +38,8 @@ internal open class UniversalSearchDataViewTestFixtures {
         SearchApiConst.USER_ID to "123123",
         SearchApiConst.SOURCE to "universe",
     )
+
+    protected val testException = TestException("Error")
 
     @Before
     open fun setUp() {
@@ -52,5 +58,9 @@ internal open class UniversalSearchDataViewTestFixtures {
 
     protected fun `Given universal search API will be successful`() {
         universalSearchUseCase.stubExecute().returns(universalSearchModel)
+    }
+
+    protected fun `Given universal search API will be fail`() {
+        universalSearchUseCase.stubExecute().throws(testException)
     }
 }

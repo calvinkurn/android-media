@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchCarouselItemLayoutBinding
+import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -24,26 +25,26 @@ class CarouselViewHolder(
     private var binding: UniversalSearchCarouselItemLayoutBinding? by viewBinding()
 
     override fun bind(data: CarouselDataView) {
-        bindTitle(data)
-        bindSubtitle(data)
+        bindTitle(data.data)
+        bindSubtitle(data.data)
         bindSeeAll(data)
         bindCarousel(data)
     }
 
-    private fun bindTitle(data: CarouselDataView) {
+    private fun bindTitle(data: BaseUniversalDataView) {
         binding?.universalSearchCarouselTitle?.shouldShowWithAction(data.title.isNotEmpty()) {
             binding?.universalSearchCarouselTitle?.text = data.title
         }
     }
 
-    private fun bindSubtitle(data: CarouselDataView) {
+    private fun bindSubtitle(data: BaseUniversalDataView) {
         binding?.universalSearchCarouselSubtitle?.shouldShowWithAction(data.subtitle.isNotEmpty()) {
             binding?.universalSearchCarouselSubtitle?.text = data.subtitle
         }
     }
 
     private fun bindSeeAll(data: CarouselDataView) {
-        binding?.universalSearchCarouselSeeAll?.shouldShowWithAction(data.applink.isNotEmpty()) {
+        binding?.universalSearchCarouselSeeAll?.shouldShowWithAction(data.data.applink.isNotEmpty()) {
             binding?.universalSearchCarouselSeeAll?.setOnClickListener {
                 carouselListener.onCarouselSeeAllClick(data)
             }

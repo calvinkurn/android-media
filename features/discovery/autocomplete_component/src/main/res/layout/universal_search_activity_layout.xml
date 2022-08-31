@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
+        app:toolbarAlwaysShowShadow="true"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeCustom"
         app:toolbarInitialTheme="light" />

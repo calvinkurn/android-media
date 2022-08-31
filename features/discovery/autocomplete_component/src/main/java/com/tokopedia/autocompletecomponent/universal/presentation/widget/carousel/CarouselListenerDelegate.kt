@@ -22,7 +22,7 @@ class CarouselListenerDelegate @Inject constructor(
 
     override fun onCarouselSeeAllClick(data: CarouselDataView) {
         data.click(TrackApp.getInstance().gtm)
-        RouteManager.route(context, data.applink)
+        RouteManager.route(context, data.data.applink)
     }
 
     override fun onCarouselItemClick(data: CarouselDataView.Product) {

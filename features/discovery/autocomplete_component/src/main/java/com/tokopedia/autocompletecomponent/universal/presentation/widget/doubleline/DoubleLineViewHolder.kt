@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchDoubleLineItemLayoutBinding
+import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.itemdecoration.DoubleLineItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
@@ -30,26 +31,26 @@ class DoubleLineViewHolder(
     private var binding: UniversalSearchDoubleLineItemLayoutBinding? by viewBinding()
 
     override fun bind(data: DoubleLineDataView) {
-        bindTitle(data)
-        bindSubtitle(data)
+        bindTitle(data.data)
+        bindSubtitle(data.data)
         bindSeeAll(data)
         bindRecyclerView(data)
     }
 
-    private fun bindTitle(data: DoubleLineDataView) {
+    private fun bindTitle(data: BaseUniversalDataView) {
         binding?.universalSearchDoubleLineTitle?.shouldShowWithAction(data.title.isNotEmpty()) {
             binding?.universalSearchDoubleLineTitle?.text = data.title
         }
     }
 
-    private fun bindSubtitle(data: DoubleLineDataView) {
+    private fun bindSubtitle(data: BaseUniversalDataView) {
         binding?.universalSearchDoubleLineSubtitle?.shouldShowWithAction(data.subtitle.isNotEmpty()) {
             binding?.universalSearchDoubleLineSubtitle?.text = data.subtitle
         }
     }
 
     private fun bindSeeAll(data: DoubleLineDataView) {
-        binding?.universalSearchDoubleLineSeeAll?.shouldShowWithAction(data.applink.isNotEmpty()) {
+        binding?.universalSearchDoubleLineSeeAll?.shouldShowWithAction(data.data.applink.isNotEmpty()) {
             binding?.universalSearchDoubleLineSeeAll?.setOnClickListener {
                 doubleLineListener.onDoubleLineSeeAllClick(data)
             }
