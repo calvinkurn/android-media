@@ -318,7 +318,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_interactive_finish" />
+        app:layout_constraintTop_toBottomOf="@id/rv_engagement_widget" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
