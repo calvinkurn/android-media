@@ -271,7 +271,11 @@ class NavigationTab(
         }
 
         private fun updateSelectedTab(recyclerView: RecyclerView) {
-            val firstVisibleItemPosition = calculateFirstVisibleItemPosition(recyclerView, offsetY = view.height)
+            val offsetY = view.height + navTabPositionOffsetY
+            val firstVisibleItemPosition = calculateFirstVisibleItemPosition(
+                recyclerView = recyclerView,
+                offsetY = offsetY
+            )
             val indexTab = if (firstVisibleItemPosition == 0) 0
             else items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
 
