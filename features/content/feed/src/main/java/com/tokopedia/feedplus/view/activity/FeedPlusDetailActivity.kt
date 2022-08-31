@@ -104,8 +104,5 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         return findViewById(R.id.shop_info_card)
     }
 
-    fun getFooterLayout(): View? {
-        return findViewById(R.id.footer)
-    }
 
 }

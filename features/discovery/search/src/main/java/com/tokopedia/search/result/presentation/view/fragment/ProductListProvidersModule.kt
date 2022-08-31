@@ -8,8 +8,19 @@ import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 
 @Module
+class ProductListFragmentModule(
+    private val productListFragment: ProductListFragment
+) {
+
+    @SearchScope
+    @Provides
+    fun provideFragment(): ProductListFragment = productListFragment
+}
+
+@Module(includes = [ProductListFragmentModule::class])
 abstract class ProductListProvidersModule {
 
     @Binds

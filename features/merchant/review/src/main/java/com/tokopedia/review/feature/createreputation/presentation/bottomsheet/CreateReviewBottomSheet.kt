@@ -11,13 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -50,7 +44,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.SubmitReviewRequestErrorState
-import com.tokopedia.review.feature.createreputation.presentation.widget.BaseCreateReviewCustomView
+import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymous
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewMediaPicker
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewRating
@@ -322,17 +316,9 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     private inner class ActivityResultHandler {
         private fun handleMediaPickerResult(data: Intent) {
-            val mediaCount = if (viewModel.shouldUseUniversalMediaPicker()) {
-                val result = MediaPicker.result(data)
-                viewModel.updateMediaPicker(result.originalPaths)
-                result.originalPaths.size
-            } else {
-                val result = ImagePickerResultExtractor.extract(data)
-                val selectedImage = result.imageUrlOrPathList
-                val imagesFedIntoPicker = result.imagesFedIntoPicker
-                viewModel.updateMediaPicker(selectedImage, imagesFedIntoPicker)
-                selectedImage.size
-            }
+            val result = MediaPicker.result(data)
+            viewModel.updateMediaPicker(result.originalPaths)
+            val mediaCount = result.originalPaths.size
             trackingHandler.trackOnReceiveMediaFromMediaPicker(mediaCount)
         }
 
@@ -849,7 +835,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private inner class BaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener {
+    private inner class BaseCreateReviewCustomViewListener: BaseReviewCustomView.Listener {
         override fun onRequestClearTextAreaFocus() {
             viewModel.updateTextAreaHasFocus(hasFocus = false)
         }
@@ -912,31 +898,24 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private inner class MediaPickerListener: CreateReviewMediaPicker.Listener {
         private fun goToMediaPicker() {
             context?.let {
-                val intent = if (viewModel.shouldUseUniversalMediaPicker()) {
-                    trackingHandler.trackOpenUniversalMediaPicker()
-                    MediaPicker.intent(it) {
-                        pageSource(PageSource.Review)
-                        modeType(ModeType.COMMON)
-                        maxMediaItem(MAX_IMAGE_COUNT)
-                        maxVideoItem(MAX_VIDEO_COUNT)
-                        maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
-                    }
-                } else {
-                    val builder = ImagePickerBuilder.getSquareImageBuilder(it)
-                        .withSimpleEditor()
-                        .withSimpleMultipleSelection(viewModel.getSelectedMediasUrl())
-                        .apply { title = getString(R.string.image_picker_title) }
-                    RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER).apply {
-                        putImagePickerBuilder(builder)
-                        putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
-                    }
+                trackingHandler.trackOpenUniversalMediaPicker()
+                val intent = MediaPicker.intent(it) {
+                    pageSource(PageSource.Review)
+                    modeType(ModeType.COMMON)
+                    maxMediaItem(MAX_IMAGE_COUNT)
+                    maxVideoItem(MAX_VIDEO_COUNT)
+                    maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
                 }
                 startActivityForResult(intent, CreateReviewFragment.REQUEST_CODE_IMAGE)
             }
         }
 
-        override fun onAddMediaClicked() {
-            goToMediaPicker()
+        override fun onAddMediaClicked(enabled: Boolean) {
+            if (enabled) {
+                goToMediaPicker()
+            } else {
+                viewModel.enqueueDisabledAddMoreMediaToaster()
+            }
         }
 
         override fun onRemoveMediaClicked(media: CreateReviewMediaUiModel) {

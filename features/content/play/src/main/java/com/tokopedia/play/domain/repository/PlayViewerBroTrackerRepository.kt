@@ -1,6 +1,5 @@
 package com.tokopedia.play.domain.repository
 
-import com.tokopedia.play.view.type.PlaySource
 
 interface PlayViewerBroTrackerRepository {
 
@@ -11,6 +10,6 @@ interface PlayViewerBroTrackerRepository {
 
     suspend fun trackVisitChannel(
         channelId: String,
-        source: PlaySource,
+        sourceType: String,
     )
 }

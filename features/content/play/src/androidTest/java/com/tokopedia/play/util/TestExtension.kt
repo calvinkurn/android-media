@@ -21,14 +21,6 @@ import org.hamcrest.Matcher
 /**
  * Custom ViewAction to click on a child view with specified id
  */
-fun clickOnViewChild(viewId: Int) = object : ViewAction {
-    override fun getConstraints() = null
-
-    override fun getDescription() = "Click on a child view with specified id."
-
-    override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById(viewId))
-}
-
 fun orientationChangeAction(orientation: Int) = object : ViewAction {
 
     override fun getDescription(): String = "change orientation to $orientation"

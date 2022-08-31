@@ -15,20 +15,18 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.mock.ShopOpenMockResponseConfig
+import com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisionerFragment
 import com.tokopedia.shop.open.util.clickClickableSpan
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -46,12 +44,11 @@ class ShopOpenAnalyticTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopOpenRevampActivity> = IntentsTestRule(ShopOpenRevampActivity::class.java, false, false)
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ShopOpenMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
         activityRule.launchActivity(Intent())
@@ -60,7 +57,6 @@ class ShopOpenAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.idlingResource)
     }
@@ -162,7 +158,7 @@ class ShopOpenAnalyticTest {
 
     private fun doAnalyticDebuggerTest() {
         assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH),
+                cassavaRule.validate(SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH),
                 hasAllSuccess()
         )
     }

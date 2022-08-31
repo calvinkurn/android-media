@@ -8,6 +8,13 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven {
+            url "${gcp_artifactory_url}" + "/libs-release-local";
+            credentials {
+                username = "${gcp_artifactory_username}"
+                password = "${gcp_artifactory_password}"
+            }
+        }
+        maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
