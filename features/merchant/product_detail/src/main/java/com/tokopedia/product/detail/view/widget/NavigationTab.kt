@@ -143,6 +143,27 @@ class NavigationTab(
         } else recyclerView?.suppressLayout(false)
     }
 
+    /**
+     * ProductDetailNavigation will render front of recyclerview
+     * layoutManager.findFirstVisibleItemPosition -> is doesn't aware of actual visible item
+     *
+     * we should manually determine if the item position if visible in screen
+     * (with nav tab in from of recyclerview)
+     */
+    private fun calculateFirstVisibleItemPosition(recyclerView: RecyclerView, offsetY: Int): Int {
+        val layoutManager = recyclerView.layoutManager
+        if (layoutManager !is LinearLayoutManager) return -1
+        val position = layoutManager.findFirstVisibleItemPosition()
+        val someItem = layoutManager.findViewByPosition(position)
+        val rectItem = Rect()
+        someItem?.getGlobalVisibleRect(rectItem)
+        val rectRv = Rect()
+        recyclerView.getGlobalVisibleRect(rectRv)
+        return if ((rectItem.bottom - rectRv.top) <= offsetY) {
+            position + 1
+        } else position
+    }
+
     data class Item(
         val label: String,
         private val positionUpdater: () -> Int
@@ -176,7 +197,7 @@ class NavigationTab(
         private fun getFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
             val layoutManager = recyclerView.layoutManager
             if (layoutManager !is LinearLayoutManager) return -1
-            return layoutManager.findFirstVisibleItemPosition()
+            return calculateFirstVisibleItemPosition(recyclerView, offsetY = navTabPositionOffsetY)
         }
 
         private fun delayedShow() {
@@ -250,29 +271,8 @@ class NavigationTab(
             if (enableContentChangeListener) updateSelectedTab(recyclerView)
         }
 
-        /**
-         * ProductDetailNavigation will render front of recyclerview
-         * layoutManager.findFirstVisibleItemPosition -> is doesn't aware of nav tab
-         *
-         * we should manually determine if the item position if visible in screen
-         * (with nav tab in from of recyclerview)
-         */
-        private fun calculateFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return -1
-            val position = layoutManager.findFirstVisibleItemPosition()
-            val someItem = layoutManager.findViewByPosition(position)
-            val rectItem = Rect()
-            someItem?.getGlobalVisibleRect(rectItem)
-            val rectRv = Rect()
-            recyclerView.getGlobalVisibleRect(rectRv)
-            return if ((rectItem.bottom - rectRv.top) <= view.height) {
-                position + 1
-            } else position
-        }
-
         private fun updateSelectedTab(recyclerView: RecyclerView) {
-            val firstVisibleItemPosition = calculateFirstVisibleItemPosition(recyclerView)
+            val firstVisibleItemPosition = calculateFirstVisibleItemPosition(recyclerView, offsetY = view.height)
             val indexTab = if (firstVisibleItemPosition == 0) 0
             else items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
 
