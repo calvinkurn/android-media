@@ -1,7 +1,12 @@
 package com.tokopedia.entertainment.home.utils
 
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
-import com.tokopedia.entertainment.home.adapter.viewmodel.*
+import com.tokopedia.entertainment.home.adapter.viewmodel.BannerModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.TickerModel
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 

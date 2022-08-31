@@ -40,7 +40,11 @@ import com.tokopedia.entertainment.pdp.adapter.factory.EventPDPFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter
 import com.tokopedia.entertainment.pdp.common.util.EventShare
-import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
+import com.tokopedia.entertainment.pdp.data.Facilities
+import com.tokopedia.entertainment.pdp.data.Outlet
+import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.ValueBullet
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPModel
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPTabEntity
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour

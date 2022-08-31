@@ -37,7 +37,13 @@ import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.EventPDPTicket
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketBanner
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketGroup
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
+import com.tokopedia.entertainment.pdp.data.PackageItem
+import com.tokopedia.entertainment.pdp.data.PackageV3
+import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
@@ -59,15 +65,25 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
-import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
-import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import java.util.Date
+import java.util.TimeZone
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtDate
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.loaderUbah
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtUbah
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtPlaceHolderTglKunjungan
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.containerEventBottom
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.pilihTicketBtn
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.rvEventTicketList
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.scroll_ticket_pdp
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.swipe_refresh_layout
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.txtTotalHarga
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.viewBottom
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.accordionEventPDPTicket
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.tgEventTicketRecommendationTitle
+import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.bottom_sheet_calendar
 
 class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFactory>(),
         OnBindItemTicketListener, OnCoachmarkListener {

@@ -4,7 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.digital_deals.data.*
+import com.tokopedia.digital_deals.data.CartData
+import com.tokopedia.digital_deals.data.DealsVerifyRequest
+import com.tokopedia.digital_deals.data.DealsVerifyResponse
+import com.tokopedia.digital_deals.data.ItemMap
+import com.tokopedia.digital_deals.data.MetaData
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealsQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -53,7 +57,7 @@ class DealsVerifyViewModel @Inject constructor(
                 cartdata = CartData(
                     metadata = MetaData(
                             categoryName = categoryName,
-                            totalPrice = (currentQuantity * dealsResponse.salesPrice).toLong(),
+                            totalPrice = (currentQuantity * dealsResponse.salesPrice),
                             quantity = currentQuantity,
                             productIds = listOf(dealsResponse.id.toString()),
                             productNames = listOf(dealsResponse.displayName),

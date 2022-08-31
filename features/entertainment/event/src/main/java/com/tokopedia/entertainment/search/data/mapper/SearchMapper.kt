@@ -1,10 +1,21 @@
 package com.tokopedia.entertainment.search.data.mapper
 
-import android.content.res.Resources
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
-import com.tokopedia.entertainment.search.adapter.viewholder.*
-import com.tokopedia.entertainment.search.adapter.viewmodel.*
-import com.tokopedia.entertainment.search.data.*
+import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewmodel.FirstTimeModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEmptyStateModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
+import com.tokopedia.entertainment.search.data.CategoryModel
+import com.tokopedia.entertainment.search.data.EventDetailResponse
+import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
+import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
+import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 

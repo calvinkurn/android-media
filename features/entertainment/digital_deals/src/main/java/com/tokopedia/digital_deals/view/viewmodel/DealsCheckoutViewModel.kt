@@ -5,13 +5,25 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.digital_deals.data.*
+import com.tokopedia.digital_deals.data.CartInfo
+import com.tokopedia.digital_deals.data.DealCheckoutGeneral
+import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstant
+import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstantNoPromo
+import com.tokopedia.digital_deals.data.DealCheckoutGeneralNoPromo
+import com.tokopedia.digital_deals.data.DealsCheckoutInstantResponse
+import com.tokopedia.digital_deals.data.DealsCheckoutResponse
+import com.tokopedia.digital_deals.data.DealsGeneral
+import com.tokopedia.digital_deals.data.DealsInstant
+import com.tokopedia.digital_deals.data.DealsMetaDataCheckout
+import com.tokopedia.digital_deals.data.EventVerifyResponse
+import com.tokopedia.digital_deals.data.ItemMapCheckout
+import com.tokopedia.digital_deals.data.ItemMapResponse
+import com.tokopedia.digital_deals.data.MetaDataResponse
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealsQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
@@ -168,7 +180,7 @@ class DealsCheckoutViewModel @Inject constructor(
 
       private fun convertStringListtoIntList(listString: List<String>): List<Int> {
             return listString.map {
-                  it.toIntOrZero()
+                  it.toIntSafely()
             }
       }
 
