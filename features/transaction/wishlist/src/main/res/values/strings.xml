@@ -74,6 +74,7 @@
     <string name="collection_item_delete_confirmation_desc">Barang akan terhapus juga dari semua Koleksi.</string>
     <string name="collection_item_add_bulk_confirmation_title">Tambahkan %d barang ke Koleksi %s?</string>
 
+    <string name="single_collection_inside_delete_confirmation_title">Hapus barang</string>
     <string name="collection_inside_delete_confirmation_title">Hapus %d barang</string>
     <string name="collection_inside_delete_confirmation_desc">Jika hapus dari Koleksi saja, barang akan tetap tersimpan di Wishlist.</string>
     <string name="collection_inside_delete_confirmation_button_primary">Hapus dari Koleksi Saja</string>

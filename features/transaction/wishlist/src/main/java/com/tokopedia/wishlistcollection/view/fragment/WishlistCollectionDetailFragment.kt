@@ -1615,9 +1615,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showDeleteCollectionItemConfirmationDialog(count: Int, productId: String) {
+        var titleDialog = getString(Rv2.string.single_collection_inside_delete_confirmation_title)
+        if (count > 1) titleDialog = getString(Rv2.string.collection_inside_delete_confirmation_title, count)
         val dialog =
             context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.setTitle(getString(Rv2.string.collection_inside_delete_confirmation_title, count))
+        dialog?.setTitle(titleDialog)
         dialog?.setDescription(getString(Rv2.string.collection_inside_delete_confirmation_desc))
         dialog?.setPrimaryCTAText(getString(Rv2.string.collection_inside_delete_confirmation_button_primary))
         dialog?.setPrimaryCTAClickListener {
