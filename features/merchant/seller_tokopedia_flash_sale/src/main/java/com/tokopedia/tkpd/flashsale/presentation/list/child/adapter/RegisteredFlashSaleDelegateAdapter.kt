@@ -6,7 +6,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -21,7 +20,10 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.Date
 
-class RegisteredFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit): DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
+class RegisteredFlashSaleDelegateAdapter(
+    private val onCardClicked: (Int) -> Unit,
+    private val onAddProductButtonClicked: (Int) -> Unit
+) : DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
     (RegisteredFlashSaleItem::class.java) {
 
     companion object{
@@ -44,7 +46,7 @@ class RegisteredFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) 
     inner class ViewHolder(private val binding : StfsItemRegisteredFlashSaleBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onFlashSaleClicked(adapterPosition) }
+            binding.root.setOnClickListener { onCardClicked(adapterPosition) }
         }
 
         fun bind(item: RegisteredFlashSaleItem) {
@@ -61,6 +63,7 @@ class RegisteredFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) 
             )
             binding.tpgDescription.setDescription(item)
             binding.timer.setTimer(item)
+            handleButtonClickAction(item)
         }
 
         private fun TextView.setDescription(item: RegisteredFlashSaleItem) {
@@ -159,6 +162,16 @@ class RegisteredFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) 
                     timer.targetDate = endDate.toCalendar()
                 }
                 else -> {}
+            }
+        }
+
+        private fun handleButtonClickAction(item: RegisteredFlashSaleItem) {
+            binding.btnAddProduct.setOnClickListener {
+                if (item.status == FlashSaleStatus.NO_REGISTERED_PRODUCT) {
+                    onAddProductButtonClicked(adapterPosition)
+                } else {
+                    onCardClicked(adapterPosition)
+                }
             }
         }
     }

@@ -28,7 +28,7 @@
     <string name="stfs_selection_ends_in">Seleksi berakhir dalam</string>
     <string name="stfs_campaign_starts_in">Campaign dimulai dalam</string>
     <string name="stfs_campaign_quota">Kuota Campaign</string>
-    <string name="stfs_full_quota">Kuota penuh</string>
+    <string name="stfs_full_quota">Kuota penuh!</string>
     <string name="stfs_register">Daftar</string>
     <string name="stfs_add_product">Tambah Produk</string>
     <string name="stfs_change_product">Ubah Produk</string>

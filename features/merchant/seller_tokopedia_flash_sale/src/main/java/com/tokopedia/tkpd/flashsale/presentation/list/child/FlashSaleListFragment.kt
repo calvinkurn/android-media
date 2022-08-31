@@ -83,7 +83,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
-            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked, onAddProductClicked))
             .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(LoadingDelegateAdapter())
@@ -517,6 +517,12 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
                 tabName
             )
         }
+    }
+
+    private val onAddProductClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = selectedFlashSale.id()
+        //TODO: Navigate to add product page
     }
 
 }
