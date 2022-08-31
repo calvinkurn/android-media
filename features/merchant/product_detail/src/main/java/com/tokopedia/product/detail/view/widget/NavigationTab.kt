@@ -53,6 +53,7 @@ class NavigationTab(
     private var impressNavigation = false
     private var isVisible = false
     private var enableBlockingTouch = true
+    private var navTabPositionOffsetY = 0
 
     init {
         addView(view)
@@ -63,8 +64,10 @@ class NavigationTab(
         recyclerView: RecyclerView,
         items: List<Item>,
         enableBlockingTouch: Boolean,
-        listener: NavigationListener
+        listener: NavigationListener,
+        offsetY: Int = 0
     ) {
+        navTabPositionOffsetY = offsetY
         recyclerView.removeOnScrollListener(onScrollListener)
         recyclerView.removeOnScrollListener(onContentScrollListener)
 
@@ -291,7 +294,7 @@ class NavigationTab(
             return super.calculateDyToMakeVisible(
                 view,
                 snapPreference
-            ) + this@NavigationTab.view.height
+            ) + this@NavigationTab.view.height + navTabPositionOffsetY
         }
 
         override fun getVerticalSnapPreference(): Int {

@@ -67,6 +67,7 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -2910,8 +2911,19 @@ open class DynamicProductDetailFragment :
         val navigation = binding?.pdpNavigation
         getRecyclerView()?.let { recyclerView ->
             if (items.isEmpty()) navigation?.stop(recyclerView)
-            else navigation?.start(recyclerView, items, this)
+            else {
+                val offsetY = getNavTabBarOffset(isToolbarTransparent = data.isToolbarTransparent)
+                navigation?.start(recyclerView, items, this, offsetY =  offsetY)
+            }
         }
+    }
+
+    private fun getNavTabBarOffset(
+        isToolbarTransparent: Boolean
+    ) = if (isToolbarTransparent) {
+        navToolbar?.height.orZero()
+    } else {
+        0
     }
 
     override fun onButtonFollowNplClick() {

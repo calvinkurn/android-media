@@ -38,10 +38,11 @@ class ProductDetailNavigation(
     fun start(
         recyclerView: RecyclerView,
         items: List<NavigationTab.Item>,
-        listener: DynamicProductDetailListener
+        listener: DynamicProductDetailListener,
+        offsetY: Int = 0,
     ) {
         this.listener = listener
-        navigationTab.start(recyclerView, items, enableBlockingTouch, this)
+        navigationTab.start(recyclerView, items, enableBlockingTouch, this, offsetY = offsetY)
         backToTop.start(recyclerView, enableBlockingTouch, this)
     }
 
