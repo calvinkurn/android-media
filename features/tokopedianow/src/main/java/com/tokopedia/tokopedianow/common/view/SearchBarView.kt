@@ -133,8 +133,7 @@ class SearchBarView (
         binding.editText.apply {
             showKeyboard(this)
 
-            typeface = Typography
-                .getFontType(
+            typeface = Typography.getFontType(
                     context = context,
                     isBold = false,
                     fontVariant = Typography.DISPLAY_2
@@ -148,7 +147,7 @@ class SearchBarView (
 
             setOnEditorActionListener { _, _, _ ->
                 submitText(
-                    text = text.toString()
+                    text = text?.trim().toString()
                 )
                 hideKeyboard(
                     view = this
@@ -159,12 +158,10 @@ class SearchBarView (
     }
 
     private fun submitText(
-        text: CharSequence
+        text: String
     ) {
-        if (this::onTextSubmitListener.isInitialized) {
-            onTextSubmitListener(
-                text.trim().toString()
-            )
+        if (this::onTextSubmitListener.isInitialized && text.isNotBlank()) {
+            onTextSubmitListener(text)
         }
     }
 
