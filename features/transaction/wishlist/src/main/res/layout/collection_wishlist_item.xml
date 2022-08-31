@@ -40,8 +40,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:useDefaultMargins="true">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_collection_1"
