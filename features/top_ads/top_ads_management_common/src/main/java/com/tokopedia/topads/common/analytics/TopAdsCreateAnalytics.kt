@@ -404,7 +404,7 @@ class TopAdsCreateAnalytics {
     fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_TOP_ADS,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
+            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
             KEY_EVENT_ACTION to eventAction,
             KEY_EVENT_LABEL to eventLabel,
             KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,

@@ -15,20 +15,16 @@ class TopAdsGroupDetailTrackerImpl @Inject constructor() :
         )
     }
 
-    override fun bidChangeConfirmationDialogPositiveClick(isAutomatic: Boolean) {
-        if (!isAutomatic) {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoBidToggleTopAdsGroupDetailEvent(
-                CLICK_AKTIFKAN_ATUR_OTOMATIS, ""
-            )
-        }
+    override fun bidChangeConfirmationDialogPositiveClick() {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoBidToggleTopAdsGroupDetailEvent(
+            CLICK_AKTIFKAN_ATUR_OTOMATIS, ""
+        )
     }
 
-    override fun bidChangeConfirmationDialogNegativeClick(isAutomatic: Boolean) {
-        if (!isAutomatic) {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoBidToggleTopAdsGroupDetailEvent(
-                CLICK_BATALKAN_ATUR_OTOMATIS, ""
-            )
-        }
+    override fun bidChangeConfirmationDialogNegativeClick() {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoBidToggleTopAdsGroupDetailEvent(
+            CLICK_BATALKAN_ATUR_OTOMATIS, ""
+        )
     }
 
     override fun bidChangeToManualLanjuktanClicked() {
