@@ -2,7 +2,6 @@ package com.tokopedia.media.preview.data.repository
 
 import android.content.Context
 import com.tokopedia.picker.common.utils.ImageCompressor
-import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
@@ -19,10 +18,7 @@ class ImageCompressionRepositoryImpl(
         return flow {
             emit(
                 paths.filter {
-                    val isExist = File(it).exists()
-                    val isImage = it.asPickerFile().isImage()
-
-                    isExist && isImage
+                    File(it).exists()
                 }.map {
                     ImageCompressor.compress(
                         context,
