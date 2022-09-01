@@ -1,8 +1,10 @@
 package com.tokopedia.play.view.bottomsheet
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -316,6 +318,17 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
     override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
         playViewModel.hideUserReportSubmissionSheet()
+
+        /**
+         * Hacky but can be improved, this bottom sheet has it own keyboard because it overlayed the bottom sheet
+         */
+        playViewModel.onKeyboardHidden()
+        view.rootView.hideKeyboard()
+    }
+
+    private fun View.hideKeyboard() {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
