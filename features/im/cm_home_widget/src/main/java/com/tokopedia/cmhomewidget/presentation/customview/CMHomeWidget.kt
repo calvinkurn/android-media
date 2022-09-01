@@ -25,6 +25,7 @@ import com.tokopedia.cmhomewidget.presentation.adapter.decorator.CMHomeWidgetIte
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetPaymentCardViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @CMHomeWidgetScope
@@ -203,7 +204,12 @@ class CMHomeWidget @JvmOverloads constructor(
 
     override fun onPaymentCardClick(dataItem: CMHomeWidgetPaymentData) {
         sendCMHomeWidgetClickEvent()
-        startRequiredActivity(dataItem.appLink)
+        startWebView(dataItem.appLink)
+    }
+
+    private fun startWebView(urlString: String?) {
+        val webViewAppLink = URLEncoder.encode(urlString, "UTF-8")
+        RouteManager.route(context, webViewAppLink)
     }
 
     override fun onPaymentBtnClick(dataItem: CMHomeWidgetPaymentData) {
