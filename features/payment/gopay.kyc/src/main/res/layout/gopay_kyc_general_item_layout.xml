@@ -20,7 +20,7 @@
             android:id="@+id/verticalLineView"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/grey_outline" />
+            android:background="@color/Unify_NN200" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/goPayBenefitTitle"
@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:paddingHorizontal="@dimen/go_pay_kyc_dp_12"
+            android:paddingHorizontal="@dimen/unify_space_12"
             android:paddingTop="@dimen/go_pay_kyc_dp_10"
             android:paddingBottom="@dimen/go_pay_kyc_dp_10"
             android:textColor="@color/Unify_NN950"
@@ -47,7 +47,7 @@
             android:id="@+id/goPayBenefit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/go_pay_kyc_dp_12"
+            android:paddingHorizontal="@dimen/unify_space_12"
             android:paddingTop="@dimen/go_pay_kyc_dp_10"
             android:paddingBottom="@dimen/go_pay_kyc_dp_10"
             tools:text="Rp1.00.00"
@@ -83,7 +83,7 @@
                 android:id="@+id/goPayPlusBenefit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/go_pay_kyc_dp_12"
+                android:paddingHorizontal="@dimen/unify_space_12"
                 android:paddingTop="@dimen/go_pay_kyc_dp_10"
                 android:paddingBottom="@dimen/go_pay_kyc_dp_10"
                 tools:text="Rp1.00.00"
@@ -111,7 +111,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/go_pay_kyc_dp_1"
-        android:background="@color/grey_outline"
+        android:background="@color/Unify_NN200"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gopayKycBenefitRow" />
 

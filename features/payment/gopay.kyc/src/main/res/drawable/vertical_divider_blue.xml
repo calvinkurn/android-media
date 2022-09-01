@@ -3,10 +3,10 @@
     android:fromDegrees="90"
     android:toDegrees="90">
     <shape android:shape="line">
-        <solid android:color="#00AED6" />
+        <solid android:color="@color/gopay_blue" />
         <stroke
             android:width="2dp"
-            android:color="#00AED6"
+            android:color="@color/gopay_blue"
             />
     </shape>
 </rotate>
