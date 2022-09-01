@@ -126,7 +126,7 @@ class PartialContentView(
         }
 
         textDiscountRed.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount.toString())
+            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount)
             show()
         }
         hideGimmick(campaign)

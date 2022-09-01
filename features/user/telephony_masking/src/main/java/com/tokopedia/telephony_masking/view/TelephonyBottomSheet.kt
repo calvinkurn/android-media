@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.telephony_masking.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -58,7 +59,7 @@ object TelephonyBottomSheet {
         privacy.setOnClickListener {
             RouteManager.route(
                 context,
-                ApplinkConstInternalGlobal.TERM_PRIVACY,
+                ApplinkConstInternalUserPlatform.TERM_PRIVACY,
                 ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
             )
         }

@@ -22,7 +22,8 @@ const val TYPE_FEED_X_CARD_PLAY: String = "FeedXCardPlay"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
 const val TYPE_TOPADS_HEADLINE_NEW = "topads_headline_new"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
-
+const val TYPE_LONG_VIDEO: String = "long-video"
+const val TYPE_VIDEO: String = "video"
 const val TYPE_IMAGE = "image"
 
 object DynamicFeedNewMapper {

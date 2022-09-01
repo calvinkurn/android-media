@@ -474,8 +474,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                     bundleType = it.bundleType,
                     bundlePosition = it.bundlePosition,
                     priceCut = it.priceCut,
-                    cartId = it.cartId,
-                    quantity = it.quantity
+                    atcItems = it.atcItems
                 )
                 STATE_PRODUCT_BUNDLE_RECOM_CLICKED -> analytics.eventClickProductBundleRecom(
                     shopId = it.shopId,
@@ -558,6 +557,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
+            if (it == null) return@Observer
+
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 dismiss()
             }

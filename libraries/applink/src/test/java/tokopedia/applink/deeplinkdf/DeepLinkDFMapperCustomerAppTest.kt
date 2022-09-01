@@ -142,45 +142,51 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check interest pick appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://interestpick"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check internal affiliate create post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal affiliate create post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/create_post/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check internal affiliate draft post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal affiliate draft post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_AFFILIATE}/draft/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check affiliate edit appLink then should return DF_BASE in customerapp`() {
+    fun `check affiliate edit appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/affiliate/12345/edit"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check internal content create post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal content create post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/create_post/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check internal content draft post appLink then should return DF_BASE in customerapp`() {
+    fun `check internal content draft post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/draft/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
-    fun `check shop post edit appLink then should return DF_BASE in customerapp`() {
+    fun `check shop post edit appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
         val appLink = "${ApplinkConstInternalContent.INTERNAL_CONTENT}/content-shop/12345/edit"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CREATE_POST)
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
+    }
+
+    @Test
+    fun `check internal new create post appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
+        val appLink = ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
+    }
+
+    @Test
+    fun `check internal new image picker insta appLink then should return DF_FEED_CONTENT_CREATION in customerapp`() {
+        val appLink = ApplinkConstInternalGlobal.IMAGE_PICKER_V2
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_FEED_CONTENT_CREATION)
     }
 
     @Test
@@ -766,14 +772,8 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check setting profile appLink then should return DF_USER_SETTINGS in customerapp`() {
-        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/setting-profile"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
-    }
-
-    @Test
     fun `check profile revamp appLink then should return DF_USER_SETTINGS in customerapp`() {
-        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/profile-info"
+        val appLink = "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/setting-profile"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_SETTINGS)
     }
 
