@@ -9,7 +9,7 @@ class ListGridItemDecoration: RecyclerView.ItemDecoration() {
 
     companion object {
         private const val VERTICAL_GAP_DP = 12
-        private const val MARGIN_LEFT_DP = 16
+        private const val HORIZONTAL_MARGIN = 16
     }
 
     override fun getItemOffsets(
@@ -21,9 +21,9 @@ class ListGridItemDecoration: RecyclerView.ItemDecoration() {
         val position = parent.getChildAdapterPosition(view)
         val itemCount = state.itemCount
 
-        val left = MARGIN_LEFT_DP.toPx()
+        val horizontalMargin = HORIZONTAL_MARGIN.toPx()
         val bottom = if (position == itemCount - 1) 0 else VERTICAL_GAP_DP.toPx()
 
-        outRect.set(left, 0, 0, bottom)
+        outRect.set(horizontalMargin, 0, horizontalMargin, bottom)
     }
 }

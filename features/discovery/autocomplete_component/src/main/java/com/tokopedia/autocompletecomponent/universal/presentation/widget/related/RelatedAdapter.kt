@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class RelatedAdapter(
-    private val relatedItemListener: RelatedItemListener
+    private val relatedItemListener: RelatedItemListener,
+    private val type: Int,
 ): RecyclerView.Adapter<RelatedItemViewHolder>() {
 
     private val list = ArrayList<RelatedItemDataView>()
@@ -19,7 +20,7 @@ class RelatedAdapter(
     }
 
     override fun onBindViewHolder(holder: RelatedItemViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], type)
     }
 
     override fun getItemCount(): Int {
