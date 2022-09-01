@@ -79,7 +79,7 @@
         tools:ignore="PxUsage"
         />
 
-    <com.tokopedia.feedcomponent.view.widget.FlashSaleCampaignUpcomingView
+    <com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
         android:id="@+id/feed_fst"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

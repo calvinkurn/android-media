@@ -410,7 +410,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
         },
-        listener = object : FlashSaleCampaignUpcomingView.Listener {
+        listener = object : FlashSaleRilisanCampaignUpcomingView.Listener {
             override fun onTimerFinish() {
 
             }
@@ -657,7 +657,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ASGC_RILISAN_SPECIAL ->  mData.campaign.name
                 else -> String.EMPTY
             }
-            followCount.show()
+            followCount.showWithCondition(followCount.text.isNotEmpty())
         }
 
 

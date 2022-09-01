@@ -16,7 +16,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
-import com.tokopedia.feedcomponent.view.widget.FlashSaleCampaignUpcomingView
+import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
@@ -29,14 +29,14 @@ class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
-    private val fstListener: FlashSaleCampaignUpcomingView.Listener?
+    private val fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?
 ) : BaseViewHolder(itemView) {
 
     private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
     private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
-    private val flashSaleViewCard = itemView.findViewById<FlashSaleCampaignUpcomingView>(R.id.feed_fst)
+    private val flashSaleViewCard = itemView.findViewById<FlashSaleRilisanCampaignUpcomingView>(R.id.feed_fst)
     private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
 
     private val animationLike = AnimationUtils.loadAnimation(
@@ -262,7 +262,7 @@ class CarouselImageViewHolder(
             parent: ViewGroup,
             dataSource: FeedPostCarouselAdapter.DataSource,
             listener: Listener,
-            fstListener: FlashSaleCampaignUpcomingView.Listener?
+            fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?
         ) = CarouselImageViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(

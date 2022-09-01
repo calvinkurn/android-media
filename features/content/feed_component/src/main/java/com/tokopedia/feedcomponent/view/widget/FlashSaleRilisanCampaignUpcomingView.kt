@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
-class FlashSaleCampaignUpcomingView @JvmOverloads constructor(
+class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
