@@ -4,21 +4,21 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
+import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.setHtmlMessage
+import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.databinding.BottomsheetPriceSuggestionLayoutBinding
 import com.tokopedia.product.addedit.detail.presentation.adapter.SimilarProductAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
@@ -137,6 +137,7 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
             this.context?.run {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
+                binding.aboutPriceRecommendationLayout.show()
             }
         }
         binding?.tpgCtaApply?.setOnClickListener {
@@ -181,8 +182,16 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
                                 priceRange = binding.tpgPriceSuggestionRange.text.toString(),
                                 updatedPrice = it
                         )
-                    }
-                    .launchIn(viewLifecycleOwner.lifecycleScope)
+                    }.launchIn(viewLifecycleOwner.lifecycleScope)
+            // hide "tentang rekomendasi harga" layout when the keyboard is visible
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) binding.aboutPriceRecommendationLayout.hide()
+                else binding.aboutPriceRecommendationLayout.show()
+            }
+            setOnClickListener { binding.aboutPriceRecommendationLayout.hide() }
+        }
+        binding.tfuProductPrice.setKeyImeChangeCallback {
+            binding.aboutPriceRecommendationLayout.show()
         }
     }
 

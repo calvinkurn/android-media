@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify2
+    <com.tokopedia.product.addedit.detail.presentation.customview.TextFieldWithImeCallback
         android:id="@+id/tfu_product_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +85,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:background="@color/Unify_NN50"
         android:paddingHorizontal="16dp"
         android:paddingTop="16dp"
@@ -118,8 +117,9 @@
         android:id="@+id/about_price_recommendation_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/du_bottom"
         app:layout_constraintStart_toStartOf="parent">
 
