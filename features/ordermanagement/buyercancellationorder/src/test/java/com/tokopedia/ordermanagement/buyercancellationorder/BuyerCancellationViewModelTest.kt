@@ -324,7 +324,7 @@ class BuyerCancellationViewModelTest {
     }
 
     @Test
-    fun validateBuyerNormalProductList_shouldReturnMappedListGivenNoBundleDetail() {
+    fun validateBuyerNormalProductList_shouldReturnEmptyMappedListGivenNoBundleDetail() {
         //given
         val cancellationReason =
             BuyerGetCancellationReasonData.Data(
@@ -341,7 +341,38 @@ class BuyerCancellationViewModelTest {
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(result != null)
+        assert(result != null && result.isEmpty())
+    }
+
+    @Test
+    fun validateBuyerNormalProductList_shouldReturnMappedListGivenBundleDetailWithNonBundleListAndEmptybundleList() {
+        //given
+        val cancellationReason =
+            BuyerGetCancellationReasonData.Data(
+                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
+                    haveProductBundle = true,
+                    bundleDetail = BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail(
+                        nonBundleList = listOf(
+                            BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation(
+                                productId = "123",
+                                productName = "satuduatiga",
+                                productPrice = "Rp123",
+                                picture = "www.123.com/123.jpg"
+                            )
+                        ),
+                        bundleList = listOf()
+                    )
+                ))
+        coEvery {
+            getCancellationUseCase.execute(any())
+        } returns Success(cancellationReason)
+
+        //when
+        buyerCancellationViewModel.getCancelReasons("", "")
+
+        //then
+        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
+        assert(result != null && result.isNotEmpty())
     }
 
 }
