@@ -89,27 +89,36 @@ class ProductBottomSheetCardView(
 
         when (item.stock) {
             OutOfStock -> {
-                binding.shadowOutOfStock.show()
-                binding.labelOutOfStock.show()
+                binding.btnProductAtc.show()
+                binding.btnProductBuy.show()
                 binding.btnProductAtc.setDrawable(
                     getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
                 )
                 binding.btnProductBuy.isEnabled = false
                 binding.btnProductAtc.isEnabled = false
+
+                binding.shadowOutOfStock.show()
+                binding.labelOutOfStock.show()
             }
 
             is StockAvailable -> {
-                binding.shadowOutOfStock.hide()
-                binding.labelOutOfStock.hide()
+                binding.btnProductAtc.show()
+                binding.btnProductBuy.show()
                 binding.btnProductBuy.isEnabled = true
                 binding.btnProductAtc.isEnabled = true
                 binding.btnProductAtc.setDrawable(
                     getIconUnifyDrawable(context, IconUnify.ADD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
+
+                binding.shadowOutOfStock.hide()
+                binding.labelOutOfStock.hide()
             }
             is ComingSoon ->{
                 binding.btnProductAtc.hide()
                 binding.btnProductBuy.hide()
+
+                binding.shadowOutOfStock.hide()
+                binding.labelOutOfStock.hide()
             }
         }
 
