@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.gojek.conversations.babble.network.data.OrderChatType
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chat_service.databinding.FragmentChatServiceBinding
 import com.tokopedia.chat_service.di.ChatServiceComponent
@@ -54,31 +55,54 @@ class ChatServiceFragment: BaseDaggerFragment() {
             type = "personal",
             source = "tokopedia-chatservice"
         )
+
+        val channelUrl = "https://integration-api.gojekapi.com"
+        viewModel.setChannelUrl(channelUrl)
+        viewModel.registerActiveChannel()
+
+        viewModel.markChatAsRead()
+
+        viewModel.sendMessage("Hello test 123")
+        viewModel.sendExtensionMessage()
+
+        viewModel.initGroupBooking(
+            "orderId1",
+            0,
+            OrderChatType.getTypeFor("shopper")
+        )
     }
 
     private fun initObservers() {
         viewModel.conversationsChannel.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    binding?.mainTv?.text = it.data.toString()
-                    viewModel.getChatHistory(it.data.url)
+                    Log.d("CreateChannel", "Success - ${it.data}")
+                    viewModel.setChannelUrl(it.data.url)
                 }
                 is Fail -> {
+                    Log.d("CreateChannel", "Error - ${it.throwable.message}")
                     it.throwable.printStackTrace()
                 }
             }
         }
 
         viewModel.conversationsMessage.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    Log.d(TAG, it.data.toString())
-                }
-                is Fail -> {
-                    it.throwable.printStackTrace()
-                }
-            }
+            Log.d(TAG, it.toString())
         }
+
+        viewModel.getAllChannels().observe(viewLifecycleOwner) {
+            Log.d(TAG, it.toString())
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) {
+            Log.d(TAG, it.message.toString())
+            it.printStackTrace()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.deRegisterActiveChannel()
     }
 
     companion object {

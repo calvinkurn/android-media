@@ -1,28 +1,36 @@
 package com.tokopedia.chat_service.domain
 
 import com.gojek.conversations.babble.channel.data.CreateChannelInfo
+import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_service.data.repository.ChatServiceRepository
-import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
 class CreateChannelUseCase @Inject constructor(
-    private val repository: ChatServiceRepository,
-    dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<CreateChannelUseCase.Param, Unit>(dispatcher.io){
-    override fun graphqlQuery(): String = ""
-
-    override suspend fun execute(params: Param) {
-        repository.conversationRepository?.createChannel(
+    private val repository: ChatServiceRepository
+) {
+    operator fun invoke(params: CreateChannelParam) {
+        repository.getConversationRepository().createChannel(
             params.createChannelInfo,
             params.onSuccess,
             params.onError
         )
     }
 
-    data class Param(
+    fun initGroupBookingChat(
+        orderId: String,
+        serviceType: Int,
+        groupBookingListener: ConversationsGroupBookingListener,
+        orderChatType: OrderChatType
+    ) {
+        repository.getConversationRepository().initGroupBookingChat(
+            orderId, serviceType, groupBookingListener, orderChatType
+        )
+    }
+
+    data class CreateChannelParam(
         val createChannelInfo: CreateChannelInfo,
         val onSuccess: (channel: ConversationsChannel) -> Unit,
         val onError: (error: ConversationsNetworkError) -> Unit

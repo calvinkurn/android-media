@@ -1,0 +1,16 @@
+package com.tokopedia.chat_service.domain
+
+import com.tokopedia.chat_service.data.repository.ChatServiceRepository
+import javax.inject.Inject
+
+class RegistrationActiveChannelUseCase @Inject constructor(
+    private val repository: ChatServiceRepository
+) {
+    fun registerActiveChannel(channelUrl: String) {
+        repository.getConversationRepository().softRegisterChannel(channelUrl)
+    }
+
+    fun deRegisterActiveChannel(channelUrl: String) {
+        repository.getConversationRepository().softDeregisterChannel(channelUrl)
+    }
+}
