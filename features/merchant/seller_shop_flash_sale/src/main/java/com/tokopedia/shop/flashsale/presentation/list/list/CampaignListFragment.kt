@@ -600,18 +600,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
             ZERO
         }
 
-        val quotaWording = String.format(
-            getString(R.string.sfs_placeholder_remaining_quota),
-            quotaCounter
-        )
-
         if (hasCampaign || hasDraft) {
-            binding?.tpgRemainingQuotaEmptyState?.gone()
             binding?.btnCreateCampaignEmptyState?.gone()
         } else {
-            binding?.tpgRemainingQuotaEmptyState?.visible()
             binding?.btnCreateCampaignEmptyState?.visible()
-            binding?.tpgRemainingQuotaEmptyState?.text = quotaWording
         }
 
         binding?.searchBar?.isVisible = hasCampaign
@@ -627,7 +619,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun handleSecondTabEmptyState(hasCampaign: Boolean) {
         binding?.btnCreateCampaignEmptyState?.gone()
-        binding?.tpgRemainingQuotaEmptyState?.gone()
 
         if (hasCampaign) {
             binding?.btnNavigateToFirstActiveCampaign?.gone()
