@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.databinding.ActivityCompletePaymentBinding
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.activity_base_simple.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -47,8 +46,6 @@ class CompletePayment : AppCompatActivity() {
         initView()
         initBundleData()
         initUrlLoad()
-
-
     }
 
     private fun initBundleData() {
@@ -126,7 +123,7 @@ class CompletePayment : AppCompatActivity() {
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             delay(90000)
             binding.scroogeExtendedWebview.stopLoading()
-            Toaster.build(parent_view, "Gagal memuat pembayaran. Silakan coba lagi", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(binding.activityCompletepayment, "Gagal memuat pembayaran. Silakan coba lagi", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             finish()
 
         }
