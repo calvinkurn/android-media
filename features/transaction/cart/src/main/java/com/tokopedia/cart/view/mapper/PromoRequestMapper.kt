@@ -121,6 +121,7 @@ object PromoRequestMapper {
             if (voucherOrder.uniqueId == cartShopHolderData.cartString
                 && voucherOrder.shippingId > 0
                 && voucherOrder.spId > 0
+                && voucherOrder.type == "logistic"
             ) {
                 return Pair(voucherOrder.shippingId, voucherOrder.spId)
             }
@@ -136,6 +137,7 @@ object PromoRequestMapper {
             if (voucherOrder.uniqueId == cartShopHolderData.cartString
                 && voucherOrder.shippingId > 0
                 && voucherOrder.spId > 0
+                && voucherOrder.type == "logistic"
             ) {
                 return Pair(voucherOrder.shippingId, voucherOrder.spId)
             }
