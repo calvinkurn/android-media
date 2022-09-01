@@ -1,11 +1,11 @@
-package com.tokopedia.play.broadcaster.di.key
+package com.tokopedia.content.common.di
 
 import androidx.fragment.app.Fragment
 import dagger.MapKey
 import kotlin.reflect.KClass
 
 /**
- * Created by jegul on 27/05/20
+ * Created By : Jonathan Darwin on June 29, 2022
  */
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)

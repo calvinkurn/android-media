@@ -5,7 +5,7 @@ import com.tokopedia.people.views.fragment.UserProfileFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import com.tokopedia.feedcomponent.di.FragmentKey
+import com.tokopedia.content.common.di.FragmentKey
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
 import com.tokopedia.people.views.fragment.FollowerListingFragment
 import com.tokopedia.people.views.fragment.FollowingListingFragment
