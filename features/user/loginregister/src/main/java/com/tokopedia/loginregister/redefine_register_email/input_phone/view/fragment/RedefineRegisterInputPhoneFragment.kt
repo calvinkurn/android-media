@@ -26,6 +26,7 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefine_register_email.common.RedefineRegisterEmailConstants
 import com.tokopedia.loginregister.redefine_register_email.common.intentGoToHome
+import com.tokopedia.loginregister.redefine_register_email.common.intentGoToLoginWithPhone
 import com.tokopedia.loginregister.redefine_register_email.common.intentGoToVerification
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.input_phone.view.viewmodel.RedefineRegisterInputPhoneViewModel
@@ -162,12 +163,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         val offerLoginDialog = RegisteredDialog.createRedefineRegisterInputPhoneOfferLogin(requireActivity(), phone)
 
         offerLoginDialog.setPrimaryCTAClickListener {
-            goToVerification(
-                phone,
-                otpType = RegisterConstants.OtpType.OTP_LOGIN_PHONE_NUMBER,
-                requireActivity(),
-                requestCode = RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_LOGIN
-            )
+            goToPhoneLogin()
             offerLoginDialog.dismiss()
         }
 
@@ -227,17 +223,21 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_LOGIN -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    //get data login
-                }
-            }
             RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER -> {
                 if (resultCode == Activity.RESULT_OK) {
                     //register v2
                 }
             }
         }
+    }
+
+    private fun goToPhoneLogin() {
+        val intent = intentGoToLoginWithPhone(
+            binding?.fieldInputPhone?.editText?.text.toString(),
+            paramSource,
+            requireActivity()
+        )
+        startActivity(intent)
     }
 
     private fun goToHome() {

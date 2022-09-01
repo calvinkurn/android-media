@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.redefine_register_email.domain.GetUserInfoUseCase
 import com.tokopedia.loginregister.redefine_register_email.input_phone.domain.RegisterCheckUseCase
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val registerCheckUseCase: RegisterCheckUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -62,7 +64,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                     RegisteredPhoneState.Ineligible(message = response.data.errors[0])
                 }
                 response.data.isExist -> {
-                    RegisteredPhoneState.Registered()
+                    RegisteredPhoneState.Registered(phoneNumber = phone)
                 }
                 else -> {
                     RegisteredPhoneState.Unregistered(phoneNumber = response.data.view)
@@ -74,10 +76,17 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         })
     }
 
+    fun getUserInfo() {
+        launchCatchError(coroutineContext, {
+            val response = getUserInfoUseCase(Unit)
+        }, {
+
+        })
+    }
+
     companion object {
         const val NOTHING_RESOURCE = 0
         const val RESOURCE_NOT_CHANGED = -1
-        private const val STATUS_USER_ACTIVE = 1
     }
 
 }

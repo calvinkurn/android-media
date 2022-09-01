@@ -10,7 +10,6 @@ object RedefineRegisterEmailConstants {
 
     object Request {
         const val VERIFICATION_EMAIL = 100
-        const val VERIFICATION_PHONE_LOGIN = 200
         const val VERIFICATION_PHONE_REGISTER = 201
     }
 }

@@ -166,7 +166,8 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
-            submitForm()
+            //submitForm()
+            goToInputPhone()
         }
     }
 

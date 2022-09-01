@@ -8,7 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
-fun intentGoToVerification(phone: String = "", email: String = "", otpType: Int, source: String, context: Context): Intent {
+fun intentGoToVerification(phone: String = "", email: String = "", otpType: Int, source: String = "", context: Context): Intent {
     val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -44,5 +44,17 @@ fun intentGoToLoginWithEmail(email: String, source: String, context: Context): I
         source
     )
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+    return intent
+}
+
+fun intentGoToLoginWithPhone(phone: String, source: String, context: Context): Intent {
+    val intent = RouteManager.getIntent(
+        context,
+        ApplinkConstInternalUserPlatform.LOGIN_PHONE,
+        phone,
+        source
+    )
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
     return intent
 }
