@@ -21,6 +21,10 @@ object WishlistV2Utils {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
 
+    fun toDp(dp: Double): Int {
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
+    }
+
     fun getListProductId(): List<String> { return listProductId }
 
     fun organizeWishlistV2Data(

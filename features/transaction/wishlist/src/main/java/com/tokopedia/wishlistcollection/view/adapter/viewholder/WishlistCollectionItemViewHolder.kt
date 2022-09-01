@@ -63,8 +63,14 @@ class WishlistCollectionItemViewHolder(
                     TOTAL_IMG_4 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
+                        val params1: GridLayout.LayoutParams =
+                            GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
+                        params1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                        params1.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                        params1.setMargins(0, 0, WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5))
                         binding.imgCollection1.apply {
                             visible()
+                            layoutParams = params1
                             loadImage(item.dataObject.images[0]) {
                                 overrideSize(Resize(binding.imgCollection1.width, binding.imgCollection1.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
@@ -72,8 +78,14 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        val params2: GridLayout.LayoutParams =
+                            GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
+                        params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                        params2.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                        params2.setMargins(WishlistV2Utils.toDp(1.5), 0, 0, WishlistV2Utils.toDp(1.5))
                         binding.imgCollection2.apply {
                             visible()
+                            layoutParams = params2
                             loadImage(item.dataObject.images[1]) {
                                 overrideSize(Resize(binding.imgCollection2.width, binding.imgCollection2.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
@@ -81,8 +93,14 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        val params3: GridLayout.LayoutParams =
+                            GridLayout.LayoutParams(binding.imgCollection3.layoutParams)
+                        params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                        params3.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                        params3.setMargins(WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), 0)
                         binding.imgCollection3.apply {
                             visible()
+                            layoutParams = params3
                             loadImage(item.dataObject.images[2]) {
                                 overrideSize(Resize(binding.imgCollection3.width, binding.imgCollection3.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
@@ -90,8 +108,14 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        val params4: GridLayout.LayoutParams =
+                            GridLayout.LayoutParams(binding.imgCollection4.layoutParams)
+                        params4.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
+                        params4.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1.0F)
+                        params4.setMargins(WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), WishlistV2Utils.toDp(1.5), 0)
                         binding.imgCollection4.apply {
                             visible()
+                            layoutParams = params4
                             loadImage(item.dataObject.images[3]) {
                                 overrideSize(Resize(binding.imgCollection4.width, binding.imgCollection4.height))
                                 setCacheStrategy(MediaCacheStrategy.NONE)
