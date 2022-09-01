@@ -193,7 +193,6 @@ class PlayViewModel @AssistedInject constructor(
     private val _loadingBuy = MutableStateFlow(false)
     private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
-    private val _engagementWidget = MutableStateFlow(mutableListOf<EngagementUiModel>())
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
@@ -218,7 +217,7 @@ class PlayViewModel @AssistedInject constructor(
                 if(game.interactive !is InteractiveUiModel.Unknown) add(EngagementUiModel.Game(interactive = game.interactive))
             }
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _likeUiState = combine(
         _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
@@ -327,10 +326,11 @@ class PlayViewModel @AssistedInject constructor(
         _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
+        _engagementUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts ->
+        featuredProducts, engagement ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -348,6 +348,7 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
+            engagementUiState = engagement,
         )
     }.stateIn(
         viewModelScope,
@@ -1171,13 +1172,6 @@ class PlayViewModel @AssistedInject constructor(
                 id = "1261",
                 title = "GA sendal",
             )
-            _engagementWidget.update {
-                it.add(EngagementUiModel.Promo(_tagItems.value.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().first(), _tagItems.value.voucher.voucherList.size))
-                it.add(EngagementUiModel.Game(interactive))
-                return@update it.dropWhile { e ->
-                    e is EngagementUiModel.Promo
-                } as MutableList<EngagementUiModel>
-            }
 
             checkReminderStatus()
 
