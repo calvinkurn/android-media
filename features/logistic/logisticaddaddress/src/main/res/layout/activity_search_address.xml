@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:minHeight="?attr/actionBarSize"
-            android:background="@color/Unify_N0">
+            android:background="@color/Unify_Background">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_back"
