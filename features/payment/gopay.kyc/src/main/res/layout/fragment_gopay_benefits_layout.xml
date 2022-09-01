@@ -14,7 +14,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/goPayHeaderBackground"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/go_pay_kyc_dp_154"
+            android:layout_height="@dimen/go_pay_kyc_dp_158"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
