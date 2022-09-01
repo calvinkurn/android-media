@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
@@ -241,6 +242,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
                         else parentViewModel.submitAction(SwitchAccount)
                     }
+                })
+            }
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {}
+
+                    override fun impressTncOnboarding() {}
+
+                    override fun impressCompleteOnboarding() {}
+
+                    override fun clickNextOnTncOnboarding() {}
+
+                    override fun clickNextOnCompleteOnboarding() {}
                 })
             }
         }
@@ -585,7 +599,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         when(state.type) {
             NotEligibleType.Banned -> { toaster.showToaster("banned")}
-            NotEligibleType.NoUsername -> { toaster.showToaster("no username")}
+            NotEligibleType.NoUsername -> {
+                childFragmentManager.beginTransaction()
+                    .add(UGCOnboardingParentFragment::class.java, null, UGCOnboardingParentFragment.TAG)
+                    .commit()
+            }
             NotEligibleType.Unknown -> return
         }
     }
