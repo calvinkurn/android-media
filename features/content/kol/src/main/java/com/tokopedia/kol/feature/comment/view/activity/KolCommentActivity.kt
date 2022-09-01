@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kol.analytics.KolEventTracking
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -54,7 +54,7 @@ class KolCommentActivity : BaseSimpleActivity() {
         val colPosition = bundle[ARGS_POSITION_COLUMN]
         if (colPosition is String) bundle.putInt(ARGS_POSITION_COLUMN, colPosition.toInt())
 
-        return KolCommentFragment.createInstance(bundle)
+        return KolCommentNewFragment.createInstance(bundle)
     }
 
     override fun onBackPressed() {
