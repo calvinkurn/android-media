@@ -5,7 +5,6 @@ data class CriteriaCheckingResult(
     val imageUrl: String = "",
     val categoryResult: CategoryResult = CategoryResult(),
     val ratingResult: RatingResult = RatingResult(),
-    val productScoreResult: ProductScoreResult = ProductScoreResult(),
     val countSoldResult: CountSoldResult = CountSoldResult(),
     val minOrderCheckingResult: MinOrderCheckingResult = MinOrderCheckingResult(),
     val maxAppearanceCheckingResult: MaxAppearanceCheckingResult = MaxAppearanceCheckingResult(),
