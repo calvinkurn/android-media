@@ -440,6 +440,7 @@ open class DynamicProductDetailFragment :
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
     private var alreadyShowMultilocBottomSheet: Boolean = false
+    private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -5395,9 +5396,9 @@ open class DynamicProductDetailFragment :
 
     override fun onClickRecommendationVerticalItem(
         item: RecommendationItem,
-        position: Int,
-        componentTrackDataModel: ComponentTrackDataModel
+        position: Int
     ) {
+        val trackDataModel = verticalRecommendationTrackDataModel ?: return
         DynamicProductDetailTracking.Click.eventRecommendationClick(
             item,
             "",
@@ -5407,9 +5408,28 @@ open class DynamicProductDetailFragment :
             item.pageName,
             item.header,
             viewModel.getDynamicProductInfoP1,
-            componentTrackDataModel
+            trackDataModel
         )
         val intent = ProductDetailActivity.createIntent(requireContext(), item.productId)
         startActivity(intent)
+    }
+
+    override fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel) {
+        verticalRecommendationTrackDataModel = componentTrackDataModel
+    }
+
+    override fun onImpressRecommendationVerticalItem(
+        recommendationItem: RecommendationItem,
+        position: Int
+    ) {
+        val trackDataModel = verticalRecommendationTrackDataModel ?: return
+        eventRecommendationImpression(
+            recommendationItem,
+            "",
+            position,
+            recommendationItem.pageName,
+            recommendationItem.header,
+            trackDataModel
+        )
     }
 }

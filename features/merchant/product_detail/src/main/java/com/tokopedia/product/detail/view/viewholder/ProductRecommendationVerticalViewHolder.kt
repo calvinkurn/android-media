@@ -3,9 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.ViewProductRecommendationVerticalBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -33,27 +31,13 @@ class ProductRecommendationVerticalViewHolder(
             setOnClickListener {
                 listener.onClickRecommendationVerticalItem(
                     item,
-                    element.position,
-                    getComponentTrackData(item.pageName)
+                    element.position
                 )
             }
         }
 
         itemView.addOnImpressionListener(element.impressHolder) {
-            listener.eventRecommendationImpression(
-                item,
-                "",
-                element.position,
-                item.pageName,
-                item.header,
-                getComponentTrackData(item.pageName)
-            )
+            listener.onImpressRecommendationVerticalItem(item, element.position)
         }
     }
-
-    private fun getComponentTrackData(pageName: String) = ComponentTrackDataModel(
-        ProductDetailConstant.PRODUCT_LIST_VERTICAL,
-        pageName,
-        adapterPosition + 1
-    )
 }
