@@ -340,7 +340,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val bundle = this.arguments
         if (bundle != null) {
             val intentData = bundle.getString(DEEP_LINK_URI, "")
-            var uri: Uri = Uri.parse(intentData)
+            val uri: Uri = Uri.parse(intentData)
 
             isAttached = checkForIsAttachedInvoice(uri)
             hashMap = presenter.getValuesForArticleEntry(uri)
@@ -399,7 +399,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
                 if (hashMap.get(CODE)?.isNotEmpty() == true) {
                     val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
-                    var invoice: InvoiceLinkPojo =
+                    val invoice: InvoiceLinkPojo =
                         AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
                             attachInvoiceSingleViewModel
                         )
@@ -413,7 +413,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 if (hashMap.get(ARTICLE_ID)?.isNotEmpty() == true) {
                     val startTime = SendableUiModel.generateStartTime()
                     val msg = hashMap.get(ARTICLE_TITLE).toBlankOrString()
-                    var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
+                    val quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
 
                     presenter.sendQuickReplyInvoice(
                         messageId,
@@ -506,7 +506,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if(!isFloatingInvoiceCancelled) {
 
             val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
-            var invoice: InvoiceLinkPojo =
+            val invoice: InvoiceLinkPojo =
                 AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
                     attachInvoiceSingleViewModel
                 )
@@ -520,7 +520,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         val startTime = SendableUiModel.generateStartTime()
         val msg = replyEditText.text.toString()
-        var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
+        val quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
 
         presenter.sendQuickReplyInvoice(
             messageId,
@@ -565,10 +565,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 R.dimen.dp_chatbot_1,
                 Gravity.CENTER
         )
-        val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
-        val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
-        val paddingTop = resources.getDimension(R.dimen.dp_chatbot_11).toInt()
-        val paddingBottom = resources.getDimension(R.dimen.dp_chatbot_10).toInt()
+        val paddingStart = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)?.toInt() ?: 16
+        val paddingEnd = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)?.toInt() ?: 48
+        val paddingTop = context?.resources?.getDimension(R.dimen.dp_chatbot_11)?.toInt() ?: 11
+        val paddingBottom = context?.resources?.getDimension(R.dimen.dp_chatbot_10)?.toInt() ?: 10
         replyEditTextContainer.background = replyEditTextBg
         replyEditTextContainer.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
@@ -626,7 +626,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
     }
-    private  val TAG = "ChatbotFragment2"
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
@@ -824,14 +823,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private val onGetChatRatingListMessageError: (String) -> Unit = {
         if (view != null) {
-            Toaster.make(view!!, it, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(requireView(), it, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun onError(): (Throwable) -> Unit {
         return {
             if (view != null) {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, it), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(requireView(), ErrorHandler.getErrorMessage(requireView().context, it), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
         }
     }
@@ -1118,7 +1117,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(requireView(), ErrorHandler.getErrorMessage(requireView().context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 getViewState()?.showRetryUploadImages(image, true)
             }
         }
@@ -1469,7 +1468,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onErrorVideoUpload(): (String,VideoUploadUiModel) -> Unit {
         return { errorMsg,video ->
             if (view != null) {
-                Toaster.build(view!!, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(requireView(), errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 getViewState()?.showRetryUploadVideos(video)
             }
         }
