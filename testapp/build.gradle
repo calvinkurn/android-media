@@ -131,8 +131,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.mediapickerCommon)
-	implementation project(rootProject.ext.features.mediaeditor)
-	implementation project(rootProject.ext.features.mediapicker)
-	implementation project(rootProject.ext.features.mediauploader)
 }
