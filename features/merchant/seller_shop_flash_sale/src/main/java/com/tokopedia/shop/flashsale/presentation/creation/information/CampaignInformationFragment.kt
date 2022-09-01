@@ -108,6 +108,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val TWELVE = 12
         private const val SIX_DAYS = 6
         private const val THREE_MONTH = 3
+        private const val THREE_HOUR = 3
         private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
@@ -1088,7 +1089,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         if (isTodayInVpsPeriod) {
             val now = Date()
-            val startDate = now.advanceHourBy(TWO_HOURS)
+            val startDate = now.advanceHourBy(THREE_HOUR)
             val endDate = startDate.advanceMinuteBy(THIRTY_MINUTE)
 
             handleCampaignNewStartDate(startDate)
