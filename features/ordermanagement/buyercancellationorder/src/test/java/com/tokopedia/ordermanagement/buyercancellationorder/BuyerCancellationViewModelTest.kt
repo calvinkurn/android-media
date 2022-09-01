@@ -341,7 +341,9 @@ class BuyerCancellationViewModelTest {
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(result != null && result.isEmpty())
+        assert(result != null)
+        assert(result.isNullOrEmpty())
+
     }
 
     @Test
@@ -372,7 +374,7 @@ class BuyerCancellationViewModelTest {
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(result != null && result.isNotEmpty())
+        assert(!result.isNullOrEmpty())
     }
 
 }
