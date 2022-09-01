@@ -20,8 +20,8 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
     BaseDiffUtilAdapter<EngagementUiModel>() {
 
     init {
-        delegatesManager.addDelegate(GameDelegate(listener))
         delegatesManager.addDelegate(GameFinishedDelegate())
+        delegatesManager.addDelegate(GameDelegate(listener))
         delegatesManager.addDelegate(PromoDelegate(listener))
     }
 
