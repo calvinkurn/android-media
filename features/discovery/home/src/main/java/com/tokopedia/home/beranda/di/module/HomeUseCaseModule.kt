@@ -90,6 +90,7 @@ import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModu
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -373,4 +374,10 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
+
+    @Provides
+    @HomeScope
+    fun provideTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
+        return GetTopAdsHeadlineUseCase(graphqlRepository)
+    }
 }

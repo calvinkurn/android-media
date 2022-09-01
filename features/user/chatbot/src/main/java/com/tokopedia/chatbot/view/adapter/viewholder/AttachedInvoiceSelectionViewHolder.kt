@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by Hendri on 28/03/18.
@@ -62,7 +63,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
         override fun onBindViewHolder(holder: AttachedInvoiceSingleItemViewHolder,
                                       position: Int) {
             list?.getOrNull(position)?.let { holder.bind(it) }
-            holder.itemView.setOnClickListener {
+            holder.pilihButton.setOnClickListener {
                 selectedListener.onInvoiceSelected(
                         AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
                 )
@@ -92,6 +93,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
         private val price: TextView
         private val productImage: ImageUnify
         private val pricePrefix: TextView
+        val pilihButton : UnifyButton
 
         init {
             invoiceDate = itemView.findViewById(R.id.tv_invoice_date)
@@ -101,6 +103,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             pricePrefix = itemView.findViewById(R.id.tv_price_prefix)
             price = itemView.findViewById(R.id.tv_price)
             productImage = itemView.findViewById(R.id.iv_thumbnail)
+            pilihButton = itemView.findViewById(R.id.btn_pilih)
         }
 
         fun bind(element: AttachInvoiceSingleViewModel) {

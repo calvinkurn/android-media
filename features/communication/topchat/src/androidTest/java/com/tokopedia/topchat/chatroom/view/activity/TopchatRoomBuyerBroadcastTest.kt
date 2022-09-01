@@ -11,13 +11,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.hideBanner
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastShown
+import com.tokopedia.topchat.chatroom.view.activity.robot.broadcast.BroadcastResult.assertBroadcastSpamHandler
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -119,18 +118,14 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
     }
 
     private fun assertBroadcastSpamHandlerIsVisible() {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(0, BroadcastSpamHandlerUiModel::class.java)
-        )
+        assertBroadcastSpamHandler()
         onView(withId(R.id.title_bc_handle)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_stop_promo)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_follow_shop)).check(matches(isDisplayed()))
     }
 
     private fun assertBroadcastSpamHandlerIsHidden() {
-        onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(0, BroadCastUiModel::class.java)
-        )
+        assertBroadcastShown()
         onView(withId(R.id.title_bc_handle)).check(doesNotExist())
         onView(withId(R.id.btn_stop_promo)).check(doesNotExist())
         onView(withId(R.id.btn_follow_shop)).check(doesNotExist())
