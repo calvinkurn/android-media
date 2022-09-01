@@ -20,6 +20,24 @@ data class EditorCropRotateModel(
     var isCrop: Boolean,
     var isAutoCrop: Boolean = false
 ): Parcelable {
+
+    fun compareValue(data: EditorCropRotateModel): Boolean {
+        return data.offsetX == offsetX
+                && data.offsetY == offsetY
+                && data.imageWidth == imageWidth
+                && data.imageHeight == imageHeight
+                && data.scale == scale
+                && data.translateX == translateX
+                && data.translateY == translateY
+                && data.scaleX == scaleX
+                && data.scaleY == scaleY
+                && data.rotateDegree == rotateDegree
+                && data.orientationChangeNumber == orientationChangeNumber
+                && data.isRotate == isRotate
+                && data.isCrop == isCrop
+                && data.isAutoCrop == isAutoCrop
+    }
+
     companion object{
         fun getEmptyEditorCropRotateModel(): EditorCropRotateModel{
             return EditorCropRotateModel(

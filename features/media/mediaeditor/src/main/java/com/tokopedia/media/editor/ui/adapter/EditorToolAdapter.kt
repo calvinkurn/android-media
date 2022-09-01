@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel
 import com.tokopedia.picker.common.types.EditorToolType
@@ -40,21 +41,28 @@ class EditorToolAdapter constructor(
 
         stateList?.let {
             it.forEachIndexed { index, editorDetailUiModel ->
-                // if auto crop is enable, skip 1st edit state
-                if(isAutoCropped && index == 0) return@forEachIndexed
-
-                isActive = when(toolModel.id){
+                isActive = when (toolModel.id) {
                     EditorToolType.BRIGHTNESS -> editorDetailUiModel.brightnessValue != null
                     EditorToolType.CONTRAST -> editorDetailUiModel.contrastValue != null
                     EditorToolType.ROTATE -> editorDetailUiModel.cropRotateValue.isRotate
                     EditorToolType.WATERMARK -> editorDetailUiModel.watermarkMode != null
                     EditorToolType.REMOVE_BACKGROUND -> editorDetailUiModel.removeBackgroundUrl != null
-                    EditorToolType.CROP -> editorDetailUiModel.cropRotateValue.isCrop
+                    EditorToolType.CROP -> {
+                        if (isAutoCropped) {
+                            if (index == 0) {
+                                false
+                            } else {
+                                !editorDetailUiModel.cropRotateValue.compareValue(it[0].cropRotateValue)
+                            }
+                        } else {
+                            editorDetailUiModel.cropRotateValue.isCrop
+                        }
+                    }
                     else -> false
                 }
 
                 // if found related edit state then stop loop, only need 1 state
-                if(isActive) return@forEachIndexed
+                if (isActive) return@forEachIndexed
             }
         }
 
@@ -87,7 +95,8 @@ class EditorToolViewHolder(
     }
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.partial_editor_tool_item
+        @LayoutRes
+        val LAYOUT = R.layout.partial_editor_tool_item
 
         fun create(viewGroup: ViewGroup, listener: Listener): EditorToolViewHolder {
             val layout = LayoutInflater
