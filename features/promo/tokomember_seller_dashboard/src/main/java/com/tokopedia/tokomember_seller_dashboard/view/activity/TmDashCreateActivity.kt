@@ -232,7 +232,8 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             programActionType: Int = ProgramActionType.CREATE,
             requestCode: Int?,
             programId: Int?,
-            cardId: Int = 0
+            cardId: Int = 0,
+            shopAvatar: String = ""
         ){
             activity?.let {
                 val intent = Intent(it, TmDashCreateActivity::class.java)
@@ -241,6 +242,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 intent.putExtra(BUNDLE_PROGRAM_TYPE, programActionType)
                 intent.putExtra(BUNDLE_PROGRAM_ID, programId)
                 intent.putExtra(BUNDLE_CARD_ID, cardId)
+                intent.putExtra(BUNDLE_SHOP_AVATAR, shopAvatar)
                 requestCode?.let {
                     ActivityCompat.startActivityForResult(activity, intent, requestCode, intent.extras)
                 } ?:  it.startActivity(intent)

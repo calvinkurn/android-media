@@ -79,7 +79,6 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
-            feedbackIcon.hide()
             feedbackIcon.setOnClickListener {
                 Toast.makeText(context, "Google form", Toast.LENGTH_SHORT).show()
             }
