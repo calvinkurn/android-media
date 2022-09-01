@@ -23,6 +23,7 @@ android_lint.lint(inline_mode: true)
 
 # Kotlin Detekt
 kotlin_detekt.filtering = true
+kotlin_detekt.filtering_lines = true
 kotlin_detekt.gradle_task = "detektCheck"
 kotlin_detekt.report_file = "detekt_result.xml"
 kotlin_detekt.detekt(inline_mode: true)

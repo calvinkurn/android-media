@@ -10,38 +10,37 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.entertainment.search.activity.EventSearchActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.ResourcePathUtil
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class SearchEventActivityTest {
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var activityRule = ActivityTestRule(EventSearchActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
@@ -59,7 +58,7 @@ class SearchEventActivityTest {
         Thread.sleep(5000)
         search_keyword()
         click_city()
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_SEARCH_VALIDATOR_QUERY), hasAllSuccess())
+        assertThat(cassavaRule.validate(ENTERTAINMENT_EVENT_SEARCH_VALIDATOR_QUERY), hasAllSuccess())
 
     }
 
@@ -68,7 +67,7 @@ class SearchEventActivityTest {
         Thread.sleep(5000)
         search_keyword()
         click_event()
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_SEARCH_PRODUCT_VALIDATOR_QUERY), hasAllSuccess())
+        assertThat(cassavaRule.validate(ENTERTAINMENT_EVENT_SEARCH_PRODUCT_VALIDATOR_QUERY), hasAllSuccess())
     }
 
     fun search_keyword() {

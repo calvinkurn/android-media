@@ -19,7 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -43,7 +42,6 @@ import org.junit.Test
 class FlightHomepageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -56,7 +54,6 @@ class FlightHomepageActivityTest {
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_CONTAINS_HOMEPAGE_BANNER,
