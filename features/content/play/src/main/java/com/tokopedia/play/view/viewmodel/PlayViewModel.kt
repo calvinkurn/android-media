@@ -209,16 +209,6 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _engagementUiState = combine(_tagItems, _interactive){
-        voucher, game -> EngagementUiState(
-            shouldShow = voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown,
-            data = mutableListOf<EngagementUiModel>().apply {
-                if(voucher.voucher.voucherList.isNotEmpty()) add(EngagementUiModel.Promo(info = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().first(), size = voucher.voucher.voucherList.size))
-                if(game.interactive !is InteractiveUiModel.Unknown) add(EngagementUiModel.Game(interactive = game.interactive))
-            }
-        )
-    }.flowOn(dispatchers.computation)
-
     private val _likeUiState = combine(
         _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
     ) { likeInfo, channelDetail, bottomInsets, status, channelReport ->
@@ -264,6 +254,20 @@ class PlayViewModel @AssistedInject constructor(
             shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
         )
     }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private val _engagementUiState = combine(_tagItems, _interactive){
+            voucher, game -> EngagementUiState(
+        shouldShow = voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown,
+        data = buildList {
+            val vouchers = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+            if(vouchers.isNotEmpty())
+                add(EngagementUiModel.Promo(info = vouchers.first(), size = vouchers.size - 1))
+            if(game.interactive !is InteractiveUiModel.Unknown && isInteractiveAllowed)
+                add(EngagementUiModel.Game(interactive = game.interactive))
+        }
+    )
+    }.flowOn(dispatchers.computation)
 
     private val _featuredProducts = _tagItems.map { tagItems ->
         /**
@@ -348,7 +352,7 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
-            engagementUiState = engagement,
+            engagement = engagement,
         )
     }.stateIn(
         viewModelScope,

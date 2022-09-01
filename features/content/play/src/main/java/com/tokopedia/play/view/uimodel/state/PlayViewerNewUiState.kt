@@ -35,7 +35,7 @@ data class PlayViewerNewUiState(
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
-    val engagementUiState: EngagementUiState,
+    val engagement: EngagementUiState,
 ) {
 
     companion object {
@@ -66,7 +66,7 @@ data class PlayViewerNewUiState(
                     warehouseInfo = WarehouseInfoUiModel.Empty,
                 ),
                 featuredProducts = emptyList(),
-                engagementUiState = EngagementUiState.Empty,
+                engagement = EngagementUiState.Empty,
             )
     }
 }
