@@ -257,7 +257,7 @@ object TopChatAnalyticsKt {
                 event = Event.VIEW_COMMUNICATION_IRIS,
                 category = Category.CHAT_DETAIL,
                 action = Action.VIEW_BUNDLE_CART_CHATROOM,
-                label = "$blastId - $statusBundle - $bundleId - bundling",
+                label = "$blastId - $statusBundle - $bundleId - bundling", // usecase need to ask
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "35596",
@@ -265,22 +265,32 @@ object TopChatAnalyticsKt {
                 userId = userId
             )
         )
-//        var listItemBundles = ArrayList<Bundle>()
-//
-//        for (item in bundleItems){
-//            var itemBundle = Bundle()
-//            itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
-//            itemBundle.putString(DIMENSION_118, setValueOrDefault(bundleId))
-//            itemBundle.putString(
-//                DIMENSION_40,
-//                setValueOrDefault("/$source - product bundling - $bundleType")
-//            )
-//            itemBundle.putString(DIMENSION_87, setValueOrDefault(source))
-//            itemBundle.putString("index",bundleItems.indexOf(item).toString())
-//            itemBundle.putString(ITEM_BRAND, setValueOrDefault(""))
-//        }
+        var listItemBundles = ArrayList<Bundle>()
 
+        for (item in bundleItems){
+            var itemBundle = Bundle()
+            itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
+            itemBundle.putString(DIMENSION_118, setValueOrDefault(bundleId))
+            itemBundle.putString(
+                DIMENSION_40,
+                setValueOrDefault("/$source - product bundling - $bundleType")
+            )
+            itemBundle.putString(DIMENSION_87, setValueOrDefault(source))
+            itemBundle.putString("index",bundleItems.indexOf(item).toString())
+            itemBundle.putString(ITEM_BRAND, EE_VALUE_NONE_OTHER)
+            itemBundle.putString(ITEM_CATEGORY, setValueOrDefault(""))
+            itemBundle.putString(ITEM_ID, setValueOrDefault(item.productId))
+            itemBundle.putString(ITEM_NAME, setValueOrDefault(item.name))
+            itemBundle.putString(ITEM_VARIANT, EE_VALUE_NONE_OTHER)
+            itemBundle.putString(PRICE, "")// need to ask
+        }
 
+        var eventDataLayer = Bundle()
+
+        eventDataLayer.putString(TrackAppUtils.EVENT, VIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL)
 
     }
     fun eventClickBundle(

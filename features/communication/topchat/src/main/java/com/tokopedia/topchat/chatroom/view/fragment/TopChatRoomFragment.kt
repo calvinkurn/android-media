@@ -3197,6 +3197,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
             if (element.isBroadcast()) {
+                element.productBundling
                 element.productBundling.bundleItem?.let {
                     TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
                         element.blastId,
