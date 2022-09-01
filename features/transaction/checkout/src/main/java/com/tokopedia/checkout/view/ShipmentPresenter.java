@@ -2538,8 +2538,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
-            // assuming voucher with shippingId and spId not empty as voucher for BO
-            if (shippingId > 0 && spId > 0) {
+            final String type = voucherOrdersItemUiModel.getType();
+            // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
+            if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
                     unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
@@ -2553,8 +2554,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
-            // assuming voucher with shippingId and spId not empty as voucher for BO
-            if (shippingId > 0 && spId > 0) {
+            final String type = voucherOrdersItemUiModel.getType();
+            // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
+            if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
                 if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doApplyBo(voucherOrdersItemUiModel);
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
