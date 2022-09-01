@@ -22,6 +22,7 @@ class RecipeListParam {
     var fromPortion: String? = null
     var toPortion: String? = null
     var sortBy: RecipeSortBy? = null
+    var queryParams = ""
     
     companion object {
         private const val DEFAULT_PAGE = 1
@@ -53,7 +54,12 @@ class RecipeListParam {
                 putString(PARAM_SOURCE_PAGE, sourcePage)
             }
 
-            val queryParams = generateQueryParams()
+            queryParams = if(queryParams.isEmpty()) {
+                generateQueryParams()
+            } else {
+                queryParams
+            }
+
             putString(PARAM_QUERY_PARAM, queryParams)
         }.parameters
     }
