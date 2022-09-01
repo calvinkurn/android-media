@@ -110,7 +110,6 @@ class PlayUpcomingFragment @Inject constructor(
     private fun setupPage(){
         try {
             playUpcomingViewModel.initPage(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
-            sendImpression()
         }
         catch (e: Exception){}
     }
@@ -142,6 +141,7 @@ class PlayUpcomingFragment @Inject constructor(
             playParentViewModel.setLatestChannelStorageData(
                 channelId, playUpcomingViewModel.latestChannelData
             )
+            sendImpression()
         }
         catch (e: Exception) {}
     }
