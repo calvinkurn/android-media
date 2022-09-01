@@ -266,7 +266,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_gravity="center_horizontal"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:background="@color/Unify_Background">
 
                 <com.tokopedia.iconunify.IconUnify
