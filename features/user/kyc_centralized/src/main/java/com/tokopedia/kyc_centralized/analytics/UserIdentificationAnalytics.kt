@@ -99,7 +99,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventViewPendingPage() {
-        sendScreenName(Action.VIEW_PENDING_PAGE)
+        sendScreenName("${Action.VIEW_PENDING_PAGE} - $projectID - ${getKycType(projectID.toString())}")
     }
 
     fun eventClickBackPendingPage() {
@@ -121,7 +121,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventViewSuccessSnackbarPendingPage() {
-        sendScreenName(Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE)
+        sendScreenName("${Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE} - $projectID - ${getKycType(projectID.toString())}")
     }
 
     fun eventViewRejectedPage() {
@@ -170,7 +170,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventViewSuccessPage() {
-        sendScreenName(Action.VIEW_SUCCES_PAGE)
+        sendScreenName("${Action.VIEW_SUCCES_PAGE} - $projectID - ${getKycType(projectID.toString())}")
     }
 
     fun eventClickBackSuccessPage() {
