@@ -16,7 +16,7 @@ class TokoNowRecipeSearchViewModel @Inject constructor(
         private const val SOURCE_PAGE_NAME = "Search"
     }
 
-    override val pageName: String = SOURCE_PAGE_NAME
+    override val sourcePage: String = SOURCE_PAGE_NAME
 
     fun setTitleParam(title: String) {
         getRecipeListParam.title = title
