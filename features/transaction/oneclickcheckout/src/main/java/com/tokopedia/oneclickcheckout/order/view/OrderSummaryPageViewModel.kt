@@ -431,7 +431,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun validateBboStacking() {
         validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
             for (voucherOrderUiModel in it) {
-                if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0)
+                if (voucherOrderUiModel.shippingId > 0
+                    && voucherOrderUiModel.spId > 0
+                    && voucherOrderUiModel.type == "logistic"
+                )
                     if (voucherOrderUiModel.messageUiModel.state == "red") {
                         unApplyBbo(voucherOrderUiModel.code)
                     } else if (voucherOrderUiModel.messageUiModel.state == "green") {
