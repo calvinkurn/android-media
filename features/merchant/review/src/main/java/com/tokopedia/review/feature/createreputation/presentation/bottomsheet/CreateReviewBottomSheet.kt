@@ -3,8 +3,6 @@ package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +64,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -193,24 +192,27 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private fun setupInsetListener() {
         dialog?.window?.decorView?.let {
             ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
-                if (insets.systemWindowInsetBottom.isMoreThanZero()) {
-                    scheduleScrollToTextArea()
-                }
+                viewModel.setBottomSheetBottomInset(insets.systemWindowInsetBottom)
                 insets
             }
         }
     }
 
-    private fun scheduleScrollToTextArea() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding?.let {
-                val mediaPickerBottom = it.reviewFormTextArea.bottom + 8.toPx()
-                val scrollViewHeight = it.reviewFormScrollView.height
-                val scrollX = Int.ZERO
-                val scrollY = mediaPickerBottom - scrollViewHeight
-                it.reviewFormScrollView.smoothScrollTo(scrollX, scrollY)
-            }
-        }, SHOW_TEXT_AREA_AUTO_SCROLL_DELAY)
+    private suspend fun shouldScheduleScrollToTextArea(bottomInset: Int) {
+        if (bottomInset.isMoreThanZero()) {
+            delay(SHOW_TEXT_AREA_AUTO_SCROLL_DELAY)
+            scrollToTextArea()
+        }
+    }
+
+    private fun scrollToTextArea() {
+        binding?.let {
+            val mediaPickerBottom = it.reviewFormTextArea.bottom + CreateReviewTextArea.PADDING_BOTTOM.toPx()
+            val scrollViewHeight = it.reviewFormScrollView.height
+            val scrollX = Int.ZERO
+            val scrollY = mediaPickerBottom - scrollViewHeight
+            it.reviewFormScrollView.smoothScrollTo(scrollX, scrollY)
+        }
     }
 
     private fun handleDismiss() {
@@ -701,13 +703,18 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         private fun collectCreateReviewBottomSheet() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.createReviewBottomSheetUiState) {
-                if (it is CreateReviewBottomSheetUiState.ShouldDismiss) {
-                    context?.let { context ->
-                        finishIfRoot(
-                            it.success,
-                            it.message.getStringValue(context),
-                            it.feedbackId
-                        )
+                when (it) {
+                    is CreateReviewBottomSheetUiState.Showing -> {
+                        shouldScheduleScrollToTextArea(it.bottomInset)
+                    }
+                    is CreateReviewBottomSheetUiState.ShouldDismiss -> {
+                        context?.let { context ->
+                            finishIfRoot(
+                                it.success,
+                                it.message.getStringValue(context),
+                                it.feedbackId
+                            )
+                        }
                     }
                 }
             }

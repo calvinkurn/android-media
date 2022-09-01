@@ -184,6 +184,7 @@ class CreateReviewViewModel @Inject constructor(
     private val textAreaHasFocus = MutableStateFlow(false)
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
     private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
+    private val bottomSheetBottomInset = MutableStateFlow(Int.ZERO)
     // endregion state that must not be saved nor restored
 
     // region state whose it's value is determined by other states
@@ -311,8 +312,10 @@ class CreateReviewViewModel @Inject constructor(
     // endregion submit button state
 
     // region create review bottom sheet state
-    val createReviewBottomSheetUiState = reviewForm.mapLatest(::mapCreateReviewBottomSheetUiState)
-        .toStateFlow(CreateReviewBottomSheetUiState.Showing)
+    val createReviewBottomSheetUiState = combine(
+        reviewForm, bottomSheetBottomInset, ::mapCreateReviewBottomSheetUiState
+    ).toStateFlow(CreateReviewBottomSheetUiState.Showing(Int.ZERO))
+
     // endregion create review bottom sheet state
 
     // region incentive bottom sheet state
@@ -772,8 +775,9 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun mapCreateReviewBottomSheetUiState(
-        reviewForm: ReviewFormRequestState
+        reviewForm: ReviewFormRequestState, bottomInset: Int
     ): CreateReviewBottomSheetUiState {
+        val currentUiState = createReviewBottomSheetUiState.value
         return if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
             CreateReviewBottomSheetUiState.ShouldDismiss(
                 success = false,
@@ -792,8 +796,10 @@ class CreateReviewViewModel @Inject constructor(
                 message = StringRes(R.string.review_toaster_page_error),
                 feedbackId = ""
             )
+        } else if (currentUiState is CreateReviewBottomSheetUiState.Showing) {
+            currentUiState.copy(bottomInset)
         } else {
-            createReviewBottomSheetUiState.value
+            currentUiState
         }
     }
 
@@ -1405,6 +1411,10 @@ class CreateReviewViewModel @Inject constructor(
 
     fun dismissTextAreaBottomSheet() {
         shouldShowTextAreaBottomSheet.value = false
+    }
+
+    fun setBottomSheetBottomInset(inset: Int) {
+        bottomSheetBottomInset.value = inset
     }
     // endregion MutableStateFlow updater
 

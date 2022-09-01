@@ -32,6 +32,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
 
     companion object {
         private const val TRANSITION_DURATION = 300L
+        const val PADDING_BOTTOM = 8
     }
 
     private val transitionHandler = TransitionHandler()
