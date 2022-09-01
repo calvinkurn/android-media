@@ -242,7 +242,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
+        get() = _accountListState.value.size > 1 && _accountListState.value.find { it.isUserPostEligible } != null
 
     val authorId: String
         get() = _selectedAccount.value.id
@@ -439,7 +439,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
 
-            _configInfo.value = configUiModel
+            if (selectedAccount.type == TYPE_SHOP) _configInfo.value = configUiModel
 
             if (!configUiModel.streamAllowed) {
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
