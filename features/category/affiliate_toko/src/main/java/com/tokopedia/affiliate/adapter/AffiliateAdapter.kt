@@ -142,7 +142,7 @@ class AffiliateAdapter(
             item.itemID,
             position,
             item.itemTitle,
-            "${item.itemID} - ${item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $status",
+            "${item.itemID} - ${item.metrics?.findLast { it?.metricType == "shopOrderCommissionPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "shopTotalClickPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "shopOrderPerItem" }?.metricValue} - $status",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
         )
     }
