@@ -58,7 +58,7 @@ class RecipeListParam {
         }.parameters
     }
 
-    private fun generateQueryParams(): String {
+    fun generateQueryParams(): String {
         val stringBuilder = StringBuilder()
         val queryParamsMap = mutableMapOf<String, String>()
 
