@@ -26,7 +26,7 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparati
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SelectAccount
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -239,7 +239,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
-                        else parentViewModel.submitAction(SelectAccount(contentAccount))
+                        else parentViewModel.submitAction(SwitchAccount)
                     }
                 })
             }
@@ -835,7 +835,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(SelectAccount(contentAccount))
+                    parentViewModel.submitAction(SwitchAccount)
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }

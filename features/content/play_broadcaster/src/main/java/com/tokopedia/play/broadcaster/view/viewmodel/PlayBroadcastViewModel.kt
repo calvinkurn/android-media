@@ -392,7 +392,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
-            is PlayBroadcastAction.SelectAccount -> handleSelectedAccount(event.contentAccount)
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -439,7 +439,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
 
-            if (selectedAccount.type == TYPE_SHOP) _configInfo.value = configUiModel
+            _configInfo.value = configUiModel
 
             if (!configUiModel.streamAllowed) {
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -467,7 +467,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
 
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-                _selectedAccount.value = selectedAccount
+                _selectedAccount.update { selectedAccount }
                 sharedPref.setLastSelectedAccount(selectedAccount.type)
 
                 setProductConfig(configUiModel.productTagConfig)
@@ -485,9 +485,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
 
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) {
-                handleSelectedAccount(selectedAccount)
-            }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { handleSwitchAccount() }
         }
     }
 
@@ -1531,23 +1529,32 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _accountListState.value = accountList
 
             if (accountList.isNotEmpty()) {
-                val selectedAccount = getAccountFromCachedOrDefault(
-                    sharedPref.getLastSelectedAccount(),
-                    accountList
-                )
-                _selectedAccount.value = selectedAccount
-                getConfiguration(selectedAccount)
+                _selectedAccount.update {
+                    getAccountFromCachedOrDefault(
+                        sharedPref.getLastSelectedAccount(),
+                        accountList
+                    )
+                }
+                getConfiguration(_selectedAccount.value)
             }
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
         })
     }
 
-    private fun handleSelectedAccount(selectedAccount: ContentAccountUiModel) {
-        checkSelectedAccountIsEligible(selectedAccount) {
+    private fun handleSwitchAccount() {
+        val currentSelected = switchAccount(
+            if (_selectedAccount.value.type == TYPE_SHOP) TYPE_USER
+            else TYPE_SHOP
+        )
+        checkSelectedAccountIsEligible(currentSelected) {
             _observableConfigInfo.value = NetworkResult.Loading
-            getConfiguration(selectedAccount)
+            getConfiguration(currentSelected)
         }
+    }
+
+    private fun switchAccount(selectedType: String): ContentAccountUiModel {
+        return _accountListState.value.first { it.type == selectedType }
     }
 
     private fun checkSelectedAccountIsEligible(

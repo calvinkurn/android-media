@@ -548,6 +548,9 @@ class PlayBroadcastActivity : BaseActivity(),
             )
         } else {
             val bottomSheet = BottomSheetUnify().apply {
+                isCancelable = false
+                isHideable = false
+                overlayClickDismiss = false
                 clearContentPadding = true
                 setTitle(this@PlayBroadcastActivity.getString(R.string.play_bro_tnc_title))
             }
@@ -568,7 +571,10 @@ class PlayBroadcastActivity : BaseActivity(),
         }
         if (!bottomSheet.isVisible) {
             view.setTermsAndConditions(tncList)
-            bottomSheet.setOnDismissListener { finish() }
+            bottomSheet.setOnDismissListener {
+                if (viewModel.isAllowChangeAccount) viewModel.submitAction(PlayBroadcastAction.SwitchAccount)
+                else finish()
+            }
             bottomSheet.show(supportFragmentManager, TERMS_AND_CONDITION_TAG)
         }
     }
