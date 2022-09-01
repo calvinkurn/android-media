@@ -63,6 +63,10 @@ class SingleProductBundleViewModel @Inject constructor(
     val throwableError: LiveData<Throwable>
         get() = mThrowableError
 
+    fun isUserLoggedIn(): Boolean {
+        return userSession.userId.isNotBlank()
+    }
+
     fun getUserId(): String {
         return userSession.userId
     }
