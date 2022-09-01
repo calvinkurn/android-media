@@ -35,8 +35,8 @@ object ProductBundleAtcTrackerMapper {
             it.bundleID.toString() == selectedBundleId
         }
 
-        if (productDetails != null) {
-            return listOf(
+        return if (productDetails != null && productDetails.bundleItems.isNotEmpty()) {
+            listOf(
                     ProductDetailBundleTracker(
                             productId = productDetails.bundleItems[0].productID.toString(),
                             productName = productDetails.bundleItems[0].name,
@@ -46,7 +46,7 @@ object ProductBundleAtcTrackerMapper {
                     )
             )
         } else {
-            return listOf(
+            listOf(
                     ProductDetailBundleTracker()
             )
         }
