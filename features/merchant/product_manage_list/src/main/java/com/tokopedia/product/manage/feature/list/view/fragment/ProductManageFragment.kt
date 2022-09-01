@@ -335,21 +335,22 @@ open class ProductManageFragment :
                         if (coachMarkStockReminder?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
                             reshowStockReminderCoachMark(dy < Int.ZERO)
                         } else if (coachMarkStockReminder?.isDismissed == false) {
-                            val layoutManager = productManageLayoutManager!!
-                            val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-                            val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
-                            val currentProductStockReminder =
-                                layoutManager.findViewByPosition(
-                                    currentPositionStockReminderCoachMark
-                                )
-                                    ?.findViewById<IconUnify>(R.id.imageStockReminder)
-                            if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
-                                        (currentProductStockReminder != null && getVisiblePercent(
-                                            currentProductStockReminder
-                                        ) == -1))
-                            ) {
-                                coachMarkStockReminder?.dismissCoachMark()
+                            productManageLayoutManager?.let{ layoutManager ->
+                                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                                val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                                val currentProductStockReminder =
+                                    layoutManager.findViewByPosition(
+                                        currentPositionStockReminderCoachMark
+                                    )
+                                        ?.findViewById<IconUnify>(R.id.imageStockReminder)
+                                if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                            (currentProductStockReminder != null && getVisiblePercent(
+                                                currentProductStockReminder
+                                            ) == -1))
+                                ) {
+                                    coachMarkStockReminder?.dismissCoachMark()
 
+                                }
                             }
                         }
                     }
