@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics.trackSendButtonClicked
 import com.tokopedia.attachproduct.databinding.FragmentAttachProductBinding
 import com.tokopedia.attachproduct.di.AttachProductModule
 import com.tokopedia.attachproduct.di.DaggerAttachProductComponent
@@ -339,6 +340,7 @@ class AttachProductFragment :
             product.toResultProduct()
         } ?: listOf()
         val resultProduct = arrayListOf<ResultProduct>()
+        trackSendButtonClicked(resultProduct)
         resultProduct.addAll(products)
         activityContract?.finishActivityWithResult(resultProduct)
     }

@@ -156,6 +156,8 @@ import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventSeenProductAttachment
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.trackSuccessDoBuyAndAtc
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -1244,6 +1246,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 addSrwBubbleToChat()
             }
         })
+        viewModel.attachments
         onSendingMessage().invoke()
         sendAttachmentPreviews(sticker.intention)
         viewModel.sendSticker(sticker, referredMsg)
@@ -1632,10 +1635,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onSuccessClickBuyFromProductAttachment(element: AddToCartParam) {
-        analytics.trackSuccessDoBuyAndAtc(
+        trackSuccessDoBuyAndAtc(
             element, element.dataModel,
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
-            element.getBuyEventAction()
+            element.getBuyEventAction(),
+            getUserSession().userId
         )
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         startActivity(intent)
@@ -1653,10 +1657,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onSuccessClickATCFromProductAttachment(element: AddToCartParam) {
-        analytics.trackSuccessDoBuyAndAtc(
+        trackSuccessDoBuyAndAtc(
             element, element.dataModel,
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
-            element.getAtcEventAction()
+            element.getAtcEventAction(),getUserSession().userId
         )
         val msg = element.dataModel?.message?.getOrNull(0) ?: ""
         rvContainer?.let { view ->
@@ -1908,7 +1912,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackSeenProduct(element: ProductAttachmentUiModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(requireContext(), element, session, amISeller)
+            eventSeenProductAttachment(requireContext(), element, session, amISeller)
         }
     }
 
@@ -3193,13 +3197,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
             if (element.isBroadcast()) {
-                TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
-                    element.blastId,
-                    element.productBundling.bundleStatus.toString(),
-                    element.productBundling.bundleId.toString(),
-                    getBroadcastSenderShopId(element),
-                    session.userId
-                )
+                element.productBundling.bundleItem?.let {
+                    TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                        element.blastId,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        element.productBundling.bundleType.toString(),
+                        element.source.toString(),
+                        it,
+                        getBroadcastSenderShopId(element),
+                        session.userId
+                    )
+                }
             } else {
                 TopChatAnalyticsKt.eventViewProductBundling(
                     element.productBundling.bundleItem?.first()?.productId?: "",
@@ -3208,6 +3217,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         }
     }
+
+
 
     override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
         if (element.isBroadcast()) {

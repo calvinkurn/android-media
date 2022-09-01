@@ -1,12 +1,19 @@
 package com.tokopedia.topchat.common.analytics
 
+import android.content.Context
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_ATC
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_BUY
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import java.util.ArrayList
+import com.tokopedia.user.session.UserSessionInterface
+import kotlin.collections.ArrayList
 
 object TopChatAnalyticsKt {
 
@@ -68,13 +75,13 @@ object TopChatAnalyticsKt {
 
     private fun setValueOrDefault(value: String = ""): String {
         return if (value.isEmpty()) {
-            AddToCartExternalAnalytics.EE_VALUE_NONE_OTHER
+            EE_VALUE_NONE_OTHER
         } else value
     }
 
     private fun <T> getValueOrEmpty(value: List<T>): String {
         return if (value.isEmpty()) {
-            ""
+            EE_VALUE_NONE_OTHER
         } else value.toString()
     }
 
@@ -239,6 +246,9 @@ object TopChatAnalyticsKt {
         blastId: String,
         statusBundle: String,
         bundleId: String,
+        bundleType: String,
+        source: String,
+        bundleItems: List<BundleItem>,
         shopId: String,
         userId: String
     ) {
@@ -255,6 +265,47 @@ object TopChatAnalyticsKt {
                 userId = userId
             )
         )
+//        var listItemBundles = ArrayList<Bundle>()
+//
+//        for (item in bundleItems){
+//            var itemBundle = Bundle()
+//            itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
+//            itemBundle.putString(DIMENSION_118, setValueOrDefault(bundleId))
+//            itemBundle.putString(
+//                DIMENSION_40,
+//                setValueOrDefault("/$source - product bundling - $bundleType")
+//            )
+//            itemBundle.putString(DIMENSION_87, setValueOrDefault(source))
+//            itemBundle.putString("index",bundleItems.indexOf(item).toString())
+//            itemBundle.putString(ITEM_BRAND, setValueOrDefault(""))
+//        }
+
+
+
+    }
+    fun eventClickBundle(
+        blastId: String,
+        statusBundle: String,
+        bundleId: String,
+        bundleType: String,
+        source: String,
+        shopId: String,
+        userId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_BUNDLE_CART_CHATROOM,
+                label = "$blastId - $statusBundle - $bundleId - bundling",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35596",
+                shopId = shopId,
+                userId = userId
+            )
+        )
+
     }
 
     fun eventClickProductAttachmentOnProductBundlingBroadcast(
@@ -300,6 +351,93 @@ object TopChatAnalyticsKt {
                 userId = userId
             )
         )
+    }
+    fun eventSeenProductAttachment(
+        context: Context,
+        product : ProductAttachmentUiModel,
+        user : UserSessionInterface,
+        amISeller : Boolean
+    ){
+        var eventLabel = product.getEventLabelImpression(amISeller)
+        var itemBundle = Bundle()
+        itemBundle.putString("index", PRODUCT_INDEX.toString())
+        itemBundle.putString(ITEM_BRAND,"none / other")
+        itemBundle.putString(ITEM_CATEGORY, setValueOrDefault(product.category))
+        itemBundle.putString(ITEM_ID, setValueOrDefault(product.productId))
+        itemBundle.putString(ITEM_NAME, setValueOrDefault(product.productName))
+        itemBundle.putString(ITEM_VARIANT, EE_VALUE_NONE_OTHER)
+        itemBundle.putString(PRICE, product.productPrice + 0.0)
+
+        var eventDataLayer = Bundle()
+        eventDataLayer.putString(TrackAppUtils.EVENT, VIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_ON_PRODUCT_THUMBNAIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
+        eventDataLayer.putString(TRACKER_ID, "14824")
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            object : ArrayList<Bundle?>() {
+                init {
+                    add(itemBundle)
+                }
+            }
+        )
+        eventDataLayer.putString(USER_ID, setValueOrDefault(user.userId))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIL,eventDataLayer)
+    }
+
+    fun trackSuccessDoBuyAndAtc(
+        element: AddToCartParam,
+        data: DataModel?,
+        shopName: String,
+        eventAction: String,
+        userId: String
+    ){
+        var itemBundle = Bundle()
+        itemBundle.putString(CATEGORY_ID, setValueOrDefault(""))
+        itemBundle.putString(DIMENSION_45, setValueOrDefault(data?.cartId.toString()))
+        itemBundle.putString(ITEM_BRAND, setValueOrDefault(""))
+        itemBundle.putString(ITEM_CATEGORY, setValueOrDefault(element.category))
+        itemBundle.putString(ITEM_ID, setValueOrDefault(data?.productId.toString()))
+        itemBundle.putString(ITEM_NAME, setValueOrDefault(element.productName))
+        itemBundle.putString(ITEM_VARIANT, setValueOrDefault(""))
+        itemBundle.putString(PRICE, setValueOrDefault(element.price.toString()))
+        itemBundle.putString(QUANTITY, setValueOrDefault(element.minOrder.toString()))
+        itemBundle.putString(SHOP_ID, setValueOrDefault(data?.shopId.toString()))
+        itemBundle.putString(SHOP_NAME, setValueOrDefault(shopName))
+        itemBundle.putString(SHOP_TYPE, setValueOrDefault(""))
+
+        var eventDataLayer = Bundle()
+        eventDataLayer.putString(TrackAppUtils.EVENT, ATC)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, eventAction)
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, element.source+"-"+element.blastId)
+        if(eventAction == EVENT_ACTION_ATC) {
+            eventDataLayer.putString(TRACKER_ID, "14826")
+        }
+        else if (eventAction == EVENT_ACTION_BUY){
+            eventDataLayer.putString(TRACKER_ID,"14827")
+        }
+        else{
+            eventDataLayer.putString(TRACKER_ID,"Error")
+        }
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            object : ArrayList<Bundle?>() {
+                init {
+                    add(itemBundle)
+                }
+            }
+        )
+        eventDataLayer.putString(USER_ID, setValueOrDefault(userId))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ATC,eventDataLayer)
+
     }
 
     private fun createGeneralEvent(
@@ -363,10 +501,18 @@ object TopChatAnalyticsKt {
         const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
+        const val CLICK_SEND_AFTER_ADD_PRODUCT_VARIANT = "click kirim after pilih product variant"
+        const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
     }
+
+    const val PRODUCT_INDEX = 1
+
+    // default value
+    private const val EE_VALUE_NONE_OTHER = "none / other"
 
     //Event Name
     private const val ATC = "add_to_cart"
+    private const val VIL = "view_item_list"
 
     //Event Category
     private const val EVENT_CATEGORY_CHAT = "chat"
@@ -403,6 +549,9 @@ object TopChatAnalyticsKt {
     private const val DIMENSION_81 = "dimension81"
     private const val DIMENSION_82 = "dimension82"
     private const val DIMENSION_83 = "dimension83"
+    private const val DIMENSION_87 = "dimension87"
+    private const val DIMENSION_117 = "dimension117"
+    private const val DIMENSION_118 = "dimension118"
     private const val ITEM_BRAND = "item_brand"
     private const val ITEM_CATEGORY = "item_category"
     private const val ITEM_ID = "item_id"
