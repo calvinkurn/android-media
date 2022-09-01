@@ -1,6 +1,5 @@
 package com.tokopedia.shop.analyticvalidator.testcase
 
-import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
@@ -12,13 +11,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig
@@ -29,7 +26,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.trackingoptimizer.constant.Constant
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -47,12 +43,12 @@ class ShopOngoingProductResultPageAnalyticTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ShopProductListResultActivity> = IntentsTestRule(ShopProductListResultActivity::class.java, false, false)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_ONGOING_PRODUCT))
         activityRule.launchActivity(Intent().apply {
@@ -76,7 +72,6 @@ class ShopOngoingProductResultPageAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -85,10 +80,7 @@ class ShopOngoingProductResultPageAnalyticTest {
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {
-        assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
-                hasAllSuccess()
-        )
+        assertThat(cassavaRule.validate(fileName), hasAllSuccess())
     }
 
     private fun testProductCard() {

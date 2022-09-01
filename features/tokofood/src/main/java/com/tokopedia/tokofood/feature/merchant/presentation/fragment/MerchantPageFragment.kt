@@ -510,46 +510,50 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantShareComponent: MerchantShareComponent,
         storageImagePath: String
     ) {
-        universalShareBottomSheet = null
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@MerchantPageFragment)
-            setUtmCampaignData(
-                pageName = ShareComponentConstants.TOKOFOOD,
-                userId = userSession.userId.orEmpty(),
-                pageIdConstituents = listOf(
-                    ShareComponentConstants.MERCHANT,
-                    merchantShareComponent.id
-                ),
-                feature = SHARE
-            )
-            setMetaData(
-                tnTitle = merchantShareComponent.previewTitle,
-                tnImage = merchantShareComponent.previewThumbnail,
-            )
-            setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
-            imageSaved(storageImagePath)
-        }
+        if (isAdded) {
+            universalShareBottomSheet = null
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@MerchantPageFragment)
+                setUtmCampaignData(
+                    pageName = ShareComponentConstants.TOKOFOOD,
+                    userId = userSession.userId.orEmpty(),
+                    pageIdConstituents = listOf(
+                        ShareComponentConstants.MERCHANT,
+                        merchantShareComponent.id
+                    ),
+                    feature = SHARE
+                )
+                setMetaData(
+                    tnTitle = merchantShareComponent.previewTitle,
+                    tnImage = merchantShareComponent.previewThumbnail,
+                )
+                setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
+                imageSaved(storageImagePath)
+            }
 
-        universalShareBottomSheet?.show(childFragmentManager, this)
+            universalShareBottomSheet?.show(childFragmentManager, this)
+        }
     }
 
     private fun shareFoodItem(
         tokoFoodMerchantProfile: TokoFoodMerchantProfile?,
         productUiModel: ProductUiModel
     ) {
-        merchantShareComponent = null
-        merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
-            tokoFoodMerchantProfile,
-            productUiModel,
-            merchantId
-        )
-        context?.let {
-            merchantShareComponent?.let { merchantShareComponent ->
-                SharingUtil.saveImageFromURLToStorage(
-                    it,
-                    merchantShareComponent.previewThumbnail
-                ) { storageImagePath ->
-                    showFoodShareBottomSheet(merchantShareComponent, storageImagePath)
+        if (isAdded) {
+            merchantShareComponent = null
+            merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
+                tokoFoodMerchantProfile,
+                productUiModel,
+                merchantId
+            )
+            context?.let {
+                merchantShareComponent?.let { merchantShareComponent ->
+                    SharingUtil.saveImageFromURLToStorage(
+                        it,
+                        merchantShareComponent.previewThumbnail
+                    ) { storageImagePath ->
+                        showFoodShareBottomSheet(merchantShareComponent, storageImagePath)
+                    }
                 }
             }
         }

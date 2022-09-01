@@ -9,38 +9,39 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSaveStateUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupConfig
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
-import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play_common.util.extension.combine
+import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -49,6 +50,7 @@ import kotlinx.coroutines.launch
 class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted isEligibleForPin: Boolean,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     userSession: UserSessionInterface,
@@ -60,6 +62,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            isEligibleForPin: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -67,6 +70,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         if (!savedStateHandle.hasProductSections()) {
             savedStateHandle.setProductSections(productSectionList)
         }
+        savedStateHandle.setEligiblePinStatus(isEligibleForPin)
     }
 
     val channelId: String
@@ -74,6 +78,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val maxProduct: Int
         get() = configStore.getMaxProduct()
+
+    val isEligibleForPin: Boolean
+        get() = savedStateHandle.isEligibleForPin()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
@@ -116,7 +123,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(STOP_TIME_OUT_MILLIS),
         ProductChooserUiState.Empty,
     )
 
@@ -135,7 +142,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         getCampaignAndEtalaseList()
 
         viewModelScope.launch {
-            searchQuery.debounce(300)
+            searchQuery.debounce(DEBOUNCE_TIME_OUT_MILLIS)
                 .collectLatest { query ->
                     _loadParam.update {
                         it.copy(keyword = query)
@@ -180,6 +187,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             ProductSetupAction.SaveProducts -> handleSaveProducts()
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
         }
     }
 
@@ -399,11 +407,55 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         savedStateHandle[KEY_PRODUCT_SECTIONS] = productSectionList
     }
 
+    private fun SavedStateHandle.setEligiblePinStatus(
+        isEligibleForPin: Boolean
+    ) {
+        savedStateHandle[KEY_ELIGIBLE_PIN] = isEligibleForPin
+    }
+
     private fun SavedStateHandle.hasProductSections(): Boolean {
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
     }
 
+    private fun SavedStateHandle.isEligibleForPin(): Boolean {
+        return savedStateHandle[KEY_ELIGIBLE_PIN] ?: true
+    }
+
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
+            product.updatePinProduct(isLoading = true, needToReset = true)
+            val result = repo.setPinProduct(channelId, product)
+            if(result)
+                product.updatePinProduct(isLoading = false)
+        }){
+            product.updatePinProduct(isLoading = false, needToReset = true)
+            _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
+        }
+    }
+
+    /**
+     * hacky way needToReset -> find better approach
+     */
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToReset: Boolean = false) {
+        _productTagSectionList.update { sectionList ->
+            sectionList.map { sectionUiModel ->
+                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                sectionUiModel.products.map { prod ->
+                    if(prod.id == this.id)
+                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading, isPinned =
+                            if(!needToReset) this.pinStatus.isPinned.switch()
+                            else this.pinStatus.isPinned))
+                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
+                })
+            }
+        }
+    }
+
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
+        private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
+
+        private const val STOP_TIME_OUT_MILLIS = 5000L
+        private const val DEBOUNCE_TIME_OUT_MILLIS = 300L
     }
 }
