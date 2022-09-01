@@ -90,7 +90,6 @@ object ProductDetailConstant {
     const val CATEGORY_CAROUSEL = "category_carousel"
     const val HAMPERS_INFO = "palugada_hampers"
     const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
-    const val PDP_8_VERTICAL = "pdp_8_vertical"
     const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
 
     const val BEST_SELLER = "best_seller"

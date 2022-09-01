@@ -61,7 +61,6 @@ import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_8_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -930,8 +929,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         val indexVertical = mutableItems.indexOfLast {
             it is ProductRecommendationVerticalPlaceholderDataModel
         }
+        verticalRecommendationItems.forEachIndexed { index, item ->
+            item.position = index + 1
+        }
         mutableItems.addAll(indexVertical + 1, verticalRecommendationItems)
         return mutableItems
     }
-
 }

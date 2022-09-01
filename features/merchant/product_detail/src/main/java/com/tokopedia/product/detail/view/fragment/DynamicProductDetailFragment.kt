@@ -147,7 +147,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -2672,6 +2671,7 @@ open class DynamicProductDetailFragment :
                 }
                 updateUi()
             }, {
+                pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
                 removeEndlessScrollListener()
                 updateUi()
             })
@@ -5393,8 +5393,23 @@ open class DynamicProductDetailFragment :
         viewModel.getVerticalRecommendationData(productId = productId)
     }
 
-    override fun onClickRecommendationVerticalItem(productId: String) {
-        val intent = ProductDetailActivity.createIntent(requireContext(), productId)
+    override fun onClickRecommendationVerticalItem(
+        item: RecommendationItem,
+        position: Int,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        DynamicProductDetailTracking.Click.eventRecommendationClick(
+            item,
+            "",
+            false,
+            position,
+            viewModel.isUserSessionActive,
+            item.pageName,
+            item.header,
+            viewModel.getDynamicProductInfoP1,
+            componentTrackDataModel
+        )
+        val intent = ProductDetailActivity.createIntent(requireContext(), item.productId)
         startActivity(intent)
     }
 }
