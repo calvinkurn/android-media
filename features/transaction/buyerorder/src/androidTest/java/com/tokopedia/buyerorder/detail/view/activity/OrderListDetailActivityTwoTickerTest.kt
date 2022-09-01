@@ -11,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -19,7 +18,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,14 +34,12 @@ class OrderListDetailActivityTwoTickerTest {
     }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     val activityRule: IntentsTestRule<RevampOrderListDetailActivity> =
         object : IntentsTestRule<RevampOrderListDetailActivity>(RevampOrderListDetailActivity::class.java) {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
-                gtmLogDBSource.deleteAll().subscribe()
                 setupGraphqlMockResponse {
                     addMockResponse(
                         KEY_CONTAINS_ORDER_DETAILS,

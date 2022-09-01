@@ -12,7 +12,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.KEY_CONTAINS_ORDER_DETAILS
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.setupRemoteConfig
@@ -34,14 +33,12 @@ import org.junit.runner.RunWith
 class OrderListDetailActivityOneTickerTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     val activityRule: IntentsTestRule<RevampOrderListDetailActivity> =
         object : IntentsTestRule<RevampOrderListDetailActivity>(RevampOrderListDetailActivity::class.java) {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
-                gtmLogDBSource.deleteAll().subscribe()
                 setupGraphqlMockResponse {
                     addMockResponse(
                         KEY_CONTAINS_ORDER_DETAILS,
