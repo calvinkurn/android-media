@@ -158,6 +158,7 @@ object LeftCarouselAtcMapper {
                     channelGrid.isFreeOngkirActive,
                     channelGrid.freeOngkirImageUrl
                 ),
+                hasAddToCartButton = !channelGrid.isOutOfStock,
                 isOutOfStock = channelGrid.isOutOfStock,
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
