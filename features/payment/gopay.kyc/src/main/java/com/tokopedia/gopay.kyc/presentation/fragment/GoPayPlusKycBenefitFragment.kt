@@ -56,8 +56,13 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHeaderBackground()
         setUpGoPayBenefitRecyclerView()
         initListeners()
+    }
+
+    private fun setHeaderBackground(){
+       goPayHeaderBackground.setImageUrl(GOPAY_HEADER_BACKGROUND_IMAGE)
     }
 
     private fun initListeners() {
@@ -65,6 +70,10 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
         upgradeNowButton.setOnClickListener {
             upgradeToGoPayPlus()
         }
+    }
+
+    private fun imageUrl(){
+
     }
 
     private fun setUpGoPayBenefitRecyclerView() {
@@ -165,5 +174,6 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
 
     companion object {
         fun newInstance() = GoPayPlusKycBenefitFragment()
+        private const val GOPAY_HEADER_BACKGROUND_IMAGE="https://images.tokopedia.net/img/android/gopay_benefit_page/ic_gopay_benefit_blue_background.png"
     }
 }
