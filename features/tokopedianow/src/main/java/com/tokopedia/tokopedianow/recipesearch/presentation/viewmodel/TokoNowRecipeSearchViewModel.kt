@@ -12,8 +12,13 @@ class TokoNowRecipeSearchViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowRecipeListViewModel(getRecipeListUseCase, addressData, dispatchers) {
 
+    companion object {
+        private const val SOURCE_PAGE_NAME = "Search"
+    }
+
+    override val pageName: String = SOURCE_PAGE_NAME
+
     fun setTitleParam(title: String) {
         getRecipeListParam.title = title
     }
-
 }

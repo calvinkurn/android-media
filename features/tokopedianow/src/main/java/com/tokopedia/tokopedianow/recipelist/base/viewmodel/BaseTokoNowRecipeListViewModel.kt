@@ -8,11 +8,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
+import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToSortBy
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addFilterItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addHeaderItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addRecipeItems
+import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
 abstract class BaseTokoNowRecipeListViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase,
@@ -34,10 +37,14 @@ abstract class BaseTokoNowRecipeListViewModel(
     protected var getRecipeListParam = RecipeListParam()
     protected var visitableItems = mutableListOf<Visitable<*>>()
 
+    var selectedFilters = emptyList<SelectedFilter>()
     var enableHeaderBackground: Boolean = true
+
+    abstract val pageName: String
 
     fun getRecipeList() {
         launchCatchError(block = {
+            getRecipeListParam.sourcePage = pageName
             getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
             val response = getRecipeListUseCase.execute(getRecipeListParam)
 
@@ -56,6 +63,19 @@ abstract class BaseTokoNowRecipeListViewModel(
             hideProgressBar()
             showError()
         }
+    }
+
+    fun applyFilter(filters: List<SelectedFilter>) {
+        val sortBy = mapToSortBy(filters)
+        val ingredientID = mapToIngredientIds(filters)
+        selectedFilters = filters
+
+        getRecipeListParam.apply {
+            this.sortBy = sortBy
+            this.ingredientID = ingredientID
+        }
+
+        refreshPage()
     }
 
     fun refreshPage() {
