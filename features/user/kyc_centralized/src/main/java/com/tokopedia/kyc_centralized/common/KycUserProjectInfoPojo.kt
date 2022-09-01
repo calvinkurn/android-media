@@ -1,50 +1,37 @@
 package com.tokopedia.kyc_centralized.common
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.ArrayList
 
 data class KycUserProjectInfoPojo(
-    @Expose
     @SerializedName("kycProjectInfo")
-    var kycProjectInfo: KycProjectInfo? = null
+    var kycProjectInfo: KycProjectInfo? = KycProjectInfo()
 )
 
 data class KycProjectInfo(
-    @Expose
     @SerializedName("Status")
-    var status: Int? = null,
-    @Expose
+    var status: Int? = KYCConstant.STATUS_DEFAULT,
     @SerializedName("StatusName")
-    var statusName: String? = null,
-    @Expose
+    var statusName: String? = "",
     @SerializedName("Message")
-    var message: String? = null,
-    @Expose
+    var message: String? = "",
     @SerializedName("IsAllowToRegister")
     var isAllowToRegister: Boolean = false,
-    @Expose
     @SerializedName("Reason")
-    var reasonList: ArrayList<String>? = null,
-    @Expose
+    var reasonList: ArrayList<String>? = arrayListOf(),
     @SerializedName("TypeList")
-    var typeLists: ArrayList<TypeList>? = null,
-    @Expose
+    var typeLists: ArrayList<TypeList>? = arrayListOf(),
     @SerializedName("IsSelfie")
     var isSelfie: Boolean? = null,
 )
 
 data class TypeList(
-    @Expose
     @SerializedName("TypeID")
-    var iD: Int? = null,
-    @Expose
+    var iD: Int? = 0,
     @SerializedName("Status")
-    var status: Int? = null,
-    @Expose
+    var status: Int? = 0,
     @SerializedName("StatusName")
-    var statusName: String? = null,
-    @Expose
+    var statusName: String? = "",
     @SerializedName("IsAllowToUpload")
     var isAllowToUpload: Boolean = false
 )

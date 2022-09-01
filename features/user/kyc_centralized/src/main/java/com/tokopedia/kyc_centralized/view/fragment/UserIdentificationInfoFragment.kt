@@ -150,8 +150,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo?.isSelfie == true
                     if( it.data.kycProjectInfo?.status == KYCConstant.STATUS_BLACKLISTED ||
-                        it.data.kycProjectInfo?.statusName != null &&
-                        it.data.kycProjectInfo?.statusName == ""
+                        it.data.kycProjectInfo?.statusName?.isEmpty() == true
                     ) {
                         onUserBlacklist()
                     } else {
