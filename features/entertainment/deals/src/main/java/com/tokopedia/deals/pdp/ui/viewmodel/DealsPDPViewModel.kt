@@ -4,14 +4,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.pdp.data.DealRatingRequest
 import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.DealsRatingResponse
+import com.tokopedia.deals.pdp.data.DealsRatingUpdateRequest
+import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPGetRatingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendationUseCase
+import com.tokopedia.deals.pdp.domain.DealsPDPUpdateRatingUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
@@ -38,6 +42,7 @@ class DealsPDPViewModel @Inject constructor (
     private val dealsPDPEventContentUseCase: DealsPDPEventContentUseCase,
     private val dealsPDPRecommendationUseCase: DealsPDPRecommendationUseCase,
     private val dealsPDPGetRatingUseCase: DealsPDPGetRatingUseCase,
+    private val dealsPDPUpdateRatingUseCase: DealsPDPUpdateRatingUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -45,6 +50,7 @@ class DealsPDPViewModel @Inject constructor (
     private val _inputContentState = MutableSharedFlow<String>(Int.ONE)
     private val _inputRecommendationState = MutableSharedFlow<String>(Int.ONE)
     private val _inputRatingState = MutableSharedFlow<String>(Int.ONE)
+    private val _inputUpdateRatingState = MutableSharedFlow<DealsRatingUpdateRequest>(Int.ONE)
 
     val flowPDP: SharedFlow<Result<DealsProductDetail>> =
         _inputPDPState.flatMapConcat {
@@ -98,6 +104,22 @@ class DealsPDPViewModel @Inject constructor (
             replay = Int.ONE
         )
 
+    val flowUpdateRating: SharedFlow<Result<DealsRatingUpdateResponse>> =
+        _inputUpdateRatingState.flatMapConcat {
+            flow {
+                emit(updateRating(it))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
+    var isLiked = false
+    var totalLikes = 0
+
     fun setPDP(urlProduct: String) {
         _inputPDPState.tryEmit(urlProduct)
     }
@@ -112,6 +134,10 @@ class DealsPDPViewModel @Inject constructor (
 
     fun setRating(productId: String) {
         _inputRatingState.tryEmit(productId)
+    }
+
+    fun updateRating(productId: String, userId: String, isLiked: Boolean) {
+        _inputUpdateRatingState.tryEmit(mapperParamUpdateRating(productId, userId, isLiked))
     }
 
     fun productImagesMapper(productDetail: ProductDetailData): List<String> {
@@ -153,14 +179,37 @@ class DealsPDPViewModel @Inject constructor (
     private suspend fun getRating(productId: String): Result<DealsRatingResponse> {
         dealsPDPGetRatingUseCase.setUrlId(productId)
         val dealsRatingResponse = withContext(dispatcher.io){
-            convertToValidateResponse(dealsPDPGetRatingUseCase.executeOnBackground())
+            convertToRatingResponse(dealsPDPGetRatingUseCase.executeOnBackground())
         }
 
         return Success(dealsRatingResponse)
     }
 
-    private fun convertToValidateResponse(typeRestResponseMap: Map<Type, RestResponse>): DealsRatingResponse {
+    private suspend fun updateRating(dealsRatingUpdateRequest: DealsRatingUpdateRequest): Result<DealsRatingUpdateResponse> {
+        dealsPDPUpdateRatingUseCase.setParam(dealsRatingUpdateRequest)
+        val dealsUpdateRating = withContext(dispatcher.io) {
+            convertToUpdateRatingResponse(dealsPDPUpdateRatingUseCase.executeOnBackground())
+        }
+
+        return Success(dealsUpdateRating)
+    }
+
+    private fun mapperParamUpdateRating(productId: String, userId: String, isLiked: Boolean): DealsRatingUpdateRequest {
+        return DealsRatingUpdateRequest(DealRatingRequest(
+            feedback = "",
+            isLiked = isLiked,
+            productId = productId.toLong(),
+            rating = 0,
+            userId = userId.toLong()
+        ))
+    }
+
+    private fun convertToRatingResponse(typeRestResponseMap: Map<Type, RestResponse>): DealsRatingResponse {
         return typeRestResponseMap[DealsRatingResponse::class.java]?.getData() as DealsRatingResponse
+    }
+
+    private fun convertToUpdateRatingResponse(typeRestResponseMap: Map<Type, RestResponse>): DealsRatingUpdateResponse {
+        return typeRestResponseMap[DealsRatingUpdateResponse::class.java]?.getData() as DealsRatingUpdateResponse
     }
 
     companion object {

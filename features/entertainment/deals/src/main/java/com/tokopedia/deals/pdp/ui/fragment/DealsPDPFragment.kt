@@ -56,6 +56,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Calendar
 import java.util.regex.Pattern
@@ -67,6 +68,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var productId: String = ""
     private var binding by autoClearedNullable<FragmentDealsDetailBinding>()
@@ -234,12 +238,28 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 when (it) {
                     is Success -> {
                         it.data.data.first().apply {
-                            updateRating(totalLikes, isLiked)
+                            setRating(productId.toString(), totalLikes, isLiked)
                         }
                     }
 
                     is Fail -> {
-                        updateRating(0, false, isHideImageRating = true)
+                        setRating("0", Int.ZERO, false, isHideImageRating = true)
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowUpdateRating.collect {
+                when (it) {
+                    is Success -> {
+                        it.data.data.apply {
+                            setRating(productId.toString(), getTotalLikes(), isLiked)
+                        }
+                    }
+
+                    is Fail -> {
+                        setRating("0", Int.ZERO, false, isHideImageRating = true)
                     }
                 }
             }
@@ -257,6 +277,26 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun getRating(productId: String) {
         viewModel.setRating(productId)
+    }
+
+    private fun updateRating(productId: String, isLiked: Boolean) {
+        viewModel.updateRating(productId, userSession.userId, isLiked)
+    }
+
+    private fun setIsLiked(isLiked: Boolean) {
+        viewModel.isLiked = isLiked
+    }
+
+    private fun getIsLiked(): Boolean {
+        return viewModel.isLiked
+    }
+
+    private fun getTotalLikes(): Int {
+        return viewModel.totalLikes
+    }
+
+    private fun setTotalLikes(totalLikes: Int) {
+        viewModel.totalLikes = totalLikes
     }
 
     private fun showLoading() {
@@ -460,15 +500,22 @@ class DealsPDPFragment: BaseDaggerFragment() {
             DealsUtils.convertEpochToString(maxEndDate.toIntSafely())))
     }
 
-    private fun updateRating(likeCount: Int, isLiked: Boolean, isHideImageRating: Boolean = false) {
+    private fun setRating(productId: String, likeCount: Int, isLiked: Boolean, isHideImageRating: Boolean = false) {
 
         if (isHideImageRating) {
             imgFavorite?.hide()
         } else {
             imgFavorite?.show()
+            setIsLiked(isLiked)
+            imgFavorite?.setOnClickListener {
+                if (!getIsLiked()) {
+                    setTotalLikes(getTotalLikes() - Int.ONE)
+                } else setTotalLikes(getTotalLikes() + Int.ONE)
+                updateRating(productId, !getIsLiked())
+            }
         }
 
-        if(isLiked) {
+        if(getIsLiked()) {
             imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_filled)
         } else {
             imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_unfilled)
