@@ -28,7 +28,7 @@ class InteractiveFinishView : RoundedFrameLayout {
         this
     )
 
-    private val mWidth = resources.getDimensionPixelSize(R.dimen.interactive_finish_width)
+    private val mWidth = 104
 
     init {
         setCornerRadius(
