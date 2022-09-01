@@ -15,11 +15,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -81,6 +76,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         private const val MAX_VIDEO_COUNT = 1
         private const val MAX_IMAGE_COUNT = 4
         private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
+        private const val SHOW_TEXT_AREA_AUTO_SCROLL_DELAY = 500L
 
         fun createInstance(
             rating: Int,
@@ -214,7 +210,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
                 val scrollY = mediaPickerBottom - scrollViewHeight
                 it.reviewFormScrollView.smoothScrollTo(scrollX, scrollY)
             }
-        }, 500L)
+        }, SHOW_TEXT_AREA_AUTO_SCROLL_DELAY)
     }
 
     private fun handleDismiss() {
