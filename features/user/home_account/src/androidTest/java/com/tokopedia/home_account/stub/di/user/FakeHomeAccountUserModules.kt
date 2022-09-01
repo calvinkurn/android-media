@@ -13,7 +13,6 @@ import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.stub.domain.FakeUserSession
-import com.tokopedia.home_account.stub.domain.FakeUserSessionDataStore
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -38,11 +37,6 @@ class FakeHomeAccountUserModules(val context: Context) {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return FakeUserSession(context)
-    }
-
-    @Provides
-    fun provideUserSessionDataStore(): UserSessionDataStore {
-        return FakeUserSessionDataStore()
     }
 
     @Provides
