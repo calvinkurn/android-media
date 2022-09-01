@@ -238,7 +238,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 when (it) {
                     is Success -> {
                         it.data.data.first().apply {
-                            setRating(productId.toString(), totalLikes, isLiked)
+                            setRating(productId.toString(), totalLikes, isLiked, )
                         }
                     }
 
@@ -280,7 +280,20 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun updateRating(productId: String, isLiked: Boolean) {
-        viewModel.updateRating(productId, userSession.userId, isLiked)
+        if(userSession.isLoggedIn) {
+            viewModel.updateRating(productId, userSession.userId, isLiked)
+        } else {
+            context?.let { context ->
+                view?.let { view ->
+                    Toaster.build(
+                        view,
+                        context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_login_likes),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun setIsLiked(isLiked: Boolean) {
@@ -507,10 +520,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
         } else {
             imgFavorite?.show()
             setIsLiked(isLiked)
+            setTotalLikes(likeCount)
             imgFavorite?.setOnClickListener {
                 if (!getIsLiked()) {
-                    setTotalLikes(getTotalLikes() - Int.ONE)
-                } else setTotalLikes(getTotalLikes() + Int.ONE)
+                    setTotalLikes(getTotalLikes() + Int.ONE)
+                } else setTotalLikes(getTotalLikes() - Int.ONE)
                 updateRating(productId, !getIsLiked())
             }
         }

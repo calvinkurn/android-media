@@ -142,7 +142,7 @@ class DealsPDPViewModel @Inject constructor (
 
     fun productImagesMapper(productDetail: ProductDetailData): List<String> {
         val images = mutableListOf<String>()
-        if (productDetail.media.size > 0) {
+        if (productDetail.media.isNotEmpty()) {
             images.addAll(productDetail.media.map {
                 it.url
             })
@@ -197,7 +197,7 @@ class DealsPDPViewModel @Inject constructor (
     private fun mapperParamUpdateRating(productId: String, userId: String, isLiked: Boolean): DealsRatingUpdateRequest {
         return DealsRatingUpdateRequest(DealRatingRequest(
             feedback = "",
-            isLiked = isLiked,
+            isLiked = isLiked.toString(),
             productId = productId.toLong(),
             rating = 0,
             userId = userId.toLong()

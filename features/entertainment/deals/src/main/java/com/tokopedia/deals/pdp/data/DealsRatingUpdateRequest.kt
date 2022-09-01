@@ -11,7 +11,7 @@ data class DealRatingRequest(
     @SerializedName("feedback")
     val feedback: String = "",
     @SerializedName("is_liked")
-    val isLiked: Boolean = false,
+    val isLiked: String = "false",
     @SerializedName("product_id")
     val productId: Long = 0,
     @SerializedName("user_id")
