@@ -43,7 +43,9 @@ fun intentGoToLoginWithEmail(email: String, source: String, context: Context): I
         Uri.encode(email),
         source
     )
+    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
     return intent
 }
 
@@ -54,6 +56,7 @@ fun intentGoToLoginWithPhone(phone: String, source: String, context: Context): I
         phone,
         source
     )
+    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
     return intent
