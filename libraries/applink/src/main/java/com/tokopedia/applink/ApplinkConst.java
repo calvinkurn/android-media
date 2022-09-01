@@ -390,8 +390,10 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
     String EPHARMACY = "tokopedia://epharmacy";
+    String AFFILIATE_TOKO_HOST = "affiliate";
     String AFFILIATE_TOKO = "tokopedia://affiliate";
     String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
+    String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
