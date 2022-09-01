@@ -109,6 +109,7 @@ class CompletePayment : AppCompatActivity() {
             if(::timerJob.isInitialized)
                 timerJob.cancel()
 
+            super.onPageFinished(view, url)
 
 
         }
@@ -116,6 +117,7 @@ class CompletePayment : AppCompatActivity() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             showProgressBar()
             startTimer()
+            super.onPageStarted(view, url, favicon)
 
 
         }
