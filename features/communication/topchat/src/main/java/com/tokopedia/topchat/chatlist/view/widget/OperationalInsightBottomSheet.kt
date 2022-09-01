@@ -67,6 +67,7 @@ class OperationalInsightBottomSheet(
         initTarget()
         initUrlShopPerformance()
         initCtaButton()
+        initTopedIcon()
         trackBottomSheet()
     }
 
@@ -147,11 +148,11 @@ class OperationalInsightBottomSheet(
         }
     }
 
-    private fun getIconSummary(): Int {
+    private fun getIconSummary(): String {
         return when(ticker.isMaintain) {
-            true -> R.drawable.ic_performance_chat_maintain
-            false -> R.drawable.ic_performance_chat_fix
-            else -> 0
+            true -> MAINTAIN_IMAGE_URL
+            false -> FIX_IMAGE_URL
+            else -> ""
         }
     }
 
@@ -175,15 +176,17 @@ class OperationalInsightBottomSheet(
     }
 
     private fun getActualReplyRateTextColor(): Int? {
-        if (isDarkMode()) {
-            ticker.colorLight?.chatRepliedIndicatorLight?.let {
-                return Color.parseColor(it)
+        try {
+            if (isDarkMode()) {
+                ticker.colorLight?.chatRepliedIndicatorLight?.let {
+                    return Color.parseColor(it)
+                }
+            } else {
+                ticker.colorDark?.chatRepliedIndicatorDark?.let {
+                    return Color.parseColor(it)
+                }
             }
-        } else {
-            ticker.colorDark?.chatRepliedIndicatorDark?.let {
-                return Color.parseColor(it)
-            }
-        }
+        } catch (ignored: Throwable) {}
         return null
     }
 
@@ -200,15 +203,17 @@ class OperationalInsightBottomSheet(
     }
 
     private fun getActualReplySpeedTextColor(): Int? {
-        if (isDarkMode()) {
-            ticker.colorLight?.chatSpeedIndicatorLight?.let {
-                return Color.parseColor(it)
+        try {
+            if (isDarkMode()) {
+                ticker.colorLight?.chatSpeedIndicatorLight?.let {
+                    return Color.parseColor(it)
+                }
+            } else {
+                ticker.colorDark?.chatSpeedIndicatorDark?.let {
+                    return Color.parseColor(it)
+                }
             }
-        } else {
-            ticker.colorDark?.chatSpeedIndicatorDark?.let {
-                return Color.parseColor(it)
-            }
-        }
+        } catch (ignored: Throwable) {}
         return null
     }
 
@@ -225,15 +230,17 @@ class OperationalInsightBottomSheet(
     }
 
     private fun getActualDiscussionReplyRateTextColor(): Int? {
-        if (isDarkMode()) {
-            ticker.colorLight?.discussionRepliedIndicatorLight?.let {
-                return Color.parseColor(it)
+        try {
+            if (isDarkMode()) {
+                ticker.colorLight?.discussionRepliedIndicatorLight?.let {
+                    return Color.parseColor(it)
+                }
+            } else {
+                ticker.colorDark?.discussionRepliedIndicatorDark?.let {
+                    return Color.parseColor(it)
+                }
             }
-        } else {
-            ticker.colorDark?.discussionRepliedIndicatorDark?.let {
-                return Color.parseColor(it)
-            }
-        }
+        } catch (ignored: Throwable) {}
         return null
     }
 
@@ -250,15 +257,17 @@ class OperationalInsightBottomSheet(
     }
 
     private fun getActualDiscussionReplySpeedTextColor(): Int? {
-        if (isDarkMode()) {
-            ticker.colorLight?.discussionSpeedIndicatorLight?.let {
-                return Color.parseColor(it)
+        try {
+            if (isDarkMode()) {
+                ticker.colorLight?.discussionSpeedIndicatorLight?.let {
+                    return Color.parseColor(it)
+                }
+            } else {
+                ticker.colorDark?.discussionSpeedIndicatorDark?.let {
+                    return Color.parseColor(it)
+                }
             }
-        } else {
-            ticker.colorDark?.discussionSpeedIndicatorDark?.let {
-                return Color.parseColor(it)
-            }
-        }
+        } catch (ignored: Throwable) {}
         return null
     }
 
@@ -302,6 +311,11 @@ class OperationalInsightBottomSheet(
         ctaOperationalInsight?.setOnClickListener {
             goToOperationalInsightPage()
         }
+    }
+
+    private fun initTopedIcon() {
+        val topedImage: ImageUnify? = childView?.findViewById(R.id.icon_toped_operational_insight)
+        topedImage?.loadImage(TOPED_IMAGE_URL)
     }
 
     private fun createSpannableWithLink(completeString: String): SpannableString {
@@ -388,5 +402,8 @@ class OperationalInsightBottomSheet(
     companion object {
         private const val LIMIT = 100
         private const val SHOP_PERFORMANCE = "Performa Toko"
+        private const val TOPED_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_character_toped.png"
+        private const val MAINTAIN_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_pertahankan_performa.png"
+        private const val FIX_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_tingkatkan_performa.png"
     }
 }

@@ -28,9 +28,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="12dp"
             android:layout_marginStart="12dp"
-            android:layout_marginBottom="12dp"
-            app:srcCompat="@drawable/ic_performance_chat_fix"
-            />
+            android:layout_marginBottom="12dp" />
         
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_chat_performance_summary"
@@ -337,12 +335,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icon_toped_operational_insight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="44dp"
+        android:layout_height="48.6dp"
         app:layout_constraintTop_toBottomOf="@id/divider_dashed_effect_performance"
         app:layout_constraintLeft_toLeftOf="@id/divider_dashed_effect_performance"
-        android:layout_marginTop="18dp"
-        app:srcCompat="@drawable/ic_topchat_toped_seller"/>
+        android:layout_marginTop="18dp"/>
 
     <View
         android:id="@+id/bg_operational_insight_monitor"
