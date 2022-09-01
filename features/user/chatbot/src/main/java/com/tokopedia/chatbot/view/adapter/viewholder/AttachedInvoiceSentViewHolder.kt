@@ -71,12 +71,16 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     private fun setStatus(invoice: AttachInvoiceSentUiModel) {
         if (invoice.status.isNotEmpty()) {
-            val labelType = InvoiceStatusLabelHelper.getLabelType(invoice.color)
+            val labelType: Int = if (invoice.color.isEmpty())
+                InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
+            else
+                InvoiceStatusLabelHelper.getLabelType(invoice.color)
             status?.text = invoice.status
             status?.setLabelType(labelType)
-        }else{
+        } else {
             status?.invisible()
         }
+
     }
 
     private fun setPrice(totalAmount: String?) {

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -116,7 +115,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             invoiceDate.text = element.createdTime
             productName.text = element.title
             setProductDesc(element.description)
-            setStatus(element.status, element.color)
+            setStatus(element.status, element.color, element.statusId)
             setPrice(element.amount)
         }
 
@@ -140,9 +139,12 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             }
         }
 
-        private fun setStatus(status: String, statusColor: String?) {
+        private fun setStatus(status: String, statusColor: String?, statusId: Int) {
             if (status.isNotEmpty() == true) {
-                val labelType = InvoiceStatusLabelHelper.getLabelType(statusColor)
+                var labelType : Int = if(statusColor!=null && statusColor.isEmpty())
+                    InvoiceStatusLabelHelper.getLabelTypeWithStatusId(statusId)
+                else
+                    InvoiceStatusLabelHelper.getLabelType(statusColor)
                 invoiceStatus.text = status
                 invoiceStatus.setLabelType(labelType)
                 invoiceStatus.show()

@@ -37,7 +37,10 @@ class TransactionInvoiceViewHolder(itemView: View, private val listener: Transac
 
     private fun setStatus(invoice: TransactionInvoiceUiModel) {
         if (invoice.status.isNotEmpty()) {
-            val labelType = InvoiceStatusLabelHelper.getLabelType(invoice.color)
+            var labelType : Int = if(invoice.color.isEmpty())
+                InvoiceStatusLabelHelper.getLabelTypeWithStatusId(invoice.statusId)
+            else
+                InvoiceStatusLabelHelper.getLabelType(invoice.color)
             tvStatus.text = invoice.status
             tvStatus.setLabelType(labelType)
             tvStatus.show()

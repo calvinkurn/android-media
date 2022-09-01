@@ -26,8 +26,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -418,7 +416,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
                 disableSendButton()
                 isFloatingSendButton = true
-                val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap.get(STATUS_COLOR))
+                val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap[STATUS_COLOR])
 
                 floatingInvoice.setUpInvoiceData(
                     invoiceTitle = hashMap.get(CODE).toBlankOrString(),
