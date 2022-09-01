@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.ItemMyShopProductListBinding
-import com.tokopedia.content.common.databinding.ItemMyShopProductWithCheckboxListBinding
 import com.tokopedia.content.common.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 
 /**
@@ -22,7 +22,7 @@ internal class MyShopProductViewHolder private constructor() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MyShopProductAdapter.Model.Product) {
-            binding.bind(item.product)
+            binding.bind(item.product, false)
             binding.root.setOnClickListener { onSelected(item.product, adapterPosition) }
         }
 
@@ -43,12 +43,12 @@ internal class MyShopProductViewHolder private constructor() {
     }
 
     internal class ProductWithCheckbox(
-        private val binding: ItemMyShopProductWithCheckboxListBinding,
+        private val binding: ItemMyShopProductListBinding,
         private val onSelected: (ProductUiModel, Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MyShopProductAdapter.Model.ProductWithCheckbox) {
-            binding.viewProduct.bind(item.product)
+            binding.bind(item.product, true)
             binding.root.setOnClickListener { onSelected(item.product, adapterPosition) }
 
             binding.checkboxProduct.isChecked = item.isSelected
@@ -60,7 +60,7 @@ internal class MyShopProductViewHolder private constructor() {
                 parent: ViewGroup,
                 onSelected: (ProductUiModel, Int) -> Unit
             ) = ProductWithCheckbox(
-                binding = ItemMyShopProductWithCheckboxListBinding.inflate(
+                binding = ItemMyShopProductListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,
@@ -71,7 +71,10 @@ internal class MyShopProductViewHolder private constructor() {
     }
 }
 
-fun ItemMyShopProductListBinding.bind(product: ProductUiModel) {
+fun ItemMyShopProductListBinding.bind(
+    product: ProductUiModel,
+    isShowCheckbox: Boolean,
+) {
     imgProduct.loadImage(product.coverURL)
     tvName.text = product.name
     tvStock.text = root.context.getString(
@@ -87,4 +90,7 @@ fun ItemMyShopProductListBinding.bind(product: ProductUiModel) {
         tvPrice.text = product.priceFmt
         llDiscount.visibility = View.GONE
     }
+
+    viewTopGradient.showWithCondition(isShowCheckbox)
+    checkboxProduct.showWithCondition(isShowCheckbox)
 }
