@@ -115,5 +115,13 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
     <string name="ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
     <string name="ugc_onboarding_continue">Lanjut</string>
+    <string name="ugc_account_non_active">Akun dinonaktifkan</string>
+    <string name="ugc_warning_both_account_banned_title">Semua akun kamu melanggar\nketentuan Tokopedia</string>
+    <string name="ugc_warning_both_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun toko dan pembeli.</string>
+    <string name="ugc_get_to_know_more">Pelajari Selengkapnya</string>
+    <string name="ugc_warning_both_account_live_title">Akunmu sedang siaran di\nperangkat lain</string>
+    <string name="ugc_warning_both_account_live_subtitle">Akhiri Live di perangkat lain jika ingin\nmengambil alih siaran.</string>
+    <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
+    <string name="ugc_warning_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun ini.</string>
 
 </resources>
