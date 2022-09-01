@@ -21,11 +21,6 @@ class LeaveQueueSubscriber(val messageId : String,
         return {
             val pojo = graphqlResponse.getData<LeaveQueueResponse>(LeaveQueueResponse::class.java)
             pojo?.postLeaveQueue?.leaveQueueHeader?.errorCode?.let { errorcode -> onSuccess(errorcode) }
-            ChatbotNewRelicLogger.logNewRelic(
-                ChatbotConstant.NewRelic.KEY_CHATBOT_LEAVE_QUEUE,
-                true,
-                messageId,
-            )
         }
     }
 
@@ -36,9 +31,9 @@ class LeaveQueueSubscriber(val messageId : String,
     override fun onError(e: Throwable) {
         onLeaveQueueError(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_LEAVE_QUEUE,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_LEAVE_QUEUE,
             e
         )
     }

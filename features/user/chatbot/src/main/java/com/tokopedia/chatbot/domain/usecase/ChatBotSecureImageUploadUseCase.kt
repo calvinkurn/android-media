@@ -43,9 +43,9 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
                 reqImgFile
         } catch (e: UnsupportedEncodingException) {
             ChatbotNewRelicLogger.logNewRelic(
-                ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
                 false,
                 messageId,
+                ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD,
                 e
             )
             e.printStackTrace()

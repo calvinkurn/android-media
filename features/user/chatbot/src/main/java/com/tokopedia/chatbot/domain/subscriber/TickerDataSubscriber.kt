@@ -22,11 +22,6 @@ class TickerDataSubscriber(val messageId : String,
         return {
             val pojo = graphqlResponse.getData<TickerDataResponse>(TickerDataResponse::class.java)
             pojo?.chipGetActiveTickerV4?.data?.let { tickerData -> onSuccess(tickerData) }
-            ChatbotNewRelicLogger.logNewRelic(
-                ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
-                true,
-                messageId,
-            )
         }
     }
 
@@ -37,9 +32,9 @@ class TickerDataSubscriber(val messageId : String,
     override fun onError(e: Throwable) {
         onTickerError(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
             e
         )
     }

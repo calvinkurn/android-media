@@ -584,9 +584,9 @@ class ChatbotPresenter @Inject constructor(
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {
                     ChatbotNewRelicLogger.logNewRelic(
-                        KEY_SECURE_UPLOAD,
                         false,
                         messageId,
+                        KEY_SECURE_UPLOAD,
                         e
                     )
                     onErrorImageUpload(e, imageUploadViewModel)
@@ -596,11 +596,6 @@ class ChatbotPresenter @Inject constructor(
                     val token = object : TypeToken<UploadSecureResponse?>() {}.type
                     val restResponse = t?.get(token)
                     val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
-                    ChatbotNewRelicLogger.logNewRelic(
-                        KEY_SECURE_UPLOAD,
-                        true,
-                        messageId
-                    )
                     sendUploadedImageToWebsocket(
                             ChatbotSendWebsocketParam
                                     .generateParamUploadSecureSendImage(
@@ -779,18 +774,13 @@ class ChatbotPresenter @Inject constructor(
                     val link = orderList?.dynamicLink ?: ""
                     onGetSuccessResponse(getEnvResoLink(link))
 
-                    ChatbotNewRelicLogger.logNewRelic(
-                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
-                        true,
-                        messageId
-                    )
                 },
                 onError = {
                     onError(it)
                     ChatbotNewRelicLogger.logNewRelic(
-                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
                         false,
                         messageId,
+                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
                         it
                     )
                 }
@@ -840,19 +830,14 @@ class ChatbotPresenter @Inject constructor(
                 val isTypingBlocked = response.topBotGetNewSession.isTypingBlocked
                 handleNewSession(isNewSession)
                 handleReplyBox(isTypingBlocked)
-                ChatbotNewRelicLogger.logNewRelic(
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
-                    true,
-                    messageId
-                )
             },
             onError = {
                 view.loadChatHistory()
                 view.enableTyping()
                 ChatbotNewRelicLogger.logNewRelic(
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
                     false,
                     messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
                     it
                 )
             }
@@ -874,17 +859,12 @@ class ChatbotPresenter @Inject constructor(
                 val response = checkUploadSecureUseCase.checkUploadSecure(params)
                 val isSecureUpload = response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
                 if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(data)
-                ChatbotNewRelicLogger.logNewRelic(
-                    KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
-                    true,
-                    messageId
-                )
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelic(
-                    KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
                     false,
                     messageId,
+                    KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
                     it
                 )
                 view.loadChatHistory()
@@ -920,20 +900,15 @@ class ChatbotPresenter @Inject constructor(
                     } else {
                         onSuccessGetChat(mappedResponse,chatReplies)
                     }
-                    ChatbotNewRelicLogger.logNewRelic(
-                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
-                        true,
-                        messageId,
-                    )
 
                 },
                 onError = {
                     onError.invoke(it)
 
                     ChatbotNewRelicLogger.logNewRelic(
-                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
                         false,
                         messageId,
+                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
                         it
                     )
                 }
@@ -966,18 +941,13 @@ class ChatbotPresenter @Inject constructor(
                 val response = gqlResponse.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
 
                 onSuccessGetRatingList(response.chipGetChatRatingList)
-                ChatbotNewRelicLogger.logNewRelic(
-                    KEY_CHATBOT_GET_CHATLIST_RATING,
-                    true,
-                    messageId
-                )
             },
             onError = {
                 onGetChatRatingListError(it)
                 ChatbotNewRelicLogger.logNewRelic(
-                    KEY_CHATBOT_GET_CHATLIST_RATING,
                     true,
                     messageId,
+                    KEY_CHATBOT_GET_CHATLIST_RATING,
                     it
                 )
             }
@@ -1049,19 +1019,13 @@ class ChatbotPresenter @Inject constructor(
                 } else {
                     onSuccessGetChat(mappedResponse,chatReplies)
                 }
-                ChatbotNewRelicLogger.logNewRelic(
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
-                    true,
-                    messageId,
-                )
             },
             onError = {
                 onError.invoke(it)
-
                 ChatbotNewRelicLogger.logNewRelic(
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     false,
                     messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     it
                 )
             }
@@ -1087,19 +1051,13 @@ class ChatbotPresenter @Inject constructor(
                 } else {
                     onSuccessGetChat(mappedResponse,chatReplies)
                 }
-                ChatbotNewRelicLogger.logNewRelic(
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
-                    true,
-                    messageId,
-                )
             },
             onError = {
                 onError.invoke(it)
-
                 ChatbotNewRelicLogger.logNewRelic(
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     false,
                     messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
                     it
                 )
             }

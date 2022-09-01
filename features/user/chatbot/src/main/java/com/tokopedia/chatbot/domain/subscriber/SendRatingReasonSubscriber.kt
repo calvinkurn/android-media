@@ -25,11 +25,6 @@ class SendRatingReasonSubscriber(val messageId : String,
         return {
             val pojo = graphqlResponse.getData<SendReasonRatingPojo>(SendReasonRatingPojo::class.java)
             onSuccess(pojo.postRatingReason.data.message)
-            ChatbotNewRelicLogger.logNewRelic(
-                ChatbotConstant.NewRelic.KEY_CHATBOT_RATING_REASON,
-                true,
-                messageId
-            )
         }
     }
 
@@ -40,9 +35,9 @@ class SendRatingReasonSubscriber(val messageId : String,
     override fun onError(e: Throwable) {
         onErrorSendReason(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_RATING_REASON,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_RATING_REASON,
             e
         )
     }

@@ -25,11 +25,6 @@ class SendRatingSubscriber(val messageId : String,
         return {
             val pojo = graphqlResponse.getData<SendRatingPojo>(SendRatingPojo::class.java)
             onSuccessSendRating(pojo)
-            ChatbotNewRelicLogger.logNewRelic(
-                ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
-                true,
-                messageId
-            )
         }
     }
 
@@ -40,9 +35,9 @@ class SendRatingSubscriber(val messageId : String,
     override fun onError(e: Throwable) {
         onErrorSendRating(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
             e
         )
     }

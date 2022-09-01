@@ -22,11 +22,6 @@ class SubmitCsatRatingSubscriber(val messageId : String,
         return {
             val pojo = graphqlResponse.getData<SubmitCsatGqlResponse>(SubmitCsatGqlResponse::class.java)
             onSuccess(pojo.submitRatingCSAT?.data?.message.toString())
-            ChatbotNewRelicLogger.logNewRelic(
-                ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-                true,
-                messageId
-            )
         }
     }
 
@@ -37,9 +32,9 @@ class SubmitCsatRatingSubscriber(val messageId : String,
     override fun onError(e: Throwable) {
         onErrorSubmitRating(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
             e
         )
     }

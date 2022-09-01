@@ -18,11 +18,6 @@ class ChipSubmitHelpfullQuestionsSubscriber(private val messageId : String,
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit = {
        // just hitting to notify backend
-        ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
-            true,
-            messageId
-        )
     }
 
     override fun onCompleted() {
@@ -32,9 +27,9 @@ class ChipSubmitHelpfullQuestionsSubscriber(private val messageId : String,
     override fun onError(e: Throwable) {
         onsubmitingHelpfQuestionsError(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
             e
         )
     }

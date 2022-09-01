@@ -20,11 +20,6 @@ class ChipSubmitChatCsatSubscriber(private val messageId : String,
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit = {
         val pojo = graphqlResponse.getData<ChipSubmitChatCsatResponse>(ChipSubmitChatCsatResponse::class.java)
         onsubmitingChatCsatSuccess(pojo?.chipSubmitChatCSAT?.csatSubmitData?.toasterMessage ?: "")
-        ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
-            true,
-            messageId
-        )
     }
 
     override fun onCompleted() {
@@ -34,9 +29,9 @@ class ChipSubmitChatCsatSubscriber(private val messageId : String,
     override fun onError(e: Throwable) {
         onsubmitingChatCsatError(e)
         ChatbotNewRelicLogger.logNewRelic(
-            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
             false,
             messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
             e
         )
     }
