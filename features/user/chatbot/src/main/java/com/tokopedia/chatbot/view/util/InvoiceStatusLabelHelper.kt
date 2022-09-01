@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.view.util
 
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.unifycomponents.Label
 
 object InvoiceStatusLabelHelper {
@@ -16,11 +15,11 @@ object InvoiceStatusLabelHelper {
 
     fun getLabelTypeWithStatusId(statusId: Int?): Int {
         if (statusId == null)
-            return Label.HIGHLIGHT_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.HIGHLIGHT_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.HIGHLIGHT_LIGHT_GREEN
-            else -> Label.HIGHLIGHT_DARK_GREY
+            return Label.HIGHLIGHT_LIGHT_ORANGE
+        return when (ChatbotOrderStatusCode.MAP[statusId]) {
+            ChatbotOrderStatusCode.COLOR_RED -> Label.HIGHLIGHT_LIGHT_RED
+            ChatbotOrderStatusCode.COLOR_GREEN -> Label.HIGHLIGHT_LIGHT_GREEN
+            else -> Label.HIGHLIGHT_LIGHT_ORANGE
         }
     }
 
