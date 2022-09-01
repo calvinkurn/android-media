@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -92,6 +91,7 @@ import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActi
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.removeTime
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Date
 import javax.inject.Inject
@@ -108,6 +108,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val TWELVE = 12
         private const val SIX_DAYS = 6
         private const val THREE_MONTH = 3
+        private const val THREE_HOUR = 3
         private const val TWO_HOURS = 2
         private const val THIRTY_MINUTE = 30
         private const val CAMPAIGN_NAME_MAX_LENGTH = 15
@@ -657,21 +658,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val maximumCampaignEndDate = viewModel.findCampaignMaxEndDateByVpsRule(selectedVpsPackage, maximumEndDate)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
-            TimePickerSelectionMode.START_TIME,
+            TimePickerSelectionMode.CAMPAIGN_START_DATE,
             selectedDate,
             minimumDate,
             maximumCampaignEndDate,
             viewModel.getSelectedVpsPackage() ?: return
         )
 
-        bottomSheet.setOnDateTimePicked { newStartDate ->
-            viewModel.setSelectedStartDate(newStartDate)
-            binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-            adjustEndDate()
-            val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
-            adjustQuantityPicker(quantityPickerCurrentValue, newStartDate)
-            viewModel.getCampaignQuota(newStartDate.extractMonth(), newStartDate.extractYear())
-        }
+        bottomSheet.setOnDateTimePicked { newStartDate -> handleCampaignNewStartDate(newStartDate) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
@@ -679,21 +673,46 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
         val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
         val minimumDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val maximumEndDate = viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
+
+        val maximumEndDate = if (selectedVpsPackage.isShopTierBenefit) {
+            viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        } else {
+            selectedVpsPackage.packageEndTime
+        }
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
-            TimePickerSelectionMode.END_TIME,
+            TimePickerSelectionMode.CAMPAIGN_END_DATE,
             endDate,
             minimumDate,
             maximumEndDate,
             viewModel.getSelectedVpsPackage() ?: return
         )
-        bottomSheet.setOnDateTimePicked { newEndDate ->
-            viewModel.setSelectedEndDate(newEndDate)
-            binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-        }
+        bottomSheet.setOnDateTimePicked { newEndDate -> handleCampaignNewEndDate(newEndDate) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
+
+    private fun handleCampaignNewStartDate(newStartDate: Date) {
+        viewModel.setSelectedStartDate(newStartDate)
+        binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+        adjustEndDate()
+
+        val quantityPickerCurrentValue = binding?.quantityEditor?.editText?.text.toString().trim().toIntOrZero()
+        adjustQuantityPicker(quantityPickerCurrentValue, newStartDate)
+
+        val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
+        viewModel.getCampaignQuotaOfSelectedMonth(
+            newStartDate.extractMonth(),
+            newStartDate.extractYear(),
+            vpsPackageId
+        )
+    }
+
+    private fun handleCampaignNewEndDate(newEndDate: Date) {
+        viewModel.setSelectedEndDate(newEndDate)
+        binding?.tauEndDate?.editText?.setText(newEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+    }
+
 
     private fun adjustEndDate() {
         val startDate = viewModel.getSelectedStartDate()
@@ -1048,6 +1067,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             displaySelectedVpsPackage(selectedVpsPackage)
             val campaignName = binding?.tauCampaignName?.editText?.text.toString()
             binding?.btnCreateCampaign?.isEnabled = viewModel.shouldEnableProceedButton(campaignName, selectedVpsPackage)
+            handleSwitchVpsPackageRule(selectedVpsPackage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -1060,5 +1080,26 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         )
         binding?.tauVpsPackageName?.setMessage(errorMessage)
         binding?.tauVpsPackageName?.isInputError = true
+    }
+
+    private fun handleSwitchVpsPackageRule(selectedVpsPackage: VpsPackageUiModel) {
+        if (selectedVpsPackage.isShopTierBenefit) return
+
+        val isTodayInVpsPeriod = viewModel.isTodayInVpsPeriod(selectedVpsPackage)
+
+        if (isTodayInVpsPeriod) {
+            val now = Date()
+            val startDate = now.advanceHourBy(THREE_HOUR)
+            val endDate = startDate.advanceMinuteBy(THIRTY_MINUTE)
+
+            handleCampaignNewStartDate(startDate)
+            handleCampaignNewEndDate(endDate)
+        } else {
+            val startDate = selectedVpsPackage.packageStartTime.removeTime()
+            val endDate = startDate.advanceMinuteBy(THIRTY_MINUTE)
+
+            handleCampaignNewStartDate(startDate)
+            handleCampaignNewEndDate(endDate)
+        }
     }
 }

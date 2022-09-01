@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.list.list
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -21,17 +20,28 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentCampaignListBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
-import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.Constant.FIRST_PAGE
 import com.tokopedia.shop.flashsale.common.constant.Constant.ZERO
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
-import com.tokopedia.shop.flashsale.common.extension.*
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
+import com.tokopedia.shop.flashsale.common.extension.showError
+import com.tokopedia.shop.flashsale.common.extension.showLoading
+import com.tokopedia.shop.flashsale.common.extension.showToaster
+import com.tokopedia.shop.flashsale.common.extension.slideDown
+import com.tokopedia.shop.flashsale.common.extension.slideUp
+import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.share_component.ShareComponentInstanceBuilder
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
@@ -61,8 +71,6 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.lang.reflect.Method
-import java.util.*
 import javax.inject.Inject
 
 class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiModel>(),
@@ -80,6 +88,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val DRAFT_SERVER_SAVING_DURATION = 1000L
+        private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
 
         @JvmStatic
         fun newInstance(
@@ -174,7 +183,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onResume() {
         super.onResume()
-        viewModel.getCampaignPrerequisiteData()
+        viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
         viewModel.getVpsPackages()
     }
 
@@ -380,7 +389,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         if (decorStatus == "native" && hasCampaignOrDraft) {
             binding?.btnCreateCampaignEmptyState.showLoading()
             binding?.btnCreateCampaign.showLoading()
-            viewModel.validateCampaignCreationEligibility()
+            viewModel.validateCampaignCreationEligibility(VPS_PACKAGE_ID_NOT_SELECTED)
         } else {
             showShopDecorationDialog()
         }
@@ -714,7 +723,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(DRAFT_SERVER_SAVING_DURATION) {
-            viewModel.getCampaignPrerequisiteData()
+            viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
         }
     }
 
@@ -779,10 +788,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun showIneligibleAccess(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(context.getString(R.string.sfs_ineligible_access_title))
-        dialog.setDescription(context.getString(R.string.sfs_ineligible_access_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.sfs_subscribe_pm_pro))
-        dialog.setSecondaryCTAText(context.getString(R.string.no_campaign_quota_secondary_cta_text))
+        dialog.setTitle(context.getString(R.string.sfs_empty_quota_title))
+        dialog.setDescription(context.getString(R.string.sfs_empty_quota_description))
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_no_campaign_quota_primary_cta_text))
+        dialog.setSecondaryCTAText(context.getString(R.string.sfs_no_campaign_quota_secondary_cta_text))
 
         dialog.setPrimaryCTAClickListener {
             routeToPmSubscribePage()
@@ -886,7 +895,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         val dialog = ShopDecorationDialog()
         dialog.setOnPrimaryActionClick {
-            viewModel.validateCampaignCreationEligibility()
+            viewModel.validateCampaignCreationEligibility(VPS_PACKAGE_ID_NOT_SELECTED)
         }
         dialog.setOnHyperlinkClick { routeToShopDecorationArticle() }
         dialog.show(activity ?: return)
@@ -933,11 +942,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     private fun routeToYourShopFlashSaleQuotaPage() {
         QuotaMonitoringActivity.start(activity ?: return)
-    }
-
-    private fun Typography.textColor(@ColorRes resourceId: Int) {
-        val color = ContextCompat.getColor(context, resourceId)
-        this.setTextColor(color)
     }
 }
 

@@ -56,6 +56,7 @@ class CampaignInformationViewModel @Inject constructor(
         private const val ONE_HOUR = 1
         private const val SHOP_TIER_BENEFIT_PACKAGE_ID: Long= -1
         private const val EMPTY_QUOTA = 0
+        private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
     }
 
     private val _currentMonthRemainingQuota = MutableLiveData<Result<Int>>()
@@ -201,7 +202,8 @@ class CampaignInformationViewModel @Inject constructor(
             block = {
                 val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
                     month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear()
+                    year = dateManager.getCurrentYear(),
+                    vpsPackageId = VPS_PACKAGE_ID_NOT_SELECTED
                 )
 
                 _currentMonthRemainingQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
@@ -341,13 +343,14 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun getCampaignQuota(month : Int, year: Int) {
+    fun getCampaignQuotaOfSelectedMonth(month : Int, year: Int, vpsPackageId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
                     month = month,
-                    year = year
+                    year = year,
+                    vpsPackageId = vpsPackageId
                 )
 
                 _campaignQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
@@ -506,7 +509,7 @@ class CampaignInformationViewModel @Inject constructor(
             .filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
             .sortedBy { vpsPackage -> vpsPackage.packageEndTime }
         val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
-        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> vpsPackage.remainingQuota == EMPTY_QUOTA }
+        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit && vpsPackage.remainingQuota == EMPTY_QUOTA }
         return nonEmptyVpsPackages + shopTierBenefit + emptyVpsPackages
     }
 
@@ -584,5 +587,10 @@ class CampaignInformationViewModel @Inject constructor(
                 _emptyQuotaVpsPackage.postValue(Fail(error))
             }
         )
+    }
+
+    fun isTodayInVpsPeriod(selectedVpsPackage : VpsPackageUiModel): Boolean {
+        val now = Date()
+        return now.after(selectedVpsPackage.packageStartTime) && now.before(selectedVpsPackage.packageEndTime)
     }
 }

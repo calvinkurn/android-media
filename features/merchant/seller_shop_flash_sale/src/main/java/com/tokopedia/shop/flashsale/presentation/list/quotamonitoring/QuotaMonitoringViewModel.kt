@@ -8,15 +8,14 @@ import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.Constant.SELLER_QUOTA_SOURCE_EXPIRING_DAY_RANGE
 import com.tokopedia.shop.flashsale.common.extension.daysDifference
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
-import com.tokopedia.shop.flashsale.domain.entity.PackageAvailability
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackageAvailability
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
-import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 class QuotaMonitoringViewModel @Inject constructor(
@@ -42,7 +41,7 @@ class QuotaMonitoringViewModel @Inject constructor(
         )
     }
 
-    fun getPackageAvailability(packages: List<VpsPackage>): PackageAvailability {
+    fun getPackageAvailability(packages: List<VpsPackage>): VpsPackageAvailability {
         var totalQuota = Constant.ZERO
         var totalRemainingQuota = Constant.ZERO
         var isNearExpirePackageAvailable = false
@@ -59,7 +58,7 @@ class QuotaMonitoringViewModel @Inject constructor(
             }
         }
 
-        return PackageAvailability(
+        return VpsPackageAvailability(
             totalQuota = totalQuota,
             remainingQuota = totalRemainingQuota,
             isNearExpirePackageAvailable = isNearExpirePackageAvailable,
