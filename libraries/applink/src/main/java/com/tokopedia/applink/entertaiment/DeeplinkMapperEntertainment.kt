@@ -10,6 +10,7 @@ import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 object DeeplinkMapperEntertainment {
     private const val EVENTS = "events"
     private const val EVENTS_DETAIL = "events/detail"
+
     fun getRegisteredNavigationFromHttpEvents(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val path = uri.pathSegments.joinToString("/")
