@@ -1,5 +1,7 @@
 package com.tokopedia.loginregister.common.di;
 
+import static com.tokopedia.sessioncommon.di.SessionModule.getUserAgent;
+
 import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
@@ -11,22 +13,15 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
-import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
-import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
-import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference;
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager;
-import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,8 +29,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.sessioncommon.di.SessionModule.getUserAgent;
 
 /**
  * @author by nisie on 10/15/18.
@@ -53,13 +46,6 @@ public class LoginRegisterModule {
     @LoginRegisterScope
     FingerprintPreference provideFingerprint(@ApplicationContext Context context) {
         return new FingerprintPreferenceManager(context);
-    }
-
-    @LoginRegisterScope
-    @Provides
-    OvoCreationAnalytics provideOvoCreationAnalytics(
-            @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
-        return new OvoCreationAnalytics(userSessionInterface);
     }
 
     @LoginRegisterScope

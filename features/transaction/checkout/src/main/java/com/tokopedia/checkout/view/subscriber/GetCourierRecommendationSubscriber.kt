@@ -128,10 +128,9 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         var courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
 
         // Auto apply Promo Stacking Logistic
-        var logisticPromoChosen = logisticPromo ?: shippingRecommendationData.listLogisticPromo.firstOrNull {
-            it.shipperId == shipperId && it.shipperProductId == spId && it.promoCode.isNotEmpty() && !it.disabled
-        }
-        if (logisticPromoChosen != null && shipmentCartItemModel.isAutoCourierSelection) {
+        var logisticPromoChosen = logisticPromo
+        if (shipmentCartItemModel.isDisableChangeCourier) {
+            // must get promo for tokonow
             logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
                 it.promoCode.isNotEmpty() && !it.disabled
             }

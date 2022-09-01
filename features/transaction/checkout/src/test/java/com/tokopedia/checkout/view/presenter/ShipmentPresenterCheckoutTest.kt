@@ -14,11 +14,7 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
@@ -53,6 +49,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
@@ -127,6 +124,9 @@ class ShipmentPresenterCheckoutTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
@@ -148,7 +148,7 @@ class ShipmentPresenterCheckoutTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
@@ -161,6 +161,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -186,6 +188,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(emptyList())
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
@@ -210,6 +214,8 @@ class ShipmentPresenterCheckoutTest {
             cartItemModels = listOf(CartItemModel())
         })
         presenter.setDataCheckoutRequestList(null)
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
@@ -237,6 +243,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val priceValidationData = PriceValidationData().apply {
             isUpdated = true
@@ -267,6 +275,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         every { view.activityContext } returns null
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -295,6 +305,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val mockContext = mockk<Activity>()
         every { view.activityContext } returns mockContext
@@ -325,6 +337,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         every { view.activityContext } returns null
         every { checkoutUseCase.createObservable(any()) } returns Observable.error(IOException())
@@ -351,7 +365,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.promos?.isNotEmpty() == true)
@@ -366,7 +380,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 1, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 1, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.isDonation == 1)
@@ -385,7 +399,7 @@ class ShipmentPresenterCheckoutTest {
         }
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.egoldData?.isEgold == true)
@@ -406,7 +420,7 @@ class ShipmentPresenterCheckoutTest {
         }
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.cornerData?.isTokopediaCorner == true)
@@ -420,7 +434,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
         val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
@@ -437,7 +451,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // When
         val checkoutParams = presenter.generateCheckoutParams(true, true, true, deviceId, checkoutRequest)
@@ -454,7 +468,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -492,7 +506,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -536,6 +550,8 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -596,6 +612,8 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -621,6 +639,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -647,6 +667,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -673,6 +695,8 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.setPurchaseProtection(true)
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -699,6 +723,8 @@ class ShipmentPresenterCheckoutTest {
         })
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
 
         val prompt = Prompt().apply {
             eligible = true
@@ -866,7 +892,8 @@ class ShipmentPresenterCheckoutTest {
             isChecked = true
             crossSellModel = CrossSellModel()
         })
-
+        val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
+        presenter.setUploadPrescriptionData(uploadModel)
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
             this.transactionId = transactionId
@@ -898,7 +925,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.listShipmentCrossSellModel = listCrossSellModel
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "", arrayListOf())
 
         // Then
         assert(checkoutRequest.crossSell?.listItem?.isNotEmpty() == true)
@@ -1070,7 +1097,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.featureType == FEATURE_TYPE_TOKONOW_PRODUCT)

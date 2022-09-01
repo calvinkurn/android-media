@@ -42,6 +42,11 @@ data class CartShipmentAddressFormData(
         var isEligibleNewShippingExperience: Boolean = false,
         var popUpMessage: String = "",
         var errorTicker: String = "",
+        var prescriptionShowImageUpload: Boolean = false,
+        var prescriptionUploadText: String = "",
+        var prescriptionLeftIconUrl: String = "",
+        var prescriptionCheckoutId: String = "",
+        var prescriptionFrontEndValidation: Boolean = false,
         var upsell: UpsellData = UpsellData(),
         var newUpsell: NewUpsellData = NewUpsellData(),
         var cartData: String = ""

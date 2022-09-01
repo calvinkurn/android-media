@@ -680,7 +680,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun onSuccessValidateUse(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
                                      selectedPromoList: ArrayList<String>,
                                      validateUsePromoRequest: ValidateUsePromoRequest) {
-        if (validateUsePromoRevampUiModel.status == "OK") {
+        if (validateUsePromoRevampUiModel.status == "OK" && validateUsePromoRevampUiModel.errorCode == "200") {
             // Initialize response action state
             initApplyPromoResponseAction()
 
@@ -824,21 +824,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Check all promo merchant is success
         // Update : This logic might be unnecessary,
         // since if global success is true, all voucher order status shoulbe success
-        var successCount = 0
-        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.success) {
-                successCount++
-            } else {
-                // If one of promo merchant is error, then show error message
-                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
-                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
-                // Notify fragment apply promo to stop loading
-                setApplyPromoStateFailed(exception, selectedPromoList)
-                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
-            }
-        }
+//        // temporary disabled for bo unstack
+//        var successCount = 0
+//        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
+//            if (voucherOrder.success) {
+//                successCount++
+//            } else {
+//                // If one of promo merchant is error, then show error message
+//                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
+//                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
+//                // Notify fragment apply promo to stop loading
+//                setApplyPromoStateFailed(exception, selectedPromoList)
+//                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
+//            }
+//        }
 
-        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrderUiModels.size) {
+        if (isGlobalSuccess /*|| successCount == responseValidatePromo.voucherOrderUiModels.size*/) {
             var selectedRecommendationCount = 0
             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                 if (selectedPromoList.contains(it)) selectedRecommendationCount++
@@ -991,18 +992,53 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId > 0) {
-                val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
-                if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
-                    order.codes.add(visitable.uiData.promoCode)
-                } else if (order == null) {
-                    val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
-                    if (promoOrder != null) {
-                        orders.add(ClearPromoOrder(
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled) {
+                if (visitable.uiState.isBebasOngkir) {
+                    // get orders in clearpromo param that eligible for bo promo
+                    val boPromoUniqueIds = visitable.uiData.boAdditionalData.map { additionalBoData -> additionalBoData.uniqueId }
+                    val eligibleClearPromoParamForBoPromo = orders.filter { clearPromoOrder ->  boPromoUniqueIds.contains(clearPromoOrder.uniqueId)}
+                    eligibleClearPromoParamForBoPromo.forEach { order ->
+                        // for each eligible order, get bo additional data
+                        val boData = visitable.uiData.boAdditionalData.find { boAdditionalData -> order.uniqueId == boAdditionalData.uniqueId }
+                        if (boData != null) {
+                            // if code is not in clear orders code, then add bo code
+                            if (!order.codes.contains(boData.code)) {
+                                order.codes.add(visitable.uiData.promoCode)
+                            }
+                        }
+                    }
+                    // if there are unique ids which eligible for bo promo
+                    // but that unique id not present in clear promo param,
+                    if (boPromoUniqueIds.size != eligibleClearPromoParamForBoPromo.size) {
+                        val boUniqueIdNotInClearPromo = boPromoUniqueIds.subtract(orders.map { it.uniqueId })
+                        boUniqueIdNotInClearPromo.forEach { uniqueId ->
+                            // then find that unique id in promo request param
+                            val promoOrder = promoRequest.orders.find { it.uniqueId == uniqueId }
+                            if (promoOrder != null) {
+                                val boData = visitable.uiData.boAdditionalData.find { boAdditionalData -> promoOrder.uniqueId == boAdditionalData.uniqueId }
+                                boData?.let {
+                                    orders.add(ClearPromoOrder(
+                                        uniqueId = uniqueId,
+                                        boType = promoOrder.boType,
+                                        codes = arrayListOf(boData.code)
+                                    ))
+                                }
+                            }
+                        }
+                    }
+                } else if (visitable.uiData.shopId > 0) {
+                    val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
+                    if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
+                        order.codes.add(visitable.uiData.promoCode)
+                    } else if (order == null) {
+                        val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
+                        if (promoOrder != null) {
+                            orders.add(ClearPromoOrder(
                                 uniqueId = visitable.uiData.uniqueId,
                                 boType = promoOrder.boType,
                                 codes = arrayListOf(visitable.uiData.promoCode)
-                        ))
+                            ))
+                        }
                     }
                 }
             }

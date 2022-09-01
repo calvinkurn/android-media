@@ -448,8 +448,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun applyBbo(code: String) {
-        if (orderShipment.value.logisticPromoViewModel == null ||
-            orderShipment.value.logisticPromoViewModel!!.promoCode != code
+        if (orderShipment.value.logisticPromoViewModel == null
+            || orderShipment.value.logisticPromoViewModel!!.promoCode != code
+            || !orderShipment.value.isApplyLogisticPromo
         ) {
             orderShipment.value = orderShipment.value.copy(
                 isApplyLogisticPromo = true,

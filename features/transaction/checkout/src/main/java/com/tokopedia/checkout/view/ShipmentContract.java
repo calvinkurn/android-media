@@ -2,8 +2,11 @@ package com.tokopedia.checkout.view;
 
 import android.app.Activity;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
@@ -15,7 +18,6 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
-import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
@@ -42,6 +44,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -175,9 +178,15 @@ public interface ShipmentContract {
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
 
+        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
+
         void onNeedUpdateViewItem(int position);
 
         void renderUnapplyBoIncompleteShipment(List<String> unappliedBoPromoUniqueIds);
+
+        int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId);
+
+        @Nullable ShipmentCartItemModel getShipmentCartItemModel(int position);
     }
 
     interface AnalyticsActionListener {
@@ -356,9 +365,11 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
 
         void releaseBooking();
+
+        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded,String checkoutId);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -371,6 +382,10 @@ public interface ShipmentContract {
         void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
 
         ValidateUsePromoRequest getLastValidateUseRequest();
+
+        void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        UploadPrescriptionUiModel getUploadPrescriptionUiModel();
 
         String generateRatesMvcParam(String cartString);
 
@@ -389,6 +404,8 @@ public interface ShipmentContract {
         ArrayList<String> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
+
+        void validateClearAllBoPromo();
 
         void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
                           boolean isTradeIn, boolean skipUpdateOnboardingState,
