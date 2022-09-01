@@ -3,6 +3,7 @@ package com.tokopedia.pms.paymentlist.presentation.activity
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -87,6 +88,7 @@ class CompletePayment : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
+            Log.e("Hii",request?.url.toString())
             if (request?.url.toString().contains("tokopedia://payment/thankyou?payment_id=")) {
                 routeToSuccess(request?.url.toString())
                 return true
