@@ -12,6 +12,7 @@ import android.os.Handler
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -30,12 +31,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.deals.R
+import com.tokopedia.deals.brand_detail.data.Brand
+import com.tokopedia.deals.brand_detail.util.DealsBrandDetailShare
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
 import com.tokopedia.deals.pdp.data.EventContentInnerData
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
+import com.tokopedia.deals.pdp.share.DealsPDPShare
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.deals.pdp.ui.adapter.DealsRecommendationAdapter
@@ -58,6 +63,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.lang.ref.WeakReference
 import java.util.Calendar
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -71,6 +77,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+    private lateinit var dealsSharePDP: DealsPDPShare
 
     private var productId: String = ""
     private var binding by autoClearedNullable<FragmentDealsDetailBinding>()
@@ -114,6 +121,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var btnCheckout: UnifyButton? = null
     private var tgRecommendation: Typography? = null
     private var rvRecommendation: RecyclerView? = null
+    private var productDetailData: ProductDetailData = ProductDetailData()
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
@@ -146,6 +154,14 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String = ""
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item?.itemId ?: "" == R.id.action_menu_share_pdp) {
+            share(productDetailData)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     private fun setupUi() {
         view?.apply {
@@ -324,6 +340,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun showPDPData(data: ProductDetailData) {
+        productDetailData = data
         showShareButton()
         showPDPOptionsMenu(data.displayName)
         showHeader(data.displayName)
@@ -700,6 +717,24 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 ).show()
             }
         }
+    }
+
+    private fun share(productdetail: ProductDetailData) {
+        activity?.let { activity ->
+            val activity = WeakReference<Activity>(activity)
+            if(!::dealsSharePDP.isInitialized) dealsSharePDP = DealsPDPShare(activity)
+            dealsSharePDP.shareEvent(productdetail, productdetail.displayName, requireContext(), { showShareLoading() }, { hideShareLoading() })
+        }
+    }
+
+    private fun hideShareLoading() {
+        progressBar?.show()
+        progressBarLayout?.show()
+    }
+
+    private fun showShareLoading() {
+        progressBar?.hide()
+        progressBarLayout?.hide()
     }
 
     companion object {
