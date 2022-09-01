@@ -85,7 +85,6 @@ object MacroIntent {
          * Capture view by resource id
          */
         const val RV_HOME_TAB_RESOURCE_ID = "recycler_view"
-        const val RV_PRODUCT_TAB_RESOURCE_ID = "recycler_view"
 
         private const val DF_MODULE_NAME = "df_base"
         const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
@@ -95,12 +94,6 @@ object MacroIntent {
         fun getShopPageHomeTabIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://marketplace/shop-page/$SAMPLE_SHOP_ID/home")
-            return intent
-        }
-
-        fun getShopPageProductTabIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/shop-page/$SAMPLE_SHOP_ID/product")
             return intent
         }
     }
