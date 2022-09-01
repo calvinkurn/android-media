@@ -131,7 +131,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBar"
+        app:layout_constraintTop_toBottomOf="@+id/card_quota_monitoring"
         app:unifyEmptyStateOrientation="horizontal"
         app:unifyEmptyStateType="section"
         tools:visibility="visible" />
@@ -161,22 +161,6 @@
         app:layout_constraintStart_toStartOf="@+id/emptyState"
         app:layout_constraintTop_toBottomOf="@id/emptyState"
         app:unifyButtonSize="medium" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgRemainingQuotaEmptyState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:text="@string/sfs_placeholder_remaining_quota"
-        android:textColor="@color/Unify_NN600"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/emptyState"
-        app:layout_constraintStart_toStartOf="@+id/emptyState"
-        app:layout_constraintTop_toBottomOf="@+id/btnCreateCampaignEmptyState"
-        app:typographyType="body_3" />
-
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
