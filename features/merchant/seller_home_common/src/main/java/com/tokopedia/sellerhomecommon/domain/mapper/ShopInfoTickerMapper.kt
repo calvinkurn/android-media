@@ -19,6 +19,7 @@ class ShopInfoTickerMapper @Inject constructor() :
     companion object {
         private const val TYPE_WARNING = "warning"
         private const val TYPE_DANGER = "danger"
+        private const val SHOP_STATUS_INCUBATED = 6
     }
 
     override fun mapRemoteDataToUiData(
@@ -27,6 +28,7 @@ class ShopInfoTickerMapper @Inject constructor() :
     ): List<TickerItemUiModel> {
         return response.shopInfo.result.filter {
             it.statusInfo.title.isNotBlank() && it.statusInfo.message.isNotBlank()
+                    && it.statusInfo.shopStatus == SHOP_STATUS_INCUBATED
         }.map {
             val ticker = it.statusInfo
             return@map TickerItemUiModel(

@@ -36,6 +36,7 @@ import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GATEWAY_CODE
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
@@ -289,6 +290,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private fun renderLayout(eventProductDetailEntity: EventProductDetailEntity) {
         pg_event_checkout.gone()
         container_checkout.show()
+        (activity as EventCheckoutActivity).supportActionBar?.title = getString(R.string.ent_event_checkout_title_page)
         eventProductDetailEntity.eventProductDetail.productDetailData.apply {
             renderDesc(this)
             renderPassenger(this)
@@ -314,12 +316,17 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         if (!forms.isNullOrEmpty()) {
             setPassengerData(forms)
         }
-        ticker_event_checkout.setTextDescription(resources.getString(R.string.ent_event_checkout_pessanger_ticker))
-        btn_event_checkout_passenger.setOnClickListener {
-            goToPageForm()
-        }
-        widget_event_checkout_pessangers.setOnClickListener {
-            goToPageForm()
+        ticker_event_checkout.setTextDescription(context?.resources?.getString(R.string.ent_event_checkout_pessanger_ticker).orEmpty())
+        if (!forms.isNullOrEmpty()) {
+            btn_event_checkout_passenger.setOnClickListener {
+                goToPageForm()
+            }
+            widget_event_checkout_pessangers.setOnClickListener {
+                goToPageForm()
+            }
+        } else {
+            btn_event_checkout_passenger.hide()
+            widget_event_checkout_pessangers.hide()
         }
     }
 
@@ -423,11 +430,6 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     when{
                         !userSessionInterface.isLoggedIn -> {
                             Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                        }
-                        forms.isEmpty() -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                            scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
-                            widget_event_checkout_pessangers.startAnimationWiggle()
                         }
                         !forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form)) -> {
                             Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()

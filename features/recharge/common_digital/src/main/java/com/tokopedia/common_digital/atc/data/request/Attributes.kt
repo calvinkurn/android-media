@@ -70,7 +70,11 @@ data class Attributes(
 
         @SerializedName("is_thankyou_native_new")
         @Expose
-        var isThankyouNativeNew: Boolean = false
+        var isThankyouNativeNew: Boolean = false,
+
+        @SerializedName("atc_source")
+        @Expose
+        var atcSource: String = ""
 ) {
     data class Field(
             @SerializedName("name")

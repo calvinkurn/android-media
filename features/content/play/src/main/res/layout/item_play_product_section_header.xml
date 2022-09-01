@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         android:translationZ="@dimen/dp_1"
-        android:layout_marginStart="@dimen/play_offset_18"
+        android:layout_marginStart="@dimen/dp_18"
         tools:text="Aksesoris Sale" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +72,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_header_info"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header_info" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_header_info"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_bg"
@@ -83,5 +85,19 @@
         app:layout_constraintStart_toStartOf="@+id/tv_header_info"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/bg_gradient_blue" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_information"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/play_offset_6"
+        android:visibility="gone"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_header_title"
+        app:layout_constraintEnd_toStartOf="@+id/btn_section_reminder"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_header_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_header_title"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

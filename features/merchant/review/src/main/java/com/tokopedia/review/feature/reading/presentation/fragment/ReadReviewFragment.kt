@@ -22,8 +22,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -33,12 +35,10 @@ import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.review.feature.reading.data.LikeDislike
@@ -74,6 +74,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMedi
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -85,7 +86,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
+open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
     HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
     ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener,
     ReviewReportBottomSheetListener, ReadReviewHighlightedTopicListener,
@@ -104,7 +105,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val GALLERY_ACTIVITY_CODE = 420
         const val REPORT_REVIEW_ACTIVITY_CODE = 421
         const val PRODUCT_SATISFACTION_RATE = "% pembeli puas belanja barang ini"
-        const val READING_SOURCE = "reading"
         fun createNewInstance(
             productId: String = "",
             shopId: String = "",
@@ -126,10 +126,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
+    protected var goToTopFab: FloatingButtonUnify? = null
+    protected var reviewHeader: ReadReviewHeader? = null
+    protected var currentScrollPosition = 0
+
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     private var reviewReadingCoordinatorLayout: CoordinatorLayout? = null
-    private var reviewHeader: ReadReviewHeader? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
     private var listOnlyLoading: View? = null
@@ -137,11 +140,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var emptyFilteredState: View? = null
     private var emptyFilteredStateImage: ImageUnify? = null
     private var emptyRatingOnly: ReadReviewRatingOnlyEmptyState? = null
-    private var goToTopFab: FloatingButtonUnify? = null
     private var errorType = GlobalError.NO_CONNECTION
     private var isProductReview: Boolean = false
-
-    private var currentScrollPosition = 0
     private var imageClickedPosition = 0
 
     private val readReviewFilterFactory by lazy {
@@ -245,17 +245,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         redirectToPDP(productId)
     }
 
-    private fun redirectToPDP(productId: String) {
-        context?.let {
-            val intent = RouteManager.getIntent(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-            )
-            startActivity(intent)
-        }
-    }
-
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -273,6 +262,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                     goToTopFab?.hide()
                 } else {
                     goToTopFab?.show()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                val canScrollVertically = getRecyclerView(view)?.canScrollVertically(RecyclerView.NO_POSITION).orFalse()
+                if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    reviewHeader?.hideRatingContainer()
+                } else if (!canScrollVertically){
+                    reviewHeader?.showRatingContainer()
                 }
             }
         }
@@ -524,6 +524,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onSortClicked(chipTitle: String) {
+        trackOnSortClicked()
         val listSortOptions = if (isProductReview) {
             listOf(
                     getString(R.string.review_reading_sort_most_helpful),
@@ -560,7 +561,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         else
             ReadReviewTracking.trackOnShopReviewClearFilter(viewModel.getShopId())
         viewModel.clearFilters()
-        viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM, isProductReview)
+        viewModel.setSort(SortTypeConstants.LATEST_COPY, isProductReview)
         viewModel.getSelectedRatingFilter()
         if (isProductReview) {
             with(getRatingAndTopics()) {
@@ -748,18 +749,45 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         )
     }
 
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReadReviewTracking.trackOnGoToCredibility(
-            feedbackId,
-            userId,
-            statistics,
-            viewModel.getProductId(),
-            viewModel.userId
-        )
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId)) {
+            ReadReviewTracking.trackOnGoToCredibility(
+                feedbackId,
+                userId,
+                statistics,
+                viewModel.getProductId(),
+                viewModel.userId,
+                label
+            )
+        }
     }
 
-    override fun onUserNameClicked(userId: String) {
-        goToReviewCredibility(userId)
+    protected fun showShopPageReviewHeader() {
+        reviewHeader?.showShopPageReviewHeader()
+    }
+
+    fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
+    }
+
+    open fun redirectToPDP(productId: String) {
+        context?.let {
+            val intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productId
+            )
+            startActivity(intent)
+        }
     }
 
     private fun getProductIdFromArguments() {
@@ -842,7 +870,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         })
     }
 
-    private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
+    open fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         if (ratingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
@@ -869,11 +897,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             )
             getRecyclerView(view)?.show()
             setHighlightedTopics(ratingAndTopics.topics, this@ReadReviewFragment)
+            setSeeAll(false)
             show()
         }
     }
 
-    private fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
+    open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
         if (shopRatingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
@@ -899,6 +928,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 this@ReadReviewFragment
             )
             getRecyclerView(view)?.show()
+            setSeeAll(false)
             show()
         }
     }
@@ -952,12 +982,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    private fun onFailGetProductReviews(throwable: Throwable) {
+    open fun onFailGetProductReviews(throwable: Throwable) {
         logToCrashlytics(throwable)
         if (currentPage == 0) {
             showError(throwable)
         } else {
-            showToasterError(throwable.getErrorMessage(context)) {
+            showToasterError(getString(R.string.review_reading_connection_error)) {
                 loadData(
                     currentPage
                 )
@@ -965,7 +995,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    private fun showError(throwable: Throwable) {
+    open fun showError(throwable: Throwable) {
         globalError?.apply {
             if (throwable is SocketTimeoutException || throwable is UnknownHostException) {
                 setType(GlobalError.NO_CONNECTION)
@@ -985,7 +1015,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             Toaster.build(
                 it,
                 message,
-                Toaster.toasterLength,
+                Toaster.LENGTH_INDEFINITE,
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_refresh)
             ) { action.invoke() }.show()
@@ -1022,17 +1052,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         loadingView?.hide()
     }
 
-    private fun showFilteredEmpty() {
+    open fun showFilteredEmpty() {
         hideFab()
         emptyFilteredStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
         emptyFilteredState?.show()
     }
 
-    private fun hideFilteredEmpty() {
+    open fun hideFilteredEmpty() {
         emptyFilteredState?.hide()
     }
 
-    private fun showPageNotFound() {
+    open fun showPageNotFound() {
         hideFab()
         globalError?.apply {
             errorType = GlobalError.PAGE_NOT_FOUND
@@ -1040,6 +1070,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             setActionClickListener {
                 goToHome()
             }
+            errorAction.text = getString(R.string.review_back_to_home)
             show()
         }
     }
@@ -1110,34 +1141,42 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         RouteManager.route(context, ApplinkConst.HOME)
     }
 
-    private fun logToCrashlytics(throwable: Throwable) {
-        if (!BuildConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
-        } else {
-            throwable.printStackTrace()
-        }
-    }
-
     private fun isLiked(likeStatus: Int): Boolean {
         return likeStatus == LikeDislike.LIKED
     }
 
-    private fun goToReviewCredibility(userId: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(
                     ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                     userId,
-                    READING_SOURCE
+                    ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING
                 )
             ).buildUpon()
                 .appendQueryParameter(
-                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    ReviewApplinkConst.PARAM_PRODUCT_ID,
                     viewModel.getProductId()
                 ).build()
                 .toString()
         )
+    }
+
+    private fun trackOnSortClicked() {
+        if (isProductReview) {
+            ReadReviewTracking.trackOnFilterClicked(
+                ReadReviewTrackingConstants.FILTER_NAME_SORT,
+                !reviewHeader?.isSortFilterActive().orTrue(),
+                viewModel.getProductId()
+            )
+        } else {
+            ReadReviewTracking.trackOnFilterShopReviewClicked(
+                ReadReviewTrackingConstants.FILTER_NAME_SORT,
+                !reviewHeader?.isSortFilterActive().orTrue(),
+                viewModel.getShopId()
+            )
+        }
     }
 
     private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {

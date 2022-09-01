@@ -11,8 +11,11 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
+import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
@@ -58,6 +61,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val remoteConfigAbTest = mockk<RemoteConfig>(relaxed = true)
+    protected val pagination = PaginationImpl()
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -69,6 +73,9 @@ internal open class ProductListPresenterTestFixtures {
 
     @Before
     open fun setUp() {
+        val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
+        val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
+
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
             searchLoadMoreUseCase,
@@ -84,8 +91,14 @@ internal open class ProductListPresenterTestFixtures {
             testSchedulersProvider,
             topAdsHeadlineHelper,
             { performanceMonitoring },
-            ChooseAddressPresenterDelegate(chooseAddressView),
-            RequestParamsGenerator(userSession),
+            chooseAddressPresenterDelegate,
+            BannerPresenterDelegate(pagination),
+            requestParamsGenerator,
+            pagination,
+            LastFilterPresenterDelegate(
+                requestParamsGenerator,
+                chooseAddressPresenterDelegate
+            ) { saveLastFilterUseCase },
         )
         productListPresenter.attachView(productListView)
     }
@@ -117,7 +130,12 @@ internal open class ProductListPresenterTestFixtures {
                 topAdsProductListIndex++
             }
             else {
-                productItem.assertOrganicProduct(organicProductList[organicProductListIndex], expectedOrganicProductPosition)
+                productItem.assertOrganicProduct(
+                    organicProductList[organicProductListIndex],
+                    expectedOrganicProductPosition,
+                    "",
+                    searchProductModel.getProductListType(),
+                )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
             }
@@ -143,12 +161,15 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
         productItem.productName shouldBe topAdsProduct.product.name
+        productItem.applink shouldBe topAdsProduct.applinks
+        productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
         organicProduct: SearchProductModel.Product,
         position: Int,
         expectedPageTitle: String = "",
+        productListType: String = "",
     ) {
         val productItem = this as ProductItemDataView
 
@@ -173,6 +194,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.price shouldBe organicProduct.price
         productItem.minOrder shouldBe organicProduct.minOrder
         productItem.pageTitle shouldBe expectedPageTitle
+        productItem.productListType shouldBe productListType
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -42,7 +42,9 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                         ) {
                             migrateData()
                         } else {
-                            logSyncResult(syncResult)
+                            if(syncResult.isNotEmpty()) {
+                                logSyncResult(syncResult)
+                            }
                         }
                     }
                     Result.success()
@@ -65,7 +67,6 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
             if (migrationResult.isEmpty()) {
                 getDataStoreMigrationPreference(applicationContext).edit()
                     .putBoolean(KEY_MIGRATION_STATUS, true).apply()
-                logMigrationResultSuccess()
             } else {
                 getDataStoreMigrationPreference(applicationContext).edit()
                     .putBoolean(KEY_MIGRATION_STATUS, false).apply()
@@ -77,20 +78,11 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
         }
     }
 
-    private fun logMigrationResultSuccess() {
-        ServerLogger.log(
-            Priority.P2, USER_SESSION_LOGGER_TAG,
-            mapOf(
-                "type" to "migration_result_success"
-            )
-        )
-    }
-
     private fun logMigrationResultFailed(result: List<String>) {
         ServerLogger.log(
             Priority.P2, USER_SESSION_LOGGER_TAG,
             mapOf(
-                "type" to "migration_result_failed",
+                "method" to "migration_result_failed",
                 "total_difference" to result.size.toString(),
                 "result_data" to result.toString()
             )
@@ -101,7 +93,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
         ServerLogger.log(
             Priority.P2, USER_SESSION_LOGGER_TAG,
             mapOf(
-                "type" to "sync_result",
+                "method" to "sync_result",
                 "total_difference" to result.size.toString(),
                 "result_data" to result.toString()
             )
@@ -112,7 +104,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
         ServerLogger.log(
             Priority.P2, USER_SESSION_LOGGER_TAG,
             mapOf(
-                "type" to "migration_result_exception",
+                "method" to "migration_result_exception",
                 "error" to Log.getStackTraceString(ex)
             )
         )
@@ -122,7 +114,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
         ServerLogger.log(
             Priority.P2, USER_SESSION_LOGGER_TAG,
             mapOf(
-                "type" to "worker_error",
+                "method" to "worker_error",
                 "error" to Log.getStackTraceString(ex)
             )
         )
@@ -136,11 +128,13 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
         const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
 
+        private const val WORKER_INTERVAL = 5L
+
         @JvmStatic
         fun scheduleWorker(context: Context) {
             try {
                 val periodicWorker = PeriodicWorkRequest
-                    .Builder(DataStoreMigrationWorker::class.java, 5, TimeUnit.DAYS)
+                    .Builder(DataStoreMigrationWorker::class.java, WORKER_INTERVAL, TimeUnit.DAYS)
                     .setConstraints(Constraints.NONE)
                     .build()
 

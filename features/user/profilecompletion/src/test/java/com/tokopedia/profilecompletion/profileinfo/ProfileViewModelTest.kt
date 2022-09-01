@@ -5,25 +5,24 @@ import androidx.lifecycle.Observer
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.profileinfo.data.*
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.*
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureData
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureInnerData
-import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureResponse
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureData
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureInnerData
+import com.tokopedia.profilecompletion.profilecompletion.data.SaveProfilePictureResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import net.bytebuddy.implementation.bytecode.Throw
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import kotlin.test.assertEquals
 
 class ProfileViewModelTest {
 
@@ -44,6 +43,9 @@ class ProfileViewModelTest {
 
     @RelaxedMockK
     private lateinit var saveProfilePictureUsecase: SaveProfilePictureUseCase
+
+    @RelaxedMockK
+    private lateinit var userFinancialAssetsUseCase: UserFinancialAssetsUseCase
 
     @RelaxedMockK
     private lateinit var userSession: UserSessionInterface
@@ -68,21 +70,35 @@ class ProfileViewModelTest {
     private val dummyProfileFeed = ProfileFeedResponse()
     private val dummyUploadResultSuccess = UploadResult.Success("123", "")
     private val dummyUploadResultFailed = UploadResult.Error("")
-    private val dummySaveProfilePictureSuccess = SaveProfilePictureResponse(SaveProfilePictureData(
-        "", emptyList(), SaveProfilePictureInnerData(imageUrl = dummyImageUrl, isSuccess = 1)))
-    private val dummySaveProfilePictureFailed = SaveProfilePictureResponse(SaveProfilePictureData(
-        "", listOf(dummyErrorMsg), SaveProfilePictureInnerData(imageUrl = "", isSuccess = 0)))
+    private val dummySaveProfilePictureSuccess = SaveProfilePictureResponse(
+        SaveProfilePictureData(
+            "", emptyList(), SaveProfilePictureInnerData(imageUrl = dummyImageUrl, isSuccess = 1)
+        )
+    )
+    private val dummySaveProfilePictureFailed = SaveProfilePictureResponse(
+        SaveProfilePictureData(
+            "", listOf(dummyErrorMsg), SaveProfilePictureInnerData(imageUrl = "", isSuccess = 0)
+        )
+    )
     private val dummyProfileUIModel = ProfileInfoUiModel(
         profileInfoData = dummyProfileInfo.profileInfoData,
         profileRoleData = dummyProfilerole.profileRole,
         profileFeedData = dummyProfileFeed.profileFeedData
     )
 
-        @Before
+    @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = ProfileViewModel(profileInfoUsecase, profileRoleUsecase, profileFeedInfoUsecase,
-            uploaderUsecase, saveProfilePictureUsecase, userSession, CoroutineTestDispatchersProvider)
+        viewModel = ProfileViewModel(
+            profileInfoUsecase,
+            profileRoleUsecase,
+            profileFeedInfoUsecase,
+            uploaderUsecase,
+            saveProfilePictureUsecase,
+            userFinancialAssetsUseCase,
+            userSession,
+            CoroutineTestDispatchersProvider
+        )
         viewModel.profileInfoUiData.observeForever(profileInfoObserver)
         viewModel.errorMessage.observeForever(errorMessageObserver)
         viewModel.saveImageProfileResponse.observeForever(savePhotoObserver)
@@ -238,5 +254,33 @@ class ProfileViewModelTest {
             uploaderUsecase(any())
             errorMessageObserver.onChanged(ProfileInfoError.ErrorSavePhoto(dummyErrors.message))
         }
+    }
+
+    @Test
+    fun `get financial assets then response success`() {
+        val data = UserFinancialAssetsData()
+        val expected = Success(data.checkUserFinancialAssets)
+
+        coEvery {
+            userFinancialAssetsUseCase(Unit)
+        } returns data
+        viewModel.checkFinancialAssets()
+
+        val result = viewModel.userFinancialAssets.value
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `get financial assets then response failed`() {
+        val throwable = Throwable()
+        val expected = Fail(throwable)
+
+        coEvery {
+            userFinancialAssetsUseCase(Unit)
+        } throws throwable
+        viewModel.checkFinancialAssets()
+
+        val result = viewModel.userFinancialAssets.value
+        assertEquals(expected, result)
     }
 }

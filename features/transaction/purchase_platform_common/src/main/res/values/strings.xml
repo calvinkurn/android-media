@@ -11,7 +11,6 @@
     <string name="label_shipment_fee">Total Ongkos Kirim</string>
     <string name="label_product_discount">Total Diskon Barang</string>
     <string name="label_shipping_discount">Total Diskon Ongkos Kirim</string>
-    <string name="label_free_shipping">Bebas Ongkir</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
@@ -26,4 +25,8 @@
     <string name="pp_cd_image_shop_badge_with_shop_type">image shop badge %1$s</string>
     <string name="pp_cd_image_badge_bo">image badge bebas ongkir</string>
     <string name="pp_cd_image_badge_boe">image badge bebas ongkir extra</string>
+
+    <string name="pp_epharmacy_upload_count_text">%d foto resep di-upload</string>
+    <string name="pp_epharmacy_upload_success_title_text">Berhasil Upload Resep</string>
+    <string name="pp_epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
 </resources>

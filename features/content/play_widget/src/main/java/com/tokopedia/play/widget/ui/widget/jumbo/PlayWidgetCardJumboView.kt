@@ -28,6 +28,7 @@ import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play_common.R as playCommonR
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -82,7 +83,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
         ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
@@ -148,7 +149,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.showWithCondition(model.hasGiveaway)
+        ivGiveaway.showWithCondition(model.hasGame)
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {

@@ -12,6 +12,7 @@ data class SellableStockProductUIModel(
         val productId: String,
         val productName: String,
         var stock: String,
+        var maxStock: Int? = null,
         var isActive: Boolean,
         var isAllStockEmpty: Boolean,
         val access: ProductManageAccess,

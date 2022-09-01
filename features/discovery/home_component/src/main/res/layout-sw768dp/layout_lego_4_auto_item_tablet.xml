@@ -41,7 +41,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/item_desc"
-                    app:typographyType="display_1"
+                    app:typographyType="display_3"
                     app:typographyWeight="bold"
                     tools:text="TITLE" />
 

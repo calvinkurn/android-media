@@ -50,6 +50,17 @@ class ProductAdapter(private val typeFactory: ProductAdapterTypeFactory) : Recyc
         }
         return list
     }
+
+    fun getSelectedItemsProductId() : List<String> {
+        val list = mutableListOf<String>()
+        items.forEach {
+            if(it is ProductItemModel && it.isChecked) {
+                list.add(it.data.itemId)
+            }
+        }
+        return list
+    }
+
     private fun clearData(selectedMode: Boolean) {
         if (!selectedMode){
             items.forEach {

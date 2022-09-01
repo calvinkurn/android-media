@@ -47,7 +47,11 @@ fun createProductUiModel(
     isCampaign: Boolean = false,
     campaignTypeList: List<ProductCampaignType>? = emptyList(),
     isProductBundling: Boolean = false,
-    suspendLevel:Int = 0
+    suspendLevel:Int = 0,
+    hasStockAlert:Boolean = false,
+    stockAlertActive: Boolean = false,
+    stockAlertCount:Int = 0,
+    maxStock: Int? = null
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -69,6 +73,10 @@ fun createProductUiModel(
         isCampaign,
         campaignTypeList,
         isProductBundling,
-        suspendLevel
+        suspendLevel,
+        hasStockAlert,
+        stockAlertActive,
+        stockAlertCount,
+        maxStock
     )
 }

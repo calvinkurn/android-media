@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sfs_1_dp">1dp</dimen>
+    <dimen name="sfs_8_dp">8dp</dimen>
+    <dimen name="sfs_calendar_height">400dp</dimen>
+    <dimen name="sfs_corner_radius">4dp</dimen>
+    <dimen name="sfs_checkmark_height">20dp</dimen>
+    <dimen name="sfs_product_image_height">56dp</dimen>
+    <dimen name="sfs_product_image_width">56dp</dimen>
+    <dimen name="sfs_fst_intro_image_height">200dp</dimen>
+    <dimen name="sfs_fst_intro_image_width">120dp</dimen>
+    <dimen name="sfs_hex_color_border_stroke_width">1dp</dimen>
+</resources>

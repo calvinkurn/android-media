@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -50,6 +49,7 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReschedulePickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
@@ -66,6 +66,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUE
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESCHEDULE_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
@@ -796,6 +797,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         key.equals(KEY_SET_DELIVERED, true) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                         key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
+                        key.equals(KEY_RESCHEDULE_PICKUP, true) -> goToReschedulePickupPage(this, orderId)
                     }
                 }
             }
@@ -924,7 +926,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, invoiceUrl)
             putExtra(PARAM_INVOICE, invoice)
-            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            putExtra(KEY_TITLE, requireActivity().getString(R.string.title_som_invoice))
             putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
             startActivity(this)
         }
@@ -975,10 +977,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onDialPhone(strPhoneNo: String) {
-        val intent = Intent(Intent.ACTION_DIAL)
-        val phone = "tel:$strPhoneNo"
-        intent.data = Uri.parse(phone)
-        startActivity(intent)
+        try {
+            val intent = Intent(Intent.ACTION_DIAL)
+            val phone = "tel:$strPhoneNo"
+            intent.data = Uri.parse(phone)
+            startActivity(intent)
+        } catch (t: Throwable) {
+            t.showErrorToaster()
+        }
     }
 
     override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
@@ -1004,6 +1010,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
             handleRequestPickUpResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING || requestCode == SomNavigator.REQUEST_CHANGE_COURIER) {
             handleChangeCourierAndConfirmShippingResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_RESCHEDULE_PICKUP) {
+            handleReschedulePickupResult(resultCode, data)
         }
     }
 
@@ -1140,6 +1148,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
             })
             activity?.finish()
+        }
+    }
+
+    protected open fun handleReschedulePickupResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent())
+                finish()
+            }
         }
     }
 

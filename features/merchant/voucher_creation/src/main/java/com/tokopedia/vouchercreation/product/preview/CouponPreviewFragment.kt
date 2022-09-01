@@ -712,7 +712,7 @@ class CouponPreviewFragment: BaseDaggerFragment() {
         binding.btnCreateCoupon.isLoading = true
         binding.btnCreateCoupon.loadingText = getString(R.string.mvc_please_wait)
 
-        val isCreateMode = viewModel.isCreateMode(pageMode)
+        val isCreateMode = viewModel.isCreateMode(pageMode) || viewModel.isDuplicateMode(pageMode)
         val parentProductIds = viewModel.getParentProductIds(selectedProducts, selectedProductIds)
 
         viewModel.createCoupon(

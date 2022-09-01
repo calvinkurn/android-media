@@ -5,4 +5,4 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_lvl4"
-    app:typographyType="body_2" />
+    app:typographyType="display_2" />

@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageProduct"
+            android:id="@+id/productCardImage"
             android:contentDescription="@string/content_desc_imageProduct"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -74,6 +74,38 @@
             tools:visibility="visible"/>
 
         <ImageView
+            android:id="@+id/labelRepositionBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@null"
+            android:background="@drawable/product_card_rounded_label"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/labelReposition"
+            app:layout_constraintTop_toTopOf="@id/labelReposition"
+            app:layout_constraintEnd_toEndOf="@id/labelReposition"
+            app:layout_constraintBottom_toBottomOf="@id/labelReposition"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelReposition"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_label_campaign_height"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+            tools:visibility="visible"
+            tools:text="Semarak Ramadan" />
+
+        <ImageView
             android:id="@+id/labelCampaignBackground"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_campaign_height"
@@ -106,11 +138,11 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/product_card_label_best_seller_height"
             android:background="@drawable/product_card_best_seller_background"
-            android:paddingTop="@dimen/product_card_label_best_seller_paddingtop"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:layout_marginTop="@dimen/product_card_label_best_seller_margintop"
             android:textColor="@color/Unify_N0"
+            android:gravity="center_vertical"
             tools:text="# 1"
             tools:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +234,7 @@
         <ImageView
             android:id="@+id/imageThreeDots"
             android:contentDescription="@string/content_desc_imageThreeDots"
-            android:layout_width="@dimen/dp_32"
+            android:layout_width="32dp"
             android:layout_height="16dp"
             android:paddingLeft="8dp"
             android:paddingStart="8dp"
@@ -237,7 +269,7 @@
             android:layout_height="@dimen/product_card_flashsale_label_height"
             android:textStyle="bold"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/sp_10"
+            android:textSize="10sp"
             android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"

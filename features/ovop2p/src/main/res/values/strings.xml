@@ -38,4 +38,6 @@
     <string name="amt_more_thn_bal">Saldo Anda Tidak cukup</string>
     <string name="non_ovo_usr">Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO.</string>
     <string name="general_error">Ada yang salah. Silakan coba lagi.</string>
+    <string name="ovop2p_oke">OKE</string>
+    <string name="ovop2p_tryagain_later">Try Again Later</string>
 </resources>

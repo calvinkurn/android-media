@@ -51,7 +51,7 @@ data class ProductAddParam (
         @SerializedName("variant")
         var variant: Variant? = null,
         @SerializedName("cpl")
-        var cpl: CPLData = CPLData(),
+        var cpl: CPLData? = null,
         @SerializedName("annotations")
         var annotations: List<String>? = null
 ) : Parcelable

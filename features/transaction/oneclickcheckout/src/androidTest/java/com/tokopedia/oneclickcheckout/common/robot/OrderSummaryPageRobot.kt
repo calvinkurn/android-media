@@ -291,6 +291,8 @@ class OrderSummaryPageRobot {
     }
 
     fun clickChangeInstallmentRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
+        // Wait for espresso
+        Thread.sleep(1000)
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 
@@ -397,6 +399,8 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.btn_order_detail).performClick()
             }
         }))
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
@@ -920,6 +924,8 @@ class OrderSummaryPageRobot {
     }
 
     fun assertInstallmentRevamp(detail: String?) {
+        // Wait for espresso
+        Thread.sleep(1000)
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 

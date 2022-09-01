@@ -23,6 +23,7 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
@@ -341,6 +342,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                     setSelectMode(false)
                 }
             }
+        } else if(actionActivate == ACTION_MOVE) {
+            topAdsDashboardPresenter.setProductActionMoveGroup(
+                selectedFilter ?: "",
+                adapter.getSelectedItemsProductId(), ::onSuccessAction
+            )
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction,
                 actionActivate, getAdIds(), selectedFilter)

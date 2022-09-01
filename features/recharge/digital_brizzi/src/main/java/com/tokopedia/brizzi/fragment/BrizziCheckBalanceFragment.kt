@@ -194,10 +194,13 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private fun getBalanceBrizzi(needRefreshToken: Boolean, intent: Intent) {
         try {
+            val timeCheckCardDuration = intent.getStringExtra(EMONEY_TIME_CHECK_LOGIC_TAG)
+                ?: context?.resources?.getString(com.tokopedia.brizzi.R.string.brizzi_nfc_no_need_to_check_logic) ?: ""
+            val startTimeBeforeCallGql = System.currentTimeMillis()
             brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
                     DigitalBrizziGqlQuery.tokenBrizzi,
                     DigitalBrizziGqlMutation.emoneyLogBrizzi,
-                    needRefreshToken)
+                    needRefreshToken, startTimeBeforeCallGql, timeCheckCardDuration)
         } catch (e: Exception) {
             Log.e(BrizziCheckBalanceFragment.javaClass.simpleName, e.message?: "")
         }
@@ -281,6 +284,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
         const val REQUEST_CODE_LOGIN = 1980
 
         const val CLASS_NAME = "BrizziCheckBalanceFragment"
+        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
 
         const val ARCHITECTURE_ARM64 = "arm64-v8a"
         const val ARCHITECTURE_ARM32 = "armeabi-v7a"

@@ -57,6 +57,7 @@ object SomConsts {
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
     const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
+    const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -95,9 +96,6 @@ object SomConsts {
     const val STATUS_CODE_WAITING_PICKUP = 450
     const val STATUS_CODE_READY_TO_SEND = 520
     const val STATUS_CODE_RECEIPT_CHANGED = 530
-
-    const val SORT_ASCENDING = 0
-    const val SORT_DESCENDING = 2
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"

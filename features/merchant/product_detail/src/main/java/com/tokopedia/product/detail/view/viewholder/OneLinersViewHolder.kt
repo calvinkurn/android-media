@@ -52,8 +52,8 @@ class OneLinersViewHolder(
             addOnImpressionListener(element.impressHolder) {
                 if (element.name == STOCK_ASSURANCE)
                     listener.onImpressStockAssurance(
-                        getComponentTrackData(element),
-                        content.linkText + content.content
+                            getComponentTrackData(element),
+                            content.linkText + content.content
                     )
                 else listener.onImpressComponent(getComponentTrackData(element))
             }
@@ -70,12 +70,9 @@ class OneLinersViewHolder(
         title?.apply {
             text = content.linkText
 
-            try {
+            runCatching {
                 val unifyColor = stringToUnifyColor(context, content.color)
                 setTextColor(unifyColor.unifyColor ?: unifyColor.defaultColor)
-
-            } catch (ex: RuntimeException) {
-                ex.printStackTrace()
             }
         }
 

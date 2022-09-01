@@ -9,5 +9,5 @@ enum class BottomInsetsType {
     ProductSheet,
     VariantSheet,
     LeaderboardSheet,
-    CouponSheet
+    CouponSheet,
 }

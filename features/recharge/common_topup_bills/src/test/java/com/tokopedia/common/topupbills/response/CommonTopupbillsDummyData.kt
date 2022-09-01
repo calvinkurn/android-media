@@ -3,10 +3,10 @@ package com.tokopedia.common.topupbills.response
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberTrackingData
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumber
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberTrackingData
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {

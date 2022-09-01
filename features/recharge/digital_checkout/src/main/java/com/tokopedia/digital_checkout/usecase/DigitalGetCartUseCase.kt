@@ -2,9 +2,11 @@ package com.tokopedia.digital_checkout.usecase
 
 import com.tokopedia.digital_checkout.data.DigitalCheckoutQueries
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import javax.inject.Inject
 
+@GqlQuery("DigitalCartQuery", DigitalCheckoutQueries.RECHARGE_GET_CART_QUERY)
 class DigitalGetCartUseCase @Inject constructor(
         private val useCase: GraphqlUseCase<RechargeGetCart.Response>
 ) {
@@ -16,7 +18,7 @@ class DigitalGetCartUseCase @Inject constructor(
         useCase.apply {
             setTypeClass(RechargeGetCart.Response::class.java)
             setRequestParams(params)
-            setGraphqlQuery(DigitalCheckoutQueries.getGetCartQuery())
+            setGraphqlQuery(DigitalCartQuery())
             execute(onSuccess, onError)
         }
     }

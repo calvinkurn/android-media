@@ -50,7 +50,8 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_more_account_settings() {
         runTest {
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(
+                Activity.RESULT_OK, null))
             onView(withId(R.id.home_account_member_layout_member_forward)).check(matches(isDisplayed())).perform(click())
         }.validate(QueryUtils.queryMoreSettings("Member"))
     }
@@ -67,6 +68,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_bank_account() {
         runTest {
+            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT)
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT))
     }

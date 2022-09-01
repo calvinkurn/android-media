@@ -3,25 +3,27 @@ package com.tokopedia.product.manage.common.feature.variant.presentation.viewmod
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
-import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.updateVariant
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.setEditStockAndStatus
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.updateVariant
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -29,6 +31,7 @@ class QuickEditVariantViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
         private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+        private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -54,6 +57,9 @@ class QuickEditVariantViewModel @Inject constructor(
     val showStockInfo: LiveData<Boolean>
         get() = _showStockInfo
 
+    val enableSaveButton: LiveData<Boolean>
+        get() = _enableSaveButton
+
     private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
     private val _onClickSaveButton = MutableLiveData<EditVariantResult>()
     private val _productManageAccess = MutableLiveData<ProductManageAccess>()
@@ -62,6 +68,7 @@ class QuickEditVariantViewModel @Inject constructor(
     private val _showSaveBtn = MutableLiveData<Boolean>()
     private val _tickerList = MutableLiveData<List<ProductManageTicker>>()
     private val _showStockInfo = MutableLiveData<Boolean>()
+    private val _enableSaveButton = MutableLiveData<Boolean>()
 
     private var warehouseId: String? = null
     private var editVariantResult: EditVariantResult? = null
@@ -87,15 +94,27 @@ class QuickEditVariantViewModel @Inject constructor(
         showProgressBar()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val warehouseId = getWarehouseId(userSession.shopId)
+                val shopId = userSession.shopId
+                val warehouseId = getWarehouseId(shopId)
                 val requestParams =
                     GetProductVariantUseCase.createRequestParams(
                         productId,
                         warehouseId = warehouseId,
                         isBundling = isBundle)
-                val response = getProductVariantUseCase.execute(requestParams)
-                val variant = response.getProductV3
-                mapToVariantsResult(variant, access)
+                val responseDeferred = async {
+                    getProductVariantUseCase.execute(requestParams)
+                }
+                val maxStockDeferred = async {
+                    try {
+                        getMaxStockThresholdUseCase.execute(shopId)
+                    } catch (ex: Exception) {
+                        null
+                    }
+                }
+
+                val (variant, maxStock) =
+                    responseDeferred.await().getProductV3 to maxStockDeferred.await()?.getMaxStockFromResponse()
+                mapToVariantsResult(variant, access, maxStock)
             }
             val variants = result.variants
             val variantNotEmpty = variants.isNotEmpty()
@@ -105,6 +124,7 @@ class QuickEditVariantViewModel @Inject constructor(
                 _getProductVariantsResult.value = result
                 setEditVariantResult(productId, result)
                 getTickerList()
+                setSaveButtonEnabled()
             } else {
                 setEmptyTicker()
                 showErrorView()
@@ -146,6 +166,7 @@ class QuickEditVariantViewModel @Inject constructor(
             it.copy(stock = stock)
         }
         setShowStockInfo()
+        setSaveButtonEnabled()
     }
 
     fun setVariantStatus(variantId: String, status: ProductStatus) {
@@ -188,6 +209,11 @@ class QuickEditVariantViewModel @Inject constructor(
         if(showStockInfo != shouldShow) {
             _showStockInfo.value = shouldShow
         }
+    }
+
+    private fun setSaveButtonEnabled() {
+        val isExceedMaxStock = editVariantResult?.isSomeVariantExceedMaxStock() == true
+        _enableSaveButton.value = !isExceedMaxStock
     }
 
     private fun updateVariant(variantId: String, update: (ProductVariant) -> ProductVariant) {

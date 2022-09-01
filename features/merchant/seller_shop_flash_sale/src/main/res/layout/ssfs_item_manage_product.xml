@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/check_product_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/image_product_item"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStarter"
+        app:layout_constraintTop_toTopOf="@+id/image_product_item" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_product_item"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/check_product_item"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_product_item"
+        app:layout_constraintTop_toTopOf="@+id/image_product_item"
+        app:typographyType="paragraph_2"
+        tools:text="product name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_discounted_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/image_product_item"
+        app:layout_constraintStart_toStartOf="@+id/tpg_product_name"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_product_name"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold"
+        tools:text="Rp 13.500.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:labelTitle="20%"
+        app:labelType="general_light_red"
+        app:layout_constraintStart_toStartOf="@+id/tpg_discounted_price"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_discounted_price" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_original_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintBottom_toBottomOf="@+id/label_discount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/label_discount"
+        app:layout_constraintTop_toTopOf="@+id/label_discount"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp 15.000.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_belum_lengkap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:labelTitle="Belum Lengkap"
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toStartOf="@+id/check_product_item"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_original_price" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_error_copy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/red_500"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/label_belum_lengkap"
+        app:layout_constraintTop_toTopOf="@+id/label_belum_lengkap"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="bold"
+        tools:text="error" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_complete_product_info_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/manage_product_complete_product_info_warning_label"
+        android:textColor="@color/grey_600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_error_copy"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="reguler" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icon_dilayani_tokopedia"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        android:paddingEnd="4dp"
+        android:src="@drawable/ic_sfs_dilayani_tokopedia_gs"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStarter"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_stock_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/grey_600"
+        app:layout_constraintStart_toEndOf="@id/icon_dilayani_tokopedia"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_complete_product_info_desc"
+        app:typographyType="paragraph_2"
+        tools:text="@string/manage_product_item_stock_at_seller_location_label" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/separator_label"
+        android:textColor="@color/grey_600"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_stock_product"
+        app:layout_constraintStart_toEndOf="@+id/tpg_stock_product"
+        app:layout_constraintTop_toTopOf="@+id/tpg_stock_product"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_stock_campaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/grey_600"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_separator"
+        app:layout_constraintStart_toEndOf="@+id/tpg_separator"
+        app:layout_constraintTop_toTopOf="@+id/tpg_separator"
+        app:typographyType="paragraph_2"
+        tools:text="@string/manage_product_item_campaign_stock_label" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_max_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/grey_600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_stock_product"
+        app:typographyType="paragraph_2"
+        tools:text="@string/manage_product_item_max_buy_label" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_max_order" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_delete_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:icon_name="DELETE"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_update_product"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_update_product" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_update_product"
+        android:layout_width="0dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/manage_product_ubah_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_delete_product"
+        app:layout_constraintTop_toBottomOf="@+id/divider_1"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_2"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_update_product" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="image_product_item, label_discount"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStarter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="18dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

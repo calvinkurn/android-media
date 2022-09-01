@@ -12,6 +12,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileAffiliateData
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 
 class AccountHeaderMapper(
         private val userSession: UserSessionInterface
@@ -31,7 +32,9 @@ class AccountHeaderMapper(
                          isSaldoError: Boolean = false,
                          isShopDataError: Boolean = false,
                          isGetTokopointsError: Boolean = false,
-                         isAffiliateError: Boolean = false
+                         isAffiliateError: Boolean = false,
+                         tokopediaPlusParam: TokopediaPlusParam?,
+                         tokopediaPlusError: Throwable? = null
     ): AccountHeaderDataModel {
         var accountModel = AccountHeaderDataModel()
 
@@ -94,12 +97,22 @@ class AccountHeaderMapper(
                     )
                 }
 
+                tokopediaPlusParam?.let {
+                    data.setTokopediaPlus(
+                        tokopediaPlusParam = it,
+                        isLoading = false,
+                        error = null
+                    )
+                }
+
                 data.profileWalletAppDataModel.isWalletAppFailed = isWalletAppError
                 data.profileWalletAppDataModel.isEligibleForWalletApp = isEligibleForWalletApp
                 data.profileSaldoDataModel.isGetSaldoError = isSaldoError
                 data.profileSellerDataModel.isGetShopError = isShopDataError
                 data.profileAffiliateDataModel.isGetAffiliateError = isAffiliateError
                 data.profileMembershipDataModel.isGetUserMembershipError = isGetTokopointsError
+                data.tokopediaPlusDataModel.isGetTokopediaPlusLoading = false
+                data.tokopediaPlusDataModel.tokopediaPlusError = tokopediaPlusError
                 // extra case when tokopoint null and ab is false
                 if(data.profileMembershipDataModel.isTokopointExternalAmountError){
                     data.profileMembershipDataModel.isTokopointExternalAmountError = false

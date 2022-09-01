@@ -229,7 +229,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
     implementation projectOrAar(rootProject.ext.features.topAdsDashboard)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
-    implementation projectOrAar(rootProject.ext.features.topAdsManagement)
     implementation projectOrAar(rootProject.ext.features.report)
     implementation projectOrAar(rootProject.ext.features.topAdsAutoAds)
     implementation projectOrAar(rootProject.ext.features.topAdsCreate)
@@ -240,7 +239,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
-    implementation projectOrAar(rootProject.ext.features.people)
     implementation projectOrAar(rootProject.ext.features.contactUs)
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.features.logout)
@@ -256,6 +254,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.editshipping)
     implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.chatbot)
@@ -272,6 +271,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
     implementation projectOrAar(rootProject.ext.features.campaignList)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopOpen)
@@ -384,7 +384,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface

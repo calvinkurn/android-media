@@ -29,7 +29,7 @@ data class ProductProfile (
     val categoryId: String = "0",
 
     @SerializedName("variant")
-    val variant: List<AttachmentVariant> = listOf(),
+    val variant: List<AttachmentVariant>? = listOf(),
 
     @SerializedName("drop_percentage")
     var dropPercentage: String = "",
@@ -86,5 +86,11 @@ data class ProductProfile (
     var isUpcomingCampaign: Boolean = false,
 
     @SerializedName("location_stock")
-    var locationStock: LocationStock = LocationStock()
+    var locationStock: LocationStock = LocationStock(),
+
+    @SerializedName("android_url")
+    var androidUrl: String = "",
+
+    @SerializedName("ios_url")
+    var iosUrl: String = ""
 )

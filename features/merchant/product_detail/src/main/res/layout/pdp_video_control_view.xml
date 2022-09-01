@@ -5,7 +5,9 @@
     tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:orientation="horizontal">
 
     <FrameLayout
@@ -22,13 +24,15 @@
             android:id="@id/exo_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_pdp_video_play" />
+            app:srcCompat="@drawable/ic_pdp_video_play"
+            android:contentDescription="exo_play" />
 
         <ImageView
             android:id="@id/exo_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_pdp_video_pause" />
+            app:srcCompat="@drawable/ic_pdp_video_pause"
+            android:contentDescription="exo_pause" />
 
     </FrameLayout>
 
@@ -47,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N0"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="00:00" />
 
@@ -60,7 +64,8 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_maximize_control"
-        app:srcCompat="@drawable/ic_pdp_volume_mute" />
+        app:srcCompat="@drawable/ic_pdp_volume_mute"
+        android:contentDescription="pdp_volume_control" />
 
     <ImageView
         android:id="@+id/pdp_maximize_control"
@@ -68,6 +73,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_pdp_video_maximize" />
+        app:srcCompat="@drawable/ic_pdp_video_maximize"
+        android:contentDescription="pdp_maximize_control" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

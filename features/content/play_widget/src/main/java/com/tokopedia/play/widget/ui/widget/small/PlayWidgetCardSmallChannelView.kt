@@ -102,7 +102,7 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         handleType(data.channelType)
         handleTotalView(data.channelType, data.totalView)
-        handleGiveaway(data.hasGiveaway)
+        handleGame(data.hasGame)
 
         tvTitle.text = data.title
         tvUpcoming.text = data.startTime
@@ -130,12 +130,7 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(this, data)
-            mListener?.onLabelPromoClicked(this, data)
         }
-
-        tvContextualInfo.isVisibleOnTheScreen(onViewVisible = {
-            mListener?.onLabelPromoImpressed(this, data)
-        }, onViewNotVisible = {})
     }
 
 
@@ -173,8 +168,8 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
         else llTotalView.gone()
     }
 
-    private fun handleGiveaway(hasGiveaway: Boolean) {
-        if(hasGiveaway) ivGiveaway.visible()
+    private fun handleGame(hasGame: Boolean) {
+        if(hasGame) ivGiveaway.visible()
         else ivGiveaway.gone()
     }
 
@@ -184,9 +179,5 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: PlayWidgetCardSmallChannelView,
             model: PlayWidgetChannelUiModel
         )
-
-        fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel)
-
-        fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel)
     }
 }

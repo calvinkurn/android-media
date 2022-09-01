@@ -4,14 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.profilecompletion.profileinfo.data.CheckUserFinancialAssets
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileFeedInfoUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileInfoUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.ProfileRoleUseCase
-import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
+import com.tokopedia.profilecompletion.profileinfo.usecase.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -26,6 +28,7 @@ class ProfileViewModel @Inject constructor(
     private val profileFeedInfoUseCase: ProfileFeedInfoUseCase,
     private val uploader: UploaderUseCase,
     private val saveProfilePictureUseCase: SaveProfilePictureUseCase,
+    private val userFinancialAssetsUseCase: UserFinancialAssetsUseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -43,6 +46,9 @@ class ProfileViewModel @Inject constructor(
     private val coroutineErrorHandler = CoroutineExceptionHandler { _, error ->
         mutableErrorMessage.value = ProfileInfoError.GeneralError(error)
     }
+
+    private val _userFinancialAssets = SingleLiveEvent<Result<CheckUserFinancialAssets>>()
+    val userFinancialAssets: LiveData<Result<CheckUserFinancialAssets>> get() = _userFinancialAssets
 
     fun getProfileInfo() {
         launch(coroutineErrorHandler) {
@@ -99,6 +105,15 @@ class ProfileViewModel @Inject constructor(
             } catch (e: Exception) {
                 mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
             }
+        }
+    }
+
+    fun checkFinancialAssets() {
+        launchCatchError(coroutineContext, {
+            val response = userFinancialAssetsUseCase(Unit)
+            _userFinancialAssets.value = Success(response.checkUserFinancialAssets)
+        }) {
+            _userFinancialAssets.value = Fail(it)
         }
     }
 

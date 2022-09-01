@@ -51,13 +51,29 @@ data class ShopProduct(
         @Expose
         val stock: Int = 0,
 
+        @SerializedName("minimum_order")
+        @Expose
+        val minimumOrder: Int = 0,
+
+        @SerializedName("max_order")
+        @Expose
+        val maximumOrder: Int = 0,
+
         @SerializedName("freeOngkir")
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir(),
 
         @SerializedName("label_groups")
         @Expose
-        val labelGroupList: List<LabelGroup> = listOf()
+        val labelGroupList: List<LabelGroup> = listOf(),
+
+        @SerializedName("hasVariant")
+        @Expose
+        val hasVariant: Boolean = false,
+
+        @SerializedName("parent_id")
+        @Expose
+        val parentId: String = ""
 ){
         data class Response(
                 @SerializedName("GetShopProduct")

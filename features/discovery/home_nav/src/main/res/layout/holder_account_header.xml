@@ -179,6 +179,16 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.tokopedia.usercomponents.tokopediaplus.ui.TokopediaPlusWidget
+            android:id="@+id/tokopedia_plus_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/layout_login_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingHorizontal="@dimen/unify_space_16"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_seller"
             android:layout_width="match_parent"
@@ -186,7 +196,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_login_header"
+            app:layout_constraintTop_toBottomOf="@id/tokopedia_plus_widget"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

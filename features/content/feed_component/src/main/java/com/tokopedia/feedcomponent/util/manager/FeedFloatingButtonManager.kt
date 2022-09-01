@@ -2,10 +2,10 @@ package com.tokopedia.feedcomponent.util.manager
 
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import kotlinx.coroutines.*
-import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 25, 2022
@@ -16,7 +16,7 @@ class FeedFloatingButtonManager {
     private val scope = CoroutineScope(dispatchers.computation)
     private var job: Job? = null
 
-    private lateinit var mParentFragment: Fragment
+    private var mParentFragment: Fragment? = null
 
     val scrollListener = object : RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -30,11 +30,20 @@ class FeedFloatingButtonManager {
         }
     }
 
-    fun setInitialData(parentFragment: Fragment) {
+    val offsetListener = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        if(verticalOffset == 0) setDelayForExpandFab()
+        else {
+            cancel()
+            shrinkFab()
+        }
+    }
+
+    fun setInitialData(parentFragment: Fragment?) {
         mParentFragment = parentFragment
     }
 
     fun setDelayForExpandFab(recyclerView: RecyclerView) {
+        cancel()
         job = scope.launch {
             delay(FAB_EXPAND_WAITING_DELAY)
 
@@ -44,14 +53,25 @@ class FeedFloatingButtonManager {
         }
     }
 
+    private fun setDelayForExpandFab() {
+        cancel()
+        job = scope.launch {
+            delay(FAB_EXPAND_WAITING_DELAY)
+
+            withContext(dispatchers.main) {
+                expandFab()
+            }
+        }
+    }
+
     private fun expandFab() {
-        if(::mParentFragment.isInitialized && mParentFragment is FeedPlusContainerListener) {
+        if(mParentFragment != null && mParentFragment is FeedPlusContainerListener) {
             (mParentFragment as FeedPlusContainerListener).expandFab()
         }
     }
 
     fun shrinkFab() {
-        if(::mParentFragment.isInitialized && mParentFragment is FeedPlusContainerListener) {
+        if(mParentFragment != null && mParentFragment is FeedPlusContainerListener) {
             (mParentFragment as FeedPlusContainerListener).shrinkFab()
         }
     }

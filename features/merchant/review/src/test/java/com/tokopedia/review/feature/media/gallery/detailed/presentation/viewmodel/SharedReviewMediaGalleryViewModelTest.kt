@@ -423,6 +423,13 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
+    fun `updateVideoDurationMillis should update videoDurationMillis value`() = runBlockingTest {
+        val newVideoDurationMillis = 10000L
+        viewModel.updateVideoDurationMillis(newVideoDurationMillis)
+        Assert.assertEquals(newVideoDurationMillis, viewModel.videoDurationMillis.first())
+    }
+
+    @Test
     fun `getReviewMedia should merge old result with new result when load more next`() = runBlockingTest {
         val mockCacheManager = mockk<CacheManager>(relaxed = true) {
             every {
