@@ -46,6 +46,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
@@ -158,6 +159,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private val errorState = ErrorState()
     private var loaderDialog: LoaderDialog?=null
     private var fromEdit = false
+    private var duplicate = false
     private var voucherId = 0
     private var errorCount = 0
     private var prefManager: TmPrefManager? = null
@@ -193,6 +195,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
         fromEdit = arguments?.getBoolean(ACTION_EDIT)?:false
+        duplicate = arguments?.getBoolean(ACTION_DUPLICATE)?:false
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
         prefManager = context?.let { it1 -> TmPrefManager(it1) }
 
@@ -430,7 +433,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if(fromEdit) {
                                 updateCoupon(it.data.uploadId)
                             }
-                            else{
+                            if(!fromEdit || duplicate){
                                 if (token != null && tmCouponDetail?.voucherImagePortrait != null && tmCouponDetail?.voucherImageSquare != null && couponPremiumData?.maxCashback != null) {
 
                                     val timeEnd = if(tmCouponEndTimeUnix != null){
@@ -1027,6 +1030,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         tvTermsAndCondition.highlightColor = Color.TRANSPARENT
         if (fromEdit) {
             btnContinue.text = "Ubah Kupon"
+        }
+        if(duplicate){
+            btnContinue.text = "Buat Kupon"
         }
         btnContinue.setOnClickListener {
             tmCouponStartTimeUnix?.timeInMillis?.let { start ->

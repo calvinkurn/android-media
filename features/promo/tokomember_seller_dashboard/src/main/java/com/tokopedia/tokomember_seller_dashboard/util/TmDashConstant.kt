@@ -33,6 +33,7 @@ const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
 const val ACTION_EXTEND = "extend"
 const val ACTION_EDIT = "edit"
+const val ACTION_DUPLICATE = "duplicate"
 const val ACTION_CANCEL = "cancel"
 
 const val DRAFT = 1

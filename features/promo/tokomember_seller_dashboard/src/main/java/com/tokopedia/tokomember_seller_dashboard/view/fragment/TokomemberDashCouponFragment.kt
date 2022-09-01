@@ -30,6 +30,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
@@ -379,6 +380,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             }
             ADD_QUOTA ->{
                 TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, maxCashback)
+            }
+            DUPLICATE ->{
+                TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toInt(), this, edit = false, duplicate = true)
             }
         }
     }

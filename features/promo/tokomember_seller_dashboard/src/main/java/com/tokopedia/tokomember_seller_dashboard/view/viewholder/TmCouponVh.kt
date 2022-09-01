@@ -26,6 +26,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
@@ -235,7 +236,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             }
             COUPON_ENDED -> {
                 ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
-                optionMenu.hide()
+                optionMenu.show()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
                 tvCouponState.setTextColor(
@@ -252,10 +253,21 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         com.tokopedia.unifyprinciples.R.color.Unify_NN400
                     )
                 )
+                optionMenu.setOnClickListener {
+                    val actions = Actions()
+                    val tripleDots = arrayListOf<TripleDotsItem?>()
+                    tripleDots.add(TripleDotsItem("Duplicate", DUPLICATE))
+                    actions.tripleDots = tripleDots
+                    TokomemberOptionsMenuBottomsheet.show(
+                        Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
+                        item.voucherTypeFormatted,
+                        0
+                    )
+                }
             }
             COUPON_STOPPED -> {
                 ivCoupon.loadImage(R.drawable.tm_ic_member_grey)
-                optionMenu.hide()
+                optionMenu.show()
                 btnAddQuota.hide()
                 tvCouponState.text = "Berakhir"
                 tvCouponState.setTextColor(
@@ -272,6 +284,18 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         com.tokopedia.unifyprinciples.R.color.Unify_NN400
                     )
                 )
+                optionMenu.setOnClickListener {
+                    val actions = Actions()
+                    val tripleDots = arrayListOf<TripleDotsItem?>()
+                    tripleDots.add(TripleDotsItem("Duplicate", DUPLICATE))
+                    actions.tripleDots = tripleDots
+                    TokomemberOptionsMenuBottomsheet.show(
+                        Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
+                        item.voucherTypeFormatted,
+                        0
+                    )
+                }
+
             }
         }
 

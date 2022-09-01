@@ -19,6 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CREATE_SCREEN_TYPE
@@ -254,7 +255,8 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             screenType: Int,
             voucherId: Int?,
             tmCouponListRefreshCallback: TmCouponListRefreshCallback,
-            edit: Boolean = true
+            edit: Boolean = false,
+            duplicate: Boolean = false
         ){
             this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
             activity?.let {
@@ -262,6 +264,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 intent.putExtra(BUNDLE_CREATE_SCREEN_TYPE, screenType)
                 intent.putExtra(BUNDLE_VOUCHER_ID, voucherId)
                 intent.putExtra(ACTION_EDIT, edit)
+                intent.putExtra(ACTION_DUPLICATE, edit)
                 it.startActivity(intent)
             }
         }
