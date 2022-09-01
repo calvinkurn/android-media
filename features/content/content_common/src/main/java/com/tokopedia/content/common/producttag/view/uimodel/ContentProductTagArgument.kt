@@ -65,7 +65,7 @@ class ContentProductTagArgument private constructor(
 
     class Builder {
 
-        private val argumentMap = hashMapOf<String, Any>(
+        private val argumentMap = mutableMapOf<String, Any>(
             KEY_SHOP_BADGE to "",
             KEY_AUTHOR_ID to "",
             KEY_AUTHOR_TYPE to "",
