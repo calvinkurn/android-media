@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
 import com.tokopedia.content.common.ui.model.NotEligibleType
@@ -1530,7 +1531,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _accountListState.value = accountList
 
             if (accountList.isNotEmpty()) {
-                val selectedAccount = getAccountFromCachedOrDefault(accountList)
+                val selectedAccount = getAccountFromCachedOrDefault(
+                    sharedPref.getLastSelectedAccount(),
+                    accountList
+                )
                 _selectedAccount.value = selectedAccount
                 getConfiguration(selectedAccount)
             }
@@ -1562,12 +1566,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getAccountFromCachedOrDefault(
+        cacheSelectedType: String,
         accountList: List<ContentAccountUiModel>,
         defaultSelectedType: String = TYPE_SHOP
     ): ContentAccountUiModel {
-        val cacheSelectedType = sharedPref.getLastSelectedAccount()
         return accountList.first {
-            it.type == if (cacheSelectedType.isNotEmpty()) cacheSelectedType else defaultSelectedType
+            it.type == when {
+                cacheSelectedType.isNotEmpty() -> cacheSelectedType
+                it.type == defaultSelectedType -> defaultSelectedType
+                else -> TYPE_USER
+            }
         }
     }
 
