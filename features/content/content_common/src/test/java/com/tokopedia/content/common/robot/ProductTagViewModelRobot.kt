@@ -3,6 +3,7 @@ package com.tokopedia.content.common.robot
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
@@ -24,6 +25,7 @@ class ProductTagViewModelRobot(
     shopBadge: String = "",
     authorId: String = "",
     authorType: String = "",
+    initialSelectedProduct: List<SelectedProductUiModel> = emptyList(),
     productTagConfig: ContentProductTagConfig = mockk(relaxed = true),
     repo: ProductTagRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -36,6 +38,7 @@ class ProductTagViewModelRobot(
         shopBadge = shopBadge,
         authorId = authorId,
         authorType = authorType,
+        initialSelectedProduct = initialSelectedProduct,
         productTagConfig = productTagConfig,
         repo = repo,
         userSession = userSession,
