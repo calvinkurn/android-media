@@ -17,6 +17,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_0
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_2
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
 class WishlistCollectionItemViewHolder(
@@ -26,10 +27,10 @@ class WishlistCollectionItemViewHolder(
     var isAllWishlist = false
         fun bind(item: WishlistCollectionTypeLayoutData) {
             if (item.dataObject is GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
-                binding.root.setOnClickListener {
+                binding.root.clickWithDebounce {
                     actionListener?.onCollectionItemClicked(item.dataObject.id)
                 }
-                binding.cardCollectionItem.setOnClickListener {
+                binding.cardCollectionItem.clickWithDebounce {
                     actionListener?.onCollectionItemClicked(item.dataObject.id)
                 }
                 binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW

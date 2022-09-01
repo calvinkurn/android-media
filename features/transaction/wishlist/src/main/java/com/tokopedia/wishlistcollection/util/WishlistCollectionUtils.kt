@@ -1,5 +1,7 @@
 package com.tokopedia.wishlistcollection.util
 
+import android.os.SystemClock
+import android.view.View
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
@@ -97,5 +99,18 @@ object WishlistCollectionUtils {
             }
         }
         return listData
+    }
+
+    fun View.clickWithDebounce(debounceTime: Long = 600L, action: () -> Unit) {
+        this.setOnClickListener(object : View.OnClickListener {
+            private var lastClickTime: Long = 0
+
+            override fun onClick(v: View) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
+                else action()
+
+                lastClickTime = SystemClock.elapsedRealtime()
+            }
+        })
     }
 }
