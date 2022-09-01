@@ -7,7 +7,7 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 
-class OfficialHomeMapper (
+class OfficialProductCardMapper (
         private val context: Context,
         private val dispatchers: CoroutineDispatchers
 ){

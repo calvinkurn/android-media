@@ -76,6 +76,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val topAdsAddressHelper: TopAdsAddressHelper,
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val COUNTER_RECOM_TITLE_RENDERED = 1
+    }
+
     var currentSlug: String = ""
         private set
     var currentSlugDC: String = ""
@@ -84,7 +88,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private set
     val impressedShop = mutableMapOf<String, MutableSet<String>>()
     var counterTitleShouldBeRendered = 0
-    var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
+    var productRecommendationTitleSection = ""
 
     private var _officialStoreListVisitable = mutableListOf<Visitable<*>>()
 
@@ -264,8 +268,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private fun addRecomTitle(title: String){
-        PRODUCT_RECOMMENDATION_TITLE_SECTION = title
-        if(counterTitleShouldBeRendered == 1){
+        productRecommendationTitleSection = title
+        if(counterTitleShouldBeRendered == COUNTER_RECOM_TITLE_RENDERED){
             _officialStoreListVisitable.add(ProductRecommendationTitleDataModel(title))
             _officialStoreLiveData.postValue()
         }

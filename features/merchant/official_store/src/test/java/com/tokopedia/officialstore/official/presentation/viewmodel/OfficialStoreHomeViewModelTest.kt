@@ -968,7 +968,7 @@ class OfficialStoreHomeViewModelTest {
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
-        assertEquals(viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION, title)
+        assertEquals(viewModel.productRecommendationTitleSection, title)
     }
 
     @Test
@@ -1013,7 +1013,7 @@ class OfficialStoreHomeViewModelTest {
         viewModel.removeFlashSale()
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is DynamicChannelDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
-        assertEquals(viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION, title)
+        assertEquals(viewModel.productRecommendationTitleSection, title)
     }
 
     @Test
@@ -1068,7 +1068,7 @@ class OfficialStoreHomeViewModelTest {
         val resultRecomTitle = viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel } as? ProductRecommendationTitleDataModel
         assertNotNull(resultRecomTitle)
         assertEquals(resultRecomTitle?.title, title)
-        assertEquals(viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION, title)
+        assertEquals(viewModel.productRecommendationTitleSection, title)
     }
 
     @Test

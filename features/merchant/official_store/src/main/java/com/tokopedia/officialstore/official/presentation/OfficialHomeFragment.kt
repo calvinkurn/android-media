@@ -279,17 +279,17 @@ class OfficialHomeFragment :
     }
 
     private fun observeOfficialStoreList(){
-        viewModel.officialStoreLiveData.observe(viewLifecycleOwner){
-            removeLoading(it.isCache)
+        viewModel.officialStoreLiveData.observe(viewLifecycleOwner){ dataModel ->
+            removeLoading(dataModel.isCache)
             swipeRefreshLayout?.isRefreshing = false
-            adapter?.submitList(it.dataList)
-            if(it.dataList.any { it is OfficialBannerDataModel }){
+            adapter?.submitList(dataModel.dataList)
+            if(dataModel.dataList.any { it is OfficialBannerDataModel }){
                 bannerPerformanceMonitoring.stopTrace()
             }
-            if(it.dataList.any { it is OfficialFeaturedShopDataModel }){
+            if(dataModel.dataList.any { it is OfficialFeaturedShopDataModel }){
                 shopPerformanceMonitoring.stopTrace()
             }
-            if(it.dataList.any {
+            if(dataModel.dataList.any {
                 it !is OfficialBannerDataModel &&
                 it !is OfficialFeaturedShopDataModel &&
                 it !is OfficialBenefitDataModel &&
@@ -360,7 +360,7 @@ class OfficialHomeFragment :
                 item,
                 isLogin(),
                 category?.title.toString(),
-                viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.productRecommendationTitleSection,
                 item.position.toString()
         )
     }
@@ -1092,7 +1092,7 @@ class OfficialHomeFragment :
         tracking?.eventClickProductRecommendation(
                 item,
                 position.toString(),
-                viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.productRecommendationTitleSection,
                 isLogin(),
                 category?.title.toString()
         )

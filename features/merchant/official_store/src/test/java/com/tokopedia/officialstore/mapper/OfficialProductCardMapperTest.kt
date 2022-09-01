@@ -32,7 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class OfficialHomeMapperTest {
+class OfficialProductCardMapperTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
