@@ -5,7 +5,6 @@ data class CriteriaCheckingResult(
     val imageUrl: String = "",
     val categoryResult: CategoryResult = CategoryResult(),
     val ratingResult: RatingResult = RatingResult(),
-    val productScoreResult: ProductScoreResult = ProductScoreResult(),
     val countSoldResult: CountSoldResult = CountSoldResult(),
     val minOrderCheckingResult: MinOrderCheckingResult = MinOrderCheckingResult(),
     val maxAppearanceCheckingResult: MaxAppearanceCheckingResult = MaxAppearanceCheckingResult(),
@@ -28,11 +27,6 @@ data class CriteriaCheckingResult(
     data class RatingResult (
         val isEligible: Boolean = false,
         val min: Double = 0.0
-    )
-
-    data class ProductScoreResult (
-        val isEligible: Boolean = false,
-        val min: Long = 0
     )
 
     data class CountSoldResult (
