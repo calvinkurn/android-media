@@ -2,12 +2,12 @@ package com.tokopedia.play.ui.engagement.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play.ui.engagement.viewholder.GameFinishedViewHolder
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.view.game.GameSmallWidgetView
 import com.tokopedia.play_common.view.game.InteractiveFinishView
@@ -39,7 +39,7 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
     }
 
     internal class GameDelegate(private val listener: EngagementWidgetViewHolder.Listener) :
-        TypedAdapterDelegate<EngagementUiModel.Game, EngagementUiModel, EngagementWidgetViewHolder>(
+        BaseAdapterDelegate<EngagementUiModel.Game, EngagementUiModel, EngagementWidgetViewHolder>(
             commonR.layout.view_play_empty
         ) {
 
@@ -48,10 +48,10 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
-            return when (val item = itemList.filterIsInstance<EngagementUiModel.Game>()[position].interactive) {
+            return when (val item = (itemList[position] as? EngagementUiModel.Game)?.interactive) {
                 is InteractiveUiModel.Quiz -> item.status !is InteractiveUiModel.Quiz.Status.Finished || item.status !is InteractiveUiModel.Quiz.Status.Unknown
                 is InteractiveUiModel.Giveaway -> item.status !is InteractiveUiModel.Giveaway.Status.Finished || item.status !is InteractiveUiModel.Giveaway.Status.Unknown
-                else -> true
+                else -> false
             }
         }
 
@@ -72,7 +72,7 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
     }
 
     internal class GameFinishedDelegate :
-        TypedAdapterDelegate<EngagementUiModel.Game, EngagementUiModel, GameFinishedViewHolder>(
+        BaseAdapterDelegate<EngagementUiModel.Game, EngagementUiModel, GameFinishedViewHolder>(
             commonR.layout.view_play_empty
         ) {
 
@@ -81,7 +81,7 @@ class EngagementWidgetAdapter(listener: EngagementWidgetViewHolder.Listener) :
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
-            return when (val item = itemList.filterIsInstance<EngagementUiModel.Game>()[position].interactive) {
+            return when (val item = (itemList[position] as? EngagementUiModel.Game)?.interactive) {
                 is InteractiveUiModel.Quiz -> item.status is InteractiveUiModel.Quiz.Status.Finished
                 is InteractiveUiModel.Giveaway -> item.status is InteractiveUiModel.Giveaway.Status.Finished
                 else -> false
