@@ -1543,6 +1543,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSwitchAccount() {
+        if (!isAllowChangeAccount) return
         val currentSelected = switchAccount(
             if (_selectedAccount.value.type == TYPE_SHOP) TYPE_USER
             else TYPE_SHOP
