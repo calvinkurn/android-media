@@ -74,8 +74,7 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         binding.apply {
             imgBtInsuranceInfo.let { iv ->
                 iv.setOnClickListener {
-                    listener.onClickInsuranceInfo(
-                        insuranceData.insuranceUsedInfo)
+                    listener.onClickInsuranceInfo(insuranceData.insuranceUsedInfo)
                 }
             }
             cbInsurance.setOnCheckedChangeListener { _, isChecked ->

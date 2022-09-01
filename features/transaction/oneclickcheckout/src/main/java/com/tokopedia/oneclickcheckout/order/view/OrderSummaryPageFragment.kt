@@ -93,7 +93,6 @@ import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDeta
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
@@ -1515,16 +1514,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
 
             override fun onClickInsuranceInfo(message: String) {
-                context?.also { ctx ->
-                    InsuranceBottomSheet().apply {
-                        setDesc(message)
-                    }.show(
-                        getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                        ctx,
-                        parentFragmentManager
-                    )
-                }
+                   showInsuranceBottomSheet(message)
             }
+        }
+    }
+
+    private fun showInsuranceBottomSheet(message: String) {
+        context?.let { ctx ->
+            InsuranceBottomSheet().apply {
+                setDesc(message)
+            }.show(getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance), ctx, parentFragmentManager)
         }
     }
 
