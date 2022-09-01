@@ -51,6 +51,7 @@ import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel
 import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.data.Title
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
+import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListWebViewActivity
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
 import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.EventsViewHolder
@@ -58,7 +59,6 @@ import com.tokopedia.buyerorder.detail.revamp.analytics.OrderDetailsAnalytics
 import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
-import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo
@@ -760,7 +760,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
             redeemAdapter.setOnCopiedListener { voucherCode ->
                 context?.let { ctx ->
-                    BuyerUtils.copyTextToClipBoard("text", voucherCode, ctx)
+                    BuyerUtils.copyTextToClipBoard(KEY_TEXT, voucherCode, ctx)
                     Toaster.build(bottomSheetView.root, getString(R.string.deals_msg_copy)).show()
                 }
             }
@@ -1029,7 +1029,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         } catch (e : UnsupportedEncodingException){
             ""
         }
-        val intent = OrderListwebViewActivity.getWebViewIntent(context, url, title)
+        val intent = RevampOrderListWebViewActivity.getWebViewIntent(requireContext(), url, title)
         startActivity(intent)
     }
 
