@@ -207,7 +207,7 @@ abstract class BaseProductBundleTracking {
         }
         return Bundle().apply {
             putString(KEY_CATEGORY_ID, VALUE_NONE_OTHER)
-            putString(KEY_DIMENSION_117, bundleType)
+            putString(KEY_DIMENSION_117, _valueBundleType)
             putString(KEY_DIMENSION_118, bundleId)
             putString(KEY_DIMENSION_40, joinDash("/$source", PRODUCT_BUNDLING, _valueBundleType ))
             putString(KEY_DIMENSION_45, cartId)
