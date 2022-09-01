@@ -9,15 +9,17 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.databinding.ActivityCompletePaymentBinding
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.activity_base_simple.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 
 class CompletePayment : AppCompatActivity() {
@@ -42,7 +44,7 @@ class CompletePayment : AppCompatActivity() {
         }
 
         initView()
-         initBundleData()
+        initBundleData()
         initUrlLoad()
 
 
@@ -50,7 +52,7 @@ class CompletePayment : AppCompatActivity() {
 
     private fun initBundleData() {
         intent?.extras?.let {
-            urlToLoad =  it.getString(COMPLETE_PAYMENT_URL_KEY,"")
+            urlToLoad = it.getString(COMPLETE_PAYMENT_URL_KEY, "")
         }
     }
 
@@ -73,6 +75,11 @@ class CompletePayment : AppCompatActivity() {
 
     }
 
+    private fun routeToSuccess(appLink: String) {
+        RouteManager.route(this, appLink)
+        finish()
+    }
+
 
     inner class CompletePaymentPmsWebClient : WebViewClient() {
 
@@ -80,6 +87,11 @@ class CompletePayment : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
+            if (request?.url.toString().contains("tokopedia://payment/thankyou?payment_id=")) {
+                routeToSuccess(request?.url.toString())
+                return true
+            }
+
             return super.shouldOverrideUrlLoading(view, request)
         }
 
@@ -95,7 +107,7 @@ class CompletePayment : AppCompatActivity() {
             showProgressBar()
             startTimer()
             super.onPageStarted(view, url, favicon)
-            
+
         }
 
 
@@ -110,8 +122,11 @@ class CompletePayment : AppCompatActivity() {
     private fun startTimer() {
 
         timerJob = CoroutineScope(Dispatchers.Main).launch {
-               delay(90000)
-               binding.scroogeExtendedWebview.stopLoading()
+            delay(90000)
+            binding.scroogeExtendedWebview.stopLoading()
+            Toaster.build(parent_view, "Gagal memuat pembayaran. Silakan coba lagi", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            finish()
+
         }
 
     }
@@ -124,7 +139,7 @@ class CompletePayment : AppCompatActivity() {
         binding.progressbar.gone()
     }
 
-    companion object{
+    companion object {
         const val COMPLETE_PAYMENT_URL_KEY = "completePaymentUrl"
     }
 }
