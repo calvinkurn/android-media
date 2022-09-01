@@ -52,6 +52,17 @@ data class FeedXProduct(
         var totalSold: Int = 0,
         @SerializedName("webLink")
         var webLink: String = "",
+        //new fields for asgc fst and rs
+        @SerializedName("priceMasked")
+        var priceMasked: Float = 0f,
+        @SerializedName("priceMaskedFmt")
+        var priceMaskedFmt: String = "",
+        @SerializedName("stockWording")
+        var stockWording: String = "",
+        @SerializedName("stockSoldPercentage")
+        var stockSoldPercentage: Float = 0f,
+        @SerializedName("cartable")
+        var cartable: Boolean = false,
 
         //TopadsHeadline
         var variant: Int = 1,

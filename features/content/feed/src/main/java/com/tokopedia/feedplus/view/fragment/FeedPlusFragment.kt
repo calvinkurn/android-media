@@ -44,9 +44,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.bottomsheets.*
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.mapper.*
@@ -114,10 +112,6 @@ import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseV
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -156,6 +150,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
+import com.tokopedia.kotlin.extensions.view.*
 
 /**
  * @author by nisie on 5/15/17.
@@ -632,6 +628,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     }
                 }
             })
+
+            asgcReminderButtonStatus.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Fail -> {
+                        showToast(it.throwable.message ?: "", Toaster.TYPE_ERROR)
+                    }
+                    is Success -> {
+                        onSuccessFetchStatusIngnatSayaButton(it.data, true)
+
+                    }
+                }
+            })
+
+            asgcReminderButtonInitialStatus.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Fail -> {
+                    }
+                    is Success -> {
+                        onSuccessFetchStatusIngnatSayaButton(it.data)
+                    }
+                }
+            })
+
 
             viewTrackResponse.observe(lifecycleOwner, Observer {
                 when (it) {
@@ -2362,6 +2381,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventClickReadMoreNew(postId, shopId, type, isFollowed, mediaType)
     }
 
+    override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
+        feedViewModel.checkUpcomingCampaignInitialReminderStatus(card.campaign, positionInFeed)
+    }
+
+    override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
+        feedViewModel.setUnsetReminder(card.campaign, positionInFeed)
+    }
+
     override fun onImageClicked(
         activityId: String,
         type: String,
@@ -2926,6 +2953,45 @@ class FeedPlusFragment : BaseDaggerFragment(),
             view.count = view.count + 1
 
         }
+    }
+    private fun onSuccessFetchStatusIngnatSayaButton(data : FeedAsgcCampaignResponseModel, shouldShowToaster: Boolean = false){
+        val newList = adapter.getlist()
+        val  rowNumber = data.rowNumber
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
+            val item = (newList[rowNumber] as DynamicPostUiModel)
+            val campaign = item.feedXCard.campaign
+            if (campaign.id.toLongOrZero() == data.campaignId)
+            campaign.reminder = data.reminderStatus
+            if (shouldShowToaster)
+            showToastOnSuccessReminderSetForFSTorRS(item.feedXCard)
+
+            adapter.notifyItemChanged(
+                data.rowNumber,
+                DynamicPostNewViewHolder.PAYLOAD_REMINDER_BTN_STATUS_UPDATED
+            )
+        }
+    }
+
+    private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
+        when{
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isFlashSaleToko -> showToast(
+                context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message)
+                    ?: "",
+                Toaster.TYPE_NORMAL
+            )
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isRilisanSpl -> showToast(
+                context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message)
+                    ?: "",
+                Toaster.TYPE_NORMAL
+            )
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
+                context?.getString(
+                    com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
+                ) ?: "", Toaster.TYPE_NORMAL
+            )
+        }
+
+
     }
 
     private fun onErrorLikeDislikeKolPost(errorMessage: String) {

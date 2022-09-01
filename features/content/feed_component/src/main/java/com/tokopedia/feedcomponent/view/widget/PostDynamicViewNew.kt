@@ -118,7 +118,7 @@ private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
 private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
 private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
 private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
-private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_special"
+private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
 
 private const val FOCUS_CTA_DELAY = 2000L
 
@@ -409,6 +409,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     lastPosition,
                 )
             }
+        },
+        listener = object : FlashSaleCampaignUpcomingView.Listener {
+            override fun onTimerFinish() {
+
+            }
+
+            override fun setInitialStateOfReminderBtn(isReminderSet: Boolean, positionInFeed: Int) {
+
+            }
+
+            override fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int) {
+                listener?.onIngatkanSayaBtnClicked(mData, positionInFeed)
+            }
+
         }
     )
     private val snapHelper = PagerSnapHelper()
@@ -635,13 +649,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
-            when (feedXCard.type) {
-                ASGC_NEW_PRODUCTS -> followCount.text = context.getString(R.string.feeds_asgc_new_product_text)
-                ASGC_RESTOCK_PRODUCTS -> followCount.text = context.getString(R.string.feeds_asgc_restock_text)
-                ASGC_DISCOUNT_TOKO -> followCount.text = context.getString(R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO -> followCount.text = context.getString(R.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL -> followCount.text = context.getString(R.string.feed_asgc_rilisan_special)
-
+            followCount.text = when (feedXCard.type) {
+                ASGC_NEW_PRODUCTS ->  context.getString(R.string.feeds_asgc_new_product_text)
+                ASGC_RESTOCK_PRODUCTS ->  context.getString(R.string.feeds_asgc_restock_text)
+                ASGC_DISCOUNT_TOKO ->  context.getString(R.string.feed_asgc_diskon_toko)
+                ASGC_FLASH_SALE_TOKO ->  mData.campaign.name
+                ASGC_RILISAN_SPECIAL ->  mData.campaign.name
+                else -> String.EMPTY
             }
             followCount.show()
         }
@@ -1506,6 +1520,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         commentButton.invisible()
         seeAllCommentText.hide()
+        listener?.onIngatkanSayaBtnImpressed(mData, positionInFeed)
 
         adapter.setItemsAndAnimateChanges(mediaList)
         rvCarousel.addOneTimeGlobalLayoutListener {
@@ -1968,6 +1983,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     fun onCTAVisible(feedXCard: FeedXCard) {
         changeCTABtnColorAsPerWidget(feedXCard, FOCUS_CTA_DELAY)
+    }
+    fun onFSTReminderStatusUpdated() {
+        adapter.updateReminderStatusForAllButtonsInCarousel()
     }
 
     private fun sendHeaderTopadsEvent(positionInFeed: Int, appLink: String, cpmData: CpmData, isNewVariant: Boolean) {

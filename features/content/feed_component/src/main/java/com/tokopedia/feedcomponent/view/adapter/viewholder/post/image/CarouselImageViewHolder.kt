@@ -29,6 +29,7 @@ class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
+    private val fstListener: FlashSaleCampaignUpcomingView.Listener?
 ) : BaseViewHolder(itemView) {
 
     private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
@@ -158,6 +159,7 @@ class CarouselImageViewHolder(
         postImage.setImageUrl(item.mediaUrl)
         llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
         showHideFlashSaleCampaignCard(card)
+        updateAsgcButton()
 
         itemView.doOnLayout {
             removeExistingPostTags()
@@ -187,17 +189,23 @@ class CarouselImageViewHolder(
     }
     private fun showHideFlashSaleCampaignCard(feedXCard: FeedXCard){
 
-// TODO    flashSaleViewCard.setupTimer(feedXCard.campaign.endTime) {
-        flashSaleViewCard.setupTimer("2022-08-29 23:59:00") {
-            // TODO implement ontimer ends
+       flashSaleViewCard.setupTimer(feedXCard.campaign.endTime) {
+          // TODO implement ontimer ends
         }
         flashSaleViewCard.setData(
             feedXCard = feedXCard,
             positionInFeed = dataSource.getPositionInFeed()
         )
+        fstListener?.let {
+            flashSaleViewCard.setListener(fstListener)
+        }
+
 
         flashSaleViewCard.showWithCondition(feedXCard.isTypeProductHighlight)
 
+    }
+    private fun updateAsgcButton(){
+        flashSaleViewCard.setReminderBtnState(dataSource.getFeedXCard().campaign.reminder, dataSource.getPositionInFeed())
     }
 
     private fun removeExistingPostTags() {
@@ -254,6 +262,7 @@ class CarouselImageViewHolder(
             parent: ViewGroup,
             dataSource: FeedPostCarouselAdapter.DataSource,
             listener: Listener,
+            fstListener: FlashSaleCampaignUpcomingView.Listener?
         ) = CarouselImageViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
@@ -263,6 +272,7 @@ class CarouselImageViewHolder(
                 ),
             dataSource,
             listener,
+            fstListener
         )
     }
 

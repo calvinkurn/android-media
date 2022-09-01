@@ -11,18 +11,17 @@ import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
@@ -40,6 +39,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -85,7 +85,9 @@ class FeedViewModel @Inject constructor(
     private val addWishListUseCase: AddWishListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
-    private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase
+    private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
+    private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
+    private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase
 
 ) : BaseViewModel(baseDispatcher.main) {
 
@@ -120,6 +122,13 @@ class FeedViewModel @Inject constructor(
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
     val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
         get() = _playWidgetModel
+
+    private val _asgcReminderButtonInitialStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
+    val asgcReminderButtonInitialStatus: LiveData<Result<FeedAsgcCampaignResponseModel>>
+        get() = _asgcReminderButtonInitialStatus
+    private val _asgcReminderButtonStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
+    val asgcReminderButtonStatus: LiveData<Result<FeedAsgcCampaignResponseModel>>
+        get() = _asgcReminderButtonStatus
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
@@ -210,6 +219,44 @@ class FeedViewModel @Inject constructor(
             longVideoViewTrackResponse.postValue(Fail(it))
         }
     }
+
+     fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
+        viewModelScope.launchCatchError(block = {
+            val data = checkUpcomingCampaign(campaignId = campaign.id.toLongOrZero())
+            val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaign.id.toLongOrZero()) else FeedASGCUpcomingReminderStatus.Off(campaign.id.toLongOrZero())
+                _asgcReminderButtonInitialStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.id.toLongOrZero(), reminderStatus = reminderStatusRes))
+        }) {
+            _asgcReminderButtonInitialStatus.value = Fail(it)
+        }
+    }
+
+    private suspend fun checkUpcomingCampaign(campaignId: Long): Boolean = withContext(baseDispatcher.io) {
+        val response = checkUpcomingCampaignReminderUseCase.apply {
+            setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
+        }.executeOnBackground()
+        return@withContext response.response.isAvailable
+    }
+
+     fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
+        viewModelScope.launchCatchError(block = {
+            val data = subscribeUpcomingCampaign(
+                campaignId = campaign.id.toLongOrZero(),
+                reminderType = campaign.reminder
+            )
+            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.id.toLongOrZero()) else FeedASGCUpcomingReminderStatus.Off(campaign.id.toLongOrZero())
+            _asgcReminderButtonStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.id.toLongOrZero(), reminderStatus = reminderStatusRes))
+        }) {
+            _asgcReminderButtonStatus.value = Fail(it)
+        }
+    }
+
+    suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: FeedASGCUpcomingReminderStatus): Pair<Boolean, String> = withContext(baseDispatcher.io)  {
+        val response = postUpcomingCampaignReminderUseCase.apply {
+            setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
+        }.executeOnBackground()
+        return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
+    }
+
 
     fun getFeedFirstPage() {
         pagingHandler.resetPage()

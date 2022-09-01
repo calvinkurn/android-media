@@ -733,6 +733,8 @@ open class DynamicPostViewHolder(v: View,
                 playChannelId: String = "",
                 shopName: String = ""
         )
+        fun onIngatkanSayaBtnImpressed(card : FeedXCard, positionInFeed: Int)
+        fun onIngatkanSayaBtnClicked(card : FeedXCard, positionInFeed: Int)
 
         fun onReadMoreClicked(
             postId: String,

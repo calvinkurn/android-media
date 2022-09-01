@@ -12,10 +12,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -33,6 +35,8 @@ class FlashSaleCampaignUpcomingView @JvmOverloads constructor(
     private val fstReminderBtn : UnifyButton
     private var mListener : Listener? = null
     var isReminderSet = false
+    private var mPostionInFeed: Int = 0
+    private var mFeedXCard: FeedXCard? = null
 
 
     init {
@@ -50,16 +54,29 @@ class FlashSaleCampaignUpcomingView @JvmOverloads constructor(
         feedXCard: FeedXCard,
         positionInFeed: Int
     ) {
-        //TODO Replace with Backend Values , these are for testing
-        val imageUrl = "https://images.tokopedia.net/img/feeds/ribbon-overlay-rs.png"
-        setRibbonBackground(imageUrl)
+        mPostionInFeed = positionInFeed
+        mFeedXCard = feedXCard
+        setRibbonBackground(feedXCard.ribbonImageURL)
         setUpReminderButtonListener()
-//        fstSaleProductTitle.text = feedXCard.campaign.name
-//        setBackground(feedXCard.ribbonImageURL)
+        fstSaleProductTitle.text = feedXCard.campaign.shortName
     }
 
-    fun setListener(listener : Listener){
+    fun  setListener(listener : Listener){
         this.mListener = listener
+    }
+
+    fun setReminderBtnState(reminderStatus: FeedASGCUpcomingReminderStatus, positionInFeed: Int){
+        mListener?.setInitialStateOfReminderBtn(isReminderSet, positionInFeed)
+        fstReminderBtn.apply {
+            if (reminderStatus == FeedASGCUpcomingReminderStatus.On(mFeedXCard?.campaign?.id.toLongOrZero())) {
+                text = context.getString(R.string.btn_asgc_flash_remind_btn_text_disabled)
+                buttonType = UnifyButton.Type.ALTERNATE
+            } else {
+                text = context.getString(R.string.btn_asgc_flash_remind_btn_text)
+                buttonType = UnifyButton.Type.MAIN
+
+            }
+        }
     }
 
 
@@ -75,25 +92,11 @@ class FlashSaleCampaignUpcomingView @JvmOverloads constructor(
         }?: fstTimer.hide()
         fstTimer.onFinish = { mListener?.onTimerFinish() }
     }
+
     private fun setUpReminderButtonListener(){
-        fstReminderBtn.apply {
-            setOnClickListener {
-
-                mListener?.onReminderBtnClick(isReminderSet)
-
-                if (isReminderSet) {
-                    isReminderSet = false
-                    text = context.getString(R.string.btn_asgc_flash_remind_btn_text)
-                    buttonType = UnifyButton.Type.MAIN
-                } else {
-                    isReminderSet = true
-                    text = context.getString(R.string.btn_asgc_flash_remind_btn_text_disabled)
-                    buttonType = UnifyButton.Type.ALTERNATE
-                }
-
-            }
+        fstReminderBtn.setOnClickListener {
+            mListener?.onReminderBtnClick(isReminderSet,mPostionInFeed )
         }
-
     }
 
     private fun setRibbonBackground(backgroundUrl: String) {
@@ -107,7 +110,8 @@ class FlashSaleCampaignUpcomingView @JvmOverloads constructor(
     }
     interface Listener {
         fun onTimerFinish()
-        fun onReminderBtnClick(isReminderSet: Boolean)
+        fun setInitialStateOfReminderBtn(isReminderSet: Boolean, positionInFeed: Int)
+        fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int)
     }
 
 }

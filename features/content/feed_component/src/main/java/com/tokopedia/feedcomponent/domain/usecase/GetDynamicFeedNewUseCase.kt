@@ -351,6 +351,11 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           star
           price
           priceFmt
+          priceMasked
+          priceMaskedFmt
+          stockWording
+          stockSoldPercentage
+          cartable
           isDiscount
           discount
           discountFmt
