@@ -13,6 +13,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideEx
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListGlobalParentNotEnabled
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedMerchantPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -111,7 +112,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN clear promo and show BO promo THEN should not include BO promo`() {
+    fun `WHEN clear promo and show BO promo THEN should not clear BO promo in validate use request`() {
         // given
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
         val validateUseRequest = provideApplyPromoBoRequest()
@@ -129,6 +130,53 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         //then
         assert(!validateUseRequest.orders[0].codes.contains(promoBo))
 
+    }
+
+//    todo
+    @Test
+    fun `WHEN show BO promo THEN should add BO promo code in clear promo order param`() {
+        // given
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val validateUseRequest = provideApplyPromoBoRequest()
+        val promoBo = "PLUSAA"
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoRequest = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList(), clearPromoRequest)
+
+        //then
+        assert(clearPromoRequest.orderData.orders[0].codes.contains(promoBo))
+        assert(!validateUseRequest.orders[0].codes.contains(promoBo))
+    }
+
+    // todo
+    @Test
+    fun `WHEN show BO promo and no same unique id in order clear param THEN should add new order clear param from get promo request`() {
+        // given
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val promoParam = providePromoRequestWithSelectedExpandedMerchantPromo()
+        val validateUseRequest = provideApplyPromoBoRequest()
+        val promoBo = "PLUSAA"
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoRequest = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList(), clearPromoRequest)
+
+        //then
+        assert(clearPromoRequest.orderData.orders[0].codes.contains(promoBo))
+        assert(!validateUseRequest.orders[0].codes.contains(promoBo))
     }
 
     @Test
