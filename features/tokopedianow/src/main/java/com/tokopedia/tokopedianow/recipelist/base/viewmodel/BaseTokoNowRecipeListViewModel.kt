@@ -40,8 +40,11 @@ abstract class BaseTokoNowRecipeListViewModel(
     var selectedFilters = emptyList<SelectedFilter>()
     var enableHeaderBackground: Boolean = true
 
+    abstract val pageName: String
+
     fun getRecipeList() {
         launchCatchError(block = {
+            getRecipeListParam.sourcePage = pageName
             getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
             val response = getRecipeListUseCase.execute(getRecipeListParam)
 
