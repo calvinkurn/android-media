@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.di.setup
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.content.common.di.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
