@@ -5,7 +5,7 @@
         android:topLeftRadius="16dp"
         android:topRightRadius="16dp" />
     <gradient
-        android:angle="30"
+        android:angle="270"
         android:endColor="@color/Unify_NN1000"
         android:startColor="@color/dividerunify_background"
         android:type="linear">
