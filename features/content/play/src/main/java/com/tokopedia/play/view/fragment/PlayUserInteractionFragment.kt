@@ -292,7 +292,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         invalidateSystemUiVisibility()
         initAddress()
-        testingPurpose()
+//        testingPurpose()
     }
 
     private fun testingPurpose(){
@@ -887,6 +887,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(state.status)
+                renderEngagement(prevState?.engagement, state.engagement)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
                         prevState?.tagItems?.voucher != state.tagItems.voucher) {
@@ -895,6 +896,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun renderEngagement(prevState: EngagementUiState?, currState: EngagementUiState){
+        if(prevState?.shouldShow != currState.shouldShow)
+            engagementCarouselView.rootView.showWithCondition(currState.shouldShow)
+        if(prevState?.data != currState.data)
+            engagementCarouselView.setData(currState.data)
     }
 
     private fun observeUiEvent() {
