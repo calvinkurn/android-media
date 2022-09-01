@@ -29,15 +29,16 @@ object ChatbotNewRelicLogger {
     }
 
     fun logNewRelicForGetChatReplies(
-        key: String,
         isSuccess: Boolean,
-        messageId: Long,
-        exception: Exception,
+        messageId: String,
+        gqlKey: String,
+        exception: Throwable? = null,
         beforeReplyTime: String,
-        afterReplyTime: String
+        afterReplyTime: String,
+        key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR
     ) {
         val map: MutableMap<String, String> = HashMap()
-        var message = exception.message
+        var message = exception?.message
         var messageContent = (message?.subSequence(
             0,
             Math.min(message.length, MAX_LENGTH_FOR_NR_EXCEPTION)
@@ -45,7 +46,8 @@ object ChatbotNewRelicLogger {
 
         map["type"] = "request"
         map["success"] = if (isSuccess) "true" else "false"
-        map["messageId"] = messageId.toString()
+        map["messageId"] = messageId
+        map["gql_name"] = gqlKey
         map["exception"] = messageContent
         map["beforeReplyTime"] = beforeReplyTime
         map["afterReplyTime"] = afterReplyTime

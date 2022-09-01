@@ -1022,11 +1022,13 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError.invoke(it)
-                ChatbotNewRelicLogger.logNewRelic(
+                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
-                    it
+                    it,
+                    getExistingChatUseCase.minReplyTime,
+                    getExistingChatUseCase.maxReplyTime
                 )
             }
         )
@@ -1054,11 +1056,13 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError.invoke(it)
-                ChatbotNewRelicLogger.logNewRelic(
+                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
                     false,
                     messageId,
                     ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
-                    it
+                    it,
+                    getExistingChatUseCase.minReplyTime,
+                    getExistingChatUseCase.maxReplyTime
                 )
             }
         )
