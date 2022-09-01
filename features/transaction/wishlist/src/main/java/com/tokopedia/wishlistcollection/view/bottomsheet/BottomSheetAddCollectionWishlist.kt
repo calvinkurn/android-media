@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,8 +28,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
@@ -41,6 +42,8 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLI
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
+import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
@@ -48,9 +51,6 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
-import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
-import java.util.ArrayList
 import javax.inject.Inject
 
 class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.WishlistCollectionComponent> {
@@ -128,6 +128,17 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
                 setTextDescription(getString(R.string.collection_ticker_oos))
                 tickerType = Ticker.TYPE_ANNOUNCEMENT
             }
+            val constraintLayout = binding?.root
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            binding?.tickerOos?.id?.let { tickerId ->
+                binding?.rvAddWishlistCollection?.let { rv ->
+                    constraintSet.connect(
+                        rv.id, ConstraintSet.TOP,
+                        tickerId, ConstraintSet.BOTTOM, 20)
+                }
+            }
+            constraintSet.applyTo(constraintLayout)
         } else {
             binding?.tickerOos?.gone()
         }
