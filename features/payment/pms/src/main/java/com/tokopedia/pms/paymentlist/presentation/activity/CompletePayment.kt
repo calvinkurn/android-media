@@ -11,6 +11,7 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.databinding.ActivityCompletePaymentBinding
@@ -43,8 +44,8 @@ class CompletePayment : AppCompatActivity() {
             }
         }
 
-        initView()
         initBundleData()
+        initView()
         initUrlLoad()
     }
 
@@ -69,6 +70,14 @@ class CompletePayment : AppCompatActivity() {
         binding.progressbar.isIndeterminate = true
 
         binding.scroogeExtendedWebview.webViewClient = CompletePaymentPmsWebClient()
+        binding.scroogeExtendedWebview?.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            builtInZoomControls = false
+            displayZoomControls = true
+
+        }
+
 
 
     }
@@ -91,21 +100,23 @@ class CompletePayment : AppCompatActivity() {
                 return true
             }
 
-            return super.shouldOverrideUrlLoading(view, request)
+            return false
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             hideProgressBar()
             // cancel timer
-            timerJob.cancel()
-            super.onPageFinished(view, url)
+            if(::timerJob.isInitialized)
+                timerJob.cancel()
+
+
 
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             showProgressBar()
             startTimer()
-            super.onPageStarted(view, url, favicon)
+
 
         }
 
