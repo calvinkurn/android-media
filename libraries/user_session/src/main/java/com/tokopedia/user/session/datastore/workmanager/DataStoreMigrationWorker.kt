@@ -13,7 +13,6 @@ import com.tokopedia.user.session.datastore.workmanager.WorkOps.MIGRATED
 import com.tokopedia.user.session.datastore.workmanager.WorkOps.NO_OPS
 import com.tokopedia.user.session.datastore.workmanager.WorkOps.OPERATION_KEY
 import com.tokopedia.user.session.di.ComponentFactory
-import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -40,17 +39,13 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
                 if (userSession.isLoggedIn) {
                     val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
                     if (syncResult.isNotEmpty()) {
+                        logSyncResult(syncResult)
                         migrateData()
                         ops = MIGRATED
-                    } else {
-                        if(syncResult.isNotEmpty()) {
-                            logSyncResult(syncResult)
-                        }
                     }
                 }
                 Result.success(workDataOf(OPERATION_KEY to ops))
             } catch (e: Exception) {
-                e.printStackTrace()
                 logWorkerError(e)
                 Result.failure()
             }
