@@ -308,6 +308,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val list = mutableListOf<EngagementUiModel>().apply {
             add(EngagementUiModel.Promo(size = 4, info = PlayVoucherUiModel.MerchantVoucherUiModel(title = "Ada apa", id = "11", type = MerchantVoucherType.Discount, description = "A", code = "hehe", copyable = false, highlighted = false,voucherStock = 1,expiredDate = "1")))
             add(EngagementUiModel.Game(interactive))
+            add(EngagementUiModel.Game(InteractiveUiModel.Quiz(status = InteractiveUiModel.Quiz.Status.Finished, waitingDuration = 3000L, id = "0", title = "QUIZ", listOfChoices = emptyList(), reward = "")))
         }
         engagementCarouselView.setData(list)
     }
