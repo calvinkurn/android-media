@@ -25,6 +25,7 @@ import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -236,6 +237,16 @@ class PlayBroadcastActivity : BaseActivity(),
         super.onBackPressed()
     }
 
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when (fragment) {
+            is WarningInfoBottomSheet -> {
+                if (channelType == ChannelStatus.Live)
+                    fragment.setData(WarningInfoBottomSheet.WarningType.LIVE)
+            }
+        }
+    }
+
     private fun inject() {
         retainedComponent.inject(this)
     }
@@ -356,7 +367,7 @@ class PlayBroadcastActivity : BaseActivity(),
         if (config.streamAllowed) {
             this.channelType = config.channelStatus
             if (channelType == ChannelStatus.Live) {
-                showDialogWhenActiveOnOtherDevices()
+                showBottomSheetWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
                 if (isRequiredPermissionGranted()) configureChannelType(channelType)
@@ -444,16 +455,12 @@ class PlayBroadcastActivity : BaseActivity(),
         ).show()
     }
 
-    private fun showDialogWhenActiveOnOtherDevices() {
-        getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    finish()
-                }
-        ).show()
+    private fun showBottomSheetWhenActiveOnOtherDevices() {
+        try {
+            WarningInfoBottomSheet
+                .getFragment(supportFragmentManager, classLoader)
+                .showNow(supportFragmentManager)
+        } catch (e: Exception) { }
     }
 
     private fun showToaster(
