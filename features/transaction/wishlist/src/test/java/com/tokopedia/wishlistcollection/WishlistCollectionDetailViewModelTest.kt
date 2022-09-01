@@ -17,6 +17,7 @@ import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
@@ -85,6 +86,22 @@ class WishlistCollectionDetailViewModelTest {
     private var getWishlistCollectionItemsResponseDataStatusError = GetWishlistCollectionItemsResponse(
         getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "error")
     )
+
+    private var deleteWishlistProgressStatusOkErrorEmpty = DeleteWishlistProgressResponse(DeleteWishlistProgressResponse.DeleteWishlistProgress(
+        status = "OK", errorMessage = emptyList()
+    ))
+
+    private var deleteWishlistProgressStatusOkErrorNotEmpty = DeleteWishlistProgressResponse(DeleteWishlistProgressResponse.DeleteWishlistProgress(
+        status = "OK", errorMessage = arrayListOf("error")
+    ))
+
+    private var deleteWishlistProgressStatusNotOkErrorEmpty = DeleteWishlistProgressResponse(DeleteWishlistProgressResponse.DeleteWishlistProgress(
+        status = "ERROR", errorMessage = emptyList()
+    ))
+
+    private var deleteWishlistProgressStatusNotOkErrorNotEmpty = DeleteWishlistProgressResponse(DeleteWishlistProgressResponse.DeleteWishlistProgress(
+        status = "ERROR", errorMessage = arrayListOf("error")
+    ))
 
     private val throwable = Fail(Throwable(message = "Error"))
 
@@ -409,5 +426,76 @@ class WishlistCollectionDetailViewModelTest {
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetDeleteWishlistProgress Success Status OK And Error is Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value is Success)
+        assert((wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `Execute GetDeleteWishlistProgress Success Status OK And Error is not Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetDeleteWishlistProgress Success Status Error And Error is Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusNotOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetDeleteWishlistProgress Success Status Error And Error is not Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusNotOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute GetDeleteWishlistProgress Failed`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } throws throwable.throwable
+
+        //when
+        wishlistCollectionDetailViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value is Fail)
     }
 }
