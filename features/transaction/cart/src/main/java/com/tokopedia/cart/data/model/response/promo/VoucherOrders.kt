@@ -26,4 +26,7 @@ data class VoucherOrders (
         @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         val spId: Int = 0,
+
+        @SerializedName("type")
+        val type: String = "",
 )
