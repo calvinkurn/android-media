@@ -1,5 +1,6 @@
 package com.tokopedia.pms.paymentlist.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import com.tokopedia.pms.R
 import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
+import com.tokopedia.pms.paymentlist.presentation.activity.CompletePayment
 import com.tokopedia.pms.paymentlist.presentation.activity.PaymentListActivity
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
@@ -187,7 +189,14 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
             ACTION_INVOICE_PAGE_REDIRECTION -> openInvoiceDetail(model)
             ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA -> checkAndOpenInvoiceDetail(model)
             ACTION_CHEVRON_ACTIONS -> openActionBottomSheet(model)
+            ACTION_COMPLETE_PAYMENT -> openCompletePaymentWeb(model)
         }
+    }
+
+    private fun openCompletePaymentWeb(model: BasePaymentModel) {
+        startActivity(Intent(activity,CompletePayment::class.java).apply {
+            putExtra(COMPLETE_PAYMENT_URL_KEY,(model as CreditCardPaymentModel).paymentUrl)
+        })
     }
 
     private fun openInvoiceDetail(model: BasePaymentModel) {
@@ -260,6 +269,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         const val ACTION_INVOICE_PAGE_REDIRECTION = 2
         const val ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA = 3
         const val ACTION_CHEVRON_ACTIONS = 4
+        const val ACTION_COMPLETE_PAYMENT = 5
+        const val COMPLETE_PAYMENT_URL_KEY = "completePaymentUrl"
         fun createInstance() = DeferredPaymentListFragment()
     }
 

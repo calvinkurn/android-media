@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class CompletePayment : AppCompatActivity() {
 
     private lateinit var binding: ActivityCompletePaymentBinding
-    private var urlToLoad = "https://edition.cnn.com"
+    private var urlToLoad = ""
     private lateinit var timerJob: Job
 
 
@@ -42,10 +42,16 @@ class CompletePayment : AppCompatActivity() {
         }
 
         initView()
-        // initBundleData()
+         initBundleData()
         initUrlLoad()
 
 
+    }
+
+    private fun initBundleData() {
+        intent?.extras?.let {
+            urlToLoad =  it.getString(COMPLETE_PAYMENT_URL_KEY,"")
+        }
     }
 
 
@@ -104,7 +110,7 @@ class CompletePayment : AppCompatActivity() {
     private fun startTimer() {
 
         timerJob = CoroutineScope(Dispatchers.Main).launch {
-               delay(10000)
+               delay(90000)
                binding.scroogeExtendedWebview.stopLoading()
         }
 
@@ -116,5 +122,9 @@ class CompletePayment : AppCompatActivity() {
 
     fun hideProgressBar() {
         binding.progressbar.gone()
+    }
+
+    companion object{
+        const val COMPLETE_PAYMENT_URL_KEY = "completePaymentUrl"
     }
 }
