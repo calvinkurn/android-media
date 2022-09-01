@@ -176,7 +176,7 @@
         android:id="@+id/pdp_shipment_courier_label_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/Unify_G500"
         app:layout_constraintTop_toBottomOf="@id/pdp_shipment_courier_label_1"
         app:typographyType="display_3"
