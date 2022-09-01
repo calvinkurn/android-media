@@ -62,7 +62,7 @@ class TokoNowRecipeSearchFragment: BaseTokoNowRecipeListFragment() {
     private fun getRecipeList() {
         val uri = activity?.intent?.data
         viewModel.setQueryParams(
-            queryParams = uri?.encodedQuery.orEmpty()
+            encodedQuery = uri?.encodedQuery
         )
         viewModel.getRecipeList()
     }

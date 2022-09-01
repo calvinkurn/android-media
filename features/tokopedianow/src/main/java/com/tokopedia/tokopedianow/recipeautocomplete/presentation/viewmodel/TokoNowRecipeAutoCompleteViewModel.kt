@@ -18,6 +18,8 @@ class TokoNowRecipeAutoCompleteViewModel @Inject constructor(
     fun submitSearch(title: String) {
         val getRecipeListParam = RecipeListParam()
         getRecipeListParam.title = title
-        _recipeListParam.value = "?" + getRecipeListParam.generateQueryParams()
+        val queryParamsGenerated = getRecipeListParam.generateQueryParams()
+        val queryParams = queryParamsGenerated.ifBlank { "" }
+        _recipeListParam.value = "?${queryParams}"
     }
 }
