@@ -42,6 +42,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -210,7 +211,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         currentFragment?.let { fragment ->
-            return (fragment as? AffiliatePromoFragment)?.view?.findViewById<AffiliateLinkTextField>(
+            return (fragment as? AffiliatePromoFragment)?.view?.findViewById(
                 R.id.product_link_et
             )
         }
@@ -221,7 +222,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.name)
         currentFragment?.let { fragment ->
-            return (fragment as? AffiliateHomeFragment)?.view?.findViewById<Typography>(R.id.user_name)
+            return (fragment as? AffiliateHomeFragment)?.view?.findViewById(R.id.user_name)
         }
         return null
     }
@@ -265,23 +266,24 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun setObservers() {
-        affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
+        affiliateVM.getValidateUserdata().observe(this) { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
-                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
+                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true
+            ) {
                 showAffiliatePortal()
-            } else{
+            } else {
                 showLoginPortal()
             }
-        })
+        }
 
-        affiliateVM.progressBar().observe(this,{
-            if(it)
+        affiliateVM.progressBar().observe(this) {
+            if (it)
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
             else
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.hide()
-        })
+        }
 
-        affiliateVM.getErrorMessage().observe(this, { error ->
+        affiliateVM.getErrorMessage().observe(this) { error ->
             when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
                     Toaster.build(
@@ -295,10 +297,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                     showLoginPortal()
                 }
             }
-        })
+        }
     }
-
-    var isBackEnabled = true
 
     private fun openFragment(fragment: Fragment) {
         val backStackName = fragment.javaClass.name
@@ -415,14 +415,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 HELP_MENU
             )
         }
-    }
-
-    fun setBlackListedStatus(blackListed: Boolean) {
-        isUserBlackListed = blackListed
-    }
-
-    fun getBlackListedStatus(): Boolean {
-        return isUserBlackListed
     }
 
 }

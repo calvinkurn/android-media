@@ -1345,4 +1345,30 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         assert(shopPageProductListResultViewModel.miniCartUpdate.value == null)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value == null)
     }
+
+    @Test
+    fun `check when call initAffiliateCookie is success`() {
+        val mockShopId = "456"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } returns Unit
+        shopPageProductListResultViewModel.initAffiliateCookie(
+            affiliateCookieHelper,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when when call initAffiliateCookie is not success`() {
+        val mockShopId = "456"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } throws Exception()
+        shopPageProductListResultViewModel.initAffiliateCookie(
+            affiliateCookieHelper,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
 }

@@ -27,6 +27,7 @@ import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import javax.inject.Inject
 
 /**
@@ -151,7 +152,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun goToAddPin(validateToken: String){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN_FROM_2FA)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PIN_FROM_2FA)
             i.putExtras(Bundle().apply {
                 putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
                 putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
@@ -162,7 +163,7 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     private fun goToAddPhone(){
         context?.run {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
+            val i = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.ADD_PHONE)
             i.putExtras(Bundle().apply {
                 putBoolean(IS_FROM_2FA, arguments?.getBoolean(IS_FROM_2FA, false) ?: false)
             })

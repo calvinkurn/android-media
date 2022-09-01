@@ -21,6 +21,21 @@ class ShopFollowUseCase @Inject constructor(
         setTypeClass(ShopFollowModel::class.java)
     }
 
+    suspend fun executeOnBackground(
+        shopId: String,
+        action: ShopFollowAction,
+    ): ShopFollowModel {
+        val request = mapOf(
+            SHOP_FOLLOW_INPUT to mapOf(
+                SHOP_FOLLOW_SHOP_ID to shopId,
+                SHOP_FOLLOW_ACTION to action.value
+            )
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val SHOP_FOLLOW_SHOP_ID = "shopID"
         private const val SHOP_FOLLOW_ACTION = "action"
@@ -37,18 +52,5 @@ class ShopFollowUseCase @Inject constructor(
               }
             }
         """
-
-        fun createParam(
-            shopId: String,
-            action: ShopFollowAction,
-        ): HashMap<String, Any> {
-            return hashMapOf(
-                SHOP_FOLLOW_INPUT to hashMapOf(
-                    SHOP_FOLLOW_SHOP_ID to shopId,
-                    SHOP_FOLLOW_ACTION to action.value
-                )
-            )
-        }
     }
-
 }
