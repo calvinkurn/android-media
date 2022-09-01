@@ -1,13 +1,11 @@
-package com.tokopedia.topads.dashboard.tracker
+package com.tokopedia.topads.common.analytics
 
 import com.tokopedia.topads.common.analytics.*
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
-import com.tokopedia.topads.dashboard.view.sheet.BidSwitchManualBudgetBottomSheet
 import javax.inject.Inject
 
 class TopAdsGroupDetailTrackerImpl @Inject constructor() :
-    TopadsAutoBidSwitchPartialLayout.TrackerListener,
-    BidSwitchManualBudgetBottomSheet.TrackerListener {
+    TopadsAutoBidSwitchPartialLayout.TrackerListener{
 
     override fun autoBidSwitchClicked(on: Boolean) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoBidToggleTopAdsGroupDetailEvent(
