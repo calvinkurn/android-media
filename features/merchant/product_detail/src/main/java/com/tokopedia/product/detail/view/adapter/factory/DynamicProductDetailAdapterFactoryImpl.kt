@@ -274,7 +274,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 } else super.createViewHolder(view, type)
             }
             ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view, listener)
-            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view)
+            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view, listener)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
 
             else -> super.createViewHolder(view, type)
