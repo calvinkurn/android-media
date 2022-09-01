@@ -7,6 +7,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.robot.prepare
 import com.tokopedia.play.data.PlayErrorMockModelConfig
@@ -27,6 +28,9 @@ class CavPlayTrackingErrorTest {
     @get:Rule
     val intentsTestRule = IntentsTestRule(PlayActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     @Test
     fun validateTrackingChannelError() {
         prepare {
@@ -39,7 +43,7 @@ class CavPlayTrackingErrorTest {
             checkIsDisplayed()
             performClose()
             Thread.sleep(2000)
-            validate()
+            validate(cassavaTestRule)
         }
     }
 

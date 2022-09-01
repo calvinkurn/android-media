@@ -96,5 +96,7 @@ data class Product(
         @SerializedName("variant_description_detail")
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("add_ons")
-        val addOns: AddOnsResponse = AddOnsResponse()
+        val addOns: AddOnsResponse = AddOnsResponse(),
+        @SerializedName("ethical_drug")
+        val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse()
 )

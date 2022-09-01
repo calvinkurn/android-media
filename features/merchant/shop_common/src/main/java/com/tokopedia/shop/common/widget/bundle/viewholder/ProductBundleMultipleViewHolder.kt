@@ -48,10 +48,10 @@ class ProductBundleMultipleViewHolder(
 
     init {
         viewBinding?.apply {
-            typographyBundleName = tvBundleName
+            typographyBundleName = bundleWidgetHeaderContainer.tvBundleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
-            typographyBundlePreOrder = tvBundlePreorder
+            typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             labelBundleDiscount = labelDiscountBundle
             typographyBundleProductSavingAmount = tvSavingAmountPriceWording
             buttonAtc = btnBundleAtc
@@ -77,7 +77,7 @@ class ProductBundleMultipleViewHolder(
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
-        initActionButton(bundleDetail.isPreOrder)
+        initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, bundleDetail.products)
     }
 
@@ -92,7 +92,7 @@ class ProductBundleMultipleViewHolder(
 
     private fun initShopInfo(shopInfo: BundleShopUiModel?, bundleName: String) {
         val hasShopInfo = shopInfo != null
-        viewBinding?.apply {
+        viewBinding?.bundleWidgetHeaderContainer?.apply {
             iconShop.isVisible = hasShopInfo
             tvShopName.isVisible = hasShopInfo
             tvBundleName.isVisible = hasShopInfo
@@ -128,8 +128,10 @@ class ProductBundleMultipleViewHolder(
         constraintSet.applyTo(widgetContainer)
     }
 
-    private fun initActionButton(isPreOrder: Boolean) {
-        buttonAtc?.text = if (isPreOrder) {
+    private fun initActionButton(atcButtonText: String?, isPreOrder: Boolean) {
+        buttonAtc?.text = if (atcButtonText != null) {
+            atcButtonText
+        } else if (isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)

@@ -121,6 +121,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
     }
 
     private fun setToastOnProgramAction(programActionType:Int){
+        arguments?.putInt(BUNDLE_PROGRAM_ACTION, -1)
         when(programActionType){
             ProgramActionType.CREATE_BUAT -> {
                 view?.let { Toaster.build(it, " Yay, pengaturan TokoMember sudah dibuat. Kamu bisa cek progresnya di menu Home.", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show() }

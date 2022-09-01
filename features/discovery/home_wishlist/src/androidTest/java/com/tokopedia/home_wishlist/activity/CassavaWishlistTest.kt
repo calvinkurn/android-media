@@ -11,8 +11,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_wishlist.mock.WishlistMockData
 import com.tokopedia.home_wishlist.test.R
@@ -24,9 +23,9 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 private const val TAG = "CassavaWishlistTest"
 
 
@@ -41,12 +40,14 @@ class CassavaWishlistTest {
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationWishlistTestActivity>(InstrumentationWishlistTestActivity::class.java) {
         override fun beforeActivityLaunched() {
-            gtmLogDBSource.deleteAll().subscribe()
             disableCoachMark()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(WishlistMockData())
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
@@ -59,12 +60,6 @@ class CassavaWishlistTest {
     }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
-
-    @Before
-    fun resetAll() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
 
     @Test
     fun testWishlistImpressionAndClickLogin() {
@@ -73,8 +68,6 @@ class CassavaWishlistTest {
         scrollToItemAndBanner()
 
         doCassavaCheck()
-
-        onFinishTest()
 
         addDebugEnd()
     }
@@ -88,8 +81,6 @@ class CassavaWishlistTest {
 
         doCassavaCheckAddToCartTracker()
 
-        onFinishTest()
-
         addDebugEnd()
     }
 
@@ -100,8 +91,6 @@ class CassavaWishlistTest {
         scrollToItemPositionCancelDeleteItem(0)
 
         doCassavaCancelDeleteItem()
-
-        onFinishTest()
 
         addDebugEnd()
     }
@@ -160,19 +149,19 @@ class CassavaWishlistTest {
 
     private fun doCassavaCheck() {
         waitForData()
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ITEM),
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ITEM),
                 hasAllSuccess())
     }
 
     private fun doCassavaCheckAddToCartTracker() {
         waitForData()
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ADD_TO_CART),
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ADD_TO_CART),
                 hasAllSuccess())
     }
 
     private fun doCassavaCancelDeleteItem() {
         waitForData()
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_BATALKAN_DELETE_ITEM),
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_BATALKAN_DELETE_ITEM),
             hasAllSuccess())
     }
 
@@ -266,11 +255,5 @@ class CassavaWishlistTest {
     private fun addDebugEnd() {
         Thread.sleep(5000)
     }
-
-    private fun onFinishTest() {
-        gtmLogDBSource.deleteAll().subscribe()
-    }
-
-
 
 }

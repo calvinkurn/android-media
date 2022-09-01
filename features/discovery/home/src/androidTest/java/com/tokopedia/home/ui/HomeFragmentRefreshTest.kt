@@ -11,7 +11,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeEmptyActivity
@@ -39,7 +38,6 @@ import org.junit.*
 class HomeFragmentRefreshTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val totalData =
         MOCK_HEADER_COUNT + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
     private var mDevice: UiDevice? = null
@@ -92,7 +90,6 @@ class HomeFragmentRefreshTest {
         override fun beforeActivityLaunched() {
             InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
-            gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             disableCoachMark(context)
@@ -144,7 +141,7 @@ class HomeFragmentRefreshTest {
          * - Membership data changes
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertEquals(TOTAL_PARTIAL_HEADER_REFRESH_COUNT, dataChangedCount)
+        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
 
