@@ -1,15 +1,19 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
@@ -26,6 +30,10 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.R.color
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,13 +41,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseDaggerFragment() {
+class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, DelegateAdapterItem>() {
 
     companion object {
         private const val UPCOMING_TAB = "upcoming"
         private const val REGISTERED_TAB = "registered"
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
+        private const val PAGE_SIZE = 10
 
         @JvmStatic
         fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
@@ -68,6 +77,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     //registered
     private var registeredCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var registeredCdpMidBinding by autoClearedNullable<StfsCdpRegisteredMidBinding>()
+    private var registeredCdpBodyBinding by autoClearedNullable<StfsCdpRegisteredBodyBinding>()
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
@@ -75,6 +85,13 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private val tabName by lazy {
         arguments?.getString(BundleConstant.BUNDLE_KEY_TAB_NAME).orEmpty()
+    }
+
+    private val productAdapter by lazy {
+        CompositeAdapter.Builder()
+            .add(WaitingForSelectionDelegateAdapter(onProductItemClicked = { onProductClicked(it.toLong()) }))
+            .add(LoadingDelegateAdapter())
+            .build()
     }
 
     override fun getScreenName(): String =
@@ -120,10 +137,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         viewModel.submittedProduct.observe(viewLifecycleOwner) { submittedProduct ->
             when (submittedProduct) {
                 is Success -> {
-                    //TODO: Populate list data
+                    renderList(submittedProduct.data, submittedProduct.data.size == getPerPage())
                 }
                 is Fail -> {
-                    //TODO: Add Error Handling, not available on figma yet
+
                 }
             }
         }
@@ -134,8 +151,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         viewModel.getCampaignDetail(flashSaleId)
     }
 
-    private fun loadSubmittedProductListData() {
-        viewModel.getSubmittedProduct(flashSaleId)
+    private fun loadSubmittedProductListData(offset: Int) {
+        viewModel.getSubmittedProduct(flashSaleId, offset)
     }
 
     private fun setupView(flashSale: FlashSale) {
@@ -331,11 +348,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             layoutMid.setOnInflateListener { _, view ->
                 registeredCdpMidBinding = StfsCdpRegisteredMidBinding.bind(view)
             }
+            layoutBody.setOnInflateListener { _, view ->
+                registeredCdpBodyBinding = StfsCdpRegisteredBodyBinding.bind(view)
+            }
         }
 
-        loadSubmittedProductListData()
         setupRegisteredHeader(flashSale)
         setupRegisteredMid(flashSale)
+        setupRegisteredBody()
     }
 
     private fun setupRegisteredHeader(flashSale: FlashSale) {
@@ -352,6 +372,13 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         inflatedView.layoutResource = R.layout.stfs_cdp_registered_mid
         inflatedView.inflate()
         setupRegisteredMidData(flashSale)
+    }
+
+    private fun setupRegisteredBody() {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutBody
+        inflatedView.layoutResource = R.layout.stfs_cdp_registered_body
+        inflatedView.inflate()
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
@@ -549,5 +576,49 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             loader.gone()
             nsvContent.show()
         }
+    }
+
+    private fun onProductClicked(productId: Long) {
+
+    }
+
+    override fun createAdapter(): CompositeAdapter {
+        return productAdapter
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView? {
+        return binding?.recyclerView
+    }
+
+    override fun getPerPage(): Int {
+        return PAGE_SIZE
+    }
+
+    override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
+        adapter?.submit(list)
+    }
+
+    override fun loadData(page: Int, offset: Int) {
+        loadSubmittedProductListData(offset)
+    }
+
+    override fun clearAdapterData() {
+        adapter?.submit(listOf())
+    }
+
+    override fun onShowLoading() {
+        adapter?.addItem(LoadingItem)
+    }
+
+    override fun onHideLoading() {
+        adapter?.removeItem(LoadingItem)
+    }
+
+    override fun onDataEmpty() {
+        adapter?.removeItem(LoadingItem)
+    }
+
+    override fun onGetListError(message: String) {
+        adapter?.removeItem(LoadingItem)
     }
 }

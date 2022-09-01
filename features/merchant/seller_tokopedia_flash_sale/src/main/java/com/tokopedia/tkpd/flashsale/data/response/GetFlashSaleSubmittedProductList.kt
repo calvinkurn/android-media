@@ -38,7 +38,7 @@ data class GetFlashSaleSubmittedProductListResponse(
         @SerializedName("lower_price")
         val lowerPrice: Double,
         @SerializedName("upper_price")
-        val upper_price: Double
+        val upperPrice: Double
     )
 
     data class Discount(
@@ -56,7 +56,7 @@ data class GetFlashSaleSubmittedProductListResponse(
         @SerializedName("lower_price")
         val lowerPrice: Double,
         @SerializedName("upper_price")
-        val upper_price: Double
+        val upperPrice: Double
     )
 
     data class Warehouse(
@@ -65,9 +65,9 @@ data class GetFlashSaleSubmittedProductListResponse(
         @SerializedName("price")
         val price: Double,
         @SerializedName("discount_setup")
-        val discountSetup: DiscountSetup,
+        val discountSetup: DiscountSetup?,
         @SerializedName("subsidy")
-        val subsidy: Subsidy,
+        val subsidy: Subsidy?,
         @SerializedName("rejection_reason")
         val rejectionReason: String,
         @SerializedName("status_id")
@@ -91,7 +91,7 @@ data class GetFlashSaleSubmittedProductListResponse(
 
     data class Subsidy(
         @SerializedName("has_subsidy")
-        val hasSubsidy: Boolean,
+        val hasSubsidy: Boolean = false,
         @SerializedName("subsidy_amount")
         val subsidyAmount: Long
     )
@@ -108,6 +108,8 @@ data class GetFlashSaleSubmittedProductListResponse(
         val isMultiwarehouse: Boolean,
         @SerializedName("is_parent_product")
         val isParentProduct: Boolean,
+        @SerializedName("total_child")
+        val totalChild: Int,
         @SerializedName("main_stock")
         val mainStock: Int,
         @SerializedName("name")

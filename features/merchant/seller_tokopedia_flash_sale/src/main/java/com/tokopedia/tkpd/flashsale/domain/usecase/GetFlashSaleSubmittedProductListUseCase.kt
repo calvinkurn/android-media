@@ -42,6 +42,7 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                             campaign_stock
                             is_multiwarehouse
                             is_parent_product
+                            total_child
                             price {
                               price
                               lower_price
@@ -88,11 +89,10 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
 
     suspend fun execute(
         campaignId: Long,
-        useCase: String = "",
         pagination: Pagination = Pagination(),
         filter: Filter = Filter()
     ): SubmittedProductData {
-        val request = buildRequest(campaignId, useCase, pagination, filter)
+        val request = buildRequest(campaignId, pagination, filter)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleSubmittedProductListResponse>()
         return mapper.map(data)
@@ -100,15 +100,14 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
 
     private fun buildRequest(
         campaignId: Long,
-        useCase: String,
         pagination: Pagination,
         filter : Filter
     ): GraphqlRequest {
         val payload = GetFlashSaleSubmittedProductListRequest(
-            requestHeader = SubmittedProductListRequestHeader(useCase),
+            requestHeader = SubmittedProductListRequestHeader(),
             campaignId = campaignId.toInt(),
             pagination = pagination,
-            filter = filter
+            filter = filter,
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(

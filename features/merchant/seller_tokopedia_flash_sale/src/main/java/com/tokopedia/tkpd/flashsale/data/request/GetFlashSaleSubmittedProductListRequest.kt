@@ -16,8 +16,10 @@ data class GetFlashSaleSubmittedProductListRequest(
 ) {
 
     data class SubmittedProductListRequestHeader(
+        @SerializedName("source")
+        val source: String = "fe",
         @SerializedName("usecase")
-        val usecase: String = ""
+        val usecase: String = "list"
     )
 
     data class Pagination(
@@ -32,6 +34,6 @@ data class GetFlashSaleSubmittedProductListRequest(
         @SerializedName("keyword")
         val keyword: String = "",
         @SerializedName("category_ids")
-        val categoryIds: Int? = null
+        val categoryIds: List<Int> = listOf()
     )
 }

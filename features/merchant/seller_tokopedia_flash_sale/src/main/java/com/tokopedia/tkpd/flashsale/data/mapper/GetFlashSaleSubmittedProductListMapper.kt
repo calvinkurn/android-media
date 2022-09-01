@@ -1,8 +1,11 @@
 package com.tokopedia.tkpd.flashsale.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleSubmittedProductListResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProductData
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus
 import javax.inject.Inject
 
 class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
@@ -20,6 +23,7 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 submittedProduct.campaignStock,
                 submittedProduct.isMultiwarehouse,
                 submittedProduct.isParentProduct,
+                submittedProduct.totalChild,
                 submittedProduct.mainStock,
                 submittedProduct.name,
                 submittedProduct.picture,
@@ -29,6 +33,7 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 submittedProduct.toPrice(),
                 submittedProduct.toDiscount(),
                 submittedProduct.toDiscountedPrice(),
+                submittedProduct.toProductStockStatus(),
                 submittedProduct.toWarehouses()
             )
         }
@@ -36,25 +41,25 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
 
     private fun GetFlashSaleSubmittedProductListResponse.Product.toPrice(): SubmittedProduct.Price {
         return SubmittedProduct.Price(
-            price.price,
-            price.lowerPrice,
-            price.lowerPrice
+            price.price.orZero(),
+            price.lowerPrice.orZero(),
+            price.upperPrice.orZero()
         )
     }
 
     private fun GetFlashSaleSubmittedProductListResponse.Product.toDiscount(): SubmittedProduct.Discount {
         return SubmittedProduct.Discount(
-            discount.discount,
-            discount.lowerDiscount,
-            discount.upperDiscount
+            discount.discount.orZero(),
+            discount.lowerDiscount.orZero(),
+            discount.upperDiscount.orZero()
         )
     }
 
     private fun GetFlashSaleSubmittedProductListResponse.Product.toDiscountedPrice(): SubmittedProduct.DiscountedPrice {
         return SubmittedProduct.DiscountedPrice(
-            discountedPrice.price,
-            discountedPrice.lowerPrice,
-            discountedPrice.lowerPrice
+            discountedPrice.price.orZero(),
+            discountedPrice.lowerPrice.orZero(),
+            discountedPrice.upperPrice.orZero()
         )
     }
 
@@ -76,16 +81,16 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
 
     private fun GetFlashSaleSubmittedProductListResponse.Warehouse.toDiscountSetup(): SubmittedProduct.DiscountSetup {
         return SubmittedProduct.DiscountSetup(
-            discountSetup.price,
-            discountSetup.stock,
-            discountSetup.discount
+            discountSetup?.price.orZero(),
+            discountSetup?.stock.orZero(),
+            discountSetup?.discount.orZero()
         )
     }
 
     private fun GetFlashSaleSubmittedProductListResponse.Warehouse.toSubsidy(): SubmittedProduct.Subsidy {
         return SubmittedProduct.Subsidy(
-            subsidy.hasSubsidy,
-            subsidy.subsidyAmount
+            subsidy?.hasSubsidy ?: false,
+            subsidy?.subsidyAmount.orZero()
         )
     }
 
@@ -93,5 +98,21 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
         return SubmittedProduct.ProductCriteria(
             productCriteria.criteriaId
         )
+    }
+
+    private fun GetFlashSaleSubmittedProductListResponse.Product.toProductStockStatus(): ProductStockStatus {
+        return if (totalChild.isZero()) {
+            if (isMultiwarehouse) {
+                ProductStockStatus.SINGLE_VARIANT_MULTI_LOCATION
+            } else {
+                ProductStockStatus.SINGLE_VARIANT_SINGLE_LOCATION
+            }
+        } else {
+            if (isMultiwarehouse) {
+                ProductStockStatus.MULTI_VARIANT_MULTI_LOCATION
+            } else {
+                ProductStockStatus.MULTI_VARIANT_SINGLE_LOCATION
+            }
+        }
     }
 }

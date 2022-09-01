@@ -1,9 +1,12 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus
+
 data class SubmittedProduct(
     val campaignStock: Int,
     val isMultiwarehouse: Boolean,
     val isParentProduct: Boolean,
+    val totalChild: Int,
     val mainStock: Int,
     val name: String,
     val picture: String,
@@ -13,13 +16,14 @@ data class SubmittedProduct(
     val price: Price,
     val discount: Discount,
     val discountedPrice: DiscountedPrice,
+    val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<Warehouse>
 ) {
 
     data class Price(
         val price: Double,
         val lowerPrice: Double,
-        val upper_price: Double
+        val upperPrice: Double
     )
 
     data class Discount(
@@ -31,7 +35,7 @@ data class SubmittedProduct(
     data class DiscountedPrice(
         val price: Double,
         val lowerPrice: Double,
-        val upper_price: Double
+        val upperPrice: Double
     )
 
     data class Warehouse(
@@ -41,7 +45,7 @@ data class SubmittedProduct(
         val statusId: Long,
         val statusText: String,
         val stock: Int,
-        val discountSetup: DiscountSetup,
+        val discountSetup: DiscountSetup?,
         val subsidy: Subsidy,
         val warehouseId: Long
     )

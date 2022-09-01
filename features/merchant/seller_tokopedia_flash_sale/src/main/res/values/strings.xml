@@ -135,4 +135,8 @@
     <string name="stfs_rejected_label">Ditolak</string>
     <string name="stfs_mid_section_product_count_placeholder"><![CDATA[<b>%d</b>]]> Produk</string>
     <string name="stfs_dash_label">-</string>
+    <string name="stfs_variant_stock_non_variant_non_location_placeholder">Stok Campaign: <![CDATA[<b>%d</b>]]></string>
+    <string name="stfs_variant_stock_single_multiloc_placeholder">Stok Campaign: <![CDATA[<b>%d</b>]]> di %2d lokasi</string>
+    <string name="stfs_variant_stock_variant_singleloc_placeholder">%d Varian Diskon | Stok Campaign: <![CDATA[<b>%2d</b>]]></string>
+    <string name="stfs_variant_stock_variant_multiloc_placeholder">%d Varian Diskon | Stok Campaign: <![CDATA[<b>%2d</b>]]> di %3d lokasi</string>
 </resources>
