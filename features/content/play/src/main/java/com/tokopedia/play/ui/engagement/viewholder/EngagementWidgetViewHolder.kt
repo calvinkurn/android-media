@@ -61,6 +61,7 @@ class EngagementWidgetViewHolder(
         fun onGiveawayEnd(giveaway: InteractiveUiModel.Giveaway)
         fun onGiveawayUpcomingEnd(giveaway: InteractiveUiModel.Giveaway)
         fun onQuizEnd(quiz: InteractiveUiModel.Quiz)
+        fun onWidgetClicked(engagement: EngagementUiModel)
     }
 }
 

@@ -38,6 +38,10 @@ class EngagementCarouselViewComponent(
         override fun onQuizEnd(quiz: InteractiveUiModel.Quiz) {
             //TODO("Not yet implemented")
         }
+
+        override fun onWidgetClicked(engagement: EngagementUiModel) {
+            TODO("Not yet implemented")
+        }
     })
 
     init {
