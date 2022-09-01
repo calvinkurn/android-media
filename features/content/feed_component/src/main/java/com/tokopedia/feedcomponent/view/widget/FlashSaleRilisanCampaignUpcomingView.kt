@@ -42,7 +42,7 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     init {
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
         val view =
-            LayoutInflater.from(context).inflate(R.layout.item_flash_sale_card, this, true)
+            LayoutInflater.from(context).inflate(R.layout.item_flash_sale_rs_upcoming_card, this, true)
 
         fstTimer = findViewById(R.id.fst_timer)
         postImageLayout = findViewById(R.id.ribbon_image_parent)
