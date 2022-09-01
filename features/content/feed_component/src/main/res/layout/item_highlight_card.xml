@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_150"
+    android:layout_width="150dp"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
@@ -120,8 +120,8 @@
 
                 <ImageView
                     android:id="@+id/likeIcon"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:contentDescription="@string/kol_action_like"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_thumb"
@@ -142,7 +142,7 @@
                     android:paddingRight="16dp"
                     android:text="@string/kol_action_like"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_10"
+                    android:textSize="10sp"
                     android:textStyle="normal"
                     android:visibility="visible"
                     tools:ignore="RtlSymmetry"
@@ -150,8 +150,8 @@
 
                 <ImageView
                     android:id="@+id/commentIcon"
-                    android:layout_width="@dimen/dp_18"
-                    android:layout_height="@dimen/dp_18"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:contentDescription="@string/kol_action_comment"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/fc_ic_comment"
@@ -170,7 +170,7 @@
                     android:paddingRight="16dp"
                     android:text="@string/kol_action_comment"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_10"
+                    android:textSize="10sp"
                     android:textStyle="normal"
                     android:visibility="visible"
                     tools:ignore="RtlSymmetry"

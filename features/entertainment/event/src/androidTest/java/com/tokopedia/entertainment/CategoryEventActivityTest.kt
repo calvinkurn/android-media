@@ -8,20 +8,19 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.ResourcePathUtil
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Before
@@ -30,17 +29,18 @@ import org.junit.Test
 
 class CategoryEventActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var mActivityRule = ActivityTestRule(EventCategoryActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setup(){
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
@@ -66,7 +66,7 @@ class CategoryEventActivityTest {
         clickCategory()
         impressionProduct()
         clickProduct()
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY), hasAllSuccess())
+        assertThat(cassavaRule.validate(ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY), hasAllSuccess())
 
     }
 
