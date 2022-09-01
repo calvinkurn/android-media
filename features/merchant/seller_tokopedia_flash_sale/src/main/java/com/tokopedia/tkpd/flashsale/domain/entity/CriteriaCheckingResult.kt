@@ -29,11 +29,6 @@ data class CriteriaCheckingResult(
         val min: Double = 0.0
     )
 
-    data class ProductScoreResult (
-        val isEligible: Boolean = false,
-        val min: Long = 0
-    )
-
     data class CountSoldResult (
         val isEligible: Boolean = false,
         val min: Long = 0,
