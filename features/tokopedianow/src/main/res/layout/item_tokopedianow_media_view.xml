@@ -16,6 +16,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="0" />
 
+    <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+        android:id="@+id/video_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:visibility="gone"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/play_button_bg"
         android:layout_width="50dp"
@@ -62,14 +78,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN0"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/video_duration_bg"
         app:layout_constraintEnd_toEndOf="@id/video_duration_bg"
         app:layout_constraintStart_toStartOf="@id/video_duration_bg"
         app:layout_constraintTop_toTopOf="@id/video_duration_bg"
         app:typographyType="display_3"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="01:30" />
+        tools:text="01:30"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/fullscreen_button_bg"
@@ -89,10 +105,12 @@
         android:id="@+id/fullscreen_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_NN0"
         app:icon_name="SCREEN_FULL"
         app:layout_constraintBottom_toBottomOf="@id/fullscreen_button_bg"
         app:layout_constraintEnd_toEndOf="@id/fullscreen_button_bg"
         app:layout_constraintStart_toStartOf="@id/fullscreen_button_bg"
-        app:layout_constraintTop_toTopOf="@id/fullscreen_button_bg" />
+        app:layout_constraintTop_toTopOf="@id/fullscreen_button_bg"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

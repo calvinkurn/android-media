@@ -8,6 +8,5 @@ import kotlinx.parcelize.Parcelize
 data class MediaItemUiModel(
     val url: String,
     val thumbnailUrl: String,
-    val duration: String = "",
     val type: MediaType
 ): Parcelable
