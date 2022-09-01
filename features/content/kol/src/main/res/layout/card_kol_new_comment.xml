@@ -86,7 +86,7 @@
                 android:id="@+id/btn_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/unify_space_16"
                 android:text="@string/kol_reply"
                 app:unifyButtonSize="micro"
                 app:unifyButtonVariant="text" />
