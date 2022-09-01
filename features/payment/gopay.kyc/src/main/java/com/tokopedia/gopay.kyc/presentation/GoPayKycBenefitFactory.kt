@@ -9,7 +9,7 @@ import com.tokopedia.gopay.kyc.presentation.viewholder.GoPayBenefitTitleViewHold
 import com.tokopedia.gopay.kyc.presentation.viewholder.GoPayBenefitItemViewHolder
 import com.tokopedia.gopay.kyc.utils.ViewType
 
-class GoPayKycBenefitFactory() : BaseAdapterTypeFactory(), ViewType {
+class GoPayKycBenefitFactory : BaseAdapterTypeFactory(), ViewType {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
@@ -31,7 +31,7 @@ class GoPayKycBenefitFactory() : BaseAdapterTypeFactory(), ViewType {
         return GoPayBenefitItemViewHolder.LAYOUT_ID
     }
 
-    override fun type(model: EmptyModel): Int {
+    override fun type(dataModel: EmptyModel): Int {
         return GoPayBenefitTitleViewHolder.LAYOUT_ID
     }
 
