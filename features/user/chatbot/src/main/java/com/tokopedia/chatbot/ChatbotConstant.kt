@@ -69,7 +69,9 @@ object ChatbotConstant {
     }
 
     object NewRelic {
+        //New Relic Key For Logging
         const val KEY_CHATBOT_ERROR = "CHATBOT_ANDROID_ERROR"
+        //Keys for each GQL
         const val KEY_SECURE_UPLOAD = "CHATBOT_SECURE_UPLOAD"
         const val KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY = "CHATBOT_SECURE_UPLOAD_AVAILABILITY"
         const val KEY_CHATBOT_GET_CHATLIST_RATING = "CHATBOT_GET_CHATLIST_RATING"

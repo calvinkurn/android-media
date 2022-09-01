@@ -1057,7 +1057,7 @@ class ChatbotPresenter @Inject constructor(
                 ChatbotNewRelicLogger.logNewRelic(
                     false,
                     messageId,
-                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
                     it
                 )
             }
