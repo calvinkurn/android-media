@@ -22,22 +22,7 @@ internal class MyShopProductViewHolder private constructor() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MyShopProductAdapter.Model.Product) {
-            binding.imgProduct.loadImage(item.product.coverURL)
-            binding.tvName.text = item.product.name
-            binding.tvStock.text = itemView.context.getString(
-                R.string.cc_product_stock_template, item.product.stock
-            )
-
-            if(item.product.isDiscount) {
-                binding.tvPrice.text = item.product.priceFmt
-                binding.labelDiscountPercentage.text = item.product.discountFmt
-                binding.tvPriceBeforeDiscount.text = item.product.priceOriginalFmt
-                binding.llDiscount.visibility = View.VISIBLE
-            } else {
-                binding.tvPrice.text = item.product.priceFmt
-                binding.llDiscount.visibility = View.GONE
-            }
-
+            binding.bind(item.product)
             binding.root.setOnClickListener { onSelected(item.product, adapterPosition) }
         }
 
@@ -63,22 +48,7 @@ internal class MyShopProductViewHolder private constructor() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MyShopProductAdapter.Model.ProductWithCheckbox) {
-            binding.viewProduct.imgProduct.loadImage(item.product.coverURL)
-            binding.viewProduct.tvName.text = item.product.name
-            binding.viewProduct.tvStock.text = itemView.context.getString(
-                R.string.cc_product_stock_template, item.product.stock
-            )
-
-            if(item.product.isDiscount) {
-                binding.viewProduct.tvPrice.text = item.product.priceFmt
-                binding.viewProduct.labelDiscountPercentage.text = item.product.discountFmt
-                binding.viewProduct.tvPriceBeforeDiscount.text = item.product.priceOriginalFmt
-                binding.viewProduct.llDiscount.visibility = View.VISIBLE
-            } else {
-                binding.viewProduct.tvPrice.text = item.product.priceFmt
-                binding.viewProduct.llDiscount.visibility = View.GONE
-            }
-
+            binding.viewProduct.bind(item.product)
             binding.root.setOnClickListener { onSelected(item.product, adapterPosition) }
 
             binding.checkboxProduct.isChecked = item.isSelected
@@ -98,5 +68,23 @@ internal class MyShopProductViewHolder private constructor() {
                 onSelected = onSelected,
             )
         }
+    }
+}
+
+fun ItemMyShopProductListBinding.bind(product: ProductUiModel) {
+    imgProduct.loadImage(product.coverURL)
+    tvName.text = product.name
+    tvStock.text = root.context.getString(
+        R.string.cc_product_stock_template, product.stock
+    )
+
+    if(product.isDiscount) {
+        tvPrice.text = product.priceFmt
+        labelDiscountPercentage.text = product.discountFmt
+        tvPriceBeforeDiscount.text = product.priceOriginalFmt
+        llDiscount.visibility = View.VISIBLE
+    } else {
+        tvPrice.text = product.priceFmt
+        llDiscount.visibility = View.GONE
     }
 }
