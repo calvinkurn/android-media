@@ -10,26 +10,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
-import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
@@ -41,8 +40,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -321,8 +318,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void addUploadPrescriptionUiDataModel(UploadPrescriptionUiModel uploadPrescriptionUiModel){
-        if(uploadPrescriptionUiModel != null){
+    public void addUploadPrescriptionUiDataModel(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        if (uploadPrescriptionUiModel != null) {
             this.uploadPrescriptionUiModel = uploadPrescriptionUiModel;
             shipmentDataList.add(uploadPrescriptionUiModel);
         }
@@ -493,7 +490,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private int getIndexCrossSell() {
         int existingIndex = counterCrossSell;
-        if (existingIndex < shipmentCrossSellModelList.size()-1) {
+        if (existingIndex < shipmentCrossSellModelList.size() - 1) {
             counterCrossSell += 1;
         }
         return existingIndex;
@@ -653,7 +650,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
 
             boolean isPrescriptionFrontEndValidationError = false;
-            if(availableCheckout) {
+            if (availableCheckout) {
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     Object shipmentData = shipmentDataList.get(i);
                     if (shipmentData instanceof UploadPrescriptionUiModel) {
@@ -663,16 +660,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             isPrescriptionFrontEndValidationError = true;
                             errorPosition = i;
                             errorSelectedShipmentData = shipmentData;
-                        }else{
+                        } else {
                             isPrescriptionFrontEndValidationError = false;
                         }
                     }
                 }
             }
 
-            if(isPrescriptionFrontEndValidationError){
+            if (isPrescriptionFrontEndValidationError) {
                 shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
-            }else {
+            } else {
                 shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
             }
         } else {
