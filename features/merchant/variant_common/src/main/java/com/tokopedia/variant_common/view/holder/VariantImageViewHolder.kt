@@ -1,10 +1,10 @@
 package com.tokopedia.variant_common.view.holder
 
 import android.view.View
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -30,7 +30,9 @@ class VariantImageViewHolder(val view: View,
     }
 
     override fun bind(element: VariantOptionWithAttribute) = with(binding) {
-        ImageHandler.LoadImage(variantImg, element.image100)
+        variantImg.loadImage(element.image100, properties = {
+            centerCrop()
+        })
         setState(element)
     }
 

@@ -3,11 +3,7 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -103,6 +99,9 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -118,7 +117,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }

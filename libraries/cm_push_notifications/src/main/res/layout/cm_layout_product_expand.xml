@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_64">
+        android:layout_marginTop="64dp">
 
         <LinearLayout
             android:id="@+id/ll_expandedProductView"
@@ -54,7 +54,7 @@
                     android:layout_alignParentTop="true"
                     android:visibility="gone"
                     tools:visibility="visible"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     tools:text="Sisa 2" />
 
@@ -87,7 +87,7 @@
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
                         android:textColor="@color/Unify_R500"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         tools:text="20%" />
 
                     <TextView
@@ -96,7 +96,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         tools:text="Rp1500000" />
 
                 </LinearLayout>
@@ -108,7 +108,7 @@
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="@dimen/sp_15"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
 
@@ -135,7 +135,7 @@
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         android:layout_marginStart="4dp"
                         tools:text="4.5" />
 
@@ -143,7 +143,7 @@
                         android:id="@+id/txt_count_review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="12sp"
                         android:textColor="@color/Unify_N700_68"
                         android:layout_marginStart="4dp"
                         tools:text="(60)" />
@@ -164,14 +164,14 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_height="32dp"
                     android:layout_marginTop="8dp"
                     android:paddingBottom="2dp"
                     android:layout_alignParentBottom="true">
 
                     <Button
                         android:id="@+id/btn_icon"
-                        android:layout_width="@dimen/dp_32"
+                        android:layout_width="32dp"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/unify_space_8"
                         android:background="@drawable/cm_btn_atc"
