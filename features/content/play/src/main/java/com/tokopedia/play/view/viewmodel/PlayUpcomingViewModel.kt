@@ -153,8 +153,8 @@ class PlayUpcomingViewModel @Inject constructor(
                 _upcomingState.emit(
                     when {
                         upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
-                        upcomingInfo.isReminderSet -> PlayUpcomingState.Reminded
-                        else -> PlayUpcomingState.RemindMe
+                        upcomingInfo.isReminderSet -> PlayUpcomingState.ReminderStatus(isReminded = upcomingInfo.isReminderSet)
+                        else -> PlayUpcomingState.ReminderStatus(isReminded = false)
                     }
                 )
             }
@@ -249,16 +249,15 @@ class PlayUpcomingViewModel @Inject constructor(
 
         when(currState) {
             PlayUpcomingState.WatchNow -> handleWatchNowUpcomingChannel()
-            PlayUpcomingState.RemindMe -> handleRemindMeUpcomingChannel()
+            is PlayUpcomingState.ReminderStatus -> handleRemindMeUpcomingChannel()
             PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
-            PlayUpcomingState.Reminded -> handleRemindMeUpcomingChannel()
             else -> {}
         }
     }
 
     private fun handleRemindMeUpcomingChannel() {
         suspend fun failedRemindMe() {
-            _upcomingState.emit(if (!isReminderSet) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
+            _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
             _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
 
@@ -276,7 +275,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
                     if(!status) failedRemindMe()
                     else {
-                        _upcomingState.emit(if (isReminderSet) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
+                        _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
                         _upcomingInfo.setValue { copy(isReminderSet = !isReminderSet) }
 
                         _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
@@ -528,7 +527,7 @@ class PlayUpcomingViewModel @Inject constructor(
         if (!isSuccess) {
             if(requestCode == REQUEST_CODE_LOGIN_REMIND_ME) {
                 viewModelScope.launch {
-                    _upcomingState.value = if(isReminderSet) PlayUpcomingState.Reminded else PlayUpcomingState.RemindMe
+                    _upcomingState.value = PlayUpcomingState.ReminderStatus(isReminded = isReminderSet)
                 }
             }
             return

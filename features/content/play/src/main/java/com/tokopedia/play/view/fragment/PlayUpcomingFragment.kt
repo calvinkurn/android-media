@@ -294,28 +294,8 @@ class PlayUpcomingFragment @Inject constructor(
                 upcomingTimer.setupTimer(it.startTime)
             }
         }
-
-        when(currState.state) {
-            PlayUpcomingState.RemindMe -> {
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMIND_ME)
-            }
-            PlayUpcomingState.WatchNow -> {
-                upcomingTimer.stopTimer()
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
-            }
-            PlayUpcomingState.Unknown, PlayUpcomingState.WaitingRefreshDuration -> {
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
-            }
-            PlayUpcomingState.Refresh -> {
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REFRESH)
-            }
-            PlayUpcomingState.Loading -> {
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.LOADING)
-            }
-            PlayUpcomingState.Reminded -> {
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMINDED)
-            }
-        }
+        if(currState.state is PlayUpcomingState.WatchNow) upcomingTimer.stopTimer()
+        actionButton.setButtonStatus(currState.state)
     }
 
     override fun onTimerFinish(view: UpcomingTimerViewComponent) {
@@ -328,12 +308,12 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun handleUpcomingClickAnalytic(){
-        when (playUpcomingViewModel.remindState) {
-            PlayUpcomingState.Reminded -> {
-                analytic.clickCancelRemindMe(channelId)
-            }
-            PlayUpcomingState.RemindMe -> {
-                analytic.clickRemindMe(channelId)
+        when (val status = playUpcomingViewModel.remindState) {
+            is PlayUpcomingState.ReminderStatus -> {
+                if(status.isReminded)
+                    analytic.clickCancelRemindMe(channelId)
+                else
+                    analytic.clickRemindMe(channelId)
             }
             PlayUpcomingState.WatchNow -> {
                 analytic.clickWatchNow(channelId)

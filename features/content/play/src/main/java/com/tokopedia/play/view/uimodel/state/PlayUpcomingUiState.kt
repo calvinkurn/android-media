@@ -23,9 +23,7 @@ data class DescriptionUiState(val isExpand: Boolean = false, val isShown: Boolea
 
 sealed class PlayUpcomingState {
     object Unknown : PlayUpcomingState()
-
-    object RemindMe : PlayUpcomingState()
-    object Reminded : PlayUpcomingState()
+    data class ReminderStatus(val isReminded: Boolean): PlayUpcomingState()
     object WatchNow : PlayUpcomingState()
     object WaitingRefreshDuration : PlayUpcomingState()
     object Refresh : PlayUpcomingState()
