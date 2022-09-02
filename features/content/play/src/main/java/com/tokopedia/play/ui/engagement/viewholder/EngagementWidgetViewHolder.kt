@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.engagement.viewholder
 
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.play.R as playR
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.view.game.*
@@ -24,13 +25,13 @@ class EngagementWidgetViewHolder(
     private fun getPromoDescription(item: EngagementUiModel.Promo): String {
         return when {
             item.info.voucherStock <= 20 -> {
-                "Sisa ${item.info.voucherStock - 1} kupon!"
+                getString(playR.string.play_voucher_widget_low_quantity, item.info.voucherStock - 1)
             }
             item.size == 1 -> {
-                "Cek kuponnya!"
+                getString(playR.string.play_voucher_widget_single)
             }
             else -> {
-                "+${item.size} Kupon lainnya"
+                getString(playR.string.play_voucher_widget_default, item.size)
             }
         }
     }
