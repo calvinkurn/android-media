@@ -290,7 +290,7 @@ class PlayUpcomingFragment @Inject constructor(
                 if(it.coverUrl.isNotEmpty()) {
                     binding.ivUpcomingCover.setImageUrl(it.coverUrl)
                 }
-                description.rootView.showWithCondition(it.description.isNotEmpty())
+                description.rootView.showWithCondition(it.description.isNotBlank())
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)
             }

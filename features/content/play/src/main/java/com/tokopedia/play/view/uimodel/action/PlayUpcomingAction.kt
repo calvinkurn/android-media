@@ -33,6 +33,6 @@ data class OpenUpcomingPageResultAction(val isSuccess: Boolean, val requestCode:
 /**
  * Description
  */
-object ExpandDescriptionUpcomingAction: PlayUpcomingAction()
-object TapCover: PlayUpcomingAction()
+object ExpandDescriptionUpcomingAction : PlayUpcomingAction()
+object TapCover : PlayUpcomingAction()
 
