@@ -33,7 +33,8 @@ class HasPaginatedListImpl : HasPaginatedList {
     }
 
     /**
-     * Function to determine whether we should load next page or not
+     * Function to notify whether recyclerview should load next page or not
+     * sample usage: call this function when you've finished loaded the first page data
      */
     override fun notifyLoadResult(hasNextPage: Boolean) {
         val config = this.config ?: return
@@ -44,6 +45,10 @@ class HasPaginatedListImpl : HasPaginatedList {
         scrollListener?.setHasNextPage(hasNextPage)
     }
 
+    /**
+     * To reset scroll listener state.
+     * sample usage: call this function when you apply filter or sort operation
+     */
     override fun resetPaging() {
         scrollListener?.resetState()
     }
