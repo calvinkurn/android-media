@@ -116,7 +116,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/rv_social_media_list"
-        android:visibility="gone"
         android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_height="wrap_content">
@@ -133,22 +132,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="@dimen/unify_space_24"
                 android:layout_height="@dimen/unify_space_24"
-                app:layout_constraintEnd_toStartOf="@id/tv_title_affiliate"
-                android:src="@drawable/ic_affiliate"/>
+                android:contentDescription="@string/content_description_icon_affiliate"
+                app:layout_constraintEnd_toStartOf="@id/tv_title_affiliate"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_affiliate"
                 app:layout_constraintTop_toTopOf="@id/iv_affiliate"
                 app:layout_constraintBottom_toBottomOf="@id/iv_affiliate"
                 app:layout_constraintStart_toEndOf="@id/iv_affiliate"
-
                 android:layout_marginStart="@dimen/unify_space_8"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold"
                 android:textColor="@color/Unify_N700"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tokopedia Affiliate"/>
+                tools:text="Tokopedia Affiliate"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_new"
@@ -163,10 +161,10 @@
                 android:paddingVertical="@dimen/unify_space_2"
                 android:background="@drawable/background_ticker_new"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="@dimen/dp_6"
+                android:layout_marginStart="@dimen/unify_space_8"
                 app:layout_constraintBottom_toBottomOf="@id/tv_title_affiliate"
                 app:layout_constraintTop_toTopOf="@id/tv_title_affiliate"
-                android:text="Baru"/>
+                android:text="@string/ticker_new"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_description_affiliate"
@@ -180,7 +178,7 @@
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:typographyType="body_2"
                 android:ellipsize="end"
-                android:text="Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini."/>
+                tools:text="Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini."/>
 
             <ImageView
                 android:id="@+id/iv_right_arrow"
@@ -190,7 +188,8 @@
                 app:layout_constraintStart_toEndOf="@id/tv_description_affiliate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_chevron_right"/>
+                android:src="@drawable/ic_chevron_right"
+                android:contentDescription="@string/content_description_icon_redirection"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 
