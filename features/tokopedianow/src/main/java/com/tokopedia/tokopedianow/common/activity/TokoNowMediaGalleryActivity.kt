@@ -26,14 +26,14 @@ class TokoNowMediaGalleryActivity : AppCompatActivity() {
         }
     }
 
-    private var imageGallery: ImageGallery? = null
+    private var mediaGallery: ImageGallery? = null
     private var closeButton: ImageUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokopedianow_media_gallery)
 
-        imageGallery = findViewById(R.id.media_gallery)
+        mediaGallery = findViewById(R.id.media_gallery)
         closeButton = findViewById(R.id.close_button)
 
         intent?.extras?.getParcelable<MediaGalleryUiModel>(EXTRA_MEDIA_GALLERY_DATA)?.let {
@@ -46,7 +46,7 @@ class TokoNowMediaGalleryActivity : AppCompatActivity() {
         val arrayDrawable = data.mapToImageGalleryItems(isAutoPlay)
         val selectedPosition = data.selectedPosition
 
-        imageGallery?.apply {
+        mediaGallery?.apply {
             setImages(
                 arrayDrawable = arrayDrawable,
                 defaultIndex = selectedPosition
