@@ -68,6 +68,9 @@ class CompletePayment : AppCompatActivity() {
         binding.pmsWebviewTitle.text =
             getString(com.tokopedia.pms.R.string.pms_complete_payment_title)
         binding.progressbar.isIndeterminate = true
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
 
         binding.scroogeExtendedWebview.webViewClient = CompletePaymentPmsWebClient()
         binding.scroogeExtendedWebview?.settings.apply {
