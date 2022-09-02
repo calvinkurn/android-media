@@ -13,11 +13,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
-import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.WarningType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.AccountConfiguration
-import com.tokopedia.content.common.ui.model.AccountConfigurationType
+import com.tokopedia.content.common.ui.model.AccountStateInfo
+import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -236,7 +235,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
-    private val _accountConfiguration = MutableStateFlow(AccountConfiguration.Empty)
+    private val _accountStateInfo = MutableStateFlow(AccountStateInfo.Empty)
     lateinit var warningInfoType: WarningType
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -313,7 +312,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _accountConfiguration,
+        _accountStateInfo,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -327,7 +326,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         onBoarding,
         quizBottomSheetUiState,
         selectedFeedAccount,
-        accountConfiguration ->
+        accountStateInfo ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -342,7 +341,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
             selectedContentAccount = selectedFeedAccount,
-            accountConfiguration = accountConfiguration
+            accountStateInfo = accountStateInfo
         )
     }.stateIn(
         viewModelScope,
@@ -1560,32 +1559,32 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     ) {
         when {
             !configUiModel.streamAllowed -> {
-                _accountConfiguration.value = AccountConfiguration(
-                    type = AccountConfigurationType.Banned,
+                _accountStateInfo.value = AccountStateInfo(
+                    type = AccountStateInfoType.Banned,
                     selectedAccount = selectedAccount
                 )
                 warningInfoType = WarningType.BANNED
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
-                _accountConfiguration.value = AccountConfiguration(
-                    type = AccountConfigurationType.Banned,
+                _accountStateInfo.value = AccountStateInfo(
+                    type = AccountStateInfoType.Banned,
                     selectedAccount = selectedAccount
                 )
                 warningInfoType = WarningType.LIVE
             }
             !selectedAccount.hasAcceptTnc -> {
-                _accountConfiguration.value = AccountConfiguration(
-                    type = AccountConfigurationType.NotAcceptTNC,
+                _accountStateInfo.value = AccountStateInfo(
+                    type = AccountStateInfoType.NotAcceptTNC,
                     selectedAccount
                 )
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
-                _accountConfiguration.value = AccountConfiguration(
-                    type = AccountConfigurationType.NoUsername,
+                _accountStateInfo.value = AccountStateInfo(
+                    type = AccountStateInfoType.NoUsername,
                     selectedAccount = selectedAccount
                 )
             }
-            else -> _accountConfiguration.value = AccountConfiguration.Empty
+            else -> _accountStateInfo.value = AccountStateInfo.Empty
         }
     }
 

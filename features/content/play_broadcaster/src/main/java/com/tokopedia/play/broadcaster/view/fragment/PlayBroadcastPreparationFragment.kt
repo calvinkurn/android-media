@@ -14,8 +14,8 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.AccountConfiguration
-import com.tokopedia.content.common.ui.model.AccountConfigurationType
+import com.tokopedia.content.common.ui.model.AccountStateInfo
+import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -458,7 +458,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
-                renderNotEligibleAccount(prevState?.accountConfiguration, state.accountConfiguration)
+                renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
             }
         }
     }
@@ -596,22 +596,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderNotEligibleAccount(
-        prevState: AccountConfiguration?,
-        state: AccountConfiguration,
+    private fun renderAccountStateInfo(
+        prevState: AccountStateInfo?,
+        state: AccountStateInfo,
     ) {
         if (prevState == state) return
 
         when(state.type) {
-            AccountConfigurationType.Live, AccountConfigurationType.Banned -> {
+            AccountStateInfoType.Live, AccountStateInfoType.Banned -> {
                 showWaringInfoBottomSheet()
             }
-            AccountConfigurationType.NotAcceptTNC -> {
+            AccountStateInfoType.NotAcceptTNC -> {
                 if (state.selectedAccount.isUser) toaster.showToaster("not accept tnc buyer")
                 else toaster.showToaster("not accept tnc seller")
             }
-            AccountConfigurationType.NoUsername -> openUGCCompletionBottomSheet()
-            AccountConfigurationType.Unknown -> return
+            AccountStateInfoType.NoUsername -> openUGCCompletionBottomSheet()
+            AccountStateInfoType.Unknown -> return
         }
     }
 
