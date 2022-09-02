@@ -140,16 +140,16 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
 
     private val isSaldoNativeEnabled: Boolean
-        get() = remoteConfig!!.getBoolean(
+        get() = remoteConfig?.getBoolean(
             RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
             true
-        )
+        ) ?: true
 
     private val isMerchantCreditLineEnabled: Boolean
-        get() = remoteConfig!!.getBoolean(
+        get() = remoteConfig?.getBoolean(
             RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
             true
-        )
+        ) ?: true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceInterface.startMonitoring(SALDODETAIL_FINTECH_PLT)
