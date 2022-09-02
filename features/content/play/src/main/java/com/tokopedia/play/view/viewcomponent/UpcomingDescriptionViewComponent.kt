@@ -38,7 +38,10 @@ class UpcomingDescriptionViewComponent(
     private val ctx: Context
         get() = rootView.context
 
-    private var uiModel: DescriptionUiModel = DescriptionUiModel()
+    private val uiModel: DescriptionUiModel by lazy(LazyThreadSafetyMode.NONE){
+        DescriptionUiModel()
+    }
+
     private val impressHelper = ImpressHolder()
 
     init {
