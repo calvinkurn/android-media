@@ -31,9 +31,11 @@ import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
-import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
+import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.removeKeys
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
@@ -41,6 +43,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSession
@@ -187,6 +190,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun sendTracking() {
         sendTrackingInitiateSearchSession()
         sendTrackingFromAppShortcuts()
+        sendTrackingVoiceSearchImpression()
     }
 
     private fun sendTrackingInitiateSearchSession() {
@@ -200,6 +204,14 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         if (isFromAppShortcuts)
             autoCompleteTracking.eventSearchShortcut()
+    }
+
+    private fun sendTrackingVoiceSearchImpression() {
+        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        searchComponentTracking(
+            componentId = SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH,
+            dimension90 = pageSource,
+        ).impress(IrisAnalytics.getInstance(this))
     }
 
     override fun onStart() {
@@ -350,8 +362,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun sendVoiceSearchGTM(keyword: String?) {
-        if (keyword != null && keyword.isNotEmpty())
-            autoCompleteTracking.eventDiscoveryVoiceSearch(keyword)
+        if (keyword != null && keyword.isNotEmpty()) {
+            val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+            autoCompleteTracking.eventDiscoveryVoiceSearch(keyword, pageSource)
+        }
     }
 
     override fun onBackPressed() {

@@ -26,6 +26,7 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
@@ -140,13 +141,18 @@ open class AutoCompleteTracking(
         )
     }
 
-    open fun eventDiscoveryVoiceSearch(label: String) {
+    open fun eventDiscoveryVoiceSearch(label: String, pageSource: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             CLICK_SEARCH,
             SEARCH,
             VOICE_SEARCH,
             label
         )
+        searchComponentTracking(
+            keyword = label,
+            componentId = AUTO_COMPLETE_VOICE_SEARCH,
+            dimension90 = pageSource,
+        ).click(TrackApp.getInstance().gtm)
     }
 
     open fun eventCancelSearch(query: String, pageSource: String) {
