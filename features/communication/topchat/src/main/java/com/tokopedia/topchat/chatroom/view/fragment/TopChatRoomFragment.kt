@@ -3171,13 +3171,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
         if (element.isBroadcast()) {
-            TopChatAnalyticsKt.eventClickCtaOnProductBundlingBroadcast(
-                element.blastId,
-                element.productBundling.bundleStatus.toString(),
-                element.productBundling.bundleId.toString(),
-                getBroadcastSenderShopId(element),
-                session.userId
-            )
+            element.productBundling.bundleItem?.let {
+                element.productBundling.bundleType?.let { it1 ->
+                    TopChatAnalyticsKt.eventClickCtaOnProductBundlingBroadcast(
+                        element.blastId,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        it,
+                        it1,
+                        element.source,
+                        getBroadcastSenderShopId(element),
+                        getBroadcastSenderShopName(element),
+                        session.userId
+                    )
+                }
+            }
         } else {
             TopChatAnalyticsKt.eventClickProductBundlingCta(
                 element.productBundling.bundleItem?.first()?.productId?: "",
@@ -3199,16 +3207,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             if (element.isBroadcast()) {
                 element.productBundling
                 element.productBundling.bundleItem?.let {
-                    TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
-                        element.blastId,
-                        element.productBundling.bundleStatus.toString(),
-                        element.productBundling.bundleId.toString(),
-                        element.productBundling.bundleType.toString(),
-                        element.source.toString(),
-                        it,
-                        getBroadcastSenderShopId(element),
-                        session.userId
-                    )
+                    element.productBundling.bundleType?.let { it1 ->
+                        TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                            element.blastId,
+                            element.productBundling.bundleStatus.toString(),
+                            element.productBundling.bundleId.toString(),
+                            it1,
+                            element.source.toString(),
+                            it,
+                            getBroadcastSenderShopId(element),
+                            session.userId
+                        )
+                    }
                 }
             } else {
                 TopChatAnalyticsKt.eventViewProductBundling(
@@ -3222,15 +3232,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
 
     override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
+
         if (element.isBroadcast()) {
-            TopChatAnalyticsKt.eventClickProductAttachmentOnProductBundlingBroadcast(
-                element.blastId,
-                element.productBundling.bundleStatus.toString(),
-                element.productBundling.bundleId.toString(),
-                item.productId,
-                getBroadcastSenderShopId(element),
-                session.userId
-            )
+            element.productBundling.bundleItem?.let {
+                element.productBundling.bundleType?.let { it1 ->
+                    TopChatAnalyticsKt.eventClickProductAttachmentOnProductBundlingBroadcast(
+                        element.blastId,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        it1,
+                        element.source.toString(),
+                        it,
+                        getBroadcastSenderShopId(element),
+                        session.userId
+                    )
+                }
+            }
         }
 
         if (item.androidUrl.isNotEmpty()) {
@@ -3248,6 +3265,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             shopId
         }
     }
+
+    private fun getBroadcastSenderShopName(element: ProductBundlingUiModel): String{
+        return if(element.isSender){
+            session.shopName
+        }
+        else{
+            ""
+        }
+    }
+
 
     private fun isUsingMediaPicker(): Boolean {
         return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER

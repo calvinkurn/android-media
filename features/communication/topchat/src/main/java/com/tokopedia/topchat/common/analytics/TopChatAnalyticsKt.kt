@@ -33,7 +33,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(DIMENSION_14, setValueOrDefault())
         itemBundle.putString(DIMENSION_16, setValueOrDefault())
         itemBundle.putString(DIMENSION_38, setValueOrDefault())
-        itemBundle.putString(DIMENSION_40, element.getAtcDimension40(sourcePage))
+        itemBundle.putString(DIMENSION_40, element.getProductSource(sourcePage))
         itemBundle.putString(DIMENSION_45, setValueOrDefault(element.cartId))
         itemBundle.putString(DIMENSION_54, setValueOrDefault())
         itemBundle.putString(DIMENSION_79, chatData.headerModel.shopId.toString())
@@ -241,32 +241,17 @@ object TopChatAnalyticsKt {
             )
         )
     }
-
-    fun eventViewProductBundlingBroadcast(
-        blastId: String,
-        statusBundle: String,
+    private fun getItemBundle(
+        bundleItems: List<BundleItem>,
         bundleId: String,
         bundleType: String,
         source: String,
-        bundleItems: List<BundleItem>,
-        shopId: String,
-        userId: String
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createGeneralEvent(
-                event = Event.VIEW_COMMUNICATION_IRIS,
-                category = Category.CHAT_DETAIL,
-                action = Action.VIEW_BUNDLE_CART_CHATROOM,
-                label = "$blastId - $statusBundle - $bundleId - bundling", // usecase need to ask
-                businessUnit = COMMUNICATION,
-                currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = "35596",
-                shopId = shopId,
-                userId = userId
-            )
-        )
+        quantity: Boolean = false,
+        shop_id: String = "",
+        shop_name: String = "",
+        shop_type: Boolean = false,
+    ): ArrayList<Bundle>{
         var listItemBundles = ArrayList<Bundle>()
-
         for (item in bundleItems){
             var itemBundle = Bundle()
             itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
@@ -282,23 +267,74 @@ object TopChatAnalyticsKt {
             itemBundle.putString(ITEM_ID, setValueOrDefault(item.productId))
             itemBundle.putString(ITEM_NAME, setValueOrDefault(item.name))
             itemBundle.putString(ITEM_VARIANT, EE_VALUE_NONE_OTHER)
-            itemBundle.putString(PRICE, "")// need to ask
+            itemBundle.putString(PRICE, item.price.toString())
+            if(quantity){
+                itemBundle.putString(QUANTITY, item.quantity)
+            }
+            if(shop_id.isNotEmpty()){
+                itemBundle.putString(SHOP_ID, shop_id)
+            }
+            if(shop_name.isNotEmpty()){
+                itemBundle.putString(SHOP_NAME, shop_name)
+            }
+            if(shop_type){
+                itemBundle.putString(SHOP_TYPE, "")
+            }
+            listItemBundles.add(itemBundle)
         }
+
+        return listItemBundles
+    }
+
+    private fun getItemIdList(bundleItems: List<BundleItem>): List<String>{
+        var productIdList = listOf<String>()
+        for(item in bundleItems){
+            productIdList += setValueOrDefault(item.productId)
+        }
+        return  productIdList
+    }
+
+    fun eventViewProductBundlingBroadcast(
+        blastId: String,
+        statusBundle: String,
+        bundleId: String,
+        bundleType: Int,
+        source: String,
+        bundleItems: List<BundleItem>,
+        shopId: String,
+        userId: String
+    ) {
+        var bundleTypeString = bundleTypeMapper(bundleType)
+        var listItemBundles = getItemBundle(bundleItems, bundleId, bundleTypeString, source)
 
         var eventDataLayer = Bundle()
 
         eventDataLayer.putString(TrackAppUtils.EVENT, VIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, "$blastId - $statusBundle - $bundleId - bundling")
+        eventDataLayer.putString(TRACKER_ID, "35596")
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+
+        var productIdList = getItemIdList(bundleItems)
+
+        eventDataLayer.putString(ITEM_LIST, productIdList.toString())
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            listItemBundles
+        )
+        eventDataLayer.putString(USER_ID, userId)
+        eventDataLayer.putString(SHOP_ID, shopId)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIL,eventDataLayer)
+
 
     }
     fun eventClickBundle(
         blastId: String,
         statusBundle: String,
         bundleId: String,
-        bundleType: String,
-        source: String,
         shopId: String,
         userId: String
     ) {
@@ -322,45 +358,83 @@ object TopChatAnalyticsKt {
         blastId: String,
         statusBundle: String,
         bundleId: String,
-        productId: String,
+        bundleType: Int,
+        source: String,
+        bundleItems: List<BundleItem>,
         shopId: String,
         userId: String
     ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createGeneralEvent(
-                event = Event.CLICK_COMMUNICATION,
-                category = Category.CHAT_DETAIL,
-                action = Action.CLICK_PRODUCT_BUNDLE,
-                label = "$blastId - $statusBundle - $bundleId - bundling - $productId",
-                businessUnit = COMMUNICATION,
-                currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = "35598",
-                shopId = shopId,
-                userId = userId
-            )
+        var bundleTypeString = bundleTypeMapper(bundleType)
+        var listItemBundles = getItemBundle(bundleItems, bundleId, bundleTypeString, source)
+
+        var eventDataLayer = Bundle()
+
+        eventDataLayer.putString(TrackAppUtils.EVENT, SC)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_PRODUCT_BUNDLE)
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, "$blastId - $statusBundle - $bundleId - bundling - ${bundleItems[0].productId.toString()}")
+        eventDataLayer.putString(TRACKER_ID, "35598")
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+
+        var productIdList = getItemIdList(bundleItems)
+
+        eventDataLayer.putString(ITEM_LIST, productIdList.toString())
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            listItemBundles
         )
+        eventDataLayer.putString(USER_ID, userId)
+        eventDataLayer.putString(SHOP_ID, shopId)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SC,eventDataLayer)
+
     }
 
     fun eventClickCtaOnProductBundlingBroadcast(
         blastId: String,
         statusBundle: String,
         bundleId: String,
+        bundleItems: List<BundleItem>,
+        bundleType: Int,
+        source: String,
         shopId: String,
+        shopName: String,
         userId: String
     ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createGeneralEvent(
-                event = Event.CLICK_COMMUNICATION,
-                category = Category.CHAT_DETAIL,
-                action = Action.CLICK_ADD_TO_CART_BUNDLE,
-                label = "$blastId - $statusBundle - $bundleId - bundling",
-                businessUnit = COMMUNICATION,
-                currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = "35599",
-                shopId = shopId,
-                userId = userId
-            )
+        var bundleTypeString = bundleTypeMapper(bundleType)
+        var listItemBundles = getItemBundle(
+            bundleItems,
+            bundleId,
+            bundleTypeString,
+            source,
+            true,
+            shopId,
+            shopName,
+            true
         )
+
+        var eventDataLayer = Bundle()
+
+        eventDataLayer.putString(TrackAppUtils.EVENT, ATC)
+        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_ADD_TO_CART_BUNDLE)
+        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, "$blastId - $statusBundle - $bundleId - bundling - ${bundleItems[0].productId.toString()}")
+        eventDataLayer.putString(TRACKER_ID, "35599")
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+
+        eventDataLayer.putParcelableArrayList(
+            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
+            listItemBundles
+        )
+        eventDataLayer.putString(USER_ID, userId)
+        eventDataLayer.putString(SHOP_ID, shopId)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SC,eventDataLayer)
+
+
+
     }
     fun eventSeenProductAttachment(
         context: Context,
@@ -418,13 +492,13 @@ object TopChatAnalyticsKt {
         itemBundle.putString(QUANTITY, setValueOrDefault(element.minOrder.toString()))
         itemBundle.putString(SHOP_ID, setValueOrDefault(data?.shopId.toString()))
         itemBundle.putString(SHOP_NAME, setValueOrDefault(shopName))
-        itemBundle.putString(SHOP_TYPE, setValueOrDefault(""))
+        itemBundle.putString(SHOP_TYPE, "")
 
         var eventDataLayer = Bundle()
         eventDataLayer.putString(TrackAppUtils.EVENT, ATC)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, eventAction)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, element.source+"-"+element.blastId)
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, element.getAtcDimension40(sourcePage)+"-"+element.blastId)
         if(eventAction == EVENT_ACTION_ATC) {
             eventDataLayer.putString(TRACKER_ID, "14826")
         }
@@ -483,6 +557,15 @@ object TopChatAnalyticsKt {
         return data
     }
 
+    private fun bundleTypeMapper(bundleType: Int): String{
+        when(bundleType){
+            1 -> return "single"
+            2 -> return "multiple"
+        }
+        return ""
+    }
+
+
     object Event {
         const val CHAT_DETAIL = "clickChatDetail"
         const val CLICK_COMMUNICATION = "clickCommunication"
@@ -523,6 +606,7 @@ object TopChatAnalyticsKt {
     //Event Name
     private const val ATC = "add_to_cart"
     private const val VIL = "view_item_list"
+    private const val SC = "select_content"
 
     //Event Category
     private const val EVENT_CATEGORY_CHAT = "chat"
@@ -567,6 +651,7 @@ object TopChatAnalyticsKt {
     private const val ITEM_ID = "item_id"
     private const val ITEM_NAME = "item_name"
     private const val ITEM_VARIANT = "item_variant"
+    private const val ITEM_LIST = "item_list"
     private const val PRICE = "price"
     private const val QUANTITY = "quantity"
     private const val SHOP_ID = "shop_id"
