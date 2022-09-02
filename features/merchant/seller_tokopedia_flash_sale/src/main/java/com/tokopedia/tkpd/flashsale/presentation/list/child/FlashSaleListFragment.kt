@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -60,7 +61,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         private const val BUNDLE_KEY_TAB_ID = "tab_id"
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val PAGE_SIZE = 10
-        private const val ONE = 1
         private const val SELLER_EDU_URL =
             "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
 
@@ -251,9 +251,9 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     private fun handleUiState(uiState: FlashSaleListUiState) {
         renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
-        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.totalFlashSaleCount)
+        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.allItems.size)
         refreshScrollState(uiState.allItems)
-        renderScrollUpButton(uiState.totalFlashSaleCount)
+        renderScrollUpButton(uiState.allItems.size)
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
@@ -267,7 +267,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     private fun renderSortFilter(uiState: FlashSaleListUiState) {
-        if (!uiState.isFilterActive && uiState.totalFlashSaleCount == 0) {
+        if (!uiState.isFilterActive && uiState.allItems.isEmpty()) {
             binding?.sortFilter?.gone()
         } else {
             binding?.sortFilter?.visible()
@@ -277,30 +277,33 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         renderStatusChips(uiState.selectedStatusIds)
     }
 
-    private fun renderEmptyState(
-        isLoading: Boolean,
-        isUsingFilter: Boolean,
-        totalFlashSaleCount: Int
-    ) {
+    private fun renderEmptyState(isLoading: Boolean, isUsingFilter: Boolean, totalFlashSaleCount: Int) {
         when {
             isLoading -> binding?.emptyState?.gone()
-            isUsingFilter && totalFlashSaleCount == 0 -> {
-                flashSaleAdapter.removeItem(LoadingItem)
-                binding?.emptyState?.visible()
-                binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
-                binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
-                binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
-            }
-            !isUsingFilter && totalFlashSaleCount == 0 -> {
-                flashSaleAdapter.removeItem(LoadingItem)
-                binding?.emptyState?.visible()
-                val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
-                binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
-                binding?.emptyState?.setTitle(emptyStateConfig.title)
-                binding?.emptyState?.setDescription(emptyStateConfig.description)
-                handleEmptyStatePrimaryAction(emptyStateConfig)
-            }
+            totalFlashSaleCount.isZero() -> displayEmptySearchResult()
+            totalFlashSaleCount.isMoreThanZero() -> binding?.emptyState?.gone()
+            isUsingFilter && totalFlashSaleCount == 0 -> displayEmptySearchResult()
+            !isUsingFilter && totalFlashSaleCount == 0 -> displayNoFlashSaleAvailable()
         }
+    }
+
+    private fun displayEmptySearchResult() {
+        flashSaleAdapter.removeItem(LoadingItem)
+        binding?.emptyState?.visible()
+        binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
+        binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
+        binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
+    }
+
+    private fun displayNoFlashSaleAvailable() {
+        flashSaleAdapter.removeItem(LoadingItem)
+        binding?.emptyState?.visible()
+
+        val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
+        binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
+        binding?.emptyState?.setTitle(emptyStateConfig.title)
+        binding?.emptyState?.setDescription(emptyStateConfig.description)
+        handleEmptyStatePrimaryAction(emptyStateConfig)
     }
 
     private fun renderSortChips(selectedSort: SingleSelectionItem) {

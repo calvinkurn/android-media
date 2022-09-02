@@ -185,13 +185,7 @@ class FlashSaleListViewModel @Inject constructor(
                 val allItems = currentState.allItems + formattedFlashSales
                 _uiEffect.emit(FlashSaleListUiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        allItems = allItems,
-                        totalFlashSaleCount = response.totalFlashSaleCount
-                    )
-                }
+                _uiState.update { it.copy(isLoading = false, allItems = allItems) }
             },
             onError = { error ->
                 _uiState.update { it.copy(isLoading = false) }
