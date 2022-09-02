@@ -1565,7 +1565,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     selectedAccount = selectedAccount
                 )
                 warningInfoType = WarningType.BANNED
-                return
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
                 _accountConfiguration.value = AccountConfiguration(
@@ -1573,26 +1572,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     selectedAccount = selectedAccount
                 )
                 warningInfoType = WarningType.LIVE
-                return
             }
             !selectedAccount.hasAcceptTnc -> {
                 _accountConfiguration.value = AccountConfiguration(
                     type = AccountConfigurationType.NotAcceptTNC,
                     selectedAccount
                 )
-                return
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
                 _accountConfiguration.value = AccountConfiguration(
                     type = AccountConfigurationType.NoUsername,
                     selectedAccount = selectedAccount
                 )
-                return
             }
-            else -> {
-                _accountConfiguration.value = AccountConfiguration.Empty
-                return
-            }
+            else -> _accountConfiguration.value = AccountConfiguration.Empty
         }
     }
 
