@@ -957,6 +957,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderProfile.value,
                 orderCost
             )
+            val pslCode = if (orderShipment.value.isApplyLogisticPromo) orderShipment.value.logisticPromoViewModel?.promoCode ?: "" else ""
             shipmentDetailData?.let {
                 orderShippingDuration.value = OccState.Success(
                     OrderShippingDuration(
@@ -965,7 +966,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
                         products = products,
                         cartString = orderCart.cartString,
-                        pslCode = orderShipment.value.logisticPromoViewModel?.promoCode ?: ""
+                        pslCode = pslCode
                     )
                 )
             }
