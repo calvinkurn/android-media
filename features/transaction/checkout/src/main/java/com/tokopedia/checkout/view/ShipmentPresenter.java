@@ -2544,6 +2544,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
                     unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+                    // do interaction
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
@@ -2563,6 +2564,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         }
+        for (ShipmentCartItemModel cartItemModel : shipmentCartItemModelList) {
+            if (cartItemModel.getVoucherLogisticItemUiModel() != null && !reloadedUniqueIds.contains(cartItemModel.getCartString())) {
+                // kalau cartItem sedang pakai BO, tapi tidak ada voucherOrder BOnya (sehingga belum diproses cartItemnya), maka unapply BOnya
+                // jangan ada interaction
+                doUnapplyBo(cartItemModel.getCartString(), "");
+            }
+        }
         return reloadedUniqueIds;
     }
 
@@ -2571,6 +2579,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (itemAdapterPosition != -1) {
             getView().resetCourier(itemAdapterPosition);
             clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
+            // hit clear auto apply
+//            clearCacheAutoApplyStackUseCase.createObservable(...)
             getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
     }
