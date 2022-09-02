@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/engagement_tools_small_widget_width"
     android:layout_height="wrap_content"
+    tools:background="@color/Unify_GN400"
     >
 
     <android.widget.Space
