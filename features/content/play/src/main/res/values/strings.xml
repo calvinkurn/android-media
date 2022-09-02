@@ -89,7 +89,7 @@
     <string name="play_voucher_sheet_coupon_expired">Berakhir dalam %1$s hari</string>
     <string name="play_voucher_widget_single">Cek kuponnya!</string>
     <string name="play_voucher_widget_low_quantity">Sisa %1$s kupon!</string>
-    <string name="play_voucher_widget_default">%1$s Kupon lainnya</string>
+    <string name="play_voucher_widget_default">+ %1$s Kupon lainnya</string>
 
     <!--Kebab Menu-->
     <string name="play_kebab_report_title">Laporkan Video</string>
