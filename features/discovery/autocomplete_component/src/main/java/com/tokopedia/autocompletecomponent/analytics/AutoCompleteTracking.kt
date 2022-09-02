@@ -23,6 +23,7 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.PAGE_SOURCE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
@@ -31,6 +32,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Com
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.iris.Iris
 import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
 import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING
 import com.tokopedia.track.TrackApp
@@ -38,6 +40,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 open class AutoCompleteTracking(
     protected val userSession: UserSessionInterface,
+    protected val iris: Iris,
 ) {
 
     object Category {
@@ -153,6 +156,13 @@ open class AutoCompleteTracking(
             componentId = AUTO_COMPLETE_VOICE_SEARCH,
             dimension90 = pageSource,
         ).click(TrackApp.getInstance().gtm)
+    }
+
+    open fun impressDiscoveryVoiceSearch(pageSource: String) {
+        searchComponentTracking(
+            componentId = SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH,
+            dimension90 = pageSource,
+        ).impress(iris)
     }
 
     open fun eventCancelSearch(query: String, pageSource: String) {

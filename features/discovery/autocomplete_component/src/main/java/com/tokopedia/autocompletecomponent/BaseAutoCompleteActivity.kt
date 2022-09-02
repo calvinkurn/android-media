@@ -34,8 +34,6 @@ import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.removeKeys
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
-import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
@@ -108,7 +106,10 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun initTracking() {
-        autoCompleteTracking = AutoCompleteTracking(UserSession(this))
+        autoCompleteTracking = AutoCompleteTracking(
+            UserSession(this),
+            IrisAnalytics.getInstance(this),
+        )
     }
 
     private fun initViews() {
@@ -208,10 +209,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     private fun sendTrackingVoiceSearchImpression() {
         val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-        searchComponentTracking(
-            componentId = SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH,
-            dimension90 = pageSource,
-        ).impress(IrisAnalytics.getInstance(this))
+        autoCompleteTracking.impressDiscoveryVoiceSearch(pageSource)
     }
 
     override fun onStart() {
