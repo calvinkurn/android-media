@@ -42,7 +42,7 @@
 
     <string name="gami_palai_kupon_ovo_points"><![CDATA[Palai Kupon & Ovo Points]]></string>
     <string name="gami_gift_box_toolbar_title">Kotak Kejutan</string>
-    <string name="gami_gift_60_toolbar_title">Tap Tap Kotak</string>
+    <string name="gami_gift_60_toolbar_title">Kotak Kejutan</string>
 
     <string name="gami_no_internet_title">Koneksi internetmu terganggu!</string>
     <string name="gami_no_internet_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
