@@ -574,7 +574,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(INTERNAL_MEDIA_EDITOR)
-            }, DF_BASE, R.string.title_image_picker))
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
@@ -790,6 +790,10 @@ object DeeplinkDFMapper : CoroutineScope {
             // Tokomember dashboard
             add(DFP({ it.startsWith(TOKOMEMBER) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
 
+            // Media
+            add(DFP({
+                it.startsWith(INTERNAL_MEDIA_EDITOR)
+            }, DF_FEED_CONTENT_CREATION, R.string.title_image_picker))
         }
     }
 
