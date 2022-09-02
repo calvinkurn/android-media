@@ -13,6 +13,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 /**
  * @author by astidhiyaa on 24/08/22
@@ -58,10 +59,28 @@ class EngagementCarouselViewComponent(
     private fun autoScroll(){
         scope.launch {
             //should be list size
-            repeat(carouselAdapter.itemCount){
+            repeat(2){
                 delay(5000L)
-                carousel.smoothScrollToPosition(it)
+                carousel.snapScrollTo(it)
             }
+        }
+    }
+
+    private fun RecyclerView.snapScrollTo (position: Int){
+        try {
+            this.scrollToPosition(position)
+            this.post {
+                layoutManager?.findViewByPosition(position)
+                rootView?.let {
+                    val snapDistance =
+                        layoutManager?.let { lM -> snapHelper.calculateDistanceToFinalSnap(lM, it) }
+                    if (snapDistance?.get(0) ?: 0 != 0 || snapDistance?.get(1) ?: 0 != 0) {
+                        this.scrollBy(snapDistance?.get(0) ?: 0, snapDistance?.get(1) ?: 0)
+                    }
+                }
+            }
+        } catch (e: Exception){
+            this.smoothScrollToPosition(position)
         }
     }
 
