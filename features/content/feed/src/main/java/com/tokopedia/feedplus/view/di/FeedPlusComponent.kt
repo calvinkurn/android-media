@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.di.FeedComponentModule
 import com.tokopedia.feedplus.view.fragment.*
-import com.tokopedia.interest_pick_common.di.InterestPickCommonModule
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
@@ -21,7 +20,6 @@ import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
         FeedPlusModule::class,
         FeedComponentModule::class,
         ViewModelModule::class,
-        InterestPickCommonModule::class,
         PlayWidgetModule::class,
         FeedFloatingButtonManagerModule::class
      ],
@@ -37,6 +35,5 @@ interface FeedPlusComponent {
     fun inject(feedPlusFragment: FeedPlusFragment)
     fun inject(feedPlusDetailFragment: FeedPlusDetailFragment)
     fun inject(dynamicFeedFragment: DynamicFeedFragment)
-    fun inject(feedOnboardingFragment: FeedOnboardingFragment)
     fun inject(feedSeeMoreFragment: PlayFeedSeeMoreFragment)
 }

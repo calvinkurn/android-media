@@ -76,8 +76,10 @@ const val TM_SUMMARY_DIALOG_TITLE = "<b>Tunggu Sebentar, ya</b>" + "<br>" +
 "Kami sedang membuat kuponmu"
 
 const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
+const val ERROR_CREATING_TITLE_NO_INTERNET= "Koneksi internetmu terganggu!"
 const val ERROR_CREATING_TITLE_RETRY= "Yaah, pengaturan TokoMember  gagal disimpan"
 const val ERROR_CREATING_DESC = "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
+const val ERROR_CREATING_DESC_NO_INTERNET = "Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu"
 const val ERROR_CREATING_CTA = "Ubah Tanggal"
 const val ERROR_CREATING_CTA_RETRY = "Ke Dashboard TokoMember"
 
