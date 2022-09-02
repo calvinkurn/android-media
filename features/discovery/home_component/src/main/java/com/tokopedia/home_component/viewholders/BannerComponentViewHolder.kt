@@ -2,7 +2,10 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -11,7 +14,6 @@ import com.tokopedia.home_component.decoration.BannerChannelDecoration
 import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
@@ -25,7 +27,13 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 /**
