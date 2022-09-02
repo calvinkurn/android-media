@@ -20,7 +20,9 @@ import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
 import com.tokopedia.play_common.view.setTextGradient
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 
 /**
@@ -40,8 +42,12 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
     private val ivReward = itemView.findViewById<IconUnify>(R.id.iv_reward)
     private val tvReward = itemView.findViewById<Typography>(R.id.tv_reward)
     private val rvChoices = itemView.findViewById<RecyclerView>(R.id.rv_choices)
-    private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
-        override fun onClicked(item: QuizChoicesUiModel) {}
+    private val tvEndsIn = itemView.findViewById<Typography>(R.id.tv_ends_in)
+    private val timerEndsIn = itemView.findViewById<TimerUnifySingle>(R.id.timer_ends_in)
+    private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener {
+        override fun onClicked(item: QuizChoicesUiModel) {
+            listener.onChoiceItemClicked(item)
+        }
     })
 
     private val winnerAdapter = PlayInteractiveWinnerAdapter(object : PlayInteractiveWinnerViewHolder.Listener{
@@ -66,22 +72,24 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
         setupLeaderboardType(leaderboard)
 
         if (leaderboard.winners.isEmpty()) hideParticipant(leaderboard) else showParticipant(leaderboard)
-        if(leaderboard.choices.isEmpty()) hideQuiz(leaderboard) else showQuiz(leaderboard)
+        if (leaderboard.choices.isEmpty()) hideQuiz() else showQuiz(leaderboard)
+        if (leaderboard.reward.isBlank()) hideReward() else showReward(leaderboard)
+        if (leaderboard.endsIn == 0) hideTimer() else showTimer(leaderboard.endsIn.toLong())
 
+        tvOtherParticipant.text = leaderboard.otherParticipantText
+        if (leaderboard.otherParticipantText.isNotBlank() && leaderboard.winners.isNotEmpty()) tvOtherParticipant.show() else tvOtherParticipant.hide()
         itemView.addOnImpressionListener(leaderboard.impressHolder){
             listener.onLeaderBoardImpressed(leaderboard)
         }
     }
 
-    private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel){
-        when(leaderboard.leaderBoardType){
+    private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel) {
+        when (leaderboard.leaderBoardType) {
             LeadeboardType.Quiz -> {
                 ivReward.showWithCondition(leaderboard.reward.isNotEmpty())
                 tvReward.showWithCondition(leaderboard.reward.isNotEmpty())
-
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
-                tvReward.text = "Hadiah: ${leaderboard.reward}"
-                tvReward.setTextGradient(intArrayOf(MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)))
+                ivLeaderBoard.showWithCondition(leaderboard.endsIn == 0 )
             }
             LeadeboardType.Giveaway -> {
                 ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
@@ -96,11 +104,8 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
     }
 
     private fun showParticipant(leaderboard: PlayLeaderboardUiModel) {
-        tvOtherParticipant.text = leaderboard.otherParticipantText
-
         winnerAdapter.setItems(leaderboard.winners)
         winnerAdapter.notifyDataSetChanged()
-
         if (leaderboard.otherParticipant > 0 && leaderboard.leaderBoardType == LeadeboardType.Giveaway) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()
         tvEmpty.hide()
@@ -110,7 +115,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
         tvEmpty.text = leaderboard.emptyLeaderBoardCopyText
         tvOtherParticipant.hide()
         rvWinner.hide()
-        tvEmpty.show()
+        tvEmpty.showWithCondition(leaderboard.emptyLeaderBoardCopyText.isNotBlank())
     }
 
     private fun showQuiz(leaderboard: PlayLeaderboardUiModel){
@@ -118,12 +123,61 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
         choicesAdapter.setItemsAndAnimateChanges(leaderboard.choices)
     }
 
-    private fun hideQuiz(leaderboard: PlayLeaderboardUiModel){
+    private fun hideQuiz(){
         rvChoices.hide()
+    }
+
+    private fun showReward(leaderboard: PlayLeaderboardUiModel) {
+        ivReward.show()
+        tvReward.show()
+        tvReward.text = "Hadiah: ${leaderboard.reward}"
+        tvReward.setTextGradient(
+            intArrayOf(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.play_dms_quiz_header_gradient_start
+                ),
+                MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)
+            )
+        )
+    }
+
+    private fun hideReward() {
+        ivReward.hide()
+        tvReward.hide()
+    }
+
+    private fun showTimer(duration: Long) {
+        tvEndsIn.show()
+        timerEndsIn.show()
+        setTimer(duration) {}
+    }
+
+    private fun hideTimer() {
+        tvEndsIn.hide()
+        timerEndsIn.hide()
+    }
+
+    private fun setTimer(duration: Long, onFinished: () -> Unit) {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.SECOND, duration.toInt())
+        setTargetTime(calendar, onFinished)
+    }
+
+    private fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
+        tvEndsIn.show()
+        timerEndsIn.show()
+        timerEndsIn.apply {
+            pause()
+            targetDate = targetTime
+            onFinish = onFinished
+            resume()
+        }
     }
 
     interface Listener {
         fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int)
+        fun onChoiceItemClicked(item: QuizChoicesUiModel){}
         fun onLeaderBoardImpressed(leaderboard: PlayLeaderboardUiModel)
     }
 

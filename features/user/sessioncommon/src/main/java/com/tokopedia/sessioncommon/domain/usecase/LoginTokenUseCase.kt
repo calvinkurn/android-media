@@ -20,7 +20,6 @@ import javax.inject.Named
 
 open class LoginTokenUseCase @Inject constructor(val resources: Resources,
                                             private val graphqlUseCase: GraphqlUseCase,
-                                            @Named(SessionModule.SESSION_MODULE)
                                             private val userSession: UserSessionInterface
 ) {
 

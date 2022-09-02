@@ -453,7 +453,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         mIsLoading.value = true
         launchCatchError(block = {
             getShopInfoLocationUseCase.params = GetShopInfoLocationUseCase.createRequestParams(shopId)
-            val shopLocation = withContext(Dispatchers.IO) {
+            val shopLocation = withContext(dispatcher.io) {
                 getShopInfoLocationUseCase.executeOnBackground()
             }
             mLocationValidation.value = Success(shopLocation)

@@ -3,6 +3,7 @@ package com.tokopedia.unifyorderhistory.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLAC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TOKOFOOD
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAIN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
@@ -80,7 +82,19 @@ import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
-import com.tokopedia.unifyorderhistory.data.model.*
+import com.tokopedia.unifyorderhistory.data.model.CancelOrderQueryParams
+import com.tokopedia.unifyorderhistory.data.model.FlightQueryParams
+import com.tokopedia.unifyorderhistory.data.model.LsPrintData
+import com.tokopedia.unifyorderhistory.data.model.TrainQueryParams
+import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
+import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
+import com.tokopedia.unifyorderhistory.data.model.UohFilterBundle
+import com.tokopedia.unifyorderhistory.data.model.UohFilterCategory
+import com.tokopedia.unifyorderhistory.data.model.UohFinishOrder
+import com.tokopedia.unifyorderhistory.data.model.UohFinishOrderParam
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.unifyorderhistory.data.model.UohListParam
+import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.FragmentUohListBinding
 import com.tokopedia.unifyorderhistory.di.DaggerUohListComponent
 import com.tokopedia.unifyorderhistory.di.UohListModule
@@ -152,6 +166,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TOKOFOOD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
@@ -160,14 +175,17 @@ import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
-import com.tokopedia.unifyorderhistory.view.bottomsheet.*
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohFilterOptionsBottomSheet
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohFinishOrderBottomSheet
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohKebabMenuBottomSheet
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohLsFinishOrderBottomSheet
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohSendEmailBottomSheet
 import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.Serializable
 import java.net.URLDecoder
@@ -254,11 +272,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private var CATEGORIES_MP = ""
         private var CATEGORIES_TRAVELENT = ""
         private var CATEGORIES_KEUANGAN = ""
+        private var CATEGORIES_TOKOFOOD = ""
 
         private val LABEL_MP = "Belanja"
         private val LABEL_DIGITAL = "Top-up & Tagihan"
         private val LABEL_TRAVELENT = "Travel & Entertainment"
         private val LABEL_KEUANGAN = "Keuangan"
+        private val LABEL_TOKOFOOD = "GoFood"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
@@ -553,6 +573,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = CATEGORIES_TRAVELENT
                     }
+                    PARAM_TOKOFOOD -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TOKOFOOD
+                    }
                     PARAM_UOH_ONGOING -> {
                         status = DALAM_PROSES
                         statusLabel = TRANSAKSI_BERLANGSUNG
@@ -568,7 +593,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         setInitialValue()
         loadOrderHistoryList("")
         if (!paramUohOrder.hasActiveFilter()) {
-            uohListViewModel.loadPmsCounter()
+            uohListViewModel.loadPmsCounter(userSession.shopId)
         }
     }
 
@@ -677,7 +702,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val defDate = orderList.dateLimit
         val splitDefDate = defDate.split("-")
         if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
-            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
+            returnDate = stringToCalendar("${splitDefDate[0].toIntOrZero()}-${(splitDefDate[1].toIntOrZero()-1)}-${splitDefDate[2].toIntOrZero()}")
         }
         return returnDate
     }
@@ -1006,7 +1031,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             || filterStatus.equals(PARAM_MODALTOKO, true)
             || filterStatus.equals(PARAM_HOTEL, true)
             || filterStatus.equals(PARAM_TRAIN, true)
-            || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
+            || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)
+            || filterStatus.equals(PARAM_TOKOFOOD, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -1042,6 +1068,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 category.label.equals(LABEL_KEUANGAN, true) -> {
                     CATEGORIES_KEUANGAN = category.value
                 }
+                category.label.equals(LABEL_TOKOFOOD, true) -> {
+                    CATEGORIES_TOKOFOOD = category.value
+                }
             }
         }
 
@@ -1059,7 +1088,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatus.equals(PARAM_MODALTOKO, true) ||
             filterStatus.equals(PARAM_TRAIN, true) ||
             filterStatus.equals(PARAM_HOTEL, true) ||
-            filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
+            filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true) ||
+            filterStatus.equals(PARAM_TOKOFOOD, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -1093,6 +1123,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
                     filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             chipCategoryProduct?.title = LABEL_KEUANGAN
+
+        } else if ((filterStatus.equals(PARAM_TOKOFOOD, true)) && !isReset) {
+            chipCategoryProduct?.title = LABEL_TOKOFOOD
         }
         chipCategoryProduct?.let { chips.add(it) }
     }
@@ -1266,13 +1299,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 tempFilterDateLabel = value
                 if (label.isNotEmpty()) {
                     when {
-                        label.toInt() == LABEL_0 -> {
+                        label.toIntOrZero() == LABEL_0 -> {
                             filterDateBottomSheet.hideChooseDate()
                             tempStartDate = ""
                             tempEndDate = ""
 
                         }
-                        label.toInt() == LABEL_1 -> {
+                        label.toIntOrZero() == LABEL_1 -> {
                             filterDateBottomSheet.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
@@ -1280,7 +1313,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = endDate
 
                         }
-                        label.toInt() == LABEL_2 -> {
+                        label.toIntOrZero() == LABEL_2 -> {
                             filterDateBottomSheet.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
@@ -1288,7 +1321,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = endDate
 
                         }
-                        label.toInt() == LABEL_3 -> {
+                        label.toIntOrZero() == LABEL_3 -> {
                             var start = GregorianCalendar()
                             var end = GregorianCalendar()
                             chosenStartDate?.let { startDate -> start = startDate }
@@ -1393,6 +1426,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         || filterStatus.equals(PARAM_INSURANCE, true)
                         || filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             selectedKey = CATEGORIES_KEUANGAN
+
+        } else if (filterStatus.equals(PARAM_TOKOFOOD, true) && !isReset) {
+            selectedKey = CATEGORIES_TOKOFOOD
 
         } else {
             selectedKey = currFilterCategoryKey
@@ -1587,7 +1623,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
         val split = stringParam.split("-")
         return if (split.isNotEmpty() && split.size == LABEL_3) {
-            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
+            GregorianCalendar(split[0].toIntOrZero(), split[1].toIntOrZero(), split[2].toIntOrZero())
         } else GregorianCalendar()
     }
 
@@ -1596,7 +1632,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         view?.let { v ->
             if (activity !is UohListActivity) {
                 try {
-                    toasterSuccess.toasterCustomBottomHeight = 48.dpToPx(resources.displayMetrics)
+                    context?.resources?.displayMetrics?.let {
+                        toasterSuccess.toasterCustomBottomHeight = 48.dpToPx(it)
+                    }
                 } catch (t: Throwable) {
                     // ignore
                     Timber.d(t)
@@ -1628,108 +1666,112 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         kebabMenuBottomSheet.setListener(object : UohKebabMenuBottomSheet.UohKebabMenuBottomSheetListener {
             override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
                 kebabMenuBottomSheet.dismiss()
-                val dotMenu = orderData.metadata.dotMenus[index]
-                if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                        RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
-                    } else {
-                        val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
-                            dotMenu.webURL
+                try {
+                    val dotMenu = orderData.metadata.dotMenus[index]
+                    if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                        if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                            RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
                         } else {
-                            dotMenu.appURL
-                        }
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                    }
-                } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
-                    if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                        var helpLinkUrl = ""
-                        currIndexNeedUpdate = index
-                        orderIdNeedUpdated = orderData.orderUUID
-                        orderData.metadata.dotMenus.forEach {
-                            if (it.label.equals(LABEL_HELP_LINK)) {
-                                helpLinkUrl = it.webURL
+                            val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                                dotMenu.webURL
+                            } else {
+                                dotMenu.appURL
                             }
-                        }
-
-                        val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
-                        val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
-                            putExtra(PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
-                            putExtra(PARAM_INVOICE, cancelOrderQueryParam.invoice)
-                            putExtra(PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
-                            putExtra(PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
-                            putExtra(PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
-                            putExtra(PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
-                            putExtra(PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
-                            putExtra(PARAM_STATUS_ID, cancelOrderQueryParam.status)
-                            putExtra(PARAM_SOURCE_UOH, true)
-                            putExtra(PARAM_HELP_LINK_URL, helpLinkUrl)
-                        }
-                        startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
-                    } else {
-                        val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
-                            dotMenu.webURL
-                        } else {
-                            dotMenu.appURL
-                        }
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                    }
-                } else {
-                    when {
-                        dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                            val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
-                            if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
-
-                            sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
-                                override fun onEmailSent(email: String) {
-                                    val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
-                                    val invoiceId = flightQueryParam.invoiceId
-                                    uohListViewModel.doFlightResendEmail(invoiceId, email)
-                                    userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
-                                }
-
-                            })
-                            sendEmailBottomSheet.show(childFragmentManager)
-                        }
-                        dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
-                            val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
-                            if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
-
-                            sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
-                                override fun onEmailSent(email: String) {
-                                    val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
-                                    val invoiceId = trainQueryParam.invoiceId
-                                    val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                                    uohListViewModel.doTrainResendEmail(param)
-                                    userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
-                                }
-
-                            })
-                            sendEmailBottomSheet.show(childFragmentManager)
-                        }
-                        dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
-                            doChatSeller(dotMenu.appURL, orderData)
-                        }
-                        dotMenu.actionType.equals(GQL_ATC, true) -> {
-                            atc(orderData)
-                        }
-                        dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
-                            orderIdNeedUpdated = orderData.orderUUID
-                            doFinishOrder(orderIndex, orderData.verticalStatus, orderData.verticalID)
-                        }
-                        dotMenu.actionType.equals(GQL_TRACK, true) -> {
-                            val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
-                            RouteManager.route(context, applinkTrack)
-                        }
-                        dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
-                            val linkUrl = dotMenu.appURL
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                         }
-                        dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
-                            goToOrderExtension(order, index)
+                    } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
+                        if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                            var helpLinkUrl = ""
+                            currIndexNeedUpdate = index
+                            orderIdNeedUpdated = orderData.orderUUID
+                            orderData.metadata.dotMenus.forEach {
+                                if (it.label.equals(LABEL_HELP_LINK)) {
+                                    helpLinkUrl = it.webURL
+                                }
+                            }
+
+                            val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
+                            val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
+                                putExtra(PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
+                                putExtra(PARAM_INVOICE, cancelOrderQueryParam.invoice)
+                                putExtra(PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
+                                putExtra(PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
+                                putExtra(PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
+                                putExtra(PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
+                                putExtra(PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
+                                putExtra(PARAM_STATUS_ID, cancelOrderQueryParam.status)
+                                putExtra(PARAM_SOURCE_UOH, true)
+                                putExtra(PARAM_HELP_LINK_URL, helpLinkUrl)
+                            }
+                            startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
+                        } else {
+                            val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                                dotMenu.webURL
+                            } else {
+                                dotMenu.appURL
+                            }
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                        }
+                    } else {
+                        when {
+                            dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
+                                val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
+                                if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                                sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
+                                    override fun onEmailSent(email: String) {
+                                        val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
+                                        val invoiceId = flightQueryParam.invoiceId
+                                        uohListViewModel.doFlightResendEmail(invoiceId, email)
+                                        userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                    }
+
+                                })
+                                sendEmailBottomSheet.show(childFragmentManager)
+                            }
+                            dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
+                                val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
+                                if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                                sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
+                                    override fun onEmailSent(email: String) {
+                                        val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
+                                        val invoiceId = trainQueryParam.invoiceId
+                                        val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
+                                        uohListViewModel.doTrainResendEmail(param)
+                                        userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                    }
+
+                                })
+                                sendEmailBottomSheet.show(childFragmentManager)
+                            }
+                            dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
+                                doChatSeller(dotMenu.appURL, orderData)
+                            }
+                            dotMenu.actionType.equals(GQL_ATC, true) -> {
+                                atc(orderData)
+                            }
+                            dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
+                                orderIdNeedUpdated = orderData.orderUUID
+                                doFinishOrder(orderIndex, orderData.verticalStatus, orderData.verticalID)
+                            }
+                            dotMenu.actionType.equals(GQL_TRACK, true) -> {
+                                val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                                RouteManager.route(context, applinkTrack)
+                            }
+                            dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
+                                val linkUrl = dotMenu.appURL
+                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                            }
+                            dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
+                                goToOrderExtension(order, index)
+                            }
                         }
                     }
+                    userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
             }
 
         })
@@ -1761,110 +1803,117 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
 
             override fun onClickAjukanKomplain(orderId: String) {
+                finishOrderBottomSheet.dismiss()
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
                 userSession.userId?.let { userId -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(userId) }
             }
-
         })
         finishOrderBottomSheet.show(childFragmentManager)
     }
 
     override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        val detailUrl = order.metadata.detailURL
-        var intent: Intent? = null
-        if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
-        } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-            intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
-        }
-
-        currIndexNeedUpdate = index
-        orderIdNeedUpdated = order.orderUUID
-
-        // analytics
-        var jsonArray = JsonArray()
-        if (order.metadata.listProducts.isNotEmpty()) {
-            jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
-        }
-        val arrayListProducts = arrayListOf<ECommerceClick.Products>()
-        var i = 0
-        order.metadata.products.forEach {
-            var eeProductId = ""
-            var eeProductPrice = ""
-            if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(i).asJsonObject
-                eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+        try {
+            val detailUrl = order.metadata.detailURL
+            var intent = Intent()
+            if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
+                intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+            } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
+                intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
             }
-            arrayListProducts.add(
-                ECommerceClick.Products(
-                    name = it.title,
-                    id = eeProductId,
-                    price = eeProductPrice,
-                    list = "/order list - ${order.verticalCategory}",
-                    position = index.toString()
-            ))
-            i++
+
+            currIndexNeedUpdate = index
+            orderIdNeedUpdated = order.orderUUID
+
+            // analytics
+            var jsonArray = JsonArray()
+            if (order.metadata.listProducts.isNotEmpty()) {
+                jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
+            }
+            val arrayListProducts = arrayListOf<ECommerceClick.Products>()
+            var i = 0
+            order.metadata.products.forEach {
+                var eeProductId = ""
+                var eeProductPrice = ""
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    val objProduct = jsonArray.get(i).asJsonObject
+                    eeProductId = objProduct.get(EE_PRODUCT_ID).asString
+                    eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                }
+                arrayListProducts.add(
+                    ECommerceClick.Products(
+                        name = it.title,
+                        id = eeProductId,
+                        price = eeProductPrice,
+                        list = "/order list - ${order.verticalCategory}",
+                        position = index.toString()
+                    ))
+                i++
+            }
+
+            userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+            // requested as old flow (from old order list)
+            UohAnalytics.orderDetailOpenScreenEvent()
+
+            startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
-        userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
-
-        // requested as old flow (from old order list)
-        UohAnalytics.orderDetailOpenScreenEvent()
-
-        startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        order.metadata.buttons.firstOrNull()?.let { button ->
-            if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                handleRouting(button.appURL)
-            } else {
-                when {
-                    button.actionType.equals(GQL_FINISH_ORDER, true) -> {
-                        orderIdNeedUpdated = order.orderUUID
-                        doFinishOrder(index, order.verticalStatus, order.verticalID)
-                    }
-                    button.actionType.equals(GQL_ATC, true) -> {
-                        atc(order)
-                    }
-                    button.actionType.equals(GQL_TRACK, true) -> {
-                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
-                        RouteManager.route(context, applinkTrack)
-                    }
-                    button.actionType.equals(GQL_LS_FINISH, true) -> {
-                        orderIdNeedUpdated = order.orderUUID
-                        val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
-                        if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        try {
+            order.metadata.buttons.firstOrNull()?.let { button ->
+                if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                    handleRouting(button.appURL)
+                } else {
+                    when {
+                        button.actionType.equals(GQL_FINISH_ORDER, true) -> {
+                            orderIdNeedUpdated = order.orderUUID
+                            doFinishOrder(index, order.verticalStatus, order.verticalID)
+                        }
+                        button.actionType.equals(GQL_ATC, true) -> {
+                            atc(order)
+                        }
+                        button.actionType.equals(GQL_TRACK, true) -> {
+                            val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                            RouteManager.route(context, applinkTrack)
+                        }
+                        button.actionType.equals(GQL_LS_FINISH, true) -> {
+                            orderIdNeedUpdated = order.orderUUID
+                            val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
+                            if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
-                        lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
-                            override fun onClickLsFinishOrder(index: Int, orderId: String) {
-                                currIndexNeedUpdate = index
-                                uohItemAdapter.showLoaderAtIndex(index)
-                                uohListViewModel.doLsPrintFinishOrder(orderId)
+                            lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
+                                override fun onClickLsFinishOrder(index: Int, orderId: String) {
+                                    currIndexNeedUpdate = index
+                                    uohItemAdapter.showLoaderAtIndex(index)
+                                    uohListViewModel.doLsPrintFinishOrder(orderId)
+                                }
+
+                            })
+                            lsFinishOrderBottomSheet.show(childFragmentManager)
+                        }
+                        button.actionType.equals(GQL_LS_LACAK, true) -> {
+                            val linkUrl = button.appURL
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                        }
+                        button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                            currIndexNeedUpdate = index
+                            orderIdNeedUpdated = order.orderUUID
+                            if (order.verticalID.isNotEmpty()) {
+                                uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
                             }
-
-                        })
-                        lsFinishOrderBottomSheet.show(childFragmentManager)
-                    }
-                    button.actionType.equals(GQL_LS_LACAK, true) -> {
-                        val linkUrl = button.appURL
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                    }
-                    button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                        currIndexNeedUpdate = index
-                        orderIdNeedUpdated = order.orderUUID
-                        if (order.verticalID.isNotEmpty()) {
-                            uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+                        }
+                        button.actionType.equals(GQL_MP_EXTEND, true) -> {
+                            goToOrderExtension(order, index)
                         }
                     }
-                    button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                        goToOrderExtension(order, index)
-                    }
                 }
+                userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
             }
-
-            userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

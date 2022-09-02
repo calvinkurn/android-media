@@ -139,10 +139,15 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation projectOrAar(rootProject.ext.features.minicart)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.features.affiliateSDK)
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)
     androidTestImplementation projectOrAar(rootProject.ext.features.feedShop)
+    androidTestImplementation projectOrAar(rootProject.ext.features.review)
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

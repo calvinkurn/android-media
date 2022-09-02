@@ -15,7 +15,7 @@
         android:text="@string/pdp_installment_price_heading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Cicilan 6x" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_installment_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_minimum_price_ext"
@@ -46,6 +46,6 @@
         android:textColor="@color/Unify_N200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_installment_price"
-        app:typographyType="body_2" />
+        app:typographyType="display_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

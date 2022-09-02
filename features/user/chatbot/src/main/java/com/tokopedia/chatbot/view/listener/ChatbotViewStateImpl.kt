@@ -14,12 +14,17 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -38,7 +43,6 @@ import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 /**
  * @author by nisie on 07/12/18.
@@ -53,15 +57,15 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>,
-                           private val onChatMenuButtonClicked: () -> Unit
+                           private val onChatMenuButtonClicked: () -> Unit,
+                           val sendAnalytics:( impressionType:String)->Unit
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView
     private lateinit var reasonBottomSheet: ReasonBottomSheet
     private lateinit var chatMenuBtn: ImageView
-    @Inject
-    lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
+
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
@@ -74,7 +78,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
         chatMenuBtn = view.findViewById(R.id.iv_chat_menu)
         rvQuickReply = view.findViewById(R.id.list_quick_reply)
-        quickReplyAdapter = QuickReplyAdapter(getQuickReplyList(), quickReplyListener)
+        quickReplyAdapter = QuickReplyAdapter(getQuickReplyList(), quickReplyListener, sendAnalyticsFromAdapter = { impressionType ->
+            sendAnalytics(impressionType)
+        })
 
         rvQuickReply.layoutManager = LinearLayoutManager(rvQuickReply.context,
                 LinearLayoutManager.HORIZONTAL, false)
@@ -105,6 +111,50 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun handleReplyBox(isEnable: Boolean) {
        showReplyBox(isEnable)
+    }
+
+    override fun onSendingMessage(it: MessageUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String,
+        parentReply: ParentReply?
+    ) {
+        val localId = IdentifierUtil.generateLocalId()
+        val message = MessageUiModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(BaseChatUiModel.SENDING_TEXT)
+            .withStartTime(startTime)
+            .withMsg(sendMessage)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .withParentReply(parentReply)
+            .build()
+        getAdapter().addElement(message)
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String
+    ) {
+
+    }
+
+    override fun hideQuickReplyOnClick() {
+        hideQuickReply()
     }
 
     override fun loadAvatar(avatarUrl: String) {
@@ -166,17 +216,17 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel) {
         super.onReceiveMessageEvent(visitable)
-        chatbotAnalytics.get().eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
+        sendAnalytics(ACTION_IMRESSION_ACTION_BUTTON)
         showQuickReply(visitable.quickReplies)
     }
 
     override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
         super.onReceiveMessageEvent(visitable)
-        chatbotAnalytics.get().eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
+        sendAnalytics(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
         showQuickReply(visitable.quickReplies)
     }
 
-    override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel) {
+    override fun onShowInvoiceToChat(generatedInvoice: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel) {
         removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
     }

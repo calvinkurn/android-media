@@ -55,7 +55,7 @@ class AutoAdsItemsItemViewHolder(val view: View) :
                 klikCount?.text = statsData[adapterPosition].statTotalClick
                 persentaseKlikCount?.text = statsData[adapterPosition].statTotalCtr
                 pengeluaranCount?.text = statsData[adapterPosition].statTotalSpent
-                pendapatanCount?.text = statsData[adapterPosition].statTotalConversion
+                pendapatanCount?.text = statsData[adapterPosition].statTotalGrossProfit
                 produkTerjualCount?.text = statsData[adapterPosition].statTotalSold
             }
 

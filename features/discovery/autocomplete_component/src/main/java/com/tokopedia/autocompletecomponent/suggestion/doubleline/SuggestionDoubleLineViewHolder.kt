@@ -33,8 +33,6 @@ class SuggestionDoubleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
-
-        private const val FONT_LEVEL_14_SP = 2
     }
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
@@ -55,10 +53,10 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
         val iconImage = binding?.iconImage ?: return
-        if (item.isBoldSquareType()) {
-            iconImage.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
-        } else {
+        if (item.data.isCircleImage()) {
             iconImage.loadImageCircle(item.data.imageUrl)
+        } else {
+            iconImage.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
 
@@ -84,12 +82,13 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
         when {
-            item.isBoldText() -> {
+            item.data.isBoldAllText() -> {
+                bindAllBoldTextTitle(item.data)
+            }
+            else -> {
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
             }
-            item.isBoldSquareType() -> bindAllBoldTextTitle(item.data)
-            else -> bindNormalTextTitle(item.data)
         }
     }
 
@@ -104,10 +103,11 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindBoldTextTitle(item: BaseSuggestionDataView) {
         val doubleLineTitle = binding?.doubleLineTitle ?: return
-        doubleLineTitle.weightType = Typography.BOLD
         if (searchQueryStartIndexInKeyword == -1) {
+            doubleLineTitle.setWeight(Typography.BOLD)
             doubleLineTitle.text = MethodChecker.fromHtml(item.title)
         } else {
+            doubleLineTitle.setWeight(Typography.REGULAR)
             doubleLineTitle.text = getHighlightedTitle(item)
         }
     }
@@ -147,10 +147,6 @@ class SuggestionDoubleLineViewHolder(
             highlightAfterKeywordEndIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-    }
-
-    private fun bindNormalTextTitle(item: BaseSuggestionDataView) {
-        binding?.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
     }
 
     private fun bindLabel(item: BaseSuggestionDataView) {

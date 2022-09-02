@@ -80,6 +80,9 @@ class PartialRegisterInputView : BaseCustomView {
         wrapperPassword = view.findViewById(R.id.wrapper_password)
         btnForgotPassword = view.findViewById(R.id.forgot_pass)
         btnChange = view.findViewById(R.id.change_button)
+
+        etInputEmailPhone?.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
+
         renderData()
     }
 

@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -180,7 +179,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     }
 
     private int getMaxSwipeWidth() {
-        return mView.getWidth() - getResources().getDimensionPixelOffset(R.dimen.dp_6);
+        return mView.getWidth() - getResources().getDimensionPixelOffset(R.dimen.gami_core_floating_egg_dp_6);
     }
 
     private boolean isLeftSwipe(float dx) {

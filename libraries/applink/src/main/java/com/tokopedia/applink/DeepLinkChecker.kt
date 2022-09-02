@@ -62,6 +62,8 @@ object DeepLinkChecker {
     const val POWER_MERCHANT = 40
     const val SALDO_DEPOSIT = 41
     const val SNAPSHOT = 42
+    const val TOKOFOOD = 43
+    const val TOP_ADS_CLICK_LINK = 44
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -134,6 +136,9 @@ object DeepLinkChecker {
         }
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
+        }
+        if (url.contains("ta.tokopedia.com")|| url.contains("ta-staging.tokopedia.com")) {
+            return TOP_ADS_CLICK_LINK
         }
         return try {
             val uriData = Uri.parse(url)

@@ -19,17 +19,11 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.data.DataItem
-import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
-import com.tokopedia.interest_pick_common.data.OnboardingData
-import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
-import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
-import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -67,8 +61,6 @@ private const val DEFAULT_VALUE_SRC = "fav_shop"
 class FeedViewModel @Inject constructor(
     private val baseDispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val getInterestPickUseCase: GetInterestPickUseCase,
-    private val submitInterestPickUseCase: SubmitInterestPickUseCase,
     private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
@@ -98,8 +90,6 @@ class FeedViewModel @Inject constructor(
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
 
-    val onboardingResp = MutableLiveData<Result<OnboardingViewModel>>()
-    val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
     val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
     val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopViewModel>>()
@@ -121,17 +111,6 @@ class FeedViewModel @Inject constructor(
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
-
-    fun getOnboardingData(source: String) {
-        getInterestPickUseCase.apply {
-            clearRequest()
-            addRequestWithParam(source)
-        }.execute({
-            onboardingResp.value = Success(it.convertToViewModel())
-        }, {
-            onboardingResp.value = Fail(it)
-        })
-    }
 
     fun sendReport(
         positionInFeed: Int,
@@ -161,27 +140,6 @@ class FeedViewModel @Inject constructor(
         )
     }
 
-    fun submitInterestPickData(
-        dataList: List<InterestPickDataViewModel>,
-        source: String,
-        requestInt: Int
-    ) {
-        val idList = dataList.map { it.id }
-        submitInterestPickUseCase.apply {
-            clearRequest()
-            addRequestWithParam(idList)
-        }.execute({
-            val resultData = SubmitInterestResponseViewModel()
-            resultData.source = source
-            resultData.requestInt = requestInt
-            resultData.idList = idList
-            resultData.success = it.feedInterestUserUpdate.success
-            resultData.error = it.feedInterestUserUpdate.error
-            submitInterestPickResp.value = Success(resultData)
-        }, {
-            submitInterestPickResp.value = Fail(it)
-        })
-    }
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
 
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
@@ -373,16 +331,17 @@ class FeedViewModel @Inject constructor(
         rowNumber: Int,
         adapterPosition: Int,
         shopId: String,
-        follow: Boolean = true
+        follow: Boolean = true,
+        isUnfollowFromBottomSheetMenu: Boolean = false
     ) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                toggleFavoriteShop(rowNumber, adapterPosition, shopId)
+                toggleFavoriteShop(rowNumber, adapterPosition, shopId, isUnfollowFromBottomSheetMenu)
             }
             toggleFavoriteShopResp.value = Success(results)
         }) {
             if (follow)
-                toggleFavoriteShopResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
+                toggleFavoriteShopResp.value = Fail(CustomUiMessageThrowable(R.string.feed_unfollow_error_message))
             else
                 toggleFavoriteShopResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
 
@@ -465,37 +424,6 @@ class FeedViewModel @Inject constructor(
                 onFail.invoke(errorMessage)
             }
         }
-    }
-
-    private fun OnboardingData.convertToViewModel(): OnboardingViewModel =
-        mappingOnboardingData(feedUserOnboardingInterests)
-
-    private fun mappingOnboardingData(pojo: FeedUserOnboardingInterests): OnboardingViewModel {
-        return OnboardingViewModel(
-            pojo.meta.isEnabled,
-            pojo.meta.minPicked,
-            pojo.meta.source,
-            pojo.meta.assets.titleIntro,
-            pojo.meta.assets.titleFull,
-            pojo.meta.assets.instruction,
-            pojo.meta.assets.buttonCta,
-            mappingOnboardingListData(pojo.data)
-        )
-    }
-
-    private fun mappingOnboardingListData(pojoList: List<DataItem>): MutableList<InterestPickDataViewModel> {
-        val dataList: MutableList<InterestPickDataViewModel> = mutableListOf()
-        for (pojo in pojoList) {
-            dataList.add(
-                InterestPickDataViewModel(
-                    pojo.id,
-                    pojo.name,
-                    pojo.image,
-                    pojo.isSelected
-                )
-            )
-        }
-        return dataList
     }
 
     private suspend fun getFeedFirstDataResult(): DynamicFeedFirstPageDomainModel {
@@ -718,13 +646,15 @@ class FeedViewModel @Inject constructor(
     private fun toggleFavoriteShop(
         rowNumber: Int,
         adapterPosition: Int,
-        shopId: String
+        shopId: String,
+        isUnfollowClickedFromBottomSheetMenu: Boolean = false
     ): FavoriteShopViewModel {
         try {
             val data = FavoriteShopViewModel()
             data.rowNumber = rowNumber
             data.adapterPosition = adapterPosition
             data.shopId = shopId
+            data.isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu
             val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
             val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess

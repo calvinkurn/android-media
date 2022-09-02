@@ -20,15 +20,18 @@ import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUti
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import java.util.regex.Pattern
 
 
 /**
  * Created by Yehezkiel on 13/10/20
  */
-class ProductDetailInfoExpandableViewHolder(private val view: View, private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableDataModel>(view) {
+class ProductDetailInfoExpandableViewHolder(private val view: View, private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableDataModel>(view){
 
     companion object {
         val LAYOUT = R.layout.bs_item_product_detail_expandable
+        private const val TOKOPEDIA_LINK_REGEX = "((https?)://)?(www.)?(tokopedia.com|tkp.me|tokopedia.link)([-a-zA-Z0-9+&@#/%?=~_|!:,;]*[-a-zA-Z0-9+&@#/%=~_|])?"
+        private const val HTTPS_SCHEME = "https://"
     }
 
     private val binding = BsItemProductDetailExpandableBinding.bind(view)
@@ -77,9 +80,10 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
     }
 
     private fun setSelectClickableTextView() = with(binding) {
+        val pattern = Pattern.compile(TOKOPEDIA_LINK_REGEX)
 
         productDetailValue.autoLinkMask = 0
-        Linkify.addLinks(productDetailValue, Linkify.WEB_URLS)
+        Linkify.addLinks(productDetailValue, pattern, HTTPS_SCHEME)
         productDetailValue.movementMethod = ProductCustomMovementMethod(listener::onBranchLinkClicked)
     }
 

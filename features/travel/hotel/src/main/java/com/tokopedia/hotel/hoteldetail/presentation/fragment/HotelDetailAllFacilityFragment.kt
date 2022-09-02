@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.hotel.databinding.FragmentHotelDetailAllFacilityBinding
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.hotel.databinding.FragmentHotelDetailAllFacilityBinding
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailPagerAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
@@ -23,7 +25,11 @@ class HotelDetailAllFacilityFragment : Fragment() {
 
     lateinit var hotelDetailPagerAdapter: HotelDetailPagerAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentHotelDetailAllFacilityBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -51,9 +57,15 @@ class HotelDetailAllFacilityFragment : Fragment() {
             it.viewPager.adapter = getViewPagerAdapter()
 
             for (i in 0 until hotelDetailPagerAdapter.count) {
-                if (it.tabLayout.getTabAt(i)?.text == arguments?.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
-                    it.tabLayout.getTabAt(i)?.select()
-                    break
+                val currentTab = it.tabLayout.getTabAt(i)
+                val tabItemCustomView: View? = currentTab?.customView
+                val tabTextView: TextView? =
+                    tabItemCustomView?.findViewById(com.tokopedia.unifycomponents.R.id.tab_item_text_id)
+                tabTextView?.typeface =
+                    Typography.getFontType(it.root.context, false, Typography.DISPLAY_3)
+
+                if (currentTab?.text == arguments?.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
+                    currentTab?.select()
                 }
             }
         }
@@ -63,8 +75,10 @@ class HotelDetailAllFacilityFragment : Fragment() {
         if (!::hotelDetailPagerAdapter.isInitialized) {
             context?.run {
                 arguments?.let {
-                    hotelDetailPagerAdapter = HotelDetailPagerAdapter(childFragmentManager, this,
-                            it.getString(EXTRA_TAB_TITLE, FACILITY_TITLE))
+                    hotelDetailPagerAdapter = HotelDetailPagerAdapter(
+                        childFragmentManager, this,
+                        it.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)
+                    )
                 }
             }
         }
@@ -83,14 +97,18 @@ class HotelDetailAllFacilityFragment : Fragment() {
         const val IMPORTANT_INFO_TITLE = "Informasi Penting"
         const val DESCRIPTION_TITLE = "Deskripsi"
 
-        fun getInstance(propertyName: String, data: HotelDetailAllFacilityModel, tabTitle: String): HotelDetailAllFacilityFragment =
-                HotelDetailAllFacilityFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(EXTRA_PROPERTY_NAME, propertyName)
-                        putParcelable(EXTRA_PROPERTY_DETAIL, data)
-                        putString(EXTRA_TAB_TITLE, tabTitle)
-                    }
+        fun getInstance(
+            propertyName: String,
+            data: HotelDetailAllFacilityModel,
+            tabTitle: String
+        ): HotelDetailAllFacilityFragment =
+            HotelDetailAllFacilityFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(EXTRA_PROPERTY_NAME, propertyName)
+                    putParcelable(EXTRA_PROPERTY_DETAIL, data)
+                    putString(EXTRA_TAB_TITLE, tabTitle)
                 }
+            }
 
     }
 

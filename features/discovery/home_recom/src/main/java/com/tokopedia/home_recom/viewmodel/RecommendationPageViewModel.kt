@@ -34,6 +34,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -77,7 +78,8 @@ open class RecommendationPageViewModel @Inject constructor(
         private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
         private val dispatcher: RecommendationDispatcher,
-        private val remoteConfig: RemoteConfig
+        private val remoteConfig: RemoteConfig,
+        private val topAdsAddressHelper: TopAdsAddressHelper
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
 
     companion object {
@@ -131,7 +133,7 @@ open class RecommendationPageViewModel @Inject constructor(
                 if (eligibleToShowHeadlineCPM(queryParam)) {
                     val newParams = HEADLINE_PARAM_RECOM + userSessionInterface.userId
                     val topadsHeadlineResult = asyncCatchError(dispatcher.getIODispatcher(), block = {
-                        getTopAdsHeadlineUseCase.setParams(newParams)
+                        getTopAdsHeadlineUseCase.setParams(newParams, topAdsAddressHelper.getAddressData())
                         getTopAdsHeadlineUseCase.executeOnBackground()
                     }) {
                         throw it
@@ -250,7 +252,6 @@ open class RecommendationPageViewModel @Inject constructor(
                 productId = productId,
                 queryParam = queryParam
             )
-            it.printStackTrace()
         }
     }
 
@@ -374,7 +375,6 @@ open class RecommendationPageViewModel @Inject constructor(
                         }
 
                         override fun onError(e: Throwable) {
-                            e.printStackTrace()
                             _addToCartLiveData.postValue(Response.error(e))
                         }
 
@@ -409,7 +409,6 @@ open class RecommendationPageViewModel @Inject constructor(
                         override fun onCompleted() {}
 
                         override fun onError(e: Throwable) {
-                            e.printStackTrace()
                             _buyNowLiveData.postValue(Response.error(e))
                         }
 

@@ -9,6 +9,7 @@ import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVari
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel.QuickEditVariantViewModelTestFixture.LocationType.MAIN_LOCATION
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel.QuickEditVariantViewModelTestFixture.LocationType.OTHER_LOCATION
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,6 +28,7 @@ open class QuickEditVariantViewModelTestFixture {
     private lateinit var getProductVariantUseCase: GetProductVariantUseCase
     private lateinit var getProductManageAccessUseCase: GetProductManageAccessUseCase
     private lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
+    private lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
     private lateinit var userSession: UserSessionInterface
 
     @Before
@@ -34,12 +36,14 @@ open class QuickEditVariantViewModelTestFixture {
         getProductVariantUseCase = mockk(relaxed = true)
         getProductManageAccessUseCase = mockk(relaxed = true)
         getAdminInfoShopLocationUseCase = mockk(relaxed = true)
+        getMaxStockThresholdUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
         viewModel = QuickEditVariantViewModel(
                 getProductVariantUseCase,
                 getProductManageAccessUseCase,
                 getAdminInfoShopLocationUseCase,
+                getMaxStockThresholdUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )

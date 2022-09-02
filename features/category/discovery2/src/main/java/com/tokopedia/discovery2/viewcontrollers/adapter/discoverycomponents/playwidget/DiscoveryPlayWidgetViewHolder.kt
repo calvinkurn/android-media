@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -24,7 +25,7 @@ import com.tokopedia.user.session.UserSession
 
 class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), PlayWidgetListener, PlayWidgetInListAnalyticListener {
     private lateinit var discoveryPlayWidgetViewModel: DiscoveryPlayWidgetViewModel
-    private val playWidgetViewHolder: PlayWidgetViewHolder = PlayWidgetViewHolder(itemView, PlayWidgetCoordinator(fragment.viewLifecycleOwner).apply {
+    private val playWidgetViewHolder: PlayWidgetViewHolder = PlayWidgetViewHolder(itemView, PlayWidgetCoordinator(fragment).apply {
         setListener(this@DiscoveryPlayWidgetViewHolder)
         setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(this@DiscoveryPlayWidgetViewHolder))
     })
@@ -62,11 +63,23 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                     (fragment as DiscoveryFragment).openLoginScreen(discoveryPlayWidgetViewModel.position)
             })
 
+            discoveryPlayWidgetViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, {
+                if(it){
+                    (fragment as DiscoveryFragment).reSync()
+                }
+            })
+            discoveryPlayWidgetViewModel.hideSectionLD.observe(fragment.viewLifecycleOwner, { sectionId ->
+                (fragment as DiscoveryFragment).handleHideSection(sectionId)
+            })
         }
     }
 
     private fun showToast(message: String, type: Int = Toaster.TYPE_NORMAL) {
-        Toaster.build(itemView, message, Toast.LENGTH_SHORT, type).show()
+        fragment.activity?.let {
+            SnackbarManager.getContentView(it)
+        }?.let { contentView ->
+            Toaster.build(contentView, message, Toast.LENGTH_SHORT, type).show()
+        }
     }
 
     override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
@@ -79,6 +92,8 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
             discoveryPlayWidgetViewModel.getPlayWidgetUILiveData().removeObservers(it)
             discoveryPlayWidgetViewModel.reminderObservable.removeObservers(it)
             discoveryPlayWidgetViewModel.reminderLoginEvent.removeObservers(it)
+            discoveryPlayWidgetViewModel.getSyncPageLiveData().removeObservers(it)
+            discoveryPlayWidgetViewModel.hideSectionLD.removeObservers(it)
         }
     }
 
@@ -92,91 +107,52 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         }
     }
 
+
     override fun onImpressPlayWidget(view: PlayWidgetView, item: PlayWidgetUiModel, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
 
     }
 
-    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, "", verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, "", verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, item.partner.id, verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.appLink, item.partner.id, verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, "", verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, "", verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.partner.id, verticalWidgetPosition, channelPositionInList, isAutoPlay)
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, config: PlayWidgetConfigUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, item.channelId, item.partner.id, verticalWidgetPosition, channelPositionInList, config.autoPlay)
     }
 
-    override fun onClickBannerCard(view: PlayWidgetSmallView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickBannerCard(view: PlayWidgetSmallView, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
     }
 
-    override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetBannerUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetBannerUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
     }
 
-    override fun onClickViewAll(view: PlayWidgetSmallView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickViewAll(view: PlayWidgetSmallView, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
     }
 
-    override fun onClickViewAll(view: PlayWidgetMediumView, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickViewAll(view: PlayWidgetMediumView, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition)
     }
 
-    override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetOverLayImpression(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.overlayImageAppLink)
     }
 
-    override fun onClickOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetOverLayClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.overlayImageAppLink)
     }
 
-    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
+    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean, verticalWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetReminderClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.channelId , isRemindMe)
-    }
-
-    override fun onLabelPromoClicked(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, item.appLink, isAutoPlay)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetMediumView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelImpress(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
-    }
-
-    override fun onLabelPromoClicked(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, item.appLink, isAutoPlay)
-    }
-
-    override fun onLabelPromoImpressed(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean
-    ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelImpress(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
     }
 }

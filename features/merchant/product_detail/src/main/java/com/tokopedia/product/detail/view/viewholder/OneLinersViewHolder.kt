@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Comp
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTTOM
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_TOP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.STOCK_ASSURANCE
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -41,7 +42,7 @@ class OneLinersViewHolder(
 
     override fun bind(element: OneLinersDataModel) {
         val content = element.oneLinersContent
-        if (content == null || !content.isVisible){
+        if (content == null || !content.isVisible) {
             itemView.layoutParams.height = 0
             return
         } else itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -49,7 +50,12 @@ class OneLinersViewHolder(
         val applink = content.applink
         view.apply {
             addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
+                if (element.name == STOCK_ASSURANCE)
+                    listener.onImpressStockAssurance(
+                            getComponentTrackData(element),
+                            content.linkText + content.content
+                    )
+                else listener.onImpressComponent(getComponentTrackData(element))
             }
             if (applink.isNotBlank()) {
                 setOnClickListener { listener.goToApplink(applink) }
@@ -64,12 +70,9 @@ class OneLinersViewHolder(
         title?.apply {
             text = content.linkText
 
-            try {
+            runCatching {
                 val unifyColor = stringToUnifyColor(context, content.color)
                 setTextColor(unifyColor.unifyColor ?: unifyColor.defaultColor)
-
-            } catch (ex: RuntimeException) {
-                ex.printStackTrace()
             }
         }
 

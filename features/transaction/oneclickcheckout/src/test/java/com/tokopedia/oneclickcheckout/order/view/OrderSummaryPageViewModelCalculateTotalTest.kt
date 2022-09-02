@@ -299,7 +299,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(errorBelowMinimum), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -319,7 +319,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(errorBelowMinimum), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -375,7 +375,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel.orderPayment.value.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -395,7 +395,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel.orderPayment.value.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -677,7 +677,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(errorAboveLimit), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -753,7 +753,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(errorAboveLimit), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -810,7 +810,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
                 totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0,
-                installmentData = OrderCostInstallmentData(installmentTerm = 2)),
+                installmentData = OrderCostInstallmentData(installmentTerm = 2), isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(null, orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -897,7 +897,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(errorUnavailableTenures), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
@@ -1002,7 +1002,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(listOf(
                 OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true),
@@ -1036,7 +1036,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1515.0, 1000.0, 500.0, paymentFee = 15.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(listOf(
                 OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 15.0, monthlyAmount = 1515.0, isEnable = true, isSelected = true),
@@ -1068,7 +1068,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
@@ -1095,7 +1095,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isSelected = true, isEnable = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
     }
@@ -1187,7 +1187,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
@@ -1206,7 +1206,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
@@ -1225,7 +1225,73 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Non Installment With Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, paymentFees = helper.paymentFeeDetails)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(3000.0, 1000.0, 500.0, paymentFee = 1500.0,
+            totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, orderPaymentFees = helper.paymentFeeDetails),
+            OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Gocicil With Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 100000, walletAmount = 100000, walletData = OrderPaymentWalletAdditionalData(walletType = 4,
+            goCicilData = OrderPaymentGoCicilData(availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = false), OrderPaymentGoCicilTerms(isActive = true)), selectedTerm = null)),
+            paymentFees = helper.paymentFeeDetails)
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(3000.0, 1000.0, 500.0,
+            totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true, orderPaymentFees = helper.paymentFeeDetails),
+            OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Credit Card With Payment Fee Details`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 1000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
+            creditCard = OrderPaymentCreditCard(
+                numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                availableTerms = listOf(
+                    OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+                    OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isError = true)
+                ),
+                selectedTerm = OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100000, isSelected = true, isError = true)
+            ),
+            paymentFees = helper.paymentFeeDetails
+        )
+
+        // When
+        orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(3045.0, 1000.0, 500.0, paymentFee = 45.0,
+            totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true, orderPaymentFees = helper.paymentFeeDetails),
+            OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 }

@@ -10,17 +10,15 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/search"
         android:layout_weight="1"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_10"
-        android:background="@drawable/reputation_green_button_rounded_unify"
         android:text="@string/save_title"
         android:textColor="@color/Unify_N0"/>
 

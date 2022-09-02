@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivChangeMerchant"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="16dp"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvChangeMerchantTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivChangeMerchant"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/title_change_merchant_label"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvChangeMerchantDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        app:typographyType="display_2"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="@id/tvChangeMerchantTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvChangeMerchantTitle"
+        app:layout_constraintEnd_toEndOf="@id/tvChangeMerchantTitle"
+        android:text="@string/desc_change_merchant_label"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnConfirmOrder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
+        android:text="@string/btn_confirm_order_change_merchant"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvChangeMerchantDesc"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCancelOrder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
+        android:text="@string/btn_cancel_order_change_merchant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnConfirmOrder"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

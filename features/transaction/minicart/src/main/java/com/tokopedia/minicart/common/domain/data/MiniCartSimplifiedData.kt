@@ -1,9 +1,12 @@
 package com.tokopedia.minicart.common.domain.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+
 data class MiniCartSimplifiedData(
-        var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
-        var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
-        var isShowMiniCartWidget: Boolean = false
+    var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
+    var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
+    var isShowMiniCartWidget: Boolean = false,
+    var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData(),
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {
@@ -29,13 +32,16 @@ fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, M
 }
 
 data class MiniCartWidgetData(
-        var totalProductCount: Int = 0,
-        var totalProductPrice: Long = 0,
-        var totalProductError: Int = 0,
-        var containsOnlyUnavailableItems: Boolean = false,
-        var unavailableItemsCount: Int = 0,
-        var isOCCFlow: Boolean = false,
-        var buttonBuyWording: String = ""
+    var totalProductCount: Int = 0,
+    var totalProductPrice: Long = 0,
+    var totalProductError: Int = 0,
+    var containsOnlyUnavailableItems: Boolean = false,
+    var unavailableItemsCount: Int = 0,
+    var isOCCFlow: Boolean = false,
+    var buttonBuyWording: String = "",
+    var headlineWording: String = "",
+    var totalProductPriceWording: String = "",
+    var isShopActive: Boolean = false
 )
 
 data class MiniCartItemKey(
@@ -96,3 +102,8 @@ sealed class MiniCartItem {
             var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap(),
     ): MiniCartItem()
 }
+
+data class ShoppingSummaryBottomSheetData(
+    var title: String = "",
+    var items: List<Visitable<*>> = emptyList()
+)

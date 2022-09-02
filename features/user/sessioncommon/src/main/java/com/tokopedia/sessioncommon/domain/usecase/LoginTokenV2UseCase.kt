@@ -19,7 +19,6 @@ import javax.inject.Named
  */
 open class LoginTokenV2UseCase @Inject constructor(
         val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface):
         UseCase<LoginTokenPojoV2>() {
 

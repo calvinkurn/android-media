@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/Unify_RN100" />
+    <corners android:radius="3dp" />
+    <padding
+        android:bottom="@dimen/unify_space_4"
+        android:left="@dimen/unify_space_4"
+        android:right="@dimen/unify_space_4"
+        android:top="@dimen/unify_space_4" />
+</shape>
