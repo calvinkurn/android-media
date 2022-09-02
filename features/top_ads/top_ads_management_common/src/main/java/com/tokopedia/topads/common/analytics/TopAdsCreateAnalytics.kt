@@ -74,17 +74,6 @@ class TopAdsCreateAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    private fun getTrackerId(eventAction: String) : String{
-        return when(eventAction){
-            EVENT_ACTION_CLICK_TOGGLE_ATUR_OTOMATIS -> TRACKER_ID_CLICK_TOGGLE_ATUR_OTOMATIS
-            EVENT_ACTION_CLICK_AKTIFKAN_ATUR_OTOMATIS -> TRACKER_ID_CLICK_AKTIFKAN_ATUR_OTOMATIS
-            EVENT_ACTION_CLICK_BATALKAN_ATUR_OTOMATIS -> TRACKER_ID_CLICK_BATALKAN_ATUR_OTOMATIS
-            EVENT_ACTION_CLICK_AKTIFKAN_ATUR_MANUAL -> TRACKER_ID_CLICK_AKTIFKAN_ATUR_MANUAL
-            EVENT_ACTION_CLICK_BATALKAN_ATUR_MANUAL -> TRACKER_ID_CLICK_BATALKAN_ATUR_MANUAL
-            else -> ""
-        }
-    }
-
     fun sendTopAdsEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_EVENT_VALUE,
@@ -417,7 +406,7 @@ class TopAdsCreateAnalytics {
         return list
     }
 
-    fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
+    fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String, trackerId: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_TOP_ADS,
             KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
@@ -425,7 +414,7 @@ class TopAdsCreateAnalytics {
             KEY_EVENT_LABEL to eventLabel,
             KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
             KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-            KEY_TRACKER_ID to getTrackerId(eventAction))
+            KEY_TRACKER_ID to trackerId)
 
         getTracker().sendGeneralEvent(map)
     }
@@ -533,3 +522,5 @@ class TopAdsCreateAnalytics {
     }
 
 }
+
+
