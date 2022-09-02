@@ -29,6 +29,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -432,6 +433,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        (context as Context?)
         val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
         if (!TextUtils.isEmpty(commissionMessage)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -456,7 +458,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
-                RouteManager.route(context, banner.ctaLink)
+                RouteManager.route(context, ApplinkConst.AFFILIATE)
             }
             affiliateRegisterIcon?.loadImage(banner.icon)
 
@@ -467,8 +469,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             } else {
                 affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
                 affiliateRegisterMsg?.text = Html.fromHtml(banner.message)            }
-
-
         }
     }
 
