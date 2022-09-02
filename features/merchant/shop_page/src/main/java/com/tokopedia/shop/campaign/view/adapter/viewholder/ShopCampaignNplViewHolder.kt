@@ -167,7 +167,9 @@ class ShopCampaignNplViewHolder(
                         ShopPageHomeMapper.mapToProductCardCampaignModel(
                                 isHasAddToCartButton = false,
                                 hasThreeDots = false,
-                                shopHomeProductViewModel = it
+                                shopHomeProductViewModel = it,
+                                widgetName = model.name,
+                                statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
                         )
                     })
                 } catch (throwable: Exception) {
@@ -295,7 +297,6 @@ class ShopCampaignNplViewHolder(
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             textTimeDescription?.text = timeDescription
-            val currentTime = System.currentTimeMillis()
             layoutTimer?.show()
             if (timeCounter.toLong() != 0L) {
                 timerUnify?.apply {
@@ -314,6 +315,9 @@ class ShopCampaignNplViewHolder(
                         }
                     }
                     isShowClockIcon = false
+                    onFinish = {
+                        shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+                    }
                     show()
                 }
             } else {

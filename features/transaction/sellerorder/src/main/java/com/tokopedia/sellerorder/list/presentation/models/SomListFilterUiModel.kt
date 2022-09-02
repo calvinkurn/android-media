@@ -42,11 +42,15 @@ data class SomListFilterUiModel(
             sortBy.isChecked = getOrderListParam.sortBy == sortBy.id
         }
         quickFilterList.forEach { quickFilter ->
-            quickFilter.isChecked = if (quickFilter.isOrderTypeFilter()) {
-                getOrderListParam.orderTypeList.contains(quickFilter.id)
-            } else if (quickFilter.isShippingFilter()) {
-                getOrderListParam.shippingList.contains(quickFilter.id)
-            } else quickFilter.isChecked
+            quickFilter.isChecked = when {
+                quickFilter.isOrderTypeFilter() -> {
+                    getOrderListParam.orderTypeList.contains(quickFilter.id)
+                }
+                quickFilter.isShippingFilter() -> {
+                    getOrderListParam.shippingList.contains(quickFilter.id)
+                }
+                else -> quickFilter.isChecked
+            }
         }
     }
 

@@ -6,14 +6,21 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.*
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -21,7 +28,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.appbar.AppBarLayout
@@ -32,17 +42,37 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.*
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
 import com.tokopedia.applink.FragmentConst.SHOP_REVIEW_FRAGMENT
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -53,6 +83,11 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
@@ -69,66 +104,72 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
+import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
+import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
-import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.common.view.model.ShopShareModel
-import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
-import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
-import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
-import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
-import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
-import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
-import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
-import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.data.model.HomeLayoutData
-import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
-import com.tokopedia.shop.common.util.ShopAsyncErrorException
-import com.tokopedia.shop.common.util.ShopLogger
-import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
-import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_HIDE
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SETUP
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SHOW
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.common.data.model.ShopAffiliateData
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
+import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetNoteButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
@@ -136,14 +177,19 @@ import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHead
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageTabName
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
+import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
+import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
+import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -161,6 +207,9 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -186,7 +235,8 @@ class NewShopPageFragment :
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
         ShareBottomsheetListener,
         ScreenShotListener,
-        PermissionListener
+        PermissionListener,
+        MiniCartWidgetListener
 {
 
     companion object {
@@ -227,6 +277,8 @@ class NewShopPageFragment :
         private const val PATH_NOTE = "note"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
+        private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
+        private const val QUERY_AFFILIATE_CHANNEL = "channel"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -240,6 +292,8 @@ class NewShopPageFragment :
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
 
+        private const val DELAY_MINI_CART_RESUME = 1000L
+
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
     }
@@ -248,6 +302,8 @@ class NewShopPageFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
     var shopViewModel: NewShopPageViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -259,6 +315,7 @@ class NewShopPageFragment :
     var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
+    private var affiliateData: ShopAffiliateData? = null
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
@@ -312,6 +369,7 @@ class NewShopPageFragment :
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var shopPageMiniCartSharedViewModel: ShopPageMiniCartSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
     private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
@@ -335,7 +393,7 @@ class NewShopPageFragment :
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
     private var viewOneTabSeparator: View? = null
-//    private val viewBinding:  NewShopPageMainBinding? by viewBinding()
+    private var miniCart: MiniCartGeneralWidget? = null
     private var viewBinding by autoClearedNullable<NewShopPageMainBinding>()
     private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
     private var viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding? by viewBinding()
@@ -393,6 +451,7 @@ class NewShopPageFragment :
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.removeObservers(this)
         shopPageFeedTabSharedViewModel?.shopPageFab?.removeObservers(this)
+        shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.removeObservers(this)
         shopViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
         UniversalShareBottomSheet.clearState(screenShotDetector)
@@ -421,6 +480,7 @@ class NewShopPageFragment :
         viewOneTabSeparator = viewBindingShopContentLayout?.viewOneTabSeparator
         shopPageFab = viewBindingShopContentLayout?.fabShopPage
         scrollToTopButton = viewBindingShopContentLayout?.buttonScrollToTop
+        miniCart = viewBinding?.miniCart
         //    we can't use viewbinding for the code below, since the layout from abstraction hasn't implement viewbinding
         errorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         subErrorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.sub_message_retry)
@@ -524,6 +584,7 @@ class NewShopPageFragment :
             when (result) {
                 is Success -> {
                     onSuccessGetShopPageP1Data(result.data)
+                    initMiniCart()
                 }
                 is Fail -> {
                     val throwable = result.throwable
@@ -716,7 +777,33 @@ class NewShopPageFragment :
                 }
             }
         })
+    }
 
+    private fun refreshCartCounterData() {
+        if (isLogin && !MvcLockedToProductUtil.isSellerApp())
+            newNavigationToolbar?.updateNotification()
+    }
+
+    private fun hideMiniCartWidget() {
+        miniCart?.hide()
+    }
+
+    private fun showMiniCartWidget() {
+        miniCart?.show()
+    }
+
+    private fun initMiniCart() {
+        if(shopPageHeaderDataModel?.isEnableDirectPurchase == true) {
+            val shopIds = listOf(shopId)
+            miniCart?.initialize(
+                shopIds = shopIds,
+                fragment = this,
+                listener = this,
+                isShopDirectPurchase = true,
+                source = MiniCartSource.ShopPage,
+                page = MiniCartAnalytics.Page.SHOP_PAGE
+            )
+        }
     }
 
     private fun sendEmbraceBreadCrumbLogger(
@@ -875,6 +962,9 @@ class NewShopPageFragment :
         sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_PREFERENCE, Context.MODE_PRIVATE)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+        shopPageMiniCartSharedViewModel = ViewModelProviders.of(requireActivity()).get(
+            ShopPageMiniCartSharedViewModel::class.java
+        )
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         shopPageFeedTabSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFeedTabSharedViewModel::class.java)
         context?.let {
@@ -925,6 +1015,7 @@ class NewShopPageFragment :
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
+                    setAffiliateData(this)
                 }
                 handlePlayBroadcastExtra(this@run)
             }
@@ -939,6 +1030,7 @@ class NewShopPageFragment :
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
             observeShopPageFeedTabSharedViewModel()
+            observeShopPageMiniCartSharedViewModel()
             getInitialData()
             inflateViewStub()
             initViews(view)
@@ -954,6 +1046,23 @@ class NewShopPageFragment :
                    permissionListener = this
            )
         }
+        initAffiliateCookie()
+    }
+
+    private fun setAffiliateData(uri: Uri) {
+        affiliateData = ShopAffiliateData(
+            uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
+            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+        )
+    }
+
+    private fun initAffiliateCookie() {
+        shopViewModel?.initAffiliateCookie(
+            affiliateCookieHelper,
+            affiliateData?.affiliateUUId.orEmpty(),
+            affiliateData?.affiliateChannel.orEmpty(),
+            shopId
+        )
     }
 
     private fun inflateViewStub() {
@@ -989,6 +1098,17 @@ class NewShopPageFragment :
                 FAB_ACTION_SETUP -> setupShopPageFab(shopPageFeedTabSharedViewModel?.shopPageFabConfig ?: ShopPageFabConfig())
                 FAB_ACTION_SHOW -> showShopPageFab()
                 FAB_ACTION_HIDE -> hideShopPageFab()
+            }
+        })
+    }
+
+    private fun observeShopPageMiniCartSharedViewModel() {
+        shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.observe(viewLifecycleOwner, {
+            refreshCartCounterData()
+            if (it.isShowMiniCartWidget) {
+                showMiniCartWidget()
+            } else {
+                hideMiniCartWidget()
             }
         })
     }
@@ -1059,6 +1179,7 @@ class NewShopPageFragment :
     }
 
     private fun getInitialData() {
+        hideMiniCartWidget()
         updateCurrentPageLocalCacheModelData()
         startMonitoringPltNetworkRequest()
         startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
@@ -1195,6 +1316,10 @@ class NewShopPageFragment :
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
                 .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
+                .appendQueryParameter(SearchApiConst.PLACEHOLDER, String.format(
+                    getString(R.string.shop_product_search_hint_2),
+                    shopPageHeaderDataModel?.shopName.orEmpty())
+                )
                 .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
                 .build()
                 .toString()
@@ -1223,6 +1348,9 @@ class NewShopPageFragment :
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
         screenShotDetector?.start()
+        refreshCartCounterData()
+        // Add delay update mini cart when on resume, to prevent race condition with cart page's update cart
+        updateMiniCartWidget(delay = DELAY_MINI_CART_RESUME)
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1420,6 +1548,7 @@ class NewShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
             listDynamicTabData = shopPageP1Data.listDynamicTabData
+            isEnableDirectPurchase = getIsEnableDirectPurchase(shopPageP1Data)
         }
         newNavigationToolbar?.run {
             val searchBarHintText = MethodChecker.fromHtml(getString(
@@ -1456,6 +1585,14 @@ class NewShopPageFragment :
         }
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         stickyLoginView?.loadContent()
+    }
+
+    private fun getIsEnableDirectPurchase(shopPageP1Data: NewShopPageP1HeaderData): Boolean {
+        return shopPageP1Data.listDynamicTabData.firstOrNull {
+            it.name == ShopPageTabName.HOME
+        }?.shopLayoutFeature?.firstOrNull {
+            it.name == DIRECT_PURCHASE && it.isActive
+        } != null
     }
 
     private fun sendShopPageTabImpressionTracker() {
@@ -1727,7 +1864,8 @@ class NewShopPageFragment :
                 isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
                 isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
                 shopAttribution = shopAttribution,
-                shopRef = shopRef
+                shopRef = shopRef,
+                isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
         )
         shopViewModel?.productListData?.let {
             shopPageProductFragment.setInitialProductListData(it)
@@ -1801,7 +1939,8 @@ class NewShopPageFragment :
                         shopPageHeaderDataModel?.isGoldMerchant ?: false,
                         shopPageHeaderDataModel?.shopName.orEmpty(),
                         shopAttribution ?: "",
-                        shopRef
+                        shopRef,
+                        shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
                         shopViewModel?.productListData?.let {
                             setInitialProductListData(it)
@@ -1816,7 +1955,8 @@ class NewShopPageFragment :
                         isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
                         isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
                         shopAttribution = shopAttribution,
-                        shopRef = shopRef
+                        shopRef = shopRef,
+                        isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
                     shopViewModel?.productListData?.let {
                         shopPageProductFragment.setInitialProductListData(it)
@@ -1838,15 +1978,19 @@ class NewShopPageFragment :
                     shopShowcaseTabFragment
                 }
                 ShopPageTabName.FEED -> {
-                    val feedFragment = RouteManager.instantiateFragmentDF(
-                        activity as AppCompatActivity,
-                        FEED_SHOP_FRAGMENT,
-                        Bundle().apply {
-                            putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                            putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
-                        }
-                    )
-                    feedFragment
+                    if (isShowFeed) {
+                        val feedFragment = RouteManager.instantiateFragmentDF(
+                            activity as AppCompatActivity,
+                            FEED_SHOP_FRAGMENT,
+                            Bundle().apply {
+                                putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
+                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
+                            }
+                        )
+                        feedFragment
+                    } else {
+                        null
+                    }
                 }
                 ShopPageTabName.REVIEW -> {
                     val reviewTabFragment = RouteManager.instantiateFragmentDF(
@@ -1887,7 +2031,8 @@ class NewShopPageFragment :
             shopPageHeaderDataModel?.isGoldMerchant ?: false,
             shopPageHeaderDataModel?.shopName.orEmpty(),
             shopAttribution ?: "",
-            shopRef
+            shopRef,
+            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
         ).apply {
             setListWidgetLayoutData(HomeLayoutData(
                 widgetIdList = tabData.data.widgetIdList
@@ -1909,7 +2054,8 @@ class NewShopPageFragment :
                 shopPageHeaderDataModel?.isGoldMerchant ?: false,
                 shopPageHeaderDataModel?.shopName.orEmpty(),
                 shopAttribution ?: "",
-                shopRef
+                shopRef,
+                shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
             ).apply {
                 shopViewModel?.productListData?.let {
                     setInitialProductListData(it)
@@ -2870,5 +3016,17 @@ class NewShopPageFragment :
 
     fun setConfettiAlreadyShown() {
         isConfettiAlreadyShown = true
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        shopPageMiniCartSharedViewModel?.updateSharedMiniCartData(miniCartSimplifiedData)
+    }
+
+    fun updateMiniCartWidget(delay: Long = 0) {
+        miniCart?.updateData(delay)
+    }
+
+    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 }

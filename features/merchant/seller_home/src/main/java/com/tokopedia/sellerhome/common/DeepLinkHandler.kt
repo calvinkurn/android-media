@@ -33,7 +33,7 @@ object DeepLinkHandler {
                         .orEmpty()
                 val filterOrderType = intent.data?.getQueryParameter(
                     AppLinkMapperSellerHome.FILTER_ORDER_TYPE
-                ) ?: "0"
+                ) ?: SomTabConst.DEFAULT_ORDER_TYPE_FILTER
                 callback(
                     PageFragment(
                         type = FragmentType.ORDER,
@@ -49,7 +49,7 @@ object DeepLinkHandler {
                         .orEmpty()
                 val filterOrderType = intent.data?.getQueryParameter(
                     AppLinkMapperSellerHome.FILTER_ORDER_TYPE
-                ) ?: "0"
+                ) ?: SomTabConst.DEFAULT_ORDER_TYPE_FILTER
                 callback(
                     PageFragment(
                         type = FragmentType.ORDER,
@@ -74,16 +74,32 @@ object DeepLinkHandler {
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST) -> {
                 val uri = intent.data
                 val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
-                val filterOrderType = uri?.getQueryParameter(AppLinkMapperSellerHome.FILTER_ORDER_TYPE) ?: "0"
+                val filterOrderType = uri?.getQueryParameter(
+                    AppLinkMapperSellerHome.FILTER_ORDER_TYPE
+                ) ?: SomTabConst.DEFAULT_ORDER_TYPE_FILTER
                 callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, searchKeyword, filterOrderType))
             }
 
             //Product Manage
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
                 val uri = intent.data
-                val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
-                val searchKeyword = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SEARCH).orEmpty()
-                callback(PageFragment(FragmentType.PRODUCT, filterId, searchKeyword))
+                val filterId = uri?.getQueryParameter(
+                    DeepLinkMapperProductManage.QUERY_PARAM_FILTER
+                ).orEmpty()
+                val searchKeyword = uri?.getQueryParameter(
+                    DeepLinkMapperProductManage.QUERY_PARAM_SEARCH
+                ).orEmpty()
+                val tab = uri?.getQueryParameter(
+                    DeepLinkMapperProductManage.QUERY_PARAM_TAB
+                ).orEmpty()
+                callback(
+                    PageFragment(
+                        type = FragmentType.PRODUCT,
+                        tabPage = filterId,
+                        keywordSearch = searchKeyword,
+                        productManageTab = tab
+                    )
+                )
             }
 
             //Top Chat

@@ -109,6 +109,7 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
         super.onActivityCreated(savedInstanceState)
         observeVariantStock()
         observeStockInfo()
+        observeSaveButton()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -168,6 +169,7 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
                     ActiveProductSwitchUiModel(isActive, sellableProduct?.productId, access),
                     TotalStockEditorUiModel(
                         stockCount.orZero(),
+                        sellableProduct?.maxStock,
                         access,
                         sellableProduct?.campaignTypeList,
                         sellableProduct?.productId)
@@ -205,6 +207,12 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
         })
     }
 
+    private fun observeSaveButton() {
+        mViewModel.shouldEnableSaveButton.observe(viewLifecycleOwner) { enableSaveButton ->
+            campaignStockListener?.setSaveButtonEnabled(enableSaveButton)
+        }
+    }
+
     private fun showHideStockInfo(showStockInfo: Boolean) {
         adapter.apply {
             getRecyclerView(view)?.post {
@@ -221,7 +229,8 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
         }
     }
 
-    private fun onTotalStockChanged(totalStock: Int) {
+    private fun onTotalStockChanged(productId: String, totalStock: Int, maxStock: Int?) {
+        mViewModel.setNonVariantStock(productId, totalStock, maxStock)
         campaignStockListener?.onTotalStockChanged(totalStock)
     }
 
@@ -229,8 +238,8 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
         campaignStockListener?.onActiveStockChanged(isActive)
     }
 
-    private fun onVariantStockChanged(productId: String, stock: Int) {
-        mViewModel.setVariantStock(productId, stock)
+    private fun onVariantStockChanged(productId: String, stock: Int, maxStock: Int?) {
+        mViewModel.setVariantStock(productId, stock, maxStock)
         campaignStockListener?.onVariantStockChanged(productId, stock)
     }
 

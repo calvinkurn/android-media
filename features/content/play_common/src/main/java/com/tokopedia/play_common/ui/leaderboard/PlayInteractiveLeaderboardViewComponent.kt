@@ -86,10 +86,11 @@ class PlayInteractiveLeaderboardViewComponent(
         tvSheetTitle.setText(R.string.play_interactive_leaderboard_title)
 
         ivSheetClose.setOnClickListener {
-                listener.onCloseButtonClicked(this)
-            }
+            listener.onCloseButtonClicked(this)
+        }
 
         rvLeaderboard.apply {
+            addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
             adapter = leaderboardAdapter
             layoutManager = layoutManager
         }
@@ -105,7 +106,6 @@ class PlayInteractiveLeaderboardViewComponent(
         }
 
         registerAdapterObserver()
-        rvLeaderboard.addItemDecoration(PlayLeaderBoardItemDecoration(rvLeaderboard.context))
 
         btnRefreshError.rootView.addOnImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)

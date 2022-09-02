@@ -181,6 +181,8 @@ class GetOccCartMapper @Inject constructor() {
             isPreOrder = product.isPreOrder
             categoryId = product.categoryId
             category = product.category
+            lastLevelCategory = product.lastLevelCategory
+            categoryIdentifier = product.categoryIdentifier
             campaignId = product.campaignId
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
@@ -240,6 +242,7 @@ class GetOccCartMapper @Inject constructor() {
                 cityName = address.cityName,
                 provinceId = address.provinceId,
                 provinceName = address.provinceName,
+                country = address.country,
                 phone = address.phone,
                 longitude = address.longitude,
                 latitude = address.latitude,
@@ -305,7 +308,8 @@ class GetOccCartMapper @Inject constructor() {
                 errorData = null,
                 bid = payment.bid,
                 specificGatewayCampaignOnlyType = payment.specificGatewayCampaignOnlyType,
-                walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl)
+                walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl),
+                paymentFees = mapPaymentFee(payment.paymentFeeDetail)
         )
     }
 
@@ -409,6 +413,19 @@ class GetOccCartMapper @Inject constructor() {
                 headerTitle = walletData.headerTitle,
                 urlLink = walletData.urlLink
         )
+    }
+
+    private fun mapPaymentFee(paymentFeeDetails: List<PaymentFeeDetailResponse>): List<OrderPaymentFee> {
+        return paymentFeeDetails.map { paymentFeeDetail ->
+            OrderPaymentFee(
+                title = paymentFeeDetail.title,
+                fee = paymentFeeDetail.fee,
+                showTooltip = paymentFeeDetail.showTooltip,
+                showSlashed = paymentFeeDetail.showSlashed,
+                slashedFee = paymentFeeDetail.slashedFee,
+                tooltipInfo = paymentFeeDetail.tooltipInfo,
+            )
+        }
     }
 
     private fun mapPaymentGoCicilData(goCicilData: GoCicilData): OrderPaymentGoCicilData {

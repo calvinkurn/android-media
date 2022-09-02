@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.VisibleRegion
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search_map.data.model.Filter
 import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
@@ -196,11 +197,11 @@ class HotelSearchMapViewModelTest {
         //given
         val properties = listOf(Property(1), Property(2), Property(3))
         coEvery {
-            searchPropertyUseCase.execute(any() as String, any())
+            searchPropertyUseCase.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
         } returns Success(PropertySearch(properties))
 
         //when
-        hotelSearchMapViewModel.searchProperty(0, "")
+        hotelSearchMapViewModel.searchProperty(0, DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelSearchMapViewModel.liveSearchResult.value is Success)
@@ -211,11 +212,11 @@ class HotelSearchMapViewModelTest {
     fun searchProperty_shouldReturnFail() {
         //given
         coEvery {
-            searchPropertyUseCase.execute(any() as String, any())
+            searchPropertyUseCase.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
         } returns Fail(Throwable())
 
         //when
-        hotelSearchMapViewModel.searchProperty(0, "")
+        hotelSearchMapViewModel.searchProperty(0, DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelSearchMapViewModel.liveSearchResult.value is Fail)

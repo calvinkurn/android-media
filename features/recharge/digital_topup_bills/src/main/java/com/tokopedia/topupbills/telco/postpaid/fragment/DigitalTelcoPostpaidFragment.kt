@@ -214,21 +214,23 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val oldItems = telcoTabViewModel.createIdSnapshot()
         performChange()
         val newItems = telcoTabViewModel.createIdSnapshot()
-        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldItems[oldItemPosition] == newItems[newItemPosition]
+        viewPager.adapter?.let {
+            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    oldItems[oldItemPosition] == newItems[newItemPosition]
 
-            override fun getOldListSize(): Int {
-                return oldItems.size
-            }
+                override fun getOldListSize(): Int {
+                    return oldItems.size
+                }
 
-            override fun getNewListSize(): Int {
-                return newItems.size
-            }
+                override fun getNewListSize(): Int {
+                    return newItems.size
+                }
 
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                areItemsTheSame(oldItemPosition, newItemPosition)
-        }, true).dispatchUpdatesTo(viewPager.adapter!!)
+                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    areItemsTheSame(oldItemPosition, newItemPosition)
+            }, true).dispatchUpdatesTo(it)
+        }
     }
 
     override fun setupCheckoutData() {
@@ -638,6 +640,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         private const val TITLE_PAGE = "telco post paid"
+
+        private const val MINIMUM_OPERATOR_PREFIX = 4
 
         private const val VALID_MIN_INPUT_NUMBER = 10
         private const val VALID_MAX_INPUT_NUMBER = 14

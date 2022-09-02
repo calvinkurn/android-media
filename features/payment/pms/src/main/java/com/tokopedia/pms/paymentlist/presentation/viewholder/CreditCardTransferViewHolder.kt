@@ -29,7 +29,7 @@ class CreditCardTransferViewHolder(
     private fun setHeaderData(element: CreditCardPaymentModel) {
         view.apply {
             cardTitle.text = element.productName
-            cardIcon.urlSrc = CARD_ICON_URL
+            cardIcon.urlSrc = if(element.productImage != "") element.productImage else CARD_ICON_URL
             tvPaymentTransactionDate.text = element.expiryDate
             setOnClickListener { actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, element) }
             cardMenu.setOnClickListener { actionItemListener(ACTION_CHEVRON_ACTIONS, element) }

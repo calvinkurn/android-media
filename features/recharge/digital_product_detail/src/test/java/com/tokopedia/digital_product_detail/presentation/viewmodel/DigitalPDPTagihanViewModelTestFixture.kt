@@ -3,17 +3,17 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteGroupModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTagihanListrikRepository
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
@@ -96,13 +96,13 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any())
+            repo.addToCart(any(), any(), any(), any(), any())
         } returns response
     }
 
     protected fun onGetAddToCart_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.addToCart(any(), any(), any(), any())
+            repo.addToCart(any(), any(), any(), any(), any())
         } throws errorThrowable
     }
 
@@ -143,21 +143,24 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
-        coVerify { repo.addToCart(any(), any(), any(), any()) }
+        coVerify { repo.addToCart(any(), any(), any(), any(), any()) }
     }
 
     protected fun verifyInquiryProductRepoGetCalled() {
         coVerify { repo.inquiryProduct(any(), any(), any()) }
     }
 
-    protected fun verifyGetMenuDetailLoading(expectedResponse: RechargeNetworkResult.Loading){
+    protected fun verifyGetMenuDetailLoading(expectedResponse: RechargeNetworkResult.Loading) {
         val actualResponse = viewModel.menuDetailData.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetMenuDetailSuccess(expectedResponse: MenuDetailModel) {
         val actualResponse = viewModel.menuDetailData.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyGetMenuDetailFail() {
@@ -165,24 +168,33 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
-    protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){
+    protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading) {
         val actualResponse = viewModel.favoriteChipsData.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetFavoriteNumberChipsSuccess(expectedResponse: List<FavoriteChipModel>) {
         val actualResponse = viewModel.favoriteChipsData.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyGetFavoriteNumberListSuccess(expectedResponse: List<AutoCompleteModel>) {
         val actualResponse = viewModel.autoCompleteData.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyGetFavoriteNumberPrefillSuccess(expectedResponse: PrefillModel) {
         val actualResponse = viewModel.prefillData.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyGetFavoriteNumberPrefillEmpty() {
@@ -191,14 +203,17 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualResponse.data.clientNumber.isEmpty())
     }
 
-    protected fun verifyGetOperatorSelectGroupLoading(expectedResponse: RechargeNetworkResult.Loading){
+    protected fun verifyGetOperatorSelectGroupLoading(expectedResponse: RechargeNetworkResult.Loading) {
         val actualResponse = viewModel.catalogSelectGroup.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetOperatorSelectGroupSuccess(expectedResponse: DigitalCatalogOperatorSelectGroup) {
         val actualResponse = viewModel.catalogSelectGroup.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyGetOperatorSelectGroupFail() {
@@ -206,7 +221,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
-    protected fun verifyGetTagihanProductLoading(expectedResponse: RechargeNetworkResult.Loading){
+    protected fun verifyGetTagihanProductLoading(expectedResponse: RechargeNetworkResult.Loading) {
         val actualResponse = viewModel.tagihanProduct.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
@@ -218,7 +233,10 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun verifyGetTagihanProductSuccess(expectedResponse: RechargeProduct) {
         val actualResponse = viewModel.tagihanProduct.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyGetTagihanProductFail() {
@@ -228,12 +246,18 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
 
     protected fun verifyAddToCartSuccess(expectedResponse: DigitalAtcResult) {
         val actualResponse = viewModel.addToCartResult.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
+        Assert.assertEquals(
+            expectedResponse,
+            (actualResponse as RechargeNetworkResult.Success).data
+        )
     }
 
     protected fun verifyAddToCartError(expectedResponse: Throwable) {
         val actualResponse = viewModel.addToCartResult.value
-        Assert.assertEquals(expectedResponse.message, (actualResponse as RechargeNetworkResult.Fail).error.message)
+        Assert.assertEquals(
+            expectedResponse.message,
+            (actualResponse as RechargeNetworkResult.Fail).error.message
+        )
     }
 
     protected fun verifyAddToCartErrorExceptions(expectedResponse: Throwable) {
@@ -241,7 +265,7 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Fail).error)
     }
 
-    protected fun verifyAddToCartErrorLoading(expectedResponse: RechargeNetworkResult.Loading){
+    protected fun verifyAddToCartErrorLoading(expectedResponse: RechargeNetworkResult.Loading) {
         val actualResponse = viewModel.addToCartResult.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
@@ -289,11 +313,14 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualCategoryId == EMPTY || actualCategoryId == null)
     }
 
-    protected fun verifyListInfoSuccess(expectedListInfo: List<String>, actualListInfo: List<String>){
+    protected fun verifyListInfoSuccess(
+        expectedListInfo: List<String>,
+        actualListInfo: List<String>
+    ) {
         Assert.assertEquals(expectedListInfo, actualListInfo)
     }
 
-    protected fun verifyListInfoEmpty(actualListInfo: List<String>){
+    protected fun verifyListInfoEmpty(actualListInfo: List<String>) {
         Assert.assertEquals(actualListInfo, listOf<String>())
     }
 
@@ -302,7 +329,10 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         assertOperatorDataEqual(expectedResult, actualResult)
     }
 
-    private fun assertDigitalCheckoutPassDataEqual(expected: DigitalCheckoutPassData, actual: DigitalCheckoutPassData) {
+    private fun assertDigitalCheckoutPassDataEqual(
+        expected: DigitalCheckoutPassData,
+        actual: DigitalCheckoutPassData
+    ) {
         Assert.assertEquals(expected.clientNumber, actual.clientNumber)
         Assert.assertEquals(expected.categoryId, actual.categoryId)
         Assert.assertEquals(expected.operatorId, actual.operatorId)

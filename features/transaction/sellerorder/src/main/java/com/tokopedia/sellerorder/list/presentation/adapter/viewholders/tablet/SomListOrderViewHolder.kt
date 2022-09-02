@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.unifycomponents.toPx
 
 class SomListOrderViewHolder(
         itemView: View,
@@ -62,7 +63,7 @@ class SomListOrderViewHolder(
             }
             binding?.cardSomOrder?.setMargin(
                 Int.ZERO,
-                if (element.orderPlusData != null) CARD_MARGIN_TOP_ORDER_PLUS else CARD_MARGIN_TOP_ORDER_REGULAR,
+                if (element.orderPlusData != null) CARD_MARGIN_TOP_ORDER_PLUS.toPx() else CARD_MARGIN_TOP_ORDER_REGULAR.toPx(),
                 Int.ZERO,
                 Int.ZERO
             )

@@ -30,7 +30,6 @@
     <!-- id -->
     <item name="product_bundle_master_tag" type="id" />
     <item name="product_bundle_detail_tag" type="id" />
-    <item name="product_variant_tag" type="id" />
 
     <!-- actions -->
     <string name="action_back">Kembali</string>
@@ -39,7 +38,7 @@
     <string name="action_oke">Oke</string>
     <string name="action_reload">Muat ulang</string>
     <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
-    <string name="action_choose_package">Pilih Paket</string>
+    <string name="action_choose_package">Beli Paket</string>
     <string name="action_package_chosen">Paket Terpilih</string>
 
     <!-- single bundle item mapping -->

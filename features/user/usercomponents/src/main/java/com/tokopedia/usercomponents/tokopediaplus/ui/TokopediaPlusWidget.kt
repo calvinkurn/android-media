@@ -1,6 +1,7 @@
 package com.tokopedia.usercomponents.tokopediaplus.ui
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -8,8 +9,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usercomponents.databinding.UiTokopediaPlusBinding
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
@@ -19,6 +23,11 @@ class TokopediaPlusWidget @JvmOverloads constructor(
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0
 ): ConstraintLayout(context, attributeSet, defStyleAttr) {
+
+    companion object {
+        private const val HEIGHT_NON_SUBSCRIBER = 56f
+        private const val HEIGHT_SUBSCRIBER = 40f
+    }
 
     private var pageSource: String = ""
     var listener: TokopediaPlusListener? = null
@@ -32,35 +41,23 @@ class TokopediaPlusWidget @JvmOverloads constructor(
             addView(it.root)
         }
 
-    var icon = ""
-        set(value) {
-            viewBinding.tokopediaPlusComponent.iconTokopediaPlus.loadIcon(value)
-        }
-
-    var title = ""
-        set(value) {
-            viewBinding.tokopediaPlusComponent.titleTokopediaPlus.text = value
-            field = value
-        }
-
-    var subtitle = ""
-        set(value) {
-            viewBinding.tokopediaPlusComponent.descriptionTokopediaPlus.text = MethodChecker.fromHtml(value)
-            field = value
-        }
-
     fun setContent(
         param: TokopediaPlusParam
     ) {
         pageSource = param.pageSource
 
         hideLoading()
-        renderView(param.tokopediaPlusDataModel)
+        if (pageSource == TokopediaPlusCons.SOURCE_ACCOUNT_PAGE) {
+            renderViewCard(param.tokopediaPlusDataModel)
+        } else {
+            renderView(param.tokopediaPlusDataModel)
+        }
     }
 
     fun onError(throwable: Throwable? = null) {
         viewBinding.apply {
             tokopediaPlusComponent.root.hide()
+            tokopediaPlusCardComponent.root.hide()
             tokopediaPlusLoader.root.hide()
 
             tokopediaLocalLoad.show()
@@ -81,15 +78,19 @@ class TokopediaPlusWidget @JvmOverloads constructor(
     private fun renderView(tokopediaPlusDataModel: TokopediaPlusDataModel?) {
         tokopediaPlusDataModel?.let { tokopediaPlusData ->
             if (tokopediaPlusData.title.isNotEmpty() && tokopediaPlusData.iconImageURL.isNotEmpty()) {
-                icon = tokopediaPlusData.iconImageURL
-                title = tokopediaPlusData.title
-                subtitle = tokopediaPlusData.subtitle
-
                 listener?.isShown(tokopediaPlusData.isShown, pageSource, tokopediaPlusDataModel)
                 viewBinding.apply {
+                    tokopediaPlusCardComponent.root.hide()
                     root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
 
                     tokopediaPlusComponent.apply {
+                        val containerHeight =  if(tokopediaPlusData.isSubscriber) {
+                            HEIGHT_SUBSCRIBER.dpToPx().toInt()
+                        } else HEIGHT_NON_SUBSCRIBER.dpToPx().toInt()
+                        containerTokopediaPlus.layoutParams.height = containerHeight
+                        iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
+                        titleTokopediaPlus.text = tokopediaPlusData.title
+                        descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
                         descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
@@ -98,7 +99,39 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                             val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
                             context.startActivity(intent)
                         }
-                    }
+                    }.root.show()
+                }
+            } else {
+                viewBinding.root.hide()
+            }
+        }
+    }
+
+    private fun renderViewCard(tokopediaPlusDataModel: TokopediaPlusDataModel?) {
+        tokopediaPlusDataModel?.let { tokopediaPlusData ->
+            if (tokopediaPlusData.title.isNotEmpty() && tokopediaPlusData.iconImageURL.isNotEmpty()) {
+                listener?.isShown(tokopediaPlusData.isShown, pageSource, tokopediaPlusDataModel)
+                viewBinding.apply {
+                    tokopediaPlusComponent.root.hide()
+                    root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
+
+                    tokopediaPlusCardComponent.apply {
+                        val containerHeight =  if(tokopediaPlusData.isSubscriber) {
+                            HEIGHT_SUBSCRIBER.dpToPx().toInt()
+                        } else HEIGHT_NON_SUBSCRIBER.dpToPx().toInt()
+                        containerTokopediaPlus.layoutParams.height = containerHeight
+                        iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
+                        titleTokopediaPlus.text = tokopediaPlusData.title
+                        descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
+                        descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
+
+                        setOnClickListener {
+                            listener?.onClick(pageSource, tokopediaPlusData)
+
+                            val intent = RouteManager.getIntent(context, tokopediaPlusData.applink)
+                            context.startActivity(intent)
+                        }
+                    }.root.show()
                 }
             } else {
                 viewBinding.root.hide()

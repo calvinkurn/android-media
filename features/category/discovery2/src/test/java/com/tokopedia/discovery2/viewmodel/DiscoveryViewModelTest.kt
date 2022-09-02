@@ -15,6 +15,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.customtopchatdatamodel.ChatExistingChat
 import com.tokopedia.discovery2.data.customtopchatdatamodel.CustomChatResponse
@@ -153,6 +154,9 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.CATEGORY_ID, "") } returns "i"
         every { bundle.getString(DiscoveryActivity.DYNAMIC_SUBTITLE, "") } returns "j"
         every { bundle.getString(DiscoveryActivity.TARGET_TITLE_ID, "") } returns "k"
+        every { bundle.getString(DiscoveryActivity.CAMPAIGN_ID, "") } returns "l"
+        every { bundle.getString(DiscoveryActivity.VARIANT_ID, "") } returns "m"
+        every { bundle.getString(DiscoveryActivity.SHOP_ID, "") } returns "n"
 
         val discoComponentQuery : MutableMap<String, String?> = mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -168,7 +172,10 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
                 DiscoveryActivity.CATEGORY_ID to "p",
                 DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
-                DiscoveryActivity.TARGET_TITLE_ID to "k"
+                DiscoveryActivity.TARGET_TITLE_ID to "k",
+                DiscoveryActivity.CAMPAIGN_ID to "l",
+                DiscoveryActivity.VARIANT_ID to "m",
+                DiscoveryActivity.SHOP_ID to "n"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -191,6 +198,9 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.CATEGORY_ID, "") } returns "i"
         every { bundle.getString(DiscoveryActivity.DYNAMIC_SUBTITLE, "") } returns "j"
         every { bundle.getString(DiscoveryActivity.TARGET_TITLE_ID, "") } returns "k"
+        every { bundle.getString(DiscoveryActivity.CAMPAIGN_ID, "") } returns "l"
+        every { bundle.getString(DiscoveryActivity.VARIANT_ID, "") } returns "m"
+        every { bundle.getString(DiscoveryActivity.SHOP_ID, "") } returns "n"
 
         val map : MutableMap<String, String?> = mutableMapOf(
                 DiscoveryActivity.SOURCE to "a",
@@ -203,7 +213,10 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
                 DiscoveryActivity.CATEGORY_ID to "i",
                 DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
-                DiscoveryActivity.TARGET_TITLE_ID to "k"
+                DiscoveryActivity.TARGET_TITLE_ID to "k",
+                DiscoveryActivity.CAMPAIGN_ID to "l",
+                DiscoveryActivity.VARIANT_ID to "m",
+                DiscoveryActivity.SHOP_ID to "n"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -226,6 +239,9 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.CATEGORY_ID, "") } returns "i"
         every { bundle.getString(DiscoveryActivity.DYNAMIC_SUBTITLE, "") } returns "j"
         every { bundle.getString(DiscoveryActivity.TARGET_TITLE_ID, "") } returns "k"
+        every { bundle.getString(DiscoveryActivity.CAMPAIGN_ID, "") } returns "l"
+        every { bundle.getString(DiscoveryActivity.VARIANT_ID, "") } returns "m"
+        every { bundle.getString(DiscoveryActivity.SHOP_ID, "") } returns "n"
         val map : MutableMap<String, String?> = mutableMapOf(
                 DiscoveryActivity.SOURCE to "a",
                 DiscoveryActivity.COMPONENT_ID to "b",
@@ -237,7 +253,10 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
                 DiscoveryActivity.CATEGORY_ID to "i",
                 DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
-                DiscoveryActivity.TARGET_TITLE_ID to "k"
+                DiscoveryActivity.TARGET_TITLE_ID to "k",
+                DiscoveryActivity.CAMPAIGN_ID to "l",
+                DiscoveryActivity.VARIANT_ID to "m",
+                DiscoveryActivity.SHOP_ID to "n"
         )
         val discoComponentQuery : MutableMap<String, String?> = mutableMapOf()
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -313,6 +332,9 @@ class DiscoveryViewModelTest {
         every { uri.getQueryParameter(DiscoveryActivity.CATEGORY_ID) } returns "i"
         every { uri.getQueryParameter(DiscoveryActivity.DYNAMIC_SUBTITLE) } returns "j"
         every { uri.getQueryParameter(DiscoveryActivity.TARGET_TITLE_ID) } returns "k"
+        every { uri.getQueryParameter(DiscoveryActivity.CAMPAIGN_ID) } returns "l"
+        every { uri.getQueryParameter(DiscoveryActivity.VARIANT_ID) } returns "m"
+        every { uri.getQueryParameter(DiscoveryActivity.SHOP_ID) } returns "n"
 
         val map : MutableMap<String, String?> = mutableMapOf(
                 DiscoveryActivity.SOURCE to "a",
@@ -325,7 +347,10 @@ class DiscoveryViewModelTest {
                 DiscoveryActivity.RECOM_PRODUCT_ID to "h",
                 DiscoveryActivity.CATEGORY_ID to "i",
                 DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
-                DiscoveryActivity.TARGET_TITLE_ID to "k"
+                DiscoveryActivity.TARGET_TITLE_ID to "k",
+                DiscoveryActivity.CAMPAIGN_ID to "l",
+                DiscoveryActivity.VARIANT_ID to "m",
+                DiscoveryActivity.SHOP_ID to "n"
         )
 
         viewModel.getMapOfQueryParameter(uri)
@@ -470,6 +495,26 @@ class DiscoveryViewModelTest {
         viewModel.openCustomTopChat(context = context, appLinks = "tokopedia://discovery/test-campaign-7", shopId = 23)
 
         verify(inverse = true) { RouteManager.route(any(),any()) }
+    }
+
+    @Test
+    fun `test for DiscoverySamePage being opened if no recomProdId present`(){
+        viewModel.checkForSamePageOpened(mutableMapOf())
+        verify(inverse = true) { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
+    }
+
+    @Test
+    fun `test for DiscoverySamePage being opened if recomProdId present and data mismatch`(){
+        val map : MutableMap<String, String?> = mutableMapOf()
+        map[DiscoveryActivity.RECOM_PRODUCT_ID] = "123"
+        val mockResp: DiscoveryResponse = mockk()
+        every { discoveryDataUseCase.getDiscoResponseIfPresent(any()) } returns mockResp
+        val map2: MutableMap<String, String?> = mutableMapOf()
+        map2[DiscoveryActivity.RECOM_PRODUCT_ID] = "101"
+        every { mockResp.queryParamMap } returns map2
+        viewModel.checkForSamePageOpened(map)
+        verify { discoveryDataUseCase.getDiscoResponseIfPresent(any()) }
+        verify { discoveryDataUseCase.clearPage(any()) }
     }
 
     @After

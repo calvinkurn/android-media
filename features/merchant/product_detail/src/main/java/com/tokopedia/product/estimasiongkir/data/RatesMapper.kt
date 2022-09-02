@@ -53,7 +53,7 @@ object RatesMapper {
                     it.price.priceFmt,
                     it.cod.isCodAvailable == COD_AVAILABLE,
                     it.cod.text,
-                    it.features.dynamicPrice.dynamicPriceString,
+                    it.features.dynamicPrice.dynamicPriceString
                 )
             }
             if (servicesDetail.isNotEmpty()) {

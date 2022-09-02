@@ -26,18 +26,20 @@ object GetSomFilterMapper {
         if (statusList.isNotEmpty()) {
             somFilterUiModel.find {
                 it.nameFilter == FILTER_STATUS_ORDER
-            }?.somFilterData?.forEach {
-                val isTheSameStatusFilter = it.idList.any {
-                    it in statusList
+            }?.somFilterData?.forEach { somFilterData ->
+                val isTheSameStatusFilter = somFilterData.idList.any { somFilterDataId ->
+                    somFilterDataId in statusList
                 }
-                it.isSelected = isTheSameStatusFilter
+                somFilterData.isSelected = isTheSameStatusFilter
                 if (isTheSameStatusFilter) {
-                    it.childStatus.forEach {
-                        it.isChecked = statusList.contains(it.childId.firstOrNull())
+                    somFilterData.childStatus.forEach { somFilterDataChild ->
+                        somFilterDataChild.isChecked = statusList.contains(
+                            somFilterDataChild.childId.firstOrNull()
+                        )
                     }
                 } else {
-                    it.childStatus.forEach {
-                        it.isChecked = true
+                    somFilterData.childStatus.forEach { somFilterDataChild ->
+                        somFilterDataChild.isChecked = true
                     }
                 }
             }

@@ -226,41 +226,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         super.onDestroy()
     }
 
-    private fun List<SomFilterUiModel>.transformFilterOrderStatus(): List<SomFilterUiModel> {
-        if (!somListOrderParam?.statusList.isNullOrEmpty()) {
-            find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.forEach {
-                val isTheSameStatusFilter = it.idList.any {
-                    it in somListOrderParam?.statusList.orEmpty()
-                }
-                it.isSelected = isTheSameStatusFilter
-                if (isTheSameStatusFilter) {
-                    it.childStatus.forEach {
-                        it.isChecked = somListOrderParam?.statusList.orEmpty().contains(it.childId.firstOrNull())
-                    }
-                } else {
-                    it.childStatus.forEach {
-                        it.isChecked = true
-                    }
-                }
-            }
-        }
-        return this
-    }
-
-    private fun List<SomFilterUiModel>.transformFilterOrderType(): List<SomFilterUiModel> {
-        find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData?.forEach {
-            it.isSelected = somListOrderParam?.orderTypeList?.contains(it.id) ?: it.isSelected
-        }
-        return this
-    }
-
-    private fun List<SomFilterUiModel>.transformFilterSort(): List<SomFilterUiModel> {
-        find { it.nameFilter == FILTER_SORT }?.somFilterData?.forEach {
-            it.isSelected = it.id == somListOrderParam?.sortBy
-        }
-        return this
-    }
-
     private fun adjustBottomSheetPadding() {
         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, bottomSheetWrapper.paddingBottom)
         (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(), 0,

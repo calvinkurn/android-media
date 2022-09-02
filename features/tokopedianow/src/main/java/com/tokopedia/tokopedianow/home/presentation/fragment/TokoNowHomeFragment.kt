@@ -1063,6 +1063,10 @@ class TokoNowHomeFragment: Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
+                        actionText = getString(R.string.tokopedianow_lihat),
+                        onClickActionBtn = {
+                            showMiniCartBottomSheet()
+                        },
                         type = TYPE_NORMAL
                     )
                 }
@@ -1109,7 +1113,6 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
                 is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
-                    it.position,
                     it.quantity,
                     it.data
                 )
@@ -1122,6 +1125,16 @@ class TokoNowHomeFragment: Fragment(),
                 is HomeLeftCarouselAtcProductCardUiModel -> trackLeftCarouselAddToCart(
                     it.quantity,
                     it.cartId,
+                    it.data
+                )
+            }
+        }
+
+        observe(viewModelTokoNow.homeRemoveFromCartTracker) {
+            when(it.data) {
+                is HomeProductRecomUiModel -> trackProductRecomRemoveFromCart(
+                    it.quantity,
+                    it.position,
                     it.data
                 )
             }
@@ -1214,6 +1227,16 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
+    private fun trackProductRecomRemoveFromCart(quantity: Int, position: Int, productRecomModel: HomeProductRecomUiModel) {
+        analytics.onClickProductRecomRemoveFromCart(
+            channelId = productRecomModel.id,
+            headerName = productRecomModel.recomWidget.title,
+            quantity = quantity.toString(),
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            position = position.toString()
+        )
+    }
+
     private fun trackLeftCarouselAddToCart(quantity: Int, cartId: String, product: HomeLeftCarouselAtcProductCardUiModel) {
         analytics.onClickLeftCarouselAddToCart(
             quantity = quantity.toString(),
@@ -1301,8 +1324,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickRepurchase(position, data)
     }
 
-    private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRepurchaseAddToCart(position, quantity, data)
+    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+        analytics.onRepurchaseAddToCart(quantity, data)
     }
 
     private fun trackClickShareSenderReferralWidget(referral: HomeSharingReferralWidgetUiModel) {
@@ -1315,7 +1338,13 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
+    private fun showToaster(
+        message: String,
+        duration: Int = LENGTH_SHORT,
+        type: Int,
+        actionText: String = "",
+        onClickActionBtn: View.OnClickListener = View.OnClickListener {  }
+    ) {
         view?.let { view ->
             if (message.isNotBlank()) {
                 Toaster.toasterCustomBottomHeight = getMiniCartHeight()
@@ -1323,7 +1352,9 @@ class TokoNowHomeFragment: Fragment(),
                     view = view,
                     text = message,
                     duration = duration,
-                    type = type
+                    type = type,
+                    actionText = actionText,
+                    clickListener = onClickActionBtn
                 )
                 toaster.show()
             }
@@ -1368,9 +1399,13 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showBottomSheetMiniCartList() {
         if (isOpenMiniCartList) {
-            miniCartWidget?.showMiniCartListBottomSheet(this)
+            showMiniCartBottomSheet()
             isOpenMiniCartList = false
         }
+    }
+
+    private fun showMiniCartBottomSheet() {
+        miniCartWidget?.showMiniCartListBottomSheet(this)
     }
 
     private fun getIsOpenMiniCartListFromUri(uri: Uri): Boolean {

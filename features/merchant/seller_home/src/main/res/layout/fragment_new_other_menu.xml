@@ -34,7 +34,7 @@
                     android:id="@+id/layout_sah_new_other_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl6"
+                    android:layout_marginTop="32dp"
                     android:orientation="vertical"
                     app:layout_constraintTop_toTopOf="parent">
 

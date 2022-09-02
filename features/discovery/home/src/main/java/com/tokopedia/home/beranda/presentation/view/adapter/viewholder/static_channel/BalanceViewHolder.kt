@@ -198,10 +198,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                 listener?.actionTokoPointClicked(
                     element.applinkContainer,
                     element.redirectUrl,
-                    if (element.mainPageTitle.isEmpty())
-                        TITLE_HEADER_WEBSITE
-                    else
-                        element.mainPageTitle
+                    element.mainPageTitle.ifEmpty { TITLE_HEADER_WEBSITE }
                 )
             },
             walletAppAction = { isLinked ->

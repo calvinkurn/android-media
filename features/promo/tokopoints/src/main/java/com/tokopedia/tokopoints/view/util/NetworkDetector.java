@@ -13,7 +13,7 @@ public abstract class NetworkDetector {
         if (context == null) {
             return false;
         }
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (cm != null) {
                 NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -86,7 +87,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
             btnCheckout.isEnabled = view_consent_goto_plus.isChecked() || isEnabled
         }
 
-    private var onClickConsentListener: (() -> Unit)? = null
+    private var onClickConsentListener: ((String) -> Unit)? = null
 
     fun setDigitalPromoButtonListener(listener: () -> Unit) {
         digitalPromoBtnView.setOnClickListener { listener.invoke() }
@@ -100,7 +101,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         btnCheckout.setOnClickListener { listener.invoke() }
     }
 
-    fun setOnClickConsentListener(listener: () -> Unit){
+    fun setOnClickConsentListener(listener: (String) -> Unit){
         onClickConsentListener = listener
     }
 
@@ -114,19 +115,21 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         titleTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_title)
 
         val descTextView = digitalPromoBtnView.findViewById<TextView>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_desc)
-        descTextView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-        descTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_description)
+        descTextView.gone()
 
         digitalPromoBtnView.setOnClickListener { /* do nothing */ }
     }
 
     private fun setLinkMovement(){
+
+        fun redirectToConsentUrl(url: String) = "tokopedia://webview?url=$url"
+
         view_consent_goto_plus.setOnClickUrl(
             Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
-                onClickConsentListener?.invoke()
+                onClickConsentListener?.invoke(redirectToConsentUrl(TNC_URL))
             }),
             Pair(context.getString(R.string.digital_cart_goto_plus_privacy_policy), {
-                onClickConsentListener?.invoke()
+                onClickConsentListener?.invoke(redirectToConsentUrl(PRIVACY_POLICY_URL))
             })
         )
     }
@@ -134,5 +137,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         onClickConsentListener = null
+    }
+
+    private companion object{
+        const val PRIVACY_POLICY_URL = "https://www.tokopedia.com/privacy"
+        const val TNC_URL = "https://www.tokopedia.com/help/article/tnc-gotoplus"
     }
 }

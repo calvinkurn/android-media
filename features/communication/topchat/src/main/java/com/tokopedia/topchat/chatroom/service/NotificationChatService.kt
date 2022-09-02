@@ -25,7 +25,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatGQLUseCase
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.PUSH_NOTIF
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickReplyChatFromNotif
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -44,9 +45,6 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
     lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
 
     @Inject
-    lateinit var analytics: TopChatAnalytics
-
-    @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
     private var jobScheduler: JobScheduler? = null
@@ -56,6 +54,8 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
         private const val JOB_ID_RETRY = 712
         private const val JOB_ID_NOTIFICATION = 812
         private const val DELAY_THREAD_BINDER = 1000L
+        private const val MIN_DELAY: Long = 3
+        private const val MAX_DELAY: Long = 2
 
         fun enqueueWork(context: Context, intent: Intent) {
             enqueueWork(context, NotificationChatService::class.java, JOB_ID_NOTIFICATION, intent)
@@ -109,10 +109,10 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
                 val param = ReplyChatGQLUseCase.Param(
                     msgId = messageId,
                     msg = message,
-                    source = TopChatAnalytics.SELLERAPP_PUSH_NOTIF
+                    source = PUSH_NOTIF
                 )
                 replyChatGQLUseCase(param)
-                analytics.eventClickReplyChatFromNotif(if (userId.isNullOrBlank()) "0" else userId)
+                eventClickReplyChatFromNotif()
                 clearNotification(notificationId)
                 if (isJobIdRunning(JOB_ID_RETRY)) {
                     jobScheduler?.cancel(JOB_ID_RETRY)
@@ -146,8 +146,8 @@ class NotificationChatService : JobIntentService(), CoroutineScope {
         bundle.putString(REPLY_KEY, message)
         bundle.putInt(NOTIFICATION_ID, notificationId)
         bundle.putString(USER_ID, userId)
-        val minDelay = TimeUnit.SECONDS.toMillis(3)
-        val maxDelay = TimeUnit.MINUTES.toMillis(2)
+        val minDelay = TimeUnit.SECONDS.toMillis(MIN_DELAY)
+        val maxDelay = TimeUnit.MINUTES.toMillis(MAX_DELAY)
 
         jobScheduler?.schedule(
                 JobInfo.Builder(JOB_ID_RETRY,

@@ -82,9 +82,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
     companion object {
 
-        enum class SheetType(type: Int) {
-            LINK_GENERATION(1),
-            ADD_SOCIAL(2)
+        enum class SheetType {
+            LINK_GENERATION,
+            ADD_SOCIAL
         }
 
         private const val COPY_LABEL = "Tokopedia"
@@ -348,6 +348,8 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     Toaster.TYPE_NORMAL
                 ).show()
             } ?: kotlin.run {
+                Toaster.build(contentView.rootView, getString(R.string.affiliate_link_empty_error),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 sendClickPGevent("", currentServiceFormat, AffiliateAnalytics.LabelKeys.FAIL)
             }
         }

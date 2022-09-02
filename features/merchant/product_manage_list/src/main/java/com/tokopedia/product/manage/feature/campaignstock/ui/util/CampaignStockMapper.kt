@@ -41,6 +41,7 @@ object CampaignStockMapper {
                     productId = sellable.productId,
                     productName = sellable.productName,
                     stock = sellable.stock,
+                    maxStock = variant.maxStock,
                     isActive = variant.status == ProductStatus.ACTIVE,
                     isAllStockEmpty = isAllStockEmpty,
                     access = variant.access,
@@ -105,6 +106,7 @@ object CampaignStockMapper {
                            isActive: Boolean,
                            access: ProductManageAccess,
                            isCampaign: Boolean,
+                           maxStock: Int?,
                            sellableList: List<GetStockAllocationDetailSellable>): List<SellableStockProductUIModel> {
         return sellableList
                 .filter { it.productId == id }
@@ -117,6 +119,7 @@ object CampaignStockMapper {
                             isAllStockEmpty = sellable.stock.toIntOrZero() == 0,
                             access = access,
                             isCampaign = isCampaign,
+                            maxStock = maxStock,
                             campaignTypeList = mapVariantCampaignTypeToProduct(sellable.campaignTypeList)
                     )
                 }
@@ -127,7 +130,7 @@ object CampaignStockMapper {
         return DateFormatUtils.getFormattedDate(timeInSecond, RESERVED_INFO_DATE_FORMAT)
     }
 
-    private fun getPeriodStatus(startTimeNanosString: String): ReservedEventInfoUiModel.PeriodStatus {
+    private fun getPeriodStatus(startTimeNanosString: String): String {
         val currentTime = getCurrentTimeInNanos()
         val startTimeMillis = startTimeNanosString.toLongOrZero()
 

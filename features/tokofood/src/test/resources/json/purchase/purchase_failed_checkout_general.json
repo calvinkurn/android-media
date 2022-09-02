@@ -1,0 +1,21 @@
+{
+  "checkout_general_v2": {
+    "header": {
+      "process_time": 473.972103,
+      "reason": "",
+      "error_code": "404"
+    },
+    "data": {
+      "success": 0,
+      "error": "This is error",
+      "error_state": 0,
+      "error_metadata": "",
+      "message": "",
+      "data": {
+        "callback_url": "",
+        "query_string": "",
+        "redirect_url": ""
+      }
+    }
+  }
+}

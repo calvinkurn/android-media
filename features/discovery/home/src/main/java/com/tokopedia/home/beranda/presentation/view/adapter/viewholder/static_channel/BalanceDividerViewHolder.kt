@@ -14,7 +14,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class BalanceDividerViewHolder(v: View): RecyclerView.ViewHolder(v) {
     companion object {
-        const val FIRST_POSITION = 0
+        private const val FIRST_POSITION = 0
     }
     private val binding: ItemBalanceWidgetDividerBinding? by viewBinding()
     var coachMarkView: View? = null

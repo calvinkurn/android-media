@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -56,7 +57,8 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener) : LifecycleObserver {
+    private var listener: Listener
+) : LifecycleObserver {
 
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
@@ -218,6 +220,12 @@ class OtherMenuViewHolder(
                 SCROLLVIEW_INITIAL_POSITION,
                 SCROLLVIEW_INITIAL_POSITION
             )
+        }
+    }
+
+    fun setCentralizePromoTag(state: SettingResponseState<Boolean>) {
+        if (state is SettingResponseState.SettingSuccess) {
+            otherMenuAdapter?.setCentralizedPromoTag(state.data)
         }
     }
 

@@ -271,9 +271,9 @@ class ShopHomeFlashSaleViewHolder(
                 this.totalProduct = totalProduct
                 this.totalProductWording = totalProductWording
             })
-            // set flash sale ui model for click handling purpose
-            productCarouselAdapter.setFsUiModel(model)
         }
+        // set flash sale ui model for click handling purpose
+        productCarouselAdapter.setFsUiModel(model)
         // set product list to product carousel adapter
         productCarouselAdapter.setProductList(productList)
     }

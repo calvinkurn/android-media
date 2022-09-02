@@ -246,6 +246,42 @@
       "eventAction": "view delete bill success",
       "sessionIris": ".*",
       "eventLabel": "delete bottom sheet"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "clientId": ".*",
+      "eventCategory": "digital - smart bill management",
+      "trackerId": ".*",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": ".*",
+      "eventAction": "view highlighted product widget",
+      "sessionIris": ".*",
+      "eventLabel": "highlighted .*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "clientId": ".*",
+      "eventCategory": "digital - smart bill management",
+      "trackerId": ".*",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickDigital",
+      "userId": ".*",
+      "eventAction": "click on highlighted product widget",
+      "sessionIris": ".*",
+      "eventLabel": "highlighted .*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "clientId": ".*",
+      "eventCategory": "digital - smart bill management",
+      "trackerId": ".*",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickDigital",
+      "userId": ".*",
+      "eventAction": "click x highlighted product widget",
+      "sessionIris": ".*",
+      "eventLabel": "highlighted .*"
     }
   ]
 }

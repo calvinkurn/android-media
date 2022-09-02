@@ -6,8 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -93,7 +97,8 @@ class NewShopPageViewModel @Inject constructor(
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
-        private val dispatcherProvider: CoroutineDispatchers)
+        private val dispatcherProvider: CoroutineDispatchers
+)
     : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -168,7 +173,8 @@ class NewShopPageViewModel @Inject constructor(
                                 shopId,
                                 shopDomain,
                                 isRefresh,
-                                extParam
+                                extParam,
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -200,7 +206,7 @@ class NewShopPageViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         getProductListData(
-                                shopId.toString(),
+                                shopId,
                                 page,
                                 itemPerPage,
                                 shopProductFilterParameter,
@@ -257,7 +263,8 @@ class NewShopPageViewModel @Inject constructor(
                         shopId,
                         shopDomain,
                         isRefresh,
-                        extParam
+                        extParam,
+                        widgetUserAddressLocalData
                     )
                 },
                 onError = {
@@ -289,7 +296,7 @@ class NewShopPageViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getProductListData(
-                        shopId.toString(),
+                        shopId,
                         page,
                         itemPerPage,
                         shopProductFilterParameter,
@@ -377,14 +384,20 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopP1Data(
-            shopId: String,
-            shopDomain: String,
-            isRefresh: Boolean,
-            extParam: String
+        shopId: String,
+        shopDomain: String,
+        isRefresh: Boolean,
+        extParam: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): ShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        useCase.params = GetShopPageP1DataUseCase.createParams(
+            shopId,
+            shopDomain,
+            extParam,
+            widgetUserAddressLocalData
+        )
         return useCase.executeOnBackground()
     }
 
@@ -392,11 +405,17 @@ class NewShopPageViewModel @Inject constructor(
         shopId: String,
         shopDomain: String,
         isRefresh: Boolean,
-        extParam: String
+        extParam: String,
+        widgetUserAddressLocalData: LocalCacheModel
     ): NewShopPageHeaderP1 {
         val useCase = newGetShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        useCase.params = GetShopPageP1DataUseCase.createParams(
+            shopId,
+            shopDomain,
+            extParam,
+            widgetUserAddressLocalData
+        )
         return useCase.executeOnBackground()
     }
 
@@ -596,5 +615,21 @@ class NewShopPageViewModel @Inject constructor(
         val useCase = gqlGetShopOperationalHourStatusUseCase.get()
         useCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
         return useCase.executeOnBackground()
+    }
+
+    fun initAffiliateCookie(
+        affiliateCookieHelper: AffiliateCookieHelper,
+        affiliateUUId: String,
+        affiliateChannel: String,
+        shopId: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            affiliateCookieHelper.initCookie(
+                affiliateUUId.decodeToUtf8(),
+                affiliateChannel,
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId))
+            )
+        }) {
+        }
     }
 }

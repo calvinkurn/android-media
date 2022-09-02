@@ -18,6 +18,7 @@ import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -33,7 +34,8 @@ class FavoriteViewModel
         private val getFavoriteShopUseCaseWithCoroutine: GetFavoriteShopUseCaseWithCoroutine,
         private val getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine,
         private val userSession: UserSessionInterface,
-        private val pagingHandler: PagingHandler
+        private val pagingHandler: PagingHandler,
+        private val topAdsAddressHelper: TopAdsAddressHelper
 ): BaseViewModel(dispatcherProvider.main) {
 
     /**
@@ -189,7 +191,7 @@ class FavoriteViewModel
     }
 
     private suspend fun getTopAdsShop(): TopAdsShop {
-        val requestParams = GetTopAdsShopUseCase.defaultParams()
+        val requestParams = GetTopAdsShopUseCase.defaultParams(topAdsAddressHelper.getAddressData())
         requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
         getTopAdsShopUseCase.requestParams = requestParams
 
