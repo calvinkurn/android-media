@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
+import com.tokopedia.unifyprinciples.R as UnifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.DealsQrCodeLayoutBinding
@@ -295,7 +296,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         if (conditional.color.border.isNotEmpty()){
             shape.setStroke(
-                getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2),
+                getDimensionPixelOffset(UnifyPrinciplesR.dimen.spacing_lvl1),
                 Color.parseColor(conditional.color.border)
             )
         }
@@ -303,10 +304,10 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         binding?.conditionalInfo?.let {
             it.background = shape
             it.setPadding(
-                getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16),
-                getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16),
-                getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16),
-                getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16)
+                getDimensionPixelOffset(UnifyPrinciplesR.dimen.spacing_lvl4),
+                getDimensionPixelOffset(UnifyPrinciplesR.dimen.spacing_lvl4),
+                getDimensionPixelOffset(UnifyPrinciplesR.dimen.spacing_lvl4),
+                getDimensionPixelOffset(UnifyPrinciplesR.dimen.spacing_lvl4)
             )
             it.text = conditional.text
             if (conditional.color.textColor.isNotEmpty()){
@@ -410,7 +411,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                    ds.color = getColor(UnifyPrinciplesR.color.Unify_G400)
                 }
             }, startIndexOfLink, startIndexOfLink + clickableLink.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -503,20 +504,20 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     private fun setTopActionButton(actionButton: ActionButton) {
         val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
             setMargins(
-                getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
-                getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
-                getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
-                getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
+                getDimensionPixelSize(UnifyPrinciplesR.dimen.unify_space_0),
+                getDimensionPixelSize(UnifyPrinciplesR.dimen.unify_space_0),
+                getDimensionPixelSize(UnifyPrinciplesR.dimen.unify_space_0),
+                getDimensionPixelSize(UnifyPrinciplesR.dimen.unify_space_0),
             )
         }
         binding?.langannan?.text = actionButton.label
         val shape = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = SHAPE_CORNER_RADIUS_4
-            setColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setColor(getColor(UnifyPrinciplesR.color.Unify_N0))
             setStroke(
                 SHAPE_STROKE_2,
-                getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                getColor(UnifyPrinciplesR.color.Unify_N100)
             )
         }
         binding?.langannan?.background = shape
@@ -535,11 +536,11 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         val shape = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = SHAPE_CORNER_RADIUS_4
-            setColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+            setColor(getColor(UnifyPrinciplesR.color.Unify_Y500))
         }
         binding?.beliLagi?.let {
             it.background = shape
-            it.setTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            it.setTextColor(getColor(UnifyPrinciplesR.color.Unify_N0))
             if (actionButton.body.appURL.isNotEmpty()){
                 it.setOnClickListener { clickActionButton(actionButton.body.appURL) }
             }
@@ -641,9 +642,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     metadata.entityPessengers.forEach { entityPessenger ->
                         val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
                             setTopText(entityPessenger.title)
-                            setTopTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                            setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
                             setBottomText(entityPessenger.value)
-                            setBottomTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                            setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
                             setBottomTextStyle(BOLD_TEXT_STYLE)
                         }
                         it.userInformationLayout.addView(doubleTextView)
@@ -681,8 +682,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             }
 
             qrCode.loadImage(actionButton.body.appURL){
-                setPlaceHolder(com.tokopedia.unifyprinciples.R.color.Unify_N50)
-                setErrorDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+                setPlaceHolder(UnifyPrinciplesR.color.Unify_N50)
+                setErrorDrawable(UnifyPrinciplesR.color.Unify_N50)
             }
 
             redeemDialogShopName.text = actionButton.headerObject.poweredBy
@@ -815,9 +816,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 passengerForm.passengerInformations.forEach { passengerInformation ->
                     val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
                         setTopText(passengerInformation.title)
-                        setTopTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
                         setBottomText(passengerInformation.value)
-                        setBottomTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                        setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
                         setBottomTextStyle(BOLD_TEXT_STYLE)
                     }
                     it.userInformationLayout.addView(doubleTextView)
