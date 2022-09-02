@@ -1,9 +1,10 @@
-package com.tokopedia.analyticsdebugger.database
+package com.tokopedia.analyticsdebugger.cassava.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 
 @Database(entities = [GtmLogDB::class], version = 1)
@@ -26,7 +27,8 @@ abstract class CassavaDatabase: RoomDatabase() {
                     r = instance
                     if (r == null) {
                         r = Room.databaseBuilder(context,
-                            CassavaDatabase::class.java, DATABASE_NAME)
+                            CassavaDatabase::class.java, DATABASE_NAME
+                        )
                             .fallbackToDestructiveMigration().build()
                         instance = r
                     }

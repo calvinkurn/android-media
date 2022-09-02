@@ -168,7 +168,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //            clickOnBusinessWidgetSection(viewHolder)
 //        }
 //
-//        getAssertBUWiddet(gtmLogDBSource, context)
 //
 //        onFinishTest()
 //
@@ -217,7 +216,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //            clickOnRecommendationFeedSection(viewHolder)
 //        }
 //
-//        getAssertRecommendationFeedTab(gtmLogDBSource, context)
 //
 //        onFinishTest()
 //
