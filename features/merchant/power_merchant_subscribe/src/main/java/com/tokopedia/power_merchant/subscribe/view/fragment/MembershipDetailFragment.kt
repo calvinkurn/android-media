@@ -77,15 +77,16 @@ class MembershipDetailFragment : BaseDaggerFragment() {
     private var binding: FragmentMembershipDetailBinding? = null
     private val pagerAdapter by lazy { MembershipViewPagerAdapter() }
     private var data: MembershipDetailUiModel? = null
-    private val tabSelectedListener = object : TabLayout.OnTabSelectedListener {
-        override fun onTabSelected(tab: TabLayout.Tab?) {
-            setOnTabSelected()
-            sendTrackerOnTabClicked()
-        }
+    private var tabSelectedListener: TabLayout.OnTabSelectedListener? =
+        object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                setOnTabSelected()
+                sendTrackerOnTabClicked()
+            }
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {}
-        override fun onTabReselected(tab: TabLayout.Tab?) {}
-    }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        }
 
     override fun getScreenName(): String = String.EMPTY
 
@@ -110,8 +111,13 @@ class MembershipDetailFragment : BaseDaggerFragment() {
         observePmShopInfo()
     }
 
-    private fun setViewBackground() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tabSelectedListener = null
+        binding = null
+    }
 
+    private fun setViewBackground() {
         binding?.root?.run {
             val background =
                 context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
@@ -213,15 +219,6 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             } catch (e: IllegalStateException) {
                 Timber.e(e)
             }
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
-                    if (position != RecyclerView.NO_POSITION) {
-                        binding?.tabPmMembership?.tabLayout?.getTabAt(position)?.select()
-                    }
-                }
-            })
         }
     }
 
@@ -232,7 +229,8 @@ class MembershipDetailFragment : BaseDaggerFragment() {
             val activeTabIndex = gradeList.indexOfLast { it.isTabActive }
             try {
                 gradeList.forEachIndexed { i, page ->
-                    addNewTab(page.tabLabel)
+                    val isSelected = i == activeTabIndex
+                    addNewTab(page.tabLabel, isSelected)
                     getUnifyTabLayout().getTabAt(i)?.run {
                         setIconUnify(page.tabResIcon)
                         if (i == activeTabIndex) {
@@ -255,11 +253,29 @@ class MembershipDetailFragment : BaseDaggerFragment() {
 
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             post {
-                tabLayout.addOnTabSelectedListener(tabSelectedListener)
-
                 if (activeTabIndex != RecyclerView.NO_POSITION) {
-                    tabLayout.getTabAt(activeTabIndex)?.select()
+                    binding?.rvPmMembership?.scrollToPosition(activeTabIndex)
                 }
+                setListeners()
+            }
+        }
+    }
+
+    private fun setListeners() {
+        binding?.run {
+            val mLayoutManager = rvPmMembership.layoutManager as LinearLayoutManager
+            rvPmMembership.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (position != RecyclerView.NO_POSITION) {
+                        binding?.tabPmMembership?.tabLayout?.getTabAt(position)?.select()
+                    }
+                }
+            })
+
+            tabSelectedListener?.let {
+                tabPmMembership.tabLayout.addOnTabSelectedListener(it)
             }
         }
     }

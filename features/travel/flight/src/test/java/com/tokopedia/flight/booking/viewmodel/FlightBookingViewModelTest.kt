@@ -1,15 +1,37 @@
 package com.tokopedia.flight.booking.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.util.PatternsCompat
 import com.google.gson.Gson
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.data.*
+import com.tokopedia.flight.booking.data.FlightAddToCartData
+import com.tokopedia.flight.booking.data.FlightCheckoutData
+import com.tokopedia.flight.booking.data.FlightVerify
+import com.tokopedia.flight.booking.data.FlightVerifyParam
+import com.tokopedia.flight.booking.data.FlightVoucher
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.dummy.*
+import com.tokopedia.flight.dummy.DUMMY_AMENITY_PRICE
+import com.tokopedia.flight.dummy.DUMMY_ATC
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_FLIGHT_DETAIL
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_INTERNATIONAL_MODEL
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_MODEL
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_NEW_PRICE
+import com.tokopedia.flight.dummy.DUMMY_BOOKING_PASSENGER
+import com.tokopedia.flight.dummy.DUMMY_CANCEL_VOUCHER_FAILED
+import com.tokopedia.flight.dummy.DUMMY_CANCEL_VOUCHER_SUCCESS
+import com.tokopedia.flight.dummy.DUMMY_CART_PRICE
+import com.tokopedia.flight.dummy.DUMMY_CHECKOUT
+import com.tokopedia.flight.dummy.DUMMY_INSURANCE
+import com.tokopedia.flight.dummy.DUMMY_LUGGAGE_AMENITIES
+import com.tokopedia.flight.dummy.DUMMY_MEALS_AMENITIES
+import com.tokopedia.flight.dummy.DUMMY_OTHER_PRICE
+import com.tokopedia.flight.dummy.DUMMY_PROFILE
+import com.tokopedia.flight.dummy.FlightDummyGqlInterfaceImpl
+import com.tokopedia.flight.dummy.TICKER_DATA
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
@@ -31,6 +53,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -217,7 +240,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable("Failed to Fetch") }
 
         // when
-        viewModel.getProfile("")
+        viewModel.getProfile(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.profileResult.value != null)
@@ -239,7 +262,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
-        viewModel.getProfile("")
+        viewModel.getProfile(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.profileResult.value != null)
@@ -275,7 +298,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
-        viewModel.getProfile("")
+        viewModel.getProfile(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.profileResult.value != null)
@@ -309,7 +332,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
-        viewModel.getProfile("")
+        viewModel.getProfile(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.profileResult.value != null)
@@ -342,7 +365,7 @@ class FlightBookingViewModelTest {
                 mapOf(),
                 false)
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
-        viewModel.getProfile("")
+        viewModel.getProfile(FlightDummyGqlInterfaceImpl())
         val userName = "Dummy User Name"
         val bookingParam = DUMMY_BOOKING_MODEL
         bookingParam.isMandatoryDob = true
@@ -711,21 +734,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactNameEmpty_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = ""
         val contactEmail = ""
         val contactPhone = ""
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_name_empty_error
@@ -734,21 +754,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactNameAlphanumeric_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy n4m3"
         val contactEmail = ""
         val contactPhone = ""
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_name_alpha_space_error
@@ -757,21 +774,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactEmailEmpty_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = ""
         val contactPhone = ""
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_empty_error
@@ -780,21 +794,64 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactEmailNotValid_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummy email"
         val contactPhone = ""
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+
+        // then
+        viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
+    }
+
+    @Test
+    fun validateDataAndVerifyCart_contactEmailNotValidWithAtAndDotChar_validationFailed() {
+        // given
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
+        val totalPrice = 1000
+        val contactName = "Dummy name"
+        val contactEmail = "dummy@.gmail.com"
+        val contactPhone = ""
+        val contactCountry = ""
+        val idempotencyKey = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
+        // when
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
+
+        // then
+        viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
+    }
+
+    @Test
+    fun validateDataAndVerifyCart_contactEmailNotValidWithDotAndAtSymbol_validationFailed() {
+        // given
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
+        val totalPrice = 1000
+        val contactName = "Dummy name"
+        val contactEmail = "dummy.@gmail.com"
+        val contactPhone = ""
+        val contactCountry = ""
+        val idempotencyKey = ""
+
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+
+        // when
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+            contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
@@ -803,21 +860,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactEmailContainsProhibitedChars_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail+01@gmail.com"
         val contactPhone = ""
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_email_invalid_error
@@ -826,21 +880,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactPhoneEmpty_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = ""
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_empty_error
@@ -849,21 +900,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactPhoneAlphanumeric_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "O81313131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_invalid_error
@@ -872,21 +920,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactPhoneMoreThan13_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "08131313131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_max_length_error
@@ -895,21 +940,18 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_contactPhoneLessThan9_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "08131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
 
         // when
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_contact_phone_min_length_error
@@ -918,23 +960,20 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_passengerFirstNameNull_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel()
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_passenger_not_fullfilled_error
@@ -943,25 +982,22 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_passengerLastNameNull_validationFailed() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
         }
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe R.string.flight_booking_passenger_not_fullfilled_error
@@ -970,16 +1006,13 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_validationSuccess() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -987,9 +1020,9 @@ class FlightBookingViewModelTest {
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -998,16 +1031,13 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_samePassVerifyParam_validationSuccess() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1029,9 +1059,9 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = Gson().toJson(cartMeta)
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1040,16 +1070,13 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_international_validationSuccess() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1117,9 +1144,9 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = Gson().toJson(cartMeta)
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1128,16 +1155,13 @@ class FlightBookingViewModelTest {
     @Test
     fun validateDataAndVerifyCart_internationalWithoutPassport_validationSuccess() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1204,9 +1228,9 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = Gson().toJson(cartMeta)
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.errorToastMessageData.value shouldBe 0
@@ -1222,7 +1246,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any()) } returns gqlResponse
 
         // when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
         coVerify { graphqlRepository.response(any(), any()) }
@@ -1231,16 +1255,13 @@ class FlightBookingViewModelTest {
     @Test
     fun verifyCartData_failedToVerify() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1252,9 +1273,9 @@ class FlightBookingViewModelTest {
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.isStillLoading shouldBe false
@@ -1264,16 +1285,13 @@ class FlightBookingViewModelTest {
     @Test
     fun verifyCartData_successToVerifyAndGetVoucher() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1314,9 +1332,9 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.isStillLoading shouldBe false
@@ -1330,16 +1348,13 @@ class FlightBookingViewModelTest {
     @Test
     fun verifyCartData_successToVerifyFailedToGetVoucher() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1376,9 +1391,9 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.isStillLoading shouldBe false
@@ -1391,16 +1406,13 @@ class FlightBookingViewModelTest {
     @Test
     fun refreshCartId_failedToRefresh() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1413,9 +1425,9 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = "nothing"
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         assert(viewModel.flightCartResult.value is Fail)
@@ -1424,16 +1436,13 @@ class FlightBookingViewModelTest {
     @Test
     fun refreshCartId_successToRefresh() {
         // given
-        val query = ""
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1452,9 +1461,9 @@ class FlightBookingViewModelTest {
         viewModel.pastVerifyParam = "nothing"
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart(query, totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
         // then
         viewModel.getFlightBookingParam().cartId shouldBe "new cart id"
@@ -1463,9 +1472,10 @@ class FlightBookingViewModelTest {
     @Test
     fun proceedCheckoutWithoutLuggage_withNullPassengers() {
         // given
+        val fakeGqlQueryInterface = FlightDummyGqlInterfaceImpl()
 
         // when
-        viewModel.proceedCheckoutWithoutLuggage("", "", 10000,
+        viewModel.proceedCheckoutWithoutLuggage(fakeGqlQueryInterface, fakeGqlQueryInterface, 10000,
                 "dummy contact name", "dummy@email.com", "628111111111",
                 "Indonesia")
 
@@ -1476,13 +1486,14 @@ class FlightBookingViewModelTest {
     @Test
     fun proceedCheckoutWithoutLuggage_withPassengers() {
         // given
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val passengerModels = DUMMY_BOOKING_PASSENGER
         passengerModels[0].flightBookingMealMetaViewModels = DUMMY_MEALS_AMENITIES
         passengerModels[0].flightBookingLuggageMetaViewModels = DUMMY_LUGGAGE_AMENITIES
 
         // when
         viewModel.setPassengerModels(passengerModels)
-        viewModel.proceedCheckoutWithoutLuggage("", "", 10000,
+        viewModel.proceedCheckoutWithoutLuggage(fakeGqlInterface, fakeGqlInterface, 10000,
                 "dummy contact name", "dummy@email.com", "628111111111",
                 "Indonesia")
 
@@ -1494,15 +1505,13 @@ class FlightBookingViewModelTest {
     @Test
     fun checkoutCart_failedToCheckout() {
         // given
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1538,11 +1547,11 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart("", totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
-        viewModel.checkOutCart("", 10000)
+        viewModel.checkOutCart(fakeGqlInterface, 10000)
 
         // then
         assert(viewModel.flightCheckoutResult.value is Fail)
@@ -1552,15 +1561,13 @@ class FlightBookingViewModelTest {
     @Test
     fun checkoutCart_successToCheckout() {
         // given
+        val fakeGqlInterface = FlightDummyGqlInterfaceImpl()
         val totalPrice = 1000
         val contactName = "Dummy name"
         val contactEmail = "Dummyemail@gmail.com"
         val contactPhone = "0813131313"
         val contactCountry = ""
-        val checkVoucherQuery = ""
-        val addToCartQuery = ""
         val idempotencyKey = ""
-        val getCartQuery = ""
         val passenger = FlightBookingPassengerModel().apply {
             passengerFirstName = "Dummy First"
             passengerLastName = "Last"
@@ -1600,11 +1607,11 @@ class FlightBookingViewModelTest {
         viewModel.setPassengerModels(arrayListOf(passenger))
         viewModel.updatePromoData(PromoData(1, "Testing"))
         viewModel.setCartId("dummy")
-        viewModel.validateDataAndVerifyCart("", totalPrice, contactName, contactEmail,
-                contactPhone, contactCountry, checkVoucherQuery,
-                addToCartQuery, idempotencyKey, getCartQuery)
+        viewModel.validateDataAndVerifyCart(fakeGqlInterface, totalPrice, contactName, contactEmail,
+                contactPhone, contactCountry, fakeGqlInterface,
+            fakeGqlInterface, idempotencyKey, fakeGqlInterface)
 
-        viewModel.checkOutCart("", 10000)
+        viewModel.checkOutCart(fakeGqlInterface, 10000)
 
         // then
         assert(viewModel.flightCheckoutResult.value is Success<FlightCheckoutData>)
@@ -1623,7 +1630,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable("Failed") }
 
         // when
-        viewModel.addToCart("", idempotencyKey = "")
+        viewModel.addToCart(FlightDummyGqlInterfaceImpl(), idempotencyKey = "")
 
         // then
         assert(viewModel.flightCartResult.value is Fail)
@@ -1643,7 +1650,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
-        viewModel.addToCart("", idempotencyKey = "")
+        viewModel.addToCart(FlightDummyGqlInterfaceImpl(), idempotencyKey = "")
 
         // then
         viewModel.getFlightBookingParam().cartId shouldBe DUMMY_ATC.addToCartData.id
@@ -1826,7 +1833,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
         //when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.errorCancelVoucher.value is Int)
@@ -1845,7 +1852,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
         //when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.errorCancelVoucher.value is Int)
@@ -1859,7 +1866,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable() }
 
         //when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         //then
         assert(viewModel.errorCancelVoucher.value is Int)

@@ -81,7 +81,8 @@
           "code": ""
         },
         "discount_percentage": "",
-        "original_price": ""
+        "original_price": "",
+        "suggestion_id": "123456"
       },
       {
         "template": "list_double_line",

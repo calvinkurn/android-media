@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="?selectableItemBackground"
+    android:padding="16dp"
+    tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSahPlusBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmerSahPlusBadge"
+        android:layout_width="@dimen/sah_new_other_item_shop_shimmer_width"
+        android:layout_height="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="@dimen/setting_shimmer_radius"
+        app:loader_type="line" />
+
+    <include
+        android:id="@+id/errorStateSahPlusBadge"
+        layout="@layout/partial_item_sah_new_other_failed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

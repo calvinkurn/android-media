@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.data.model.v3
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -10,8 +11,9 @@ data class Recommendation(
 
         @SerializedName("shipping_id")
         @Expose
-        val shippingId: Int = 0,
+        val shippingId: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Price = Price(),

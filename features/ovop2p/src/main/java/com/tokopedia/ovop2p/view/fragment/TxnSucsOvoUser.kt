@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -24,6 +24,7 @@ import com.tokopedia.ovop2p.view.viewStates.ThankYouErrPage
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
 import com.tokopedia.ovop2p.viewmodel.OvoP2PTransactionThankYouVM
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
@@ -105,7 +106,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         updateHeader()
         if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
-            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
+            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toIntOrZero())
             context?.let {
                 activity?.let {
                     (it as LoaderUiListener).showProgressDialog()
@@ -199,11 +200,6 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
                     }
                 }
-                com.tokopedia.design.R.id.btn_ok -> {
-                    errorSnackbar.let {
-                        if (it.isShownOrQueued) it.dismiss()
-                    }
-                }
             }
         }
     }
@@ -222,7 +218,12 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun showErrorSnackBar(errMsg: String) {
         activity?.let {
-            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
+            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it,  errMsg)
+        {
+            errorSnackbar.let { errorSnackbar->
+                if (errorSnackbar.isShownOrQueued) errorSnackbar.dismiss()
+            }
+            }
             errorSnackbar.show()
         }
     }

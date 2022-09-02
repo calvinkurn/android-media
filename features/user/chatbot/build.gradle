@@ -46,15 +46,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.webview)
-
-    //test
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -69,6 +63,15 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 }
 
@@ -80,3 +83,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

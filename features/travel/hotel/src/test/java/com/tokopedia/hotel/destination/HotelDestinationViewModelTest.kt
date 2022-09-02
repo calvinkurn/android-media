@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -190,7 +191,7 @@ class HotelDestinationViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelDestinationViewModel.getHotelSearchDestination("", "")
+        hotelDestinationViewModel.getHotelSearchDestination(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelDestinationViewModel.searchDestination.value is Loaded)
@@ -209,7 +210,7 @@ class HotelDestinationViewModelTest {
         } returns graphqlErrorResponse
 
         //when
-        hotelDestinationViewModel.getHotelSearchDestination("", "")
+        hotelDestinationViewModel.getHotelSearchDestination(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelDestinationViewModel.searchDestination.value is Loaded)
@@ -232,7 +233,7 @@ class HotelDestinationViewModelTest {
         } returns "0"
 
         //when
-        hotelDestinationViewModel.deleteRecentSearch("", "")
+        hotelDestinationViewModel.deleteRecentSearch(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelDestinationViewModel.deleteSuccess.value as Boolean)
@@ -254,7 +255,7 @@ class HotelDestinationViewModelTest {
         } returns "0"
 
         //when
-        hotelDestinationViewModel.deleteRecentSearch("", "")
+        hotelDestinationViewModel.deleteRecentSearch(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(!(hotelDestinationViewModel.deleteSuccess.value as Boolean))
@@ -271,6 +272,36 @@ class HotelDestinationViewModelTest {
 
         // then
         assert(hotelDestinationViewModel.longLat.value is Fail)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLatitude() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessWithZeroLongitude() {
+        // given
+        val deviceLocation = DeviceLocation(1.123450, 0.0, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
     }
 
     @Test

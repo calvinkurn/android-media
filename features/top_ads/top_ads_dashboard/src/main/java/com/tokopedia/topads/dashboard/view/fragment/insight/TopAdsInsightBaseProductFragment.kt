@@ -19,7 +19,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_SOURCE_RECOM
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.FinalAdResponse
@@ -277,60 +276,27 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         if (currentGroupId.isEmpty()) {
-            val param: HashMap<String, Any> = hashMapOf()
-            val userSession = UserSession(context)
-            param[INPUT] = InputCreateGroup().apply {
-                shopID = userSession.shopId
-                keywords = null
-                group = Group(
-                    groupName = currentGroupName,
-                    ads = getAdsList(),
-                    priceBid = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0,
-                    groupBudget = "0",
-                    source = PARAM_SOURCE_RECOM,
-                    suggestedBidValue = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
-                )
-            }
-            topAdsDashboardPresenter.createGroup(param, ::onSuccessGroupCreation)
+            val priceBid = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
 
+            topAdsDashboardPresenter.createGroup(
+                adapter.getSelectedIds(), currentGroupName, priceBid, priceBid) {
+                if (it.isNullOrEmpty()) {
+                    showSuccessToast()
+                    loadData()
+                } else {
+                    onError(it)
+                }
+            }
         } else {
             val productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = getAds()
-            val map = HashMap<String, Any?>()
-            map[PARAM_GROUP_Id] = currentGroupId
-            map[PARAM_GROUP_TYPE] = currentGroupType
-            map[PARAM_PRICE_BID] = data.firstOrNull()?.minBid ?: 0
-            topAdsDashboardPresenter.editBudgetThroughInsight(productList,
-                map,
-                ::onResultEdit,
-                ::onError)
+            val priceBid = data.firstOrNull()?.minBid?.toFloatOrNull()
+            topAdsDashboardPresenter.editBudgetThroughInsight(
+                productList, priceBid, currentGroupId, null,
+                ::onResultEdit, ::onError
+            )
             currentGroupId = ""
         }
         sheet.dismiss()
-    }
-
-    private fun getAdsList(): List<AdsItem> {
-        val ids = adapter.getSelectedIds()
-        val adsList: MutableList<AdsItem> = mutableListOf()
-        ids.forEach {
-            val ad = AdsItem()
-            ad.productID = it
-            ad.source = PARAM_SOURCE_RECOM
-            ad.ad = Ad().apply {
-                adType = "1"
-                adID = "0"
-            }
-            adsList.add(ad)
-        }
-        return adsList
-    }
-
-    private fun onSuccessGroupCreation(topadsCreateGroupAds: ResponseCreateGroup.TopadsCreateGroupAds) {
-        if (topadsCreateGroupAds.errors.isEmpty()) {
-            showSuccessToast()
-            loadData()
-        } else {
-            onError(topadsCreateGroupAds.errors.firstOrNull()?.detail ?: "")
-        }
     }
 
     private fun getAds(): MutableList<GroupEditInput.Group.AdOperationsItem>? {

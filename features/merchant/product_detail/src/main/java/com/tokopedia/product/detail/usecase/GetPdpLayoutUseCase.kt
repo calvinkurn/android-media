@@ -34,6 +34,13 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  shopMultilocation {
+                    isReroute
+                    cityName
+                    eduLink {
+                        appLink
+                    }
+                  }
                   isGiftable
                   isTokoNow
                   shopName
@@ -110,6 +117,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         source
                         url
                       }
+                      containerType
             		}
             		... on pdpDataProductContent {
                       name
@@ -208,6 +216,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       title
                       isApplink
                       applink
+                      lightIcon
+                      darkIcon
                       content {
                         icon
                         text
@@ -232,6 +242,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        applink
                        separator
                        description
+                       lightIcon
+                       darkIcon
                        label {
                         value
                         color

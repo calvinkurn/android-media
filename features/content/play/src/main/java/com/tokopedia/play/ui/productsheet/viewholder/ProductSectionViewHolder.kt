@@ -1,11 +1,9 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -40,29 +38,11 @@ class ProductSectionViewHolder(
     private val timerSection: TimerUnifySingle = itemView.findViewById(R.id.section_timer)
     private val rvProducts: RecyclerView = itemView.findViewById(R.id.rv_product)
     private val btnReminder: IconUnify = itemView.findViewById(R.id.btn_section_reminder)
+    private val btnInfo: IconUnify = itemView.findViewById(R.id.btn_information)
 
     private var timerTime = ""
 
     private lateinit var adapter: ProductLineAdapter
-
-    private fun setupOnScrollListener(sectionInfo: ProductSectionUiModel.Section){
-        itemView.viewTreeObserver.addOnScrollChangedListener (object : ViewTreeObserver.OnScrollChangedListener {
-            override fun onScrollChanged() {
-                itemView.isVisibleOnTheScreen(onViewVisible = {
-                    listener.onProductImpressed(getVisibleProducts(layoutManagerProductList(sectionInfo)), sectionInfo)} ,
-                    onViewNotVisible = {
-                        itemView.viewTreeObserver.removeOnScrollChangedListener(this)
-                    })
-            }
-        })
-    }
-
-    private fun layoutManagerProductList(sectionInfo: ProductSectionUiModel.Section) = object : LinearLayoutManager(rvProducts.context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            listener.onProductImpressed(getVisibleProducts(this), sectionInfo)
-        }
-    }
 
     private fun setupListener(sectionInfo: ProductSectionUiModel.Section) = object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: PlayProductUiModel.Product) {
@@ -73,17 +53,17 @@ class ProductSectionViewHolder(
             listener.onATCProduct(product, sectionInfo)
         }
 
-        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-            listener.onClickProductCard(product, sectionInfo, position)
+        override fun onClicked(
+            viewHolder: ProductLineViewHolder,
+            product: PlayProductUiModel.Product
+        ) {
+            listener.onClickProductCard(product, sectionInfo, viewHolder.adapterPosition)
         }
-
     }
 
     fun bind(item: ProductSectionUiModel.Section) {
         resetBackground()
-        setupOnScrollListener(sectionInfo = item)
         adapter = ProductLineAdapter(setupListener(item))
-        rvProducts.layoutManager = layoutManagerProductList(item)
         rvProducts.adapter = adapter
 
         tvSectionTitle.shouldShowWithAction(item.config.title.isNotEmpty()){
@@ -110,8 +90,15 @@ class ProductSectionViewHolder(
                 timerSection.show()
                 setupBackground(item.config.background)
                 setupTimer(item)
+                btnInfo.hide()
             }
             ProductSectionType.Other -> {
+                tvTimerInfo.hide()
+                timerSection.hide()
+                btnInfo.hide()
+            }
+            ProductSectionType.TokoNow -> {
+                btnInfo.showWithCondition(item.config.title.isNotEmpty())
                 tvTimerInfo.hide()
                 timerSection.hide()
             }
@@ -126,10 +113,21 @@ class ProductSectionViewHolder(
             listener.onReminderClicked(item)
         }
 
-        btnReminder.addOnImpressionListener(item.impressHolder){
-            listener.onReminderImpressed(item)
+        if(btnReminder.isVisible && item.config.type == ProductSectionType.Upcoming) listener.onReminderImpressed(item)
+
+        btnInfo.setOnClickListener {
+            listener.onInformationClicked(item)
         }
+
+        itemView.addOnImpressionListener(item.impressHolder){
+            listener.onProductImpressed(sectionInfo = item, product = getFinalProduct(item.productList))
+        }
+
+        if(btnInfo.isVisible && item.config.type == ProductSectionType.TokoNow) listener.onInformationImpressed()
     }
+
+    private fun getFinalProduct(productList: List<PlayProductUiModel.Product>): List<Pair<PlayProductUiModel.Product, Int>> =
+        productList.mapIndexed { index, product -> Pair(product, index) }
 
     private fun setupBackground(background: ProductSectionUiModel.Section.BackgroundUiModel) {
         if (background.gradients.isNotEmpty()) {
@@ -167,20 +165,6 @@ class ProductSectionViewHolder(
         return currentTime.addTimeToSpesificDate(Calendar.MILLISECOND, diff.toInt())
     }
 
-    private fun getVisibleProducts(layoutManagerProductList: LinearLayoutManager): List<Pair<PlayProductUiModel.Product, Int>> {
-        val products = adapter.getItems()
-        if (products.isNotEmpty()) {
-            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
-            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
-            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                .filterIsInstance<PlayProductUiModel.Product>()
-                .mapIndexed { index, item ->
-                    Pair(item, startPosition + index)
-                }
-        }
-        return emptyList()
-    }
-
     private fun resetBackground(){
         ivBg.setImageDrawable(null)
         itemView.background = null
@@ -200,6 +184,8 @@ class ProductSectionViewHolder(
         fun onProductChanged()
         fun onReminderClicked(section: ProductSectionUiModel.Section)
         fun onReminderImpressed(section: ProductSectionUiModel.Section)
+        fun onInformationClicked(section: ProductSectionUiModel.Section)
+        fun onInformationImpressed()
     }
 }
 

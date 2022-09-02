@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
@@ -38,21 +39,28 @@ open class WebsocketMessageMapper @Inject constructor() {
     open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(pojo, jsonAttributes)
-            TYPE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
+            TYPE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes, TYPE_IMAGE_UPLOAD)
+            TYPE_IMAGE_UPLOAD_SECURE ->
+                convertToImageUpload(pojo, jsonAttributes, TYPE_IMAGE_UPLOAD_SECURE)
             TYPE_INVOICE_SEND -> convertToInvoiceSent(pojo, jsonAttributes)
             else -> convertToFallBackModel(pojo)
         }
     }
 
-    private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            ImageUploadUiModel {
+    private fun convertToImageUpload(
+        @NonNull pojo: ChatSocketPojo,
+        jsonAttribute: JsonObject,
+        attachmentType: String
+    ): ImageUploadUiModel {
         val pojoAttribute = GsonBuilder().create().fromJson(
             jsonAttribute, ImageUploadAttributes::class.java
         )
         return ImageUploadUiModel.Builder()
             .withResponseFromWs(pojo)
+            .withAttachmentType(attachmentType)
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .withImageSecureUrl(pojoAttribute.imageUrlSecure)
             .build()
     }
 

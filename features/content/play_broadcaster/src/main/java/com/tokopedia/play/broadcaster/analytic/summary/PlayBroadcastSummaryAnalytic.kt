@@ -14,4 +14,6 @@ interface PlayBroadcastSummaryAnalytic {
     fun clickCoverOnReportPage(channelID: String, channelTitle: String)
 
     fun impressReportPage(channelID: String)
+
+    fun clickInteractiveParticipantDetail(channelID: String, channelTitle: String)
 }

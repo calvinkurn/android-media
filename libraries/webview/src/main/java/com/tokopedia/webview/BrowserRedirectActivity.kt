@@ -1,5 +1,6 @@
 package com.tokopedia.webview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
@@ -12,12 +13,20 @@ import com.tokopedia.url.TokopediaUrl
  * Class act as intermediary/bridging to redirect to browser or native activity (webview)
  * tokopedia-android-internal://global/browser
  */
-class BrowserRedirectActivity: AppCompatActivity() {
+class BrowserRedirectActivity : AppCompatActivity() {
+    @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
             val redirectIntent = getCallingIntentOpenBrowser(this, uri)
-            startActivity(redirectIntent)
+            if (redirectIntent.resolveActivity(packageManager) != null) {
+                try {
+                    startActivity(redirectIntent)
+                } catch (ignored: Exception) {
+                    //exception happen because activity
+                    // does not have permission query to open
+                }
+            }
         }
         super.onCreate(savedInstanceState)
         finish()

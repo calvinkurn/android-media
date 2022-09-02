@@ -36,7 +36,7 @@
             android:id="@+id/filter_bottom_sheet_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_Background"
             android:paddingTop="@dimen/layout_lvl2"
             android:paddingBottom="@dimen/layout_lvl2"
             android:layout_alignParentBottom="true">

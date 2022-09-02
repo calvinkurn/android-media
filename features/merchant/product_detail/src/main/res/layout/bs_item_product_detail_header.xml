@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/pdp_header_img"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@null"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pdp_header_list_container"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

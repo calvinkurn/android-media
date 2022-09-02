@@ -26,6 +26,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
@@ -52,7 +53,6 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
-import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -218,7 +218,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setProductWeight(orderProduct.weight.toString())
                 setPromoCode(promoCodes)
                 setPromoDetails("")
-                setProductType("")
+                setProductType(orderProduct.freeShippingName)
                 setCartId(orderProduct.cartId)
                 setBuyerAddressId(orderProfile.value.address.addressId.toString())
                 setSpid(orderShipment.value.getRealShipperProductId().toString())
@@ -870,7 +870,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (payment.minimumAmount <= orderCost.totalPriceWithoutPaymentFees
                 && orderCost.totalPriceWithoutPaymentFees <= payment.maximumAmount
                 && orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount) {
-            val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart)
+            val result = paymentProcessor.get().getGopayAdminFee(payment, userSession.userId, orderCost, orderCart, orderProfile.value)
             if (result != null) {
                 chooseInstallment(result.first, result.second, !result.third)
                 return

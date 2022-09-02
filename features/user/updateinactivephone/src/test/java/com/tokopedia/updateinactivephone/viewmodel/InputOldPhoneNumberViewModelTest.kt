@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.updateinactivephone.domain.data.RegisterCheckData
 import com.tokopedia.updateinactivephone.domain.data.RegisterCheckModel
 import com.tokopedia.updateinactivephone.domain.usecase.InputOldPhoneNumberUseCase
@@ -44,9 +45,9 @@ class InputOldPhoneNumberViewModelTest {
 
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.formState.value
-        assertTrue(result?.isDataValid == isDataValid)
-        assertFalse(result?.numberError == defaultNumberError)
+        val result = viewModel.formState.getOrAwaitValue()
+        assertTrue(result.isDataValid == isDataValid)
+        assertFalse(result.numberError == defaultNumberError)
     }
 
     @Test
@@ -57,9 +58,9 @@ class InputOldPhoneNumberViewModelTest {
 
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.formState.value
-        assertTrue(result?.isDataValid == isDataValid)
-        assertFalse(result?.numberError == defaultNumberError)
+        val result = viewModel.formState.getOrAwaitValue()
+        assertTrue(result.isDataValid == isDataValid)
+        assertFalse(result.numberError == defaultNumberError)
     }
 
     @Test
@@ -70,9 +71,9 @@ class InputOldPhoneNumberViewModelTest {
 
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.formState.value
-        assertFalse(result?.isDataValid == isDataValid)
-        assertTrue(result?.numberError == defaultNumberError)
+        val result = viewModel.formState.getOrAwaitValue()
+        assertFalse(result.isDataValid == isDataValid)
+        assertTrue(result.numberError == defaultNumberError)
     }
 
     @Test
@@ -83,9 +84,9 @@ class InputOldPhoneNumberViewModelTest {
 
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.formState.value
-        assertTrue(result?.isDataValid == isDataValid)
-        assertFalse(result?.numberError == defaultNumberError)
+        val result = viewModel.formState.getOrAwaitValue()
+        assertTrue(result.isDataValid == isDataValid)
+        assertFalse(result.numberError == defaultNumberError)
     }
 
     @Test
@@ -98,8 +99,8 @@ class InputOldPhoneNumberViewModelTest {
         } returns data
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.isLoading.value
-        assertFalse(result == true)
+        val result = viewModel.isLoading.getOrAwaitValue()
+        assertFalse(result)
     }
 
     @Test
@@ -112,8 +113,8 @@ class InputOldPhoneNumberViewModelTest {
         } returns data
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.statusPhoneNumber.value
-        assertEquals(Success(phoneNumber), result?.first)
+        val result = viewModel.statusPhoneNumber.getOrAwaitValue()
+        assertEquals(Success(phoneNumber), result)
     }
 
     @Test
@@ -127,9 +128,8 @@ class InputOldPhoneNumberViewModelTest {
         } returns data
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.statusPhoneNumber.value
-        assertTrue(result?.first is Fail)
-        assertEquals(phoneNumber, result?.second)
+        val result = viewModel.statusPhoneNumber.getOrAwaitValue()
+        assertTrue(result is Fail)
     }
 
     @Test
@@ -144,13 +144,13 @@ class InputOldPhoneNumberViewModelTest {
         } returns data
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.formState.value
-        assertTrue(result?.isDataValid == isDataValid)
-        assertFalse(result?.numberError == defaultNumberError)
+        val result = viewModel.formState.getOrAwaitValue()
+        assertTrue(result.isDataValid == isDataValid)
+        assertFalse(result.numberError == defaultNumberError)
     }
 
     @Test
-    fun `submit phone number then trowable`() {
+    fun `submit phone number then throwable`() {
         val phoneNumber = "0821876590"
         val data = Throwable()
 
@@ -159,8 +159,7 @@ class InputOldPhoneNumberViewModelTest {
         } throws data
         viewModel.submitNumber(phoneNumber)
 
-        val result = viewModel.statusPhoneNumber.value
-        assertEquals(Fail(data), result?.first)
-        assertEquals(phoneNumber, result?.second)
+        val result = viewModel.statusPhoneNumber.getOrAwaitValue()
+        assertEquals(Fail(data), result)
     }
 }

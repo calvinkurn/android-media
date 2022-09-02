@@ -17,6 +17,9 @@ import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
@@ -40,30 +43,45 @@ class SuggestionSingleLineViewHolder(
 
     private fun bindIconImage(item: BaseSuggestionDataView){
         binding?.iconImage?.let {
-            ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
+            if (item.isCircleImage()) {
+                it.loadImageCircle(item.imageUrl)
+            } else {
+                it.loadImageRounded(
+                    item.imageUrl,
+                    itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius),
+                    properties = { setErrorDrawable(R.drawable.autocomplete_ic_time) }
+                )
+            }
         }
     }
 
     private fun bindTextTitle(item: BaseSuggestionDataView){
-        val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
-        if (startIndex == -1) {
-            binding?.singleLineTitle?.text = item.title
+        val binding = binding ?: return
+        val highlightedTitle = SpannableString(item.title)
+        if(item.isBoldAllText()){
+            binding.singleLineTitle.setWeight(Typography.BOLD)
         } else {
-            val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(
-                StyleSpan(Typeface.BOLD),
-                0,
-                startIndex,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            highlightedTitle.safeSetSpan(
-                StyleSpan(Typeface.BOLD),
-                startIndex + item.searchTerm.length,
-                highlightedTitle.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            binding?.singleLineTitle?.text = highlightedTitle
+            val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
+            if (startIndex == -1) {
+                binding.singleLineTitle.setWeight(Typography.BOLD)
+            }
+            else {
+                binding.singleLineTitle.setWeight(Typography.REGULAR)
+                highlightedTitle.safeSetSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    startIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                highlightedTitle.safeSetSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex + item.searchTerm.length,
+                    highlightedTitle.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
+        binding.singleLineTitle.text = highlightedTitle
     }
 
     private fun indexOfSearchQuery(displayName: String, searchTerm: String): Int {

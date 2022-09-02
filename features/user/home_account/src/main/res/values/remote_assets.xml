@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--PRIVACY ACCOUNT-->
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_1" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_1.png</string>
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_2" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_2.png</string>
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_3" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_3.png</string>
+    <string name="privacy_account_bottom_sheet_verification_image_header" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_verification.png</string>
+</resources>

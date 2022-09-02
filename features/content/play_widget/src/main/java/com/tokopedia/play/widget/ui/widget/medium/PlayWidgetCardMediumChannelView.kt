@@ -27,6 +27,7 @@ import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play_common.R as playCommonR
 
 /**
  * Created by kenny.hadisaputra on 24/01/22
@@ -78,7 +79,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
@@ -123,7 +124,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvTitle.text = data.title
         tvStartTime.text = data.startTime
         tvTotalView.text = data.totalView.totalViewFmt
-        ivGiveaway.visibility = if(data.hasGiveaway) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = if(data.hasGame) View.VISIBLE else View.GONE
 
         setIconToggleReminder(data.reminderType)
         reminderBadge.setOnClickListener {
@@ -132,16 +133,11 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(it, data)
-            mListener?.onLabelPromoClicked(this, data)
         }
 
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, data)
         }
-
-        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
-            mListener?.onLabelPromoImpressed(this, data)
-        }, onViewNotVisible = {})
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -267,14 +263,5 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: View,
             item: PlayWidgetChannelUiModel
         ) {}
-        fun onLabelPromoClicked(
-            view: View,
-            item: PlayWidgetChannelUiModel
-        )
-
-        fun onLabelPromoImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel
-        )
     }
 }

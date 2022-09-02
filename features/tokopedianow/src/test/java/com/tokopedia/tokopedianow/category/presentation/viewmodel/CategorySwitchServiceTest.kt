@@ -17,7 +17,7 @@ class CategorySwitchServiceTest: CategoryTestFixtures() {
     @Test
     fun `when service type is 20m and bottomsheet not yet been shown should show bottomsheet`() {
         val currentServiceType = "15m"
-        val localCacheModel = LocalCacheModel(service_type = currentServiceType)
+        val localCacheModel = LocalCacheModel(warehouse_id = "123", service_type = currentServiceType)
 
         `Given choose address data`(localCacheModel)
 

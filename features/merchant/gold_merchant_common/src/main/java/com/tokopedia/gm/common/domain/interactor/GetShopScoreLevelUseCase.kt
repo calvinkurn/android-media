@@ -2,6 +2,7 @@ package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResponse
 import com.tokopedia.gm.common.data.source.local.model.ShopScoreResultUiModel
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -13,12 +14,15 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 03/06/21
  */
 
+@GqlQuery("GetShopScoreLevelGqlQuery", GetShopScoreLevelUseCase.QUERY)
 class GetShopScoreLevelUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository
+    private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<ShopScoreResultUiModel>() {
 
     override suspend fun executeOnBackground(): ShopScoreResultUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, ShopScoreResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            GetShopScoreLevelGqlQuery(), ShopScoreResponse::class.java, params.parameters
+        )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
         val gqlErrors = gqlResponse.getError(ShopScoreResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
@@ -34,13 +38,7 @@ class GetShopScoreLevelUseCase @Inject constructor(
     }
 
     companion object {
-        private const val KEY_INPUT = "input"
-        private const val KEY_SHOP_ID = "shopID"
-        private const val KEY_SOURCE = "source"
-        private const val KEY_CALCULATE_SHOP_SCORE = "calculateScore"
-        private const val KEY_GET_NEXT_MIN_VALUE = "getNextMinValue"
-
-        private val QUERY = """
+        internal const val QUERY = """
             query getShopScoreLevel(${'$'}input: ShopScoreLevelParam!) {
               shopScoreLevel(input: ${'$'}input) {
                 result {
@@ -48,16 +46,23 @@ class GetShopScoreLevelUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+        """
+        private const val KEY_INPUT = "input"
+        private const val KEY_SHOP_ID = "shopID"
+        private const val KEY_SOURCE = "source"
+        private const val KEY_CALCULATE_SHOP_SCORE = "calculateScore"
+        private const val KEY_GET_NEXT_MIN_VALUE = "getNextMinValue"
 
         fun getRequestParams(shopId: String, source: String): RequestParams {
             return RequestParams.create().apply {
-                putObject(KEY_INPUT, mapOf(
+                putObject(
+                    KEY_INPUT, mapOf(
                         KEY_SHOP_ID to shopId,
                         KEY_SOURCE to source,
                         KEY_CALCULATE_SHOP_SCORE to true,
                         KEY_GET_NEXT_MIN_VALUE to false
-                ))
+                    )
+                )
             }
         }
     }

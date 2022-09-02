@@ -229,16 +229,12 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun onViewCreated(source: MiniCartSource?) {
-        when(externalServiceType) {
-            ServiceType.NOW_20M -> {
-                setUserPreference(ServiceType.NOW_15M)
-            }
-            ServiceType.NOW_2H -> {
-                setUserPreference(ServiceType.NOW_2H)
-            }
-            else -> {
-                super.onViewCreated(source)
-            }
+        val currentServiceType = chooseAddressData?.getServiceType()
+
+        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+            setUserPreference(externalServiceType)
+        } else {
+            super.onViewCreated(source)
         }
     }
 

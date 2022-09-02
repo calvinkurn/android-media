@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:tint="@color/Unify_NN900"
+        app:layout_constraintEnd_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toTopOf="@id/txtCairkanTitle"
+        app:srcCompat="@drawable/iconunify_wallet" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:tint="@color/Unify_NN900"
+        app:layout_constraintEnd_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toTopOf="@id/txtItuTitle"
+        app:srcCompat="@drawable/iconunify_lightbulb" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="50dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_lvl4"
+        android:text="@string/topads_credit_ada_reward_pending_yang_bisa_kamu_cairkan_lihat_caranya_di_bawah_ini"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtItuTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_dashboard_apa_itu_reward_pending"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/txtDescription"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtItuDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_credit_itu_reward_description"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/txtItuTitle"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtCairkanTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/topads_dashboard_bagaimana_cara_cairkan_reward"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/txtItuDescription"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtCairkanDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/topads_dashboard_caikan_description"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/txtCairkanTitle"
+        app:typographyType="paragraph_3" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnOkay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:background="@color/transparent"
+        android:elevation="@dimen/spacing_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/txtCairkanDescription">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/unify_space_12"
+            android:text="@string/topads_insight_oke_button" />
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

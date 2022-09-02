@@ -81,7 +81,16 @@ class ProductRecommendationViewHolder(
                     })
                     binding.chipFilterRecyclerview.adapter = annotationChipAdapter
                 }
-                annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                element.filterData?.let {
+                    if (it.isNotEmpty()) {
+                        annotationChipAdapter?.submitList(it)
+                        binding.chipFilterRecyclerview.visible()
+                    }
+                    else {
+                        binding.chipFilterRecyclerview.gone()
+                    }
+                }
+
                 initAdapter(element, this, element.cardModel, getComponentTrackData(element))
 
                 binding.titleRecom.text = title

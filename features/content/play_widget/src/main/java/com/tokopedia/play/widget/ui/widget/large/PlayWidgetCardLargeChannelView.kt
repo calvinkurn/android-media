@@ -13,6 +13,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -74,7 +75,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
-        tvTotalView = view.findViewById(R.id.viewer)
+        tvTotalView = view.findViewById(playCommonR.id.viewer)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
         ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
@@ -116,7 +117,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.showWithCondition(model.hasGiveaway)
+        ivGiveaway.showWithCondition(model.hasGame)
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
@@ -125,12 +126,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
-            mListener?.onLabelPromoClicked(this, model)
         }
-
-        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
-            mListener?.onLabelPromoImpressed(this, model)
-        }, onViewNotVisible = {})
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -220,15 +216,6 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType
-        )
-        fun onLabelPromoClicked(
-            view: View,
-            item: PlayWidgetChannelUiModel
-        )
-
-        fun onLabelPromoImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel
         )
     }
 }

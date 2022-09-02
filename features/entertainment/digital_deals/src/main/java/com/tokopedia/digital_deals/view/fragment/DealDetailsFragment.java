@@ -198,8 +198,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvDealDetails = view.findViewById(com.tokopedia.digital_deals.R.id.tv_deal_details);
         viewPager = view.findViewById(com.tokopedia.digital_deals.R.id.deals_images);
         circlePageIndicator = view.findViewById(com.tokopedia.digital_deals.R.id.pager_indicator);
-        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+        setToolbar();
         buyDealNow = view.findViewById(com.tokopedia.digital_deals.R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(com.tokopedia.digital_deals.R.id.tv_expandable_description);
         seeMoreButtonDesc = view.findViewById(com.tokopedia.digital_deals.R.id.seemorebutton_description);
@@ -251,6 +250,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         }
     }
 
+    private void setToolbar(){
+        BaseSimpleActivity activity = (BaseSimpleActivity) getActivity();
+        if (activity != null){
+            activity.setSupportActionBar(toolbar);
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+            toolbar.setNavigationOnClickListener(view -> requireActivity().onBackPressed());
+        }
+    }
 
     @Override
     protected void initInjector() {

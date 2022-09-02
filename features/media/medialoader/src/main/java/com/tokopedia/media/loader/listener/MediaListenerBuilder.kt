@@ -6,16 +6,14 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
-import com.tokopedia.media.loader.tracker.MediaLoaderTrackerParam
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
 object MediaListenerBuilder {
 
-    private const val PAGE_NAME_NOT_FOUND = "None"
 
     fun callback(
             context: Context,
@@ -40,27 +38,16 @@ object MediaListenerBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
-            val pageName = try {
-                context.javaClass.name.split(".").last()
-            } catch (e: Throwable) {
-                PAGE_NAME_NOT_FOUND
-            }
-
-            val fileSize = resource?.allocationByteCount?.toString() ?: "0"
-            val fileSizeInMb = fileSize.toLong().formattedToMB()
-
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
             // tracker
-            if (properties.data is String && !properties.isIcon) {
-                MediaLoaderTracker.track(
-                    context = context,
-                    data = MediaLoaderTrackerParam(
-                        url = properties.data.toString(),
-                        pageName = pageName,
-                        loadTime = loadTime,
-                        fileSize = fileSizeInMb
-                    )
+            if (properties.data is String) {
+                MediaLoaderTracker.simpleTrack(
+                    context = context.applicationContext,
+                    bitmap = resource,
+                    url = properties.data.toString(),
+                    isIcon = IsIcon(properties.isIcon),
+                    loadTime = loadTime
                 )
             }
 

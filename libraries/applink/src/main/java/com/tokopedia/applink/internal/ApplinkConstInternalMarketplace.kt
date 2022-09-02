@@ -64,7 +64,7 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
     // ReadReviewActivity
-    const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
+    const val SHOP_REVIEW_FULL_PAGE = "$INTERNAL_MARKETPLACE/shop/{id}/review"
 
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
@@ -75,10 +75,7 @@ object ApplinkConstInternalMarketplace {
     // StockReminderActivity
     const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
 
-    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{stock}/"
-
-    // SetCashbackActivity
-    const val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
+    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{isVariant}/"
 
     // CampaignStockActivity
     const val RESERVED_STOCK_BASE = "$INTERNAL_MARKETPLACE/reserved-stock"
@@ -203,6 +200,18 @@ object ApplinkConstInternalMarketplace {
     const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    //AdminInvitationConfirmationActivity
+    @JvmField
+    val ADMIN_INVITATION = "$INTERNAL_MARKETPLACE/shop-admin/invitation-page"
+
+    //AdminInvitationAcceptedActivity
+    @JvmField
+    val ADMIN_ACCEPTED = "$INTERNAL_MARKETPLACE/shop-admin/accepted-page"
+
+    //ShopAdminRedirectionActivity
+    @JvmField
+    val ADMIN_REDIRECTION = "$INTERNAL_MARKETPLACE/shop-admin/redirection-page"
 
     //ShopScorePerformanceActivity
     @JvmField

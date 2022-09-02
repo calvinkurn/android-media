@@ -11,7 +11,9 @@ data class ProductMediaDataModel(
         var listOfMedia: List<MediaDataModel> = listOf(),
         var initialScrollPosition: Int = -1,
         var variantOptionIdScrollAnchor: String = "",
-        var shouldUpdateImage: Boolean = false
+        var shouldUpdateImage: Boolean = false,
+        var shouldAnimateLabel: Boolean = true,
+        var containerType: MediaContainerType = MediaContainerType.Square
 ) : DynamicPdpDataModel {
     companion object {
         const val VIDEO_TYPE = "video"
@@ -27,6 +29,15 @@ data class ProductMediaDataModel(
         return listOfMedia.indexOfFirst {
             it.variantOptionId == variantOptionIdScrollAnchor
         }.takeIf { it > -1 } ?: 0
+    }
+
+    fun getScrollPosition(): Int {
+        val optionIdAnchor = variantOptionIdScrollAnchor
+        return if (optionIdAnchor.isNotEmpty() && shouldUpdateImage) {
+            listOfMedia.indexOfFirst {
+                it.variantOptionId == optionIdAnchor
+            }.takeIf { it > -1 } ?: 0
+        } else initialScrollPosition
     }
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -83,4 +94,20 @@ data class MediaDataModel(
         val variantOptionId: String = ""
 ) {
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
+}
+
+data class ThumbnailDataModel(
+        val media: MediaDataModel = MediaDataModel(),
+        val isSelected: Boolean = false,
+        val impressHolder: ImpressHolder = ImpressHolder()
+)
+
+sealed class MediaContainerType(val type: String, val ratio: String) {
+    object Square: MediaContainerType(type = "square", "H,1:1")
+    object Portrait: MediaContainerType(type = "portrait", "H,4:5")
+}
+
+internal fun String?.asMediaContainerType(): MediaContainerType = when (this) {
+    MediaContainerType.Portrait.type -> MediaContainerType.Portrait
+    else -> MediaContainerType.Square
 }

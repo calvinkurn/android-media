@@ -15,7 +15,7 @@ import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 
-class RichDefaultNotification internal constructor(
+open class RichDefaultNotification internal constructor(
     context: Context,
     baseNotificationModel: BaseNotificationModel
 ) : BaseNotification(context, baseNotificationModel) {
@@ -52,7 +52,7 @@ class RichDefaultNotification internal constructor(
         return builder.build()
     }
 
-    private fun setNotificationIcon(builder: NotificationCompat.Builder) {
+    protected fun setNotificationIcon(builder: NotificationCompat.Builder) {
         val iconBitmap = loadBitmap(baseNotificationModel.icon)
         if (iconBitmap != null) {
             if (baseNotificationModel.isBigImage)
@@ -66,7 +66,7 @@ class RichDefaultNotification internal constructor(
         }
     }
 
-    private fun setBigTextStyle(builder: NotificationCompat.Builder) {
+    protected fun setBigTextStyle(builder: NotificationCompat.Builder) {
         if (!TextUtils.isEmpty(baseNotificationModel.detailMessage))
             builder.setStyle(
                 NotificationCompat.BigTextStyle()
@@ -79,7 +79,7 @@ class RichDefaultNotification internal constructor(
             )
     }
 
-    private fun setActionButton(builder: NotificationCompat.Builder) {
+    protected fun setActionButton(builder: NotificationCompat.Builder) {
         baseNotificationModel.actionButton.forEach {
             val action = NotificationCompat.Action.Builder(
                 0, it.text, getButtonPendingIntent(it)
@@ -95,11 +95,11 @@ class RichDefaultNotification internal constructor(
         return getPendingIntent(context, intent, requestCode)
     }
 
-    private fun hasActionButton(): Boolean {
+    protected fun hasActionButton(): Boolean {
         return baseNotificationModel.actionButton.isNotEmpty()
     }
 
-    private fun setBigPictureNotification(
+    protected fun setBigPictureNotification(
         builder: NotificationCompat.Builder,
         baseNotificationModel: BaseNotificationModel,
         mediaBitmap: Bitmap

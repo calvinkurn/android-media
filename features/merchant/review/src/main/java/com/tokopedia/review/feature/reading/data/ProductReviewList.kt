@@ -28,7 +28,7 @@ data class ProductReview(
     var feedbackID: String = "",
     @SerializedName("variantName")
     @Expose
-    val variantName: String = "",
+    var variantName: String = "",
     @SerializedName("message")
     @Expose
     var message: String = "",
@@ -93,6 +93,9 @@ data class ProductReviewUser(
     @SerializedName("url")
     @Expose
     val url: String = "",
+    @SerializedName("label")
+    @Expose
+    val label: String = "",
 )
 
 data class ProductReviewImageAttachments(

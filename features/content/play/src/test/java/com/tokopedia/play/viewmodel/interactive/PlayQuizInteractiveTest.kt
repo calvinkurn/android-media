@@ -25,7 +25,7 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -43,7 +43,9 @@ class PlayQuizInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val interactiveId = "12398"
     private val title = "Quiz Ikan Koi"
@@ -119,6 +121,8 @@ class PlayQuizInteractiveTest {
 
     @Test
     fun `given quiz is active and answer quiz is success, when click option, then user should have joined the game`() {
+        val choice = modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Default('a'))
+
         coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
             id = interactiveId,
             title = title,
@@ -127,7 +131,7 @@ class PlayQuizInteractiveTest {
                 endTime = duration,
             ),
             reward = "Sepeda",
-            listOfChoices = listOf(modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Default('a')))
+            listOfChoices = listOf(choice)
         )
 
         coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "3"))
@@ -145,14 +149,18 @@ class PlayQuizInteractiveTest {
 
             mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
             it.recordEvent {
-                it.viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = QuizChoicesUiModel(id = "3", text = "25 June", type = PlayQuizOptionState.Default('a'))))
-            }.last().assertEqualTo(QuizAnsweredEvent)
+                it.viewModel.submitAction(
+                    PlayViewerNewAction.ClickQuizOptionAction(item = choice)
+                )
+            }.last().assertEqualTo(QuizAnsweredEvent(isTrue = true))
             mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
         }
     }
 
     @Test
     fun `given quiz is active and answer quiz is error, when click option, then user should not have joined the game`() {
+        val choice = modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Default('a'))
+
         coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
             id = interactiveId,
             title = title,
@@ -161,7 +169,7 @@ class PlayQuizInteractiveTest {
                 endTime = duration,
             ),
             reward = "Sepeda",
-            listOfChoices = listOf(modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Default('a')))
+            listOfChoices = listOf(choice)
         )
         val err = MessageErrorException("Error gk bs jawab y")
 
@@ -180,7 +188,9 @@ class PlayQuizInteractiveTest {
 
             mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
             it.recordEvent {
-                it.viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = QuizChoicesUiModel(id = "3", text = "25 June", type = PlayQuizOptionState.Default('a'))))
+                it.viewModel.submitAction(
+                    PlayViewerNewAction.ClickQuizOptionAction(item = choice)
+                )
             }.last().assertEqualTo(ShowErrorEvent(err))
             mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
         }
@@ -189,6 +199,8 @@ class PlayQuizInteractiveTest {
     @Test
     fun `given quiz is active and user has not answer question, then click answer, quiz options state needs to change`() {
         val selectedId = "3"
+        val selectedChoice = modelBuilder.buildQuizChoices(id = selectedId, text = "25 June", type = PlayQuizOptionState.Default('a'))
+
         coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
             id = interactiveId,
             title = title,
@@ -198,7 +210,7 @@ class PlayQuizInteractiveTest {
             ),
             reward = "Sepeda",
             listOfChoices = listOf(
-                modelBuilder.buildQuizChoices(id = selectedId, text = "25 June", type = PlayQuizOptionState.Default('a')),
+                selectedChoice,
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Default('b')),
                 modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Default('b')),
             )
@@ -219,10 +231,10 @@ class PlayQuizInteractiveTest {
                 setUserId("1")
 
                 mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
-                viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = QuizChoicesUiModel(id = selectedId, text = "25 June", type = PlayQuizOptionState.Default('a'))))
+                viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = selectedChoice))
                 mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
             }
-            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent)
+            eventAndState.second.last().assertEqualTo(QuizAnsweredEvent(isTrue = false))
             (eventAndState.first.interactive.interactive as InteractiveUiModel.Quiz).listOfChoices.forEach { quizChoice ->
                 quizChoice.assertType<QuizChoicesUiModel> { choice ->
                     if(choice.id == selectedId) choice.type is PlayQuizOptionState.Answered

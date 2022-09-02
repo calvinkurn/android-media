@@ -6,8 +6,20 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 
 data class GetProductV3 (
     @Expose
+    @SerializedName("productID")
+    val productID: String,
+    @Expose
     @SerializedName("productName")
     val productName: String,
+    @Expose
+    @SerializedName("stockAlertCount")
+    val stockAlertCount: String,
+    @Expose
+    @SerializedName("stockAlertStatus")
+    val stockAlertStatus: Int,
+    @Expose
+    @SerializedName("stock")
+    val stock: Int,
     @Expose
     @SerializedName("variant")
     val variant: Variant

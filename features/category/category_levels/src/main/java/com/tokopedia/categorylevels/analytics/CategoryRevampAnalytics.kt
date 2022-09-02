@@ -121,7 +121,8 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         id: String,
         parentPosition: Int,
         dataItem: DataItem,
-        tabPosition1: Int
+        tabPosition1: Int,
+        eventAction: String
     ) {
         dataItem.title = dataItem.name
         trackClickNavigationChips(dataItem, tabPosition1)
@@ -305,7 +306,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         }
     }
 
-    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {
+    override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean,campaignId: String,variantId: String, shopID: String) {
         additionalInfo?.categoryData?.let {
             categoryUrl = it[KEY_URL] ?: ""
             if(it[KEY_REDIRECTION_URL].isNullOrEmpty())

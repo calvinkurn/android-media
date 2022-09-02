@@ -5,6 +5,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -12,36 +13,11 @@ import com.tokopedia.usecase.RequestParams
 import java.io.IOException
 import javax.inject.Inject
 
+@GqlQuery("GetShopCreatedInfoGqlQuery", GetShopCreatedInfoUseCase.QUERY)
 open class GetShopCreatedInfoUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val shopScoreCommonMapper: ShopScoreCommonMapper
 ) : BaseGqlUseCase<ShopInfoPeriodUiModel>() {
-
-    companion object {
-        const val SHOP_ID = "shopIDs"
-        const val SHOP_INFO_INPUT = "input"
-        const val SOURCE = "source"
-        private const val SHOP_ID_DEFAULT = 0L
-        val SHOP_INFO_ID_QUERY = """
-            query shopInfoByID(${'$'}input: ParamShopInfoByID!) {
-              shopInfoByID(input: ${'$'}input) {
-                result{
-                  createInfo{
-                    shopCreated
-                  }
-                }
-                error{
-                  message
-                }
-              }
-            }
-        """.trimIndent()
-
-        @JvmStatic
-        fun createParams(shopID: Long): RequestParams = RequestParams.create().apply {
-            putLong(SHOP_ID, shopID)
-        }
-    }
 
     var requestParams: RequestParams = RequestParams.create()
 
@@ -51,8 +27,9 @@ open class GetShopCreatedInfoUseCase @Inject constructor(
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
 
-        val shopInfoRequest =
-            GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
+        val shopInfoRequest = GraphqlRequest(
+            GetShopCreatedInfoGqlQuery(), ShopInfoByIDResponse::class.java, shopInfoParam
+        )
 
         val requests = mutableListOf(shopInfoRequest)
         try {
@@ -70,6 +47,32 @@ open class GetShopCreatedInfoUseCase @Inject constructor(
             throw IOException(e.message)
         } catch (e: Throwable) {
             throw Exception(e.message)
+        }
+    }
+
+    companion object {
+        internal const val QUERY = """
+            query shopInfoByID(${'$'}input: ParamShopInfoByID!) {
+              shopInfoByID(input: ${'$'}input) {
+                result{
+                  createInfo{
+                    shopCreated
+                  }
+                }
+                error{
+                  message
+                }
+              }
+            }
+        """
+        const val SHOP_ID = "shopIDs"
+        const val SHOP_INFO_INPUT = "input"
+        const val SOURCE = "source"
+        private const val SHOP_ID_DEFAULT = 0L
+
+        @JvmStatic
+        fun createParams(shopID: Long): RequestParams = RequestParams.create().apply {
+            putLong(SHOP_ID, shopID)
         }
     }
 }

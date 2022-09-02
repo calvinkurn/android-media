@@ -2,9 +2,11 @@ package com.tokopedia.digital_checkout.usecase
 
 import com.tokopedia.digital_checkout.data.DigitalCheckoutQueries
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import javax.inject.Inject
 
+@GqlQuery("CancelVoucherCartQuery", DigitalCheckoutQueries.CANCEL_VOUCHER_CHART_QUERY)
 class DigitalCancelVoucherUseCase @Inject constructor(
         private val useCase: GraphqlUseCase<CancelVoucherData.Response>
 ) {
@@ -16,7 +18,7 @@ class DigitalCancelVoucherUseCase @Inject constructor(
         useCase.apply {
             setRequestParams(createParam(promoCode))
             setTypeClass(CancelVoucherData.Response::class.java)
-            setGraphqlQuery(DigitalCheckoutQueries.getCancelVoucherCartQuery())
+            setGraphqlQuery(CancelVoucherCartQuery())
             execute(onSuccess, onError)
         }
     }

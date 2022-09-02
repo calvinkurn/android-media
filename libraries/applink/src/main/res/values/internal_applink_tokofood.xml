@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_tokofood" translatable="false">TokoFood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!--host-->
+    <string name="host_food" translatable="false">food</string>
+
+    <!--path-->
+    <string name="path_tokofood_home" translatable="false">/home</string>
+    <string name="path_tokofood_category" translatable="false">/category</string>
+    <string name="path_tokofood_merchant" translatable="false">/merchant</string>
+    <string name="path_tokofood_purchase" translatable="false">/purchase</string>
+    <string name="path_tokofood_post_purchase" translatable="false">/postpurchase</string>
+</resources>

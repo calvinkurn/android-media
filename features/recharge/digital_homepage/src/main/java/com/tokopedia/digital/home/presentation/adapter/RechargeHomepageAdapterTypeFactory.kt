@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastItemModel
@@ -36,7 +37,9 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualBannersViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageDualIconsViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageFavoriteViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLegoBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLoadingViewholder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageOfferingWidgetViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductBannerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerV2ViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageProductCardCustomBannerViewHolder
@@ -49,7 +52,6 @@ import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepa
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageThreeIconsViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageTickerViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageVideoHighlightViewHolder
-import com.tokopedia.digital.home.presentation.adapter.viewholder.RechargeHomepageLegoBannerViewHolder
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
@@ -147,6 +149,9 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(customLastItem: RechargeHomepageProductCardCustomLastItemModel): Int =
         RechargeHomepageProductCardCustomLastItemViewHolder.LAYOUT
+
+    fun type(offeringWidget: RechargeHomepageOfferingWidgetModel): Int =
+        RechargeHomepageOfferingWidgetViewHolder.LAYOUT
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
@@ -311,6 +316,10 @@ class RechargeHomepageAdapterTypeFactory(
                 )
                 RechargeHomepageProductCardCustomLastItemViewHolder(binding, listener)
             }
+            RechargeHomepageOfferingWidgetViewHolder.LAYOUT -> RechargeHomepageOfferingWidgetViewHolder(
+                parent,
+                listener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

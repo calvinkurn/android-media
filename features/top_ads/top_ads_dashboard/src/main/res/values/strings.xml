@@ -11,7 +11,7 @@
     <string name="topads_dash_auto_topup_off_dialog_ok_btn">Ya, Nonaktifkan</string>
     <string name="topads_dash_auto_topup_off_dialog_cancel_btn">Tetap gunakan</string>
     <string name="topads_dash_auto_topup_ticker_desc">Biaya diambil dari saldo penghasilan toko anda, setiap kali kredit di bawah batas</string>
-    <string name="topads_dash_select_topup_amount">Top-up kredit sebesar</string>
+    <string name="topads_dash_select_topup_amount">Otomatis top-up saldo sebesar</string>
     <string name="topads_dash_when_credit_is_down">Saat kredit saya di bawah</string>
     <string name="topads_dash_auto_topup_setting_is_saved_toast">Pengaturan berhasil diperbarui</string>
     <string name="topads_dash_auto_topup_disabled_toast">Tambah kredit otomatis telah dinonaktifkan</string>
@@ -466,5 +466,24 @@
     <string name="topads_dashboard_recommendation_info_sheet_desc">Ikuti rekomendasi jitu dari hasil analisa kami untuk tingkatkan performa iklanmu!</string>
     <string name="topads_dash_deleted_group_empty_result_title">Tidak ada iklan di periode ini</string>
     <string name="topads_deleted_empty_ads_desc">Coba ubah tanggal untuk melihat statistik iklan yg telah dihapus</string>
+    <string name="total_reward_pending">Total Reward Pending</string>
+    <string name="topads_credit_reward_pending">Reward Pending</string>
+    <string name="topads_credit_ada_reward_pending_yang_bisa_kamu_cairkan_lihat_caranya_di_bawah_ini">Ada Reward Pending yang bisa kamu cairkan! Lihat caranya di bawah ini.</string>
+    <string name="topads_dashboard_apa_itu_reward_pending">Apa itu Reward Pending?</string>
+    <string name="topads_dashboard_bagaimana_cara_cairkan_reward">Bagaimana cara cairkan Reward?</string>
+    <string name="topads_dashboard_caikan_description">
+        \u2022 Tambah Kredit TopAds min. Rp50 ribu untuk cairkan Reward, atau\n\u2022 Tunggu hingga total Reward Pending mencapai Rp50 ribu (sebelum kedaluwarsa), atau\n\u2022 Miliki akumulasi senilai Rp50 rb dari total Kredit TopAds dan Reward Pending kamu.
+    </string>
+    <string name="topads_credit_itu_reward_description">Reward Pending adalah Reward Kredit TopAds yang kamu dapatkan dari berjualan bulan ini dan bisa dicairkan ke akunmu. <![CDATA["<font color='#42b549'><b> Pelajari Lebih Lanjut </b></font>]]></string>
+    <string name="topads_credit_otomatis_title_1">Lebih praktis supaya iklan terus tampil</string>
+    <string name="topads_credit_otomatis_desc_1">Tidak repot lagi harus terus memantau kapan perlu tambah kredit karena bisa ditambah otomatis.</string>
+    <string name="topads_credit_otomatis_title_2">Pengeluaran tetap terkontrol</string>
+    <string name="topads_credit_otomatis_desc_2">TopAds akan menggunakan saldo penghasilanmu untuk fitur ini, selama saldo penghasilanmu mencukupi.</string>
+    <string name="topads_credit_otomatis_title_3">Ada bonus Kredit TopAds!</string>
+    <string name="topads_credit_otomatis_desc_3">Dapatkan bonus 9,5% Kredit TopAds tiap kali kreditmu ditambah otomatis!</string>
+    <string name="topads_credit_status_berhasil">Berhasil</string>
+    <string name="topads_credit_status_digunakan">Digunakan</string>
+    <string name="topads_credit_status_menunggu">Menunggu</string>
+    <string name="topads_credit_status_kedaluwarsa">Kedaluwarsa</string>
 </resources>
 

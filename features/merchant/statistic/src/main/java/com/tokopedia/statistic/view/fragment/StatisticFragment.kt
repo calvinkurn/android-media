@@ -1,10 +1,16 @@
 package com.tokopedia.statistic.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +22,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
@@ -24,7 +37,27 @@ import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -201,7 +234,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onResume() {
         super.onResume()
         setHeaderSubTitle(headerSubTitle)
-        if (userVisibleHint) {
+        if (!isHidden) {
             StatisticTracker.sendScreen(screenName)
         }
     }
@@ -293,13 +326,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
+        val widgets = mutableListOf<BaseWidgetUiModel<*>>()
+        adapter.data.forEach {
+            val isTheSameWidget = it.widgetType == widget.widgetType
+            if (isTheSameWidget) {
+                it.showLoadingState = true
+                notifyWidgetChanged(it)
+                widgets.add(it)
+            }
+        }
+        getWidgetsData(widgets)
+    }
+
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         StatisticTracker.sendClickCardEvent(model)
     }
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendCardImpressionEvent(model, position)
+        StatisticTracker.sendCardImpressionEvent(
+            statisticPage?.pageSource.orEmpty(), model
+        )
     }
 
     override fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {
@@ -307,35 +354,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendImpressionLineGraphEvent(model, position)
+        StatisticTracker.sendImpressionLineGraphEvent(
+            statisticPage?.pageSource.orEmpty(),
+            model
+        )
     }
 
     override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
         StatisticTracker.sendEmptyStateCtaClickLineGraphEvent(model)
     }
-
-    override fun sendCarouselImpressionEvent(
-        dataKey: String,
-        carouselItems: List<CarouselItemUiModel>,
-        position: Int
-    ) {
-        StatisticTracker.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
-    }
-
-    override fun sendCarouselClickTracking(
-        dataKey: String,
-        carouselItems: List<CarouselItemUiModel>,
-        position: Int
-    ) {
-        StatisticTracker.sendClickCarouselItemBannerEvent(dataKey, carouselItems, position)
-    }
-
-    override fun sendCarouselCtaClickEvent(dataKey: String) {
-        StatisticTracker.sendClickCarouselCtaEvent(dataKey)
-    }
-
-    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
     override fun sendPosListItemClickEvent(element: PostListWidgetUiModel, post: PostItemUiModel) {
         StatisticTracker.sendClickPostItemEvent(element.dataKey, post.title)
@@ -349,11 +376,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionPostEvent(element.dataKey)
     }
 
-    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressImpressionEvent(
+        dataKey: String,
+        stateColor: String,
+        valueScore: Long
+    ) {
         StatisticTracker.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {
         StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
@@ -372,15 +403,33 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         maxSlidePosition: Int,
         isSlideEmpty: Boolean
     ) {
-        StatisticTracker.sendTableImpressionEvent(model, position, slidePosition, isSlideEmpty)
-        getCategoryPage()?.let { categoryPage ->
-            StatisticTracker.sendTableSlideEvent(categoryPage, slidePosition.plus(Int.ONE), maxSlidePosition)
-        }
+        StatisticTracker.sendTableImpressionEvent(
+            statisticPage?.pageSource.orEmpty(), model.dataKey, isSlideEmpty
+        )
+
+        StatisticTracker.sendTableOnSwipeEvent(
+            statisticPage?.pageSource.orEmpty(),
+            slidePosition, maxSlidePosition
+        )
+    }
+
+    override fun sendTableOnSwipeEvent(
+        element: TableWidgetUiModel,
+        slidePosition: Int,
+        maxSlidePosition: Int,
+        isSlideEmpty: Boolean
+    ) {
+        StatisticTracker.sendTableOnSwipeEvent(
+            statisticPage?.pageSource.orEmpty(),
+            slidePosition,
+            maxSlidePosition
+        )
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendPieChartImpressionEvent(model, position)
+        StatisticTracker.sendPieChartImpressionEvent(
+            statisticPage?.pageSource.orEmpty(), model
+        )
     }
 
     override fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {
@@ -388,8 +437,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
-        val position = adapter.data.indexOf(model)
-        StatisticTracker.sendBarChartImpressionEvent(model, position)
+        StatisticTracker.sendBarChartImpressionEvent(
+            statisticPage?.pageSource.orEmpty(),
+            model
+        )
     }
 
     override fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {
@@ -397,7 +448,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
-        StatisticTracker.sendSectionTooltipClickEvent(model.title)
+        StatisticTracker.sendSectionTooltipClickEvent(
+            statisticPage?.pageSource.orEmpty(), model.title
+        )
     }
 
     override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
@@ -457,7 +510,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     fetchTableData(listOf(copiedWidget))
                 }
             }
-            sendSelectedFilterClickEvent(filter)
+            sendSelectedFilterClickEvent(filter, element)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
 
         statisticPage?.let {
@@ -469,10 +522,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         this.selectedWidget = widget
     }
 
-    private fun sendSelectedFilterClickEvent(filter: WidgetFilterUiModel) {
-        getCategoryPage()?.let { categoryPage ->
-            StatisticTracker.sendTableFilterClickEvent(categoryPage, filter.name)
-        }
+    private fun sendSelectedFilterClickEvent(
+        filter: WidgetFilterUiModel,
+        model: TableWidgetUiModel
+    ) {
+        val isEmpty = model.data?.dataSet?.all { it.rows.isEmpty() }.orTrue()
+        StatisticTracker.sendTableFilterClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            model.dataKey,
+            filter.name,
+            isEmpty
+        )
     }
 
     private fun loadInitialLayoutData(savedInstanceState: Bundle?, action: () -> Unit) {
@@ -597,27 +657,33 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return try {
             val widget = adapter.data[position]
             return if (isTablet) {
-                val orientation = resources.configuration.orientation
-                val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
-                if (isPortrait) {
-                    when (widget) {
-                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_2
-                        is PieChartWidgetUiModel -> widget.gridSize
-                        else -> defaultSpanCount
-                    }
-                } else {
-                    when (widget) {
-                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_1
-                        is SectionWidgetUiModel -> defaultSpanCount
-                        else -> widget.gridSize
-                    }
-                }
+                setupLayoutForTable(widget, defaultSpanCount)
             } else {
                 val isCardWidget = widget.widgetType == WidgetType.CARD
                 if (isCardWidget) WidgetGridSize.GRID_SIZE_1 else defaultSpanCount
             }
         } catch (e: IndexOutOfBoundsException) {
+            Timber.e(e)
             defaultSpanCount
+        }
+    }
+
+    private fun setupLayoutForTable(widget: BaseWidgetUiModel<*>, defaultSpanCount: Int): Int {
+        val orientation = activity?.resources?.configuration?.orientation
+            ?: Configuration.ORIENTATION_PORTRAIT
+        val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
+        return if (isPortrait) {
+            when (widget) {
+                is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_2
+                is PieChartWidgetUiModel -> widget.gridSize
+                else -> defaultSpanCount
+            }
+        } else {
+            when (widget) {
+                is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_1
+                is SectionWidgetUiModel -> defaultSpanCount
+                else -> widget.gridSize
+            }
         }
     }
 
@@ -725,7 +791,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
         val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
         DateFilterBottomSheet.newInstance(
-            dateFilters, identifierDescription
+            dateFilters,
+            identifierDescription,
+            statisticPage?.pageSource.orEmpty()
         )
             .setOnApplyChanges {
                 setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
@@ -736,6 +804,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun applyDateRange(item: DateFilterItem) {
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
@@ -743,11 +812,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             mViewModel.setDateFilter(it.pageSource, startDate, endDate, item.getDateFilterType())
         }
 
-        StatisticTracker.sendSetDateFilterEvent(item.label)
+        StatisticTracker.sendSetDateFilterEvent(
+            statisticPage?.pageSource.orEmpty(),
+            item.getDateFilterType(),
+            item.startDate,
+            item.endDate
+        )
         adapter.data.forEach {
             when (it) {
-                is TickerWidgetUiModel -> {
-                }
                 is SectionWidgetUiModel -> {
                     it.shouldShow = true
                 }
@@ -925,6 +997,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     error = message
                 }
                 widget.data = widgetData
+                widget.showLoadingState = false
                 notifyWidgetChanged(widget)
             }
         }
@@ -947,6 +1020,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }?.let { widget ->
                 if (widget is W) {
                     widget.data = widgetData
+                    widget.showLoadingState = false
                     notifyWidgetChanged(widget)
                 }
             }
@@ -967,21 +1041,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeWidgetLayoutLiveData() {
-        mViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
-
+        mViewModel.widgetLayout.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
-
             setProgressBarVisibility(false)
-        })
-
+        }
         setProgressBarVisibility(true)
     }
 
     private fun observeTickers() {
-        mViewModel.tickers.observe(viewLifecycleOwner, {
+        mViewModel.tickers.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> showTickers(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(
@@ -989,14 +1060,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                     StatisticLogger.ERROR_TICKER
                 )
             }
-        })
+        }
     }
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String
     ) {
-        liveData.observe(viewLifecycleOwner, { result ->
+        liveData.observe(viewLifecycleOwner) { result ->
             startLayoutRenderingPerformanceMonitoring()
 
             when (result) {
@@ -1006,7 +1077,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             stopPLTPerformanceMonitoring()
             stopWidgetPerformanceMonitoring(type)
-        })
+        }
     }
 
     private fun showTickers(tickers: List<TickerItemUiModel>) {
@@ -1028,7 +1099,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             actionMenuBottomSheet.show(childFragmentManager)
 
-            StatisticTracker.sendThreeDotsClickEvent(userSession.userId)
+            StatisticTracker.sendThreeDotsClickEvent(statisticPage?.pageSource.orEmpty())
         }
     }
 
@@ -1054,14 +1125,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         //send impression for calendar filter action menu
         menu.findItem(R.id.actionStcSelectDate)?.let {
             view?.addOnImpressionListener(dateFilterImpressHolder) {
-                StatisticTracker.sendCalendarImpressionEvent(userSession.userId)
+                val dateFilter = statisticPage?.dateFilters?.firstOrNull { it.isSelected }
+                StatisticTracker.sendCalendarImpressionEvent(
+                    statisticPage?.pageSource.orEmpty(),
+                    dateFilter
+                )
             }
         }
 
         //send impression for 3 dots action menu
         menu.findItem(R.id.actionStcOtherMenu)?.let {
             view?.addOnImpressionListener(otherMenuImpressHolder) {
-                StatisticTracker.sendThreeDotsImpressionEvent(userSession.userId)
+                StatisticTracker.sendThreeDotsImpressionEvent(statisticPage?.pageSource.orEmpty())
             }
         }
     }
@@ -1104,28 +1179,32 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun checkForSectionToBeRemoved(removedPosition: Int) {
-        val previousWidget = adapter.data.getOrNull(removedPosition - 1)
+        val previousWidget = adapter.data.getOrNull(removedPosition.minus(Int.ONE))
         if (previousWidget is SectionWidgetUiModel) {
-            if (adapter.data.getOrNull(removedPosition + 1) == null) {
-                removeEmptySection(removedPosition - 1)
+            if (adapter.data.getOrNull(removedPosition.plus(Int.ONE)) == null) {
+                removeEmptySection(removedPosition.minus(Int.ONE))
             } else {
-                var shouldRemoveSection = false
-                adapter.data?.drop(removedPosition + 1)?.forEach { widget ->
-                    when {
-                        widget.isShowEmpty || !widget.isEmpty() -> {
-                            // If we found that the next widget should be shown, then we should not remove the section
-                            return@forEach
-                        }
-                        widget is SectionWidgetUiModel -> {
-                            shouldRemoveSection = true
-                            return@forEach
-                        }
-                    }
+                removeSectionIfEmpty(removedPosition)
+            }
+        }
+    }
+
+    private fun removeSectionIfEmpty(removedPosition: Int) {
+        var shouldRemoveSection = false
+        adapter.data?.drop(removedPosition.plus(Int.ONE))?.forEach { widget ->
+            when {
+                widget.isShowEmpty || !widget.isEmpty() -> {
+                    // If we found that the next widget should be shown, then we should not remove the section
+                    return@forEach
                 }
-                if (shouldRemoveSection) {
-                    removeEmptySection(removedPosition - 1)
+                widget is SectionWidgetUiModel -> {
+                    shouldRemoveSection = true
+                    return@forEach
                 }
             }
+        }
+        if (shouldRemoveSection) {
+            removeEmptySection(removedPosition.minus(Int.ONE))
         }
     }
 

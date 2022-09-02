@@ -26,9 +26,9 @@ class TelcoTabViewModelTest {
     private fun createListTab() : List<TelcoTabItem> {
         var idLong = 1L
         val listTabs = mutableListOf<TelcoTabItem>()
-        listTabs.add(TelcoTabItem(Bundle(), "Pulsa", idLong++))
-        listTabs.add(TelcoTabItem(Bundle(), "Paket Data", idLong++))
-        listTabs.add(TelcoTabItem(Bundle(), "Roaming", idLong++))
+        listTabs.add(TelcoTabItem("Pulsa", idLong++))
+        listTabs.add(TelcoTabItem("Paket Data", idLong++))
+        listTabs.add(TelcoTabItem("Roaming", idLong++))
         return listTabs
     }
 

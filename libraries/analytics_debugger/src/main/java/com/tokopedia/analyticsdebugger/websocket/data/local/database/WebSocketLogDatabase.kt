@@ -11,7 +11,7 @@ import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogE
  * Created By : Jonathan Darwin on December 01, 2021
  */
 
-@Database(entities = [WebSocketLogEntity::class], version = 1)
+@Database(entities = [WebSocketLogEntity::class], version = 2)
 abstract class WebSocketLogDatabase: RoomDatabase() {
 
     abstract fun webSocketLogDao(): WebSocketLogDao

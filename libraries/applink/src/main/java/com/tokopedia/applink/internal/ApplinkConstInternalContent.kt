@@ -17,6 +17,9 @@ object ApplinkConstInternalContent {
     const val AFFILIATE_EDIT = "$INTERNAL_CONTENT/affiliate/{id}/edit"
     const val SHOP_POST_EDIT = "$INTERNAL_CONTENT/content-shop/{id}/edit"
     const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
+    const val INTERNAL_FEED_AUTOCOMPLETE = "$INTERNAL_CONTENT/feed_autocomplete"
+    const val INTERNAL_FEED_CREATION_PRODUCT_SEARCH = "$INTERNAL_CONTENT/creation_product_search"
+    const val INTERNAL_FEED_CREATION_SHOP_SEARCH = "$INTERNAL_CONTENT/creation_shop_search"
 
     const val HASHTAG_PAGE = "$INTERNAL_CONTENT/explore-hashtag/{hashtag}/"
 
@@ -28,7 +31,7 @@ object ApplinkConstInternalContent {
 
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
 
-    const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}/"
+    const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}"
 
     const val HOST_PLAY = "play"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"

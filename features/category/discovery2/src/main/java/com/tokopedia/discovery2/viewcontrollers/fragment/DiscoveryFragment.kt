@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -49,6 +49,7 @@ import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -56,8 +57,12 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewHolder
@@ -193,6 +198,7 @@ class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
+    var currentTabPosition: Int? = null
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -220,6 +226,11 @@ class DiscoveryFragment :
                 bundle.putString(CATEGORY_ID, queryParameterMap[CATEGORY_ID])
                 bundle.putString(EMBED_CATEGORY, queryParameterMap[EMBED_CATEGORY])
                 bundle.putString(RECOM_PRODUCT_ID, queryParameterMap[RECOM_PRODUCT_ID])
+                bundle.putString(DYNAMIC_SUBTITLE, queryParameterMap[DYNAMIC_SUBTITLE])
+                bundle.putString(TARGET_TITLE_ID, queryParameterMap[TARGET_TITLE_ID])
+                bundle.putString(CAMPAIGN_ID, queryParameterMap[CAMPAIGN_ID])
+                bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
+                bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
             }
         }
     }
@@ -440,8 +451,17 @@ class DiscoveryFragment :
         setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
+        checkForSamePageOpened()
         fetchDiscoveryPageData()
         setUpObserver()
+    }
+
+    private fun checkForSamePageOpened() {
+        discoveryViewModel.checkForSamePageOpened(
+            discoveryViewModel.getQueryParameterMapFromBundle(
+                arguments
+            )
+        )
     }
 
     private fun setAdapter() {
@@ -1098,6 +1118,16 @@ class DiscoveryFragment :
         }
     }
 
+    fun scrollToComponentWithID(componentID:String){
+        val position = discoveryViewModel.scrollToPinnedComponent(
+            discoveryAdapter.currentList, componentID
+        )
+        if (position >= 0) {
+            userPressed = false
+            smoothScrollToComponentWithPosition(position)
+        }
+    }
+
     private fun setAnimationOnScroll() {
         recyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
@@ -1145,9 +1175,16 @@ class DiscoveryFragment :
         getDiscoveryAnalytics().clearProductViewIds(true)
         miniCartData = null
         resetAnchorTabs()
+        checkTabPositionBeforeRefresh()
         discoveryViewModel.resetScroll()
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
+    }
+
+    private fun checkTabPositionBeforeRefresh(){
+        if((activity as? DiscoveryActivity)?.isFromCategory() != true && currentTabPosition != null){
+            this.arguments?.putString(ACTIVE_TAB,(currentTabPosition).toString())
+        }
     }
 
     private fun resetAnchorTabs(){
@@ -1439,10 +1476,13 @@ class DiscoveryFragment :
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+        val campaignId = arguments?.getString(CAMPAIGN_ID,"") ?: ""
+        val variantId = arguments?.getString(VARIANT_ID,"") ?: ""
+        val shopId = arguments?.getString(SHOP_ID,"") ?: ""
         if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn())
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn(),campaignId,variantId,shopId)
         } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn())
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn(),campaignId,variantId,shopId)
         }
         openScreenStatus = true
     }
@@ -1719,17 +1759,21 @@ class DiscoveryFragment :
                 if (position >= 0) {
                     userPressed = false
                     anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, true)
-                    val smoothScroller: RecyclerView.SmoothScroller =
-                        object : LinearSmoothScroller(context) {
-                            override fun getVerticalSnapPreference(): Int {
-                                return SNAP_TO_START
-                            }
-                        }
-                    smoothScroller.targetPosition = position
-                    staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+                    smoothScrollToComponentWithPosition(position)
                 }
             }
         }
+    }
+
+    private fun smoothScrollToComponentWithPosition(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     fun updateSelectedSection(sectionID: String) {

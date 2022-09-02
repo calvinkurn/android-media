@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -17,11 +16,9 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
-import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
@@ -184,13 +181,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
-                    OpenUserReportEvent -> doActionUserReport()
-                    is OpenPageEvent -> openPageByApplink(
-                        applink = event.applink,
-                        params = event.params.toTypedArray(),
-                        requestCode = event.requestCode,
-                        pipMode = event.pipMode
-                    )
+                    OpenUserReportEvent -> {
+                        doActionUserReport()
+                    }
                 }
             }
         }
@@ -250,31 +243,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         }else{
             TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
         }
-    }
-
-    /****
-     * Common Methods can do better - move to parent
-     */
-    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
-            playViewModel.requestPiPBrowsingPage(
-                OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
-            )
-        } else {
-            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
-        }
-    }
-
-    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
-        if (requestCode == null) {
-            RouteManager.route(requireContext(), applink, *params)
-        } else {
-            val intent = RouteManager.getIntent(requireContext(), applink, *params)
-            startActivityForResult(intent, requestCode)
-        }
-        requireActivity().overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
-
-        if (shouldFinish) requireActivity().finish()
     }
 
     private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
