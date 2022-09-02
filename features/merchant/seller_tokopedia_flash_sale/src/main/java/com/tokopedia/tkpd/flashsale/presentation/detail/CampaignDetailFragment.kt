@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
@@ -191,6 +189,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                 upcomingCdpBodyBinding = StfsCdpUpcomingBodyBinding.bind(view)
             }
             cardBottomButtonGroup.isVisible = campaignStatus.isFlashSaleAvailable()
+            rvSubmittedProductList.gone()
         }
 
         setupUpcomingHeader(flashSale, campaignStatus)
@@ -355,7 +354,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
 
         setupRegisteredHeader(flashSale)
         setupRegisteredMid(flashSale)
-        setupRegisteredBody()
+        setupRegisteredBody(flashSale)
     }
 
     private fun setupRegisteredHeader(flashSale: FlashSale) {
@@ -374,11 +373,12 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         setupRegisteredMidData(flashSale)
     }
 
-    private fun setupRegisteredBody() {
+    private fun setupRegisteredBody(flashSale: FlashSale) {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_registered_body
         inflatedView.inflate()
+        setupRegisteredBodyData(flashSale)
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
@@ -509,6 +509,17 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         }
     }
 
+    private fun setupRegisteredBodyData(flashSale: FlashSale) {
+        registeredCdpBodyBinding?.run {
+            btnSelectAllProduct.isVisible =
+                flashSale.status == FlashSaleStatus.WAITING_FOR_SELECTION
+            tpgProductCount.text = getString(
+                R.string.stfs_product_count_place_holder,
+                adapter?.itemCount
+            )
+        }
+    }
+
     private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
         when {
@@ -587,7 +598,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView
+        return binding?.rvSubmittedProductList
     }
 
     override fun getPerPage(): Int {

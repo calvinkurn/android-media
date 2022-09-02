@@ -139,4 +139,7 @@
     <string name="stfs_variant_stock_single_multiloc_placeholder">Stok Campaign: <![CDATA[<b>%d</b>]]> di %2d lokasi</string>
     <string name="stfs_variant_stock_variant_singleloc_placeholder">%d Varian Diskon | Stok Campaign: <![CDATA[<b>%2d</b>]]></string>
     <string name="stfs_variant_stock_variant_multiloc_placeholder">%d Varian Diskon | Stok Campaign: <![CDATA[<b>%2d</b>]]> di %3d lokasi</string>
+    <string name="stfs_choose_all_product_label">Pilih Sekaligus</string>
+    <string name="stfs_product_count_place_holder">%d Produk</string>
+    <string name="stfs_choosen_product_count_placeholder">%d Produk Dipilih</string>
 </resources>
