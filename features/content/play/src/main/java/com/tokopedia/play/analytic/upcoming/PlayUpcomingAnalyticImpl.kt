@@ -65,7 +65,7 @@ class PlayUpcomingAnalyticImpl @Inject constructor(
     override fun clickCancelRemindMe(channelId: String){
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_TOP_ADS)
-            .setEventAction("$KEY_TRACK_CLICK - batalkan pengingat")
+            .setEventAction("click - batalkan pengingat")
             .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
             .setEventLabel(channelId)
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
@@ -89,7 +89,7 @@ class PlayUpcomingAnalyticImpl @Inject constructor(
     override fun clickSeeAllDescription(channelId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_TOP_ADS)
-            .setEventAction("$KEY_TRACK_CLICK - lihat semua button")
+            .setEventAction("click - lihat semua button")
             .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
             .setEventLabel(channelId)
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
@@ -101,7 +101,7 @@ class PlayUpcomingAnalyticImpl @Inject constructor(
     override fun clickSeeLessDescription(channelId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_TOP_ADS)
-            .setEventAction("$KEY_TRACK_CLICK - tampilkan sedikit button")
+            .setEventAction("click - tampilkan sedikit button")
             .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
             .setEventLabel(channelId)
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
