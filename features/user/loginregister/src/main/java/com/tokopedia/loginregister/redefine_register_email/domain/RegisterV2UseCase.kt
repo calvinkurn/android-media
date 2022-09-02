@@ -30,6 +30,7 @@ class RegisterV2UseCase @Inject constructor(
                     is_active
                     access_token
                     refresh_token
+                    token_type
                     sid
                     enable_2fa
                     enable_skip_2fa

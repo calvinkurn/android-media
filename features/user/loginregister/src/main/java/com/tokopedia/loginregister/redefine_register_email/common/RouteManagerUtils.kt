@@ -20,13 +20,15 @@ fun intentGoToVerification(phone: String = "", email: String = "", otpType: Int,
     return intent
 }
 
-fun intentGoToInputPhone(email: String, password: String, name: String, source: String, isRequiredInputPhone: Boolean, context: Context): Intent {
+fun intentGoToInputPhone(email: String, encryptedPassword: String, name: String, source: String, isRequiredInputPhone: Boolean, token: String, hash: String, context: Context): Intent {
     val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_INPUT_PHONE)
     intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_EMAIL, email)
-    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_PASSWORD, password)
+    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_ENCRYPTED_PASSWORD, encryptedPassword)
     intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_NAME, name)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
     intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE, isRequiredInputPhone)
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
+    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_HASH, hash)
     return intent
 }
 

@@ -3,7 +3,7 @@ package com.tokopedia.loginregister.redefine_register_email.register_email.domai
 import com.google.gson.annotations.SerializedName
 
 data class GenerateKeyModel(
-    @SerializedName("generateKey")
+    @SerializedName("generate_key")
     val generateKey: GenerateKey = GenerateKey()
 )
 

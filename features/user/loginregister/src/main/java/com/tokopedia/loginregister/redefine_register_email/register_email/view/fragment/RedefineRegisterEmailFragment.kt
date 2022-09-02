@@ -26,9 +26,14 @@ import com.tokopedia.loginregister.redefine_register_email.common.intentGoToInpu
 import com.tokopedia.loginregister.redefine_register_email.common.intentGoToLoginWithEmail
 import com.tokopedia.loginregister.redefine_register_email.common.intentGoToVerification
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
+import com.tokopedia.loginregister.redefine_register_email.register_email.domain.data.ValidateUserData
 import com.tokopedia.loginregister.redefine_register_email.register_email.view.viewmodel.RedefineRegisterEmailViewModel
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -48,6 +53,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     private var paramIsRequiresInputPhone: Boolean = false
     private var isExtensionSelected = false
     private var emailExtensionList = mutableListOf<String>()
+    private var paramToken = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,8 +172,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
-            //submitForm()
-            goToInputPhone()
+            submitForm()
         }
     }
 
@@ -187,8 +192,22 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             binding?.fieldName?.setMessageField(it.nameError)
         }
 
-        viewModel.isRegisteredEmail.observe(viewLifecycleOwner) {
-            if (it) goToVerificationEmail()
+        viewModel.validateUserData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    it.data.apply {
+                        if (isValid) {
+                            goToVerificationEmail()
+                        } else {
+                            onFieldError(this)
+                        }
+                    }
+                }
+                is Fail -> {
+                    val message = ErrorHandler.getErrorMessage(requireActivity(), it.throwable)
+                    showToasterError(message)
+                }
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) {
@@ -204,9 +223,39 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onFieldError(data: ValidateUserData) {
+        data.run {
+            if (isExist) {
+                showLoginDialog()
+            }
+
+            if (error.isNotEmpty()) {
+                showToasterError(error)
+            }
+
+            binding?.fieldEmail?.setMessageField(errorEmail)
+            binding?.fieldName?.setMessageField(errorFullName)
+            binding?.fieldPassword?.setMessageField(errorPassword)
+        }
+    }
+
+    private fun showToasterError(message: String) {
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    }
+
     private fun TextFieldUnify2.setMessageField(stringResource: Int) {
         isInputError = if (stringResource != RedefineRegisterEmailViewModel.NOTHING_RESOURCE && stringResource != RedefineRegisterEmailViewModel.RESOURCE_NOT_CHANGED) {
             setMessage(getString(stringResource))
+            true
+        } else {
+            setMessage(RedefineRegisterEmailConstants.Common.SPACE)
+            false
+        }
+    }
+
+    private fun TextFieldUnify2.setMessageField(message: String) {
+        isInputError = if (message.isNotEmpty()) {
+            setMessage(message)
             true
         } else {
             setMessage(RedefineRegisterEmailConstants.Common.SPACE)
@@ -236,6 +285,9 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         when (requestCode) {
             RedefineRegisterEmailConstants.Request.VERIFICATION_EMAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
+
+                    paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+
                     goToInputPhone()
                 }
             }
@@ -255,10 +307,12 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     private fun goToInputPhone() {
         val intent = intentGoToInputPhone(
             email = viewModel.currentEmail,
-            password = viewModel.currentPassword,
+            encryptedPassword = viewModel.currentPassword,
             name = viewModel.currentName,
             source = paramSource,
             isRequiredInputPhone = paramIsRequiresInputPhone,
+            token = paramToken,
+            viewModel.currentHash,
             context = requireActivity()
         )
         startActivity(intent)

@@ -11,11 +11,13 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -36,6 +38,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -56,16 +60,19 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private var paramPassword: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
     private var paramName: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
     private var paramIsRequiresInputPhone: Boolean = false
+    private var paramToken = ""
+    private var paramHash = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         paramSource = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
         paramEmail = getParamString(ApplinkConstInternalUserPlatform.PARAM_VALUE_EMAIL, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
-        paramPassword = getParamString(ApplinkConstInternalUserPlatform.PARAM_VALUE_PASSWORD, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
+        paramPassword = getParamString(ApplinkConstInternalUserPlatform.PARAM_VALUE_ENCRYPTED_PASSWORD, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
         paramName = getParamString(ApplinkConstInternalUserPlatform.PARAM_VALUE_NAME, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
         paramIsRequiresInputPhone = getParamBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE, arguments, savedInstanceState, false)
-
+        paramToken = getParamString(ApplinkConstInternalGlobal.PARAM_TOKEN, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
+        paramHash = getParamString(ApplinkConstInternalUserPlatform.PARAM_HASH, arguments, savedInstanceState, RedefineRegisterEmailConstants.Common.EMPTY_STRING)
     }
 
     override fun onCreateView(
@@ -78,10 +85,39 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showSubmitRegisterLoading(!paramIsRequiresInputPhone)
         initListener()
         initObserver()
         editorChangesListener()
         setUpKeyboardListener(view)
+        initRegisterRequest()
+    }
+
+    private fun initRegisterRequest() {
+        if (!paramIsRequiresInputPhone) {
+            submitRegisterV2()
+        }
+    }
+
+    private fun submitRegisterV2() {
+        if (paramIsRequiresInputPhone) {
+            viewModel.registerV2(
+                email = paramEmail,
+                phone = binding?.fieldInputPhone?.editText?.text.toString(),
+                fullName = paramName,
+                password = paramPassword,
+                validateToken = paramToken,
+                hash = paramHash
+            )
+        } else {
+            viewModel.registerV2(
+                email = paramEmail,
+                fullName = paramName,
+                password = paramPassword,
+                validateToken = paramToken,
+                hash = paramHash
+            )
+        }
     }
 
     private fun setUpKeyboardListener(view: View) {
@@ -113,6 +149,14 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         binding?.btnSubmit?.setOnClickListener {
             submitForm()
         }
+
+        binding?.globalError?.setActionClickListener {
+            reloadLoadRegisterOrGetUserInfo()
+        }
+
+        binding?.globalError?.setSecondaryActionClickListener {
+
+        }
     }
 
     private fun submitForm() {
@@ -130,29 +174,91 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         viewModel.isRegisteredPhone.observe(viewLifecycleOwner) {
             when (it) {
                 is RegisteredPhoneState.Loading -> {
-                    showLoading(true)
+                    showRegisteredPhoneCheckLoading(true)
                 }
                 is RegisteredPhoneState.Registered -> {
-                    showLoading(false)
+                    showRegisteredPhoneCheckLoading(false)
                     showDialogOfferLogin()
                 }
                 is RegisteredPhoneState.Unregistered -> {
-                    showLoading(false)
+                    showRegisteredPhoneCheckLoading(false)
                     showDialogConfirmPhone(phone = it.message)
                 }
                 is RegisteredPhoneState.Ineligible -> {
-                    showLoading(false)
+                    showRegisteredPhoneCheckLoading(false)
                     binding?.fieldInputPhone?.setMessageFromString(it.message)
                 }
                 is RegisteredPhoneState.Failed -> {
-                    showLoading(false)
-                    it.throwable?.let { throwable -> showToasterError(throwable) }
+                    showRegisteredPhoneCheckLoading(false)
+
+                    when(it.throwable) {
+                        is AkamaiErrorException -> {
+                            showDialogFailed()
+                        }
+                        else -> {
+                            it.throwable?.let { throwable -> showToasterError(throwable) }
+                        }
+                    }
                 }
             }
         }
+
+        viewModel.getUserInfo.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    goToHome()
+                }
+                is Fail -> {
+                    onSubmitRegisterFailed()
+                    showToasterError(it.throwable)
+                }
+            }
+        }
+
+        viewModel.registerV2.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    showSubmitRegisterLoading(true)
+                }
+                is Fail -> {
+                    onSubmitRegisterFailed()
+                    showToasterError(it.throwable)
+                }
+            }
+        }
+
+        viewModel.submitRegisterLoading.observe(viewLifecycleOwner) {
+            showSubmitRegisterLoading(it)
+        }
     }
 
-    private fun showLoading(isLoading: Boolean) {
+    private fun onSubmitRegisterFailed() {
+        binding?.loaderUnify?.hide()
+        binding?.content?.gone()
+        binding?.globalError?.show()
+    }
+
+    private fun showSubmitRegisterLoading(isShow: Boolean) {
+        if (isShow) {
+            binding?.loaderUnify?.show()
+            binding?.content?.hide()
+            binding?.globalError?.hide()
+        } else {
+            binding?.loaderUnify?.hide()
+            binding?.content?.show()
+            binding?.globalError?.hide()
+        }
+    }
+
+    private fun reloadLoadRegisterOrGetUserInfo() {
+        if (viewModel.registerV2.value is Fail) {
+            submitRegisterV2()
+        } else if (viewModel.getUserInfo.value is Fail) {
+            viewModel.getUserInfo()
+        }
+    }
+
+    private fun showRegisteredPhoneCheckLoading(isLoading: Boolean) {
         com.tokopedia.abstraction.common.utils.view.KeyboardHandler.hideSoftKeyboard(activity)
         binding?.btnSubmit?.isLoading = isLoading
         binding?.fieldInputPhone?.editText?.isEnabled = !isLoading
@@ -181,8 +287,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             goToVerification(
                 phone,
                 otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER,
-                requireActivity(),
-                requestCode = RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER
+                requireActivity()
             )
             confirmDialog.dismiss()
         }
@@ -209,14 +314,14 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         failedDialog.show()
     }
 
-    private fun goToVerification(phone: String, otpType: Int, context: Context, requestCode: Int) {
+    private fun goToVerification(phone: String, otpType: Int, context: Context) {
         val intent = intentGoToVerification(
             phone = phone,
             otpType = otpType,
             source = paramSource,
             context = context
         )
-        startActivityForResult(intent, requestCode)
+        startActivityForResult(intent, RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -225,7 +330,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         when (requestCode) {
             RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    //register v2
+                    submitRegisterV2()
                 }
             }
         }

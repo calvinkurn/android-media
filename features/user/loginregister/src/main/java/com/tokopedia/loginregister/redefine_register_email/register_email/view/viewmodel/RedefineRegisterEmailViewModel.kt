@@ -1,33 +1,45 @@
 package com.tokopedia.loginregister.redefine_register_email.register_email.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.redefine_register_email.register_email.domain.GenerateKeyUseCase
+import com.tokopedia.loginregister.redefine_register_email.register_email.domain.ValidateUserDataUseCase
+import com.tokopedia.loginregister.redefine_register_email.register_email.domain.data.ValidateUserData
+import com.tokopedia.loginregister.redefine_register_email.register_email.domain.data.ValidateUserDataParam
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 
 class RedefineRegisterEmailViewModel @Inject constructor(
     private val generateKeyUseCase: GenerateKeyUseCase,
+    private val validateUserDataUseCase: ValidateUserDataUseCase,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
     private val state = RedefineEmailFormState()
     private val _formState = SingleLiveEvent<RedefineEmailFormState>()
     val formState: LiveData<RedefineEmailFormState> get() = _formState
-    private val _isRegisteredEmail = SingleLiveEvent<Boolean>()
-    val isRegisteredEmail: LiveData<Boolean> get() = _isRegisteredEmail
     private var _isLoading = SingleLiveEvent<Boolean>()
     val isLoading : LiveData<Boolean> get() = _isLoading
+    private val _validateUserData = MutableLiveData<Result<ValidateUserData>>()
+    val validateUserData: LiveData<Result<ValidateUserData>> get() = _validateUserData
     private var _currentEmail = ""
     val currentEmail get() = _currentEmail
     private var _currentPassword = ""
     val currentPassword get() = _currentPassword
     private var _currentName = ""
     val currentName get() = _currentName
+    private var _currentHash = ""
+    val currentHash get() = _currentHash
 
     fun validateEmail(email: String, setValue: Boolean = true) {
         state.emailError = when {
@@ -92,15 +104,13 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     fun submitForm(email: String, password: String, name: String) {
         if (isAllDataValid()) {
             if (_isLoading.value == false || _isLoading.value == null) {
-                _isLoading.value = true
 
                 //save value
                 _currentEmail = email
                 _currentPassword = password
                 _currentName = name
 
-                _isRegisteredEmail.value = true
-                generateKey()
+                validateUserData()
             }
         } else {
             validateEmail(email, false)
@@ -110,13 +120,26 @@ class RedefineRegisterEmailViewModel @Inject constructor(
         }
     }
 
-    private fun generateKey() {
+    private fun validateUserData() {
+        _isLoading.value = true
         launchCatchError(coroutineContext, {
-            val response = generateKeyUseCase(Unit)
+            val keyData = generateKeyUseCase(Unit).generateKey
+            val encryptedPassword = RsaUtils.encrypt(_currentPassword, keyData.key.decodeBase64(), true)
+            _currentPassword = encryptedPassword
+            _currentHash = keyData.h
+
+            val param = ValidateUserDataParam(
+                email = currentEmail,
+                fullName = currentName,
+                password = currentPassword,
+                hash = currentHash
+            )
+            val response = validateUserDataUseCase(param)
+            _validateUserData.value = Success(response.validateUserData)
 
             _isLoading.value = false
         }, {
-
+            _validateUserData.value = Fail(it)
             _isLoading.value = false
         })
     }

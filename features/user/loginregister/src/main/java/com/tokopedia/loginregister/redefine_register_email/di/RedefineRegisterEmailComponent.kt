@@ -9,6 +9,7 @@ import dagger.Component
 @ActivityScope
 @Component(
     modules = [
+        RedefineRegisterEmailModule::class,
         RedefineRegisterEmailViewModelModule::class
     ],
     dependencies = [BaseAppComponent::class]

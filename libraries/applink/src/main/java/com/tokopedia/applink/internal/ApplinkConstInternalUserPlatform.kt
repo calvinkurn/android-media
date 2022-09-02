@@ -160,11 +160,12 @@ object ApplinkConstInternalUserPlatform {
      * Required : [PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE] (type: Boolean)
      * Required : [PARAM_VALUE_EMAIL] (type: String)
      * Required : [PARAM_VALUE_NAME] (type: String)
-     * Required : [PARAM_VALUE_PASSWORD] (type: String)
+     * Required : [PARAM_VALUE_ENCRYPTED_PASSWORD] (type: String)
      **/
     const val REDEFINE_REGISTER_INPUT_PHONE = "$NEW_INTERNAL_USER/redefine-register-input-phone"
     const val PARAM_VALUE_EMAIL = "value_email"
     const val PARAM_VALUE_NAME = "value_name"
-    const val PARAM_VALUE_PASSWORD = "value_password"
+    const val PARAM_VALUE_ENCRYPTED_PASSWORD = "value_password"
+    const val PARAM_HASH = "hash"
 
 }

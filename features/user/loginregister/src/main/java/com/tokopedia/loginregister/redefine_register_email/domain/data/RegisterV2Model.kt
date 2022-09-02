@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.redefine_register_email.domain.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class RegisterV2Model(
@@ -32,6 +33,9 @@ data class Register(
 
 	@SerializedName("refresh_token")
 	val refreshToken: String = "",
+
+	@SerializedName("token_type")
+	var tokenType: String = "",
 
 	@SerializedName("is_active")
 	val isActive: Int = 0,

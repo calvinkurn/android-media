@@ -1,10 +1,14 @@
 package com.tokopedia.loginregister.redefine_register_email.domain.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 data class RegisterV2Param (
     @SerializedName("reg_type")
     val regType: String = "",
+
+    @SerializedName("os_type")
+    val osType: String = "",
 
     @SerializedName("fullname")
     val fullName: String = "",
@@ -21,9 +25,6 @@ data class RegisterV2Param (
     @SerializedName("validate_token")
     val validateToken: String = "",
 
-    @SerializedName("captcha_token")
-    val captchaToken: String = "",
-
     @SerializedName("h")
     val h: String = ""
-)
+): GqlParam
