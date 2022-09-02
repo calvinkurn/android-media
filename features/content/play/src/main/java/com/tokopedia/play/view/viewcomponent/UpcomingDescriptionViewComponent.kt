@@ -80,7 +80,7 @@ class UpcomingDescriptionViewComponent(
         resetText()
     }
 
-    private val clickableSpan by lazy {
+    private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
         object : ClickableSpan() {
             override fun updateDrawState(tp: TextPaint) {
                 tp.color = MethodChecker.getColor(ctx, unifyR.color.Unify_GN500)
