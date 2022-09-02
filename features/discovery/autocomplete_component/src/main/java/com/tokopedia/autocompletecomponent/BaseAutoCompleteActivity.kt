@@ -209,7 +209,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
     private fun sendTrackingVoiceSearchImpression() {
         val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-        autoCompleteTracking.impressDiscoveryVoiceSearch(pageSource)
+        autoCompleteTracking.eventImpressDiscoveryVoiceSearch(pageSource)
     }
 
     override fun onStart() {
@@ -362,7 +362,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun sendVoiceSearchGTM(keyword: String?) {
         if (keyword != null && keyword.isNotEmpty()) {
             val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-            autoCompleteTracking.eventDiscoveryVoiceSearch(keyword, pageSource)
+            autoCompleteTracking.eventClickDiscoveryVoiceSearch(keyword, pageSource)
         }
     }
 

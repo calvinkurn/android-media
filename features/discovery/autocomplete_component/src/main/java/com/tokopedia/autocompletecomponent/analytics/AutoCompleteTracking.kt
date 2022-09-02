@@ -4,9 +4,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_CARI
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_SEARCH_SEARCH_BAR
-import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.VOICE_SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Category.LONG_PRESS
-import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Category.SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Label.PRODUCT_SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.BUSINESS_UNIT_PHYSICAL_GOODS
@@ -23,7 +21,6 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.PAGE_SOURCE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
@@ -144,13 +141,7 @@ open class AutoCompleteTracking(
         )
     }
 
-    open fun eventDiscoveryVoiceSearch(label: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            CLICK_SEARCH,
-            SEARCH,
-            VOICE_SEARCH,
-            label
-        )
+    open fun eventClickDiscoveryVoiceSearch(label: String, pageSource: String) {
         searchComponentTracking(
             keyword = label,
             componentId = AUTO_COMPLETE_VOICE_SEARCH,
@@ -158,9 +149,9 @@ open class AutoCompleteTracking(
         ).click(TrackApp.getInstance().gtm)
     }
 
-    open fun impressDiscoveryVoiceSearch(pageSource: String) {
+    open fun eventImpressDiscoveryVoiceSearch(pageSource: String) {
         searchComponentTracking(
-            componentId = SearchComponentTrackingConst.Component.AUTO_COMPLETE_VOICE_SEARCH,
+            componentId = AUTO_COMPLETE_VOICE_SEARCH,
             dimension90 = pageSource,
         ).impress(iris)
     }
