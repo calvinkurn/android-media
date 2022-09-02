@@ -1701,11 +1701,7 @@ class NewShopPageFragment :
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
-        if (ShopUtil.isEnableShopDynamicTab(context)) {
-            viewPagerAdapter?.handleSelectedDynamicTab(tab, isActive)
-        } else {
-            viewPagerAdapter?.handleSelectedTab(tab, isActive)
-        }
+        viewPagerAdapter?.handleSelectedTab(tab, isActive)
     }
 
     private fun getTabView(index: Int): View? {
