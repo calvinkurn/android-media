@@ -16,8 +16,8 @@ import com.tokopedia.campaign.components.bottomsheet.selection.multiple.Multiple
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.campaign.entity.MultipleSelectionItem
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -219,11 +219,13 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     }
 
     private fun setupPaging() {
-        val pagingConfig = HasPaginatedList.Config(onLoadNextPage = {
-            flashSaleAdapter.addItem(LoadingItem)
-        }, onLoadNextPageFinished = {
-            flashSaleAdapter.removeItem(LoadingItem)
-        })
+        val pagingConfig = HasPaginatedList.Config(
+            pageSize = PAGE_SIZE,
+            onLoadNextPage = {
+                flashSaleAdapter.addItem(LoadingItem)
+            }, onLoadNextPageFinished = {
+                flashSaleAdapter.removeItem(LoadingItem)
+            })
 
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

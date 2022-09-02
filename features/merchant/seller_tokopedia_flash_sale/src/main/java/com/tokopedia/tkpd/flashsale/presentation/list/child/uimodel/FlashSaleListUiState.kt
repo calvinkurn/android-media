@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel
 
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 

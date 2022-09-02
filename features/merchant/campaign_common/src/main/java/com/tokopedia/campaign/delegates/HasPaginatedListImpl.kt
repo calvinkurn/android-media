@@ -37,9 +37,9 @@ class HasPaginatedListImpl : HasPaginatedList {
      * sample usage: call this function when you've finished loaded the first page data
      */
     override fun notifyLoadResult(hasNextPage: Boolean) {
-        val config = this.config ?: return
-
-        config.onLoadNextPageFinished()
+        config?.run {
+            onLoadNextPageFinished()
+        }
 
         scrollListener?.updateStateAfterGetData()
         scrollListener?.setHasNextPage(hasNextPage)

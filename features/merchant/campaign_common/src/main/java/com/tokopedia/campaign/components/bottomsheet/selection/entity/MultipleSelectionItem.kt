@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.entity
+package com.tokopedia.campaign.components.bottomsheet.selection.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

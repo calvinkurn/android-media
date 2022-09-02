@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.ItemMultipleSelectionItemBinding
-import com.tokopedia.campaign.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 
 internal class MultipleSelectionAdapter :
     RecyclerView.Adapter<MultipleSelectionAdapter.ViewHolder>() {

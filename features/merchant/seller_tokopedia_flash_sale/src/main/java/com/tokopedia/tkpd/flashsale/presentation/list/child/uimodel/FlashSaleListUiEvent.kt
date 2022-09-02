@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel
 
-import com.tokopedia.campaign.entity.MultipleSelectionItem
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 
 sealed class FlashSaleListUiEvent {
     data class Init(val tabName: String, val tabId: Int) : FlashSaleListUiEvent()
