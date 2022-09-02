@@ -15,8 +15,7 @@ sealed class PostItemUiModel(
     open val subtitle: String = "",
     open val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED,
     open val isPinned: Boolean = false,
-    open var isChecked: Boolean = false,
-    open var isCheckingMode: Boolean = false
+    open var isChecked: Boolean = false
 ) : Visitable<PostListAdapterTypeFactory> {
 
     data class PostImageEmphasizedUiModel(

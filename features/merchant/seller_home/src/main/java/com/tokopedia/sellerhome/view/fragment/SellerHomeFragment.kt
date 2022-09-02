@@ -756,6 +756,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    override fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {
+
+    }
+
+    override fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {
+        showFeedbackLoopOption(element)
+    }
+
     override fun showProgressBarCoachMark(dataKey: String, view: View) {
         val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus()
         if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY) {
@@ -875,6 +883,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun postWidgetOnCancelChecking(element: PostListWidgetUiModel) {
         switchPostWidgetCheckingMode(element)
+    }
+
+    override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
+        showFeedbackLoopOption(element)
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -2392,7 +2404,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun showFeedbackLoopOption(element: PostListWidgetUiModel) {
+    private fun showFeedbackLoopOption(element: BaseWidgetUiModel<*>) {
         val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
         bottomSheet.show(childFragmentManager)
     }

@@ -225,7 +225,9 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = widget.dismissibleState
         )
     }
 
@@ -373,7 +375,7 @@ class LayoutMapper @Inject constructor(
             isLoading = false,
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
-            isComparePeriodeOnly = widget.isComparePeriodeOnly
+            isComparePeriodeOnly = widget.isComparePeriodOnly
         )
     }
 
@@ -397,7 +399,9 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = widget.dismissibleState
         )
     }
 

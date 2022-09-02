@@ -72,15 +72,38 @@ class AnnouncementViewHolder(
 
             imgShcAnnouncement.loadImage(element.data?.imgUrl.orEmpty())
 
-            root.setOnClickListener {
+            cardShcAnnouncement.setOnClickListener {
                 setOnCtaClick(element)
             }
 
-            root.addOnImpressionListener(element.impressHolder) {
+            cardShcAnnouncement.addOnImpressionListener(element.impressHolder) {
                 listener.sendAnnouncementImpressionEvent(element)
             }
 
             listener.showAnnouncementWidgetCoachMark(element.dataKey, itemView)
+
+            setupDismissalView(element)
+        }
+    }
+
+    private fun setupDismissalView(element: AnnouncementWidgetUiModel) {
+        binding.run {
+            if (element.isDismissible) {
+                viewShcAnnouncementDismissal.visible()
+                tvShcAnnouncementDismissYes.setOnClickListener {
+                    tvShcAnnouncementDismissYes.gone()
+                    tvShcAnnouncementDismissNo.gone()
+                    tvShcAnnouncementDismiss.text = root.context.getText(
+                        R.string.shc_thanks_for_your_insight
+                    )
+                    listener.setOnAnnouncementWidgetYesClicked(element)
+                }
+                tvShcAnnouncementDismissNo.setOnClickListener {
+                    listener.setOnAnnouncementWidgetNoClicked(element)
+                }
+            } else {
+                viewShcAnnouncementDismissal.gone()
+            }
         }
     }
 
@@ -103,5 +126,9 @@ class AnnouncementViewHolder(
         fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
 
         fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {}
+
+        fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {}
+
+        fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {}
     }
 }

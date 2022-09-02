@@ -26,6 +26,7 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
     }
 
     private var feedbackItems: List<FeedbackLoopOptionUiModel> = emptyList()
+    private var onSubmitClicked: (List<FeedbackLoopOptionUiModel>) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +52,10 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
         }
 
         show(fm, TAG)
+    }
+
+    fun setOnSubmitClickedListener(onSubmitClicked: (List<FeedbackLoopOptionUiModel>) -> Unit) {
+        this.onSubmitClicked = onSubmitClicked
     }
 
     private fun setupOptionItem() {

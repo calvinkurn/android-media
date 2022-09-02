@@ -49,14 +49,14 @@ class FeedbackLoopOptionAdapter(
             edtShcFeedbackOption.gone()
 
             root.setOnClickListener {
+                cbShcFeedbackOption.isChecked = !cbShcFeedbackOption.isChecked
+            }
+            cbShcFeedbackOption.setOnCheckedChangeListener { _, _ ->
                 item.isSelected = !item.isSelected
                 if (item is FeedbackLoopOptionUiModel.Other) {
                     setOnOtherClicked(item)
                 }
                 onCheckedListener(item)
-            }
-            cbShcFeedbackOption.setOnCheckedChangeListener { _, _ ->
-                root.performClick()
             }
         }
 

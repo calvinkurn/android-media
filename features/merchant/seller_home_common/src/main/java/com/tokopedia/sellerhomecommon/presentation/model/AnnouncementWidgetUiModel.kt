@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
@@ -26,7 +27,10 @@ data class AnnouncementWidgetUiModel(
         override var isFromCache: Boolean,
         override var isNeedToBeRemoved: Boolean = false,
         override var showLoadingState: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var emptyState: WidgetEmptyStateUiModel,
+        val isDismissible: Boolean = false,
+        val dismissibleState: String = String.EMPTY,
+        val dismissToken: String = String.EMPTY
 ) : BaseWidgetUiModel<AnnouncementDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

@@ -15,7 +15,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
  */
 
 class PostListPagerAdapter(
-    private val onPostItemClicked: (PostItemUiModel) -> Unit
+    private val isCheckingMode: Boolean = false,
+    private val listener: Listener
 ) : RecyclerView.Adapter<PostListPagerAdapter.PostListPagerViewHolder>() {
 
     var pagers = listOf<PostListPagerUiModel>()
@@ -24,25 +25,27 @@ class PostListPagerAdapter(
         val binding = ShcItemPostListPagerBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return PostListPagerViewHolder(binding)
+        return PostListPagerViewHolder(binding, listener, isCheckingMode)
     }
 
     override fun onBindViewHolder(holder: PostListPagerViewHolder, position: Int) {
         val pager = pagers[position]
-        holder.bind(pager, onPostItemClicked)
+        holder.bind(pager)
     }
 
     override fun getItemCount(): Int = pagers.size
 
-    inner class PostListPagerViewHolder(
-        private val binding: ShcItemPostListPagerBinding
+    class PostListPagerViewHolder(
+        private val binding: ShcItemPostListPagerBinding,
+        listener: Listener,
+        isCheckingMode: Boolean = false
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val postAdapter = BaseListAdapter<PostItemUiModel, PostListAdapterTypeFactoryImpl>(
-            PostListAdapterTypeFactoryImpl()
+            PostListAdapterTypeFactoryImpl(listener, isCheckingMode)
         )
 
-        fun bind(pager: PostListPagerUiModel, onPostItemClicked: (PostItemUiModel) -> Unit) {
+        fun bind(pager: PostListPagerUiModel) {
             with(binding) {
                 rvShcPostList.layoutManager = object : LinearLayoutManager(itemView.context) {
                     override fun canScrollVertically(): Boolean = false
@@ -51,9 +54,11 @@ class PostListPagerAdapter(
             }
 
             postAdapter.data.addAll(pager.postList)
-            postAdapter.setOnAdapterInteractionListener {
-                onPostItemClicked(it)
-            }
         }
+    }
+
+    interface Listener {
+        fun onItemClicked(model: PostItemUiModel)
+        fun onCheckedListener(isChecked: Boolean)
     }
 }

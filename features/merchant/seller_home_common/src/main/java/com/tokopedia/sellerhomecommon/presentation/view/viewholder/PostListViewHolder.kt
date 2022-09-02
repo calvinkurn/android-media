@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -42,6 +43,7 @@ class PostListViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
+        private const val DIMEN_22DP = 22
     }
 
     private val binding by lazy { ShcPostListCardWidgetBinding.bind(itemView) }
@@ -176,7 +178,7 @@ class PostListViewHolder(
             showListLayout()
             addImpressionTracker(element)
             setupLastUpdated(element)
-            setupMoreView(element)
+            setupCheckingMode(element)
 
             if (isWidgetEmpty()) {
                 showEmptyState(element)
@@ -186,8 +188,13 @@ class PostListViewHolder(
         }
     }
 
-    private fun setupMoreView(element: PostListWidgetUiModel) {
+    private fun setupCheckingMode(element: PostListWidgetUiModel) {
         binding.shcPostListSuccessView.run {
+            if (!element.isDismissible) {
+                moreShcPostWidget.gone()
+                return
+            }
+
             moreShcPostWidget.setOnMoreClicked {
                 listener.showPostWidgetMoreOption(element)
             }
@@ -195,15 +202,50 @@ class PostListViewHolder(
                 listener.postWidgetOnCancelChecking(element)
             }
             moreShcPostWidget.showCheckingMode(element.isCheckingMode)
+            groupShcPostRemoveItem.isVisible = element.isCheckingMode
+            if (element.isCheckingMode) {
+                tvPostListSeeDetails.gone()
+                luvShcPost.gone()
+                setOnCheckedListener(element)
+                filterShcPostList.gone()
+            } else {
+                setupLastUpdated(element)
+                setupCtaButton(element)
+                setupPostFilter(element)
+                resetCheckList(element)
+            }
+            btnShcPostRemoveItem.setOnClickListener {
+                listener.setOnPostWidgetRemoveItemClicked(element)
+            }
+        }
+    }
+
+    private fun resetCheckList(element: PostListWidgetUiModel) {
+        element.data?.postPagers?.flatMap { it.postList }?.forEach {
+            it.isChecked = false
         }
     }
 
     private fun initPagerAdapter(element: PostListWidgetUiModel) {
-        pagerAdapter = PostListPagerAdapter {
-            if (RouteManager.route(itemView.context, it.appLink)) {
-                listener.sendPosListItemClickEvent(element, it)
-            }
-        }
+        pagerAdapter =
+            PostListPagerAdapter(element.isCheckingMode, object : PostListPagerAdapter.Listener {
+                override fun onItemClicked(model: PostItemUiModel) {
+                    if (RouteManager.route(itemView.context, model.appLink)) {
+                        listener.sendPosListItemClickEvent(element, model)
+                    }
+                }
+
+                override fun onCheckedListener(isChecked: Boolean) {
+                    setOnCheckedListener(element)
+                }
+            })
+    }
+
+    private fun setOnCheckedListener(element: PostListWidgetUiModel) {
+        val isItemChecked = element.data?.postPagers?.any {
+            it.postList.any { item -> item.isChecked }
+        }.orFalse()
+        binding.shcPostListSuccessView.btnShcPostRemoveItem.isEnabled = isItemChecked
     }
 
     private fun setTagNotification(tag: String) {
@@ -227,7 +269,10 @@ class PostListViewHolder(
                 val selectedFilter = element.postFilter.find { it.isSelected }
                 filterShcPostList.visible()
                 filterShcPostList.text = selectedFilter?.name.orEmpty()
-                filterShcPostList.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
+                filterShcPostList.setUnifyDrawableEnd(
+                    iconId = IconUnify.CHEVRON_DOWN,
+                    width = root.context.dpToPx(DIMEN_22DP)
+                )
                 filterShcPostList.setOnClickListener {
                     listener.showPostFilter(element)
                     listener.sendPostListFilterClick(element)
@@ -397,5 +442,7 @@ class PostListViewHolder(
         fun showPostWidgetMoreOption(element: PostListWidgetUiModel) {}
 
         fun postWidgetOnCancelChecking(element: PostListWidgetUiModel) {}
+
+        fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {}
     }
 }
