@@ -2,13 +2,13 @@ package com.tokopedia.topads.sdk.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
@@ -32,14 +32,47 @@ class TopAdsImageViewViewModelTest {
     }
 
     @Test
-    fun `test getQueryParams`() {
-        val a = mutableMapOf<String, Any>("q" to "query")
+    fun `test get_query_params`() {
+        val actual = "query"
         every {
             topAdsImageViewUseCase.getQueryMap(any(), any(), any(), any(), any(), any())
-        } returns a
+        } returns mutableMapOf("q" to actual)
 
-        val r = viewModel.getQueryParams("query", "2", "3", 4, 5, "", "", "")
-        Assert.assertEquals(r["q"], "query")
+        val result = viewModel.getQueryParams("query", "", "", 4, 5, "", "", "")
+        Assert.assertEquals(result["q"], actual)
 
+    }
+
+    @Test
+    fun `test get_query_params default`() {
+        val actual = "query"
+        every {
+            topAdsImageViewUseCase.getQueryMap(any(), any(), any(), any(), any(), any())
+        } returns mutableMapOf("q" to actual)
+
+        val result = viewModel.getQueryParams("query", "", "", 4, 5, "", "")
+        Assert.assertEquals(result["q"], actual)
+    }
+
+    @Test
+    fun `test getImageData with success`() {
+        val actual = "my_banner"
+        val data = arrayListOf(TopAdsImageViewModel(bannerName = actual))
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns data
+        viewModel.getImageData(mutableMapOf())
+        Assert.assertEquals((viewModel.getResponse().value as Success).data.first().bannerName, actual)
+    }
+
+    @Test
+    fun `test getImageData with exception`() {
+        val exception = Exception("my exception")
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws exception
+        viewModel.getImageData(mutableMapOf())
+        Assert.assertEquals((viewModel.getResponse().value as Fail).throwable.message, exception.message)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
     }
 }
