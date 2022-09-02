@@ -40,7 +40,9 @@ class EngagementWidgetViewHolder(
             is InteractiveUiModel.Giveaway -> setupGiveaway(item.interactive, item)
             is InteractiveUiModel.Quiz-> setupQuiz(item.interactive, item)
         }
-        listener.onWidgetClicked(engagement = item)
+        binding.setOnClickListener {
+            listener.onWidgetClicked(engagement = item)
+        }
     }
 
     private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway, item: EngagementUiModel.Game){
