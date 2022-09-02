@@ -33,14 +33,14 @@ class InspirationBundleListenerDelegate(
     ) {
         openApplink(context, bundle.activeApplink)
 
-        bundle.asSearchTrackingTracking()
+        bundle.asSearchComponentTracking()
             .click(TrackApp.getInstance().gtm)
     }
 
     override fun onBundleImpressed(
         bundle: BundleDataView,
     ) {
-        bundle.asSearchTrackingTracking()
+        bundle.asSearchComponentTracking()
             .impress(iris)
     }
 
@@ -70,7 +70,7 @@ class InspirationBundleListenerDelegate(
         inspirationCarouselTrackingUnification.trackCarouselClick(data)
     }
 
-    private fun BundleDataView.asSearchTrackingTracking() : SearchComponentTracking =
+    private fun BundleDataView.asSearchComponentTracking() : SearchComponentTracking =
         searchComponentTracking(
             trackingOption = trackingOption,
             componentId = componentId,
