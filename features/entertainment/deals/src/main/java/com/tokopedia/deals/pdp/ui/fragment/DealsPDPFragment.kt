@@ -484,7 +484,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 btnCheckout?.setClickable(true)
                 btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_buy_now)
                 btnCheckout?.setOnClickListener {
-                    //todo goto checkout
+                    dealsPDPCallbacks?.onSelectQuantityProduct(data)
                 }
             }
         }

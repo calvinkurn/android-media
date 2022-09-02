@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.shareIn
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class DealsPDPAllLocationViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers):
+class DealsPDPAllLocationViewModel @Inject constructor(dispatcher: CoroutineDispatchers):
     BaseViewModel(dispatcher.main) {
 
     private val _inputSearch = MutableSharedFlow<Pair<String, List<Outlet>>>(Int.ONE)

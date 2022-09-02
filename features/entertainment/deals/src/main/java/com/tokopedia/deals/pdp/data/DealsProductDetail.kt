@@ -14,6 +14,7 @@ data class EventProductDetail(
     val productDetailData: ProductDetailData = ProductDetailData()
 )
 
+@Parcelize
 data class ProductDetailData(
     @SerializedName("app_url")
     val appUrl: String = "",
@@ -67,6 +68,10 @@ data class ProductDetailData(
     val dateRange: Boolean = false,
     @SerializedName("display_name")
     val displayName: String = "",
+    @SerializedName("min_qty")
+    val minQty: Int = 0,
+    @SerializedName("max_qty")
+    val maxQty: Int = 0,
     @SerializedName("display_tags")
     val displayTags: String = "",
     @SerializedName("duration")
@@ -211,8 +216,9 @@ data class ProductDetailData(
     val url: String = "",
     @SerializedName("use_pdf")
     val usePdf: Int = 0
-)
+): Parcelable
 
+@Parcelize
 data class Brand(
     @SerializedName("city_name")
     val cityName: String = "",
@@ -224,8 +230,9 @@ data class Brand(
     val title: String = "",
     @SerializedName("seo_url")
     val seoUrl: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Catalog(
     @SerializedName("digital_category_id")
     val digitalCategoryId: String = "",
@@ -233,8 +240,9 @@ data class Catalog(
     val digitalProductCode: String = "",
     @SerializedName("digital_product_id")
     val digitalProductId: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Category(
     @SerializedName("id")
     val id: String = "",
@@ -244,8 +252,9 @@ data class Category(
     val title: String = "",
     @SerializedName("url")
     val url: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class AddressDetail(
     @SerializedName("address")
     val address: String = "",
@@ -275,8 +284,9 @@ data class AddressDetail(
     val status: Int = 0,
     @SerializedName("updated_at")
     val updatedAt: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Form(
     @SerializedName("created_at")
     val createdAt: String = "",
@@ -306,8 +316,9 @@ data class Form(
     val validatorRegex: String = "",
     @SerializedName("value")
     var value: String = "",
-)
+): Parcelable
 
+@Parcelize
 data class Group(
     @SerializedName("created_at")
     val createdAt: String = "",
@@ -337,7 +348,7 @@ data class Group(
     val tnc: String = "",
     @SerializedName("updated_at")
     val updatedAt: String = ""
-)
+): Parcelable
 
 @Parcelize
 data class Outlet(
@@ -381,6 +392,7 @@ data class Outlet(
     val updatedAt: String = ""
 ): Parcelable
 
+@Parcelize
 data class Package(
     @SerializedName("available")
     val available: String = "",
@@ -454,8 +466,9 @@ data class Package(
     val venueDetail: String = "",
     @SerializedName("venue_id")
     val venueId: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Schedules(
     @SerializedName("address_detail")
     val addressDetail: AddressDetail,
@@ -463,8 +476,9 @@ data class Schedules(
     val groups: List<Group> = emptyList(),
     @SerializedName("schedule")
     val schedule: Schedule
-)
+): Parcelable
 
+@Parcelize
 data class Schedule(
     @SerializedName("created_at")
     val createdAt: String = "",
@@ -488,8 +502,9 @@ data class Schedule(
     val tnc: String = "",
     @SerializedName("updated_at")
     val updatedAt: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class Facilities(
     @SerializedName("description")
     val description: String = "",
@@ -505,8 +520,9 @@ data class Facilities(
     val title: String = "",
     @SerializedName("type")
     val type: Int = 0
-)
+): Parcelable
 
+@Parcelize
 data class Media(
     @SerializedName("client")
     val client: String = "",
@@ -530,8 +546,9 @@ data class Media(
     val updatedAt: String = "",
     @SerializedName("url")
     val url: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class PackageV3(
     @SerializedName("id")
     val id: String = "",
@@ -560,8 +577,9 @@ data class PackageV3(
     @SerializedName("forms_package")
     val formsPackages: List<Form> = emptyList(),
     var isRecommendationPackage: Boolean = false
-)
+): Parcelable
 
+@Parcelize
 data class PackageItem(
     @SerializedName("id")
     val id: String = "",
@@ -605,4 +623,4 @@ data class PackageItem(
     val providerCustomText: String = "",
     @SerializedName("forms_item")
     val formsItems: List<Form> = emptyList(),
-)
+): Parcelable

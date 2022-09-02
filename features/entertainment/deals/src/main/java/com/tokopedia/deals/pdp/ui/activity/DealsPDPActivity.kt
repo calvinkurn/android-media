@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.pdp.data.Outlet
+import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DaggerDealsPDPComponent
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPAllLocationFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPDescFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
+import com.tokopedia.deals.pdp.ui.fragment.DealsPDPSelectDealsQuantityFragment
 
 class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent>, DealsPDPCallbacks {
 
@@ -66,6 +68,15 @@ class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent>, D
         transaction.setCustomAnimations(com.tokopedia.deals.R.anim.deals_slide_in_up, com.tokopedia.deals.R.anim.deals_slide_in_down,
             com.tokopedia.deals.R.anim.deals_slide_out_down, com.tokopedia.deals.R.anim.deals_slide_out_up)
         transaction.add(R.id.parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+    override fun onSelectQuantityProduct(data: ProductDetailData) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(com.tokopedia.deals.R.anim.deals_slide_in_up, com.tokopedia.deals.R.anim.deals_slide_in_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_down, com.tokopedia.deals.R.anim.deals_slide_out_up)
+        transaction.add(R.id.parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
         transaction.addToBackStack(null)
         transaction.commit()
     }

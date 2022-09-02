@@ -20,6 +20,8 @@ object DealsPDPDetailQuery: GqlQueryInterface {
                 provider_product_code
                 provider_product_name
                 display_name
+                min_qty
+                max_qty
                 title
                 action_text
                 censor

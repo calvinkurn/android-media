@@ -93,4 +93,10 @@
     <string name="deals_pdp_share_web_link">deals/i/%1$s/</string>
     <string name="deals_pdp_share_title">Bagikan Produk Ini</string>
     <string name="deals_pdp_share_app_link">tokopedia://deals/%1$s</string>
+    <string name="deals_pdp_button_continue">Lanjutkan</string>
+    <string name="deals_pdp_text_purchase_detail">Rincian Pembelian</string>
+    <string name="deals_pdp_deal_quantity">Kuantitas</string>
+    <string name="deals_pdp_price">Harga</string>
+    <string name="deals_pdp_total_amount">Total Pembayaran</string>
+    <string name="deals_pdp_select_number_of_voucher">Pilih Jumlah Voucher</string>
 </resources>
