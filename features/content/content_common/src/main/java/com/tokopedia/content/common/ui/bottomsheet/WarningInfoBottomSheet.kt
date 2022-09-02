@@ -48,11 +48,6 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() = with(binding) {
-        setCloseClickListener { activity?.finish() }
-        isHideable = false
-        isCancelable = false
-        overlayClickDismiss = false
-
         when (mWarningType) {
             WarningType.BOTH_BANNED -> {
                 icIconWarning.setImage(newIconId = IconUnify.LOCK)
