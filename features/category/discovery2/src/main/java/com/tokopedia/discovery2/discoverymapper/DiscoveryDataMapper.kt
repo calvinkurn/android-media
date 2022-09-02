@@ -181,6 +181,39 @@ class DiscoveryDataMapper {
         return list
     }
 
+    fun mapListToBannerComponentList(
+            itemList: List<DataItem>?,
+            subComponentName: String = "",
+            properties: Properties?,
+            parentComponentPosition: Int? = null,
+            parentListSize:Int = 0,
+            parentSectionId:String? = "",
+            parentComponentName: String? = null
+    ): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList?.forEachIndexed { index, it ->
+            val componentsItem = ComponentsItem()
+            componentsItem.position = index + parentListSize
+            componentsItem.name = subComponentName
+            componentsItem.properties = properties
+            componentsItem.creativeName = it.creativeName
+            if(!parentComponentName.isNullOrEmpty()) {
+                componentsItem.parentComponentName = parentComponentName
+            }
+            if(parentComponentPosition!=null){
+                componentsItem.parentComponentPosition = parentComponentPosition
+            }
+            val dataItem = mutableListOf<DataItem>()
+            it.typeProductCard = subComponentName
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            if (parentSectionId?.isNotEmpty() == true)
+                componentsItem.parentSectionId = parentSectionId
+            list.add(componentsItem)
+        }
+        return list
+    }
+
 
     fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
