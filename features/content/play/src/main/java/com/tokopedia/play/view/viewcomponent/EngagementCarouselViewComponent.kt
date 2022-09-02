@@ -27,7 +27,7 @@ class EngagementCarouselViewComponent(
     private val carousel : RecyclerView = findViewById(R.id.rv_engagement_widget)
 
     private val carouselAdapter = EngagementWidgetAdapter(object : EngagementWidgetViewHolder.Listener{
-        override fun onWidgetGameEnded(engagement: EngagementUiModel) {
+        override fun onWidgetGameEnded(engagement: EngagementUiModel.Game) {
             listener.onWidgetGameEnded(this@EngagementCarouselViewComponent, engagement)
         }
 
@@ -59,7 +59,7 @@ class EngagementCarouselViewComponent(
     }
 
     interface Listener {
-        fun onWidgetGameEnded(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
+        fun onWidgetGameEnded(view: EngagementCarouselViewComponent, engagement: EngagementUiModel.Game)
         fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
     }
 }

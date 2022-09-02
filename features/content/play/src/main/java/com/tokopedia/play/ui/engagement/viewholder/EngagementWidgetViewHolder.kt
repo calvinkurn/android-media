@@ -75,7 +75,7 @@ class EngagementWidgetViewHolder(
     }
 
     interface Listener {
-        fun onWidgetGameEnded(engagement: EngagementUiModel)
+        fun onWidgetGameEnded(engagement: EngagementUiModel.Game)
         fun onWidgetClicked(engagement: EngagementUiModel)
     }
 }

@@ -1809,9 +1809,32 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onWidgetGameEnded(
         view: EngagementCarouselViewComponent,
-        engagement: EngagementUiModel
+        engagement: EngagementUiModel.Game
     ) {
-        //TODO("Not yet implemented")
+        when (engagement.interactive){
+            is InteractiveUiModel.Giveaway -> {
+                handleGiveaway(interactive = engagement.interactive)
+            }
+            is InteractiveUiModel.Quiz -> {
+                handleQuiz(interactive = engagement.interactive)
+            }
+        }
+    }
+
+    private fun handleGiveaway(interactive: InteractiveUiModel.Giveaway) {
+        when(interactive.status) {
+            is InteractiveUiModel.Giveaway.Status.Upcoming ->
+                playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+            is InteractiveUiModel.Giveaway.Status.Ongoing ->
+                playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+        }
+    }
+
+    private fun handleQuiz(interactive: InteractiveUiModel.Quiz) {
+        when(interactive.status) {
+            is InteractiveUiModel.Quiz.Status.Ongoing ->
+                playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
+        }
     }
 
     override fun onWidgetClicked(
