@@ -25,26 +25,30 @@ class EngagementCarouselViewComponent(
     private val scope: CoroutineScope
 ) : ViewComponent(container, resId) {
 
-    private val carousel : RecyclerView = findViewById(R.id.rv_engagement_widget)
+    private val carousel: RecyclerView = findViewById(R.id.rv_engagement_widget)
 
-    private val carouselAdapter = EngagementWidgetAdapter(object : EngagementWidgetViewHolder.Listener{
-        override fun onWidgetGameEnded(engagement: EngagementUiModel.Game) {
-            listener.onWidgetGameEnded(this@EngagementCarouselViewComponent, engagement)
-        }
+    private val carouselAdapter =
+        EngagementWidgetAdapter(object : EngagementWidgetViewHolder.Listener {
+            override fun onWidgetGameEnded(engagement: EngagementUiModel.Game) {
+                listener.onWidgetGameEnded(this@EngagementCarouselViewComponent, engagement)
+            }
 
-        override fun onWidgetClicked(engagement: EngagementUiModel) {
-            listener.onWidgetClicked(this@EngagementCarouselViewComponent, engagement)
-        }
-    })
+            override fun onWidgetClicked(engagement: EngagementUiModel) {
+                listener.onWidgetClicked(this@EngagementCarouselViewComponent, engagement)
+            }
+        })
 
     private val snapHelper by lazy(LazyThreadSafetyMode.NONE) {
         PagerSnapHelper()
     }
 
+    private val linearLayoutManager =
+        LinearLayoutManager(rootView.context, LinearLayoutManager.VERTICAL, false)
+
     init {
         carousel.apply {
             adapter = carouselAdapter
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
         }
 
         snapHelper.attachToRecyclerView(carousel)
@@ -52,40 +56,49 @@ class EngagementCarouselViewComponent(
         autoScroll()
     }
 
-    fun setData(list: List<EngagementUiModel>){
+    fun setData(list: List<EngagementUiModel>) {
         carouselAdapter.setItemsAndAnimateChanges(list)
     }
 
-    private fun autoScroll(){
+    private fun autoScroll() {
         scope.launch {
             //should be list size
-            repeat(2){
+            repeat(2) {
                 delay(5000L)
                 carousel.snapScrollTo(it)
             }
         }
     }
 
-    private fun RecyclerView.snapScrollTo (position: Int){
+    private fun RecyclerView.snapScrollTo(position: Int) {
         try {
-            this.scrollToPosition(position)
-            this.post {
-                layoutManager?.findViewByPosition(position)
-                rootView?.let {
-                    val snapDistance =
-                        layoutManager?.let { lM -> snapHelper.calculateDistanceToFinalSnap(lM, it) }
-                    if (snapDistance?.get(0) ?: 0 != 0 || snapDistance?.get(1) ?: 0 != 0) {
-                        this.scrollBy(snapDistance?.get(0) ?: 0, snapDistance?.get(1) ?: 0)
+            scrollToPosition(position)
+            post {
+                val itemView = linearLayoutManager.findViewByPosition(position)
+                if (itemView != null) {
+                    val snapDistance: IntArray =
+                        snapHelper.calculateDistanceToFinalSnap(linearLayoutManager, itemView)
+                            ?: intArrayOf()
+                    if (snapDistance.isEmpty()) return@post
+                    if (snapDistance[0] != 0 || snapDistance[1] != 0) {
+                        scrollBy(
+                            snapDistance[0],
+                            snapDistance[1]
+                        )
                     }
                 }
             }
-        } catch (e: Exception){
-            this.smoothScrollToPosition(position)
+        } catch (e: Exception) {
+            smoothScrollToPosition(position)
         }
     }
 
     interface Listener {
-        fun onWidgetGameEnded(view: EngagementCarouselViewComponent, engagement: EngagementUiModel.Game)
+        fun onWidgetGameEnded(
+            view: EngagementCarouselViewComponent,
+            engagement: EngagementUiModel.Game
+        )
+
         fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
     }
 }
