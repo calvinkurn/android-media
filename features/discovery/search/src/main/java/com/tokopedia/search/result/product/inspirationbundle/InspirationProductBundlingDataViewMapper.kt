@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.inspirationbundle
 
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
@@ -134,22 +133,5 @@ object InspirationProductBundlingDataViewMapper {
         products: List<InspirationCarouselDataView.Option.Product>,
     ): List<BundleProductUiModel> {
         return products.map { product -> convertToBundleProductDataView(product) }
-    }
-
-    internal fun InspirationProductBundleDataView.BundleDataView.toProductModel(
-        bundleProduct: BundleProductUiModel,
-    ): InspirationCarouselDataView.Option.Product {
-        return InspirationCarouselDataView.Option.Product(
-            id = bundleProduct.productId,
-            name = bundleProduct.productName,
-            applink = bundleProduct.productAppLink,
-            price = bundle.bundleDetails.firstOrNull()?.displayPriceRaw?.toInt() ?: 0,
-            componentId = componentId,
-            inspirationCarouselType = type,
-            layout = LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
-            dimension90 = dimension90,
-            inspirationCarouselTitle = carouselTitle,
-            optionTitle = bundle.bundleName,
-        )
     }
 }
