@@ -317,9 +317,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val hasPreSelectedPromo = checkHasPreSelectedPromo()
         val preSelectedPromoCodes = getPreSelectedPromoList()
+        val currentClashingInfoBo = checkCurrentClashingInfoBo()
         val clashingInfoPreAppliedBo = checkClashingInfoPreAppliedBo()
 
-        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, clashingInfoPreAppliedBo)
+        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, clashingInfoPreAppliedBo, currentClashingInfoBo)
 
         calculateAndRenderTotalBenefit()
         updateRecommendationState()
@@ -451,6 +452,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         promoListUiModel.value?.forEach visitableLoop@{ visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir) {
                 boClashingInfo = visitable.uiData.boClashingInfos.firstOrNull()
+                return@visitableLoop
+            }
+        }
+        return boClashingInfo
+    }
+
+    private fun checkCurrentClashingInfoBo(): BoClashingInfo? {
+        var boClashingInfo: BoClashingInfo? = null
+        promoListUiModel.value?.forEach visitableLoop@{ visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && !visitable.uiState.isBebasOngkir && visitable.uiData.boClashingInfos.isNotEmpty()) {
+                boClashingInfo = visitable.uiData.boClashingInfos.first()
                 return@visitableLoop
             }
         }
@@ -592,7 +604,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, clashingInfoPreAppliedBo: BoClashingInfo?) {
+    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, clashingInfoPreAppliedBo: BoClashingInfo?, currentClashingInfoBo: BoClashingInfo?) {
         fragmentUiModel.value?.let {
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
@@ -603,6 +615,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.hasPreAppliedBo = clashingInfoPreAppliedBo != null
             it.uiData.unApplyBoMessage = clashingInfoPreAppliedBo?.message ?: ""
             it.uiData.unApplyBoIcon = clashingInfoPreAppliedBo?.icon ?: ""
+
+            it.uiState.shouldShowTickerBoClashing = currentClashingInfoBo != null
+            it.uiData.boClashingMessage = currentClashingInfoBo?.message ?: ""
+            it.uiData.boClashingImage = currentClashingInfoBo?.icon ?: ""
             _fragmentUiModel.value = it
         }
     }
