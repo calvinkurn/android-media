@@ -36,14 +36,11 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -56,7 +53,6 @@ import com.tokopedia.user.session.UserSessionInterface
 class FeedPlusTypeFactoryImpl(
         context: FeedPlusFragment,
         private val userSession: UserSessionInterface,
-        private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener,
         private val playWidgetCoordinator: PlayWidgetCoordinator
 ) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
@@ -143,10 +139,6 @@ class FeedPlusTypeFactoryImpl(
         return TopAdsBannerViewHolder.LAYOUT
     }
 
-    override fun type(onboardingViewModel: OnboardingViewModel): Int {
-        return OnboardingViewHolder.LAYOUT
-    }
-
     override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
         return CarouselPlayCardViewHolder.LAYOUT
     }
@@ -199,9 +191,6 @@ class FeedPlusTypeFactoryImpl(
                     videoViewListener,
                     gridItemListener,
                     imagePostListener)
-            }
-            OnboardingViewHolder.LAYOUT -> {
-                viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
             }
             TopAdsBannerViewHolder.LAYOUT -> {
                 viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)

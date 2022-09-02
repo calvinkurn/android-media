@@ -2,7 +2,6 @@ package com.tokopedia.analyticsdebugger.cassava.utils
 
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 import com.tokopedia.analyticsdebugger.cassava.core.JsonMap
 import java.lang.reflect.Type
 import java.math.BigDecimal
@@ -22,17 +21,6 @@ class AnalyticsParser @Inject constructor() {
                 .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
                 .replace("\\+".toRegex(), "%2B"), "UTF-8"
         )
-    }
-
-    fun inferName(data: Map<String, Any>, @AnalyticsSource source: String): String {
-       return runCatching {
-           when(source) {
-               AnalyticsSource.GTM -> data["event"].toString()
-               AnalyticsSource.BRANCH_IO -> data["eventName"].toString()
-               AnalyticsSource.ERROR -> "ERROR GTM V5"
-               else -> ""
-           }
-       }.getOrElse { "" }
     }
 
     fun toJsonMap(str: String): JsonMap {

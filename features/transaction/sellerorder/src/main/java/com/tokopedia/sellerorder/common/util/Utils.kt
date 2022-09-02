@@ -119,6 +119,24 @@ object Utils {
         return date.timeInMillis
     }
 
+    fun getNFutureDaysTimeStamp(daysForward: Int): Date {
+        val date = Calendar.getInstance(getLocale())
+        date.add(Calendar.DATE, daysForward)
+        return date.time
+    }
+
+    fun getNFutureMonthsTimeStamp(monthsForward: Int): Date {
+        val date = Calendar.getInstance(getLocale())
+        date.add(Calendar.MONTH, monthsForward)
+        return date.time
+    }
+
+    fun getNFutureYearsTimeStamp(yearsForward: Int): Date {
+        val date = Calendar.getInstance(getLocale())
+        date.add(Calendar.YEAR, yearsForward)
+        return date.time
+    }
+
     fun getNPastMonthTimeText(monthBefore: Int, format: String = PATTERN_DATE_PARAM): String {
         val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
         return format(pastTwoYear, format)
