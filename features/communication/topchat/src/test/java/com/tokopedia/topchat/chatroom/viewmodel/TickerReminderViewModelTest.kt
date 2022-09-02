@@ -62,7 +62,6 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
         coVerify {
             closeReminderTicker(any())
         }
-        assertTrue(viewModel.isTickerNotShownYet)
     }
 
     @Test
