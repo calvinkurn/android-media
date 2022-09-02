@@ -15,7 +15,6 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -57,6 +56,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
+    private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
@@ -411,6 +411,14 @@ class SellerHomeViewModel @Inject constructor(
             _shopShareTracker.postValue(Success(result))
         }, onError = {
             _shopShareTracker.postValue(Fail(it))
+        })
+    }
+
+    fun submitWidgetDismissal() {
+        launchCatchError(block = {
+            submitWidgetDismissUseCase
+        }, onError = {
+
         })
     }
 
