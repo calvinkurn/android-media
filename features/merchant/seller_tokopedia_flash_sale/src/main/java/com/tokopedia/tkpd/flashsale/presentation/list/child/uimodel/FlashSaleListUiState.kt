@@ -7,7 +7,6 @@ import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 
 data class FlashSaleListUiState(
     val isLoading: Boolean = true,
-    val totalFlashSaleCount: Int = 0,
     val tabName: String = "",
     val tabId: Int = TabConstant.TAB_ID_UPCOMING,
     val offset: Int = 0,
@@ -21,5 +20,6 @@ data class FlashSaleListUiState(
     val flashSaleCategories: List<FlashSaleCategory> = emptyList(),
     val selectedStatusIds: List<String> = emptyList(),
     val isFilterActive: Boolean = false,
-    val allItems: List<DelegateAdapterItem> = emptyList()
+    val allItems: List<DelegateAdapterItem> = emptyList(),
+    val searchResultCount: Int = 0
 )

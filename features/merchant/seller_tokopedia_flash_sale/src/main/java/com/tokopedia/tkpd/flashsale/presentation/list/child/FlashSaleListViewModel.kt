@@ -189,7 +189,7 @@ class FlashSaleListViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         allItems = allItems,
-                        totalFlashSaleCount = response.totalFlashSaleCount
+                        searchResultCount = response.flashSales.size
                     )
                 }
             },
