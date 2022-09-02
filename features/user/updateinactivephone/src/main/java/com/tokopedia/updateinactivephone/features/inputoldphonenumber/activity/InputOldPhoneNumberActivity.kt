@@ -12,7 +12,7 @@ import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.fragment.InputOldPhoneNumberFragment
 import javax.inject.Inject
 
-class InputOldPhoneNumberActivity : BaseSimpleActivity(),
+open class InputOldPhoneNumberActivity : BaseSimpleActivity(),
     HasComponent<InactivePhoneComponent> {
 
     @Inject

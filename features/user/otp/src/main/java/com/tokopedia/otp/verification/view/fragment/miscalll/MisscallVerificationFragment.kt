@@ -20,15 +20,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.*
 import javax.inject.Inject
@@ -43,7 +42,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     private val permissionCheckerHelper = PermissionCheckerHelper()
 
     private var remoteConfigInstance: RemoteConfigInstance? = null
-    private var rollanceType = ""
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
@@ -60,7 +58,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     override fun initView() {
-        rollanceType = getAbTestPlatform()?.getString(ROLLANCE_KEY_MISCALL_OTP).toString()
         modeListData.otpListImgUrl = ""
 
         super.initView()
@@ -78,7 +75,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         val height = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             FLOAT_270,
-            resources.displayMetrics
+            context?.resources?.displayMetrics
         )
         viewBound.methodIcon?.apply {
             setMargin(0, 0, 0, 0)
@@ -318,11 +315,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     private fun isOtpMiscallNew(): Boolean {
-        return rollanceType.contains(ROLLANCE_KEY_MISCALL_OTP)
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        return remoteConfigInstance?.abTestPlatform
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_KEY_MISCALL_OTP).contains(ROLLANCE_KEY_MISCALL_OTP)
     }
 
     // new ui

@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
-import com.tokopedia.affiliate.AFFILIATE_TRX_ENABLED
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
@@ -43,7 +42,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -70,8 +68,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
-    private var isUserBlackListed = false
-    private var isAffiliateWalletEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,24 +119,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         else showLoginPortal()
     }
 
-    private fun initRollence() {
-        isAffiliateWalletEnabled =
-            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AFFILIATE_TRX_ENABLED,
-                ""
-            )) {
-                AFFILIATE_TRX_ENABLED -> true
-                else -> false
-            }
-    }
-
     private fun showLoginPortal() {
         AffiliateRegistrationActivity.newInstance(this)
         finish()
     }
 
     private fun showAffiliatePortal() {
-        initRollence()
         initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         pushOpenScreenEvent()
@@ -225,7 +209,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         currentFragment?.let { fragment ->
-            return (fragment as? AffiliatePromoFragment)?.view?.findViewById<AffiliateLinkTextField>(
+            return (fragment as? AffiliatePromoFragment)?.view?.findViewById(
                 R.id.product_link_et
             )
         }
@@ -236,7 +220,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.name)
         currentFragment?.let { fragment ->
-            return (fragment as? AffiliateHomeFragment)?.view?.findViewById<Typography>(R.id.user_name)
+            return (fragment as? AffiliateHomeFragment)?.view?.findViewById(R.id.user_name)
         }
         return null
     }
@@ -253,15 +237,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun initBottomNavigationView() {
         affiliateBottomNavigation = AffiliateBottomNavbar(
             findViewById(R.id.bottom_navbar),
-            this, this, isAffiliateWalletEnabled
+            this, this
         )
-        if (isAffiliateWalletEnabled) {
-            INCOME_MENU = THIRD_TAB
-            HELP_MENU = FOURTH_TAB
-        } else {
-            INCOME_MENU = FOURTH_TAB
-            HELP_MENU = THIRD_TAB
-        }
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
     }
@@ -287,23 +264,24 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun setObservers() {
-        affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
+        affiliateVM.getValidateUserdata().observe(this) { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
-                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
+                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true
+            ) {
                 showAffiliatePortal()
-            } else{
+            } else {
                 showLoginPortal()
             }
-        })
+        }
 
-        affiliateVM.progressBar().observe(this,{
-            if(it)
+        affiliateVM.progressBar().observe(this) {
+            if (it)
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
             else
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.hide()
-        })
+        }
 
-        affiliateVM.getErrorMessage().observe(this, { error ->
+        affiliateVM.getErrorMessage().observe(this) { error ->
             when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
                     Toaster.build(
@@ -317,10 +295,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                     showLoginPortal()
                 }
             }
-        })
+        }
     }
-
-    var isBackEnabled = true
 
     private fun openFragment(fragment: Fragment) {
         val backStackName = fragment.javaClass.name
@@ -437,14 +413,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 HELP_MENU
             )
         }
-    }
-
-    fun setBlackListedStatus(blackListed: Boolean) {
-        isUserBlackListed = blackListed
-    }
-
-    fun getBlackListedStatus(): Boolean {
-        return isUserBlackListed
     }
 
 }

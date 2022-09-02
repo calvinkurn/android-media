@@ -44,6 +44,9 @@ internal object GetProductList {
                     iconURL
                 }
                 suspendLevel
+                hasStockAlert
+                stockAlertActive
+                stockAlertCount
             }
         }
     }

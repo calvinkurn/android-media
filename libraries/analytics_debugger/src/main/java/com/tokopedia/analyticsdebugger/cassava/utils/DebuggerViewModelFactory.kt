@@ -11,9 +11,9 @@ class DebuggerViewModelFactory(val dao: GtmLogDao) : ViewModelProvider.Factory {
     private val gtmRepo = GtmRepo(dao)
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-            when (modelClass) {
-                DebuggerListViewModel::class.java -> DebuggerListViewModel(gtmRepo) as T
-                else -> throw IllegalArgumentException("View Model class not found")
-            }
+        when (modelClass) {
+            DebuggerListViewModel::class.java -> DebuggerListViewModel(gtmRepo) as T
+            else -> throw IllegalArgumentException("View Model class not found")
+        }
 
 }

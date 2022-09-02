@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
@@ -64,6 +66,10 @@ interface ChatbotContract {
         fun uploadUsingOldMechanism(data: Intent)
 
         fun sendInvoiceForArticle()
+
+        fun replyBubbleStateHandler(state: Boolean)
+
+        fun visibilityReplyBubble(state: Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -79,15 +85,8 @@ interface ChatbotContract {
 
         fun getExistingChat(messageId: String,
                             onError: (Throwable) -> Unit,
-                            onSuccess: (ChatroomViewModel) -> Unit,
+                            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
                             onGetChatRatingListMessageError: (String) -> Unit)
-
-        fun loadPrevious(messageId: String,
-                         page: Int,
-                         onError: (Throwable) -> Unit,
-                         onSuccess: (ChatroomViewModel) -> Unit,
-                         onGetChatRatingListMessageError: (String) -> Unit)
-
 
         fun connectWebSocket(messageId: String)
 
@@ -147,5 +146,30 @@ interface ChatbotContract {
         fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
+
+        fun sendMessage(
+            messageId: String, sendMessage: String,
+            startTime: String, opponentId: String,
+            parentReply: ParentReply?,
+            onSendingMessage: () -> Unit
+        )
+
+        fun clearGetChatUseCase()
+
+        fun setBeforeReplyTime(createTime : String)
+
+        fun getTopChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onError: (Throwable) -> Unit,
+            onGetChatRatingListMessageError: (String) -> Unit
+        )
+
+        fun getBottomChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onError: (Throwable) -> Unit,
+            onGetChatRatingListMessageError: (String) -> Unit
+        )
     }
 }

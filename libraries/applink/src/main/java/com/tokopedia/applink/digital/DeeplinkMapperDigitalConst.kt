@@ -5,7 +5,7 @@ object DeeplinkMapperDigitalConst {
     const val TEMPLATE_ID_VOUCHER = "voucher"
     const val TEMPLATE_ID_GENERAL = "general"
     const val TEMPLATE_ID_CC = "tagihancc"
-    const val TEMPLATE_PREPAID_TELCO = "telcopre"
+    const val TEMPLATE_OLD_PREPAID_TELCO = "telcopre"
     const val TEMPLATE_POSTPAID_TELCO = "telcopost"
     const val TEMPLATE_ID_ELECTRONIC_MONEY = "electronicmoney"
 
@@ -20,6 +20,13 @@ object DeeplinkMapperDigitalConst {
     /**
      * End Template
      */
+    const val CATEGORY_ID_PULSA = "1"
+    const val CATEGORY_ID_PAKET_DATA = "2"
+    const val CATEGORY_ID_ROAMING = "20"
+
+    const val NEW_MENU_ID_PULSA = "289"
+    const val NEW_MENU_ID_PAKET_DATA = "290"
+    const val NEW_MENU_ID_ROAMING = "314"
 
     const val MENU_ID_TELCO_PREPAID = 2
     const val MENU_ID_TELCO_POSTPAID = 3

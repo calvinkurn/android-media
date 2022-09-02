@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Spannable
@@ -31,7 +32,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -55,16 +55,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
@@ -91,14 +81,6 @@ import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAd
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
-import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
-import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.EXTRA_CASHBACK_SHOP_ID
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_VALUE
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT_NAME
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_RESULT
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
@@ -106,25 +88,21 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_CHAT_CREATE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListDiffutilAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.layoutmanager.ProductManageLayoutManager
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
@@ -140,7 +118,6 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.D
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.Delete
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.Preview
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.SeeTopAds
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.SetCashBack
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.SetFeaturedProduct
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.SetTopAds
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.StockReminder
@@ -154,11 +131,6 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideLoadin
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowLoadingDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageMoreMenuBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageStockLocationBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
@@ -194,14 +166,10 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -213,7 +181,19 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_STOCK_ALERT_STATUS
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.STOCK_ALERT_ACTIVE
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.*
+import com.tokopedia.unifycomponents.*
+import kotlin.math.abs
 
 open class ProductManageFragment :
     BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),
@@ -253,7 +233,13 @@ open class ProductManageFragment :
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageMoreMenuBottomSheet: ProductManageMoreMenuBottomSheet? = null
     private var multiEditBottomSheet: ProductMultiEditBottomSheet? = null
+    private var currentPositionStockReminderCoachMark: Int = -1
+    private var navigationHomeMenuView: View? = null
+    private var haveSetReminder = -1
+    private var haveShowCoachFlagStockReminder = false
+
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(childFragmentManager) }
+
     private val productManageAddEditMenuBottomSheet by lazy {
         ProductManageAddEditMenuBottomSheet(
             sellerFeatureCarouselClickListener,
@@ -278,9 +264,6 @@ open class ProductManageFragment :
                 when (item) {
                     is SellerFeatureUiModel.MultiEditFeatureWithDataUiModel -> goToSellerAppProductManageMultiEdit()
                     is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds()
-                    is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(
-                        item.data as ProductUiModel
-                    )
                     is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(
                         item.data as ProductUiModel
                     )
@@ -299,7 +282,123 @@ open class ProductManageFragment :
                     }
                 }
             }
+
         }
+
+
+    private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (haveSetReminder == -1) {
+                    if (coachMarkMoreOption?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
+                        reshowMoreOptionCoachMark(dy < Int.ZERO)
+                    } else if (coachMarkMoreOption?.isDismissed == false) {
+
+                        val firstVisibleIndex =
+                            productManageLayoutManager?.findFirstVisibleItemPosition().orZero()
+                        val lastVisibleIndex =
+                            productManageLayoutManager?.findLastVisibleItemPosition().orZero()
+                        val currentMoreOptionButton =
+                            productManageLayoutManager?.findViewByPosition(Int.ZERO)
+                                ?.findViewById<IconUnify>(R.id.btnMoreOptions)
+                        if (coachMarkMoreOption?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                    (currentMoreOptionButton != null && getVisiblePercent(
+                                        currentMoreOptionButton
+                                    ) == -1))
+                        ) {
+                            coachMarkMoreOption?.dismissCoachMark()
+
+                        }
+                    }
+                } else {
+                    if (coachMarkStockReminder?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
+                        reshowStockReminderCoachMark(dy < Int.ZERO)
+                    } else if (coachMarkStockReminder?.isDismissed == false) {
+
+                        val layoutManager = productManageLayoutManager!!
+                        val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                        val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                        val currentProductStockReminder =
+                            layoutManager.findViewByPosition(currentPositionStockReminderCoachMark)
+                                ?.findViewById<IconUnify>(R.id.imageStockReminder)
+                        if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                    (currentProductStockReminder != null && getVisiblePercent(
+                                        currentProductStockReminder
+                                    ) == -1))
+                        ) {
+                            coachMarkStockReminder?.dismissCoachMark()
+
+                        }
+                    }
+                }
+
+
+            }
+
+            private fun reshowMoreOptionCoachMark(isReversed: Boolean) {
+                val firstVisibleIndex =
+                    productManageLayoutManager?.findFirstVisibleItemPosition().orZero()
+                val lastVisibleIndex =
+                    productManageLayoutManager?.findLastVisibleItemPosition().orZero()
+                val visibleRange = firstVisibleIndex..lastVisibleIndex
+                (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
+                    if (it >= Int.ONE) {
+                        productManageLayoutManager?.findViewByPosition(Int.ZERO)
+                            ?.findViewById<View>(R.id.pointerCoachMarkMoreOptions)?.takeIf {
+                                it.isVisible
+                            }?.let {
+                                showCoachMoreOptionMenu()
+                                return@reshowMoreOptionCoachMark
+                            }
+                    }
+                }
+            }
+
+            private fun reshowStockReminderCoachMark(isReversed: Boolean) {
+
+                val firstVisibleIndex =
+                    productManageLayoutManager?.findFirstVisibleItemPosition().orZero()
+                val lastVisibleIndex =
+                    productManageLayoutManager?.findLastVisibleItemPosition().orZero()
+                val visibleRange = firstVisibleIndex..lastVisibleIndex
+                (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
+                    val product = adapter.data.getOrNull(it)
+                    if (product is ProductUiModel && product.hasStockAlert == HAS_STOCK_ALERT_STATUS
+                        && product.stockAlertActive != STOCK_ALERT_ACTIVE && !haveShowCoachFlagStockReminder
+                    ) {
+                        productManageLayoutManager?.findViewByPosition(it)
+                            ?.findViewById<IconUnify>(R.id.imageStockReminder)?.takeIf {
+                                it.isVisible
+                            }?.let { imageStockReminder ->
+                                if (getVisiblePercent(imageStockReminder) == Int.ZERO && !CoachMarkPreference.hasShown(
+                                        imageStockReminder.context,
+                                        SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
+                                    )
+                                ) {
+                                    imageStockReminder.post {
+                                        getCoachMarkFlagStockReminder(imageStockReminder).run {
+                                            if (activity?.isFinishing != false) return@post
+                                            currentPositionStockReminderCoachMark = it
+                                            coachMarkStockReminder?.isDismissed = false
+                                            coachMarkStockReminder?.showCoachMark(
+                                                this,
+                                            )
+                                        }
+                                    }
+                                    return@reshowStockReminderCoachMark
+                                }
+                            }
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
 
     // these variables only use from seller migration (entry point broadcast chat)
     private var productId = ""
@@ -342,7 +441,7 @@ open class ProductManageFragment :
         get() = binding?.layoutFragmentProductManage?.checkBoxSelectAll
     private val btnMultiEdit: CardView?
         get() = binding?.layoutFragmentProductManage?.btnMultiEdit
-    private val recyclerView: VerticalRecyclerView?
+    private val recyclerView: RecyclerView?
         get() = binding?.layoutFragmentProductManage?.recyclerView
     private val progressBar: LoaderUnify?
         get() = binding?.layoutFragmentProductManage?.progressBar
@@ -350,6 +449,32 @@ open class ProductManageFragment :
         get() = binding?.layoutFragmentProductManage?.interceptor
     private val searchBar: SearchBarUnify?
         get() = binding?.layoutFragmentProductManage?.searchBarProductManage
+
+    private val productManageLayoutManager by lazy { recyclerView?.layoutManager as? LinearLayoutManager }
+
+    private val coachMarkMoreOption: CoachMark2? by lazy {
+        context?.let {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                CoachMark2(it)
+            } else null
+        }
+    }
+
+    private val coachMarkStockReminder: CoachMark2? by lazy {
+        context?.let {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                CoachMark2(it)
+            } else null
+        }
+    }
+
+    private val coachMarkMoreMenuReminder: CoachMark2? by lazy {
+        context?.let {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                CoachMark2(it)
+            } else null
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -393,6 +518,10 @@ open class ProductManageFragment :
         }
     }
 
+    fun setNavigationHomeMenuView(view: View?) {
+        this.navigationHomeMenuView = view
+    }
+
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.run {
@@ -421,12 +550,6 @@ open class ProductManageFragment :
 
     override fun getRecyclerView(view: View?): RecyclerView? = recyclerView
 
-    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager? {
-        return context?.let {
-            ProductManageLayoutManager(it)
-        }
-    }
-
     private fun initView() {
         setupInterceptor()
         setupSearchBar()
@@ -437,6 +560,7 @@ open class ProductManageFragment :
         setupSelectAll()
         setupErrorPage()
         setupNoAccessPage()
+        setCoachMarkFlagStockReminder()
         renderCheckedView()
 
         observeShopInfo()
@@ -468,6 +592,21 @@ open class ProductManageFragment :
         setupDialogFeaturedProduct()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
+    }
+
+    private fun setCoachMarkFlagStockReminder() {
+        coachMarkStockReminder?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (currentIndex == Int.ONE) {
+                    CoachMarkPreference.setShown(
+                        requireContext(),
+                        SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK,
+                        true
+                    )
+                }
+            }
+
+        })
     }
 
     private fun setupProgressDialogVariant() {
@@ -543,6 +682,7 @@ open class ProductManageFragment :
             ProductManageTracking.eventClickMoreMenuShopShowcase()
         }
     }
+
 
     private fun onClickMoreFilter() {
         showFilterBottomSheet()
@@ -717,9 +857,11 @@ open class ProductManageFragment :
                 is Success -> setVariantGoToBroadcastChat(it.data)
                 is Fail -> {
                     val message =
-                        resources.getString(R.string.broadcast_chat_error_state_message_empty_variant)
+                        activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_variant)
+                            .orEmpty()
                     val action =
-                        resources.getString(R.string.broadcast_chat_error_state_action_retry)
+                        activity?.resources?.getString(R.string.broadcast_chat_error_state_action_retry)
+                            .orEmpty()
                     errorStateBroadcastChat(message, action, isRetry = true)
                 }
             }
@@ -813,8 +955,11 @@ open class ProductManageFragment :
     }
 
     private fun showErrorStateEmptyProductBroadcastChat() {
-        val message = resources.getString(R.string.broadcast_chat_error_state_message_empty_stock)
-        val action = resources.getString(R.string.broadcast_chat_error_state_action_oke)
+        val message =
+            activity?.resources?.getString(R.string.broadcast_chat_error_state_message_empty_stock)
+                .orEmpty()
+        val action =
+            activity?.resources?.getString(R.string.broadcast_chat_error_state_action_oke).orEmpty()
         errorStateBroadcastChat(message, action)
     }
 
@@ -898,38 +1043,6 @@ open class ProductManageFragment :
         )
     }
 
-    private fun goToSellerAppProductManageThenSetCashback(product: ProductUiModel) {
-        val cacheManagerId = UUID.randomUUID().toString()
-        val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
-            .buildUpon()
-            .appendQueryParameter(
-                ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID,
-                cacheManagerId
-            )
-            .build()
-            .toString()
-        val secondAppLink =
-            Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, product.id))
-                .buildUpon()
-                .appendQueryParameter(SET_CASHBACK_PRODUCT_NAME, product.title)
-                .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, product.cashBack.toString())
-                .appendQueryParameter(
-                    PARAM_SET_CASHBACK_PRODUCT_PRICE,
-                    product.minPrice?.price.toIntOrZero().toString()
-                )
-                .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
-                .appendQueryParameter(
-                    ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID,
-                    cacheManagerId
-                )
-                .build()
-                .toString()
-        goToSellerMigrationPage(
-            SellerMigrationFeatureName.FEATURE_SET_CASHBACK,
-            arrayListOf(firstAppLink, secondAppLink)
-        )
-    }
-
     private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductUiModel) {
         val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
             .buildUpon()
@@ -965,7 +1078,7 @@ open class ProductManageFragment :
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             product.id,
             product.title,
-            product.stock.toString()
+            product.isVariant.toString()
         )
             .plus("?${ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID}=$cacheManagerId")
         goToSellerMigrationPage(
@@ -1198,7 +1311,6 @@ open class ProductManageFragment :
     private fun setupProductList() {
         recyclerView?.run {
             itemAnimator = defaultItemAnimator
-            clearItemDecoration()
             addItemDecoration(ProductListItemDecoration())
         }
     }
@@ -1214,11 +1326,7 @@ open class ProductManageFragment :
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ProductManageAdapterFactoryImpl> {
-        return if (getIsAdapterEnableDiffutil()) {
-            ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
-        } else {
-            ProductManageListAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
-        }
+        return ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
@@ -1263,14 +1371,8 @@ open class ProductManageFragment :
             val resultStatus =
                 cacheManager?.get(ProductManageListConstant.EXTRA_RESULT_STATUS, Int::class.java)
                     ?: 0
-            if (resultStatus == Activity.RESULT_OK) {
-                if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_SET_CASHBACK) {
-                    onSetCashbackResult(cacheManager)
-                } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
-                    val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
-                    val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
-                    onSetStockReminderResult(threshold, productName)
-                }
+            if (resultStatus == Activity.RESULT_OK && sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_STOCK_REMINDER) {
+                onSetStockReminderResult()
             }
         }
         if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
@@ -1442,60 +1544,6 @@ open class ProductManageFragment :
         getFiltersTab(withDelay = true)
     }
 
-    private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
-        showToaster(
-            getString(
-                R.string.product_manage_set_cashback_success,
-                setCashbackResult.productName
-            )
-        )
-        recyclerView?.post {
-            productManageListAdapter.updateCashBack(
-                setCashbackResult.productId,
-                setCashbackResult.cashback
-            )
-        }
-        val filterOptions = viewModel.selectedFilterAndSort.value?.filterOptions
-        if (filterOptions == listOf(FilterByCondition.CashBackOnly)) {
-            filterProductListByCashback()
-        }
-    }
-
-    private fun filterProductListByCashback() {
-        recyclerView?.post {
-            productManageListAdapter.filterProductList { it.cashBack != 0 }
-        }
-    }
-
-    private fun onSetCashbackLimitExceeded() {
-        context?.let {
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
-                setTitle(it.resources.getString(R.string.product_manage_set_cashback_dialog_title))
-                setDescription(it.resources.getString(R.string.product_manage_set_cashback_dialog_desc))
-                setPrimaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_upgrade_button))
-                setSecondaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_see_cashback_products_button))
-                setPrimaryCTAClickListener {
-                    dismiss()
-                    RouteManager.route(
-                        context,
-                        ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-                    )
-                    ProductManageTracking.eventCashbackSettingsPopUp()
-                }
-                setSecondaryCTAClickListener {
-                    dismiss()
-                    viewModel.getProductList(
-                        shopId = userSession.shopId,
-                        filterOptions = listOf(FilterByCondition.CashBackOnly),
-                        isRefresh = true
-                    )
-                    viewModel.setSelectedFilter(selectedFilter = listOf(FilterByCondition.CashBackOnly))
-                }
-                setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
-            }.show()
-        }
-    }
-
     private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
         val message = if (deleteProductResult.error is NetworkErrorException) {
             getString(deleteProductResult.error.message.toIntOrZero())
@@ -1592,25 +1640,38 @@ open class ProductManageFragment :
     private fun initPopUpDialog(productId: String): DialogUnify {
         context?.let { context ->
             return DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val backgroundColor = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 val textLinkLength = TEXT_LINK_LENGTH_END
                 val textLinkStart = TEXT_LINK_LENGTH_START
-                spanText.setSpan(object : ClickableSpan() {
-                    override fun onClick(v: View) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
-                        activity?.finish()
-                    }
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = backgroundColor
-                        ds.isUnderlineText = false
-                    }
-                },
+                spanText.setSpan(
+                    object : ClickableSpan() {
+                        override fun onClick(v: View) {
+                            RouteManager.route(
+                                context,
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK)
+                            )
+                            activity?.finish()
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.color = backgroundColor
+                            ds.isUnderlineText = false
+                        }
+                    },
                     spanText.length - textLinkLength,
                     spanText.length - textLinkStart,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                spanText.setSpan(StyleSpan(Typeface.BOLD), spanText.length - textLinkLength, spanText.length - textLinkStart, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    spanText.length - textLinkLength,
+                    spanText.length - textLinkStart,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
 
                 setTitle(getString(R.string.popup_label_static))
                 setDescription(spanText)
@@ -1728,6 +1789,7 @@ open class ProductManageFragment :
 
     override fun onSwipeRefresh() {
         swipeToRefresh.isRefreshing = true
+        refreshCoachMark()
         loadInitialData()
         clearFilterAndKeywordIfEmpty()
 
@@ -1739,6 +1801,7 @@ open class ProductManageFragment :
         hideErrorPage()
 
         getProductManageAccess()
+
     }
 
     override fun loadInitialData() {
@@ -1829,6 +1892,15 @@ open class ProductManageFragment :
         stockInfoBottomSheet.show()
     }
 
+    override fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean) {
+        val stockReminderInfoBottomSheet = StockReminderInformationBottomSheet(
+            childFragmentManager,
+            stockAlertCount,
+            stockAlertActive
+        )
+        stockReminderInfoBottomSheet.show()
+    }
+
     override fun onClickEditStockButton(product: ProductUiModel) {
         if (product.hasStockReserved) {
             context?.run {
@@ -1882,17 +1954,22 @@ open class ProductManageFragment :
                 )
             }
         } else {
-            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(
-                product.id,
-                product.isProductBundling,
-                ::onClickCampaignInfo
-            ) { result ->
-                viewModel.editVariantsStock(result)
+            try {
+                val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(
+                    product.id,
+                    product.isProductBundling,
+                    ::onClickCampaignInfo
+                ) { result ->
+                    viewModel.editVariantsStock(result)
+                }
+                editVariantStockBottomSheet.show(
+                    childFragmentManager,
+                    QuickEditVariantStockBottomSheet.TAG
+                )
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
             }
-            editVariantStockBottomSheet.show(
-                childFragmentManager,
-                QuickEditVariantStockBottomSheet.TAG
-            )
+
         }
         ProductManageTracking.eventClickEditStockVariant()
     }
@@ -1912,7 +1989,35 @@ open class ProductManageFragment :
         ProductManageTracking.eventContactCs(product.id)
     }
 
+    override fun onFinishBindMoreOption() {
+        recyclerView?.addOnScrollListener(recyclerViewScrollListener)
+        haveSetReminder =
+            getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
+        recyclerView?.post {
+            if (haveSetReminder == -1) {
+                showCoachMoreOptionMenu()
+
+            }
+        }
+
+    }
+
+    override fun onFinishBindProductStockReminder() {
+        recyclerView?.post {
+            showCoachProductWithStockReminder()
+        }
+
+    }
+
+    override fun onFinishBindMenuReminder(view: View) {
+        productManageBottomSheet?.menuList?.post {
+            showCoachMenuReminder(view)
+        }
+    }
+
+
     override fun onClickCampaignInfo(campaignTypeList: List<ProductCampaignType>) {
+        if (!isAdded) return
         showOngoingPromotionBottomSheet(campaignTypeList)
     }
 
@@ -1975,10 +2080,6 @@ open class ProductManageFragment :
             is SeeTopAds -> {
                 onSeeTopAdsClicked(product.id)
                 ProductManageTracking.eventSettingsTopadsDetail(productId)
-            }
-            is SetCashBack -> {
-                onSetCashbackClicked(product)
-                ProductManageTracking.eventSettingsCashback(productId)
             }
             is SetFeaturedProduct -> {
                 onSetFeaturedProductClicked(product.isFeatured ?: false, product.id)
@@ -2101,7 +2202,7 @@ open class ProductManageFragment :
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productManageUiModel.id,
             productManageUiModel.title,
-            productManageUiModel.stock.toString()
+            productManageUiModel.isVariant.toString()
         )
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
@@ -2112,21 +2213,6 @@ open class ProductManageFragment :
 
     private fun onSeeTopAdsClicked(productId: String) {
         goToPDP(productId = productId, showTopAdsSheet = true)
-    }
-
-    private fun onSetCashbackClicked(productManageUiModel: ProductUiModel) {
-        with(productManageUiModel) {
-            context?.let {
-                val intent = ProductManageSetCashbackActivity.createIntent(
-                    it,
-                    id,
-                    title,
-                    cashBack,
-                    minPrice?.price
-                )
-                startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
-            }
-        }
     }
 
     private fun goToDuplicateProduct(productId: String) {
@@ -2250,6 +2336,18 @@ open class ProductManageFragment :
         //no op
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            if (coachMarkMoreOption?.isDismissed == false) {
+                coachMarkMoreOption?.dismissCoachMark()
+            }
+            if (coachMarkStockReminder?.isDismissed == false) {
+                coachMarkStockReminder?.dismissCoachMark()
+            }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         if (productManageAddEditMenuBottomSheet.isVisible) {
@@ -2328,21 +2426,7 @@ open class ProductManageFragment :
                 }
                 REQUEST_CODE_STOCK_REMINDER -> {
                     if (resultCode == Activity.RESULT_OK) {
-                        val productName = intent.getStringExtra(EXTRA_PRODUCT_NAME).orEmpty()
-                        val threshold = intent.getIntExtra(EXTRA_THRESHOLD, 0)
-                        onSetStockReminderResult(threshold, productName)
-                    }
-                }
-                SET_CASHBACK_REQUEST_CODE -> {
-                    if (resultCode == Activity.RESULT_OK) {
-                        val cacheManagerId = intent.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
-                        val cacheManager = context?.let { context ->
-                            SaveInstanceCacheManager(
-                                context,
-                                cacheManagerId
-                            )
-                        }
-                        onSetCashbackResult(cacheManager)
+                        onSetStockReminderResult()
                     }
                 }
                 REQUEST_CODE_CAMPAIGN_STOCK -> {
@@ -2417,29 +2501,12 @@ open class ProductManageFragment :
         }
     }
 
-    @Suppress("NAME_SHADOWING")
-    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
-        val setCashbackResult: SetCashbackResult? =
-            cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-        setCashbackResult?.let { cashbackResult ->
-            if (cashbackResult.limitExceeded) {
-                onSetCashbackLimitExceeded()
-            } else {
-                onSuccessSetCashback(cashbackResult)
-            }
-        }
-    }
-
-    private fun onSetStockReminderResult(threshold: Int, productName: String) {
-        val toasterMessage =
-            if (threshold > 0) {
-                getString(R.string.product_stock_reminder_toaster_success_desc, productName)
-            } else {
-                getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName)
-            }
+    private fun onSetStockReminderResult() {
+        val toasterMessage = getString(R.string.product_stock_reminder_toaster_success_desc)
         constraintLayout?.let {
             Toaster.build(it, toasterMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
+        onSwipeRefresh()
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -2683,7 +2750,8 @@ open class ProductManageFragment :
                     val data = it.data
 
                     if (data is ShowFilterTab) {
-                        filterTab?.show(data)
+                        val tabData = getTabData(data)
+                        filterTab?.show(tabData)
                     } else {
                         filterTab?.update(data, this)
                     }
@@ -2691,6 +2759,22 @@ open class ProductManageFragment :
                 }
             }
         }
+    }
+
+    private fun getTabData(data: GetFilterTabResult): GetFilterTabResult {
+        val tabName = arguments?.getString(
+            ProductManageSellerFragment.PRODUCT_MANAGE_TAB, String.EMPTY
+        )
+        val tabs = data.tabs.map { tab ->
+            return@map if (tabName.equals(tab.status?.name, true)
+                && tab is FilterTabUiModel.Violation
+            ) {
+                tab.copy(isSelected = true)
+            } else {
+                tab
+            }
+        }
+        return ShowFilterTab(tabs)
     }
 
     private fun observeProductListFeaturedOnly() {
@@ -3076,8 +3160,154 @@ open class ProductManageFragment :
         }
     }
 
-    private fun getIsAdapterEnableDiffutil(): Boolean {
-        return remoteConfig.getBoolean(PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL, true)
+    private fun getCoachMarkMoreMenu(btnMoreOption: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(
+            CoachMark2Item(
+                btnMoreOption,
+                activity?.resources?.getString(R.string.content_coach_mark_more_option_title)
+                    .orEmpty(),
+                activity?.resources?.getString(R.string.content_coach_mark_more_option_desc)
+                    .orEmpty(),
+                CoachMark2.POSITION_BOTTOM
+
+            )
+        )
+    }
+
+    private fun getCoachMarkFlagStockReminder(imageStockReminder: View): ArrayList<CoachMark2Item> {
+        val coachMarkItems = arrayListOf<CoachMark2Item>()
+        coachMarkItems.add(
+            CoachMark2Item(
+                imageStockReminder,
+                activity?.resources?.getString(R.string.content_coach_mark_flag_stock_reminder_title)
+                    .orEmpty(),
+                activity?.resources?.getString(R.string.content_coach_mark_flag_stock_reminder_desc)
+                    .orEmpty()
+            )
+        )
+
+        navigationHomeMenuView?.let {
+            coachMarkItems.add(
+                CoachMark2Item(
+                    it,
+                    activity?.resources?.getString(R.string.content_coach_mark_nav_home_stock_reminder_title)
+                        .orEmpty(),
+                    activity?.resources?.getString(R.string.content_coach_mark_nav_home_stock_reminder_desc)
+                        .orEmpty(),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+
+        return coachMarkItems
+    }
+
+    private fun getCoachMarkReminderMenu(item: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(
+            CoachMark2Item(
+                item,
+                activity?.resources?.getString(R.string.content_coach_mark_stock_reminder_menu_title)
+                    .orEmpty(),
+                activity?.resources?.getString(R.string.content_coach_mark_stock_reminder_menu_desc)
+                    .orEmpty()
+            )
+        )
+    }
+
+
+    private fun showCoachMoreOptionMenu() {
+        val item = productManageLayoutManager?.findViewByPosition(Int.ZERO)
+            ?.findViewById<View>(R.id.pointerCoachMarkMoreOptions)
+
+        if (item != null) {
+            if (getVisiblePercent(item) == 0 && !CoachMarkPreference.hasShown(
+                    item.context,
+                    SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
+                )
+            ) {
+                CoachMarkPreference.setShown(
+                    item.context,
+                    SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK,
+                    true
+                )
+
+                recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
+                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
+                coachMarkMoreOption?.showCoachMark(
+                    step = getCoachMarkMoreMenu(item)
+                )
+            }
+
+        }
+    }
+
+    private fun showCoachProductWithStockReminder() {
+        val stockReminderPosition =
+            getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
+        haveSetReminder = stockReminderPosition
+        val item = productManageLayoutManager?.findViewByPosition(stockReminderPosition)
+            ?.findViewById<IconUnify>(R.id.imageStockReminder)
+
+        if (item != null) {
+
+            if (getVisiblePercent(item) == 0 && !CoachMarkPreference.hasShown(
+                    item.context,
+                    SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK
+                )
+            ) {
+                currentPositionStockReminderCoachMark = stockReminderPosition
+                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
+                coachMarkStockReminder?.stepButtonTextLastChild =
+                    activity?.resources?.getString(com.tokopedia.abstraction.R.string.label_done)
+                        .orEmpty()
+                haveShowCoachFlagStockReminder = true
+                coachMarkStockReminder?.showCoachMark(
+                    step = getCoachMarkFlagStockReminder(item),
+                    index = 0
+                )
+            }
+        }
+    }
+
+    private fun showCoachMenuReminder(view: View) {
+        if (haveSetReminder == -1
+        ) {
+            if (getVisiblePercent(view) == 0 && !CoachMarkPreference.hasShown(
+                    view.context,
+                    SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK
+                )
+            ) {
+                CoachMarkPreference.setShown(
+                    view.context,
+                    SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK,
+                    true
+                )
+
+                coachMarkMoreMenuReminder?.showCoachMark(
+                    step = getCoachMarkReminderMenu(view)
+                )
+            }
+        }
+    }
+
+    private fun refreshCoachMark() {
+        haveSetReminder = -1
+        recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
+        if (coachMarkMoreOption?.isDismissed == false) {
+            coachMarkMoreOption?.dismissCoachMark()
+            coachMarkMoreOption?.isDismissed = false
+        }
+        if (coachMarkStockReminder?.isDismissed == false) {
+            coachMarkStockReminder?.dismissCoachMark()
+            coachMarkStockReminder?.isDismissed = false
+
+        }
+    }
+
+    private fun getProductWithStockReminder(data: List<ProductUiModel>): Int {
+        return data.indexOfFirst {
+            it.hasStockAlert == HAS_STOCK_ALERT_STATUS && it.stockAlertActive != STOCK_ALERT_ACTIVE
+        }
     }
 
     companion object {
@@ -3085,9 +3315,6 @@ open class ProductManageFragment :
 
         private const val VOUCHER_CREATION_PREF = "voucher_creation"
         private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
-
-        private const val PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL =
-            "android_product_manage_adapter_enable_diffutil"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
@@ -3100,7 +3327,13 @@ open class ProductManageFragment :
         private const val TICKER_MARGIN_TOP = 8
         private const val TEXT_LINK_LENGTH_START = 0
         private const val TEXT_LINK_LENGTH_END = 5
-    }
 
+        private const val SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK = "productMoreMenu"
+        private const val SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK = "flagStockAlert"
+        private const val SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK = "menuStockReminder"
+
+        private const val RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD = 100
+
+    }
 
 }

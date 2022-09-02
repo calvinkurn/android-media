@@ -85,6 +85,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val ACTION_GET_ALL_APP_WIDGET_DATA =
             "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
+        private const val NAVIGATION_HOME_MENU_POSITION = 0
     }
 
     @Inject
@@ -146,10 +147,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
-    }
-
-    override fun checkAppUpdateAndInApp() {
-        // no op, this activity already uses UpdateCheckerHelper
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -336,7 +333,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun handleAppLink(intent: Intent?) {
-        DeepLinkHandler.handleAppLink( intent) { page ->
+        DeepLinkHandler.handleAppLink(intent) { page ->
             val pageType = page.type
 
             when (pageType) {
@@ -372,8 +369,15 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun setupNavigator() {
-        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
-
+        val navigationHomeMenuView =
+            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_HOME_MENU_POSITION)
+        navigator = SellerHomeNavigator(
+            this,
+            supportFragmentManager,
+            sellerHomeRouter,
+            userSession,
+            navigationHomeMenuView
+        )
         setNavigationOtherMenuView()
     }
 

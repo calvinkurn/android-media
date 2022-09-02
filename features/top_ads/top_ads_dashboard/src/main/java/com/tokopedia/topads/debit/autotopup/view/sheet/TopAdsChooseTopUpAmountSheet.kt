@@ -2,7 +2,9 @@ package com.tokopedia.topads.debit.autotopup.view.sheet
 
 import android.os.Bundle
 import android.text.Html
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +13,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.utils.Utils.calculatePercentage
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.adapter.TopAdsAutoTopUpChipsAdapter
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -46,6 +49,17 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         context?.run { TopAdsAutoTopUpChipsAdapter() }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        clearContentPadding = true
+        showCloseIcon = false
+        showKnob = true
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val childView =
@@ -53,7 +67,6 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         setChild(childView)
         initView(childView)
         setTitle(getString(R.string.topads_dash_topads_auto_topup_bottomsheet_title))
-        showCloseIcon = false
     }
 
     private fun initView(childView: View) {
@@ -84,10 +97,12 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
             }
         }
         cancelBtn?.setOnClickListener {
+            TopadsTopupTracker.clickBatalkan()
             dismiss()
             onCancel?.invoke()
         }
         saveBtn?.setOnClickListener {
+            TopadsTopupTracker.clickAktifkan(dedAmount?.text.toString())
             dismissedSaved = true
             dismiss()
             onSaved?.invoke(adapter?.getSelected() ?: 0)
@@ -111,6 +126,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
             bottomSheet.setTitle(getString(R.string.toapds_dash_tooltip_title))
             bottomSheet.setChild(view1)
             bottomSheet.show(childFragmentManager, "")
+            TopadsTopupTracker.clickThresholdCredit()
         }
     }
 

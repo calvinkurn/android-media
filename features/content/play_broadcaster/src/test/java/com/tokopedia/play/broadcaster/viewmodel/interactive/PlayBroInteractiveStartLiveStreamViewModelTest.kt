@@ -5,13 +5,8 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveCoachMark
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -39,8 +34,23 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
 
     private val mockLeaderboardInfoResponse = interactiveUiModelBuilder.buildLeaderboardInfoModel()
     private val mockException = uiModelBuilder.buildException()
-    private val mockInteractiveConfigInactiveResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(isActive = false)
-    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
+    private val mockInteractiveConfigInactiveResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
+        giveawayConfig = interactiveUiModelBuilder.buildGiveawayConfig(isActive = false),
+        quizConfig = interactiveUiModelBuilder.buildQuizConfig(isActive = false, showPrizeCoachMark = false),
+    )
+    private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
+        streamAllowed = true,
+        channelId = "123"
+    )
+    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
+        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
+            showPrizeCoachMark = false,
+        )
+    )
+
+    init {
+        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+    }
 
     @Test
     fun `when user starts livestreaming, get interactive config and interactive config is inactive, it should emit interactive state forbidden`() {
@@ -53,181 +63,14 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
         )
 
         robot.use {
-            robot.getViewModel().startLiveStream(true)
+            val state = robot.recordState {
+                getConfig()
 
-            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
-            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
+                startLive()
+            }
 
-            configResult.assertEqualTo(mockInteractiveConfigInactiveResponse)
-            stateResult.assertEqualTo(BroadcastInteractiveState.Forbidden)
+            state.interactiveConfig.assertEqualTo(mockInteractiveConfigInactiveResponse)
         }
     }
 
-    @Test
-    fun `when user starts livestreaming, get interactive config and interactive config is active & scheduled, it should emit interactive state scheduled`() {
-
-        val mockTitle = "Giveaway Test"
-        val mockTimeToStart = 0L
-        val mockInteractiveDurationInMs = 0L
-        val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
-            title = mockTitle,
-            timeStatus = PlayInteractiveTimeStatus.Scheduled(
-                timeToStartInMs = mockTimeToStart,
-                interactiveDurationInMs = mockInteractiveDurationInMs,
-            )
-        )
-
-        val mockExpectedState = BroadcastInteractiveState.Allowed.Schedule(
-            timeToStartInMs = mockTimeToStart,
-            durationInMs = mockInteractiveDurationInMs,
-            title = mockTitle,
-        )
-
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
-        coEvery { mockRepo.getCurrentInteractive(any()) } returns mockCurrentInteractive
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo
-        )
-
-        robot.use {
-            robot.getViewModel().startLiveStream(true)
-
-            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
-            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
-
-            configResult.assertEqualTo(mockInteractiveConfigResponse)
-            stateResult.assertEqualTo(mockExpectedState)
-        }
-    }
-
-    @Test
-    fun `when user starts livestreaming, get interactive config and interactive config is active & live, it should emit interactive state live`() {
-
-        val mockRemainingTime = 1000L
-        val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
-            timeStatus = PlayInteractiveTimeStatus.Live(
-                remainingTimeInMs = mockRemainingTime
-            )
-        )
-
-        val mockExpectedState = BroadcastInteractiveState.Allowed.Live(
-            remainingTimeInMs = mockRemainingTime,
-        )
-
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
-        coEvery { mockRepo.getCurrentInteractive(any()) } returns mockCurrentInteractive
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo
-        )
-
-        robot.use {
-            robot.getViewModel().startLiveStream(true)
-
-            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
-            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
-
-            configResult.assertEqualTo(mockInteractiveConfigResponse)
-            stateResult.assertEqualTo(mockExpectedState)
-        }
-    }
-
-    @Test
-    fun `when user starts livestreaming, get interactive config and interactive config is active & finish, it should emit interactive finish state`() {
-
-        val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
-            timeStatus = PlayInteractiveTimeStatus.Finished
-        )
-
-        val mockCoachMark = BroadcastInteractiveCoachMark.HasCoachMark("", "")
-        val mockHasPrevious = BroadcastInteractiveInitState.HasPrevious(
-            coachMark = mockCoachMark
-        )
-        val mockExpectedState = BroadcastInteractiveState.Allowed.Init(
-            state = mockHasPrevious
-        )
-
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
-        coEvery { mockRepo.getCurrentInteractive(any()) } returns mockCurrentInteractive
-        coEvery { mockRepo.getInteractiveLeaderboard(any(), any()) } returns mockLeaderboardInfoResponse
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo
-        )
-
-        rule.runBlockingTest {
-            robot.getViewModel().startLiveStream(true)
-            advanceUntilIdle()
-
-            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
-            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
-
-            configResult.assertEqualTo(mockInteractiveConfigResponse)
-            stateResult.assertEqualTo(mockExpectedState)
-        }
-    }
-
-    @Test
-    fun `when user starts livestreaming, get interactive config and interactive config is active but the status is unknown, it should emit interactive with no previous state`() {
-        val mockIsFirstInteractive = true
-        val mockCurrentInteractive = interactiveUiModelBuilder.buildCurrentInteractiveModel(
-            timeStatus = PlayInteractiveTimeStatus.Unknown
-        )
-
-        val mockExpectedState = BroadcastInteractiveState.Allowed.Init(
-            state = BroadcastInteractiveInitState.NoPrevious(mockIsFirstInteractive)
-        )
-
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
-        coEvery { mockRepo.getCurrentInteractive(any()) } returns mockCurrentInteractive
-        coEvery { mockSharedPref.isFirstInteractive() } returns mockIsFirstInteractive
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-            sharedPref = mockSharedPref
-        )
-
-        robot.use {
-            robot.getViewModel().startLiveStream(true)
-
-            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
-            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
-
-            configResult.assertEqualTo(mockInteractiveConfigResponse)
-            stateResult.assertEqualTo(mockExpectedState)
-        }
-    }
-
-    @Test
-    fun `when user starts livestreaming, get interactive config and interactive config is active but error happen, it should emit interactive with no previous state`() {
-        val mockIsFirstInteractive = true
-        val mockExpectedState = BroadcastInteractiveState.Allowed.Init(
-            state = BroadcastInteractiveInitState.NoPrevious(mockIsFirstInteractive)
-        )
-
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
-        coEvery { mockRepo.getCurrentInteractive(any()) } throws mockException
-        coEvery { mockSharedPref.isFirstInteractive() } returns mockIsFirstInteractive
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-            sharedPref = mockSharedPref
-        )
-
-        robot.use {
-            robot.getViewModel().startLiveStream(true)
-
-            val configResult = robot.getViewModel().observableInteractiveConfig.getOrAwaitValue()
-            val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
-
-            configResult.assertEqualTo(mockInteractiveConfigResponse)
-            stateResult.assertEqualTo(mockExpectedState)
-        }
-    }
 }

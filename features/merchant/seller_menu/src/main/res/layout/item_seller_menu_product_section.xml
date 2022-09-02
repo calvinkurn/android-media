@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/seller_menu_product_list"
         android:textColor="@color/Unify_N700_96"
+        app:typographyWeight="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

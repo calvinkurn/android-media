@@ -34,7 +34,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer1"
-        app:loader_type="rect" />
+        app:loader_type="rect"
+        app:loader_corner_radius="0dp"
+        />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer4"

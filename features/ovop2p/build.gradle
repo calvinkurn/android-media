@@ -16,7 +16,6 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
@@ -59,4 +58,5 @@ project.ext {
 
 apply from: '../../publish_local.gradle'
 apply from: '../../jacoco_task.gradle'
+apply plugin: 'kotlin-android'
 apply from: '../../sonar_config.gradle'

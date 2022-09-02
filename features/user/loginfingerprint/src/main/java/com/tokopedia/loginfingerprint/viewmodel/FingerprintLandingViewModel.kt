@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
@@ -15,12 +15,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import javax.inject.Inject
 
 class FingerprintLandingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val userSession: UserSessionInterface,
+                                                      private val rsaSignatureUtils: Lazy<RsaSignatureUtils?>,
                                                       private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
-                                                      private val cryptographyUtils: Cryptography?,
                                                       private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main){
 
@@ -30,7 +31,7 @@ class FingerprintLandingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun verifyFingerprint() {
         launchCatchError(block = {
-            val signature = cryptographyUtils?.generateFingerprintSignature(fingerprintPreference.getUniqueId(), userSession.deviceId)
+            val signature = rsaSignatureUtils.get()?.generateFingerprintSignature(fingerprintPreference.getUniqueId(), userSession.deviceId)
             if(signature != null) {
                 val result = verifyFingerprintUseCase(signature)
                 onSuccessVerifyFP(result.data)

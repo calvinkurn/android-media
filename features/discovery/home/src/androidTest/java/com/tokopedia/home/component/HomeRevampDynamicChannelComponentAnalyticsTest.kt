@@ -22,6 +22,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -94,6 +95,20 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testBalanceWidgetLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        HomeDCCassavaTest {
+            login()
+            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBalanceWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED)
+        }
+    }
+
+    @Test
     fun testComponentProductHighlight() {
         HomeDCCassavaTest {
             initTest()
@@ -153,7 +168,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //            clickOnBusinessWidgetSection(viewHolder)
 //        }
 //
-//        getAssertBUWiddet(gtmLogDBSource, context)
 //
 //        onFinishTest()
 //
@@ -202,7 +216,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //            clickOnRecommendationFeedSection(viewHolder)
 //        }
 //
-//        getAssertRecommendationFeedTab(gtmLogDBSource, context)
 //
 //        onFinishTest()
 //
@@ -407,6 +420,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
                 actionOnMerchantVoucherWidget(viewHolder, i)
             }
         } validateAnalytics {

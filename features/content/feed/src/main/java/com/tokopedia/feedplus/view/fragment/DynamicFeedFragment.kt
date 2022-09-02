@@ -34,6 +34,7 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -73,6 +74,12 @@ class DynamicFeedFragment:
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+    
+    /** View */
+    private lateinit var rvDynamicFeed: RecyclerView
+
     private var isLoading = false
     private var isForceRefresh = false
     private var feedKey = ""
@@ -82,18 +89,28 @@ class DynamicFeedFragment:
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView()
+        initView(view)
         initViewListener()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun initView() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvDynamicFeed.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
+    }
+
+    private fun initView(view: View) {
+        rvDynamicFeed = view.findViewById(R.id.rv_dynamic_feed)
+            
+        feedFloatingButtonManager.setInitialData(requireParentFragment())
         feedKey = arguments?.getString(KEY_FEED) ?: ""
         presenter.attachView(this)
-        rv_dynamic_feed.adapter = adapter
-        rv_dynamic_feed.layoutManager = LinearLayoutManager(activity)
+        rvDynamicFeed.addOnScrollListener(feedFloatingButtonManager.scrollListener)
+        rvDynamicFeed.adapter = adapter
+        rvDynamicFeed.layoutManager = LinearLayoutManager(activity)
         feedAnalyticTracker.eventOpenTrendingPage()
-
+        feedFloatingButtonManager.setDelayForExpandFab(rvDynamicFeed)
     }
 
     private fun initViewListener() {
@@ -112,7 +129,7 @@ class DynamicFeedFragment:
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return rv_dynamic_feed
+        return rvDynamicFeed
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

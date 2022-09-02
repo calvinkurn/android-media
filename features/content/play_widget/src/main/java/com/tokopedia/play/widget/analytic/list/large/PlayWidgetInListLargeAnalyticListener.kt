@@ -3,20 +3,42 @@ package com.tokopedia.play.widget.analytic.list.large
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 29/01/22.
  */
 interface PlayWidgetInListLargeAnalyticListener {
 
+    /**
+     * Channel
+     */
+    fun onImpressChannelCard(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+        verticalWidgetPosition: Int,
+    ) {}
+
     fun onClickChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+    ) {}
+
+    /**
+     * Reminder
+     */
+    fun onImpressReminderIcon(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean,
+        verticalWidgetPosition: Int,
+    ) {}
 
     fun onClickToggleReminderChannel(
         view: PlayWidgetLargeView,
@@ -24,26 +46,11 @@ interface PlayWidgetInListLargeAnalyticListener {
         channelPositionInList: Int,
         isRemindMe: Boolean,
         verticalWidgetPosition: Int,
-    ) {
-    }
+    ) {}
 
-    fun onImpressChannelCard(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isAutoPlay: Boolean,
-        verticalWidgetPosition: Int,
-    ) {
-    }
-
-    fun onClickBannerCard(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetBannerUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int,
-    ) {
-    }
-
+    /**
+     * Banner
+     */
     fun onImpressBannerCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetBannerUiModel,
@@ -51,19 +58,10 @@ interface PlayWidgetInListLargeAnalyticListener {
         verticalWidgetPosition: Int,
     ) {}
 
-    fun onLabelPromoClicked(
+    fun onClickBannerCard(
         view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
+        item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
-    ) {}
-
-    fun onLabelPromoImpressed(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
+        verticalWidgetPosition: Int,
     ) {}
 }

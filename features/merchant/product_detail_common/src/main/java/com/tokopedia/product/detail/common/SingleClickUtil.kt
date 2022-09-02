@@ -5,12 +5,12 @@ import android.os.SystemClock
 /**
  * Created by Yehezkiel on 01/09/21
  */
-object SingleClick{
+object SingleClick {
 
     private var lastClickTime = 0L
 
-    fun doSomethingBeforeTime(block: () -> Unit) {
-        if (SystemClock.elapsedRealtime() - lastClickTime < 700) {
+    fun doSomethingBeforeTime(interval: Int = 700, block: () -> Unit) {
+        if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
             return
         }
 

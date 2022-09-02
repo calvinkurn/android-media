@@ -3,7 +3,6 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
@@ -19,7 +18,7 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
 
     private val tvNumber = itemView.findViewById<Typography>(R.id.tv_winner_number)
     private val tvName = itemView.findViewById<Typography>(R.id.tv_winner_name)
-    private val iconChat = itemView.findViewById<IconUnify>(R.id.icon_winner_chat)
+    private val tvWinnerChat = itemView.findViewById<Typography>(R.id.tv_winner_chat)
     private val ivCrown = itemView.findViewById<ImageUnify>(R.id.img_crown)
     private val ivWinner = itemView.findViewById<ImageUnify>(R.id.img_winner)
     private val borderIvWinner = itemView.findViewById<FrameLayout>(R.id.fl_border_img_winner)
@@ -32,11 +31,11 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
         handleFirstWinner(winner)
 
         if (winner.allowChat()) {
-            iconChat.show()
-            iconChat.setOnClickListener { listener.onChatButtonClicked(winner, adapterPosition) }
+            tvWinnerChat.show()
+            tvWinnerChat.setOnClickListener { listener.onChatButtonClicked(winner, adapterPosition) }
         } else {
-            iconChat.hide()
-            iconChat.setOnClickListener(null)
+            tvWinnerChat.hide()
+            tvWinnerChat.setOnClickListener(null)
         }
     }
 

@@ -7,8 +7,14 @@ data class GenerateLinkRequest(
     val input: Input
 ) {
     data class Input(
+        @SerializedName("source")
+        val source: String,
         @SerializedName("channel")
         val channel: List<Int?>,
+        @SerializedName("pageType")
+        val pageType: String,
+        @SerializedName("itemID")
+        val itemID: String,
         @SerializedName("link")
         val link: List<Link>
     ) {

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.util
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
@@ -45,6 +46,38 @@ object NewShopPageHeaderMapper {
                 feedWhitelistData.isWhitelist,
                 feedWhitelistData.url,
                 listShopHeaderWidget
+        )
+    }
+
+    fun mapToNewShopPageP1HeaderData(
+        shopInfoOsData: GetIsShopOfficialStore,
+        shopInfoGoldData: GetIsShopPowerMerchant,
+        shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
+        feedWhitelistData: Whitelist,
+        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
+    ) : NewShopPageP1HeaderData {
+        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
+        val shopName = getShopHeaderWidgetComponentData<ShopHeaderBadgeTextValueComponentUiModel>(
+            listShopHeaderWidget,
+            SHOP_BASIC_INFO,
+            SHOP_NAME
+        )?.text?.getOrNull(0)?.textHtml.orEmpty()
+        val shopAvatar = getShopHeaderWidgetComponentData<ShopHeaderImageOnlyComponentUiModel>(
+            listShopHeaderWidget,
+            SHOP_BASIC_INFO,
+            SHOP_LOGO
+        )?.image.orEmpty()
+        return NewShopPageP1HeaderData(
+            shopInfoOsData.data.isOfficial,
+            shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+            "",
+            shopName,
+            shopAvatar,
+            "",
+            feedWhitelistData.isWhitelist,
+            feedWhitelistData.url,
+            listShopHeaderWidget,
+            shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData
         )
     }
 

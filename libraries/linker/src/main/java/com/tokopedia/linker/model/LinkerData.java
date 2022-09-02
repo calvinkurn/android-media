@@ -22,6 +22,7 @@ public class LinkerData implements Parcelable {
     public static final String ENTERTAINMENT_TYPE = "Entertainment";
     public static final String USER_PROFILE_SOCIAL = "User Profile Social";
     public static final String NOW_TYPE = "Now";
+    public static final String FOOD_TYPE = "Food";
     public static final String WEBVIEW_TYPE = "Webview";
 
     public static final String ARG_UTM_MEDIUM = "Share";
@@ -82,6 +83,7 @@ public class LinkerData implements Parcelable {
     private String channel;
     private String campaign;
     private boolean isAffiliate;
+    private String additionalQueryParam;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -138,6 +140,7 @@ public class LinkerData implements Parcelable {
         channel = in.readString();
         campaign = in.readString();
         isAffiliate = in.readByte() != 0;
+        additionalQueryParam = in.readString();
     }
 
     @Override
@@ -185,6 +188,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(channel);
         dest.writeString(campaign);
         dest.writeByte((byte) (isAffiliate ? 1 : 0));
+        dest.writeString(additionalQueryParam);
     }
 
     @Override
@@ -649,6 +653,14 @@ public class LinkerData implements Parcelable {
         isAffiliate = affiliate;
     }
 
+    public String getAdditionalQueryParam() {
+        return additionalQueryParam;
+    }
+
+    public void setAdditionalQueryParam(String additionalQueryParam) {
+        this.additionalQueryParam = additionalQueryParam;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -694,6 +706,7 @@ public class LinkerData implements Parcelable {
         private String channel;
         private String campaign;
         private boolean isAffiliate;
+        private String additionalQueryParam;
 
         private Builder() {
         }
@@ -921,6 +934,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setAdditionalQueryParam(String additionalQueryParam){
+            this.additionalQueryParam = additionalQueryParam;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -970,6 +988,7 @@ public class LinkerData implements Parcelable {
             linkerData.setChannel(channel);
             linkerData.setCampaign(campaign);
             linkerData.setAffiliate(isAffiliate);
+            linkerData.setAdditionalQueryParam(additionalQueryParam);
             return linkerData;
         }
 

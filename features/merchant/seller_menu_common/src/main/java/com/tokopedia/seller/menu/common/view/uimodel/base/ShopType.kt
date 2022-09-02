@@ -19,5 +19,4 @@ sealed class PowerMerchantProStatus : ShopType() {
     object Advanced: PowerMerchantProStatus()
     object Expert: PowerMerchantProStatus()
     object Ultimate: PowerMerchantProStatus()
-    object InActive: PowerMerchantProStatus()
 }

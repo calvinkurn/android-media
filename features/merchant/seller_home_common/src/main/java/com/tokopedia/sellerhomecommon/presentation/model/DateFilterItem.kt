@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 import android.content.Context
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit
  */
 
 sealed class DateFilterItem(
-    open val label: String = "",
+    open val label: String = String.EMPTY,
     open val startDate: Date? = null,
     open val endDate: Date? = null,
     open var isSelected: Boolean = false,
@@ -41,7 +42,7 @@ sealed class DateFilterItem(
     fun getHeaderSubTitle(context: Context): String {
         when (type) {
             TYPE_TODAY -> {
-                val startDateMillis = startDate?.time ?: return ""
+                val startDateMillis = startDate?.time ?: return String.EMPTY
                 val dateStr = DateTimeUtil.format(startDateMillis, DateTimeUtil.FORMAT_DD_MMM)
                 val hourStr = DateTimeUtil.format(
                     System.currentTimeMillis()
@@ -51,27 +52,27 @@ sealed class DateFilterItem(
                 return context.getString(R.string.shc_today_fmt, dateStr, hourStr)
             }
             TYPE_LAST_7_DAYS -> {
-                val mStartDate = startDate ?: return ""
-                val mEndDate = endDate ?: return ""
+                val mStartDate = startDate ?: return String.EMPTY
+                val mEndDate = endDate ?: return String.EMPTY
                 val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
                 return context.getString(R.string.shc_last_7_days_fmt, dateRangeStr)
             }
             TYPE_LAST_30_DAYS -> {
-                val mStartDate = startDate ?: return ""
-                val mEndDate = endDate ?: return ""
+                val mStartDate = startDate ?: return String.EMPTY
+                val mEndDate = endDate ?: return String.EMPTY
                 val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
                 return context.getString(R.string.shc_last_30_days_fmt, dateRangeStr)
             }
             TYPE_PER_DAY -> {
-                val startDateMillis = startDate?.time ?: return ""
+                val startDateMillis = startDate?.time ?: return String.EMPTY
                 val perDayFmt = DateTimeUtil.format(
                     startDateMillis, DateTimeUtil.FORMAT_DD_MMM_YYYY
                 )
                 return context.getString(R.string.shc_per_day_fmt, perDayFmt)
             }
             TYPE_PER_WEEK -> {
-                val mStartDate = startDate ?: return ""
-                val mEndDate = endDate ?: return ""
+                val mStartDate = startDate ?: return String.EMPTY
+                val mEndDate = endDate ?: return String.EMPTY
                 val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
                 return context.getString(R.string.shc_per_week_fmt, dateRangeStr)
             }
@@ -83,13 +84,13 @@ sealed class DateFilterItem(
                 return context.getString(R.string.shc_per_month)
             }
             TYPE_CUSTOM -> {
-                val mStartDate = startDate ?: return ""
-                val mEndDate = endDate ?: return ""
+                val mStartDate = startDate ?: return String.EMPTY
+                val mEndDate = endDate ?: return String.EMPTY
                 val dateRangeStr = DateFilterUtil.getDateRangeStr(mStartDate, mEndDate)
                 return context.getString(R.string.shc_custom, dateRangeStr)
             }
         }
-        return ""
+        return String.EMPTY
     }
 
     fun getDateFilterType(): String {

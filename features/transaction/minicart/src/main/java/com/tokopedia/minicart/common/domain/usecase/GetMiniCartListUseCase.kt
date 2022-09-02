@@ -17,13 +17,14 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(shopIds: List<String>) {
+    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADDITIONAL to mapOf(
                         PARAM_KEY_SHOP_IDS to shopIds,
                         KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
-                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value
+                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
+                        PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
                 )
         )
     }
@@ -52,6 +53,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         const val PARAM_KEY_PROMO_ID = "promo_id"
         const val PARAM_KEY_PROMO_CODE = "promo_code"
         const val PARAM_KEY_SOURCE = "source"
+        const val PARAM_KEY_SHOP_DIRECT_PURCHASE = "is_shop_direct_purchase"
 
         const val PARAM_VALUE_ID = "id"
 

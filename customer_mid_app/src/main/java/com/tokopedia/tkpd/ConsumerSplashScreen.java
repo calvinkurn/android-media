@@ -146,7 +146,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             if (LinkerManager.getInstance().isFirstAppOpen(getApplicationContext())) {
                 installReferral.setInstallReferrerInterface(getInstallReferrerInterface());
             }
-            installReferral.initilizeInstallReferral(this);
+            installReferral.initilizeInstallReferral(this.getApplicationContext());
         }
     }
 
@@ -169,7 +169,10 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void initializationNewRelic() {
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
+        boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
+        if (isEnableInitNrInAct) {
+            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
+        }
     }
 
     private void syncFcmToken() {

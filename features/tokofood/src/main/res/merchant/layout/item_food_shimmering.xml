@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imgLoader1"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/textViewLoader1"
+            android:layout_width="169dp"
+            android:layout_height="16dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintStart_toEndOf="@id/imgLoader1"
+            app:layout_constraintTop_toTopOf="@id/imgLoader1" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/textViewLoader2"
+            android:layout_width="126dp"
+            android:layout_height="16dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/imgLoader1"
+            app:layout_constraintTop_toBottomOf="@id/textViewLoader1" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/textViewLoader3"
+            android:layout_width="63dp"
+            android:layout_height="16dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/imgLoader1"
+            app:layout_constraintTop_toBottomOf="@id/textViewLoader2" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/textViewLoader4"
+            android:layout_width="91dp"
+            android:layout_height="16dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="line"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/imgLoader1"
+            app:layout_constraintTop_toBottomOf="@id/textViewLoader3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

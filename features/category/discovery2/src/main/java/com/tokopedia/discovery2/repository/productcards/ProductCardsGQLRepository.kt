@@ -10,6 +10,8 @@ import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
@@ -23,7 +25,8 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
         val componentItem  = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
-        val list = when (productComponentName) {
+        val list = withContext(Dispatchers.Default) {
+            when (productComponentName) {
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
                     DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
@@ -46,6 +49,7 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
             else ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName, parentListSize = componentsListSize)
 
+            }
         }
         return Pair(list,nextPage)
     }

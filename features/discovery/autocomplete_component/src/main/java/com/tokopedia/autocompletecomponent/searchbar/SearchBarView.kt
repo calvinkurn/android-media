@@ -33,6 +33,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifyprinciples.Typography
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -193,6 +194,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     private fun initSearchView() {
         val searchTextView = binding?.searchTextView ?: return
+        searchTextView.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         searchTextView.setOnEditorActionListener { _, _, _ ->
             onSubmitQuery()
             true

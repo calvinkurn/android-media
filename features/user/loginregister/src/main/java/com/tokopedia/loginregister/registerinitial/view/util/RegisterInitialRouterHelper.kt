@@ -9,21 +9,22 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
+import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 16/12/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-open class RegisterInitialRouterHelper {
+class RegisterInitialRouterHelper @Inject constructor() {
 
     var source = ""
 
-    open fun goToVerification(phone: String = "", email: String = "", otpType: Int, context: Context): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+    fun goToVerification(phone: String = "", email: String = "", otpType: Int, context: Context): Intent {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -34,7 +35,7 @@ open class RegisterInitialRouterHelper {
         return intent
     }
 
-    open fun goToLoginPage(context: Activity){
+    fun goToLoginPage(context: Activity){
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
@@ -42,22 +43,22 @@ open class RegisterInitialRouterHelper {
         context.finish()
     }
 
-    open fun goToRegisterEmail(fragment: Fragment){
+    fun goToRegisterEmail(fragment: Fragment){
         val intent = RegisterEmailActivity.getCallingIntent(fragment.context)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
-    open fun goToRegisterEmailPageWithParams(fragment: Fragment, email: String, token: String, source: String){
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
+    fun goToRegisterEmailPageWithParams(fragment: Fragment, email: String, token: String, source: String){
+        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.EMAIL_REGISTER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
-    open fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){
+    fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){
         val intent = RouteManager.getIntent(fragment.context,
-                ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+                ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
@@ -65,13 +66,16 @@ open class RegisterInitialRouterHelper {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
-    open fun goToChangeName(fragment: Fragment) {
+    fun goToChangeName(fragment: Fragment, validateToken: String) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
+        intent.putExtras(Bundle().apply {
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+        })
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)
     }
 
-    open fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = ""){
-        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalGlobal.ADD_PIN)
+    fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = ""){
+        val intent = RouteManager.getIntent(fragment.context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
@@ -80,8 +84,8 @@ open class RegisterInitialRouterHelper {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_PIN)
     }
 
-    open fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String){
-        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
+    fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String){
+        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(fragment.context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)

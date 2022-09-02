@@ -28,7 +28,7 @@ class PlayInteractiveMapper @Inject constructor(private val decodeHtml : HtmlTex
     fun mapGiveaway(data: GiveawayResponse, waitingDurationInMillis: Long): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
             id = data.interactiveID,
-            title = data.title,
+            title = decodeHtml.transform(data.title),
             status = when (data.status) {
                 STATUS_SCHEDULED -> InteractiveUiModel.Giveaway.Status.Upcoming(
                     startTime = Calendar.getInstance().apply {
@@ -65,6 +65,7 @@ class PlayInteractiveMapper @Inject constructor(private val decodeHtml : HtmlTex
             },
             listOfChoices = data.choices.mapIndexed { index: Int, item: QuizResponse.Choice ->
                 QuizChoicesUiModel(
+                    index,
                     item.id,
                     decodeHtml.transform(item.text),
                     when {

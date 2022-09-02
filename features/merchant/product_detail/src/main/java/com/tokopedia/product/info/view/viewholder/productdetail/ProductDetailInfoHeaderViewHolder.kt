@@ -72,11 +72,11 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
 
         infoDetailValue.run {
             if (data.applink.isNotEmpty()) {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(Typography.BOLD)
 
                 infoDetailClickArea.setOnClickListener {
-                    when (data.title.toLowerCase(Locale.getDefault())) {
+                    when (data.title.lowercase(Locale.getDefault())) {
                         ProductDetailCommonConstant.KEY_CATEGORY -> {
                             listener.goToCategory(data.applink)
                         }

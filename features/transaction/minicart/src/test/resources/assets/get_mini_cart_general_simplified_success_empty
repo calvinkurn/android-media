@@ -1,0 +1,30 @@
+{
+   "status":"OK",
+   "mini_cart_v3":{
+      "error_message":[
+
+      ],
+      "status":"OK",
+      "data":{
+         "errors":[
+
+         ],
+         "total_product_count":3,
+         "total_product_error":0,
+         "total_product_price":4000,
+         "bottom_bar":{
+            "text": "Ringkasan Belanja",
+            "is_shop_active": true,
+            "total_price_fmt": "Rp100.000"
+         },
+         "available_section":{
+            "available_group":[
+
+            ]
+         },
+         "unavailable_section":[
+
+         ]
+      }
+   }
+}
