@@ -575,17 +575,6 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         }
     }
 
-    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
-        val selectedProduct = productAdapter.getItems()[itemPosition]
-        val selectedProductId = selectedProduct.id() as Long
-
-        if (isCheckBoxChecked) {
-            viewModel.setSelectedItem(selectedProductId)
-        } else {
-            viewModel.removeSelectedItem(selectedProductId)
-        }
-    }
-
     private fun onShowOrHideItemCheckBox() {
         val oldItems = adapter?.getItems() as List<WaitingForSelectionItem>
         val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
@@ -678,6 +667,17 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id()
         //TODO: Open detail product bottom sheet
+    }
+
+    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
+        val selectedProduct = productAdapter.getItems()[itemPosition]
+        val selectedProductId = selectedProduct.id() as Long
+
+        if (isCheckBoxChecked) {
+            viewModel.setSelectedItem(selectedProductId)
+        } else {
+            viewModel.removeSelectedItem(selectedProductId)
+        }
     }
 
     override fun createAdapter(): CompositeAdapter {
