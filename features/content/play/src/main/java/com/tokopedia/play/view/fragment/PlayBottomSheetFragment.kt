@@ -469,6 +469,7 @@ class PlayBottomSheetFragment @Inject constructor(
             val productSheetState = it[BottomInsetsType.ProductSheet]
             val variantSheetState = it[BottomInsetsType.VariantSheet]
             val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
+            val couponSheetState = it[BottomInsetsType.CouponSheet]
 
             if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                 when (productSheetState) {
@@ -484,6 +485,12 @@ class PlayBottomSheetFragment @Inject constructor(
                 when (leaderboardSheetState) {
                     is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                     is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(leaderboardSheetState.estimatedInsetsHeight)
+                }
+            }
+            else if (couponSheetState != null && !couponSheetState.isPreviousStateSame) {
+                when (couponSheetState) {
+                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
                 }
             }
 

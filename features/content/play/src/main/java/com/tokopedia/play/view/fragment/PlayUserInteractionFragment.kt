@@ -1827,9 +1827,15 @@ class PlayUserInteractionFragment @Inject constructor(
         engagement: EngagementUiModel
     ) {
         when (engagement){
-            is EngagementUiModel.Promo -> {}
+            is EngagementUiModel.Promo -> {
+                openCouponPage()
+            }
             is EngagementUiModel.Game -> {}
         }
+    }
+
+    private fun openCouponPage() {
+        playViewModel.showCouponSheet(bottomSheetMaxHeight)
     }
 
     companion object {
