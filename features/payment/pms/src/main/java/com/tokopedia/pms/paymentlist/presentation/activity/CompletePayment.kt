@@ -157,4 +157,9 @@ class CompletePayment : AppCompatActivity() {
     companion object {
         const val COMPLETE_PAYMENT_URL_KEY = "completePaymentUrl"
     }
+
+    override fun onBackPressed() {
+        finish()
+        super.onBackPressed()
+    }
 }
