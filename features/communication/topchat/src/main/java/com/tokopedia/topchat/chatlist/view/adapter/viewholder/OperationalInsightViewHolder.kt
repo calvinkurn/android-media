@@ -75,9 +75,7 @@ class OperationalInsightViewHolder(
                 endPosition,
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             )
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        }
+        } catch (ignored: Throwable) {}
         return spannableString
     }
 

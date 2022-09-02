@@ -21,6 +21,9 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
+import com.tokopedia.topchat.common.TopChatUrlConstant.FIX_IMAGE_URL
+import com.tokopedia.topchat.common.TopChatUrlConstant.MAINTAIN_IMAGE_URL
+import com.tokopedia.topchat.common.TopChatUrlConstant.TOPED_IMAGE_URL
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickOperationalInsightCta
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickShopPerformanceOperationalInsightBottomSheet
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventViewOperationalInsightBottomSheet
@@ -340,9 +343,7 @@ class OperationalInsightBottomSheet(
                 endPosition,
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             )
-        } catch (throwable: Throwable) {
-            throwable.printStackTrace()
-        }
+        } catch (ignored: Throwable) {}
         return spannableString
     }
 
@@ -405,8 +406,5 @@ class OperationalInsightBottomSheet(
 
     companion object {
         private const val LIMIT = 100
-        private const val TOPED_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_character_toped.png"
-        private const val MAINTAIN_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_pertahankan_performa.png"
-        private const val FIX_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_tingkatkan_performa.png"
     }
 }

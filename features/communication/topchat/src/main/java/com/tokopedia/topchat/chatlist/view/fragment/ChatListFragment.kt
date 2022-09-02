@@ -327,12 +327,12 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     decreaseNotificationCounter()
                 }
                 is Fail -> view?.let {
-                    Toaster.make(
+                    Toaster.build(
                         it,
                         getString(R.string.delete_chat_default_error_message),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR
-                    )
+                    ).show()
                 }
             }
         }
