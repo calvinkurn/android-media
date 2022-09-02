@@ -1555,6 +1555,8 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(interactive = giveaway)
             }
         }
+
+        if(giveaway.status is InteractiveUiModel.Giveaway.Status.Ongoing) handleAutoOpen()
     }
 
     private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
