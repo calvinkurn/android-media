@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -40,7 +39,12 @@ class CampaignDetailViewModel @Inject constructor(
     val submittedProduct: LiveData<Result<List<DelegateAdapterItem>>>
         get() = _submittedProduct
 
-    private var campaignStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
+    private var _selectedItemsId = MutableLiveData<List<Long>>(listOf())
+    val selectedItemsId: LiveData<List<Long>>
+        get() = _selectedItemsId
+
+    private var campaignRegisteredStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
+    private var selectedItemIds = mutableListOf<Long>()
 
     companion object {
         private const val TWENTY_FOUR_HOURS = 24
@@ -54,7 +58,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleDetailForSellerUseCase.execute(
                     campaignId = campaignId
                 )
-                campaignStatus = result.status
+                campaignRegisteredStatus = result.status
                 _campaign.postValue(Success(result))
             },
             onError = { error ->
@@ -74,7 +78,8 @@ class CampaignDetailViewModel @Inject constructor(
                         offset
                     )
                 )
-                val formattedProductList = formatSubmittedProductList(campaignStatus, result.productList)
+                val formattedProductList =
+                    formatSubmittedProductList(campaignRegisteredStatus, result.productList)
                 _submittedProduct.postValue(Success(formattedProductList))
             },
             onError = { error ->
@@ -181,5 +186,24 @@ class CampaignDetailViewModel @Inject constructor(
         val now = Date()
         val distanceMinutesToSubmissionEndDate = minutesDifference(now, targetDate)
         return distanceMinutesToSubmissionEndDate in Int.ZERO..SIXTY_MINUTES
+    }
+
+    fun setSelectedItem(selectedItemId: Long) {
+        val isExist = selectedItemIds.any { it == selectedItemId }
+        if (isExist) {
+            return
+        } else {
+            selectedItemIds.add(selectedItemId)
+            _selectedItemsId.value = selectedItemIds
+        }
+    }
+
+    fun removeSelectedItem(selectedItemId: Long) {
+        selectedItemIds.remove(selectedItemId)
+        _selectedItemsId.value = selectedItemIds
+    }
+
+    fun getCampaignRegisteredStatus(): FlashSaleStatus {
+        return this.campaignRegisteredStatus
     }
 }

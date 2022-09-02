@@ -19,7 +19,9 @@ data class WaitingForSelectionItem(
     val discount: SubmittedProduct.Discount,
     val discountedPrice: SubmittedProduct.DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
-    val warehouses: List<SubmittedProduct.Warehouse>?
+    val warehouses: List<SubmittedProduct.Warehouse>?,
+    var isSelected:Boolean = false,
+    var isCheckBoxShown: Boolean = false
 ) : DelegateAdapterItem {
     override fun id() = productId
 }

@@ -17,6 +17,18 @@
         app:typographyType="paragraph_3" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_selected_product_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="18dp"
+        android:visibility="invisible"
+        android:text="@string/stfs_choosen_product_count_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_select_all_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

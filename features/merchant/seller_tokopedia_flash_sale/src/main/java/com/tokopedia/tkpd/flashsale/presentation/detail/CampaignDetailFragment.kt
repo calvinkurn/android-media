@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
@@ -87,7 +88,16 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
 
     private val productAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(WaitingForSelectionDelegateAdapter(onProductItemClicked = { onProductClicked(it.toLong()) }))
+            .add(
+                WaitingForSelectionDelegateAdapter(
+                    onProductItemClicked = { onProductClicked(it) },
+                    onCheckBoxClicked = { itemPosition, isChecked ->
+                        onCheckBoxClicked(
+                            itemPosition,
+                            isChecked
+                        )
+                    })
+            )
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -113,7 +123,6 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
-        observeSubmittedProductData()
         loadCampaignDetailData()
     }
 
@@ -136,11 +145,22 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
             when (submittedProduct) {
                 is Success -> {
                     renderList(submittedProduct.data, submittedProduct.data.size == getPerPage())
+                    setupRegisteredBody()
                 }
                 is Fail -> {
 
                 }
             }
+        }
+    }
+
+    private fun observeSelectedProductData() {
+        viewModel.selectedItemsId.observe(viewLifecycleOwner) { ids ->
+            registeredCdpBodyBinding?.tpgSelectedProductCount?.text =
+                getString(
+                    R.string.stfs_choosen_product_count_placeholder,
+                    ids.count()
+                )
         }
     }
 
@@ -354,7 +374,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
 
         setupRegisteredHeader(flashSale)
         setupRegisteredMid(flashSale)
-        setupRegisteredBody(flashSale)
+        observeSubmittedProductData()
     }
 
     private fun setupRegisteredHeader(flashSale: FlashSale) {
@@ -373,12 +393,12 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         setupRegisteredMidData(flashSale)
     }
 
-    private fun setupRegisteredBody(flashSale: FlashSale) {
+    private fun setupRegisteredBody() {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_registered_body
         inflatedView.inflate()
-        setupRegisteredBodyData(flashSale)
+        setupRegisteredBodyData()
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
@@ -509,15 +529,21 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         }
     }
 
-    private fun setupRegisteredBodyData(flashSale: FlashSale) {
+    private fun setupRegisteredBodyData() {
         registeredCdpBodyBinding?.run {
             btnSelectAllProduct.isVisible =
-                flashSale.status == FlashSaleStatus.WAITING_FOR_SELECTION
+                viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
+
             tpgProductCount.text = getString(
                 R.string.stfs_product_count_place_holder,
-                adapter?.itemCount
+                productAdapter.itemCount
             )
+
+            btnSelectAllProduct.setOnClickListener {
+                onShowOrHideItemCheckBox()
+            }
         }
+        observeSelectedProductData()
     }
 
     private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
@@ -589,8 +615,41 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         }
     }
 
-    private fun onProductClicked(productId: Long) {
+    private fun onProductClicked(itemPosition: Int) {
+        val selectedProduct = productAdapter.getItems()[itemPosition]
+        val selectedProductId = selectedProduct.id()
+        //TODO: Open detail product bottom sheet
+    }
 
+    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
+        val selectedProduct = productAdapter.getItems()[itemPosition]
+        val selectedProductId = selectedProduct.id() as Long
+
+        if (isCheckBoxChecked) {
+            viewModel.setSelectedItem(selectedProductId)
+        } else {
+            viewModel.removeSelectedItem(selectedProductId)
+        }
+    }
+
+    private fun onShowOrHideItemCheckBox() {
+        val oldItems = adapter?.getItems() as List<WaitingForSelectionItem>
+        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val isShown = newItems[0].isCheckBoxShown
+        adapter?.submit(listOf())
+        adapter?.submit(newItems)
+
+        registeredCdpBodyBinding?.run {
+            if (isShown) {
+                tpgSelectedProductCount.visible()
+                tpgProductCount.invisible()
+                btnSelectAllProduct.text = getString(R.string.fs_canceled_lable)
+            } else {
+                tpgSelectedProductCount.invisible()
+                tpgProductCount.visible()
+                btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
+            }
+        }
     }
 
     override fun createAdapter(): CompositeAdapter {

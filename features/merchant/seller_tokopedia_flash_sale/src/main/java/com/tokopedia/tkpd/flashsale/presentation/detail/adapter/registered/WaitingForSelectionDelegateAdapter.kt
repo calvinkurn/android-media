@@ -7,20 +7,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductWaitingForSelectionBinding
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.ProductStockStatus.*
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-class WaitingForSelectionDelegateAdapter(private val onProductItemClicked: (Int) -> Unit) :
-    DelegateAdapter<WaitingForSelectionItem, WaitingForSelectionDelegateAdapter.ViewHolder>(
-        WaitingForSelectionItem::class.java
-    ) {
+class WaitingForSelectionDelegateAdapter(
+    private val onProductItemClicked: (Int) -> Unit,
+    private val onCheckBoxClicked: (Int, Boolean) -> Unit):
+DelegateAdapter<WaitingForSelectionItem, WaitingForSelectionDelegateAdapter.ViewHolder>(
+WaitingForSelectionItem::class.java
+) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemProductWaitingForSelectionBinding.inflate(
@@ -42,6 +44,11 @@ class WaitingForSelectionDelegateAdapter(private val onProductItemClicked: (Int)
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener { onProductItemClicked(adapterPosition) }
+            binding.run{
+                checkProductItem.setOnClickListener {
+                    onCheckBoxClicked(checkProductItem.isChecked)
+                }
+            }
         }
 
         fun bind(item: WaitingForSelectionItem) {
@@ -52,7 +59,12 @@ class WaitingForSelectionDelegateAdapter(private val onProductItemClicked: (Int)
                 labelDiscount.setDiscount(item)
                 tpgOriginalPrice.setPrice(item)
                 tpgVariantStockLocation.setStock(item)
+                checkProductItem.isVisible = item.isCheckBoxShown
             }
+        }
+
+        private fun onCheckBoxClicked(value: Boolean) {
+            onCheckBoxClicked(adapterPosition, value)
         }
 
         private fun Typography.setDiscountedPrice(item: WaitingForSelectionItem) {
