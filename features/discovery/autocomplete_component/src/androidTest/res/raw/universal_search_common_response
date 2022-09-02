@@ -1,0 +1,282 @@
+[
+  {
+    "data": {
+      "universe_universal_search": {
+        "header": {
+          "status_code": 0,
+          "message": "",
+          "time_process": 0
+        },
+        "data": {
+          "items": [
+            {
+              "id": "196328",
+              "applink": "tokopedia://search?st=product\u0026q=Susu\u0026srp_page_id=35\u0026srp_page_title=Makanan%20%26%20Minuman\u0026navsource=clp",
+              "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/5/18/2f231260-6d32-4395-877a-89e21a68b9fb.png",
+              "template": "carousel",
+              "title": "Susu di Makanan \u0026 Minuman",
+              "subtitle": "",
+              "type": "highlighted",
+              "component_id": "05.01.01.00",
+              "tracking_option": 3,
+              "campaign_code": "thco0005699",
+              "product": [
+                {
+                  "id": "1850184047",
+                  "applink": "tokopedia://product/1850184047?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/17/9a2bb033-4202-4595-b38d-79e5cb7241b9.jpg",
+                  "title": "MILO ACTIV-GO UHT Susu Coklat 110ml - 4 pcs",
+                  "component_id": "05.01.01.01",
+                  "tracking_option": 3,
+                  "price": "Rp9.900",
+                  "original_price": "Rp18.000",
+                  "discount_percentage": "45",
+                  "rating_average": "4.9",
+                  "count_sold": "Terjual 16053",
+                  "shop": {
+                    "name": "Nestle Indonesia",
+                    "city": "Kab. Tangerang",
+                    "url": "https://www.tokopedia.com/nestle-indonesia"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1330035974",
+                  "applink": "tokopedia://product/1330035974?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/b7cab376-88a1-4f0f-bfea-beac5263e0e1.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.01.01.02",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "4.9",
+                  "count_sold": "Terjual 15538",
+                  "shop": {
+                    "name": "Hypermart Pejaten Village",
+                    "city": "Jakarta Selatan",
+                    "url": "https://www.tokopedia.com/hypermartpejaten"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1679214832",
+                  "applink": "tokopedia://product/1679214832?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/21/9eedace4-dcb0-4c70-9bdf-4992884f3910.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.01.01.03",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "4.9",
+                  "count_sold": "Terjual 8901",
+                  "shop": {
+                    "name": "Hypermart Metro Trade Center Bandung",
+                    "city": "Bandung",
+                    "url": "https://www.tokopedia.com/hypermartmtcbandung"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1380224368",
+                  "applink": "tokopedia://product/1380224368?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/21/27f52f35-181e-4f7a-a2cd-427c1e764888.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.01.01.04",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "5.0",
+                  "count_sold": "Terjual 6492",
+                  "shop": {
+                    "name": "Hypermart Ekalokasari",
+                    "city": "Bogor",
+                    "url": "https://www.tokopedia.com/hpmekalokasari"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1823131113",
+                  "applink": "tokopedia://product/1823131113?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/21/f1b590fe-1328-4da1-9b7d-0168aade9c19.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.01.01.05",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "5.0",
+                  "count_sold": "Terjual 4472",
+                  "shop": {
+                    "name": "Hypermart Pakuwon",
+                    "city": "Surabaya",
+                    "url": "https://www.tokopedia.com/hypermartpakuwon"
+                  },
+                  "badge": []
+                }
+              ],
+              "curated": []
+            },
+            {
+              "id": "",
+              "applink": "",
+              "image_url": "",
+              "template": "double_line",
+              "title": "Cek juga halaman ini",
+              "subtitle": "",
+              "type": "related",
+              "component_id": "",
+              "tracking_option": 0,
+              "campaign_code": "",
+              "product": [],
+              "curated": [
+                {
+                  "id": "239317",
+                  "url": "https://www.tokopedia.com/search?st=product\u0026q=susu\u0026srp_page_id=39654\u0026srp_page_title=Toserba\u0026navsource=campaign\u0026srp_disco_url=toserba",
+                  "applink": "tokopedia://search?st=product\u0026q=susu\u0026srp_page_id=39654\u0026srp_page_title=Toserba\u0026navsource=campaign\u0026srp_disco_url=toserba",
+                  "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/31/4e4f7e97-463c-4754-8140-3b29da6ce38c.png",
+                  "title": "Susu di Toserba",
+                  "component_id": "05.02.02.01",
+                  "tracking_option": 3,
+                  "campaign_code": "thco0007652"
+                },
+                {
+                  "id": "267590",
+                  "url": "https://www.tokopedia.com/search?st=product\u0026q=susu\u0026srp_page_id=41890\u0026srp_page_title=susu%20di%20Promo%20Hari%20Ini\u0026navsource=deals\u0026srp_disco_url=deals",
+                  "applink": "tokopedia://search?st=product\u0026q=susu\u0026srp_page_id=41890\u0026srp_page_title=susu%20di%20Promo%20Hari%20Ini\u0026navsource=deals\u0026srp_disco_url=deals",
+                  "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/1/cfb8e39e-3a35-4228-a58f-eb7bc9ebec29.png",
+                  "title": "susu di Promo Hari Ini",
+                  "component_id": "05.02.02.02",
+                  "tracking_option": 3,
+                  "campaign_code": " "
+                },
+                {
+                  "id": "268425",
+                  "url": "https://www.tokopedia.com/search?st=product\u0026q=susu%20uht\u0026srp_page_id=41890\u0026srp_page_title=susu%20uht%20di%20Promo%20Hari%20Ini\u0026navsource=deals\u0026srp_disco_url=deals",
+                  "applink": "tokopedia://search?st=product\u0026q=susu%20uht\u0026srp_page_id=41890\u0026srp_page_title=susu%20uht%20di%20Promo%20Hari%20Ini\u0026navsource=deals\u0026srp_disco_url=deals",
+                  "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/1/cfb8e39e-3a35-4228-a58f-eb7bc9ebec29.png",
+                  "title": "susu uht di Promo Hari Ini",
+                  "component_id": "05.02.02.03",
+                  "tracking_option": 3,
+                  "campaign_code": " "
+                }
+              ]
+            },
+            {
+              "id": "",
+              "applink": "tokopedia://search?st=product\u0026q=susu\u0026srp_page_id=37166\u0026srp_page_title=Deals\u0026navsource=deals\u0026srp_component_id=05.03.03.00",
+              "image_url": "",
+              "template": "carousel",
+              "title": "Yang lagi promo hari ini",
+              "subtitle": "",
+              "type": "deals",
+              "component_id": "05.03.03.00",
+              "tracking_option": 3,
+              "campaign_code": "",
+              "product": [
+                {
+                  "id": "1850184047",
+                  "applink": "tokopedia://product/1850184047?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/17/9a2bb033-4202-4595-b38d-79e5cb7241b9.jpg",
+                  "title": "MILO ACTIV-GO UHT Susu Coklat 110ml - 4 pcs",
+                  "component_id": "05.03.03.01",
+                  "tracking_option": 3,
+                  "price": "Rp9.900",
+                  "original_price": "Rp18.000",
+                  "discount_percentage": "45",
+                  "rating_average": "4.9",
+                  "count_sold": "Terjual 16053",
+                  "shop": {
+                    "name": "Nestle Indonesia",
+                    "city": "Kab. Tangerang",
+                    "url": "https://www.tokopedia.com/nestle-indonesia"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1330035974",
+                  "applink": "tokopedia://product/1330035974?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/b7cab376-88a1-4f0f-bfea-beac5263e0e1.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.03.03.02",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "4.9",
+                  "count_sold": "Terjual 15538",
+                  "shop": {
+                    "name": "Hypermart Pejaten Village",
+                    "city": "Jakarta Selatan",
+                    "url": "https://www.tokopedia.com/hypermartpejaten"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1679214832",
+                  "applink": "tokopedia://product/1679214832?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/21/9eedace4-dcb0-4c70-9bdf-4992884f3910.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.03.03.03",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "4.9",
+                  "count_sold": "Terjual 8901",
+                  "shop": {
+                    "name": "Hypermart Metro Trade Center Bandung",
+                    "city": "Bandung",
+                    "url": "https://www.tokopedia.com/hypermartmtcbandung"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1382625915",
+                  "applink": "tokopedia://product/1382625915?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/302a8c85-036e-43f1-a352-ca2135a07a5b.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.03.03.04",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "5.0",
+                  "count_sold": "Terjual 10723",
+                  "shop": {
+                    "name": "Hypermart Kemang Village",
+                    "city": "Jakarta Selatan",
+                    "url": "https://www.tokopedia.com/hpmkemang"
+                  },
+                  "badge": []
+                },
+                {
+                  "id": "1777355931",
+                  "applink": "tokopedia://product/1777355931?extParam=ivf%3Dfalse%26src%3Dsearch",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/7/20/29b94ced-ed32-48c5-af78-eb1cd2726568.jpg",
+                  "title": "Diamond Milk UHT Full Cream 1 Liter",
+                  "component_id": "05.03.03.05",
+                  "tracking_option": 3,
+                  "price": "Rp16.490",
+                  "original_price": "",
+                  "discount_percentage": "0",
+                  "rating_average": "5.0",
+                  "count_sold": "Terjual 5962",
+                  "shop": {
+                    "name": "Hypermart Pesona Depok",
+                    "city": "Depok",
+                    "url": "https://www.tokopedia.com/hypermartpesonadepok"
+                  },
+                  "badge": []
+                }
+              ],
+              "curated": []
+            }
+          ]
+        }
+      }
+    }
+  }
+]

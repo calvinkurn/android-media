@@ -66,8 +66,7 @@ class CarouselViewHolder(
                     discountPercentage = discountPercentage,
                     slashedPrice = it.originalPrice,
                     productImageUrl = it.imageUrl,
-                    ratingString = it.ratingAverage,
-                    countSoldRating = it.countSold,
+                    countSoldRating = it.ratingAverage,
                     shopLocation = it.shop.city,
                     shopName = it.shop.name,
                     shopBadgeList = it.badge.map { badge ->
@@ -75,7 +74,12 @@ class CarouselViewHolder(
                             isShown = badge.show,
                             imageUrl = badge.imageUrl
                         )
-                    }
+                    },
+                    labelGroupList = listOf(ProductCardModel.LabelGroup(
+                        position = "integrity",
+                        title = it.countSold,
+                        type = "textDarkGrey",
+                    ))
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

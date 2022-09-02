@@ -42,7 +42,7 @@ internal class UniversalSearchUseCase(
 
     companion object {
         private const val GQL_QUERY = """
-            query UniversalQuery(${'$'}param: String!) {
+            query universe_universal_search(${'$'}param: String!) {
               universe_universal_search(param: ${'$'}param) {
                 header {
                   status_code
