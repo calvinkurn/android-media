@@ -1926,7 +1926,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun submitIntegrityApi() {
         context?.let {
-            IntegrityApiWorker.scheduleWorker(it, "login")
+            IntegrityApiWorker.scheduleWorker(it.applicationContext, "login")
         }
     }
 

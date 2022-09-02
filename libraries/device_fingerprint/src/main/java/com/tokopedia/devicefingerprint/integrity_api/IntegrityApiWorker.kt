@@ -11,6 +11,7 @@ import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.integrity_api.model.IntegrityParam
 import com.tokopedia.devicefingerprint.integrity_api.usecase.SubmitIntegrityUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -88,23 +89,38 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
         private const val EVENT_PARAM = "event_param"
         private const val MAX_RETRY = 3
 
+        private const val CONFIG_INTEGIRTY = "android_user_integrity_enabled"
+
+        private fun isEnable(context: Context): Boolean {
+            return try {
+                FirebaseRemoteConfigImpl(context).getBoolean(CONFIG_INTEGIRTY, false)
+            } catch (e: Exception) {
+                false
+            }
+        }
+
         @JvmStatic
         fun scheduleWorker(context: Context, event: String) {
-            try {
-                val data = Data.Builder().apply { putString(EVENT_PARAM, event) }.build()
-                val periodicWorker = OneTimeWorkRequest
-                    .Builder(IntegrityApiWorker::class.java)
-                    .setConstraints(Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build())
-                    .setInputData(data)
-                    .build()
-                WorkManager.getInstance(context).enqueueUniqueWork(
-                    WORKER_NAME,
-                    ExistingWorkPolicy.REPLACE,
-                    periodicWorker
-                )
-            } catch (ex: Exception) { }
+            if (isEnable(context)) {
+                try {
+                    val data = Data.Builder().apply { putString(EVENT_PARAM, event) }.build()
+                    val periodicWorker = OneTimeWorkRequest
+                        .Builder(IntegrityApiWorker::class.java)
+                        .setConstraints(
+                            Constraints.Builder()
+                                .setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                        )
+                        .setInputData(data)
+                        .build()
+                    WorkManager.getInstance(context).enqueueUniqueWork(
+                        WORKER_NAME,
+                        ExistingWorkPolicy.REPLACE,
+                        periodicWorker
+                    )
+                } catch (ex: Exception) {
+                }
+            }
         }
     }
 }
