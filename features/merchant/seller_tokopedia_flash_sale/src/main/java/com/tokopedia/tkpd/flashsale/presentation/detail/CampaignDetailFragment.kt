@@ -48,6 +48,10 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
         private const val PAGE_SIZE = 10
+        private const val IMAGE_PRODUCT_ELIGIBLE_URL =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
+        private const val EMPTY_SUBMITTED_PRODUCT_URL =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/empty_cdp_product_list_Illustration.png"
 
         @JvmStatic
         fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
@@ -360,6 +364,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     private fun setupUpcomingButton() {
         binding?.run {
             btnRegister.text = getString(R.string.label_register)
+            imageProductEligible.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
         }
     }
 
@@ -538,9 +543,14 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
 
     private fun setupRegisteredBodyData() {
         registeredCdpBodyBinding?.run {
-            btnSelectAllProduct.isVisible =
+            val isShowButtonToggle =
                 viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
+            val isTitleNotShown =
+                viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT
 
+            btnSelectAllProduct.isVisible = isShowButtonToggle
+            tpgProductCount.isVisible = !isTitleNotShown
+            tpgRegisterBodyTitle.isVisible = !isTitleNotShown
             tpgProductCount.text = getString(
                 R.string.stfs_product_count_place_holder,
                 productAdapter.itemCount
@@ -548,6 +558,16 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
 
             btnSelectAllProduct.setOnClickListener {
                 onShowOrHideItemCheckBox()
+            }
+        }
+        binding?.run {
+            if (viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT) {
+                emptyStateProductList.visible()
+                rvSubmittedProductList.gone()
+                emptyStateProductList.setImageUrl(EMPTY_SUBMITTED_PRODUCT_URL)
+            } else {
+                emptyStateProductList.gone()
+                rvSubmittedProductList.visible()
             }
         }
         observeSelectedProductData()

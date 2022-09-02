@@ -6,14 +6,29 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_register_body_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/stfs_register_body_title_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_product_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="18dp"
         android:text="@string/stfs_choosen_product_count_placeholder"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_register_body_title"
         app:typographyType="paragraph_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -22,10 +37,10 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="18dp"
-        android:visibility="invisible"
         android:text="@string/stfs_choosen_product_count_placeholder"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_register_body_title"
         app:typographyType="paragraph_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -37,6 +52,7 @@
         android:paddingBottom="@dimen/unify_space_4"
         android:text="@string/stfs_choose_all_product_label"
         android:textColor="@color/Unify_GN500"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/tpg_product_count"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tpg_product_count"

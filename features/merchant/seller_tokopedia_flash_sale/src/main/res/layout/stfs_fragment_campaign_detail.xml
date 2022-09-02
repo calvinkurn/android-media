@@ -19,7 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ViewStub
                 android:id="@+id/layout_header"
@@ -53,6 +54,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" />
+
+            <com.tokopedia.empty_state.EmptyStateUnify
+                android:id="@+id/empty_state_product_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyEmptyStateCTAFullWidth="true"
+                android:layout_marginTop="48dp"
+                android:visibility="visible"
+                android:layout_gravity="center"
+                app:unifyEmptyStateDescription="Tambah produk dulu, yuk!"
+                app:unifyEmptyStateOrientation="horizontal"
+                app:unifyEmptyStateTitle="Belum ada produk, nih!" />
 
         </LinearLayout>
 
@@ -160,12 +173,12 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/stfs_label_delete"
-                app:unifyButtonVariant="ghost"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonVariant="ghost" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_edit"
