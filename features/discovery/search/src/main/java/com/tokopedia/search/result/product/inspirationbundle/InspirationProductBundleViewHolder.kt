@@ -28,8 +28,7 @@ class InspirationProductBundleViewHolder(
         @JvmField
         val LAYOUT = R.layout.search_inspiration_carousel_bundle
 
-        private const val LEFT_OFFSET_NOT_FIRST_DIVISOR = 12
-        private const val RIGHT_OFFSET_NOT_LAST_DIVISOR = 16
+        private const val DEFAULT_OFFSET = 0
     }
 
     private var binding: SearchInspirationCarouselBundleBinding? by viewBinding()
@@ -105,11 +104,11 @@ class InspirationProductBundleViewHolder(
         listener.onBundleProductClicked(bundle, selectedProduct)
     }
 
-    private fun List<InspirationProductBundleDataView.Bundle>.getSelectedBundle(
+    private fun List<InspirationProductBundleDataView.BundleDataView>.getSelectedBundle(
         selectedBundleDetail: BundleDetailUiModel
-    ): InspirationProductBundleDataView.Bundle? {
+    ): InspirationProductBundleDataView.BundleDataView? {
         forEach { bundle ->
-            val bundleDetail = bundle.bundleDetail.bundleDetails.firstOrNull { bundleDetail ->
+            val bundleDetail = bundle.bundle.bundleDetails.firstOrNull { bundleDetail ->
                 bundleDetail == selectedBundleDetail
             }
             bundleDetail?.let {
@@ -158,7 +157,12 @@ class InspirationProductBundleViewHolder(
         bundlePosition: Int
     ) {
         val productBundle = productBundle ?: return
-        listener.onBundleImpressed(productBundle.bundleList[bundlePosition])
+        val selectedBundle = productBundle.bundleList[bundlePosition]
+        listener.onBundleImpressed(selectedBundle)
+        listener.onBundleProductImpressed(
+            selectedBundle,
+            selectedProduct,
+        )
     }
 
     override fun impressionProductBundleMultiple(
@@ -174,7 +178,12 @@ class InspirationProductBundleViewHolder(
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int
     ) {
-
+        val productBundle = productBundle ?: return
+        val selectedBundle = productBundle.bundleList.getSelectedBundle(selectedMultipleBundle) ?: return
+        listener.onBundleProductImpressed(
+            selectedBundle,
+            selectedProduct,
+        )
     }
 
     private class InspirationProductBundleItemDecoration(
@@ -206,7 +215,7 @@ class InspirationProductBundleViewHolder(
         }
 
         private fun getLeftOffsetNotFirstItem(): Int {
-            return left / LEFT_OFFSET_NOT_FIRST_DIVISOR
+            return DEFAULT_OFFSET
         }
 
         private fun getRightOffset(view: View, parent: RecyclerView): Int {
@@ -220,7 +229,7 @@ class InspirationProductBundleViewHolder(
         }
 
         private fun getRightOffsetNotLastItem(): Int {
-            return right / RIGHT_OFFSET_NOT_LAST_DIVISOR
+            return DEFAULT_OFFSET
         }
     }
 }

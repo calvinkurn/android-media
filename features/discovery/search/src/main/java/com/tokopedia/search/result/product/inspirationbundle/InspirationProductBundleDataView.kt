@@ -2,9 +2,8 @@ package com.tokopedia.search.result.product.inspirationbundle
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.discovery.common.analytics.SearchComponentTracking
-import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
@@ -17,7 +16,7 @@ data class InspirationProductBundleDataView(
     val position: Int = 0,
     val layout: String = "",
     val trackingOption: Int = 0,
-    val bundleList: List<Bundle> = emptyList(),
+    val bundleList: List<BundleDataView> = emptyList(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.Both,
 ) : Visitable<ProductListTypeFactory>, VerticalSeparable {
     override fun type(typeFactory: ProductListTypeFactory): Int {
@@ -28,27 +27,21 @@ data class InspirationProductBundleDataView(
     override fun addBottomSeparator(): VerticalSeparable = this
 
     fun asBundleUiModel(): List<BundleUiModel> {
-        return bundleList.map { it.bundleDetail }
+        return bundleList.map { it.bundle }
     }
 
-    data class Bundle(
+    data class BundleDataView(
         val carouselTitle: String = "",
         val applink: String = "",
         val componentId: String = "",
-        val bundleDetail: BundleUiModel = BundleUiModel(),
+        val bundle: BundleUiModel = BundleUiModel(),
         val trackingOption: Int = 0,
         val dimension90: String = "",
         val keyword: String = "",
         val externalReference: String = "",
         val type: String = "",
-    ) : ImpressHolder(), SearchComponentTracking by searchComponentTracking(
-        trackingOption = trackingOption,
-        componentId = componentId,
-        dimension90 = dimension90,
-        applink = applink,
-        keyword = keyword,
-        valueName = "$carouselTitle - ${bundleDetail.bundleName}",
-    ) {
+        val option: InspirationCarouselDataView.Option = InspirationCarouselDataView.Option(),
+    ) : ImpressHolder() {
 
         companion object {
             private const val DEFAULT_BUNDLE_ID = "0"
@@ -60,12 +53,12 @@ data class InspirationProductBundleDataView(
 
         private val selectedSingleBundleId: String
             get() {
-                val selectedBundleId = bundleDetail.selectedBundleId
+                val selectedBundleId = bundle.selectedBundleId
                 val isNotDefaultOrEmptyId =
                     selectedBundleId.isNotEmpty() && DEFAULT_BUNDLE_ID != selectedBundleId
                 return if (isNotDefaultOrEmptyId) {
                     selectedBundleId
-                } else bundleDetail.bundleDetails.firstOrNull()?.bundleId ?: ""
+                } else bundle.bundleDetails.firstOrNull()?.bundleId ?: ""
             }
 
         private val singleBundleApplink: String
@@ -73,7 +66,7 @@ data class InspirationProductBundleDataView(
 
         val activeApplink: String
             get() {
-                return if (bundleDetail.bundleType == BundleTypes.MULTIPLE_BUNDLE) applink
+                return if (bundle.bundleType == BundleTypes.MULTIPLE_BUNDLE) applink
                 else singleBundleApplink
             }
     }

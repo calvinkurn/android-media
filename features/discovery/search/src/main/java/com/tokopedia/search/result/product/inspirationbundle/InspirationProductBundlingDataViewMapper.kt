@@ -9,7 +9,6 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 object InspirationProductBundlingDataViewMapper {
     private const val SAVING_AMOUNT_FORMAT = "Hemat <b>%s</b>"
@@ -18,8 +17,7 @@ object InspirationProductBundlingDataViewMapper {
         keyword: String,
         externalReference: String,
     ): InspirationProductBundleDataView {
-        val bundleList = options.sortedByDiscount(type)
-            .map { option ->
+        val bundleList = options.map { option ->
                 option.toBundleDataView(
                     title,
                     type,
@@ -39,19 +37,6 @@ object InspirationProductBundlingDataViewMapper {
         )
     }
 
-    private fun List<InspirationCarouselDataView.Option>.sortedByDiscount(
-        type: String,
-    ): List<InspirationCarouselDataView.Option> {
-        return sortedByDescending {
-            val discount = if (type == TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING) {
-                it.product.firstOrNull()?.discount ?: ""
-            } else {
-                it.bundle.discount
-            }
-            CurrencyFormatHelper.convertRupiahToInt(discount)
-        }
-    }
-
     private fun InspirationCarouselDataView.Option.toBundleDataView(
         title: String,
         type: String,
@@ -59,22 +44,23 @@ object InspirationProductBundlingDataViewMapper {
         dimension90: String,
         keyword: String,
         externalReference: String,
-    ): InspirationProductBundleDataView.Bundle {
+    ): InspirationProductBundleDataView.BundleDataView {
         val bundleDetailUiModel = if (type == TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING) {
             convertToSingleBundle()
         } else {
             convertToMultipleBundle()
         }
-        return InspirationProductBundleDataView.Bundle(
+        return InspirationProductBundleDataView.BundleDataView(
             carouselTitle = title,
             applink = applink,
             componentId = componentId,
-            bundleDetail = bundleDetailUiModel,
+            bundle = bundleDetailUiModel,
             trackingOption = trackingOption,
             dimension90 = dimension90,
             type = type,
             keyword = keyword,
             externalReference = externalReference,
+            option = this,
         )
     }
 
@@ -150,20 +136,20 @@ object InspirationProductBundlingDataViewMapper {
         return products.map { product -> convertToBundleProductDataView(product) }
     }
 
-    internal fun InspirationProductBundleDataView.Bundle.toProductModel(
+    internal fun InspirationProductBundleDataView.BundleDataView.toProductModel(
         bundleProduct: BundleProductUiModel,
     ): InspirationCarouselDataView.Option.Product {
         return InspirationCarouselDataView.Option.Product(
             id = bundleProduct.productId,
             name = bundleProduct.productName,
             applink = bundleProduct.productAppLink,
-            price = bundleDetail.bundleDetails.firstOrNull()?.displayPriceRaw?.toInt() ?: 0,
+            price = bundle.bundleDetails.firstOrNull()?.displayPriceRaw?.toInt() ?: 0,
             componentId = componentId,
             inspirationCarouselType = type,
             layout = LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
             dimension90 = dimension90,
             inspirationCarouselTitle = carouselTitle,
-            optionTitle = bundleDetail.bundleName,
+            optionTitle = bundle.bundleName,
         )
     }
 }

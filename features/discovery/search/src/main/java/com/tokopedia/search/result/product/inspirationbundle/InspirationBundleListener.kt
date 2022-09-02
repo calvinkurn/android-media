@@ -4,14 +4,18 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 
 interface InspirationBundleListener {
     fun onSeeBundleClicked(
-        bundle: InspirationProductBundleDataView.Bundle,
+        bundle: InspirationProductBundleDataView.BundleDataView,
         selectedProducts: List<BundleProductUiModel>,
     )
     fun onBundleImpressed(
-        bundle: InspirationProductBundleDataView.Bundle,
+        bundle: InspirationProductBundleDataView.BundleDataView,
+    )
+    fun onBundleProductImpressed(
+        bundle: InspirationProductBundleDataView.BundleDataView,
+        bundleProduct: BundleProductUiModel,
     )
     fun onBundleProductClicked(
-        bundle: InspirationProductBundleDataView.Bundle,
+        bundle: InspirationProductBundleDataView.BundleDataView,
         bundleProduct: BundleProductUiModel,
     )
 }

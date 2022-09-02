@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.product.inspirationbundle
 
 import android.content.Context
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.iris.Iris
 import com.tokopedia.search.result.product.SearchParameterProvider
-import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.toProductModel
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView.BundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
@@ -12,11 +14,13 @@ import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class InspirationBundleListenerDelegate(
     context: Context?,
     private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     private val iris: Iris,
+    private val trackingQueue: TrackingQueue,
     searchParameterProvider: SearchParameterProvider,
 ) : InspirationBundleListener,
     ApplinkOpener by ApplinkOpenerDelegate,
@@ -24,31 +28,55 @@ class InspirationBundleListenerDelegate(
     ContextProvider by WeakReferenceContextProvider(context) {
 
     override fun onSeeBundleClicked(
-        bundle: InspirationProductBundleDataView.Bundle,
+        bundle: BundleDataView,
         selectedProducts: List<BundleProductUiModel>,
     ) {
         openApplink(context, bundle.activeApplink)
 
-        bundle.click(TrackApp.getInstance().gtm)
+        bundle.asSearchTrackingTracking()
+            .click(TrackApp.getInstance().gtm)
     }
 
-
     override fun onBundleImpressed(
-        bundle: InspirationProductBundleDataView.Bundle,
+        bundle: BundleDataView,
     ) {
-        bundle.impress(iris)
+        bundle.asSearchTrackingTracking()
+            .impress(iris)
+    }
+
+    override fun onBundleProductImpressed(
+        bundle: BundleDataView,
+        bundleProduct: BundleProductUiModel
+    ) {
+        val product = bundle.option.product.firstOrNull { it.id == bundleProduct.productId } ?: return
+        val data = createCarouselTrackingUnificationData(
+            product,
+            getSearchParameter()
+        )
+        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun onBundleProductClicked(
-        bundle: InspirationProductBundleDataView.Bundle,
+        bundle: BundleDataView,
         bundleProduct: BundleProductUiModel
     ) {
-        openApplink(context, bundleProduct.productAppLink)
+        val product = bundle.option.product.firstOrNull { it.id == bundleProduct.productId } ?: return
+        openApplink(context, product.applink)
         val data = createCarouselTrackingUnificationData(
-            bundle.toProductModel(bundleProduct),
+            product,
             getSearchParameter()
         )
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data)
     }
+
+    private fun BundleDataView.asSearchTrackingTracking() : SearchComponentTracking =
+        searchComponentTracking(
+            trackingOption = trackingOption,
+            componentId = componentId,
+            dimension90 = dimension90,
+            applink = applink,
+            keyword = keyword,
+            valueName = "$carouselTitle - ${bundle.bundleName}",
+        )
 }
