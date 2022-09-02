@@ -658,7 +658,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                     PromoCheckoutVoucherOrdersItemUiModel(
                         shippingId = 1,
                         spId = 1,
-                        messageUiModel = MessageUiModel(state = "green")
+                        messageUiModel = MessageUiModel(state = "green"),
+                        type = "logistic"
                     )
                 )
             )
