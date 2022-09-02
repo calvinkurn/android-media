@@ -782,16 +782,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
-            } else if (promoListItemUiModel.uiState.isBebasOngkir) {
-                // if coupon is bebas ongkir promo, then remove code only
-                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
-                if (boData != null) {
-                    order?.let {
-                        if (it.codes.contains(boData.code)) {
-                            it.codes.remove(boData.code)
-                        }
-                    }
-                }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
                     validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)
@@ -1395,7 +1385,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.needToDismissBottomsheet = false
             it.uiData.promoCode = promoCode
 
-            _tmpUiModel.value = Update(it)
+            _promoInputUiModel.value = it
         }
     }
 
@@ -1405,7 +1395,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.isButtonSelectEnabled = false
             it.uiData.promoCode = ""
 
-            _tmpUiModel.value = Update(it)
+            _promoInputUiModel.value = it
         }
     }
 
