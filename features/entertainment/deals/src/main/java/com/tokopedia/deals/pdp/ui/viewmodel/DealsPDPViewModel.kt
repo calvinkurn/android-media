@@ -35,8 +35,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class DealsPDPViewModel @Inject constructor (
     private val dealsPDPDetailUseCase: DealsPDPDetailUseCase,
     private val dealsPDPEventContentUseCase: DealsPDPEventContentUseCase,

@@ -32,8 +32,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.R
-import com.tokopedia.deals.brand_detail.data.Brand
-import com.tokopedia.deals.brand_detail.util.DealsBrandDetailShare
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
@@ -68,7 +66,6 @@ import java.util.Calendar
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
-import okhttp3.Route
 
 class DealsPDPFragment: BaseDaggerFragment() {
 
@@ -728,13 +725,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun hideShareLoading() {
-        progressBar?.show()
-        progressBarLayout?.show()
+        progressBar?.hide()
     }
 
     private fun showShareLoading() {
-        progressBar?.hide()
-        progressBarLayout?.hide()
+        progressBar?.show()
     }
 
     companion object {
