@@ -16,11 +16,11 @@ import javax.inject.Inject
 class TokoNowRecipeSearchFragment: BaseTokoNowRecipeListFragment() {
 
     companion object {
+        private const val PAGE_NAME = "TokoNow Recipe Search"
+
         fun newInstance(): Fragment {
             return TokoNowRecipeSearchFragment()
         }
-
-        private const val PAGE_NAME = "TokoNow Recipe Search"
     }
 
     @Inject
@@ -42,7 +42,7 @@ class TokoNowRecipeSearchFragment: BaseTokoNowRecipeListFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getRecipeList()
+        getRecipeList()
     }
 
     override fun onAttach(context: Context) {
@@ -56,5 +56,12 @@ class TokoNowRecipeSearchFragment: BaseTokoNowRecipeListFragment() {
             .baseAppComponent((requireContext().applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun getRecipeList() {
+        val uri = activity?.intent?.data
+        viewModel.searchRecipe(
+            query = uri?.encodedQuery
+        )
     }
 }

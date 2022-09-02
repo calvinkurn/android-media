@@ -78,4 +78,13 @@ object DeeplinkMapperTokopediaNow {
 
         return ApplinkConstInternalTokopediaNow.RECIPE_SEARCH + queryString
     }
+
+    fun getRegisteredNavigationTokopediaNowRecipeAutoComplete(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+
+        val query = uri.encodedQuery
+        val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
+
+        return ApplinkConstInternalTokopediaNow.RECIPE_AUTO_COMPLETE + queryString
+    }
 }

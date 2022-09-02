@@ -17,4 +17,10 @@ class TokoNowRecipeSearchViewModel @Inject constructor(
     }
 
     override val sourcePage: String = SOURCE_PAGE_NAME
+
+    fun searchRecipe(query: String?) {
+        val queryParams = if (query.isNullOrEmpty()) "" else query
+        getRecipeListParam.queryParams = queryParams
+        getRecipeList()
+    }
 }

@@ -544,6 +544,7 @@ public interface ApplinkConst {
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
         String RECIPE_HOME = "tokopedia://now/recipe";
         String RECIPE_SEARCH = "tokopedia://now/recipe/search";
+        String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
     }
 
     interface TokoFood {

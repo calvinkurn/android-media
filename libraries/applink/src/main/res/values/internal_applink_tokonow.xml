@@ -23,5 +23,6 @@
     <string name="path_tokopedia_now_recipe_bookmark" translatable="false">/recipe-bookmark</string>
     <string name="path_tokopedia_now_recipe_home" translatable="false">/recipe-home</string>
     <string name="path_tokopedia_now_recipe_search" translatable="false">/recipe-search</string>
+    <string name="path_tokopedia_now_recipe_autocomplete" translatable="false">/recipe-auto-complete</string>
     <string name="path_tokopedia_now_recipe_filter" translatable="false">/recipe-filter</string>
 </resources>
