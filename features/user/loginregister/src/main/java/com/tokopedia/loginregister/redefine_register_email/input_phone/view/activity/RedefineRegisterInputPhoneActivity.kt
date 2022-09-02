@@ -53,8 +53,6 @@ class RedefineRegisterInputPhoneActivity : BaseSimpleActivity(),
     override fun onBackPressed() {
         if (paramIsRequiresInputPhone) {
             super.onBackPressed()
-        } else {
-            //show toaster
         }
     }
 

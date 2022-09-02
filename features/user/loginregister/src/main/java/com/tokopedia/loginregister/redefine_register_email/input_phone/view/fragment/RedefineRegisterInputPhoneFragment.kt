@@ -168,7 +168,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun initObserver() {
         viewModel.formState.observe(viewLifecycleOwner) {
             binding?.btnSubmit?.isEnabled = true
-            binding?.fieldInputPhone?.setMessageFromResource(it)
+            binding?.fieldInputPhone?.setMessageField(it)
         }
 
         viewModel.isRegisteredPhone.observe(viewLifecycleOwner) {
@@ -178,7 +178,13 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 }
                 is RegisteredPhoneState.Registered -> {
                     showRegisteredPhoneCheckLoading(false)
-                    showDialogOfferLogin()
+                    if (paramIsRequiresInputPhone) {
+                        showDialogOfferLogin()
+                    } else {
+                        binding?.fieldInputPhone?.setMessageField(
+                            R.string.register_email_input_phone_registered_phone_error
+                        )
+                    }
                 }
                 is RegisteredPhoneState.Unregistered -> {
                     showRegisteredPhoneCheckLoading(false)
@@ -186,7 +192,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 }
                 is RegisteredPhoneState.Ineligible -> {
                     showRegisteredPhoneCheckLoading(false)
-                    binding?.fieldInputPhone?.setMessageFromString(it.message)
+                    binding?.fieldInputPhone?.setMessageField(it.message)
                 }
                 is RegisteredPhoneState.Failed -> {
                     showRegisteredPhoneCheckLoading(false)
@@ -357,12 +363,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         ))
     }
 
-    private fun TextFieldUnify2.setMessageFromString(message: String) {
+    private fun TextFieldUnify2.setMessageField(message: String) {
         isInputError = true
         setMessage(message)
     }
 
-    private fun TextFieldUnify2.setMessageFromResource(stringResource: Int) {
+    private fun TextFieldUnify2.setMessageField(stringResource: Int) {
         isInputError = if (stringResource != RedefineRegisterInputPhoneViewModel.NOTHING_RESOURCE && stringResource != RedefineRegisterInputPhoneViewModel.RESOURCE_NOT_CHANGED) {
             setMessage(getString(stringResource))
             true

@@ -227,6 +227,8 @@
     <string name="register_email_input_phone_dialog_success_primary_button">Ya, Benar</string>
     <string name="register_email_input_phone_dialog_success_secondary_button">Ubah</string>
     <string name="register_email_input_phone_skip">Lewati</string>
+    <string name="register_email_input_phone_registered_phone_error">Nomor ini sudah terdaftar di akun lain.</string>
+
 
     <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
     <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
