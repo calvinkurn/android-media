@@ -458,6 +458,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+                dismiss()
                 RouteManager.route(context, ApplinkConst.AFFILIATE)
             }
             affiliateRegisterIcon?.loadImage(banner.icon)
