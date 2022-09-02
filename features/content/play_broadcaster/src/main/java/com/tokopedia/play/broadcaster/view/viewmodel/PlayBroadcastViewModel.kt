@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
+import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
 import com.tokopedia.play.broadcaster.domain.model.NewMetricList
 import com.tokopedia.play.broadcaster.domain.model.Banned
@@ -481,7 +482,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
 
-            logger.logChannelStatus(channelInfo.status)
+            logChannelStatus(channelInfo.status)
 
             setChannelId(channelInfo.channelId)
             setChannelTitle(channelInfo.title)
@@ -674,9 +675,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
             is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
-                // TODO: need to change this validation, instead of remaining changes this to currDuration == maxDuration
-                if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
+                if (result.duration >= result.maxDuration) logSocket(result)
             }
             is SectionedProductTagSocketResponse -> {
                 setSelectedProduct(productMapper.mapSectionedProduct(result))
@@ -687,7 +687,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
                 if (eventUiModel.freeze) {
                     _observableEvent.value = eventUiModel
-                    logger.logSocketType(result)
+                    logSocket(result)
                 }
             }
             is Banned -> {
@@ -695,7 +695,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
                 if (eventUiModel.banned) {
                     _observableEvent.value = eventUiModel
-                    logger.logSocketType(result)
+                    logSocket(result)
                 }
             }
             is GiveawayResponse -> {
@@ -1374,6 +1374,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcasterState.Error -> handleBroadcasterError(state.cause)
             PlayBroadcasterState.Stopped -> handleBroadcasterStop()
         }
+        logPusherState(state)
     }
 
     private fun handleBroadcasterError(cause: Throwable) {
@@ -1550,6 +1551,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun stopTimer() {
         broadcastTimer.stop()
+    }
+
+    /**
+     * Logger
+     */
+    private fun logChannelStatus(status: ChannelStatus) {
+        logger.logChannelStatus(status)
+    }
+
+    private fun logPusherState(state: PlayBroadcasterState) {
+        logger.logPusherState(state)
+    }
+
+    private fun logSocket(type: PlaySocketType) {
+        logger.logSocketType(type)
     }
 
     fun sendBroadcasterLog(metric: BroadcasterMetric) {
