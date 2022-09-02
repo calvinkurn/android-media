@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.image_gallery.ImageGallery
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.MediaGalleryUiModel
@@ -55,6 +56,8 @@ class TokoNowMediaGalleryActivity : AppCompatActivity() {
             onOverlayHiddenChange = { isHidden ->
                 closeButton?.showWithCondition(!isHidden)
             }
+
+            thumbnailRecyclerView.hide()
         }
 
         closeButton?.setOnClickListener { finish() }
