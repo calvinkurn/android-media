@@ -13,8 +13,8 @@ import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
-import com.tokopedia.content.common.ui.model.NotEligibleType
+import com.tokopedia.content.common.ui.model.AccountConfiguration
+import com.tokopedia.content.common.ui.model.AccountConfigurationType
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -453,7 +453,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
-                renderNotEligibleAccount(prevState?.notEligibleAccount, state.notEligibleAccount)
+                renderNotEligibleAccount(prevState?.accountConfiguration, state.accountConfiguration)
             }
         }
     }
@@ -592,15 +592,21 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun renderNotEligibleAccount(
-        prevState: NotEligibleAccountUiModel?,
-        state: NotEligibleAccountUiModel,
+        prevState: AccountConfiguration?,
+        state: AccountConfiguration,
     ) {
         if (prevState == state) return
 
         when(state.type) {
-            NotEligibleType.Banned -> { toaster.showToaster("banned")}
-            NotEligibleType.NoUsername -> openUGCCompletionBottomSheet()
-            NotEligibleType.Unknown -> return
+            AccountConfigurationType.Live, AccountConfigurationType.Banned -> {
+                showWaringInfoBottomSheet()
+            }
+            AccountConfigurationType.NotAcceptTNC -> {
+                if (state.selectedAccount.isUser) toaster.showToaster("not accept tnc buyer")
+                else toaster.showToaster("not accept tnc seller")
+            }
+            AccountConfigurationType.NoUsername -> openUGCCompletionBottomSheet()
+            AccountConfigurationType.Unknown -> return
         }
     }
 

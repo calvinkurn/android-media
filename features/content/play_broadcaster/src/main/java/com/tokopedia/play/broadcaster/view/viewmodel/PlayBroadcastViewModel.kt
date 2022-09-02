@@ -14,8 +14,8 @@ import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.NotEligibleAccountUiModel
-import com.tokopedia.content.common.ui.model.NotEligibleType
+import com.tokopedia.content.common.ui.model.AccountConfiguration
+import com.tokopedia.content.common.ui.model.AccountConfigurationType
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -234,7 +234,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
-    private val _notEligibleAccount = MutableStateFlow(NotEligibleAccountUiModel.Empty)
+    private val _accountConfiguration = MutableStateFlow(AccountConfiguration.Empty)
+    lateinit var warningInfoType: WarningType
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
@@ -310,7 +311,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
-        _notEligibleAccount,
+        _accountConfiguration,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -324,7 +325,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         onBoarding,
         quizBottomSheetUiState,
         selectedFeedAccount,
-        notEligibleAccount ->
+        accountConfiguration ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -339,7 +340,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
             selectedContentAccount = selectedFeedAccount,
-            notEligibleAccount = notEligibleAccount
+            accountConfiguration = accountConfiguration
         )
     }.stateIn(
         viewModelScope,
@@ -1560,12 +1561,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when {
             selectedAccount.isUser && selectedAccount.hasUsername -> return
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
-                _notEligibleAccount.value = NotEligibleAccountUiModel(
-                    type = NotEligibleType.NoUsername,
+                _accountConfiguration.value = AccountConfiguration(
+                    type = AccountConfigurationType.NoUsername,
                     selectedAccount = selectedAccount
                 )
+                return
             }
-            else -> _notEligibleAccount.value = NotEligibleAccountUiModel.Empty
+            else -> {
+                _accountConfiguration.value = AccountConfiguration.Empty
+                return
+            }
         }
     }
 
