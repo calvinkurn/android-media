@@ -801,6 +801,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
                     validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)
+            } else if (!promoListItemUiModel.uiState.isSelected && promoListItemUiModel.uiState.isBebasOngkir && !promoListItemUiModel.uiState.isDisabled) {
+                // remove code kalau promo BO sedang tidak dipilih dan tidak disabled
+                // kalau promo BO sedang disabled, biarkan saja
+                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    order?.let {
+                        if (it.codes.contains(boData.code)) {
+                            it.codes.remove(boData.code)
+                        }
+                    }
+                }
             }
         }
     }
