@@ -3,12 +3,12 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -36,11 +36,18 @@ class EngagementCarouselViewComponent(
         }
     })
 
+    private val snapHelper by lazy(LazyThreadSafetyMode.NONE) {
+        PagerSnapHelper()
+    }
+
     init {
         carousel.apply {
             adapter = carouselAdapter
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         }
+
+        snapHelper.attachToRecyclerView(carousel)
+
         autoScroll()
     }
 
