@@ -302,17 +302,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onImpressBannerPromo(channelModel: ChannelModel, warehouseId: String) {
-        val promotions = arrayListOf<Bundle>()
-        channelModel.channelGrids.forEachIndexed { position, channelGrid ->
-            promotions.add(
-                ecommerceDataLayerBanner(
-                    channelModel = channelModel,
-                    channelGrid = channelGrid,
-                    position = position
-                )
+    fun onImpressBannerPromo(channelModel: ChannelModel, channelGrid: ChannelGrid, warehouseId: String, position: Int) {
+        val promotions = arrayListOf(
+            ecommerceDataLayerBanner(
+                channelModel = channelModel,
+                channelGrid = channelGrid,
+                position = position
             )
-        }
+        )
 
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_VIEW_ITEM,
@@ -549,21 +546,17 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun onImpressRepurchase(
-        data: TokoNowProductCardUiModel,
-        products: List<TokoNowProductCardUiModel>
+        position: Int,
+        data: TokoNowProductCardUiModel
     ) {
-        val items = arrayListOf<Bundle>().apply {
-            products.forEachIndexed { position, item ->
-                add(
-                    productCardItemDataLayer(
-                        position = position.toString(),
-                        id = item.productId,
-                        name = item.product.productName,
-                        price = item.product.formattedPrice
-                    )
-                )
-            }
-        }
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            )
+        )
 
         val eventLabel = getProductCardLabel(data)
         val dataLayer = getProductDataLayer(

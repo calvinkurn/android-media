@@ -281,6 +281,7 @@ class TokoNowHomeFragment: Fragment(),
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
     private var playWidgetCoordinator: PlayWidgetCoordinator? = null
+    private var bannerComponentCallback: BannerComponentCallback? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -534,7 +535,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseImpression(data)
+            REPURCHASE_PRODUCT -> trackRepurchaseImpression(position, data)
         }
     }
 
@@ -856,6 +857,7 @@ class TokoNowHomeFragment: Fragment(),
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
         carouselParallaxState.clear()
+        bannerComponentCallback?.resetImpression()
         loadLayout()
     }
 
@@ -1310,9 +1312,8 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
-        val productList = viewModelTokoNow.getRepurchaseProducts()
-        analytics.onImpressRepurchase(data, productList)
+    private fun trackRepurchaseImpression(position: Int, data: TokoNowProductCardUiModel) {
+        analytics.onImpressRepurchase(position, data)
     }
 
     private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
@@ -1873,8 +1874,9 @@ class TokoNowHomeFragment: Fragment(),
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
-    private fun createSlideBannerCallback(): BannerComponentCallback {
-        return BannerComponentCallback(this, viewModelTokoNow, userSession, analytics)
+    private fun createSlideBannerCallback(): BannerComponentCallback? {
+        bannerComponentCallback = BannerComponentCallback(this, viewModelTokoNow, userSession, analytics)
+        return bannerComponentCallback
     }
 
     private fun createLegoBannerCallback(): DynamicLegoBannerCallback {
