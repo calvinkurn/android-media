@@ -142,4 +142,6 @@
     <string name="stfs_choose_all_product_label">Pilih Sekaligus</string>
     <string name="stfs_product_count_place_holder">%d Produk</string>
     <string name="stfs_choosen_product_count_placeholder">%d Produk Dipilih</string>
+    <string name="stfs_label_delete">Hapus</string>
+    <string name="stfs_label_edit">Ubah</string>
 </resources>

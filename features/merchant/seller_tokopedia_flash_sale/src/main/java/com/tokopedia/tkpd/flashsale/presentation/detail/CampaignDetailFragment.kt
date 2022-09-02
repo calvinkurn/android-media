@@ -215,6 +215,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         setupUpcomingHeader(flashSale, campaignStatus)
         setupUpcomingMid(flashSale, campaignStatus)
         setupUpcomingBody(flashSale)
+        setupUpcomingButton()
     }
 
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
@@ -353,6 +354,12 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                 binding.timer.onFinish = onTimerFinished
             }
             else -> onTimerFinished
+        }
+    }
+
+    private fun setupUpcomingButton() {
+        binding?.run {
+            btnRegister.text = getString(R.string.label_register)
         }
     }
 
@@ -544,6 +551,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
             }
         }
         observeSelectedProductData()
+        setupRegisteredButton()
     }
 
     private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
@@ -563,6 +571,57 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                 binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_MINUTE
                 binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
                 binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+            }
+        }
+    }
+
+    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
+        val selectedProduct = productAdapter.getItems()[itemPosition]
+        val selectedProductId = selectedProduct.id() as Long
+
+        if (isCheckBoxChecked) {
+            viewModel.setSelectedItem(selectedProductId)
+        } else {
+            viewModel.removeSelectedItem(selectedProductId)
+        }
+    }
+
+    private fun onShowOrHideItemCheckBox() {
+        val oldItems = adapter?.getItems() as List<WaitingForSelectionItem>
+        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val isShown = newItems[0].isCheckBoxShown
+        adapter?.submit(listOf())
+        adapter?.submit(newItems)
+
+        registeredCdpBodyBinding?.run {
+            if (isShown) {
+                tpgSelectedProductCount.visible()
+                tpgProductCount.invisible()
+                btnSelectAllProduct.text = getString(R.string.fs_canceled_lable)
+            } else {
+                tpgSelectedProductCount.invisible()
+                tpgProductCount.visible()
+                btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
+            }
+        }
+        setupRegisteredButton(isShown)
+    }
+
+    private fun setupRegisteredButton(isShown: Boolean = false) {
+        binding?.run {
+            cardProductEligible.gone()
+            cardBottomButtonGroup.visible()
+            btnRegister.text = getString(R.string.stfs_add_product)
+            btnDelete.text = getString(R.string.stfs_label_delete)
+            btnEdit.text = getString(R.string.stfs_label_edit)
+            if (isShown) {
+                btnRegister.gone()
+                btnDelete.visible()
+                btnEdit.visible()
+            } else {
+                btnRegister.visible()
+                btnDelete.gone()
+                btnEdit.gone()
             }
         }
     }
@@ -619,37 +678,6 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id()
         //TODO: Open detail product bottom sheet
-    }
-
-    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
-        val selectedProduct = productAdapter.getItems()[itemPosition]
-        val selectedProductId = selectedProduct.id() as Long
-
-        if (isCheckBoxChecked) {
-            viewModel.setSelectedItem(selectedProductId)
-        } else {
-            viewModel.removeSelectedItem(selectedProductId)
-        }
-    }
-
-    private fun onShowOrHideItemCheckBox() {
-        val oldItems = adapter?.getItems() as List<WaitingForSelectionItem>
-        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
-        val isShown = newItems[0].isCheckBoxShown
-        adapter?.submit(listOf())
-        adapter?.submit(newItems)
-
-        registeredCdpBodyBinding?.run {
-            if (isShown) {
-                tpgSelectedProductCount.visible()
-                tpgProductCount.invisible()
-                btnSelectAllProduct.text = getString(R.string.fs_canceled_lable)
-            } else {
-                tpgSelectedProductCount.invisible()
-                tpgProductCount.visible()
-                btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
-            }
-        }
     }
 
     override fun createAdapter(): CompositeAdapter {
