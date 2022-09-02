@@ -3179,7 +3179,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         element.productBundling.bundleId.toString(),
                         it,
                         it1,
-                        element.source,
+                        "broadcast",
                         getBroadcastSenderShopId(element),
                         getBroadcastSenderShopName(element),
                         session.userId
@@ -3205,7 +3205,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
             if (element.isBroadcast()) {
-                element.productBundling
                 element.productBundling.bundleItem?.let {
                     element.productBundling.bundleType?.let { it1 ->
                         TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
@@ -3213,7 +3212,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                             element.productBundling.bundleStatus.toString(),
                             element.productBundling.bundleId.toString(),
                             it1,
-                            element.source.toString(),
+                            "broadcast",
                             it,
                             getBroadcastSenderShopId(element),
                             session.userId
@@ -3241,7 +3240,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         element.productBundling.bundleStatus.toString(),
                         element.productBundling.bundleId.toString(),
                         it1,
-                        element.source.toString(),
+                        "broadcast",
                         it,
                         getBroadcastSenderShopId(element),
                         session.userId

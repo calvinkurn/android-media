@@ -431,7 +431,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(USER_ID, userId)
         eventDataLayer.putString(SHOP_ID, shopId)
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SC,eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ATC,eventDataLayer)
 
 
 
